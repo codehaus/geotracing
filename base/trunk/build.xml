@@ -38,6 +38,9 @@ $Id$
 			<zipfileset dir="${home}"
 				prefix="${project.id}-src-${version}"
 				excludes="external/**,**/version/**,**/build/**,**/*.class,**/security.properties"/>
+			<zipfileset dir="${home}"
+				prefix="${project.id}-src-${version}"
+				includes="external/build.xml,external/build.properties"/>
 		</zip>
 
 

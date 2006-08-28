@@ -1,0 +1,62 @@
+$Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
+
+1.1.0 28.aug.2006
+- automatic download of external packages during Ant build
+- build improvements
+- first version in codehaus SVN
+
+1.0.10 28.aug.2006
+- final version before codehaus migration
+- added Factory.js
+
+1.0.9 31.jul.2006
+ - webtracer
+ - gpsdoor
+
+1.0.8 1.may.2006
+- tile.jsp for GMap v2
+- migration to GMap v2
+- added Track point filtering (minimize trackpoints in reading)
+- some track playback improvements
+- geoskating migration class
+
+1.0.7 18.apr.2006
+- added delete medium (w. location) service
+- adapted MT sound volume
+
+1.0.6 4.apr.06
+- mobitracer: introduce GPSSmoother to avoid GPS spikes
+- bug: remove bad samples from returned list in Track.write()
+- mobitracer: config and impl for minimal version (trace only)
+
+1.0.5 mrt 2006
+ - fixed severe bug that prevented tracklogging
+ - fixed display incoming medium in gtapp.js
+ - bugfix: gtwidget.js random color
+ - bugfix: gtapp.js normal array in GMap constructor
+ - gtwidget.js: configurable line width and opacity
+
+v1.0.4 8.mrt.06
+- first version autoplay
+- tried fix to elimnate GPS-spikes (always calc speed)
+- generalized caching-rd-projecting wms-proxy.jsp
+- wms-proxy.jsp: close iostreams before moving temp file
+- attempt fixing weird distance calc
+
+v1.0.3 23.feb.06
+- bugfix widget.js Selector clear() for IE
+- added dynamic portal setting in mt.jsp
+- rename tracer.css to gtwidget.css
+- customizable help menu
+
+v1.0.2 17.feb.06
+- help as ajax-loadable content in Panel
+- fixes and refactoring
+
+v1.0.1 12.feb.06
+- random media/POI viewing
+- play back tracks eith media/POIs with trackplayer
+- renamed tracer.js to gtwidget.js
+
+v1.0.0 5.feb.06
+- first version
