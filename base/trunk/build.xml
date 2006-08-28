@@ -7,11 +7,8 @@ $Id: build.xml,v 1.2 2006-08-04 15:47:39 just Exp $
 <project name="geotracing" default="distro-src" basedir=".">
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
-	<property name="app.dir" value="${home}/app"/>
 	<property name="client.dir" value="${home}/client"/>
 	<property name="server.dir" value="${home}/server"/>
-	<property name="doc.dir" value="${home}/doc"/>
-
 	<property name="version.dir" value="${home}/version"/>
 
 	<property file="${server.dir}/build.properties"/>
@@ -29,7 +26,7 @@ $Id: build.xml,v 1.2 2006-08-04 15:47:39 just Exp $
 		<zip zipfile="${distro-src.zip}">
 			<zipfileset dir="${home}"
 				prefix="${project.id}-src-${version}"
-				excludes="app/otter/**,doc/**,external/**,**/version/**,**/build/**,server/webapp/n8/**,**/*.class"/>
+				excludes="external/**,**/version/**,**/build/**,**/*.class,**/security.properties"/>
 		</zip>
 
 		<!--	<delete file="${versions.gzip.file}" />
