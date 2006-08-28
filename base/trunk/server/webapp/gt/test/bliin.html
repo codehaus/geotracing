@@ -1,0 +1,58 @@
+<html>
+<head><title>mobile dhtml</title><!-- //USE06 -->
+
+<style type="text/css" media="handheld,screen">
+	body
+	{
+		margin:0px;
+		padding:0px;
+
+		background:white;
+
+		font-family:verdana,sans-serif;
+		font-size:10px;
+		color:black;
+	}
+
+	.colorbar
+	{
+		float:left;
+		height:200px;
+		background-color:rgb(250,0,0);
+	}
+</style>
+
+<script type="text/javascript">
+
+colorbars = new Array(50,100,150,200,250);
+
+function cycle()
+{
+	var divs = document.getElementsByTagName('DIV');
+
+   for (var i=0; i<divs.length; i++)
+	{
+	   colorbars[i] -= 5;
+
+	   if (colorbars[i]<50) colorbars[i]=250;
+
+	   divs[i].style.backgroundColor = 'rgb('+colorbars[i]+',0,0)';
+	}
+
+	repeat = window.setTimeout('cycle()',25)
+}
+
+
+</script>
+
+</head>
+	<body onload="cycle()">
+
+<div style="background-color: rgb(140, 0, 0);" class="colorbar">&nbsp;</div>
+<div style="background-color: rgb(190, 0, 0);" class="colorbar">&nbsp;</div>
+<div style="background-color: rgb(240, 0, 0);" class="colorbar">&nbsp;</div>
+<div style="background-color: rgb(85, 0, 0);" class="colorbar">&nbsp;</div>
+<div style="background-color: rgb(135, 0, 0);" class="colorbar">&nbsp;</div>
+
+<p style="clear: both;">do you see animated colored bars?</p>
+ </body></html>

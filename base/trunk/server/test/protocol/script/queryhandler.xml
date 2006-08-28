@@ -1,0 +1,102 @@
+<testset id="queryhandler" clients="1">
+
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" portalname="geotracing" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="query-one-table-all">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req tables="utopia_person"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="query-one-table-constraints">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req tables="utopia_person">
+					lastname = 'user'
+				</query-store-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="query-one-table-all-ordering">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req tables="utopia_person" orderby="creationdate" directions="desc"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="query-two-tables-all">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req tables="utopia_person,utopia_account" fields="utopia_person.id,utopia_person.firstname,utopia_account.id" orderby="utopia_person.creationdate" directions="desc"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="query-negative-rsp">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req tables="an_unknown_table_name" orderby="creationdate" directions="desc"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-nrsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+

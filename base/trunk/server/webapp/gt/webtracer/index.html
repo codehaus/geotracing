@@ -1,0 +1,43 @@
+<html>
+  <head>
+	<title>WebTracer - DEMO</title>
+	<link rel="stylesheet" type="text/css" href="webtracer.css">
+	<link rel="stylesheet" type="text/css" href="../css/widget.css">
+	<script type="text/javascript" src="../lib/DHTML.js" ></script>
+	<script type="text/javascript" src="webtracer.js" ></script>
+  </head>
+
+  <body>
+         <div id="mainmenu" class="mn-container">
+	<ul class="mn-content">
+		<li><a href="#">Session</a>
+
+			<ul>
+				<li id="loginout" ><a href="#" fn="WT.onMenuLogin">Login</a></li>
+			</ul>
+		</li>
+
+   		<li><a href="#">Track</a>
+			<ul>
+				<li><a href="#" fn="WT.onMenuCreateTrack">New</a></li>
+				<li id="suspendresume"><a href="#" fn="WT.onMenuResumeTrack">Resume</a></li>
+				<li><a href="#" fn="WT.onMenuAddPOI">Add POI</a></li>
+	<!--			<li><a href="#" fn="WT.onMenuAddMedium">Add Medium</a></li>  -->
+		    </ul>
+		</li>
+
+		<li><a href="#">Links</a>
+
+			<ul>
+				<li><a href="#" fn="WT.onMenuLink" arg="../my">MyGeoTracing</a></li>
+				<li><a href="#" fn="WT.onMenuLink" arg="../">GeoTracing Live App</a></li>
+				<li><a href="#" fn="WT.onMenuLink" arg="gpsdoor.html" >GPSDoor Download</a></li>
+				<li><a href="#" fn="WT.onMenuLink" arg="http://localhost:7305" >GPSDoor Configuration</a></li>
+			</ul>
+		</li>
+	</ul>
+
+	<div style="clear: both;"> </div>
+</div>
+  </body>
+</html>

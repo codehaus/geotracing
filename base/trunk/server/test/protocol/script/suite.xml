@@ -1,0 +1,5 @@
+<testsuite>
+	<testset file="tracinghandler.xml" />
+	<testset file="queryhandler.xml"/>
+</testsuite>
+

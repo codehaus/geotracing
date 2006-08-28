@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<title>Three Column GMap Layout</title>
+<style type="text/css">
+/*	@import "all.css";  just some basic formatting, no layout stuff */
+body {
+	font: 12px / 1.2 Verdana, Arial, Helvetica, sans-serif;
+	background: #0000cc;
+}
+
+h1 {
+	font-size: 14px;
+}
+
+p {
+	font-size: 10px
+}
+a {
+	text-decoration: none;
+	font-weight: bold;
+	color: #c00;
+}
+
+pre {
+	font-size: 11px;
+	color: blue;
+}
+
+.greek {
+	color: #999;
+}
+
+ol {
+	margin-right: 40px;
+}
+
+li {
+	margin-bottom: 10px;
+}
+
+body, div {
+	margin: 0px;
+	padding: 0px;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+}
+
+#left, #leftfill {
+	position: absolute;
+	background: #ddd;
+}
+
+#map {
+	position: absolute;
+	background: yellow;
+}
+
+#right, #rightfill {
+	position: absolute;
+	background: #ddd;
+}
+
+#banner {
+	position: absolute;
+	background: #eee;
+}
+
+
+</style>
+<script type="text/javascript" src="../script/dhtml.js"></script>
+
+<script type="text/javascript">
+	GM = {
+	    banner: null,
+		bannerH: 40,
+		left: null,
+		leftW: 120,
+		right: null,
+		rightW: 200,
+		leftFill: null,
+		rightFill: null,
+		map: null,
+
+		init: function() {
+			GM.initLayout();
+
+			GM.layout();
+			DH.addEvent(window, 'resize', GM.layout, false);
+			GM.layout();
+		},
+
+		initLayout: function() {
+			GM.banner = DH.getObject('banner');
+			GM.left = DH.getObject('left');
+			GM.right = DH.getObject('right');
+			GM.leftFill = DH.getObject('leftfill');
+			GM.rightFill = DH.getObject('rightfill');
+			GM.map = DH.getObject("map");
+		},
+
+		layout: function() {
+			var bannerH = GM.bannerH;
+			var leftW = GM.leftW;
+			var rightW = GM.rightW;
+			var windowH = DH.getInsideWindowHeight();
+			DH.setObjectXYWH(GM.banner, 0, 0, DH.getInsideWindowWidth(), bannerH);
+			DH.setObjectXYWH(GM.left, 0, DH.getObjectHeight(GM.banner), leftW);
+			DH.setObjectXYWH(GM.map, leftW, bannerH, DH.getInsideWindowWidth()-leftW-rightW, windowH-bannerH);
+			DH.setObjectXYWH(GM.right, DH.getObjectWidth(GM.map) + leftW, bannerH, rightW);
+
+			var mapH = DH.getObjectHeight(GM.map);
+			var leftH = DH.getObjectHeight(GM.left);
+			var rightH = DH.getObjectHeight(GM.right);
+			DH.setObjectXYWH(GM.leftFill, 0,0,0,0);
+			DH.setObjectXYWH(GM.rightFill, 0,0,0,0);
+			DH.hide(GM.leftFill);
+			DH.hide(GM.rightFill);
+
+			if (leftH < windowH) {
+				DH.show(GM.leftFill);
+				DH.setObjectXYWH(GM.leftFill, 0, leftH + bannerH, leftW, windowH - leftH - bannerH);
+			}
+
+			if (rightH < windowH) {
+				DH.show(GM.rightFill);
+				DH.setObjectXYWH(GM.rightFill, DH.getObjectWidth(GM.map) + leftW, rightH + bannerH, rightW, windowH - rightH - bannerH);
+			}
+		},
+
+		toggleLeft: function() {
+			DH.toggleVisibility(GM.left);
+			if (DH.isVisible(GM.left) == true) {
+				DH.setObjectXYWH(GM.map, GM.leftW, GM.bannerH, DH.getInsideWindowWidth()-GM.leftW-GM.rightW, DH.getInsideWindowHeight()-GM.bannerH);
+			} else {
+				DH.hide(GM.leftFill);
+				DH.setObjectXYWH(GM.map, 0, GM.bannerH, DH.getInsideWindowWidth()-GM.rightW, DH.getInsideWindowHeight()-GM.bannerH);
+			}
+		}
+	}
+
+	// Starts it all
+	DH.addEvent(window, 'load', GM.init, true);
+	DH.addEvent(window, 'click', GM.toggleLeft, true);
+
+</script>
+</head>
+
+<body>
+<div id="map">lala 	<a href="#" id="toggle" >toggle</a>
+</div>
+
+<div id="banner"><h1>3 columns, the holy grail</h1></div>
+
+<div id="left">
+	<h1>leftcontent</h1>
+
+	<p class="greek">
+		Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+		dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exercitation ulliam corper
+		suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem veleum iriure dolor in hendrerit in
+		vulputate velit esse molestie consequat, vel willum lunombro dolore eu feugiat nulla facilisis at vero eros et
+		accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla
+		facilisi.
+	</p>
+	<h1>leftcontent</h1>
+
+
+</div>
+
+
+<div id="right">
+	<h1>rightcontent</h1>
+
+		<p>
+	This page is part of <a href="home.asp">CSS Layout Techniques</a>, a resource for web developers and designers.
+	</p>
+	<p>
+
+	Other Layout Techniques:<br/>
+		<a href="7.asp">3 columns, the holy grail</a><br/>
+	<a href="9.asp">2 columns, ALA style</a><br/>
+	<a href="8.asp">4 columns, all fluid</a><br/>
+	<a href="2.asp">3 columns, all fluid </a><br/>
+	<a href="3.asp">static width and centered</a><br/>
+
+	<a href="1.asp">nested float</a><br/>
+	</p>
+	<p>
+	Does it <a href="http://validator.w3.org/check?uri=http://glish.com/css/7.asp?noSRC=true">validate</a>?
+	</p>
+</div>
+
+<div id="leftfill">&nbsp;</div>
+<div id="rightfill">&nbsp;</div>
+
+</body>
+</html>

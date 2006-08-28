@@ -1,0 +1,200 @@
+<!-- Obsolete but kept for reference -->
+<testset id="n8tracinghandler" clients="2">
+
+
+	<test id="login-selapp-client1">
+
+		<send id="client1">
+			<login-req name="blue" password="blue" portalname="geotracing" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="t-trk-create-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-get-bombs-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-get-bombs-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-get-bombs-rsp count="4"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-drop-bomb-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.3731101950923" lon="4.890632629394531"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-add-poi-req name="bomb1" type="bomb"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-get-bombs-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-add-poi-req name="bomb2" type="bomb"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-add-poi-req name="bomb3" type="bomb"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-add-poi-req name="bomb4" type="bomb"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-get-bombs-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-add-poi-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-get-bombs-rsp count="3"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-add-poi-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-add-poi-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-add-poi-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-get-bombs-rsp count="0"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-drop-bomb-req-insuff">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-add-poi-req name="bomb4" type="bomb"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-add-poi-nrsp/>
+			</utopia-rsp>
+
+		</expect>
+	</test>
+
+	<test id="t-trk-hit-bomb-req-own">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.3731101950923" lon="4.890632629394531"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="login-selapp-client2">
+
+		<send id="client2">
+			<login-req name="red" password="red" portalname="geotracing" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client2">
+
+			<login-rsp/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="t-trk-hit-bomb-req-detone">
+		<send id="client2">
+
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.4" lon="4.81"></pt>
+					<pt lat="52.41" lon="4.82"></pt>
+					<pt lat="52.42" lon="4.83"></pt>
+					<pt lat="52.43" lon="4.84"></pt>
+					<pt lat="52.44" lon="4.85"></pt>
+					<pt lat="52.45" lon="4.86"></pt>
+					<pt lat="52.46" lon="4.87"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.3731101950923" lon="4.890632629394531"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.3731101950923" lon="4.890632629394531"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client2">
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp>
+					<poi id="" type="bomb" owner="blue" trackname=""/>
+				</t-trk-write-rsp>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-delete-active-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+</testset>

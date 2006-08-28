@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<style type="text/css"><!--
+	@import "skidoo_too.css";
+	--></style>
+	<link rel="stylesheet" href="skidoo_too_print.css" type="text/css" media="print"/>
+	<script type="text/javascript" src="ruthsarian_utilities.js"></script>
+	<script type="text/javascript" src="../script/dhtml.js"></script>
+	<script type="text/javascript" src="../script/server.js"></script>
+	<script type="text/javascript" src="../script/widget.js"></script>
+	<script type="text/javascript" src="myapp.js"></script>
+
+	<script type="text/javascript">
+		<!--
+		var font_sizes = new Array(100, 110, 120);
+		var current_font_size = 0;
+		if (( typeof( NN_reloadPage ) ).toLowerCase() != 'undefined') {
+			NN_reloadPage(true);
+		}
+		if (( typeof( opacity_init  ) ).toLowerCase() != 'undefined') {
+			opacity_init();
+		}
+		if (( typeof( set_min_width ) ).toLowerCase() != 'undefined') {
+			set_min_width('pageWrapper', 600);
+		}
+		if (( typeof( loadFontSize ) ).toLowerCase() != 'undefined') {
+			event_attach('onload', loadFontSize);
+		}
+		//-->
+	</script>
+
+	<title>Skidoo Too : Ruthsarian Layouts</title>
+</head>
+
+<body>
+<div id="pageWrapper">
+<div id="masthead" class="inside">
+
+	<!-- masthead content begin -->
+
+	<h1>My Traces</h1>
+
+	<!-- masthead content end -->
+
+	<hr class="hide"/>
+</div>
+
+<div id="topmenu" class="hnav">
+
+	<!--
+	 you must preserve the (lack of) whitespace between elements when creating
+	 your own horizontal navigation elements, otherwise the extra whitespace
+	 will break the visual layout. although how it breaks (tiny spaces between
+	 each element) is an effect that some may desire.
+ -->
+
+	<ul
+			><li class="hide"
+			><a class="hide" href="../../">Ruthsarian</a
+			><span class="divider"> : </span
+			></li
+			><li
+			><a href="#" fn="MY.login">Login</a
+			><span class="divider"> : </span
+			></li
+			><li
+			><a href="#" fn="MY.register">Register</a
+			><span class="divider"> : </span
+			></li
+			><li
+			><a href="#" fn="MY.help">Help</a
+			><span class="divider"> : </span
+			></li
+			></ul>
+
+	<!-- horizontal nav end -->
+
+	<hr class="hide">
+</div>
+
+<div id="outerColumnContainer">
+<div id="innerColumnContainer">
+<div id="SOWrap">
+<div id="middleColumn">
+<div id="content" class="inside">
+
+<!--- middle (main content) column begin -->
+
+<h2>Minty Fresh Flavor!</h2>
+
+<p>
+	And so it has happened, as was foretold; I have broken down and created a source-ordered
+	version of <a href="../skidoo/">skidoo</a>. This layout has the middle column appearing
+	first in the source.
+</p>
+
+<p>
+	I started with a copy of the <a href="../skidoo/lean/">skidoo lean</a> stylesheet and
+	cleaned it up considerably. I broke the stylesheet down into sections with a brief
+	description of each. I've also added new comments to <a href="skidoo_too.css">this
+	stylesheet</a> to try and better explain what's happening. But I'm still keeping everything
+	within a single stylesheet, much like <a href="../skidoo/lean/">skidoo lean</a>. Is it
+	the best of <a href="../skidoo/">both</a> <a href="../skidoo/lean/">worlds</a>? Maybe.
+
+</p>
+
+<h2>Why Care About Source Ordering?</h2>
+
+<p>
+	You don't have to. You really don't. But, it's worthing considering.
+</p>
+
+<p>
+	There's a couple of reasons to care. The first is that some search engines
+	will only read X number of bytes into your page before it stops and indexes
+	whatever it got up to that point. If you're left and/or right columns come
+	first in the source, and they're incredibly long, the search engine may have
+	only indexed your side column(s) and never got to the meat of the page,
+	the middle column.
+</p>
+
+<p>
+	The second reason is that browsers which do not support CSS will not see your
+	page in a columned fashion. This means the content is presented in order
+	of what comes first in the source. So each page a user visits will give them
+	your navigation elements and whatever other stuff you've got in your side
+	columns. With the middle column appearing first in your layout's source, the
+	users of these browsers will get right to the meat of your page without
+	having to search for it. The downside is that there may be important navigational
+	elements in your side column(s) that you want to appear first. A way around this
+	would be to add a link at the top of the page that links to an anchor within
+	the page that's placed at the start of this important area. The link could say
+	something like "jump down to site navigation" or whatever you want. You can
+	hide this link using CSS so only non-CSS browsers will see it. Keep in mind
+	that if you implement a horizontal menu, as I've done on this page, that will
+	appear before the content as well. So perhaps the really important navigational
+	elements go there, and then you don't have to worry about this.
+	This is something you may want to think a bit about before deciding what to do.
+</p>
+
+<p>
+
+	The third reason is Mac IE. I'm still trying to figure this one out but it seems
+	the negative-margin trick used to create the three-column layout in
+	<a href="../skidoo/">skidoo</a> causes an issue with Mac IE's ability to select
+	within the three columns. It seems that selecting text within the first
+	element to come in the source of the document is... easier(?) than those
+	that follow in the source. So putting the middle column first means selecting
+	text from that column (should) be easier for Mac IE users (using Skidoo). Perhaps
+	I can find a workaround and this third reason won't apply anymore, but for now,
+	that's one of the reasons why I'm doing this.
+</p>
+
+<h2>Markup/CSS Changes</h2>
+
+<p>
+	Minor changes were needed in both the HTML and CSS to get the source-ordered
+	version working. Essentially I had to wrap the left and middle columns in
+	a new <code>div</code> block and float that left. Inside this new
+	<code>#SOWrap div</code> element I've right-floated the middle column,
+	and then, just like in <a href="../skidoo/">skidoo</a> I left-float
+	the left column and use a negative margin to push it left. The right
+	column pretty much stays where it always has been.
+
+</p>
+
+<p>
+	On the CSS side of things I had to make the obvious float changes and I
+	also had to move the right-side 1px margin, normally applied to
+	<code>#middleColumn</code>, to the new <code>#SOWrap</code> element,
+	since it's that element which touches with the left-edge of the
+	right column.
+</p>
+
+<h2>About The Demos</h2>
+
+<p>
+	There are some demos that are linked to in the left-hand column.
+	Each demo uses the <a href="skidoo_too.css">standard Skidoo Too stylesheet</a>.
+	The mods are created through embedded stylesheets which you can view by
+	simply viewing the source of the demos.
+
+</p>
+
+<p>
+	In a real-world environment, you would not want to use embedded stylesheets.
+	I'm using them because it makes the changes needed to achieve the effects seen in
+	the mods very obvious and easy to focus on. What you should actually do is either
+	put the embedded stylesheet in a separate CSS file and link to it with a
+	<code>link</code> tag or modify a copy of the <a href="skidoo_too.css">standard Skidoo Too stylesheet</a>
+	with the changes indicated in the embedded stylesheet. The latter, if nothing else, is a nice
+	exercise in getting down and dirty with my style of authoring CSS. This way things might not feel
+	so foreign later on when you want to make your own mods.
+</p>
+
+<p>
+	I know I ought to be more consistent with my documentation. It's incredibly thick in some
+	areas, and incredibly thin in others, such as my lack of documentation on what the mods are/do/etc.
+	If you've got any burning questions just give toss me an <a href="mailto:ruthsarian@gmail.com">e-mail</a>
+
+	and I'll answer them.
+</p>
+
+<h2>Anything Else</h2>
+
+<p>
+	Nope. If you're familiar with <a href="../skidoo/">skidoo</a> or
+	<a href="../skidoo/lean/">skidoo lean</a> then the rest has
+	already been covered.
+</p>
+
+<!--- middle (main content) column end -->
+
+<hr class="hide"/>
+</div>
+</div>
+
+<div id="leftColumn">
+	<div class="inside">
+
+		<!--- left column begin -->
+
+		<div class="vnav">
+			<h3>Stylesheets</h3>
+
+			<ul
+					><li
+					><a href="skidoo_too.css">skidoo_too.css</a
+					></li
+					><li
+					><a href="skidoo_too_print.css">skidoo_too_print.css</a
+					></li
+					></ul>
+
+			<h3>JavaScript</h3>
+			<ul
+					><li
+					><a href="/etribou/layouts/javascript/ruthsarian_utilities.js">ruthsarian_utilities.js</a
+					></li
+					></ul>
+
+			<h3>Demos</h3>
+			<ul
+					><li
+					><a href="border_into_masthead/index.html">Border Into Masthead</a
+					></li
+					><li
+					><a href="two_columns_left.html">Two Columns - Left</a
+					></li
+					><li
+					><a href="two_columns_right.html">Two Columns - Right</a
+					></li
+					><li
+					><a href="split_masthead_01.html">Split Masthead 1</a
+					></li
+					><li
+					><a href="split_masthead_02.html">Split Masthead 2</a
+					></li
+					></ul>
+
+			<h3>References</h3>
+			<ul
+					><li
+					><a href="http://www.css-discuss.org/">css-discuss.org</a
+					></li
+					><li
+					><a href="http://www.dithered.com/css_filters/css_only/index.php">CSS Filters</a
+					></li
+					><li
+					><a href="http://www.positioniseverything.net/piefecta-rigid.html">Piefecta Demo Layout</a
+					></li
+					><li
+					><a href="http://www.redmelon.net/tstme/3cols2/">Douglas Livingstone's 3-Column Layout</a
+					></li><li
+					><a href="http://www.456bereastreet.com/">456 Berea Street</a
+					></li
+					><li
+					><a href="http://www.behr.com/behrx/workbook/index.jsp">Explore Color</a
+					></li
+					></ul>
+		</div>
+		<script type="text/javascript">
+			<!--
+			var browser = new browser_detect();
+			if (browser.versionMajor > 4 || !( browser.isIE || browser.isNS ))
+			{
+				/* only offer style/font changing to version 5 and later browsers
+						 * which have javascript enabled. curiously, if you print this out
+						 * in NS4, NS4 breaks for some reason.
+						 */
+				document.write('									\
+			<p class="fontsize-set">							\
+				<a href="#" onclick="setFontSize(0); return false;"			\
+					><img src="images/font_small.gif" width="17" height="21"	\
+						alt="Small Font" title="Small Font"			\
+				/><\/a>									\
+				<a href="#" onclick="setFontSize(1); return false;"			\
+					><img src="images/font_medium.gif" width="17" height="21" 	\
+						alt="Medium Font" title="Medium Font"			\
+				/><\/a>									\
+				<a href="#" onclick="setFontSize(2); return false;"			\
+					><img src="images/font_large.gif" width="17" height="21"	\
+						alt="Large Font" title="Large Font"			\
+				/><\/a>									\
+			<\/p>										\
+		');
+			}
+			//-->
+		</script>
+
+		<!--- left column end -->
+
+		<hr class="hide"/>
+	</div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<div id="rightColumn">
+	<div class="inside">
+		<div id="status">OK</div>
+		<!--- right column begin -->
+
+		<p>
+			A shameless self plug:<br>
+			<a href="http://webhost.bridgew.edu/etribou/layouts/skidoo_too/gargoyles/index.html">Skidoo Too :
+				Gargoyles</a>
+			is a modified version of this layout. It has some nifty features that you might be interested
+			in investigating.
+		</p>
+
+		<p>
+			If you've ever thought about looking to make a donation to Ruthsarian Layouts,
+			you'll want to <a href="http://webhost.bridgew.edu/etribou/layouts/skidoo_too/gargoyles/index.html">check
+			out
+			Skidoo Too : Gargoyles</a>.
+		</p>
+
+		<p>
+			And if you've ever thought that anyone looking to donate money for a CSS-based layout
+			is just really crazy,
+			you'll want to <a href="http://webhost.bridgew.edu/etribou/layouts/skidoo_too/gargoyles/index.html">check
+			out
+			Skidoo Too : Gargoyles</a>.
+		</p>
+
+		<!--- right column end -->
+
+		<hr class="hide"/>
+	</div>
+</div>
+
+<div class="clear"></div>
+
+</div>
+</div>
+
+<div id="footer" class="inside">
+
+	<!-- footer begin -->
+
+	<p style="margin:0;">
+		&copy; Nobody. All CSS/HTML is released into the public domain.<br>
+		Last Updated: June 28, 2005
+	</p>
+
+	<!-- footer end -->
+
+	<hr class="hide"/>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+DOCUMENTATION FOR get.jsp
+$Id: get-usage.txt,v 1.2 2006-08-28 09:43:23 just Exp $
+
+get.jsp provides REST services to query data from a GeoTracing app.
+The type/structure/amount of the result returned is determined by the
+query params in particular the "cmd" parameter.
+
+GeoTracing applications can optionally extend get.jsp
+with application-specific queries/information requests by implementing these in
+the file myget.jsp. this file is included in get.jsp and should implement doMyCommand().
+If the application handles/overrides a command doMyCommand() should return an XML result.
+Otherwise null should be returned and the command will be handled in get.jsp (doCommand()).
+
+When developing with get.jsp, it is most optimal to use an XML-aware browser like Moz/FF
+that can display the results as formatted XML.
+
+NOTE
+Not all queries are yet optimized!!
+
+URL
+The get.jsp URL is located at the <webapp>/srv/get.jsp
+where <webapp> is the name of the GeoTracing web application.
+For example the webapp bliin01 has the
+URL http://test.bliin.com/bliin01/srv/get.jsp
+
+URL STRUCTURE
+Each get.jsp request must have the following form:
+
+get.jsp?cmd=<command>&<command-specific-parameters>
+
+Examples:
+get.jsp?cmd=q-tracks-by-user&user=caglar
+get.jsp?cmd=q-active-tracks
+get.jsp?cmd=get-track&id=123456&format=gtx
+
+The parameter "cmd" must alwalys be present (otherwise this
+file is returned.
+
+Two types of "cmd" parameters are used:
+- query commands: "cmd" starts with "q-" (e.g. cmd=q-active-tracks)
+- any other commands: no specific convention (e.g. cmd=get-track)
+
+Query commands always return a common XML structure as follows:
+
+<query-store-rsp cnt="(record count)" >
+   <record>
+     <id>23045</id>
+     <name>M13</name>
+     <lon>4.9005367</lon>
+     <lat>52.3689717</lat>
+     <loginname>green</loginname>
+   </record>
+   <record>
+     <id>177563</id>
+     <name>KillerClub</name>
+     <lon>4.8997617</lon>
+     <lat>52.3721767</lat>
+     <loginname>janb</loginname>
+   </record>
+     .
+     .
+</query-store-rsp>
+
+The field names for each <record/> are specific for each query command.
+
+QUERY COMMANDS
+The following query commands are available for queries.
+Each will be documented below. Paramteers may be mandatory (m) or
+optional (o).
+
+"q-store"
+full query of the database (will be disabled in production versions)
+
+"q-active-tracks"
+- get all active (latest) tracks with their users
+- parms
+* no parms
+
+"q-all-tracks"
+get a list of all tracks
+- parms
+* no parms
+
+"q-recent-tracks"
+get a list of recent tracks
+- parms
+* "max" : (o) maximum number to be returned default 5
+
+"q-tracks-by-user"
+get the tracks for single user
+- parms
+* "user" : (m) a user login name
+
+"q-all-users"
+get list of all users
+- parms
+* no parms
+
+"q-random-track"
+get random track
+- parms
+* no parms
+
+"q-locative-media"
+queries on media with their locations
+- parms
+* "type" : (o) specific medium type, values: image,video,audio,(text not yet)
+* "bbox" : (o) get in bounding rectangle, values 2 lon/lat pairs (SW,NE)
+* "random" : (o) pick random, values: true/false
+* "max" : (o) maximum number to be returned default 10
+
+"q-recent-media"
+get recently added media
+- parms
+* "max" : (o) maximum number to be returned default 5
+
+"q-media-by-user"
+get media for single user
+- parms
+* "user" : (m) a user login name
+
+"q-pois"
+queries on POIs with their locations
+* "type" : (o) specific  type, values: determined by pois in system
+* "bbox" : (o) get in bounding rectangle, values 2 lon/lat pairs (SW,NE)
+* "random" : (o) pick random, values: true/false
+* "max" : (o) maximum number to be returned default 10
+
+
+OTHER COMMANDS
+These are other commands.
+
+"get-track"
+get the data (media/pois/trackpoints) for specified track. The  data returned
+is an XML-document according to the specified format, GTX (GeoTracing XML) or
+the standard GPX (GPX eXchange see: http://www.topografix.com/gpx.asp) format.
+
+* "id" : (m) the track id (key)
+* "format" : (o) format to return values: "gpx" or "gtx" (default)
+* "mindist" : (o) minimal distance (meters) to filter excess points

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+	<title>default title</title>
+    <script type="text/javascript" src="../lib/DHTML.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+	 var pushletWebRoot=null;
+function getWebRoot() {
+	/** Return directory of this relative to document URL. */
+	if (pushletWebRoot != null) {
+		return pushletWebRoot;
+	}
+	//derive the baseDir value by looking for the script tag that loaded this file
+	var head = document.getElementsByTagName('head')[0];
+	var nodes = head.childNodes;
+	for (var i = 0; i < nodes.length; ++i) {
+		var src = nodes.item(i).src;
+		DH.debug(false, 'src', src)
+		if (src) {
+			var index = src.indexOf("lib/DHTML.js");
+			if (index >= 0) {
+				pushletWebRoot = src.substring(0, index);
+				break;
+			}
+		}
+	}
+	return pushletWebRoot;
+}
+
+		function go() {
+		  DH.setHTML('result', getWebRoot());
+			DH.setHTML('location', document.location.href);
+			var title = document.getElementsByTagName('title')[0];
+			     var titleText = title.firstChild;
+        // We can get the text of the text node with nodeValue
+        alert("The page title is '" + titleText.nodeValue + "'");
+	}
+
+	// Starts it all
+DH.onReady = go;
+
+	//]]>
+	</script>
+
+	</head>
+   <body>
+	   <div id="result"></div>
+	   <div id="location"></div>
+
+   </body>
+ </html>
