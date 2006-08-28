@@ -1,0 +1,96 @@
+<div class="help">
+<h2>Technical</h2>
+<hr/>
+<p>
+Below is a summary of the technical setup.
+</p>
+<p>
+GPS data is sampled using a standard <a target="_top" href="http://www.delorme.com/bluelogger">Bluetooth GPS module</a>.
+This module communicates with a mobile phone, a
+<a target="_top" href="http://www.nokia.com/nokia/0,4879,33210,00.html">Nokia 6600</a>.
+The mobile phone runs a <a target="_top" href="http://java.sun.com/j2me">Java (J2ME)</a>
+program that reads GPS
+data from the GPS module and sends it through the mobile
+data network (GPRS) to the geoskating.com server. The skater can enter
+the road quality as a number (1-5) on the phone keypad.
+The current quality is always added to each GPS sample sent to the server.
+</p>
+<p>
+<img src="img/overview.jpg" border="0" align="middle" alt="overview"/>
+</p>
+<p>
+On the server the (enriched) GPS samples are received and
+assembled. A map-drawing program on the server
+reads the route files and generates maps that can be viewed
+(and later printed) through <a href="http://www.geoskating.com">www.geoskating.com</a>.
+</p>
+<h3>Multimedia Annotation</h3>
+<p>
+During skating the skater can make various kinds of <b><i>media</i></b>, i.e. pictures, movies, sounds, texts through
+the mobile phone or for example using a regular digital camera (I use a <a target="_top" href="http://www.canon.co.jp/Imaging/IXUS/IXUS.html">Canon Digital Ixus</a>). Media
+items can be sent to the server e.g. by email (or later directly) from the phone, or by upload from a browser. On the
+server these media items are coupled to the GPS locations
+where they were captured. This is realized by correlating the item's timestamp to GPS timestamps. For example,
+picture files from a digital camera have an embedded timestamp (e.g. JPEG EXIF). In other cases
+the origin date from e.g. an email is used.
+</p>
+<p>
+The media items form a <b><i>multimedial annotation layer</i></b> over the route maps.
+</p>
+<h3>Live Position Tracking</h3>
+<p>
+In addition, live position data of skaters is pushed to the browser such that
+they can be seen moving in near real-time over the map.
+</p>
+<h3>Server Technology</h3>
+<p>
+<a target="_new" href="http://www.keyworx.org"><img src="img/kw-logo.gif" border="0" hspace="5" alt="kw-logo" align="left" /></a>
+The Open Source <a target="_top" href="http://www.keyworx.org">KeyWorx</a> platform is used as the main
+application framework for the (Tomcat) server, providing portal functionality,
+(multimedia) content management and many other services. KeyWorx is under development at <a target="_top" href="http://www.waag.org">Waag Society</a>.
+</p>
+<p>
+<a target="_new" href="http://www.pushlets.com"><img src="img/pushlet-logo.gif" border="0" hspace="5" alt="pushlet-logo" align="right" /></a>
+Real-time networking (phone to server and server to browser) is currently
+done using <a target="_top" href="http://www.pushlets.com">Pushlets</a>.
+Pushlets provide a lightweight (<a target="_top" href="http://en.wikipedia.org/wiki/AJAX">AJAX-like</a>) publish/subscribe framework over HTTP.
+</p>
+<p>
+The server software runs on
+<a target="_top" href="http://www.debian.org">Debian GNU Linux</a> with the standard <a target="_top" href="http://httpd.apache.org">Apache web server</a>
+coupled to the <a target="_top" href="http://jakarta.apache.org/tomcat">Apache Tomcat</a> Java application server.
+</p>
+
+<h3>Beyond GeoSkating</h3>
+<p>
+During the project and inspired by
+the many emails received, I
+have realized that the generic concept behind GeoSkating
+has much wider applicability in other domains like
+sports (hiking, cycling, climbing etc),
+travelling, gaming and even partying.
+This technology can be
+used for any kind of personal geographic mapping of
+locations, annotations and media. There are also
+hooks for location-based feedback to the phone, more popularly known as LBS
+(Location-Based Services).
+</p>
+<p class="small">
+$Id: technical.html,v 1.2 2006-06-03 23:17:02 just Exp $
+</p>
+<hr/>
+<table border="0">
+<tr>
+<td>
+
+      <a href="http://validator.w3.org/check?uri=referer"><img
+          src="http://www.w3.org/Icons/valid-xhtml10"
+          alt="Valid XHTML 1.0!" height="31" width="88" align="middle" border="0" /></a>
+ </td>
+ <td class="small">
+   <a href="http://creativecommons.org/licenses/by-sa/2.0" target="_top" ><img src="img/somerights20.png" alt="cc-logo" border="0" /></a>
+	This site is licensed under a <a href="http://creativecommons.org/licenses/by-sa/2.0/" target="_top" >Creative Commons License</a>
+ </td>
+ </tr>
+  </table>
+</div>
