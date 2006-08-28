@@ -9,7 +9,7 @@ DH.include('Widget.js');
  *
  * @extends Widget
  * @constructor
- * $Id: Selector.js,v 1.7 2006-07-20 14:21:41 just Exp $
+ * $Id$
  */
 function Selector(title, id, callback) {
 	Widget.apply(this, new Array(id));

@@ -22,7 +22,7 @@ import org.keyworx.amuse.core.Protocol;
  * Allows doing any query. TODO: if stable port back into KWX
  *
  * @author Just van den Broecke
- * @version $Id: QueryHandler.java,v 1.8 2005/10/21 13:09:50 just Exp $
+ * @version $Id$
  */
 public class QueryHandler extends DefaultHandler {
 

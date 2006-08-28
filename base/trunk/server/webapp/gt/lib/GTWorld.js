@@ -4,7 +4,7 @@
 /*
  * The world of Tracers, Tracks and Features.
  *
- * $Id: GTWorld.js,v 1.3 2006-08-10 23:06:34 just Exp $
+ * $Id$
  */
 
 

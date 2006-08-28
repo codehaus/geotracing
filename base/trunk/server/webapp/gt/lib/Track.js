@@ -4,7 +4,7 @@
 /*
 * Track.
 *
-* $Id: Track.js,v 1.8 2006-07-21 22:28:35 just Exp $
+* $Id$
 */
 
 

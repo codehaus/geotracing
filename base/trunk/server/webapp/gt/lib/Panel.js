@@ -8,7 +8,7 @@ DH.include('Widget.js');
  *
  * @extends Widget
  * @constructor
- * @version $Id: Panel.js,v 1.4 2006-05-29 13:33:32 just Exp $
+ * @version $Id$
  */
 function Panel(id, bgColor, fgColor, onActivate, onClose) {
 	Widget.apply(this, new Array(id));

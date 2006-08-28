@@ -9,7 +9,7 @@ import javax.microedition.midlet.MIDlet;
  *  Sends GPS data and ratings to server.
  *
  * @author  Just van den Broecke
- * @version $Id: MobiTracer.java,v 1.14 2006/01/03 17:47:07 just Exp $
+ * @version $Id$
  */
 public class MobiTracer extends MIDlet implements Runnable {
 

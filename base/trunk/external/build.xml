@@ -1,0 +1,74 @@
+<!--
+
+ANT Build for external package download.
+
+These utilities can be invoked with parameters from other
+build files. "get-external" is used to optionally
+download and unpack external packages. Each package is defined
+in build.properties, e.g ${keyworx} can be keyworx-1.0.6
+Example:
+
+<ant antfile="${root.dir}/build-util.xml" target="get-external" inheritall="false">
+   <property name="package" value="${keyworx}"/>
+</ant>
+
+You call this ant file with the task get-external and a parameter, which should
+be the name of a package and a version number, e.g. keywowrxx-1.0.8 that is usually defined
+in build.properties
+
+Author: Just van den Broecke
+$Id: build-util.xml,v 1.6 2005/07/28 14:03:20 just Exp $
+-->
+<project name="buildutil" default="usage" basedir=".">
+
+	<!-- Project global properties; overrule by modifying build.properties -->
+	<target name="usage" description="Help on usage">
+		<echo message=""/>
+		<echo message="GeoTracing build utilities file"/>
+		<echo message="*************************************************************"/>
+		<echo message="get-external: download and unpack external packages"/>
+		<echo message="example usage: see server/build.xml"/>
+		<echo message="*************************************************************"/>
+		<echo message=""/>
+	</target>
+
+	<!-- Initialize dirs. -->
+	<target name="init">
+		<!-- Get base properties. -->
+		<property name="geotracing.external.dir" value="${basedir}"/>
+		<property file="${geotracing.external.dir}/build.properties"/>
+
+		<!-- Init download and unpacked dirs -->
+		<mkdir dir="${geotracing.packages.dir}"/>
+		<echo message="packages dir=${geotracing.packages.dir}" />
+	</target>
+
+	<!-- Task to optionally download and unpack external zipfile -->
+	<target name="get-external" depends="init">
+		<echo message="optional download/unzip for external package=${package}"/>
+
+		<!-- Init remote url and local zipfile name -->
+		<property name="url" value="${codehaus.dist.url}/external/${package}.zip"/>
+		<property name="localfile" value="${geotracing.external.dir}/packages/${package}.zip"/>
+
+		<!-- Optional download of the package, dependent if local zipfile present -->
+		<available file="${localfile}" property="download.present"/>
+		<antcall target="download" inheritAll="true"/>
+
+		<!-- Optional unzip of the package, dependent if unpacked zip dir present -->
+		<available file="${geotracing.external.dir}/${package}" property="unpacked.present"/>
+		<antcall target="unzip" inheritAll="true"/>
+	</target>
+
+	<!-- Download url if local file not present. -->
+	<target name="download" unless="download.present">
+		<!-- Download the package -->
+		<get src="${url}" dest="${localfile}" verbose="on"/>
+	</target>
+
+	<!-- Unzip local file if unpacked not present. -->
+	<target name="unzip" unless="unpacked.present">
+		<!-- Unzip local file -->
+		<unzip src="${localfile}" dest="${geotracing.external.dir}"/>
+	</target>
+</project>

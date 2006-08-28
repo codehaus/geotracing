@@ -4,7 +4,7 @@
 /*
  * Plays Features.
  *
- * $Id: FeaturePlayer.js,v 1.3 2006-05-14 15:00:33 just Exp $
+ * $Id$
  */
 
 function FeaturePlayer() {

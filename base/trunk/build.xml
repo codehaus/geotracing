@@ -4,7 +4,7 @@ ANT Build file for GeoTracing.
 
 $Id$
 -->
-<project name="geotracing" default="distro-src" basedir=".">
+<project name="geotracing" default="build" basedir=".">
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
 	<property name="client.dir" value="${home}/client"/>
@@ -17,6 +17,17 @@ $Id$
 	<property name="distro-src.zip" value="${version.dir}/${project.id}-src-${version}.zip"/>
 	<property name="distro-all.zip" value="${version.dir}/${project.id}-all-${version}.zip"/>
 
+	<!-- Build all -->
+	<target name="build">
+		<echo message="Building all of GeoTracing Base..."/>
+		
+		<!-- Build clients. -->
+		<ant antfile="client/mobitracer/build.xml" target="build" inheritall="false"/>
+
+		<!-- Builds server and all server depends on. -->
+		<ant antfile="server/build.xml" target="build" inheritall="false"/>
+
+	</target>
 
 	<!-- Package into archive files -->
 	<target name="distro-src" >

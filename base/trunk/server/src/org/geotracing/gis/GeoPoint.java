@@ -8,7 +8,7 @@ import java.util.Date;
  * Point on the world in lon,lat.
  *
  * @author   Just van den Broecke
- * @version $Id: GeoPoint.java,v 1.4 2005/09/29 10:46:56 just Exp $
+ * @version $Id$
  */
 public class GeoPoint {
 

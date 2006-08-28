@@ -15,7 +15,7 @@ import org.keyworx.utopia.core.util.Oase;
  * Maps the geoLog data to an object
  *
  * @author   Just van den Broecke
- * @version $Id: Area.java,v 1.3 2006-03-08 17:12:34 just Exp $
+ * @version $Id$
  */
 public class Area extends BaseImpl {
 	/*

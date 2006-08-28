@@ -17,7 +17,7 @@
  *
  * GPS.start(5000)
  * Author: Just van den Broecke
- * $Id: GPS.js,v 1.2 2006-08-01 13:30:40 just Exp $
+ * $Id$
  */
 var GPS = {
 	lon: null,

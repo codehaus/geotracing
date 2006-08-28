@@ -4,7 +4,7 @@
 /*
  * View Media.
  *
- * $Id: FeatureSet.js,v 1.5 2006-07-25 14:23:52 just Exp $
+ * $Id$
  */
 
 function FeatureSet() {

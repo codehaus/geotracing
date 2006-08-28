@@ -14,7 +14,7 @@ import org.keyworx.oase.api.Record;
  * The Location data object
  *
  * @author   Just van den Broecke
- * @version $Id: Location.java,v 1.5 2006-04-05 13:10:41 just Exp $
+ * @version $Id$
  */
 public class Location extends BaseImpl {
 	/*

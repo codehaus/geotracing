@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Decodes stream of NMEA 0183 data into GeoSamples.
  *
- * @version $Id: GPSDecoder.java,v 1.5 2006-04-18 14:38:45 just Exp $
+ * @version $Id$
  * @author Just van den Broecke
  *
  */

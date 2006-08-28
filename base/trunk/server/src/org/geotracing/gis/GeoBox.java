@@ -5,7 +5,7 @@ package org.geotracing.gis;
 /**
  * Rectangle of two lon,lat coordinates in resp SW and NE.
  *
- * @version $Id: GeoBox.java,v 1.1 2005/09/29 10:46:56 just Exp $
+ * @version $Id$
  * @author Just van den Broecke
  *
  */

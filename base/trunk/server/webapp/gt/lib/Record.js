@@ -5,7 +5,7 @@
  * Class to represent KeyWorx Oase Record
  *
  * Author: Just van den Broecke
- * $Id: Record.js,v 1.1 2006-05-02 15:12:29 just Exp $
+ * $Id$
  */
 
 //

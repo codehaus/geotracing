@@ -25,7 +25,7 @@ import java.sql.Timestamp;
  * Redirects the requests to the right TrackLogic method.
  *
  * @author Just van den Broecke
- * @version $Id: TracingHandler.java,v 1.20 2006-08-10 23:40:01 just Exp $
+ * @version $Id$
  */
 public class TracingHandler extends DefaultHandler {
 	public final static String T_HEARTBEAT_SERVICE = "t-hb";

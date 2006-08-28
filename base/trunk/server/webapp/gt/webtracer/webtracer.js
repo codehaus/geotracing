@@ -4,7 +4,7 @@
 /*
  * WebTracer - AJAX-based GeoTracing client.
  *
- * $Id: webtracer.js,v 1.6 2006-08-09 09:53:25 just Exp $
+ * $Id$
  */
 
 DH.include('Panel.js');

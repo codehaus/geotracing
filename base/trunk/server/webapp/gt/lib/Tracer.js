@@ -3,7 +3,7 @@
 
 /**
  * Represents GeoTracing user.
-* $Id: Tracer.js,v 1.16 2006-08-11 18:45:35 just Exp $
+* $Id$
 */
 function Tracer(name, color, iconURL, pt, time) {
 	this.name = name;

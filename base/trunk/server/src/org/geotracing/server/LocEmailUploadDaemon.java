@@ -16,7 +16,7 @@ import org.keyworx.utopia.core.util.Oase;
 /**
  * Handles binding uploaded Media to Locations.
  *
- * @version $Id: LocEmailUploadDaemon.java,v 1.7 2005/11/21 14:11:16 just Exp $
+ * @version $Id$
  * @author Just van den Broecke
  */
 public class LocEmailUploadDaemon extends EmailUploadDaemon {

@@ -13,7 +13,7 @@ import java.util.TimerTask;
  * KeyWorx network client for GeoTracing protocol.
  *
  * @author  Just van den Broecke
- * @version $Id: Net.java,v 1.11 2006-08-04 12:52:10 just Exp $
+ * @version $Id$
  */
 public class Net {
 

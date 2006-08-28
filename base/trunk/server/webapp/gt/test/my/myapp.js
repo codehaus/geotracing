@@ -5,7 +5,7 @@
  * Library representing the traceland app. All starts here.
  *
  * Author: Just van den Broecke
- * $Id: traceland.js,v 1.4 2006-03-02 23:34:42 just Exp $
+ * $Id$
  */
 
 // The TraceLand application functions

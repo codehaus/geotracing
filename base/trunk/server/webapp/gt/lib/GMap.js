@@ -8,7 +8,7 @@
  *
  * Merge of several JS files (needs cleanup!).
  *
- * version: $Id: GMap.js,v 1.18 2006-08-13 18:57:00 just Exp $
+ * version: $Id$
  *
  */
 

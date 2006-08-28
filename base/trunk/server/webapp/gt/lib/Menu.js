@@ -1,7 +1,7 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-// $Id: Menu.js,v 1.4 2006-06-02 22:05:56 just Exp $
+// $Id$
 
 DH.include('Widget.js');
 

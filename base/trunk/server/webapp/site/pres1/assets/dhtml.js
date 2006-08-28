@@ -11,7 +11,7 @@
  * DH.init()
  *
  * Author: Just van den Broecke
- * $Id: dhtml.js,v 1.1 2005/11/30 13:22:51 just Exp $
+ * $Id$
  */
 var DH = {
   initialized: false,

@@ -4,7 +4,7 @@
 /*
 * TrackAutoPlayer.
 *
-* $Id: TrackAutoPlayer.js,v 1.3 2006-08-10 16:12:45 just Exp $
+* $Id$
 */
 
 

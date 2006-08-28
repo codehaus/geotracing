@@ -12,7 +12,7 @@
 // 7. keep element as object var (this.elm)
 // 8. no need (afaict) to append elm to document.body (solved performance problems by leaving out)
 //
-// $Id: TLabel.js,v 1.3 2006-07-25 14:17:02 just Exp $
+// $Id$
 diffpos = function(x, y) {
 	this.x = x;
 	this.y = y;

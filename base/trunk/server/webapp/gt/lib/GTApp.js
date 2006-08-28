@@ -8,7 +8,7 @@
  * Library representing the app. All starts here.
  *
  * Author: Just van den Broecke
- * $Id: GTApp.js,v 1.32 2006-08-28 09:35:19 just Exp $
+ * $Id$
  */
 
 DH.include('Date.js');

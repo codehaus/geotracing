@@ -14,7 +14,7 @@ import org.geotracing.gis.GeoPoint;
  * The POI data object
  *
  * @author   Just van den Broecke
- * @version $Id: POI.java,v 1.2 2006-02-26 14:14:24 just Exp $
+ * @version $Id$
  */
 public class POI extends BaseImpl {
 	/*

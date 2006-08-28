@@ -2,19 +2,22 @@
 
 ANT Build file for GeoTracing server stuff.
 
-$Id: build.xml,v 1.33 2006-08-09 09:54:00 just Exp $
+$Id$
 -->
 <project name="server" default="build" basedir=".">
 
 	<!-- Initialization of properties (dirs, files) -->
+
 	<!-- Project global properties; overrule by modifying build.properties -->
-	<property name="keyworx.dir" value="${basedir}/../external/keyworx"/>
+	<property file="build.properties"/>
+    <property name="geotracing.base.dir" value="${basedir}/.."/>
+	<property file="../external/build.properties"/>
+
+<!--	<property name="keyworx.dir" value="${basedir}/../external/keyworx"/> -->
 	<property file="${keyworx.dir}/build.properties"/>
 	<!-- Use server utopia config as base config -->
 	<property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
 
-	<!-- Project global properties; overrule by modifying build.properties -->
-	<property file="build.properties"/>
 
 	<!-- Java compiler options -->
 	<property name="javac.debug" value="false"/>
@@ -38,7 +41,7 @@ $Id: build.xml,v 1.33 2006-08-09 09:54:00 just Exp $
 	<property name="version.dir" value="${home}/version"/>
 
 	<property name="external.dir" value="${home}/../external"/>
-	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/>
+<!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
 	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
 	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
 	<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
@@ -67,9 +70,23 @@ $Id: build.xml,v 1.33 2006-08-09 09:54:00 just Exp $
 		<mkdir dir="${build.dir}"/>
 		<tstamp/>
 	</target>
+	
+	<!-- Optional download/upack of external packages. -->
+	<target name="externals">
+		<echo message="downloading and unpacking external packages"/>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${keyworx}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${pushlet}"/>
+		</ant>
+
+	</target>
 
 	<!-- Compile the java files. -->
-	<target name="compile" depends="init">
+	<target name="compile" depends="init,externals">
 		<echo message="Compiling java files..."/>
 
 		<!-- Always do clean build -->

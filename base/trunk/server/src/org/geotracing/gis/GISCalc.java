@@ -12,7 +12,7 @@ import java.util.Vector;
  * Utils for GIS calculations.
  *
  * @author Just van den Broecke
- * @version $Id: GISCalc.java,v 1.6 2006-03-08 17:12:34 just Exp $
+ * @version $Id$
  */
 public class GISCalc {
 

@@ -6,7 +6,7 @@
  *
  * PURPOSE
  * Author: Just van den Broecke
- * $Id: Subject.js,v 1.3 2006-08-04 12:51:45 just Exp $
+ * $Id$
  */
 function Subject() {
 

@@ -37,7 +37,7 @@ import java.util.Vector;
  * Maps the geoLog data to an object
  *
  * @author   Just van den Broecke
- * @version $Id: Track.java,v 1.21 2006-04-05 13:10:41 just Exp $
+ * @version $Id$
  */
 
 public class Track extends BaseImpl {

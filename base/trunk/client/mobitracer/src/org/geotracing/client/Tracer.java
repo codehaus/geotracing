@@ -8,7 +8,7 @@ import javax.microedition.midlet.MIDlet;
  *  Sends GPS data and ratings to server.
  *
  * @author  Just van den Broecke
- * @version $Id: Tracer.java,v 1.9 2006-04-18 14:43:16 just Exp $
+ * @version $Id$
  */
 public class Tracer implements GPSFetcherListener, NetListener {
 

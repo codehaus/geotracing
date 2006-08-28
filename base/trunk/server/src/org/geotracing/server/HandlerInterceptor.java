@@ -13,7 +13,7 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
  * To be implemented for specific "before/after" processing.
  *
  * @author Just van den Broecke
- * @version $Id: HandlerInterceptor.java,v 1.1 2005/10/13 12:55:23 just Exp $
+ * @version $Id$
  */
 public interface HandlerInterceptor {
 

@@ -1,7 +1,7 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-// $Id: TrackPlayer.js,v 1.8 2006-05-22 22:10:12 just Exp $
+// $Id$
 
 /**
  * Control playing back Tracks.

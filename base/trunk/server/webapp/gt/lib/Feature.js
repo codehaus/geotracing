@@ -1,7 +1,7 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-// $Id: Feature.js,v 1.14 2006-07-25 14:23:52 just Exp $
+// $Id$
 
 /**
  * Location-based item on map.

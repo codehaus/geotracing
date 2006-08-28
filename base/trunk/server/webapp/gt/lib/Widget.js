@@ -4,7 +4,7 @@
 /*
  * Widgets: some DHTML widgets.
  *
- * $Id: Widget.js,v 1.5 2006-07-06 23:06:16 just Exp $
+ * $Id$
  */
 
 // See http://www.jroller.com/page/deep?entry=aop_fun_with_javascript

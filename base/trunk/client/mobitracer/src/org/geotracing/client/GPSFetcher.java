@@ -10,7 +10,7 @@ import java.io.InputStream;
 /**
  * Generic BT GPS data reader.
  *
- * @version $Id: GPSFetcher.java,v 1.15 2006-08-01 13:50:18 just Exp $
+ * @version $Id$
  * @author Just van den Broecke
  */
 public class GPSFetcher implements Runnable {

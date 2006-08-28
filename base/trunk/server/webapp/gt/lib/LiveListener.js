@@ -4,7 +4,7 @@
 /**
  * LiveListener - acts on incoming (Pushlet) events.
  * @constructor
- * $Id: LiveListener.js,v 1.6 2006-08-10 16:12:45 just Exp $
+ * $Id$
  */
 function LiveListener(aStatusElm) {
 	this.statusElm = DH.getObject(aStatusElm);

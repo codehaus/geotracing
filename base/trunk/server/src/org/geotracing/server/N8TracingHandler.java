@@ -26,7 +26,7 @@ import java.util.Date;
  * NOTE: not used but kept here for reference (contains LBS for bombs) !
  *
  * @author Just van den Broecke
- * @version $Id: N8TracingHandler.java,v 1.7 2006-05-22 06:59:11 just Exp $
+ * @version $Id$
  */
 public class N8TracingHandler extends TracingHandler {
 	public final static String ATTR_LOGIN_NAME = "loginname";

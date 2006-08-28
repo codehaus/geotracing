@@ -17,7 +17,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Just van den Broecke
- * @version $Id: GPSSmoother.java,v 1.4 2006-04-18 14:43:16 just Exp $
+ * @version $Id$
  */
 public class GPSSmoother {
 	/** To convert float to long for easier calculations. */

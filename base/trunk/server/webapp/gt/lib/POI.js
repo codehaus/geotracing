@@ -1,7 +1,7 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-// $Id: POI.js,v 1.7 2006-06-16 11:49:22 just Exp $
+// $Id$
 
 DH.include('Feature.js');
 

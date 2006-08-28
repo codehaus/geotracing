@@ -52,7 +52,7 @@ import java.io.IOException;
  * timerFired() is synchronized thus only one fetch() can be in progress.
  *
  * @author Just van den Broecke
- * @version $Id: TracerDaemon.java,v 1.11 2006-08-10 23:40:01 just Exp $
+ * @version $Id$
  */
 public class TracerDaemon extends Daemon {
 	private String dataDir;

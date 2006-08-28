@@ -14,7 +14,7 @@
  * SRV.get("q-get-active-tracks", myfun, "state", "3", "name", "piet);
  *
  * Author: Just van den Broecke
- * $Id: Server.js,v 1.2 2006-05-02 15:12:29 just Exp $
+ * $Id$
  */
 
 //

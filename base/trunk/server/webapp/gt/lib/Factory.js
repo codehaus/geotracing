@@ -1,7 +1,7 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-// $Id: Factory.js,v 1.2 2006-08-10 23:06:34 just Exp $
+// $Id$
 
 /**
  * Implements Factory design pattern.

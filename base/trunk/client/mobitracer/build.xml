@@ -1,12 +1,17 @@
 <!--
   Ant build file for MobiTracer.
 
-  $Id: build.xml,v 1.8 2006-07-06 18:51:54 just Exp $
+  $Id$
 -->
-<project name="MobiTracer" default="package" basedir=".">
+<project name="MobiTracer" default="build" basedir=".">
+    <property name="geotracing.base.dir" value="${basedir}/../.."/>
+
+    <!-- sets paths to all external package dirs. -->
+	<property file="../../external/build.properties"/>
+
 	<property name="build.dir" value="${basedir}/build"/>
-	<property name="external.dir" value="../../external"/>
-	<property name="keyworx.j2me.dir" value="${external.dir}/keyworx/client/j2me"/>
+	
+	<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
 	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
 	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
 	<!-- Project global properties; overrule by modifying build.properties -->
@@ -22,11 +27,6 @@
 	<property name="projectobf.jar" value="${build.dir}/${project.name}obf.jar"/>
 	<property name="project.jad" value="${build.dir}/${project.name}.jad"/>
 
-	<property name="midp2.dir" value="${external.dir}/sun/midp20"/>
-	<property name="avetana.dir" value="${external.dir}/avetana"/>
-	<property name="mppsdk.dir" value="${external.dir}/mpp-sdk-1127"/>
-
-	<property name="proguard.dir" value="${external.dir}/proguard"/>
 	<property name="proguard.jar" value="${proguard.dir}/lib/proguard.jar"/>
 
 	<property name="classes.dir" value="${build.dir}/classes"/>
@@ -43,10 +43,10 @@
 	<property name="btpemu.jar" value="${mppsdk.dir}/bluetooth/bt.jar"/>
 	<property name="cldcemu.jar" value="${mppsdk.dir}/cldc.jar"/>
 	<property name="adapter.jar" value="${mppsdk.dir}/adapter.jar"/>
-	<property name="jsr82.zip" value="${external.dir}/btapi-1.0/lib/jsr82.zip"/>
+	<property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
 
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
-	<property name="mmapi.jar" value="${external.dir}/mmapi/mmapi.jar"/>
+	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
 
 
 	<!-- Various paths -->
@@ -69,7 +69,45 @@
 		<pathelement location="${emulator.jar}"/>
 	</path>
 
-	<target name="compile" depends="clean">
+	<!-- Optional download/upack of external packages. -->
+	<target name="externals">
+		<echo message="downloading and unpacking external packages"/>
+		
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${avetana}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${btapi}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${keyworx}"/>
+		</ant>
+		
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${midp2}"/>
+		</ant>
+		
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${mmapi}"/>
+		</ant>
+		
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${mppsdk}"/>
+		</ant>
+		
+		<exec executable="chmod">
+			<arg line="+x ${preverify}"/>
+		</exec>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${proguard}"/>
+		</ant>
+
+	</target>
+
+	<target name="compile" depends="clean,externals">
 		<mkdir dir="${classes.dir}"/>
 		<javac
 			destdir="${classes.dir}"
@@ -118,7 +156,7 @@
 		</jar>
 	</target>
 
-	<target name="package" depends="jar">
+	<target name="build" depends="jar">
 
 	</target>
 
@@ -131,6 +169,10 @@
 	</target>
 
 	<target name="install">
+		
+		<exec executable="chmod">
+			<arg line="+x ${btsend}"/>
+		</exec>
 		<exec executable="${btsend}">
 			<arg line="${project.jar}"/>
 		</exec>

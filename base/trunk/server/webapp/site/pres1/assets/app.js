@@ -8,7 +8,7 @@
  * Library representing the app. All starts here.
  *
  * Author: Just van den Broecke
- * $Id: app.js,v 1.3 2005/11/30 16:14:59 just Exp $
+ * $Id$
  */
 
 

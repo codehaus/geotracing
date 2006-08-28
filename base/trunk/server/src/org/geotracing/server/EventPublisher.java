@@ -26,7 +26,7 @@ import java.util.Vector;
  * Redirects the requests to the right logic method
  *
  * @author Just van den Broecke
- * @version $Id: EventPublisher.java,v 1.15 2006-08-10 16:13:17 just Exp $
+ * @version $Id$
  */
 public class EventPublisher {
 	/** Pushlet topic (subject) */

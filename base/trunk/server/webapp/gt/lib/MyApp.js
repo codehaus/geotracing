@@ -8,7 +8,7 @@
  * WITH YOUR SPECIFIC APP FUNCTIONS.
  *
  * Author: Just van den Broecke
- * $Id: MyApp.js,v 1.8 2006-07-20 12:09:32 just Exp $
+ * $Id$
  */
 
 // The TraceLand application functions
