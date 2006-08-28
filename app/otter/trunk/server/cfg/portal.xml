@@ -1,0 +1,59 @@
+<portal name="otter">
+
+	<!-- Portal definition -->
+	<admin>
+		<loginname>ot</loginname>
+		<password>ot</password>
+	</admin>
+
+
+	<config>
+		<!-- Oase context file. Context id becomes portal name -->
+		<context file="oase-context.xml"/>
+	</config>
+
+
+	<!-- Connectors -->
+	<connectors>
+		<!-- <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+			<property name="port">4414</property>
+			<property name="pongTimeoutMillis">30000</property>
+		</connector>  -->
+	</connectors>
+
+
+	<!-- Application context -->
+	<application name="geoapp" organisation="Just Objects">
+
+		<config>
+			<data file="data.xml"/>
+		</config>
+
+		<!-- Utopia handlers -->
+		<handlers>
+			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+				<property name="max-file-size">1000000</property>
+			</handler>
+
+			<handler id="t" class="org.geotracing.server.TracingHandler"/>
+			<handler id="query" class="org.geotracing.server.QueryHandler"/>
+		</handlers>
+
+
+		<daemons>
+			<!-- For testing Daemons
+			<daemon id="tracklistener" class="org.geotracing.server.TrackListenerDaemon">
+				<property name="intervalMillis">15000</property>
+			</daemon>
+
+			<property name="host">email.upload.host</property>
+
+			<property name="email" host="pundit">email.upload.email.pundit</property>
+			<property name="user" host="pundit">email.upload.user.pundit</property>
+			<property name="password" host="pundit">email.upload.password.pundit</property>
+
+               -->
+
+		</daemons>
+	</application>
+</portal>
