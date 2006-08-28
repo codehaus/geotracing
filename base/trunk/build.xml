@@ -2,7 +2,7 @@
 
 ANT Build file for GeoTracing.
 
-$Id: build.xml,v 1.2 2006-08-04 15:47:39 just Exp $
+$Id$
 -->
 <project name="geotracing" default="distro-src" basedir=".">
 	<!-- Directory locations -->
@@ -28,6 +28,7 @@ $Id: build.xml,v 1.2 2006-08-04 15:47:39 just Exp $
 				prefix="${project.id}-src-${version}"
 				excludes="external/**,**/version/**,**/build/**,**/*.class,**/security.properties"/>
 		</zip>
+
 
 		<!--	<delete file="${versions.gzip.file}" />
 			<tar tarfile="${versions.tar.file}" basedir="${dist.dir}"/>
