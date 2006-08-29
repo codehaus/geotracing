@@ -81,12 +81,6 @@
 		</store>
 
 		<daemons>
-			<!-- 	<daemon id="pop3fetcher" class="nl.justobjects.geoskating.db.EmailUploader">
-					<property name="intervalMillis">25000</property>
-					<property name="host">pop3.xs4all.nl</property>
-					<property name="user">popju017</property>
-					<property name="password">med1a101</property>
-				</daemon>  -->
 		</daemons>
 
 	</container>
