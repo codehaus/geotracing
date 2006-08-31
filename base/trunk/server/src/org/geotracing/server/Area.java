@@ -83,7 +83,8 @@ public class Area extends BaseImpl {
 
 	/**
 	 * Set area by GeoBox.
-	 *
+	 * 
+	 * @param aGeoBox the area specification
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
 	public void setArea(GeoBox aGeoBox) throws UtopiaException {
