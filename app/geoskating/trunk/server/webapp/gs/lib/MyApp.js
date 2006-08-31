@@ -11,7 +11,7 @@
  * $Id: MyApp.js,v 1.9 2006-07-25 22:38:12 just Exp $
  */
 
-// This file contains specific functions for SotC Eindhoven
+// This file contains specific functions for GeoSkating
 var MYAPP = {
 	DOC_TITLE: '<img src="img/gs-logo.jpg" border="0"  alt="gs-logo" align="middle" />',
 	WINDOW_TITLE: 'GeoTracing - GeoSkating',
