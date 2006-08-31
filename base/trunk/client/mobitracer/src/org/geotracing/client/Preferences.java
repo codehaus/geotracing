@@ -1,3 +1,6 @@
+// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.client;
 
 import javax.microedition.rms.RecordEnumeration;
@@ -6,6 +9,12 @@ import javax.microedition.rms.RecordStoreException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+/**
+ * Provides (hash)map-based property storage in RMS.
+ *
+ * @author  Just van den Broecke
+ * @version $Id$
+ */
 public class Preferences {
 	private String mRecordStoreName;
 

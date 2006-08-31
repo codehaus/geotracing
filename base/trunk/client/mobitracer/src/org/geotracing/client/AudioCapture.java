@@ -15,7 +15,12 @@ import java.io.ByteArrayOutputStream;
 
 import org.keyworx.mclient.Protocol;
 
-
+/**
+ * Record and submit audio.
+ *
+ * @author  Just van den Broecke
+ * @version $Id$
+ */
 public class AudioCapture extends Form implements CommandListener {
 
 	private Command back, play, start, stop, submit;

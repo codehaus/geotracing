@@ -1,3 +1,5 @@
+// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
 package org.geotracing.client;
 
 
@@ -11,6 +13,11 @@ import java.util.TimerTask;
 
 /**
  * KeyWorx network client for GeoTracing protocol.
+ * <p>
+ * Singleton class that provides an API wrapper to the
+ * GeoTracing protocol over HTTP. Uses KWClient and MJOX (XML)
+ * from KeyWorx.
+ * </p>
  *
  * @author  Just van den Broecke
  * @version $Id$
@@ -31,7 +38,6 @@ public class Net {
 	private NetListener listener;
 
 	private Net() {
-
 	}
 
 	public static Net getInstance() {
@@ -128,6 +134,7 @@ public class Net {
 		}
 	}
 
+	/** Send GPS sample. */
 	public void sendSample(String theData, int aRoadRating, long theTime, int theCount) {
 		JXElement req = new JXElement("t-trk-write-req");
 

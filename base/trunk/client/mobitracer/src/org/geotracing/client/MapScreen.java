@@ -1,9 +1,18 @@
+// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.client;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 
 
+/**
+ * Show map with user location.
+ *
+ * @author  Just van den Broecke
+ * @version $Id$
+ */
 public class MapScreen extends Form implements CommandListener {
 
 	private String tileURL;

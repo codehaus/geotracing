@@ -1,3 +1,6 @@
+// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.client;
 
 
@@ -6,7 +9,7 @@ import javax.microedition.midlet.MIDlet;
 
 
 /**
- *  Sends GPS data and ratings to server.
+ *  Main program for MobiTracer, starts all.
  *
  * @author  Just van den Broecke
  * @version $Id$

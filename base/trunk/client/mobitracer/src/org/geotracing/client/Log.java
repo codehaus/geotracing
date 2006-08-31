@@ -1,9 +1,17 @@
+// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.client;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 
-/** Rotating log class. */
+/**
+ * Very basic rotating log.
+ *
+ * @author  Just van den Broecke
+ * @version $Id$
+ */
 public class Log {
 
 	private static final int LOG_SZ = 16;

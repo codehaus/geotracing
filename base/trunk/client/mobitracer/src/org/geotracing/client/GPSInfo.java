@@ -1,6 +1,14 @@
+// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.client;
 
-/** GPS status. */
+/**
+ * Holds GPS status data.
+ *
+ * @author  Just van den Broecke
+ * @version $Id$
+ */
 public class GPSInfo {
 	static MFloat NULL = new MFloat(0);
 

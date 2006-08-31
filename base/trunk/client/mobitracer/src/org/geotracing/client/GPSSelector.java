@@ -1,3 +1,6 @@
+// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.client;
 
 import javax.bluetooth.*;
@@ -6,6 +9,16 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStoreException;
 import java.util.Hashtable;
 
+/**
+ * Pairs BT GPS device.
+ * <p>
+ * Searches BT devices and presents radio-button list to user. Selected
+ * device (name, BT URL) is stored in RMS.
+ * </p>
+ *
+ * @author Just van den Broecke
+ * @version $Id$
+ */
 public class GPSSelector extends Form implements CommandListener, DiscoveryListener {
 	private Command search, ok, cancel;
 	private ChoiceGroup deviceCG = new ChoiceGroup("Devices", ChoiceGroup.EXCLUSIVE);
