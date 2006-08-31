@@ -5,10 +5,10 @@
  * GeoSkating app.
  *
  * PURPOSE
- * Library representing the app. All starts here.
+ * Library representing the app. Called by GTAPP.js..
  *
  * Author: Just van den Broecke
- * $Id: MyApp.js,v 1.9 2006-07-25 22:38:12 just Exp $
+ * $Id$
  */
 
 // This file contains specific functions for GeoSkating
