@@ -23,8 +23,6 @@ import java.util.Vector;
 /**
  * Publishes all events to clients using Pushlet Publisher.
  *
- * Redirects the requests to the right logic method
- *
  * @author Just van den Broecke
  * @version $Id$
  */

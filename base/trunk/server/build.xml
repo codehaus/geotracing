@@ -9,14 +9,15 @@ $Id$
 	<!-- Initialization of properties (dirs, files) -->
 
 	<!-- Project global properties; overrule by modifying build.properties -->
-	<property file="build.properties"/>
     <property name="geotracing.base.dir" value="${basedir}/.."/>
-	<property file="../external/build.properties"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
 
-<!--	<property name="keyworx.dir" value="${basedir}/../external/keyworx"/> -->
 	<property file="${keyworx.dir}/build.properties"/>
 	<!-- Use server utopia config as base config -->
 	<property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
+
+	<property file="build.properties"/>
 
 
 	<!-- Java compiler options -->
@@ -81,6 +82,10 @@ $Id$
 
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${pushlet}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${servlet}"/>
 		</ant>
 
 	</target>
@@ -259,7 +264,7 @@ $Id$
 		</java>
 	</target>
 
-	   <!-- Run protocol test client. -->
+	   <!-- Migration task (not used).
 	<target name="migrate" description="Migration of old geoskating/sailing">
 
 		<java classname="org.geotracing.server.MigrateTracks"
@@ -275,6 +280,7 @@ $Id$
 			</classpath>
 		</java>
 	</target>
+     -->
 
 	<target name="clean" depends="init">
 		<delete dir="${build.dir}"/>
@@ -287,15 +293,15 @@ $Id$
 		</copy>
 	</target>
 
-	<target name="deploy-sumatra">
-		<copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+	<target name="deploy-local">
+		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-sumatra-raw">
-		<copy todir="${deploy.test.dir}/${war.name}" overwrite="true">
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}/${war.name}"/>
 		</copy>
-		<copy todir="${deploy.test.dir}/${war.name}/lib" overwrite="true">
+		<copy todir="${deploy.local.dir}/${war.name}/lib" overwrite="true">
 			<fileset dir="${pushlet.dir}/webapps/pushlet/lib">
 				<include name="ajax-pushlet-client.js"/>
 			</fileset>
@@ -305,11 +311,11 @@ $Id$
 			</copy> -->
 	</target>
 
-	<target name="deploy-pundit">
+	<target name="deploy-live">
 		<copy file="${project.war}" todir="${deploy.live.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-pundit-raw">
+	<target name="deploy-live-raw">
 		<copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}/${war.name}"/>
 		</copy>

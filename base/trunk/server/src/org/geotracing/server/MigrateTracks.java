@@ -49,7 +49,7 @@ public class MigrateTracks {
 			kwClient = new KWClient();
 			kwClient.setDebug(false);
 			kwClient.connect("127.0.0.1", 4042);
-			kwClient.login("just", "nope");
+			kwClient.login("just", "");
 			kwClient.selectApp("geoapp", "user");
 
 			JXElement req = Protocol.createRequest("query-store");

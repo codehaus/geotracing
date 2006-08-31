@@ -22,34 +22,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 /**
- * Base class for specific incoming email handling.
+ * Implements the Tracer bot.
  *
  * <h3>Purpose</h3>
- * This daemon regularly checks a POP3-mailbox, fetches all mails,
- * and calls the method process() for each message. Subclasses are supposed to
- * override process() for specific handling, like inserting/realting media.
- *
- * <h3>Examples</h3>
- *
- * <h3>Implementation</h3>
- *
- * <h3>Configuration</h3>
- * <p>This Daemon can be configured with the following parameters,
- * those marked with a * are mandatory.</p>
- *
- * host* - the POP3 host name, e.g. pop3.xs4all.nl <br>
- * user* - the POP3 user<br>
- * password* - the POP3 password<br>
- * intervalMillis* - interval in ms between POP3 mailbox checks<br>
- * anonUploadAllowed - allow upload by non-registered users (Persons)<br>
- * sendReply - should a confirm reply be sent to originator ?<br>
- * smtpHost - SMTP server for outgoing (reply) mails<br>
- *
- * intervalMillis should typically be 20 seconds or greater. Don't set intervalMillis
- * too small.
- *
- * <h3>Concurrency</h3>
- * timerFired() is synchronized thus only one fetch() can be in progress.
  *
  * @author Just van den Broecke
  * @version $Id$

@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Implements logic for Track manipulation.
+ * Export Track data to XML formats.
  */
 public class TrackExport {
 	public static final SimpleDateFormat GPX_TIME_FORMAT = new SimpleDateFormat("yyMMdd'T'HH:mm:ss'Z'");

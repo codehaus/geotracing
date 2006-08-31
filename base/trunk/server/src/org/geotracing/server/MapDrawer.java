@@ -1,3 +1,6 @@
+// Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
+
 package org.geotracing.server;
 
 import nl.justobjects.jox.dom.JXElement;
@@ -21,8 +24,18 @@ import java.util.*;
 
 /**
  * Draws maps from track data.
- *
+ * <p>
+ * Stand-alone program to generate transparent PNG tiles from track-data.
+ * These tiles are stored in a directory structure according to the Google Maps
+ * scheme. Google Maps applications can overlay any map with these tiles. See e.g.
+ * webapp/gt/map/gmap-tile.jsp. Settings are specified in a config file (e.g. cfg/mapdrawer.xml).
+ * Drawing works incremental, i.e. the last drawing date is remembered and only
+ * tiles are generated for data added since last drawing date.
+ * </p>
  * NOTE: a very rough version geared at GeoSkating.
+ *
+ * @author Just van den Broecke
+ * @version $Id$
  */
 public class MapDrawer extends Component {
 	private static final Color[] COLOR_INDEX = new Color[6];

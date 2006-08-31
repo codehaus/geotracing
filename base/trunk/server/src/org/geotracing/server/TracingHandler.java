@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 /**
  * Handles all operations related to Tracks.
  *
- * Redirects the requests to the right TrackLogic method.
+ * Redirects the requests to TrackLogic methods.
  *
  * @author Just van den Broecke
  * @version $Id$
