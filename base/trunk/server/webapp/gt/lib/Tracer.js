@@ -130,7 +130,7 @@ function Tracer(name, color, iconURL, pt, time) {
 				track.draw();
 			}
 
-			DH.setHTML('tracerinfo', tracer.name);
+			trecer.showInfo();
 
 			// Show Tracer at last point of Track
 			tracer.setLocation(track.getLastPoint());
@@ -181,7 +181,7 @@ function Tracer(name, color, iconURL, pt, time) {
 			var self = this;
 			this.onClick = function(e) {
 				// DH.cancelEvent(e);
-				self.openInfoWindow();
+				self.popupInfoWindow();
 			}
 
 			DH.addEvent(this.tlabel.elm, 'click', this.onClick, false);
@@ -210,19 +210,12 @@ function Tracer(name, color, iconURL, pt, time) {
 	}
 
 
-	this.openInfoWindow = function() {
-	  var html = '<h3>' + this.name + '</h3> Was at ' + this.point.lng() + ', ' + this.point.lat()
-      html += ' on ' + GTW.formatDateAndTime(this.point.time);
-
-	  GMAP.map.openInfoWindowHtml(this.point, html);
-	}
-
 	// Setting the visibility to visible
 	this.show = function() {
 		if (this.tlabel != null) {
 			DH.show(this.tlabel.id);
 		}
-		DH.setHTML('tracerinfo', this.name);
+		this.showInfo();
 		this.hidden = false;
 	}
 
@@ -244,6 +237,13 @@ function Tracer(name, color, iconURL, pt, time) {
 
 	}
 
+	this.popupInfoWindow = function() {
+	  var html = '<h3>' + this.name + '</h3>';
+      html += 'Last seen on ' + GTW.formatDateAndTime(this.point.time) + '<br/>at ' + this.point.lng() + ', ' + this.point.lat();
+
+	  GMAP.map.openInfoWindowHtml(this.point, html);
+	}
+
 	// Set Tracer live
 	this.setLive = function() {
 		if (this.live == true) {
@@ -255,7 +255,7 @@ function Tracer(name, color, iconURL, pt, time) {
 
 	// Show live track info
 	this.showLiveInfo = function() {
-		DH.setHTML('tracerinfo', this.name);
+		this.showInfo();
 		var speed = 'unknown';
 
 		if (this.point != null && this.lastPoint != null) {
@@ -263,6 +263,11 @@ function Tracer(name, color, iconURL, pt, time) {
 			speed = speed.toFixed(2) + ' km/h';
 		}
 		DH.setHTML('trackview', GTW.formatDateAndTime(this.point.time) + ' <br/>' + speed);
+	}
+
+	 // Show static info
+	this.showInfo = function() {
+		DH.setHTML('tracerinfo', this.name);
 	}
 
 	// Is Tracer visible ?
