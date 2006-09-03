@@ -83,10 +83,10 @@
 			<tr>
 				<td valign="middle" height="18" bgcolor="#111111">
 					<div id="trackcontrols" class="controls">
-						<span class="control" id="trackprev"><img title="prev" src="img/media-seek-backward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="trackplaypause"><img title="play or pause" src="img/media-playback-start.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="trackstop"><img title="stop" src="img/media-playback-stop.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="tracknext"><img title="next GPS point" src="img/media-seek-forward.png" border="0 "alt="ctrl" /></span>
+						<span class="control" id="trackprev"><img title="prev" src="img/media-seek-backward.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)" /></span>
+						<span class="control" id="trackplaypause"><img title="play or pause" src="img/media-playback-start.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)"  /></span>
+						<span class="control" id="trackstop"><img title="stop" src="img/media-playback-stop.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)" /></span>
+						<span class="control" id="tracknext"><img title="next GPS point" src="img/media-seek-forward.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)" /></span>
 					</div>
 				</td>
 			</tr>
@@ -108,10 +108,10 @@
 			<tr>
 				<td height="18" bgcolor="#111111">
 					<div id="featurecontrols" class="controls">
-						<span class="control" id="featfirst"><img title="first feature" src="img/media-skip-backward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="featprev"><img title="previous feature" src="img/media-seek-backward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="featnext"><img title="next feature" src="img/media-seek-forward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="featlast"><img title="last feature" src="img/media-skip-forward.png" border="0 "alt="ctrl" /></span>
+						<span class="control" id="featfirst"><img title="first feature" src="img/media-skip-backward.png" border="0 "alt="ctrl"onload="DH.fixPNG(this)"  /></span>
+						<span class="control" id="featprev"><img title="previous feature" src="img/media-seek-backward.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)" /></span>
+						<span class="control" id="featnext"><img title="next feature" src="img/media-seek-forward.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)" /></span>
+						<span class="control" id="featlast"><img title="last feature" src="img/media-skip-forward.png" border="0 "alt="ctrl" onload="DH.fixPNG(this)" /></span>
 					</div>
 				</td>
 			</tr>
