@@ -32,7 +32,7 @@ function Record(xmlElement) {
 		if (list && list.length > 0) {
 			return list[0];
 		} else {
-			alert('cannot get XMLField ' + name);
+			// alert('cannot get XMLField ' + name);
 			return null;
 		}
 	}

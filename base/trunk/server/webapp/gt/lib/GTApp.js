@@ -208,8 +208,7 @@ var GTAPP = {
 			tracerName = records[i].getField('loginname');
 				GTAPP.userSelector.addOption(trackId, tracerName + ' - ' + trackName, tracerName);
 
-			tracer = GTW.createTracer(records[i].getField('loginname'),
-					records[i].getField('lon'), records[i].getField('lat'), records[i].getField('time'));
+			tracer = GTW.createTracerByRecord(records[i]);
 			tracer.show();
 
 			// If we need to immediately see a tracer
@@ -384,6 +383,9 @@ var GTAPP = {
 			GTAPP.trackSelector.remove();
 			GTAPP.trackSelector = null;
 		}
+
+		var tracer = GTW.createTracer(loginName);
+		tracer.showInfo();
 		GTAPP.blinkStatus('Getting tracks for ' + loginName + "...");
 		SRV.get('q-tracks-by-user', GTAPP.onQueryUserTracks, 'user', loginName);
 	},

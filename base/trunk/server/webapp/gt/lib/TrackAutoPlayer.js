@@ -88,7 +88,7 @@ function TrackAutoPlayer() {
 		this.onQueryTrackRsp = function (records) {
 			//  id, name,state,loginname,lon,lat
 			GTW.showStatus('read ' + records[0].getField('name'));
-			player.tracer = GTW.createTracer(records[0].getField('loginname'), records[0].getField('lon'), records[0].getField('lat'), records[0].getField('time'));
+			player.tracer = GTW.createTracerByRecord(records[0]);
 
 			player.tracer.readTrack(records[0].getField('id'), records[0].getField('name'), false);
 

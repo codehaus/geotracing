@@ -6,6 +6,7 @@
 * $Id$
 */
 function Tracer(name, color, iconURL, pt, time) {
+	this.record = null;
 	this.name = name;
 	this.color = color;
 	this.point = pt;
@@ -87,6 +88,18 @@ function Tracer(name, color, iconURL, pt, time) {
 		return tl;
 	}
 
+	// get the user DB record
+	this.getRecord = function () {
+		if (this.record == null) {
+			// lazy: may not have been set on creation
+			var result = SRV.get("q-user-by-name", null, "user", this.name);
+			if (result != null && result.length > 0) {
+				this.record = result[0];
+			}
+		}
+		return this.record;
+	}
+
 	// Delete a Track for id and name
 	this.deleteTrack = function () {
 		if (this.activeTrack != null) {
@@ -130,7 +143,7 @@ function Tracer(name, color, iconURL, pt, time) {
 				track.draw();
 			}
 
-			trecer.showInfo();
+			tracer.showInfo();
 
 			// Show Tracer at last point of Track
 			tracer.setLocation(track.getLastPoint());

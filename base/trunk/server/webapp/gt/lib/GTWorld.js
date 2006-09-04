@@ -118,7 +118,7 @@ var GTW = {
 			if (lon && lat) {
 				tracer.setLocation(new GLatLng(lat, lon), time);
 			}
-			tracer.show();
+			// tracer.show();
 			return tracer;
 		}
 
@@ -131,6 +131,15 @@ var GTW = {
 		tracer = GTW.factory.create('Tracer', name, GTW.TRACK_COLOR, GTW.TRACER_ICON_URL, point, time);
 		tracer.init();
 		GTW.tracers[name] = tracer;
+		return tracer;
+	},
+
+// Create new Tracer object and put in tracers array
+	createTracerByRecord: function(record) {
+		var tracer = GTW.createTracer(record.getField('loginname'),
+				record.getField('lon'), record.getField('lat'), record.getField('time'));
+
+		tracer.record = record;
 		return tracer;
 	},
 

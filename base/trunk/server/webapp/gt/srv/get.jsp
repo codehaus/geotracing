@@ -35,6 +35,7 @@
 	public static final String CMD_QUERY_LOCATIVE_MEDIA = "q-locative-media";
 	public static final String CMD_QUERY_RECENT_MEDIA = "q-recent-media";
 	public static final String CMD_QUERY_MEDIA_BY_USER = "q-media-by-user";
+	public static final String CMD_QUERY_USER_BY_NAME = "q-user-by-name";
 	public static final String CMD_QUERY_POIS = "q-pois";
 	public static final String CMD_GET_TRACK = "get-track";
 	public static final String CMD_DESCRIBE = "describe";
@@ -409,6 +410,18 @@
 					postCond += " LIMIT " + Integer.parseInt(limitParm);
 				}
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+
+			} else if (command.equals(CMD_QUERY_USER_BY_NAME)) {
+				String loginName = getParameter(request, PAR_USER_NAME, null);
+				throwOnMissingParm(PAR_USER_NAME, loginName);
+				
+				// First get all active tracks
+				String tables = "utopia_person,utopia_account";
+				String fields = "utopia_person.id,utopia_person.extra,utopia_account.loginname";
+				String where = "utopia_account.loginname = '" + loginName + "'";
+				String relations = "utopia_person,utopia_account";
+				String postCond = null;
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 			} else if (command.equals(CMD_GET_TRACK)) {

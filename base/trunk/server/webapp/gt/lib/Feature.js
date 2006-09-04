@@ -106,6 +106,11 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	this._displayUser = function() {
 		if (this.userName != null) {
 			DH.setHTML('tracerinfo', this.userName);
+			var tracer = GTW.getTracer(this.userName);
+			if (!tracer || tracer == null) {
+				tracer = GTW.createTracer(this.userName);
+			}
+			tracer.showInfo();
 		}
 	}
 	this._displayInfo = function() {
