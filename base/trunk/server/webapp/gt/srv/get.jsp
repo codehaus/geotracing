@@ -35,6 +35,7 @@
 	public static final String CMD_QUERY_LOCATIVE_MEDIA = "q-locative-media";
 	public static final String CMD_QUERY_RECENT_MEDIA = "q-recent-media";
 	public static final String CMD_QUERY_MEDIA_BY_USER = "q-media-by-user";
+	public static final String CMD_QUERY_USER_IMAGE = "q-user-image";
 	public static final String CMD_QUERY_USER_BY_NAME = "q-user-by-name";
 	public static final String CMD_QUERY_POIS = "q-pois";
 	public static final String CMD_GET_TRACK = "get-track";
@@ -130,7 +131,7 @@
 		JXElement nextRecordElm;
 		String recordId;
 		Record record;
-		Record[] personRecords, accountRecords;
+		Record[] personRecords, accountRecords, thumbRecords;
 		for (int i=0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
@@ -162,9 +163,24 @@
 				nextRecordElm.setChildText("extra", personRecords[0].getStringField("extra"));
 			}
 
+			/* thumbRecords = relater.getRelated(personRecords[0], "base_medium", "thumb");
+			if (thumbRecords.length > 0) {
+				nextRecordElm.setChildText("thumbid", thumbRecords[0].getId() + "");
+			} */
+
 			// Add to response
 			rsp.addChild(nextRecordElm);
 		}
+	}
+
+	Record getAccount(Oase oase, String aLoginName) throws Exception  {
+		Finder finder = oase.getFinder();
+		return finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'")[0];
+	}
+
+	Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception  {
+		Record account = getAccount(oase, aLoginName);
+		return oase.getRelater().getRelated(account, "utopia_person", null)[0];
 	}
 
 	/** Performs command and returns XML result. */
@@ -415,7 +431,7 @@
 			} else if (command.equals(CMD_QUERY_USER_BY_NAME)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
-				
+
 				// First get all active tracks
 				String tables = "utopia_person,utopia_account";
 				String fields = "utopia_person.id,utopia_person.extra,utopia_account.loginname";
@@ -424,6 +440,19 @@
 				String postCond = null;
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
+			} else if (command.equals(CMD_QUERY_USER_IMAGE)) {
+				String loginName = getParameter(request, PAR_USER_NAME, null);
+				throwOnMissingParm(PAR_USER_NAME, loginName);
+
+				Record person = getPersonForLoginName(oase, loginName);
+
+				Record[] thumbRecords = oase.getRelater().getRelated(person, "base_medium", "thumb");
+
+				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+
+				if (thumbRecords.length > 0) {
+					result.addChild(thumbRecords[0].toXML());
+				}
 			} else if (command.equals(CMD_GET_TRACK)) {
 				TrackLogic trackLogic = new TrackLogic(oase);
 				String id = getParameter(request, "id", null);

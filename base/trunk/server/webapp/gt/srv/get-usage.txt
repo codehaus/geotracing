@@ -126,6 +126,11 @@ queries on POIs with their locations
 * "random" : (o) pick random, values: true/false
 * "max" : (o) maximum number to be returned default 10
 
+"q-user-by-name"
+get user record
+- parms
+* "user" : (m) a user login name
+
 
 OTHER COMMANDS
 These are other commands.

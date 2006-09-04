@@ -189,6 +189,15 @@ var GTAPP = {
 
 			// Set in live mode
 			GTAPP.mLive();
+		} else if (cmd == 'archive') {
+			// Optional user to follow immediately
+			var tracerName = DH.getPageParameter('user', null);
+
+			if (tracerName != null) {
+				// Show trackselector for user
+				GTAPP.onUserSelect(null, tracerName);
+			}
+
 		} else {
 			return false;
 		}
@@ -281,8 +290,15 @@ var GTAPP = {
 			GTAPP.trackSelector.addOption(trackId, trackName, userName);
 		}
 
-		var bbox = GTAPP.userSelector.getBBox();
-		GTAPP.trackSelector.setXY((bbox.x + bbox.w + 40), bbox.y);
+		var bbox = null;
+		if (GTAPP.userSelector && GTAPP.userSelector != null) {
+			bbox = GTAPP.userSelector.getBBox();
+			GTAPP.trackSelector.setXY((bbox.x + bbox.w + 40), bbox.y);
+		} else {
+			bbox = GTAPP.menu.getBBox();
+			GTAPP.trackSelector.setXY((bbox.x + bbox.w + 40), bbox.y);
+		}
+		
 		GTAPP.trackSelector.show();
 		GTAPP.showStatus('Archive - user has ' + records.length + ' tracks');
 	},
@@ -379,7 +395,7 @@ var GTAPP = {
 // User selected
 	onUserSelect: function(userId, loginName) {
 		// alert('u=' + userId + ' l=' + loginName);
-		if (GTAPP.trackSelector != null) {
+		if (GTAPP.trackSelector && GTAPP.trackSelector != null) {
 			GTAPP.trackSelector.remove();
 			GTAPP.trackSelector = null;
 		}
