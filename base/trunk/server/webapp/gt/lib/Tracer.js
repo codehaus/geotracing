@@ -22,7 +22,8 @@ function Tracer(name, color, iconURL, pt, time) {
 	this.full = false;
 	this.lastPoint = null;
 	this.blinkInterval = 250;
-
+	this.thumbId = null;
+	
 	this.init = function() {
 		if (this.point) {
 			this.setLocation(this.point);
@@ -98,6 +99,18 @@ function Tracer(name, color, iconURL, pt, time) {
 			}
 		}
 		return this.record;
+	}
+
+	// Get id of user thumbnail image
+	this.getThumbId = function() {
+		if (this.thumbId == null) {
+			// lazy: may not have been set on creation
+			var result = SRV.get("q-user-image", null, "user", this.name);
+			if (result != null && result.length > 0) {
+				this.thumbId = result[0].getField("id");
+			}
+		}
+		return this.thumbId;
 	}
 
 	// Delete a Track for id and name
