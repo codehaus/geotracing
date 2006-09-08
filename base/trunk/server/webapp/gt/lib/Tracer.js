@@ -206,7 +206,8 @@ function Tracer(name, color, iconURL, pt, time) {
 			// Setup onlick handling
 			var self = this;
 			this.onClick = function(e) {
-				// DH.cancelEvent(e);
+				DH.cancelEvent(e);
+				self.showInfo();
 				self.popupInfoWindow();
 			}
 

@@ -339,6 +339,7 @@
 				}
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+
 				// Add account/person attrs to each record
 				addUserAttrs(result);
 

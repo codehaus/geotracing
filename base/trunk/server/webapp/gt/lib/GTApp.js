@@ -215,10 +215,10 @@ var GTAPP = {
 			trackId = records[i].getField('id');
 			trackName = records[i].getField('name');
 			tracerName = records[i].getField('loginname');
-				GTAPP.userSelector.addOption(trackId, tracerName + ' - ' + trackName, tracerName);
+			GTAPP.userSelector.addOption(trackId, tracerName + ' - ' + trackName, tracerName);
 
 			tracer = GTW.createTracerByRecord(records[i]);
-			tracer.show();
+			// tracer.show();
 
 			// If we need to immediately see a tracer
 			if (GTW.followTracer != null && GTW.followTracer == tracerName) {
@@ -298,7 +298,7 @@ var GTAPP = {
 			bbox = GTAPP.menu.getBBox();
 			GTAPP.trackSelector.setXY((bbox.x + bbox.w + 40), bbox.y);
 		}
-		
+
 		GTAPP.trackSelector.show();
 		GTAPP.showStatus('Archive - user has ' + records.length + ' tracks');
 	},
