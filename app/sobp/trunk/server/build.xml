@@ -1,0 +1,108 @@
+<!--
+
+ANT Build file for Sense of Brainport.
+
+$Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
+-->
+<project name="SOBP" default="build" basedir=".">
+
+	<!-- Initialization of properties (dirs, files) -->
+	<!-- Project global properties; overrule by modifying build.properties -->
+	<property file="build.properties"/>
+
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+	<property name="home.cfg.dir" value="${home}/cfg"/>
+	<property name="home.data.dir" value="${home}/data"/>
+	<property name="home.webapp.dir" value="${home}/webapp"/>
+
+	<property name="build.dir" value="${home}/build"/>
+	<property name="build.war.dir" value="${build.dir}/war"/>
+	<property name="version.dir" value="${home}/version"/>
+	<property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
+
+
+	<!-- The .jar -->
+	<property name="project.war" value="${build.dir}/${war.name}.war"/>
+
+	<!-- Initialize: create dirs and set timestamp.. -->
+	<target name="init">
+		<mkdir dir="${build.dir}"/>
+		<tstamp/>
+	</target>
+
+
+	<!-- Build the .wars for the project -->
+	<target name="war" depends="init">
+		<echo message="Building webapp..."/>
+		<echo message="using GeoTracing war dir: ${gt.war.dir}" />
+
+		<delete dir="${build.war.dir}"/>
+		<delete file="${project.war}"/>
+		<mkdir dir="${build.war.dir}"/>
+
+		<copy todir="${build.war.dir}">
+			<fileset dir="${gt.war.dir}">
+				<exclude name="WEB-INF/data/**"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/cfg" overwrite="true">
+			<fileset dir="${home.cfg.dir}"/>
+		</copy>
+
+		<copy todir="${build.war.dir}" overwrite="true">
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+
+		<!--  <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+			<fileset dir="${home.data.dir}"/>
+		</copy>    -->
+
+		<!-- Replace users/passwords with local values as not to have them in repository -->
+		<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
+				 replacefilterfile="${home}/security.properties" summary="true"/>
+
+		<!-- Make war -->
+		<jar jarfile="${project.war}">
+			<fileset dir="${build.war.dir}">
+				<include name="**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Build all clean. -->
+	<target name="build" depends="clean,war"/>
+
+		<!-- Package into archive files -->
+	<target name="package">
+		<echo message="Packaging distribution into ${package.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${home}"
+				prefix="${project.id}-${version}"
+				excludes="build/**,version/**"/>
+		</zip>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="deploy-local">
+		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
+	</target>
+
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${war.name}/lib">
+			<fileset dir="${gt.dir}/server/webapp/gt/lib">
+			</fileset>
+		</copy>
+		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+	</target>
+
+
+</project>

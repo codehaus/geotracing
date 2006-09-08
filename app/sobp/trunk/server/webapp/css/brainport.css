@@ -1,0 +1,343 @@
+.body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #000000;
+}
+
+a:link {
+	color: #EE3224;
+	text-decoration: none;
+	font-weight: bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+a:visited {
+	text-decoration: none;
+	color: #EE3224;
+	font-weight: bold;
+}
+
+.nieuwsbericht {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #000000;
+	background-color: #efefef;
+	padding: 5px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #B8BEBE;
+	border-right-width: 0px;
+	border-left-width: 0px;
+	margin-right: 5px;
+	margin-left: 0px;
+	margin-top: 5px;
+	border-top-width: 0px;
+	border-top-style: none;
+	border-right-style: none;
+	border-left-style: none;
+}
+
+.fototitel {
+	color: #FFFFFF;
+	background-color: #B8BEBE;
+	height: 0px;
+	padding-top: 6px;
+	padding-right: 2px;
+	padding-bottom: 4px;
+	padding-left: 30px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	font-variant: normal;
+}
+
+.fotolijn {
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+	border-top-style: solid;
+	border-bottom-style: solid;
+	border-top-color: #FFFFFF;
+	border-bottom-color: #FFFFFF;
+}
+
+.nieuwsberichttitel {
+	font-size: 12px;
+	font-weight: bold;
+	color: #EE3224;
+	letter-spacing: 2px;
+	padding-top: 1px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.borderright {
+	border-right-width: 5px;
+	border-right-style: solid;
+	border-right-color: #FFFFFF;
+	border-top-width: 5px;
+	border-top-style: solid;
+	border-top-color: #FFFFFF;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #B8BEBE;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #0EE3224;
+	font-weight: bold;
+}
+
+a:active {
+	text-decoration: none;
+	color: #EE3224;
+	font-weight: bold;
+}
+
+.imagekader {
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	margin-left: 0px;
+	border-top-width: 10px;
+	border-right-width: 10px;
+	border-bottom-width: 10px;
+	border-left-width: 10px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #B8BEBE;
+	border-right-color: #B8BEBE;
+	border-bottom-color: #B8BEBE;
+	border-left-color: #B8BEBE;
+}
+
+.imagekaderrood {
+	border: 10px solid #EE3224;
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	margin-left: 0px;
+}
+
+.navtekst {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	padding-left: 30px;
+	padding-bottom: 3px;
+	padding-top: 5px;
+	text-transform: uppercase;
+	width: 290px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #FFFFFF;
+	background-color: #eeeeee;
+	height: 15px;
+}
+
+.borderboven {
+	border-top-width: 5px;
+	border-top-style: solid;
+	border-top-color: #FFFFFF;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #B8BEBE;
+}
+
+.sitewide {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	color: #FFFFFF;
+	letter-spacing: 1px;
+	padding-top: 3px;
+	text-decoration: none;
+	text-align: right;
+	padding-right: 5px;
+	padding-bottom: 3px;
+	border-top-width: 0px;
+	border-top-style: solid;
+	border-top-color: #000000;
+}
+
+.imagekaderlichtgrijs {
+	margin-top: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	margin-left: 0px;
+	border: 10px solid #eeeeee;
+}
+
+.deelnemertitel {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #000000;
+	letter-spacing: 1px;
+	padding-left: 5px;
+	padding-top: 2px;
+}
+
+.deelnemertekst {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	color: #000000;
+	letter-spacing: 0px;
+	padding-left: 5px;
+	padding-top: 3px;
+}
+
+.fragmenttekst {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	color: #000000;
+	letter-spacing: 0px;
+	padding-left: 10px;
+	padding-top: 3px;
+	padding-right: 25px;
+	padding-bottom: 3px;
+	margin-right: 10px;
+	margin-left: 0px;
+}
+
+.fragmenttitel {
+
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #FFFFFF;
+	letter-spacing: 0px;
+	padding-left: 10px;
+	padding-top: 3px;
+}
+
+.copyright {
+
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 10px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	color: #CCCCCC;
+	letter-spacing: 1px;
+	padding-top: 3px;
+	text-decoration: none;
+	text-align: right;
+	padding-right: 5px;
+	padding-bottom: 3px;
+}
+
+.logotekst {
+
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #666666;
+	letter-spacing: 7px;
+	padding-left: 20px;
+	padding-top: 3px;
+}
+
+.logoteksthome {
+
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #333333;
+	letter-spacing: 7px;
+	padding-left: 0px;
+	padding-top: 3px;
+}
+
+.kolomrechts {
+	border-right-width: 0px;
+	border-right-style: solid;
+	border-right-color: #FFFFFF;
+	border-top-width: 5px;
+	border-top-style: solid;
+	border-top-color: #FFFFFF;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #B8BEBE;
+	margin: 0px;
+	padding: 0px;
+}
+
+.subkop {
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: normal;
+	color: #8D0C0C;
+	letter-spacing: 1px;
+	padding-left: 10px;
+	padding-top: 20px;
+}
+
+.naam {
+
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 11px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #FFFFFF;
+	letter-spacing: 2px;
+	padding-left: 10px;
+	padding-top: 0px;
+}
+
+.voorsteltekst {
+	padding: 8px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #000000;
+}
+
+.fragmenttekstwitbold {
+
+	font-family: Verdana, Helvetica, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bold;
+	font-variant: small-caps;
+	color: #FFFFFF;
+	letter-spacing: 0px;
+	padding-left: 7px;
+	padding-top: 3px;
+	padding-right: 10px;
+	padding-bottom: 3px;
+	margin-right: 8px;
+	margin-left: 0px;
+}
+
+.imageborderonder {
+	border-bottom-width: 8px;
+	border-bottom-style: solid;
+	border-bottom-color: #FFFFFF;
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #333333;
+}
