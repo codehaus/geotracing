@@ -103,7 +103,7 @@ just[AT]justobjects.nl<br/>
 	<ul>
 		<li>independent consultant/developer/trainer</li>
 		<li>emphasis on OOT/Java/Multimedia/Webtech/AJAX</li>
-		<li>OSS projects: <a href="http://www.pushlets.com" target="_new">Pushlets</a>, <a href="http://www.geotracing.com" target="_new">GeoTracing</a>, <a href="http://www.justobjects.org/cowcatcher" target="_new">CowCatcher</a></li>
+		<li>OSS projects: <a href="http://www.keyworx.org" target="_new">KeyWorx</a>, <a href="http://www.pushlets.com" target="_new">Pushlets</a>, <a href="http://www.geotracing.com" target="_new">GeoTracing</a>, <a href="http://www.justobjects.org/cowcatcher" target="_new">CowCatcher</a></li>
 		<li>2004+:  <a href="http://www.justobjects.org/blog/index.php?cat=5" target="_new">locative media and GIS projects</a></li>
 		<li>2006+: fulltime <a href="http://www.geotracing.com" target="_new">GeoTracing</a> projects</li>
 	</ul>
@@ -239,7 +239,7 @@ just[AT]justobjects.nl<br/>
 
 		</td>
 		<td align="center">
-			<a href="http://www.waag.org/programma/locativemedia" target="_new"><img src="assets/mlgk.jpg" width="200" height="150" alt="traceland" /><br/>
+			<a href="http://kwlabs-blog.waag.org/mediawiki/index.php/KWLocativeMedia" target="_new"><img src="assets/mlgk.jpg" width="200" height="150" alt="traceland" /><br/>
 			MLGK</a>
 		</td>
 	</tr>
@@ -291,6 +291,32 @@ just[AT]justobjects.nl<br/>
 </div>
 
 <div class="slide">
+<h1>MobiTracer - Features</h1>
+<ul>
+<li>track recording
+<ul>
+	<li>create tracks</li>
+	<li>suspend/resume track</li>
+</ul>
+</li>
+<li>road rating
+	<ul>
+		<li>simply type number on keypad</li>
+		<li>rating tied to all subsequent track-points</li>
+	</ul>
+</li>
+<li>feature entry
+	<ul>
+		<li>send photo/video/audio</li>
+		<li>add POIs</li>
+	</ul>
+</li>
+<li>view your location on Google Map
+</li>
+</ul>
+</div>
+
+<div class="slide">
 <h1>Architecture</h1>
 	<div class="center">
 		<img  src="assets/architecture01.jpg" alt="architecture01" />
@@ -338,7 +364,7 @@ just[AT]justobjects.nl<br/>
 		<li>connects locally to GPS through GPSDoor</li>
 	</ul>
 </li>
-	<li>WebEditor
+	<li>WebEditor (/my)
 <ul>
 	<li>manage tracks/media</li>
 </ul>
@@ -402,10 +428,37 @@ just[AT]justobjects.nl<br/>
 </div>
 
 <div class="slide">
-<h1>Example Protocol Sequence</h1>
+<h1>Example - Session Protocol</h1>
 	<div class="center">
 		<img  src="assets/protocol-seq01.jpg" alt="protocol-seq" />
 	</div>
+</div>
+
+<div class="slide">
+<h1>Example - REST Service</h1>
+<pre>
+http://www..../get.jsp?cmd=q-active-tracks
+
+<code>
+&lt;query-store-rsp&gt;
+  &lt;record&gt;
+    &lt;id&gt;23045&lt;/id&gt;
+    &lt;name&gt;M13&lt;/name&gt;
+    &lt;lon&gt;4.9005367&lt;/lon&gt;
+    &lt;lat&gt;52.3689717&lt;/lat&gt;
+    &lt;time&gt;1131225381296&lt;/time&gt;
+    &lt;loginname&gt;green&lt;/loginname&gt;
+  &lt;/record&gt;
+
+  &lt;record&gt;
+    &lt;id&gt;177563&lt;/id&gt;
+    &lt;name&gt;KillerClub&lt;/name&gt;
+    &lt;lon&gt;4.8997617&lt;/lon&gt;
+       .
+	   .
+&lt;/query-store-rsp&gt;
+</code>
+</pre>
 </div>
 
 <div class="slide">
@@ -416,7 +469,51 @@ just[AT]justobjects.nl<br/>
 </div>
 
 <div class="slide">
-<h1>OSS Development</h1>
+<h1>Deployment</h1>
+<ul>
+<li>GeoTracing app is deployed as a J2EE .war file</li>
+<li>.war file contains
+<ul>
+	<li>server app</li>
+	<li>all client apps</li>
+</ul>
+</li>
+<li>Some setup required: Tomcat + MySQL</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Development - Extensibility</h1>
+	<p>GeoTracing offers the following extension possibilities</p>
+
+<ul>
+<li>extend client (AJAX) JS classes (Factory pattern)</li>
+<li>add new REST services (myget.jsp)</li>
+<li>add/modify new server-side session protocol handlers</li>
+<li>add new daemons</li>
+<li>add database tables</li>
+<li>create new clients based on session protocol</li>
+ </ul>
+</div>
+
+<div class="slide">
+<h1>Development - How to create Apps</h1>
+<p>The Basics</p>
+<ul>
+	<li><a href="http://ant.apache.org" target="_new">Ant</a> as swiss-army knife</li>
+	<li>create application dir</li>
+	<li>create configuration files</li>
+	<li>create files extending/replacing base files (e.g. JS)</li>
+	<li>refer default app (<a href="http://www.geotracing.org/gt" target="_new">Traceland</a>) as a base</li>
+	<li>unpacked gt.war is overwritten with your replacements</li>
+	<li>generate your .war</li>
+	<li>see examples in <a href="http://svn.codehaus.org/geotracing/app" target="_new">Subversion apps tree</a></li>
+</ul>
+
+</div>
+
+<div class="slide">
+<h1>Development - OSS </h1>
 <ul>
 <li>OSS (LGPL) since aug 2006</li>
 <li>hosting: <a href="http://geotracing.codehaus.org/" target="_new">geotracing.codehaus.org</a></li>
@@ -431,7 +528,28 @@ just[AT]justobjects.nl<br/>
 </div>
 
 <div class="slide">
-<h1>Subversion Layout</h1>
+<h1>Development - Roadmap </h1>
+<ul>
+<li>current version (v1)
+<ul>
+	<li>organize OSS project</li>
+	<li>documentation</li>
+	<li>client: PDA</li>
+</ul>
+	</li>
+<li>planned features (v2)
+<ul>
+	<li>navigation/LBS</li>
+	<li>standards: openGIS, ...</li>
+	<li>server: spatial DB (PostGIS)</li>
+	<li>client: AJAX framework (DOJO?/MapBuilder?)</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Development - Subversion Layout</h1>
 <p><a href="http://svn.geotracing.codehaus.org/" target="_new"><img  src="assets/svn-layout.jpg" align="right" alt="svn-layout" /></a></p>
 <ul>
 <li><a href="http://svn.geotracing.codehaus.org/" target="_new">svn.geotracing.codehaus.org</a></li>
@@ -441,7 +559,29 @@ just[AT]justobjects.nl<br/>
 </div>
 
 <div class="slide">
-<h1>bliin.com</h1>
+<h1>Apps - Sense of the City</h1>
+	<pre>
+
+
+	</pre>
+<div class="center">
+<i>A locative media tool for urban investigators
+to unveil individual mental maps  of city dwellers</i>
+</div>
+<ul>
+<li>SOTC Projects
+	<ul>
+	<li><a href="http://www.senseofthecity.nl" target="_new">Sense of the City Eindhoven (apr06)</a></li>
+	<li><a href="http://www.senseofthecity.nl/sobp" target="_new">Sense of Brainport (sep06)</a></li>
+	<li>Sense of the City Amersfoort (planned)</li>
+	<li>Any other city/place on earth</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Apps - bliin.com</h1>
 <ul>
 <li>Location user- and media search</li>
 <li>Track, trace and interact with other logged on users & share personal locative media in real-time on a map</li>
@@ -451,7 +591,7 @@ just[AT]justobjects.nl<br/>
 </div>
 
 <div class="slide">
-<h1>What's a Bliin ?</h1>
+<h1>Apps - What's a Bliin ?</h1>
 <ul>
 <li>Bliin is about Navigating Experiences ... experiences are contained within locations ...
 locations are constantly traversed by users ... who continuously add experience ...
@@ -464,7 +604,7 @@ locations are constantly traversed by users ... who continuously add experience 
 </div>
 
 <div class="slide">
-<h1>a bliin</h1>
+<h1>A Bliin</h1>
 
 <img src="assets/bliin01.png" alt="" title="Default" />
 
