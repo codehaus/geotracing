@@ -35,10 +35,11 @@ public class TraceScreen extends GameCanvas {
 	private static final int CMD_SELECT_GPS = 8;
 	private static final int CMD_VIEW_LOG = 9;
 	private static final int CMD_SHOW_MAP = 10;
-	private static final int CMD_QUIT = 11;
-	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_POI, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_QUIT};
+	private static final int CMD_ACCOUNT = 11;
+	private static final int CMD_QUIT = 12;
+	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_POI, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_ACCOUNT, CMD_QUIT};
 	private static final int[] MIN_CMDS = {CMD_QUIT};
-	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Add POI", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map", "Exit"};
+	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Add POI", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map", "Account", "Exit"};
 	private static final String[] MIN_CMD_LABELS = {"Stoppen"};
 	private int[] CMDS = DEF_CMDS;
 	private String[] CMD_LABELS = DEF_CMD_LABELS;
@@ -334,6 +335,11 @@ public class TraceScreen extends GameCanvas {
 				mapScreen.show();
 				break;
 
+			case CMD_ACCOUNT:
+				// tracer.stop();
+				setStatus("Account settings: do Exit when changing");
+				Display.getDisplay(midlet).setCurrent(new AccountScreen(midlet));
+				break;
 			case CMD_QUIT:
 				tracer.stop();
 				midlet.notifyDestroyed();

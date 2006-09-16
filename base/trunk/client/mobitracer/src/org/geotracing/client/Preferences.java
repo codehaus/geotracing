@@ -28,7 +28,12 @@ public class Preferences {
 	}
 
 	public String get(String key) {
-		return (String) mHashtable.get(key);
+		return get(key, null);
+	}
+
+	public String get(String key, String aDefault) {
+		String val = (String) mHashtable.get(key);
+		return val != null ? val : aDefault;
 	}
 
 	public void put(String key, String value) {

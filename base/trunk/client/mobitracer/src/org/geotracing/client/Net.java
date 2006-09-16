@@ -36,6 +36,10 @@ public class Net {
 	private String url, user, password, app, role;
 	private boolean minimal;
 	private NetListener listener;
+	public static final String RMS_STORE_NAME = "Net";
+	public static final String PROP_USER = "kw-user";
+	public static final String PROP_PASSWORD = "kw-password";
+	public static final String PROP_URL = "kw-url";
 
 	private Net() {
 	}
@@ -49,12 +53,22 @@ public class Net {
 	}
 
 	public void setProperties(MIDlet aMIDlet) {
-		url = aMIDlet.getAppProperty("kw-url");
-		user = aMIDlet.getAppProperty("kw-user");
-		password = aMIDlet.getAppProperty("kw-password");
-		app = aMIDlet.getAppProperty("kw-app");
-		role = aMIDlet.getAppProperty("kw-role");
-		minimal = aMIDlet.getAppProperty("mt-options").indexOf("minimal") != -1;
+		try {
+			Preferences prefs = new Preferences(RMS_STORE_NAME);
+
+			// Login name: value in RMS prevails
+			user = prefs.get(PROP_USER, aMIDlet.getAppProperty(PROP_USER));
+
+			password = prefs.get(PROP_PASSWORD, aMIDlet.getAppProperty(PROP_PASSWORD));
+
+			url = prefs.get(PROP_URL, aMIDlet.getAppProperty(PROP_URL));
+
+			app = aMIDlet.getAppProperty("kw-app");
+			role = aMIDlet.getAppProperty("kw-role");
+			minimal = aMIDlet.getAppProperty("mt-options").indexOf("minimal") != -1;
+		} catch (Throwable t) {
+            listener.onNetError("Cannot read RMS", t);
+		}
 	}
 
 	public void addPOI(String aType, String aName, String aDescription) {
