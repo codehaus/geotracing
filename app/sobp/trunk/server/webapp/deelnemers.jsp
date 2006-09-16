@@ -2,7 +2,7 @@
 <%@ page import="org.keyworx.oase.api.Finder"%>
 <%@ include file="model.jsp" %>
 <%@ include file="static-layout-header.html" %>
-
+<!-- $Id:$ -->
 <tr>
 	<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="images/logo170.gif"
 																			alt="logo brainport" width="170"
@@ -57,14 +57,23 @@
 						 /* postCond: */ "ORDER BY utopia_account.loginname");
 
 
-		Record record, personRecord = null;
+		Record accountRecord, personRecord, thumbRecords[];
 		Finder finder = model.getOase().getFinder();
 		Relater relater = model.getOase().getRelater();
 		for (int i = 0; i < accountRecords.length; i++) {
-			record = finder.read(accountRecords[i].getId(), "utopia_account"); // accountRecords[i];
-			personRecord = relater.getRelated(record, "utopia_person", null)[0];
-  			String imageID = relater.getRelated(personRecord, "base_medium", "thumb")[0].getId() + "";
-			String loginName = record.getStringField("loginname");
+			// User function name (=account.loginname)
+			accountRecord = finder.read(accountRecords[i].getId(), "utopia_account");
+			String loginName = accountRecord.getStringField("loginname");
+
+			// User image
+			personRecord = relater.getRelated(accountRecord, "utopia_person", null)[0];
+			String imageURL = "img/default-user-thumb.jpg";
+			thumbRecords = relater.getRelated(personRecord, "base_medium", "thumb");
+			if (thumbRecords.length > 0) {
+				imageURL = "media.srv?resize=60x60&id=" + thumbRecords[0].getId();
+			}
+
+			// User description
 			String toelichting = "geen toelichting";
 			JXElement extra = personRecord.getXMLField("extra");
 			if (extra != null) {
@@ -77,7 +86,7 @@
 				<tr>
 					<td width="75" valign="top" class="borderbottom">
 						<a href="map.jsp?cmd=staalkaart&login=<%= loginName %>">
-							<img border="0" src="media.srv?id=<%= imageID %>&resize=60x60"
+							<img border="0" src="<%= imageURL %>"
 								 alt="<%= loginName %>"/></a></td>
 					<td width="245" valign="top" bgcolor="#f4f4f4" class="borderbottom">
 						<div class="naam">
@@ -93,7 +102,7 @@
 					  </tr>
 					  <tr>
 						  <td width="60" height="60" align="left" valign="top" rowspan="2">
-							  <img src="media.srv?id=<%= imageID %>&resize=60x60" alt="<%= loginName %>" width="60" height="60"/>
+							  <img src="<%= imageURL %>" alt="<%= loginName %>" width="60" height="60"/>
 						  </td>
 						  <td align="left" valign="top" bgcolor="#eeeeee">
 							  <div class="voorsteltekst"><%= toelichting %></div>
