@@ -12,9 +12,7 @@
  */
 
 // Add project-specific JS files to be loaded.
-DH.include('MyLiveListener.js');
 DH.include('MyTracer.js');
-DH.include('MyMedium.js');
 
 // This file contains specific functions for Bliin webapp
 var MYAPP = {
@@ -108,6 +106,6 @@ var MYAPP = {
 /** Create listener to incoming live events. */
 	createLiveListener: function() {
 		// May overload with MyApp LiveListener
-		GTAPP.liveListener = new MyLiveListener('livestatus');
+		GTAPP.liveListener = new LiveListener('status');
 	}
 }
