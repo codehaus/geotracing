@@ -265,7 +265,7 @@
 			} else if (command.equals(CMD_QUERY_ALL_USERS)) {
 				String tables = "utopia_person,utopia_account,utopia_role";
 				String fields = "utopia_person.id,utopia_account.id AS accountid, utopia_account.loginname";
-				String where = "utopia_role.name = 'user'";
+				String where = "utopia_role.name = 'user' AND utopia_account.state = 1";
 				String relations = "utopia_person,utopia_account;utopia_account,utopia_role";
 				String postCond = "ORDER BY utopia_account.loginname";
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
@@ -297,7 +297,7 @@
 
 				// Now get all info for track
 				tables = "utopia_person,utopia_account,g_track,g_location";
-				fields = "g_track.id,g_track.name,g_track.state,utopia_account.loginname,g_location.lon,g_location.lat,g_location.time";
+				fields = "g_track.id,g_track.name,g_track.state,utopia_person.extra,utopia_account.loginname,g_location.lon,g_location.lat,g_location.time";
 				where = "g_track.id = " + trackId;
 				relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_person,utopia_account";
 				postCond = null;
