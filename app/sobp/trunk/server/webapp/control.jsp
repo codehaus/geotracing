@@ -257,7 +257,7 @@
 				JXElement req = new JXElement("medium-update-req");
 				JXElement medium = new JXElement("medium");
 				req.setAttr("id", id);
-				medium.setChildText("name", name);
+				medium.setChildText("name", forHTMLTag(name));
 				medium.setChildText("description", description);
 				medium.setChildText("filename", "non-existing-file");
 				req.addChild(medium);

@@ -2,10 +2,11 @@
 // Distributable under LGPL license. See terms of license at gnu.org.
 
 /*
- * Bliin main app.
+ * Sense of Brainport main app.
  *
  * PURPOSE
  * Library representing the app. All starts here. See GTApp.init();
+ * GTApp.init() will call MYAPP.init() and MYAPP.start() when initialized.
  *
  * Author: Just van den Broecke
  * $Id: MyApp.js,v 1.9 2006-08-13 01:09:03 just Exp $
@@ -36,7 +37,7 @@ var MYAPP = {
 		//GMAP.resize = MYAPP.resize;
 
 		// Overrule LiveListener implementation
-		// GTAPP.createLiveListener = MYAPP.createLiveListener;
+		GTAPP.createLiveListener = MYAPP.createLiveListener;
 		//GTAPP.onQueryActiveUsers = MYAPP.onQueryActiveUsers;
 
 		// This is the base URL for directional icons (dir_icon_green_01.png through dir_icon_green_08.png)

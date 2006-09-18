@@ -60,7 +60,7 @@ a:visited {
 	border-bottom-color: #FFFFFF;
 }
 
-.nieuwsberichttitel {
+.nieuwsberichttitel, .teksttitel {
 	font-size: 12px;
 	font-weight: bold;
 	color: #EE3224;
@@ -83,7 +83,7 @@ a:visited {
 
 a:hover {
 	text-decoration: underline;
-	color: #0EE3224;
+	color: #0E3224;
 	font-weight: bold;
 }
 
@@ -293,7 +293,7 @@ a:active {
 	color: #8D0C0C;
 	letter-spacing: 1px;
 	padding-left: 10px;
-	padding-top: 20px;
+	padding-top: 10px;
 }
 
 .naam {
@@ -340,4 +340,13 @@ a:active {
 	border-top-width: 1px;
 	border-top-style: solid;
 	border-top-color: #333333;
+}
+
+/* Hieronder toegevoegd door Just */
+.middle {
+	vertical-align: middle;
+}
+
+.right {
+	text-align: right;
 }

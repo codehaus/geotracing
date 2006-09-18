@@ -102,7 +102,7 @@
 					  </tr>
 					  <tr>
 						  <td width="60" height="60" align="left" valign="top" rowspan="2">
-							  <img src="<%= imageURL %>" alt="<%= loginName %>" width="60" height="60"/>
+							  <a href="map.jsp?cmd=archive&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
 						  </td>
 						  <td align="left" valign="top" bgcolor="#eeeeee">
 							  <div class="voorsteltekst"><%= toelichting %></div>

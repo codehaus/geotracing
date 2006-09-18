@@ -47,7 +47,7 @@ Via deze website is rechtstreeks -live- te volgen waar de deelnemers zich bevind
 
 				</td>
 		<td width="320" valign="top" bgcolor="#EFEFEF" class="borderboven">
-			<img src="images/luchtfoto.jpg" alt="truck" width="320" height="240" hspace="0" vspace="0"
+			<img src="images/luchtfoto.jpg" alt="luchtfoto" width="320" height="240" hspace="0" vspace="0"
 				 class="fotolijn"/></td>
 	</tr>
 <%@ include file="static-layout-footer.html" %>

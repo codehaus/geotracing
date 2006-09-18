@@ -14,7 +14,7 @@
 	<link href="css/brainportkaart.css" rel="stylesheet" type="text/css"/>
 	<style type="text/css">
 		<!--
-		/* Menu css */
+		/* Overrule Menu css for SOBP design */
 		.mn-container {
 			top: 25px;
 			left: 15px;

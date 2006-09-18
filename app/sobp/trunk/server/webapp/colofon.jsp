@@ -148,9 +148,9 @@ CityWorks ontwikkelde <a href="http://www.senseofthecity.nl">Sense of the City</
 																		height="100" hspace="0"
 																		vspace="0"
 																		class="imageborderonder"/><br/>
-	<img src="images/kenniswijk.jpg" alt="kenniswijk" width="170" height="100"
+	<img src="images/kenniswijk.jpg" alt="bosco tondo" width="170" height="100"
 		 class="imageborderonder"/><br/>
-	<img src="images/heempark.jpg" alt="heempark" width="170" height="100" class="imageborderonder"/>
+	<img src="images/heempark.jpg" alt="flight forum" width="170" height="100" class="imageborderonder"/>
 </td>
 </tr>
 </table>

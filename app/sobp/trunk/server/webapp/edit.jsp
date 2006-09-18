@@ -20,8 +20,8 @@
 																			  height="133" hspace="0" vspace="0"/>
 	  </td>
     <td colspan="3" valign="top" >
-    	<div class="teksttitel">
-        <% if (model.isLoggedIn()) { %><span class="inlog">Ingelogd als: <%= model.getString(ATTR_USER_NAME)%> <a href="control.jsp?cmd=logout">[uitloggen]</a></span><% } %>
+    	<div class="right">
+        <% if (model.isLoggedIn()) { %><p class="fragmenttekst">Ingelogd als <%= model.getString(ATTR_USER_NAME)%> <a href="control.jsp?cmd=logout">[uitloggen]</a></p><% } %>
       </div>
       <div class="fragmenttekst">
 		    <!-- Content starts here -->
