@@ -14,6 +14,7 @@
 
 // Add project-specific JS files to be loaded.
 DH.include('MyTracer.js');
+DH.include('MyMedium.js');
 
 // This file contains specific functions for Bliin webapp
 var MYAPP = {
@@ -47,7 +48,7 @@ var MYAPP = {
 		// Overrule creation of GT base classes with our
 		// own specific classes.
 		GTW.getFactory().setClassDef('Tracer', 'MyTracer');
-		// GTW.getFactory().setClassDef('Medium', 'MyMedium');
+		GTW.getFactory().setClassDef('Medium', 'MyMedium');
 
 		// Manage media (features)
 		//MYAPP.media = new FeatureSet();

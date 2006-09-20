@@ -88,6 +88,7 @@
 
 <body onunload="GUnload()">
 <div id="map"></div>
+
 <!-- Main menu starts here -->
 <jsp:include page="mainmenu.jsp" flush="true"/>
 <!-- Main menu ends here -->
@@ -109,13 +110,10 @@
 					<div id="mainmenuanchor">&nbsp;</div>
 				</td>
 				<td width="25%" align="left">
-					<span id="livestatus">&nbsp;</span>
+					<span id="mode" style="visibility: hidden">&nbsp;</span>
 				</td>
-				<td width="25%" align="center">
-					<span id="status">Status</span>
-				</td>
-				<td width="25%" align="right">
-					<span id="mode">Archief</span>
+				<td width="50%" align="right">
+					<span id="status">&nbsp;</span>
 				</td>
 			</tr>
 		</table>
