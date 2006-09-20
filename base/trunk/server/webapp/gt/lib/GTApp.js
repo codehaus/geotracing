@@ -57,12 +57,17 @@ var GTAPP = {
 	SIG: '<a href="http://www.geotracing.com" target="_new"><img src="img/powered-gt.png" border="0"/></a>',
 	initialized: false,
 	liveListener: null,
+	busyIcon: null,
 
 /** Bootstrap for entire app. */
 	init: function() {
 		if (GTAPP.initialized == true) {
 			return;
 		}
+
+		// Icon to indicate C/S comms (XHR).
+		GTAPP.addBusyIndicator();
+		GTAPP.busyOn();
 
 		// Bootstrap GT world
 		GTW.boot();
@@ -112,9 +117,11 @@ var GTAPP = {
 		if (MYAPP.start) {
 			MYAPP.start();
 		}
+		GTAPP.busyOff();
+
 	},
 
-/** Add GT signature to map. */
+	/** Add GT signature to map. */
 	addSig: function() {
 		var id = 'gtsig';
 		if (!DH.getObject(id)) {
@@ -127,6 +134,27 @@ var GTAPP = {
 			b.innerHTML = GTAPP.SIG;
 			document.body.appendChild(b);
 			DH.setOpacity(b, 0.7);
+		}
+	},
+
+	/** Add indicator for app busy (e.g. XHR). */
+	addBusyIndicator: function() {
+		var id = 'busyicon';
+		if (!DH.getObject(id)) {
+			var b = document.createElement('img');
+			b.id = id;
+			b.style.position = 'absolute';
+			b.style.left = '30%';
+			b.style.top = '40%';
+			b.style.zIndex = 30000;
+			b.src = "img/loading.gif";
+			document.body.appendChild(b);
+
+			GTAPP.busyIcon = DH.getObject(id);
+			DH.hide(GTAPP.busyIcon);
+			// Set XHR callbacks for XHR status
+			DH._xhrBusy = GTAPP.busyOn;
+			DH._xhrReady = GTAPP.busyOff;
 		}
 	},
 
@@ -576,7 +604,24 @@ var GTAPP = {
 // Switch background map type
 	mSetMap: function(type) {
 		GMAP.setMapType(type);
+	},
+
+	/** Show busy indicator. */
+	busyOn: function() {
+		// alert('busy');
+		if (GTAPP.busyIcon) {
+			DH.show(GTAPP.busyIcon);
+		}
+	},
+
+	/** Hide busy indicator. */
+	busyOff: function() {
+		// alert('busyOff');
+		if (GTAPP.busyIcon) {
+			DH.hide(GTAPP.busyIcon);
+		}
 	}
+
 }
 
 // Starts it all

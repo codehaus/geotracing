@@ -107,6 +107,7 @@ just[AT]justobjects.nl<br/>
 		<li>2004+:  <a href="http://www.justobjects.org/blog/index.php?cat=5" target="_new">locative media and GIS projects</a></li>
 		<li>2006+: fulltime <a href="http://www.geotracing.com" target="_new">GeoTracing</a> projects</li>
 	</ul>
+<li><a href="http://www.wordspy.com/words/neogeography.asp" target="_new">Neogeographer</a></li>
 </li>
 </ul>
 </div>
@@ -462,7 +463,32 @@ http://www..../get.jsp?cmd=q-active-tracks
 </div>
 
 <div class="slide">
-<h1>Database Model (v1)</h1>
+<h1>GeoTagging Media</h1>
+<p>Steps</p>
+<ul>
+<li>Submit media file: HTTP upload, XML CDATA or email</li>
+<li>Server: date/time extraction
+<ul>
+	<li>from metadata (e.g. JPEG EXIF)</li>
+	<li>if not available take time-of-arrival</li>
+</ul>
+</li>
+<li>Server: find nearest track/point in time</li>
+<li>Server: Relate medium to Location, Track and Person</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Core Data Model</h1>
+	<div class="center">
+		<img  src="assets/database-core.jpg" alt="database-core" />
+	</div>
+	<p><i>Users, Tracks, Media as first class objects</i></p>
+</div>
+
+
+<div class="slide">
+<h1>Detailed Database Model (v1)</h1>
 	<div class="center">
 		<img  src="assets/database-v1-small.jpg" alt="database-v1" />
 	</div>

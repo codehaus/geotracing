@@ -504,9 +504,12 @@ var DH = {
 	}
 	,
 
-// Get XML doc from server
-// On response  optional callback fun is called with optional user data.
+	/******* XMLHTTPrequest (XHR) functions.  **********/
+
+	// Get XML doc from server
+	// On response  optional callback fun is called with optional user data.
 	getXML: function(url, callback) {
+		DH._xhrBusy();
 
 		// Obtain XMLHttpRequest object
 		var xmlhttp = new XMLHttpRequest();
@@ -527,12 +530,15 @@ var DH = {
 					if (xmlhttp.status == 200) {
 						// Processing statements go here...
 						cb(xmlhttp.responseXML);
+						DH._xhrReady();
 					} else {
 						alert('Problem retrieving XML data:\n' + xmlhttp.statusText);
 					}
 				}
 			};
 		}
+
+
 		// Open URL
 		xmlhttp.open('GET', url, async);
 
@@ -540,6 +546,7 @@ var DH = {
 		xmlhttp.send(null);
 
 		if (!cb) {
+			DH._xhrReady();
 			if (xmlhttp.status != 200) {
 				alert('Problem retrieving XML data:\n' + xmlhttp.statusText);
 				return null;
@@ -568,6 +575,7 @@ var DH = {
 			// Async mode
 			async = true;
 			xmlhttp.onreadystatechange = function() {
+				DH._xhrReady();
 				if (xmlhttp.readyState == 4) {
 					if (xmlhttp.status == 200) {
 						// Processing statements go here...
@@ -578,6 +586,9 @@ var DH = {
 				}
 			};
 		}
+
+		DH._xhrBusy();
+
 		// Open URL
 		xmlhttp.open('GET', url, async);
 
@@ -586,6 +597,7 @@ var DH = {
 
 
 		if (!cb) {
+			DH._xhrReady();
 			if (xmlhttp.status != 200) {
 				alert('Problem retrieving URL data:\n' + xmlhttp.statusText);
 				return null;
@@ -596,6 +608,14 @@ var DH = {
 		}
 	}
 	,
+
+	/** Interceptor functions , replace to use these. */
+	_xhrBusy: function() {
+	},
+
+	/** Interceptor functions , replace to use these. */
+	_xhrReady: function(httpStatus) {
+	},
 
 /**
  * Dynamically load a script file if it has not already been loaded.
