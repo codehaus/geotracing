@@ -18,7 +18,7 @@ function Track(id, name, tracer) {
 	this.segments = [];
 	this.featureSet = new FeatureSet();
 	this.polyLines = [];
-	this.color = tracer.color;
+	this.color = tracer.getColor();
 
 	// Add point
 	this.addPoint = function (aPoint) {
@@ -214,6 +214,9 @@ function Track(id, name, tracer) {
 						nextMedium.getAttribute('time'),
 						nextMedium.getAttribute('lon'),
 						nextMedium.getAttribute('lat'));
+
+
+				medium.userName = this.tracer.name;
 
 				this.featureSet.addFeature(medium);
 			}

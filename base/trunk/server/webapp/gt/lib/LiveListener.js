@@ -46,6 +46,8 @@ function LiveListener(aStatusElm) {
 				event.get('time'),
 				event.get('lon'),
 				event.get('lat'));
+		
+		medium.userName = tracer.name;
 
 		tracer.addMedium(medium);
 		medium.show();

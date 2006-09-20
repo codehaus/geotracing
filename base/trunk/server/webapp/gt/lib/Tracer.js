@@ -89,6 +89,20 @@ function Tracer(name, color, iconURL, pt, time) {
 		return tl;
 	}
 
+	// get the tracer color (track)
+	this.getColor = function () {
+		var record = this.getRecord();
+		if (record != null) {
+			// In some cases the extra field may contain a color
+			var color = record.getField('color');
+			if (color != null) {
+				this.color = color;
+			}
+		}
+
+		return this.color;
+	}
+
 	// get the user DB record
 	this.getRecord = function () {
 		if (this.record == null) {

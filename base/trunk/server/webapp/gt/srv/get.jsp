@@ -148,9 +148,17 @@
 
 			// Get related person
 			personRecords = relater.getRelated(record, "utopia_person", null);
+			if (personRecords.length == 0) {
+				log.warn("no person record found for record id=" + record.getId() + " table=" + record.getTableName());
+				continue;
+			}
 
 			// Get related account
 			accountRecords = relater.getRelated(personRecords[0], "utopia_account", null);
+			if (accountRecords.length == 0) {
+				log.warn("no account record found for person id=" + record.getId());
+				continue;
+			}
 
 			// Skip records for disabled account
 			if (accountRecords[0].getIntField("state") != 1) {

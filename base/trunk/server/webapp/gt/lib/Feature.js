@@ -45,6 +45,10 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 		this._displayUser();
 	}
 
+	this.getBGColor = function() {
+		return this.bgColor;
+	}
+
 	this.getDate = function() {
 		var date = new Date(this.time);
 		return date.format("DDD D MMM YYYY HH:mm:ss");
