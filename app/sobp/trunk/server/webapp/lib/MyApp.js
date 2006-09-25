@@ -53,19 +53,15 @@ var MYAPP = {
 		// Manage media (features)
 		//MYAPP.media = new FeatureSet();
 
-		var cmd = DH.getPageParameter('cmd', 'archive');
 
 		// Use single color when not live
+		var cmd = DH.getPageParameter('cmd', 'archive');
 		if (cmd != 'live') {
 			GTW.colors = [0, 'blue', '#5555FF', '#000000'];
 			GTW.randomColors = ['#FF00CC'];
 
-			// Hoe lang foto getoond wordt tijdens afspelen
-			//GTW.getTrackPlayer().FEATURE_DISPLAY_TIME = 4000;
-
-			// Tijd tussen 2 punten
-			//GTW.getTrackPlayer().POINT_INTERVAL_TIME = 120;
 		}
+
 
 		GTAPP.showStatus('Laden OK');
 	},
@@ -75,6 +71,13 @@ var MYAPP = {
 		// Position mainmenu (solves IE menu positioning problem)
 		if (DH.isIE == true) {
 			DH.setObjectXY('mainmenu', DH.getObjectX('mainmenuanchor'), DH.getObjectY('mainmenuanchor'));
+		}
+		var cmd = DH.getPageParameter('cmd', 'archive');
+		if (cmd == 'archive') {
+			var tracerName = DH.getPageParameter('user', null);
+			if (tracerName == null) {
+				GTAPP.mShowMediaInBbox(1);
+			}
 		}
 	},
 

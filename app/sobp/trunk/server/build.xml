@@ -99,10 +99,21 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 			<fileset dir="${gt.dir}/server/webapp/gt/lib">
 			</fileset>
 		</copy>
+		<copy todir="${deploy.local.dir}/${war.name}/srv">
+			<fileset dir="${gt.dir}/server/webapp/gt/srv">
+			</fileset>
+		</copy>
 		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 	</target>
 
+
+	<target name="copy-live">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="keyworx@test.waag.org:sense"/>
+		</exec>
+	</target>
 
 </project>

@@ -22,6 +22,11 @@ function MyMedium(id, name, desc, type, mime, time, lon, lat) {
 		}
 		return this.bgColor;
 	}
+
+	this._displayDescr = function() {
+		DH.setHTML('featuredesc', this.desc);
+		GMAP.resize();
+	}
 }
 
 
