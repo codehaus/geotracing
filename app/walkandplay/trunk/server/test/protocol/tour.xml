@@ -1,0 +1,67 @@
+<testset id="profile" clients="1">
+
+    <test id="login-selapp">
+
+        <send id="client1">
+            <login-req name="wp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+            <select-app-req appname="wp" rolename="user"/>
+        </send>
+
+        <expect id="client1">
+
+            <login-rsp>
+                <!--<portalid>${portalid}</portalid>-->
+            </login-rsp>
+
+            <select-app-rsp>
+                <!--<applicationid>${applicationid}</applicationid>-->
+            </select-app-rsp>
+
+        </expect>
+    </test>
+
+    <!--<field name="name" type="STRING" size="64" required="true"/>
+    <field name="description" type="TEXT" required="true" />
+    <field name="invitation" type="TEXT" required="false" />
+    <field name="startdate" type="TIMESTAMP"/>
+    <field name="enddate" type="TIMESTAMP"/>
+    -->
+    <test id="tour-create-req">
+        <send id="client1">
+            <utopia-req>
+                <tour-create-req>
+                    <tour>
+                        <name>MyFirstTour</name>
+                        <description>Echt een hele mooie tour</description>
+                        <invitation>Komt allen</invitation>
+                        <startdate>5000111222</startdate>
+                        <enddate>5000111223</enddate>
+                    </tour>
+                </tour-create-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-create-rsp id="${tourid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="tour-delete-req">
+        <send id="client1">
+            <utopia-req>
+                <tour-delete-req id="${tourid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-delete-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+
+</testset>
+
