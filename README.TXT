@@ -18,7 +18,7 @@ app             - geotracing applications
   otter
     .
     .
-etc, i.e. each application has its own trunk/tags/branches subdirs
+etc, i.e. each application has its own trunk/tags/branches subdirs.
 
 BUILDING
 to build apps you have to build the base first
