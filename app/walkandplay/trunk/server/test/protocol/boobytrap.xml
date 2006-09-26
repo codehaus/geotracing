@@ -1,0 +1,420 @@
+<testset id="boobytrap" clients="2">
+
+	<test id="reset-team-blue">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-green"/>
+			</join-amulet-req>
+			<amulet id="mobgame">
+				<team-reset-req teamname="blue"/>
+			</amulet>
+			<leave-amulet-req id="mobgame"/>
+			<exit-space-req/>
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="blue"/>
+			</amulet>
+			<leave-amulet-rsp id="mobgame"/>
+			<exit-space-rsp/>
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="reset-team-green">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-blue"/>
+			</join-amulet-req>
+			<amulet id="mobgame">
+				<team-reset-req teamname="green"/>
+			</amulet>
+			<leave-amulet-req id="mobgame"/>
+			<exit-space-req/>
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="green"/>
+			</amulet>
+			<leave-amulet-rsp id="mobgame"/>
+			<exit-space-rsp/>
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="join-team-blue">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="gamephone" name="+31613362231"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+		</expect>
+
+	</test>
+
+	<test id="team-set-score">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-set-req teamname="blue" select="score">
+					<score points="10" boobytraps="1" cloaks="0"/>
+				</team-set-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-set-rsp teamname="blue" select="score"/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="team-action-status-ind">
+		<send id="client1">
+			<amulet id="mobgame">
+				<!-- Zone2 BT location -->
+				<gps-data-ind id="56" rx="1684" ry="1003"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="zone2" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+
+	</test>
+
+
+	<test id="boobytrap-place-ok">
+		<send id="client1">
+			<amulet id="mobgame">
+				<boobytrap-place-req/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<boobytrap-place-rsp>
+					<boobytrap id="" state="placed" owner="blue" victim="none">
+						<location/>
+					</boobytrap>
+				</boobytrap-place-rsp>
+			</amulet>
+		</expect>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<boobytrap-place-ind>
+					<boobytrap id="" state="placed" owner="blue" victim="none">
+						<location/>
+					</boobytrap>
+				</boobytrap-place-ind>
+			</amulet>
+		</expect>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="0" cloaks=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="team-get-boobytraps">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-get-req teamname="blue" select="boobytraps"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-get-rsp>
+					<team teamname="blue">
+						<boobytraps>
+							<boobytrap id="" state="placed" owner="blue" victim="none">
+								<location/>
+							</boobytrap>
+						</boobytraps>
+					</team>
+				</team-get-rsp>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="boobytrap-not-hit-own">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-data-ind rx="1686" ry="1005"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="move-out-to-avoid-confront">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-data-ind id="142" rx="860" ry="850"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="zone2" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="join-team-green">
+
+		<send id="client2">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="gamephone" name="hq-green"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client2">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+		</expect>
+
+		<expect id="client2">
+			<join-amulet-rsp/>
+		</expect>
+
+		<expect id="client1">
+			<enter-space-ind/>
+			<join-amulet-ind/>
+		</expect>
+
+		<send id="client2">
+			<amulet id="mobgame">
+				<team-set-req teamname="green" select="score">
+					<score points="10" boobytraps="1" cloaks="0"/>
+				</team-set-req>
+			</amulet>
+		</send>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-set-rsp teamname="green" select="score"/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="boobytrap-hit">
+		<send id="client2">
+			<amulet id="mobgame">
+				<!-- NEar BT -->
+				<gps-data-ind rx="1686" ry="1005"/>
+			</amulet>
+		</send>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="green">
+						<location lat="" lon="" zonename="zone2" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-action-ind action="boobytrapped" id=""/>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="boobytrapped">
+					<team teamname="green">
+						<actions>
+							<action type="boobytrap"/>
+						</actions>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="green">
+						<score/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="green">
+						<location lat="" lon="" zonename="zone2" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="boobytrapped">
+					<team teamname="green">
+						<actions>
+							<action type="boobytrap"/>
+						</actions>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="green">
+						<score/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+	<test id="boobytrap-resolve">
+		<send id="client2">
+			<amulet id="mobgame">
+				<!-- Resolve location for BT -->
+				<gps-data-ind rx="1960" ry="1334"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="green">
+						<location lat="" lon="" zonename="zone2" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="boobytrapdone">
+					<team teamname="green">
+						<actions/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="green">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="boobytrapdone">
+					<team teamname="green">
+						<actions/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="exit-client2">
+
+		<send id="client2">
+			<exit-space-req/>
+		</send>
+		<expect id="client1">
+			<leave-amulet-ind/>
+		</expect>
+
+		<expect id="client2">
+			<exit-space-rsp/>
+		</expect>
+
+		<expect id="client1">
+			<exit-space-ind/>
+		</expect>
+
+	</test>
+
+
+	<test id="exit-client1">
+		<send id="client1">
+			<exit-space-req/>
+		</send>
+
+		<expect id="client1">
+			<exit-space-rsp/>
+		</expect>
+
+	</test>
+
+	<test id="logout-client1">
+
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="logout-client2">
+		<send id="client2">
+			<logout-req/>
+		</send>
+
+		<expect id="client2">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+

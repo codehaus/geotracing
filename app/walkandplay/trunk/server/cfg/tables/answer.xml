@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--
+Answer table definition
+$Id: answer.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="type"/>
+			<field name="content"/>
+		</insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="type"/>
+		</list>
+
+		<query>
+			<field name="id"/>
+			<field name="owner"/>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="type"/>
+			<field name="content"/>
+			<field name="creationdate"/>
+			<field name="modificationdate"/>
+			<field name="extra"/>
+		</query>
+	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<field name="owner" type="STRING" size="12" required="true" default="unknown"/>
+
+		<!-- Assignment name: zone1-bewijs, zone3-poorter1 (copy from assignment) -->
+		<field name="name" type="STRING" size="64" required="true"/>
+
+		<!-- Team name: team1, team2 etc (generated) -->
+		<field name="team" type="STRING" size="32" required="true"/>
+
+		<!-- Meta: what it is about (copy from assignment). -->
+		<field name="description" type="TEXT" required="false"/>
+
+		<!-- Type: values are "bewijs" or "poorter" (copy from assignment) -->
+		<field name="type" type="STRING" size="32" required="false"/>
+
+		<!-- Content: textual answer -->
+		<field name="content" type="XML" required="true"/>
+
+		<!-- Standard fields -->
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML"/>
+	</data>
+	<!--}data -->
+</table>

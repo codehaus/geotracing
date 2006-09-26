@@ -1,0 +1,62 @@
+<portal name="walkandplay">
+
+	<config>
+		<!-- Oase context file. Context id becomes portal name -->
+		<context file="oase-context.xml"/>
+	</config>
+
+
+	<!-- Connectors -->
+	<connectors>
+		<!-- Mainly needed for TracerDaemon and LocEmailUploadDaemon -->
+		<connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+			<property name="port">4050</property>
+			<property name="pongTimeoutMillis">30000</property>
+		</connector>
+	</connectors>
+
+
+	<!-- Application context -->
+	<application name="wp" organisation="Waag Society">
+
+        <data>
+            
+        </data>
+
+        <!-- Utopia handlers -->
+		<handlers>
+			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+				<property name="max-file-size">1000000</property>
+			</handler>
+
+			<handler id="t" class="org.geotracing.server.TracingHandler"/>
+			<handler id="query" class="org.geotracing.server.QueryHandler"/>
+			<handler id="profile" class="org.walkandplay.server.control.ProfileHandler"/>
+			<handler id="version" class="org.walkandplay.server.control.VersionHandler"/>
+            <!-- plugin hanlders -->
+            <handler id="license" class="org.keyworx.plugin.metadata.control.LicenseHandler" />
+        </handlers>
+
+        <amulets>
+			<amulet id="wp-amulet" class="org.walkandplay.server.engine.GameAmulet"/>
+		</amulets>
+
+		<spaces>
+			<space id="wp-space" access="public"/>
+		</spaces>
+        
+        <daemons>
+			<daemon id="emailupload" class="org.geotracing.server.LocEmailUploadDaemon">
+				<property name="intervalMillis">25000</property>
+
+				<!-- Note these values are context-dependent and specified externally. -->
+				<property name="host">email.upload.host</property>
+
+				<!-- Production-server context -->
+				<property name="email" host="pundit">email.upload.email.pundit</property>
+				<property name="user" host="pundit">email.upload.user.pundit</property>
+				<property name="password" host="pundit">email.upload.password.pundit</property>
+			</daemon>
+		</daemons>
+	</application>
+</portal>

@@ -1,0 +1,38 @@
+<testset id="medium" clients="1">
+
+	<test id="login-select-app-enter-join">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-green"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+		</expect>
+	</test>
+
+
+	<test id="medium-delete">
+		<send id="client1">
+			<amulet id="mobgame">
+				<medium-delete-req id="4008"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<medium-delete-rsp id="4008"/>
+			</amulet>
+		</expect>
+	</test>
+
+
+</testset>
+

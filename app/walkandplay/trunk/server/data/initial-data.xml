@@ -1,0 +1,78 @@
+<db context="walkandplay">
+    <table name="game">
+        <record table="game">
+            <owner>unknown</owner>
+            <name>amsterdam</name>
+            <description>the amsterdam game</description>
+            <state>active</state>
+        </record>
+    </table>
+    <table name="team">
+        <record table="team">
+            <owner>unknown</owner>
+            <name>blue</name>
+            <state>enabled</state>
+            <location></location>
+            <score></score>
+            <actions></actions>
+            <zones></zones>
+            <results></results>
+            <extra/>
+        </record>
+        <record table="team">
+            <owner>unknown</owner>
+            <name>red</name>
+            <state>enabled</state>
+            <location></location>
+            <score></score>
+            <actions></actions>
+            <zones></zones>
+            <results></results>
+            <extra/>
+        </record>
+    </table>
+    <table name="player">
+        <record table="player">
+            <owner>unknown</owner>
+            <name>hq-blue</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player">
+            <owner>unknown</owner>
+            <name>+31613362231</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player">
+            <owner>unknown</owner>
+            <name>volvenster25@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player">
+            <owner>unknown</owner>
+            <name>hq-red</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player">
+            <owner>unknown</owner>
+            <name>+31613362418</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player">
+            <owner>unknown</owner>
+            <name>stenentempo4@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>        
+    </table>    
+</db>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--
+Assignment table definition
+$Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="type"/>
+			<field name="location"/>
+			<field name="info"/>
+			<field name="content"/>
+			<field name="answer"/>
+		</insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="type"/>
+		</list>
+
+		<query>
+			<field name="id"/>
+			<field name="owner"/>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="type"/>
+			<field name="location"/>
+			<field name="info"/>
+			<field name="content"/>
+			<field name="answer"/>
+			<field name="extra"/>
+		</query>
+	</views>
+	<!--{data -->
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<field name="owner" type="STRING" size="12" required="true" default="unknown"/>
+
+		<!-- Unique name: zone1-bewijs, zone3-1 -->
+		<field name="name" type="STRING" size="64" required="true"/>
+
+		<!-- Meta: what it is about. -->
+		<field name="description" type="TEXT" required="false"/>
+
+		<!-- Type: values are "bewijs" or "poorter" -->
+		<field name="type" type="STRING" size="32" required="false"/>
+
+		<!-- Location: where it resides -->
+		<field name="location" type="XML" required="true"/>
+
+		<!-- Info: includes points and number of required media -->
+		<field name="info" type="XML" required="false"/>
+
+		<!-- Content: includes question, answer, formats etc -->
+		<field name="content" type="XML" required="true"/>
+
+		<!-- Answer string e.g. "malle jan" -->
+		<field name="answer" type="STRING" size="64" required="false"/>
+
+		<!-- Standard fields -->
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML"/>
+	</data>
+	<!--}data -->
+</table>

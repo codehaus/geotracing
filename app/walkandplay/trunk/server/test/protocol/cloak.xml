@@ -1,0 +1,196 @@
+<testset id="cloak" clients="2">
+
+	<test id="reset-team-blue">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-green"/>
+			</join-amulet-req>
+			<amulet id="mobgame">
+				<team-reset-req teamname="blue"/>
+			</amulet>
+			<leave-amulet-req id="mobgame"/>
+			<exit-space-req/>
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="blue"/>
+			</amulet>
+			<leave-amulet-rsp id="mobgame"/>
+			<exit-space-rsp/>
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="reset-team-green">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-blue"/>
+			</join-amulet-req>
+			<amulet id="mobgame">
+				<team-reset-req teamname="green"/>
+			</amulet>
+			<leave-amulet-req id="mobgame"/>
+			<exit-space-req/>
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="green"/>
+			</amulet>
+			<leave-amulet-rsp id="mobgame"/>
+			<exit-space-rsp/>
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="join-team-blue">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="gamephone" name="+31613362231"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+		</expect>
+
+	</test>
+
+	<test id="team-cloak-req-no-score">
+		<send id="client1">
+			<amulet id="mobgame">
+				<cloak-req/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<cloak-nrsp/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="team-set-score">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-set-req teamname="blue" select="score">
+					<score points="10" boobytraps="1" cloaks="1"/>
+				</team-set-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-set-rsp teamname="blue" select="score"/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="team-cloak-req-ok">
+		<send id="client1">
+			<amulet id="mobgame">
+				<cloak-req/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<cloak-rsp/>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="cloaked">
+					<team teamname="blue" cloaked="true"/>
+				</team-status-ind>
+			</amulet>
+		</expect>
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="10" boobytraps="1" cloaks="0"/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="team-cloak-req-already-cloaked">
+		<send id="client1">
+			<amulet id="mobgame">
+				<cloak-req/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<cloak-nrsp/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="team-cloak-req-no-score2">
+		<send id="client1">
+			<amulet id="mobgame">
+				<cloak-req/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<cloak-nrsp/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="exit-client1">
+		<send id="client1">
+			<exit-space-req/>
+		</send>
+
+		<expect id="client1">
+			<exit-space-rsp/>
+		</expect>
+
+	</test>
+
+	<test id="logout-client1">
+
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+
+</testset>
+

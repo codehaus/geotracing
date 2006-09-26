@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Game table definition -->
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+            <field name="description" />
+            <field name="extra" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="name" />
+            <field name="state" />
+            <field name="startdate" />
+            <field name="enddate" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+            <field name="description" />
+            <field name="state" />
+            <field name="startdate" />
+            <field name="enddate" />
+            <field name="extra" />
+		</query>
+ 	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="owner" type="STRING" size="12" required="true" default="unknown" />
+
+		<!-- Game name -->
+		<field name="name" type="STRING" size="64" required="true" default="mobgame" />
+		<field name="description" type="TEXT" required="false" />
+
+		<!-- Game state values: null,active,paused,ended -->
+        <field name="state" type="STRING" size="12" required="true" default="null"/>
+
+		<!-- Start and end/date of game -->
+		<field name="startdate" type="TIMESTAMP"/>
+        <field name="enddate" type="TIMESTAMP"/>
+
+		<field name="extra" type="XML" />
+	</data>
+	<!--}data -->
+</table>

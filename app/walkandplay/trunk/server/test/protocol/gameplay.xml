@@ -1,0 +1,757 @@
+<testset id="gameplay" clients="2">
+
+	<test id="reset-team-blue">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-green"/>
+			</join-amulet-req>
+			<amulet id="mobgame">
+				<team-reset-req teamname="blue"/>
+			</amulet>
+			<leave-amulet-req id="mobgame"/>
+			<exit-space-req/>
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="blue"/>
+			</amulet>
+			<leave-amulet-rsp id="mobgame"/>
+			<exit-space-rsp/>
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="reset-team-green">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="hq" name="hq-blue"/>
+			</join-amulet-req>
+			<amulet id="mobgame">
+				<team-reset-req teamname="green"/>
+			</amulet>
+			<leave-amulet-req id="mobgame"/>
+			<exit-space-req/>
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="green"/>
+			</amulet>
+			<leave-amulet-rsp id="mobgame"/>
+			<exit-space-rsp/>
+			<logout-rsp/>
+		</expect>
+	</test>
+
+
+	<test id="join-team-blue">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="gamephone" name="+31613362231"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+		</expect>
+
+	</test>
+
+	<test id="join-team-green">
+
+		<send id="client2">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="gamephone" name="hq-green"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client2">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+		</expect>
+
+		<expect id="client1">
+			<enter-space-ind/>
+			<join-amulet-ind/>
+		</expect>
+	</test>
+
+	<test id="medium-send">
+		<send id="client1">
+			<amulet id="mobgame">
+				<medium-send-req id="4408" to="gamephone"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<medium-send-rsp id="4408" to="gamephone"/>
+			</amulet>
+			<amulet id="mobgame">
+				<medium-send-ind id="4408" from="gamephone"/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="medium-send-fail">
+		<send id="client1">
+			<amulet id="mobgame">
+				<medium-send-req id="4408" to="hq"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<medium-send-nrsp error=""/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="gps-status-ind">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-status-ind gps="up"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="gps">
+					<team teamname="blue" gps="up"/>
+				</team-status-ind>
+			</amulet>
+		</expect>
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="gps">
+					<team teamname="blue" gps="up"/>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="zone-enter">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-data-ind data="$GPRMC,095817.453,A,5222.3561,N,00454.0298,E,0.13,44.25,030804,,*39"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-action-ind action="zoneenter" id="zone1"/>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="zone1" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+    <test id="zone1-select-ok">
+		<send id="client1">
+			<amulet id="mobgame">
+				<zone-select-req zonename="zone1"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<zone-select-rsp zonename="zone1"/>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="zone" state="keytodo">
+					<team teamname="blue" zonename="zone1"/>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="zone1-get">
+		<send id="client1">
+			<amulet id="mobgame">
+				<zone-get-req zonename="zone1"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<zone-get-rsp>
+					<zone zonename="zone1" description="">
+
+						<teaser/>
+
+					</zone>
+				</zone-get-rsp>
+			</amulet>
+		</expect>
+	</test>
+
+
+	<test id="reach-key-assignment">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-data-ind rx="2544" ry="1997"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-action-ind action="doassignment" id="166"/>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+
+	<test id="key-assignment-get">
+		<send id="client1">
+			<amulet id="mobgame">
+				<assignment-get-req id="166"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<assignment-get-rsp>
+					<assignment id="166" name="" type="">
+						<info points="" reqimages="" reqvideos=""/>
+						<content></content>
+						<location></location>
+					</assignment>
+				</assignment-get-rsp>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="medium-upload">
+		<send id="client1">
+			<amulet id="mobgame">
+				<medium-upload-req
+					url="http://www.bmz.amsterdam.nl/adam/pics/groot/agnieten/agnieten.gif"
+					type="image"
+					name="aname"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<medium-upload-rsp url=""/>
+			</amulet>
+			<amulet id="mobgame">
+				<medium-upload-ind from="" id="" name="aname" description="" type="image"/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="medium-raw-upload">
+		<send id="client1">
+			<amulet id="mobgame">
+				<medium-raw-upload-req
+					type="image"
+					mimetype="image/jpeg"
+					name="raw upload">
+					<data encoding="hexasc">
+						<![CDATA[ffd8ffe000104a46494600010200006400640000ffec00114475636b79000100040000001e0000ffee000e41646f62650064c000000001ffdb008400100b0b0b0c0b100c0c10170f0d0f171b141010141b1f17171717171f1e171a1a1a1a171e1e23252725231e2f2f33332f2f40404040404040404040404040404001110f0f1113111512121514111411141a141616141a261a1a1c1a1a2630231e1e1e1e23302b2e2727272e2b35353030353540403f404040404040404040404040ffc00011080010001003012200021101031101ffc4006000000301000000000000000000000000000102030401010000000000000000000000000000000010000103030301090000000000000000000201030411210531120600f0415171d1e1223213110100000000000000000000000000000000ffda000c03010002110311003f008f11e308c57239269894c3cc01b0c9a2388bfa0a39f531b1269ed7eb064a360b33026643171cb1f26150cdad5975b2ee4444f89a517b2d44f1ecebaf4b6424ca08d1d8605a36dc3d8d92343f9b641bedbf4adfd11b39c9e3824b8109a0751d426d64092517726d324d962aa697f3f0e83fffd9]]>
+					</data>
+
+				</medium-raw-upload-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<medium-raw-upload-rsp/>
+			</amulet>
+			<amulet id="mobgame">
+				<medium-upload-ind from="" id="" name="" description="" type="image"/>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="text-raw-upload">
+		<send id="client1">
+			<amulet id="mobgame">
+				<medium-raw-upload-req
+					type="text"
+					mimetype="text/plain"
+					name="text upload">
+					<data encoding="raw">
+<![CDATA[!abcdefghijklmnopqrstuvwxyz!]]>
+					</data>
+
+				</medium-raw-upload-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<medium-raw-upload-rsp/>
+			</amulet>
+			<amulet id="mobgame">
+				<medium-upload-ind from="" id="" name="" description="" type="text"/>
+			</amulet>
+		</expect>
+		<expect id="client1">
+		</expect>
+	</test>
+
+	<test id="media-get">
+		<send id="client1">
+			<amulet id="mobgame">
+				<media-get-req/>
+
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-get-rsp>
+					<medium id="" type="" owner=""/>
+					<medium id="" type="" owner=""/>
+					<medium id="" type="" owner=""/>
+				</media-get-rsp>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="media-link-extra-before">
+		<send id="client1">
+			<amulet id="mobgame">
+				<media-link-req assignmentid="166">
+					<medium id="4843" type="video" extra="true"/>
+				</media-link-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-rsp assignmentid="166"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="media-link-key-assignment">
+		<send id="client1">
+			<amulet id="mobgame">
+				<media-link-req assignmentid="166">
+					<medium id="1754" type="image"/>
+					<medium id="4843" type="video"/>
+					<medium id="4845" type="video"/>
+					<medium id="7592" type="video" extra="true"/>
+				</media-link-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-rsp assignmentid="166"/>
+			</amulet>
+		</expect>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-ind assignmentid="166"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="answer-submit-notok">
+		<send id="client1">
+			<amulet id="mobgame">
+				<answer-submit-req assignmentid="166" text="bad answer"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<answer-submit-rsp assignmentid="166" text="bad answer" correct="false"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+
+	<test id="answer-submit-notok-subset">
+		<send id="client1">
+			<amulet id="mobgame">
+				<answer-submit-req assignmentid="166" text="aap"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<answer-submit-rsp assignmentid="166" text="aap" correct="false"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="answer-submit-ok">
+		<send id="client1">
+			<amulet id="mobgame">
+				<answer-submit-req assignmentid="166" text="malle jaap"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<answer-submit-rsp assignmentid="166" text="malle jaap" correct="true"/>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="" cloaks=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+			<team-status-ind event="zone" state="twotodo">
+				<team teamname="blue" zonename="zone1"/>
+			</team-status-ind>
+		</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="" cloaks="" zones="0"/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+
+	</test>
+
+	<test id="answer-get">
+		<send id="client1">
+			<amulet id="mobgame">
+				<answer-get-req assignmentid="166"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<answer-get-rsp assignmentid="166">
+				</answer-get-rsp>
+			</amulet>
+		</expect>
+
+
+	</test>
+
+	<test id="media-link-extra-after">
+		<send id="client1">
+			<amulet id="mobgame">
+				<media-link-req assignmentid="166">
+					<medium id="1754" type="video" extra="true"/>
+				</media-link-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-rsp assignmentid="166"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="reach-poorter1-assignment">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-data-ind id="122" rx="1868" ry="1843"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-action-ind action="doassignment" id="169"/>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="media-link-poorter1-assignment">
+		<send id="client1">
+			<amulet id="mobgame">
+				<media-link-req assignmentid="169">
+					<medium id="1747" type="image"/>
+					<medium id="1748" type="image"/>
+				</media-link-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-rsp assignmentid="169"/>
+			</amulet>
+		</expect>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-ind assignmentid="169"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="answer-submit-ok-poorter1">
+		<send id="client1">
+			<amulet id="mobgame">
+				<answer-submit-req assignmentid="169" text="zes"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<answer-submit-rsp assignmentid="169" text="zes" correct="true"/>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="" cloaks="" zones="1"/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="zone" state="onetodo">
+					<team teamname="blue" zonename="zone1"/>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="" cloaks=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="reach-poorter2-assignment">
+		<send id="client1">
+			<amulet id="mobgame">
+				<gps-data-ind id="58" rx="2142" ry="1045"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-action-ind action="doassignment" id="171"/>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="location">
+					<team teamname="blue">
+						<location lat="" lon="" zonename="" rx="" ry="" mx="" my=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="media-link-poorter2-assignment">
+		<send id="client1">
+			<amulet id="mobgame">
+				<media-link-req assignmentid="171">
+					<medium id="1748" type="image"/>
+					<medium id="4845" type="video"/>
+				</media-link-req>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-rsp assignmentid="171"/>
+			</amulet>
+		</expect>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<media-link-ind assignmentid="171"/>
+			</amulet>
+		</expect>
+
+	</test>
+
+	<test id="answer-submit-ok-poorter2">
+		<send id="client1">
+			<amulet id="mobgame">
+				<answer-submit-req assignmentid="171" text="scheepstakel"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<answer-submit-rsp assignmentid="171" text="scheepstakel" correct="true"/>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="" cloaks="" zones="1"/>
+					</team>
+				</team-status-ind>
+			</amulet>
+			<amulet id="mobgame">
+				<team-status-ind event="zone" state="done">
+					<team teamname="blue" zonename="zone1"/>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+		<expect id="client2">
+			<amulet id="mobgame">
+				<team-status-ind event="score">
+					<team teamname="blue">
+						<score points="" boobytraps="" cloaks=""/>
+					</team>
+				</team-status-ind>
+			</amulet>
+		</expect>
+
+	</test>
+
+
+	<test id="exit-client2">
+
+		<send id="client2">
+			<exit-space-req/>
+		</send>
+		<expect id="client2">
+			<exit-space-rsp/>
+		</expect>
+		<expect id="client1">
+			<leave-amulet-ind/>
+			<exit-space-ind/>
+		</expect>
+
+	</test>
+
+
+	<test id="exit-client1">
+		<send id="client1">
+			<exit-space-req/>
+		</send>
+
+		<expect id="client1">
+			<exit-space-rsp/>
+		</expect>
+
+	</test>
+
+	<test id="logout-client1">
+
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+	<test id="logout-client2">
+		<send id="client2">
+			<logout-req/>
+		</send>
+
+		<expect id="client2">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+

@@ -1,0 +1,86 @@
+<testset id="team" clients="1">
+
+	<test id="login-select-app-enter-join">
+		<send id="client1">
+			<login-req name="wp-guest" password="guest" portalname="walkandplay" protocolVersion="4.0"/>
+			<select-app-req appname="wp" rolename="guest"/>
+			<enter-space-req spacename="wp-space"/>
+			<join-amulet-req id="wp-amulet" protocolversion="2.0">
+				<options type="gamephone" name="+31613362231"/>
+			</join-amulet-req>
+		</send>
+
+		<expect id="client1">
+			<login-rsp/>
+			<select-app-rsp/>
+			<enter-space-rsp/>
+			<join-amulet-rsp/>
+		</expect>
+	</test>
+
+
+	<test id="team-get-all">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-get-req teamname="blue"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-get-rsp>
+					<team teamname="blue" />
+				</team-get-rsp>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="team-get-attr">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-get-req teamname="blue" select="state"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-get-rsp>
+					<team teamname="blue" state=""/>
+				</team-get-rsp>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="team-get-child">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-get-req teamname="blue" select="location"/>
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-get-rsp>
+					<team teamname="blue">
+						<location/>
+					</team>
+				</team-get-rsp>
+			</amulet>
+		</expect>
+	</test>
+
+	<test id="team-reset">
+		<send id="client1">
+			<amulet id="mobgame">
+				<team-reset-req teamname="green" />
+			</amulet>
+		</send>
+
+		<expect id="client1">
+			<amulet id="mobgame">
+				<team-reset-rsp teamname="green" />
+			</amulet>
+		</expect>
+	</test>
+</testset>
+

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Player table definition -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="invitation"/>
+			<field name="startdate"/>
+			<field name="enddate"/>
+		</insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="invitation"/>
+			<field name="startdate"/>
+			<field name="enddate"/>
+		</list>
+
+		<query>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="invitation"/>
+			<field name="startdate"/>
+			<field name="enddate"/>
+		</query>
+	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<field name="owner" type="STRING" size="12" required="true" default="unknown"/>
+		<field name="name" type="STRING" size="64" required="true"/>
+        <field name="description" type="TEXT" required="true" />
+        <field name="invitation" type="TEXT" required="false" />
+		<field name="startdate" type="TIMESTAMP"/>
+		<field name="enddate" type="TIMESTAMP"/>
+        <field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+        <field name="extra" type="XML" />
+	</data>
+	<!--}data -->
+
+</table>

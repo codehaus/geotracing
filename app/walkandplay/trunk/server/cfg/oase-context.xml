@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Defines context, only tables for now.   -->
+<context id="">
+	<tables>
+        
+        <!-- keyworx utopia tables -->
+        <table file="tables/utopia_portal.xml"/>
+		<table file="tables/utopia_application.xml"/>
+		<table file="tables/utopia_account.xml"/>
+		<table file="tables/utopia_group.xml"/>
+		<table file="tables/utopia_organisation.xml"/>
+		<table file="tables/utopia_person.xml"/>
+		<table file="tables/utopia_right.xml"/>
+		<table file="tables/utopia_role.xml"/>
+
+		<table file="tables/utopia_item.xml"/>
+
+        <!-- geotracing tables -->
+        <table file="tables/g_track.xml"/>
+		<table file="tables/g_poi.xml"/>
+		<table file="tables/g_location.xml"/>
+		<table file="tables/g_area.xml"/>
+
+        <!-- application tables -->
+        <table file="tables/answer.xml"/>
+        <table file="tables/assignment.xml"/>
+        <table file="tables/game.xml"/>
+        <table file="tables/player.xml"/>
+        <table file="tables/team.xml"/>
+        <table file="tables/version.xml"/>
+
+        <!-- plugin tables -->
+        <table file="tables/cc_agent.xml"/>
+        <table file="tables/cc_license.xml"/>
+        <table file="tables/cc_tag.xml"/>
+        <table file="tables/cc_tagrelation.xml"/>
+        
+    </tables>
+</context>
+
+
