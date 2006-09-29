@@ -130,6 +130,11 @@ var SRV = {
 			return records;
 		}
 
+		if (!xml.documentElement) {
+			alert('sorry problem with XML records, working on this, please try again');
+			return records;
+		}
+
 		// Convert xml doc to array of Record objects
 		var recordElements = xml.documentElement.getElementsByTagName('record');
 		for (i = 0; i < recordElements.length; i++) {

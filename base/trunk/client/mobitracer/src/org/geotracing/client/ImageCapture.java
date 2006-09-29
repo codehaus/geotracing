@@ -98,7 +98,7 @@ public class ImageCapture extends Form implements CommandListener {
 
 			// BlogClient.photoPreview = BlogClient.photoData;
 			// BlogClient.photoMime = "png";
-
+ // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
 			status.setText("WAIT, taking photo...");
 
 			photoData = video.getSnapshot(

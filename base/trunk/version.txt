@@ -2,6 +2,7 @@ $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
 1.1.1 - to be released
 - more comments in code
+- fixed email upload special chars encoding
 
 1.1.0 28.aug.2006
 - automatic download of external packages during Ant build

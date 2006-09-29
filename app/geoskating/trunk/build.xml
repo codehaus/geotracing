@@ -85,12 +85,12 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		<delete dir="${build.dir}"/>
 	</target>
 
-	<target name="deploy-test">
-		<copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+	<target name="deploy-local">
+		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-test-raw">
-		<copy todir="${deploy.test.dir}/${war.name}" overwrite="true">
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 	</target>

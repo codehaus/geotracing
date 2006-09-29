@@ -4,7 +4,7 @@ ANT Build file for Bliin.
 
 $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 -->
-<project name="Bliin" default="build" basedir=".">
+<project name="bliin" default="build" basedir=".">
 
 	<!-- Initialization of properties (dirs, files) -->
 	<!-- Project global properties; overrule by modifying build.properties -->
@@ -90,12 +90,12 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		<delete dir="${build.dir}"/>
 	</target>
 
-	<target name="deploy-sumatra">
-		<copy file="${project.war}" todir="${deploy.sumatra.dir}" overwrite="true"/>
+	<target name="deploy-local">
+		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-sumatra-raw">
-		<copy todir="${deploy.sumatra.dir}/${war.name}" overwrite="true">
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 	</target>

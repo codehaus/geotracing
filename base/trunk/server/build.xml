@@ -4,7 +4,7 @@ ANT Build file for GeoTracing server stuff.
 
 $Id$
 -->
-<project name="server" default="build" basedir=".">
+<project name="gt-server" default="build" basedir=".">
 
 	<!-- Initialization of properties (dirs, files) -->
 
@@ -292,6 +292,13 @@ $Id$
 			<fileset dir="${home.webapp.dir}/site"/>
 		</copy>
 	</target>
+
+	<target name="sync-site-local">
+		<copy todir="${deploy.local.dir}/site" overwrite="true">
+			<fileset dir="${home.webapp.dir}/site"/>
+		</copy>
+	</target>
+
 
 	<target name="deploy-local">
 		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>

@@ -99,13 +99,9 @@
     private void doCommand(String command, HttpServletRequest request, HttpServletResponse response, HttpSession session, Model model) {
         try {
             model.setResultMsg("");
-            if ((command.indexOf("nav-login") != -1)) {
-                model.set(ATTR_CONTENT_URL, "inc-login.html");
-                model.setState(MODEL_STATE_READY);
-                command = "nav-login";
-            } else if ((command.indexOf("delete") != -1 || command.indexOf("edit") != -1 || command.indexOf("update") != -1) && !model.isLoggedIn())
+			if ((command.indexOf("delete") != -1 || command.indexOf("edit") != -1 || command.indexOf("update") != -1) && !model.isLoggedIn())
             {
-                command = "nav-init";
+                command = "nav-login";
             }
 
             model.set(ATTR_PAGE_URL, "edit.jsp");
@@ -278,11 +274,12 @@
             } else if ("nav-home".equals(command)) {
                 model.set(ATTR_CONTENT_URL, "inc-home.html");
             } else if ("nav-login".equals(command)) {
-                if (model.isLoggedIn()) {
-                    model.set(ATTR_CONTENT_URL, "inc-edit-tracks.jsp");
+				model.reset();
+				model.set(ATTR_CONTENT_URL, "inc-login.html");
+                 if (model.isLoggedIn()) {
+                   //  model.set(ATTR_CONTENT_URL, "inc-edit-tracks.jsp");
                 } else {
-                    model.set(ATTR_CONTENT_URL, "inc-login.html");
-                }
+               }
             } else if ("nav-colofon".equals(command)) {
                 model.set(ATTR_CONTENT_URL, "inc-colofon.html");
             } else if ("nav-contact".equals(command)) {
@@ -362,7 +359,7 @@
     }
 
     doCommand(command, request, response, session, model);
-    Log.info("control.jsp: command=" + command + " result=" + model.getResultMsg());
+    Log.info("control.jsp[sobp]: command=" + command + " result=" + model.getResultMsg() + " user=" + model.getString(ATTR_USER_NAME));
 
     // Client side redirect
     response.sendRedirect(model.getString(ATTR_PAGE_URL));
