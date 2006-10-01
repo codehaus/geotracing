@@ -16,7 +16,7 @@ import javax.microedition.midlet.MIDlet;
 public class MapScreen extends Form implements CommandListener {
 
 	private String tileURL;
-	private int zoom = 9;
+	private int zoom = 12;
 	private String activeTile;
 	private Command zoomIn;
 	private Command zoomOut;
@@ -41,7 +41,7 @@ public class MapScreen extends Form implements CommandListener {
 		addCommand(toggleMapType);
 		addCommand(back);
 		setCommandListener(this);
-		tileURL = midlet.getAppProperty("kw-url") + "/tile.jsp?";
+		tileURL = midlet.getAppProperty("kw-url") + "/map/gmap.jsp?";
 
 	}
 
@@ -55,6 +55,8 @@ public class MapScreen extends Form implements CommandListener {
 	}
 
 	public void show() {
+		// for testing
+		// activeTile = tileURL + "lon=4.8529517&lat=52.3121467";
 		if (activeTile == null) {
 			append("No location yet...");
 			return;
@@ -82,10 +84,10 @@ public class MapScreen extends Form implements CommandListener {
 		if (c == back) {
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (c == zoomIn) {
-			zoom--;
+			zoom++;
 			show();
 		} else if (c == zoomOut) {
-			zoom++;
+			zoom--;
 			show();
 	    } else if (c == toggleMapType) {
 			mapType = mapType.equals("sat") ? "map" : "sat";

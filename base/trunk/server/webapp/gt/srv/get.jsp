@@ -499,7 +499,7 @@
 <%
 	// Main handling below
 
-	response.setContentType("text/xml");
+	response.setContentType("text/xml;charset=utf-8");
 
 	// Start performance timing
 	long t1 = Sys.now();
