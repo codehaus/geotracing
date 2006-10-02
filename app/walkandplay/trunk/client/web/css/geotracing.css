@@ -1,0 +1,233 @@
+/* CSS Document */
+
+input {
+  background: transparent;
+  border: none;
+  font-size: 90%;
+  height: 20px;
+  line-height: 30px;
+  font-size:12px;
+  text-indent:10px;
+  background:url(../img/input_bg.jpg) no-repeat;
+  }
+input.medium {
+  background: transparent;
+  border: none;
+  font-size: 90%;
+  height: 20px;
+  line-height: 30px;
+  font-size:12px;
+  text-indent:10px;
+  background:url(../img/input_bg_medium.jpg) no-repeat;
+  }  
+input.large {
+  background: transparent;
+  border: none;
+  font-size: 90%;
+  height: 20px;
+  line-height: 30px;
+  font-size:12px;
+  text-indent:10px;
+  background:url(../img/input_bg_large.jpg) no-repeat;
+  }    
+body {
+	left:0px;
+	top:0px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	background-color:#000000;
+	overflow:hidden;
+}
+#logobox,#buttonbar {
+	position:absolute;
+	left: 52px;
+	width: 300px;
+	top: 52px;
+	z-index:3;
+	text-align:right;
+}
+.clone {
+	display:none;
+}
+
+#buttonbar li,#buttonbar ul,#logobox li,#logobox ul,#tagcloud li,#tagcloud ul {
+	list-style:none;
+	display:inline;
+	padding:0px;
+	margin:0px;
+
+}
+#tag_block li,#tag_block ul {
+	list-style:none;
+	display:block;
+	padding:0px;
+	margin:0px;
+	}
+#signup_block li,#signup_block ul {
+	list-style:none;
+	padding:0px;
+	margin:0px;
+}
+
+#buttonbar {
+	top:200px;
+	z-index:3;
+}
+#map {
+	width:1600px;
+	top:0px;
+	left:0px;
+	height:1000px;
+}
+
+.c {
+	position:absolute;
+	top:20px;
+	left:20px;
+}
+
+#tagcloud {
+	position:absolute;
+	bottom:40px;
+	width:100%;
+	z-index:3;
+	height:100px;
+	font-weight:bold;
+	display:block;
+	left:40px;
+	line-height:20px;
+	overflow:hidden;
+}	
+#tagcloud ul {
+	position:relative;
+	top:10px;
+}
+#tagcloud .contentblockgrey {
+	margin-right:200px;
+}
+
+#tagcloud a {
+text-decoration:none;
+}
+ 
+a:link, a:active, a:visited {
+	color:#000000;
+}
+#tagcloud a:hover {
+	color:#FF0000;
+	}
+#tagcloud .contentblockgrey {
+	height:100px;
+}
+#signup_block {
+	position:absolute;
+	bottom:40px;
+	right:55px;
+	width: 150px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	line-height:20px;
+}
+.bbottom {
+	width:100%; 
+	height:50px;
+	display:block; 
+	background:url(../img/border.png) repeat-x;
+	position:absolute; 
+	bottom:0px;
+	z-index:2;
+}
+.btop {
+	width:100%; 
+	height:50px;
+	display:block; 
+	background:url(../img/bordertop.png) repeat-x;
+	position:absolute; 
+	top:0px;
+	z-index:2;
+}
+.bleft {
+	width:100%; 
+	height:50px;
+	display:block; 
+	background:url(../img/bordertop.png) repeat-x;
+	position:absolute; 
+	top:0px;
+	z-index:2;
+}
+.bright {
+	width:50px; 
+	height:100%;
+	display:block; 
+	background:url(../img/borderright.png) repeat-y;
+	position:absolute; 
+	top:0px;
+	right:0px;
+	z-index:2;
+}
+.bleft {
+	width:50px; 
+	height:100%;
+	display:block; 
+	background:url(../img/borderleft.png) repeat-y;
+	position:absolute; 
+	left:0px;
+	right:0px;
+	z-index:2;
+}
+
+div#nifty{ margin: 0 10%;background: #FFFFFF	;}
+.contentblock{width:auto;border-left:solid 6px #FFFFFF;border-right:solid 6px #FFFFFF;background: #EEEEEE;text-align:left;}
+.contentblockgrey{width:auto;border-left:solid 6px #EEEEEE;border-right:solid 6px #EEEEEE;background: #EEEEEE;text-align:left;}
+#tagcloud .contentblockgrey{width:auto;border-left:solid 6px #EEEEEE;border-right:solid 6px #EEEEEE;background: #EEEEEE;margin-right:300px;}
+
+b.rtop, b.rbottom{display:block;}
+b.rtop b, b.rbottom b{display:block;height: 1px;overflow: hidden; background: #FFFFFF}
+b.rtopgrey b, b.rbottomgrey b{display:block;height: 1px;overflow: hidden; background: #EEEEEE}
+
+b.r1{margin: 0 5px}
+b.r2{margin: 0 3px}
+b.r3{margin: 0 2px}
+b.rtop b.r4, b.rbottom b.r4{margin: 0 1px;height: 2px}
+
+
+#tagcloud .r1{margin-right:305px;}
+#tagcloud .r2{margin-right:303px;}
+#tagcloud .r3{margin-right:302px;}
+#tagcloud .r4{margin-right:301px;}
+
+.grey {
+	background:#EEEEEE;
+}
+
+
+#bottomanchor {
+	right:25px;
+	bottom:50px;
+	position:absolute;
+}
+.style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+a img {
+	border:0px;
+}
+a:link, a:active {
+	color:#000000;
+}
+.style2 {color: #FF0000}
+#tag_block {
+	height: auto;
+	width: 150px;
+	overflow: hidden;
+	position: absolute;
+	left: 276px;
+	bottom: 150px;
+	z-index:4;
+}#formblock {
+	width: 700px;
+	position: absolute;
+	left: 52px;
+	top: 200px;
+}

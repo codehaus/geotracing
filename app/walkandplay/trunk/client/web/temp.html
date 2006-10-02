@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
+<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+<title>GeoTracing, loading please wait....</title>
+<link rel="stylesheet" type="text/css" href="css/widget.css"/>
+<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
+<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
+<script type="text/javascript" src="js/dojo-0.3.1-ajax/dojo.js"></script>
+<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
+<!-- get Google Maps API with right key for this server/path -->
+<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAAnsKeh1eS56d4nSCvWmbcBSurnAizDIuQPYrT1jN4yvuBVLWkhT_FD84oCbtAcZNS3" type="text/javascript"></script>
+<script type="text/javascript" src="lib/DHTML.js"></script>
+<script type="text/javascript" src="lib/GTApp.js"></script>
+<style>
+input {
+  background: transparent;
+  border: none;
+  font-size: 90%;
+  height: 20px;
+  line-height: 30px;
+  width: 95px;
+  height:30px;
+  width:150px;
+  font-size:12px;
+  text-indent:10px;
+  }
+body {
+	left:0px;
+	top:0px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	overflow:hidden;
+}
+#logobox,#buttonbar {
+	position:absolute;
+	left: 52px;
+	width: 300px;
+	top: 52px;
+	z-index:3;
+	text-align:right;
+}
+.clone {
+	display:none;
+}
+
+#buttonbar li,#buttonbar ul,#logobox li,#logobox ul,#tagcloud li,#tagcloud ul {
+	list-style:none;
+	display:inline;
+	padding:0px;
+	margin:0px;
+
+}
+#tag_block li,#tag_block ul {
+	list-style:none;
+	display:block;
+	padding:0px;
+	margin:0px;
+	}
+#signup_block li,#signup_block ul {
+	list-style:none;
+	padding:0px;
+	margin:0px;
+}
+
+#buttonbar {
+	top:200px;
+	z-index:3;
+}
+#map {
+	width:100%;
+	height:500px;
+	top:0px;
+	left:0px;
+}
+
+.c {
+	position:absolute;
+	top:20px;
+	left:20px;
+}
+
+#tagcloud {
+	position:absolute;
+	bottom:40px;
+	width:100%;
+	z-index:3;
+	height:100px;
+	font-weight:bold;
+	display:block;
+	left:40px;
+	line-height:20px;
+	overflow:hidden;
+}	
+#tagcloud ul {
+	position:relative;
+	top:10px;
+}
+#tagcloud .contentblockgrey {
+	margin-right:200px;
+}
+
+#tagcloud a {
+text-decoration:none;
+}
+ 
+a:link, a:active, a:visited {
+	color:#000000;
+}
+#tagcloud a:hover {
+	color:#FF0000;
+	}
+#tagcloud .contentblockgrey {
+	height:100px;
+}
+#signup_block {
+	position:absolute;
+	bottom:40px;
+	right:55px;
+	width: 150px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	line-height:20px;
+}
+.bbottom {
+	width:100%; 
+	height:50px;
+	display:block; 
+	background:url(img/border.png) repeat-x;
+	position:absolute; 
+	bottom:0px;
+	z-index:2;
+}
+.btop {
+	width:100%; 
+	height:50px;
+	display:block; 
+	background:url(img/bordertop.png) repeat-x;
+	position:absolute; 
+	top:0px;
+	z-index:2;
+}
+.bleft {
+	width:100%; 
+	height:50px;
+	display:block; 
+	background:url(img/bordertop.png) repeat-x;
+	position:absolute; 
+	top:0px;
+	z-index:2;
+}
+.bright {
+	width:50px; 
+	height:100%;
+	display:block; 
+	background:url(img/borderright.png) repeat-y;
+	position:absolute; 
+	top:0px;
+	right:0px;
+	z-index:2;
+}
+.bleft {
+	width:50px; 
+	height:100%;
+	display:block; 
+	background:url(img/borderleft.png) repeat-y;
+	position:absolute; 
+	left:0px;
+	right:0px;
+	z-index:2;
+}
+
+div#nifty{ margin: 0 10%;background: #FFFFFF	;}
+.contentblock{width:auto;border-left:solid 6px #FFFFFF;border-right:solid 6px #FFFFFF;background: #EEEEEE;text-align:left;}
+.contentblockgrey{width:auto;border-left:solid 6px #EEEEEE;border-right:solid 6px #EEEEEE;background: #EEEEEE;text-align:left;}
+#tagcloud .contentblockgrey{width:auto;border-left:solid 6px #EEEEEE;border-right:solid 6px #EEEEEE;background: #EEEEEE;margin-right:300px;}
+
+b.rtop, b.rbottom{display:block;}
+b.rtop b, b.rbottom b{display:block;height: 1px;overflow: hidden; background: #FFFFFF}
+b.rtopgrey b, b.rbottomgrey b{display:block;height: 1px;overflow: hidden; background: #EEEEEE}
+
+b.r1{margin: 0 5px}
+b.r2{margin: 0 3px}
+b.r3{margin: 0 2px}
+b.rtop b.r4, b.rbottom b.r4{margin: 0 1px;height: 2px}
+
+
+#tagcloud .r1{margin-right:305px;}
+#tagcloud .r2{margin-right:303px;}
+#tagcloud .r3{margin-right:302px;}
+#tagcloud .r4{margin-right:301px;}
+
+.grey {
+	background:#EEEEEE;
+}
+
+#mapholder {
+	position:relative;
+	width:100%;
+	height:600px;
+	padding-bottom:20px;
+}
+#bottomanchor {
+	right:25px;
+	bottom:50px;
+	position:absolute;
+}
+.style1 {
+	color: #FF0000;
+	font-weight: bold;
+}
+a img {
+	border:0px;
+}
+a:link, a:active {
+	color:#000000;
+}
+.style2 {color: #FF0000}
+#tag_block {
+	height: auto;
+	width: 150px;
+	overflow: hidden;
+	position: absolute;
+	left: 276px;
+	bottom: 150px;
+	z-index:4;
+}
+</style>
+</head>
+<body onunload="GUnload()">
+<div id="mapholder">
+  <div id="topanchor"></div>
+  <div id="map"></div>
+  <div class="bbottom"></div>
+  <div class="btop"></div>
+  <div class="bright"></div>
+  <div class="bleft"></div>
+  <div id="bottomanchor">&nbsp;</div>
+</div>
+<div id="logobox"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock"><br />
+    <img src="img/gt_logo.gif" width="221"/> <img src="img/cpv_v_over.gif" width="265" border="0" usemap="#Map" />
+    <map name="Map" id="Map">
+      <area shape="rect" coords="2,-1,79,43" href="#" />
+      <area shape="rect" coords="90,-1,149,42" href="#" />
+      <area shape="rect" coords="199,0,258,43" href="#" />
+    </map>
+    <ul style="text-align:right;">
+      <li> <a href="#"><img src="img/mypageBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="#"><img src="img/aboutBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="#"><img src="img/signinBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="#"><img src="img/help_bt.gif" width="18" border="0" style="margin-right:20px;"/></a> </li>
+    </ul>
+    <br />
+    <br />
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul>
+      <li> <img src="img/archive_bt.gif" width="45" style=" margin-left:30px;"/> </li>
+      <li> <img src="img/map_bt.gif" width="45" /> </li>
+      <li> <img src="img/search_bt.gif" width="45" id="search_bt" alt="search"/> </li>
+      <li> <img src="img/score_bt.gif" width="45"/> </li>
+      <li>
+        <div id="searchbox" style="position:absolute; width:226px; left:142px; top:61px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+          <div class="contentblock"> <span>search</span><br/>
+            <br/>
+            <form>
+              <input type="text" size="18" style="background:url(img/input_bg.jpg) no-repeat;"/>
+              <a href="#">
+              <div class="style2" id="submitSearch" style="text-align:right; text-decoration:underline;margin-right:80px;">submit</div>
+              <br />
+              </a>
+            </form>
+            <img src="img/searchTarget.gif" style="position:absolute; left:172px; width: 33px; top: 30px;"/> </div>
+          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+      </li>
+    </ul>
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="tagcloud"> <b class="rtopgrey"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblockgrey">
+    <ul>
+      <li style="font-size:20px;"><a href="#">tag1</a></li>
+      <li style="font-size:40px;"><a href="#">tag2</a></li>
+      <li style="font-size:30px;"><a href="#">tag3</a></li>
+      <li style="font-size:30px;"><a href="#">tag4</a></li>
+      <li style="font-size:16px;"><a href="#">tag5</a></li>
+      <li style="font-size:40px;"><a href="#">tag6</a></li>
+      <li style="font-size:50px;"><a href="#">tag7</a></li>
+      <li style="font-size:20px;"><a href="#">tag8</a></li>
+      <li style="font-size:20px;"><a href="#">tag9</a></li>
+      <li style="font-size:40px;"><a href="#">tag7</a></li>
+      <li style="font-size:30px;"><a href="#">tag6</a></li>
+      <li style="font-size:30px;"><a href="#">tag</a></li>
+      <li style="font-size:16px;"><a href="#">tag</a></li>
+      <li style="font-size:40px;"><a href="#">tag</a></li>
+      <li style="font-size:50px;"><a href="#">tag</a></li>
+      <li style="font-size:20px;"><a href="#">tag</a></li>
+	  <li style="font-size:20px;"><a href="#">tag</a></li>
+      <li style="font-size:40px;"><a href="#">tag</a></li>
+      <li style="font-size:30px;"><a href="#">tag</a></li>
+      <li style="font-size:30px;"><a href="#">tag</a></li>
+      <li style="font-size:16px;"><a href="#">tag</a></li>
+      <li style="font-size:40px;"><a href="#">tag</a></li>
+      <li style="font-size:50px;"><a href="#">tag</a></li>
+      <li style="font-size:20px;"><a href="#">tag</a></li>	  
+    </ul>
+  </div>
+  <b class="rbottomgrey"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+
+
+<div id="signup_block"> <b class="rtopgrey"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblockgrey">
+    <ul>
+      <li><a href="#"><span class="style1">sign up!</span></a></li>
+      <li><a href="#">most popular</a></li>
+      <li><a href="#">traces near you</a></li>
+      <li><a href="#">upcoming tours</a></li>
+    </ul>
+  </div>
+  <b class="rbottomgrey"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b>
+ </div>
+ 
+ <div id="tag_block"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+  	<div id="tagblock_title">tours tagged :</div>
+    <ul>
+      <li><a href="#">nieuwmarkt</a></li>
+      <li><a href="#">city centre </a></li>
+      <li><a href="#">cycling</a></li>
+    </ul>
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+ 
+<!-- CLONE NODES -->
+<div id="clones">
+<div id="clone_contentblock" class="clone"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock"></div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+ </div> 
+<!--/CLONDE NODES-->
+<script type="text/javascript" src="js/events.js"></script>
+<style>
+#gtsig {
+	display:none;
+}
+</style>
+</body>
+</html>
