@@ -190,7 +190,7 @@ public class ProfileLogic {
      * @param aPassword
      * @throws UtopiaException
      */
-	public int updateProfile(String aPersonId, String aNickName, String aFirstName, String aLastName,
+	public void updateProfile(String aPersonId, String aNickName, String aFirstName, String aLastName,
                               String aStreet, String aStreetNr, String aZipcode, String aCity, String aCountry, String aMobileNr,
                               String aPhotoId, String[] theTags, boolean profilePublic, String aLicenseId, String anEmail,
                               boolean emailPublic, String aPassword) throws UtopiaException {
@@ -242,9 +242,7 @@ public class ProfileLogic {
                 TagLogic taglogic = new TagLogic(oase.getOaseSession());
                 int[] items = {person.getId()};
                 taglogic.tag(person.getId(), items, theTags, Constants.MODE_REPLACE);
-            }
-
-            return person.getId();
+            }            
 		} catch (UtopiaException ue) {
 			throw ue;
 		} catch (Throwable t) {

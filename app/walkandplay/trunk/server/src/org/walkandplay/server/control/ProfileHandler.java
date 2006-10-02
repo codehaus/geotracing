@@ -21,6 +21,8 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.logic.ProfileLogic;
 
+import java.util.Vector;
+
 /**
  * RssHandler.
  * <p/>
@@ -98,28 +100,33 @@ public class ProfileHandler extends DefaultHandler {
             String portalId = anUtopiaRequest.getUtopiaSession().getContext().getPortalId();
             String applicationId = anUtopiaRequest.getUtopiaSession().getContext().getApplicationId();
 
-            String nickName = requestElement.getAttr("nickname");
-            String firstName = requestElement.getAttr(Person.FIRSTNAME_FIELD);
-            String lastName = requestElement.getAttr(Person.LASTNAME_FIELD);
-            String street = requestElement.getAttr(Person.STREET_FIELD);
-            String streetNr = requestElement.getAttr(Person.STREETNR_FIELD);
-            String zipCode = requestElement.getAttr(Person.ZIPCODE_FIELD);
-            String mobileNr = requestElement.getAttr(Person.MOBILENR_FIELD);
-            String city = requestElement.getAttr(Person.CITY_FIELD);
-            String country = requestElement.getAttr(Person.COUNTRY_FIELD);
-            String tagString = requestElement.getAttr("tags");
+            JXElement person = requestElement.getChildByTag(Person.XML_TAG);
+            String nickName = person.getChildText("nickname");
+            String firstName = person.getChildText(Person.FIRSTNAME_FIELD);
+            String lastName = person.getChildText(Person.LASTNAME_FIELD);
+            String street = person.getChildText(Person.STREET_FIELD);
+            String streetNr = person.getChildText(Person.STREETNR_FIELD);
+            String zipCode = person.getChildText(Person.ZIPCODE_FIELD);
+            String mobileNr = person.getChildText(Person.MOBILENR_FIELD);
+            String city = person.getChildText(Person.CITY_FIELD);
+            String country = person.getChildText(Person.COUNTRY_FIELD);
+
+            Vector tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             String[] tags = null;
-            if (tagString != null && tagString.length() > 0) {
-                tags = Java.stripFromDelimeterToArray(tagString, ",");
+            if (tagElms != null) {
+                tags = new String[tagElms.size()];
+                for(int i=0;i<tagElms.size();i++){
+                    tags[i] = ((JXElement)tagElms.elementAt(i)).getText();
+                }                
             }
 
-            String photoId = requestElement.getAttr("mediumid");
-            String licenseId = requestElement.getAttr("licenseId");
-            boolean profilePublic = Java.StringToBoolean(requestElement.getAttr("profilepublic"));
-            boolean emailPublic = Java.StringToBoolean(requestElement.getAttr("emailpublic"));
-            String email = requestElement.getAttr(Person.EMAIL_FIELD);
-            String password = requestElement.getAttr(Account.PASSWORD_FIELD);
-            String confirmationUrl = requestElement.getAttr("confirmationurl");
+            String photoId = requestElement.getChildText("mediumid");
+            String licenseId = requestElement.getChildText("licenseid");
+            boolean profilePublic = Java.StringToBoolean(person.getChildText("profilepublic"));
+            boolean emailPublic = Java.StringToBoolean(person.getChildText("emailpublic"));
+            String email = person.getChildText(Person.EMAIL_FIELD);
+            String password = person.getChildText(Account.PASSWORD_FIELD);
+            String confirmationUrl = requestElement.getChildText("confirmationurl");
 
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             ProfileLogic logic = new ProfileLogic(oase);
@@ -176,7 +183,7 @@ public class ProfileHandler extends DefaultHandler {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String code = requestElement.getAttr("code");
-            String key = requestElement.getAttr("key");
+            /*String key = requestElement.getAttr("key");*/
 
             ProfileLogic logic = new ProfileLogic(oase);
             logic.activateProfile(code);
@@ -200,7 +207,7 @@ public class ProfileHandler extends DefaultHandler {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
-            String personId = requestElement.getAttr("personid");
+            String personId = requestElement.getAttr(Person.ID_FIELD);
 
             ProfileLogic logic = new ProfileLogic(oase);
             logic.sendJAD(personId);
@@ -223,40 +230,42 @@ public class ProfileHandler extends DefaultHandler {
     public JXElement updateProfile(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-
+            JXElement person = requestElement.getChildByTag(Person.XML_TAG);
             String personId = requestElement.getAttr("personid");
-            String nickName = requestElement.getAttr("nickname");
-            String firstName = requestElement.getAttr(Person.FIRSTNAME_FIELD);
-            String lastName = requestElement.getAttr(Person.LASTNAME_FIELD);
-            String street = requestElement.getAttr(Person.STREET_FIELD);
-            String streetNr = requestElement.getAttr(Person.STREETNR_FIELD);
-            String zipCode = requestElement.getAttr(Person.ZIPCODE_FIELD);
-            String mobileNr = requestElement.getAttr(Person.MOBILENR_FIELD);
-            String city = requestElement.getAttr(Person.CITY_FIELD);
-            String country = requestElement.getAttr(Person.COUNTRY_FIELD);
-            String tagString = requestElement.getAttr("tags");
+            String nickName = person.getChildText("nickname");
+            String firstName = person.getChildText(Person.FIRSTNAME_FIELD);
+            String lastName = person.getChildText(Person.LASTNAME_FIELD);
+            String street = person.getChildText(Person.STREET_FIELD);
+            String streetNr = person.getChildText(Person.STREETNR_FIELD);
+            String zipCode = person.getChildText(Person.ZIPCODE_FIELD);
+            String mobileNr = person.getChildText(Person.MOBILENR_FIELD);
+            String city = person.getChildText(Person.CITY_FIELD);
+            String country = person.getChildText(Person.COUNTRY_FIELD);
+
+            Vector tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             String[] tags = null;
-            if (tagString != null && tagString.length() > 0) {
-                tags = Java.stripFromDelimeterToArray(tagString, ",");
+            if (tagElms != null) {
+                tags = new String[tagElms.size()];
+                for(int i=0;i<tagElms.size();i++){
+                    tags[i] = ((JXElement)tagElms.elementAt(i)).getText();
+                }
             }
 
-            String photoId = requestElement.getAttr("mediumid");
-            String licenseId = requestElement.getAttr("licenseId");
-            boolean profilePublic = Java.StringToBoolean(requestElement.getAttr("profilepublic"));
-            boolean emailPublic = Java.StringToBoolean(requestElement.getAttr("emailpublic"));
-            String email = requestElement.getAttr(Person.EMAIL_FIELD);
-            String password = requestElement.getAttr(Account.PASSWORD_FIELD);
+            String photoId = requestElement.getChildText("mediumid");
+            String licenseId = requestElement.getChildText("licenseid");
+            boolean profilePublic = Java.StringToBoolean(person.getChildText("profilepublic"));
+            boolean emailPublic = Java.StringToBoolean(person.getChildText("emailpublic"));
+            String email = person.getChildText(Person.EMAIL_FIELD);
+            String password = person.getChildText(Account.PASSWORD_FIELD);
 
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             ProfileLogic logic = new ProfileLogic(oase);
 
-            int id = logic.updateProfile(personId, nickName, firstName, lastName,
+            logic.updateProfile(personId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
                     tags, profilePublic, licenseId, email, emailPublic, password);
 
-            JXElement response = createResponse(PROFILE_UPDATE_SERVICE);
-            response.setAttr("id", id);
-            return response;
+            return createResponse(PROFILE_UPDATE_SERVICE);
         } catch (UtopiaException ue) {
             throw ue;
         } catch (Throwable t) {

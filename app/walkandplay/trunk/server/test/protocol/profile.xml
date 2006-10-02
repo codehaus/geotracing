@@ -97,10 +97,29 @@
     <test id="profile-create-req">
         <send id="client1">
             <utopia-req>
-                <profile-create-req portalid="20" applicationid="24" nickname="ppppiet" confirmationurl="http://test.walkandplay.com/register.jsp"
-                        email="ronald@waag.org" emailpublic="true" password="pietje" licenseid="${licenseid}"
-                        firstname="piet" lastname="jansen" street="sdcsdc" streetnr="34" city="scsdc"
-                        zipcode="sdvsdv" country="scddscs" mobilenr="232342342" tags="fff,gggg,hhh"/>
+                <profile-create-req>
+                    <person>
+                        <nickname>PiETT</nickname>
+                        <firstname>piet</firstname>
+                        <lastname>janssen</lastname>
+                        <email>ronald@waag.org</email>
+                        <emailpublic>true</emailpublic>
+                        <profilepublic>true</profilepublic>
+                        <password>pietje</password>
+                        <street>sdcsdcsdc</street>
+                        <streetnr>454</streetnr>
+                        <zipcode>scdsdc</zipcode>
+                        <city>sdcsdc</city>
+                        <country>sdsdc</country>
+                        <mobilenr>34346346346346</mobilenr>
+                    </person>
+                    <photoid></photoid>
+                    <licenseid>${licensid}</licenseid>
+                    <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
+                    <tag>ffff</tag>
+                    <tag>gggg</tag>
+                    <tag>hhhh</tag>
+                </profile-create-req>
             </utopia-req>
         </send>
 
@@ -142,10 +161,28 @@
     <test id="profile-update-req">
         <send id="client1">
             <utopia-req>
-                <profile-update-req personid="${personid}" nickname="jjjjan"
-                        email="ronald@waag.org" emailpublic="false" password="janjan" licenseid="${licenseid}"
-                        firstname="jan" lastname="jansen" street="sdcsscddc" streetnr="364" city="scsdvdfvdc"
-                        zipcode="sdvsdv" country="scddscs" mobilenr="2323425665342" tags="kkk,lll,mmm"/>
+                <profile-update-req id="${personid}">
+                    <person>
+                        <nickname>JJJan</nickname>
+                        <firstname>jan</firstname>
+                        <lastname>janssen</lastname>
+                        <email>ronald@waag.org</email>
+                        <emailpublic>false</emailpublic>
+                        <profilepublic>true</profilepublic>
+                        <password>janjan</password>
+                        <street>sdcsdcsdsdcsdcc</street>
+                        <streetnr>454567</streetnr>
+                        <zipcode>scdsdcsd</zipcode>
+                        <city>sdcsdcsd</city>
+                        <country>sdsdcsd</country>
+                        <mobilenr>3434346346</mobilenr>
+                    </person>
+                    <photoid></photoid>
+                    <licenseid>${licensid}</licenseid>
+                    <tag>kkkk</tag>
+                    <tag>llll</tag>
+                    <tag>mmmm</tag>
+                </profile-update-req>
             </utopia-req>
         </send>
 
@@ -159,7 +196,7 @@
     <test id="profile-sendjad-req">
         <send id="client1">
             <utopia-req>
-                <profile-sendjad-req personid="${personid}" />
+                <profile-sendjad-req id="${personid}" />
             </utopia-req>
         </send>
 

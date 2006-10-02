@@ -30,6 +30,7 @@
         <table file="tables/team.xml"/>
         <table file="tables/version.xml"/>
         <table file="tables/tour.xml"/>
+        <table file="tables/gameplay.xml"/>
 
         <!-- plugin tables -->
         <table file="tables/cc_agent.xml"/>

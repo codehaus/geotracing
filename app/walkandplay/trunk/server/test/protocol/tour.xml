@@ -26,7 +26,7 @@
     <field name="startdate" type="TIMESTAMP"/>
     <field name="enddate" type="TIMESTAMP"/>
     -->
-    <test id="tour-create-req">
+    <test id="tour-crud-req">
         <send id="client1">
             <utopia-req>
                 <tour-create-req>
@@ -46,6 +46,119 @@
                 <tour-create-rsp id="${tourid}"/>
             </utopia-rsp>
         </expect>
+
+        <send id="client1">
+            <utopia-req>
+                <tour-update-req id="${tourid}">
+                    <tour>
+                        <name>MySecondTour</name>
+                        <description>Echt een heeeeeele mooie tour</description>
+                        <invitation>Komt allen</invitation>
+                        <startdate>5000111222</startdate>
+                        <enddate>5000111223</enddate>
+                    </tour>
+                </tour-update-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-update-rsp />
+            </utopia-rsp>
+        </expect>
+
+        <send id="client1">
+            <utopia-req>
+                <tour-get-req id="${tourid}" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-get-rsp>
+                    <tour>
+                        <name>MySecondTour</name>
+                        <description>Echt een heeeeeele mooie tour</description>
+                        <invitation>Komt allen</invitation>
+                        <startdate>5000111222</startdate>
+                        <enddate>5000111223</enddate>
+                    </tour>
+                </tour-get-rsp>
+            </utopia-rsp>
+        </expect>
+
+        <send id="client1">
+            <utopia-req>
+                <tour-create-req>
+                    <tour>
+                        <name>MyThirdTour</name>
+                        <description>Echt een hele mooie tour</description>
+                        <invitation>Komt allen</invitation>
+                        <startdate>5000111222</startdate>
+                        <enddate>5000111223</enddate>
+                    </tour>
+                </tour-create-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-create-rsp id="${tourid2}"/>
+            </utopia-rsp>
+        </expect>
+
+        <send id="client1">
+            <utopia-req>
+                <tour-getlist-req />                    
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-getlist-rsp>
+                    <tour>
+                        <name>MySecondTour</name>
+                        <description>Echt een heeeeeele mooie tour</description>
+                        <invitation>Komt allen</invitation>
+                        <startdate>5000111222</startdate>
+                        <enddate>5000111223</enddate>
+                    </tour>
+                    <tour>
+                        <name>MyThirdTour</name>
+                        <description>Echt een hele mooie tour</description>
+                        <invitation>Komt allen</invitation>
+                        <startdate>5000111222</startdate>
+                        <enddate>5000111223</enddate>
+                    </tour>
+                </tour-getlist-rsp>
+            </utopia-rsp>
+        </expect>
+
+
+        <send id="client1">
+            <utopia-req>
+                <tour-delete-req id="${tourid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-delete-rsp/>
+            </utopia-rsp>
+        </expect>
+
+        <send id="client1">
+            <utopia-req>
+                <tour-delete-req id="${tourid2}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <tour-delete-rsp/>
+            </utopia-rsp>
+        </expect>
+
     </test>
 
     <test id="tour-delete-req">
