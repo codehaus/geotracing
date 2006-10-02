@@ -42,7 +42,6 @@ public class MapScreen extends Form implements CommandListener {
 		addCommand(back);
 		setCommandListener(this);
 		tileURL = midlet.getAppProperty("kw-url") + "/map/gmap.jsp?";
-
 	}
 
 	void setLocation(String aLon, String aLat) {
@@ -70,7 +69,7 @@ public class MapScreen extends Form implements CommandListener {
 			append("Fetching map image...");
 			image = Util.getImage(activeTile + "&zoom=" + zoom + "&type=" + mapType);
 		} catch (Throwable t) {
-			append("Error fetching image !!");
+			append("Error fetching map image !!");
 			append("maybe this zoom-level is not available");
 			append("try zooming further in or out");
 			Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());

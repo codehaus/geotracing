@@ -8,8 +8,6 @@ import nl.justobjects.jox.parser.JXBuilder;
 import org.geotracing.gis.GPSSample;
 import org.geotracing.gis.GeoPoint;
 import org.geotracing.gis.GoogleTiles;
-import org.geotracing.gis.proj.WGS84toRD;
-import org.geotracing.gis.proj.XY;
 import org.keyworx.common.util.IO;
 
 import javax.imageio.ImageIO;
@@ -268,8 +266,9 @@ public class MapDrawer extends Component {
 			int roadRating = aSample.roadRating;
 
 			// Get x,y coordinates from lon/lat of sample.
-			int plotX = aMapTile.getPlotX(aSample);
-			int plotY = aMapTile.getPlotY(aSample);
+			GoogleTiles.XY xy = aMapTile.getPlotXY(aSample);
+			int plotX = xy.x;
+			int plotY = xy.y;
 			// p("x=" + plotX + " y=" + plotY);
 
 			Graphics2D g2 = aMapTile.getGraphics();
@@ -396,7 +395,6 @@ public class MapDrawer extends Component {
 	/** Represents single track point. */
 	private static class TrackSample {
 		/** Dutch RD coordinates. */
-		public XY xy;
 		public GPSSample geoSample;
 		public int roadRating;
 		public int sceneryRating;
@@ -405,10 +403,6 @@ public class MapDrawer extends Component {
 			geoSample = aGeoSample;
 			roadRating = aRoadRating == -1 ? 0 : aRoadRating;
 			sceneryRating = aSceneryRating;
-
-			// Hack: use RD projection for plot calc
-			// TODO: use transverse Mercator calc.
-			xy = WGS84toRD.calculate(geoSample.lat, geoSample.lon);
 		}
 
 		public TrackSample(GPSSample aGeoSample, int aRoadRating) {
@@ -417,8 +411,8 @@ public class MapDrawer extends Component {
 
 		public JXElement toXML() {
 			JXElement result = new JXElement("p");
-			result.setAttr("x", xy.x);
-			result.setAttr("y", xy.y);
+			result.setAttr("lon", geoSample.lon);
+			result.setAttr("lat", geoSample.lat);
 			result.setAttr("time", geoSample.timestamp);
 			result.setAttr("ar", roadRating);
 			result.setAttr("sr", sceneryRating);
@@ -586,7 +580,7 @@ public class MapDrawer extends Component {
 		}
 
 		public MapTile getMapTile(GeoPoint aPoint, int aZoom) {
-			String khRef = GoogleTiles.getKeyholeRef(aPoint.lon, aPoint.lat, 18 - aZoom);
+			String khRef = GoogleTiles.getKeyholeRef(aPoint.lon, aPoint.lat, aZoom);
 			MapTile mapTile = (MapTile) mapTilesTable.get(khRef);
 			if (mapTile == null) {
 				mapTile = addMapTile(khRef);
@@ -688,19 +682,15 @@ public class MapDrawer extends Component {
 
 	private class MapTile extends Tile {
 		// 0_630000_320000_294000
-		public XY xyNW, xySE;
-		public Rectangle2D.Double llBox;
+		// public Rectangle2D.Double llBox;
 		private String khRef;
-		private double mPerPixX, mPerPixY;
+		private int zoom;
 
 		public MapTile(String aKHRef, String aPath, int aWidth, int aHeight) {
 			super(aPath, aWidth, aHeight);
 			khRef = aKHRef;
-			llBox = GoogleTiles.getLatLong(khRef);
-			xyNW = WGS84toRD.calculate(llBox.getY() + llBox.height, llBox.getX());
-			xySE = WGS84toRD.calculate(llBox.getY(), llBox.getX() + llBox.getWidth());
-			mPerPixX = (double) (xySE.x - xyNW.x) / (double) w;
-			mPerPixY = (double) (xyNW.y - xySE.y) / (double) h;
+			zoom = GoogleTiles.getTileZoom(khRef);
+			// llBox = GoogleTiles.getBoundingBox(khRef);
 		}
 
 		public void init() {
@@ -711,26 +701,19 @@ public class MapDrawer extends Component {
 			}
 		}
 
-		public int getPlotX(TrackSample aTrackSample) {
+		public GoogleTiles.XY getPlotXY(TrackSample aTrackSample) {
 			//double m = aTrackSample.xy.x - xyNW.x;
 			//return (int) (m / mPerPixX);
-			return GoogleTiles.getX(aTrackSample.geoSample.lon, llBox);
+			return GoogleTiles.getPixelXY(aTrackSample.geoSample.lon, aTrackSample.geoSample.lat, zoom);
 		}
 
-		public int getPlotY(TrackSample aTrackSample) {
-			// Use RD projection
-			// TODO use GoogleTiles util (TBS).
-			double m = xyNW.y - aTrackSample.xy.y;
-			return (int) (m / mPerPixY);
-			// return GoogleTiles.getY(aTrackSample.geoSample.lat, llBox);
-		}
 
 		public int getZoom() {
-			return GoogleTiles.getTileZoomV2(khRef);
+			return zoom;
 		}
 
 		public String toString() {
-			return "name=" + khRef + " path=" + path + " xyNW=" + xyNW + " xySE=" + xySE;
+			return "name=" + khRef + " path=" + path + " zoom=" + zoom;
 		}
 	}
 

@@ -17,7 +17,7 @@
 	String khDir = GoogleTiles.getKeyHolePath(khRef);
 	String filePath = TILE_DIR + khDir + "/" + layer + ".png";
 	String url;
-	int zoom = GoogleTiles.getTileZoomV2(khRef);
+	int zoom = GoogleTiles.getTileZoom(khRef);
 	if (zoom > MAX_ZOOM) {
 		//log.info("no tile");
 		url = TILE_BASE_URL + "none.png";

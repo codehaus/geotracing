@@ -3,12 +3,15 @@
 package org.geotracing.gis;
 
 /*
- * Originally written by Andrew Rowbottom.
+ * Original code from multiple sources:
+ * by Andrew Rowbottom.
  * Released freely into the public domain, use it how you want, don't blame me.
  * No warranty for this code is taken in any way.
  * original : http://www.ponies.me.uk/maps/GoogleTileUtils.java
  *
- * See also: http://www.cse.buffalo.edu/~ajay/googlemaps.html (for map ref)
+ * Sother sources:
+ * http://www.cse.buffalo.edu/~ajay/googlemaps.html (for map ref)
+ * http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
  */
 
 import java.awt.Color;
@@ -30,6 +33,12 @@ import java.text.DecimalFormat;
  */
 public class GoogleTiles {
 	public static final double TILE_SIZE = 256.0D;
+
+	/* Convenience struct x,y pixel coords. */
+	public static class XY {
+		public int x;
+		public int y;
+	}
 
 	/**
 	 * hidden constructor, this is a Utils class
@@ -55,7 +64,7 @@ public class GoogleTiles {
 		g.setFont(new Font("Serif", Font.BOLD, scale));
 		g.drawString(keyholeString + " (z=" + getTileZoom(keyholeString) + ")", 10, 200);
 
-		Rectangle2D r = getLatLong(keyholeString);
+		Rectangle2D r = getBoundingBox(keyholeString);
 		DecimalFormat df = new DecimalFormat("#.####");
 		g.setFont(new Font("SanSerif", 0, 15));
 
@@ -81,7 +90,7 @@ public class GoogleTiles {
 		g.setFont(new Font("Serif", Font.BOLD, scale));
 		g.drawString("x:" + x + " y:" + y + " z:" + zoom, 10, 200);
 
-		Rectangle2D r = getLatLong(x, y, zoom);
+		Rectangle2D r = getBoundingBox(x, y, zoom);
 		DecimalFormat df = new DecimalFormat("#.####");
 		g.setFont(new Font("SanSerif", 0, 15));
 
@@ -109,9 +118,9 @@ public class GoogleTiles {
 	}
 
 	/**
-	 * returns a Rectangle2D with x = lon, y = lat, width=lonSpan, height=latSpan for a keyhole string.
+	 * Get Rectangle2D with x = lon, y = lat, width=lonSpan, height=latSpan for a keyhole string.
 	 */
-	public static Rectangle2D.Double getLatLong(String keyholeStr) {
+	public static Rectangle2D.Double getBoundingBox(String keyholeStr) {
 		// must start with "t"
 		if ((keyholeStr == null) || (keyholeStr.length() == 0) || (keyholeStr.charAt(0) != 't')) {
 			throw new RuntimeException("Keyhole string must start with 't'");
@@ -191,7 +200,7 @@ public class GoogleTiles {
 	 * returns a Rectangle2D with x = lon, y = lat, width=lonSpan, height=latSpan
 	 * for an x,y,zoom as used by google.
 	 */
-	public static Rectangle2D.Double getLatLong(int x, int y, int zoom) {
+	public static Rectangle2D.Double getBoundingBox(int x, int y, int zoom) {
 		double lon = -180; // x
 		double lonWidth = 360; // width 360
 
@@ -235,7 +244,7 @@ public class GoogleTiles {
 	}
 
 	/**
-	 * Returns x,y of tile emclosing lon, lat.
+	 * Returns x,y of tile enclosing lon, lat.
 	 */
 	public static XY getTileXY(double lon, double lat, int zoom) {
 		return getTileXY(getKeyholeRef(lon, lat, zoom));
@@ -246,7 +255,7 @@ public class GoogleTiles {
 	 * See:
 	 * http://dunck.us/collab/Simple_20Analysis_20of_20Google_20Map_20and_20Satellite_20Tiles
 	 */
-	public static XY getTileXY(String keyholeStr) {
+	public static GoogleTiles.XY getTileXY(String keyholeStr) {
 		// must start with "t"
 		if ((keyholeStr == null) || (keyholeStr.length() == 0) || (keyholeStr.charAt(0) != 't')) {
 			throw new RuntimeException("Keyhole string must start with 't'");
@@ -283,23 +292,18 @@ public class GoogleTiles {
 			}
 		}
 
-		XY xy = new XY();
+		GoogleTiles.XY xy = new GoogleTiles.XY();
 		xy.x = x;
 		xy.y = y;
 		return xy;
 
 	}
 
-	public static class XY {
-		public int x;
-		public int y;
-	}
-
 	/**
-	 * returns a keyhole string for a longitude (x), latitude (y), and zoom
+	 * Get keyhole string for a longitude (x), latitude (y), and zoom
 	 */
 	public static String getKeyholeRef(double lon, double lat, int zoom) {
-		zoom = 18 - zoom;
+		// zoom = 18 - zoom; obsolete for GMAP v2
 
 		// first convert the lat lon to transverse mercator coordintes.
 		if (lon > 180) {
@@ -345,40 +349,67 @@ public class GoogleTiles {
 	}
 
 	/**
-	 * returns the Google zoom level for the keyhole string.
-	 */
-	public static int getTileZoom(String keyHoleString) {
-		return 18 - keyHoleString.length();
-	}
-
-	/**
 	 * returns the Google zoom level for the keyhole string GMap v2.
 	 */
-	public static int getTileZoomV2(String keyHoleString) {
+	public static int getTileZoom(String keyHoleString) {
 		return keyHoleString.length() - 1;
 	}
 
 	/**
-	 * Returns xoffset for lon in tile.
+	 * Returns yoffset for lat in tile.
+	 * <p/>
+	 * public static int getY(double lat, Rectangle2D.Double llBox) {
+	 * return 256 - (int) ((Math.abs(llBox.y - lat)) * (256.0D / llBox.height));
+	 * }
 	 */
-	public static int getX(double lon, Rectangle2D.Double llBox) {
-		return (int) ((Math.abs(llBox.x - lon)) * (256.0D / llBox.width));
+	// http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
+	public static int getPixelX(double lon, int zoom) {
+		double tiles = Math.pow(2, zoom);
+		double circumference = TILE_SIZE * tiles;
+		double falseEasting = circumference / 2.0D;
+		double radius = circumference / (2 * Math.PI);
+		double longitude = Math.toRadians(lon);
+		int x = (int) (radius * longitude);
+		//System.out.println("x1=" + x) ;
+		x = (int) falseEasting + x;
+		System.out.println("x2=" + x);
+
+		int tilesOffset = x / (int) TILE_SIZE;
+		x = x - (int) (tilesOffset * TILE_SIZE);
+		//System.out.println("x3=" + x +" tilesOffset =" + tilesOffset);
+
+		return x;
 	}
 
-	/**
-	 * Returns yoffset for lat in tile.
-	 */
-	public static int getY(double lat, Rectangle2D.Double llBox) {
-		return 256 - (int) ((Math.abs(llBox.y - lat)) * (256.0D / llBox.height));
+	// http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
+	public static int getPixelY(double lat, int zoom) {
+		double tiles = Math.pow(2, zoom);
+		double circumference = TILE_SIZE * tiles;
+		double falseNorthing = circumference / 2.0D;
+		double radius = circumference / (2 * Math.PI);
+		double latitude = Math.toRadians(lat);
+		//System.out.println("tiles=" + tiles + " circumference=" + circumference + " falseNorthing="  + falseNorthing);
+
+		int y = (int) (radius / 2.0 * Math.log((1.0 + Math.sin(latitude)) / (1.0 - Math.sin(latitude))));
+		//System.out.println("y1=" + y) ;
+
+		y = (y - (int) falseNorthing) * -1;
+		//System.out.println("y2=" + y) ;
+
+		// Number of pixels to subtract for tiles skipped (offset)
+		int tilesOffset = y / (int) TILE_SIZE;
+		y = y - (int) (tilesOffset * TILE_SIZE);
+		//System.out.println("y3=" + y +" tilesOffset =" + tilesOffset);
+		return y;
 	}
 
 	/**
 	 * Returns pixel offset in tile for given lon,lat,zoom.
 	 * see http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
-	*/
-	public static XY getPixelXY(double lon, double lat, int zoom) {
+	 */
+	public static GoogleTiles.XY getPixelXY(double lon, double lat, int zoom) {
 		// Number of tiles in each axis at zoom level
-		double tiles = Math.pow(2, 17 - zoom);
+		double tiles = Math.pow(2, zoom);
 
 		// Circumference in pixels
 		double circumference = TILE_SIZE * tiles;
@@ -394,30 +425,30 @@ public class GoogleTiles {
 
 		// Do x
 		int x = (int) (radius * longitude);
-		System.out.println("x1=" + x);
+		// System.out.println("x1=" + x);
 
 		// Correct for false easting
 		x = (int) falseEasting + x;
-		System.out.println("x2=" + x);
+		// System.out.println("x2=" + x);
 
 		int tilesXOffset = x / (int) TILE_SIZE;
 		x = x - (int) (tilesXOffset * TILE_SIZE);
-		System.out.println("x3=" + x + " tilesXOffset =" + tilesXOffset);
+		// System.out.println("x3=" + x + " tilesXOffset =" + tilesXOffset);
 
 		// Do y
 		int y = (int) (radius / 2.0 * Math.log((1.0 + Math.sin(latitude)) / (1.0 - Math.sin(latitude))));
-		System.out.println("y1=" + y);
+		// System.out.println("y1=" + y);
 
 		// Correct for false northing
 		y = (y - (int) falseNorthing) * -1;
-		System.out.println("y2=" + y);
+		// System.out.println("y2=" + y);
 
 		// Number of pixels to subtract for tiles skipped (offset)
 		int tilesYOffset = y / (int) TILE_SIZE;
 		y = y - (int) (tilesYOffset * TILE_SIZE);
-		System.out.println("y3=" + y + " tilesYOffset =" + tilesYOffset);
+		// System.out.println("y3=" + y + " tilesYOffset =" + tilesYOffset);
 
-		XY xy = new XY();
+		GoogleTiles.XY xy = new GoogleTiles.XY();
 		xy.x = x;
 		xy.y = y;
 		return xy;
@@ -439,10 +470,10 @@ public class GoogleTiles {
 		String tileRef = getKeyholeRef(lon, lat, zoom);
 		System.out.println(tileRef);
 
-		Rectangle2D.Double llBox = getLatLong(tileRef);
+		Rectangle2D.Double llBox = getBoundingBox(tileRef);
 		System.out.println(llBox);
 
-		System.out.println("x=" + getX(lon, llBox) + " y=" + getY(lat, llBox));
+		// System.out.println("x=" + getX(lon, llBox) + " y=" + getY(lat, llBox));
 
 	}
 }
