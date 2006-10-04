@@ -1,5 +1,5 @@
 <testsuite>
-    <!--<testset file="profile.xml" />-->
+    <testset file="profile.xml" />
     <testset file="tour.xml"/>
     <!--<testset file="content.xml" />-->
     <!--<testset file="assignment.xml" />-->

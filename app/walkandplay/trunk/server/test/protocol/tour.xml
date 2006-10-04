@@ -3,7 +3,7 @@
     <test id="login-selapp">
 
         <send id="client1">
-            <login-req name="wp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+            <login-req name="wp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
             <select-app-req appname="wp" rolename="user"/>
         </send>
 

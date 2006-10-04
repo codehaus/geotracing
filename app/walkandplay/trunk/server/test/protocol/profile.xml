@@ -3,7 +3,7 @@
     <test id="login-selapp">
 
         <send id="client1">
-            <login-req name="wp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+            <login-req name="wp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
             <select-app-req appname="wp" rolename="user"/>
         </send>
 
@@ -48,10 +48,10 @@
         </expect>
     </test>
 
-    <test id="person-delete-req">
+   <test id="person-delete-req">
         <send id="client1">
             <utopia-req>
-                <person-delete-req id="276"/>
+                <person-delete-req id="214"/>
             </utopia-req>
         </send>
 
@@ -62,20 +62,26 @@
         </expect>
     </test>
 
-
     <!-- minimal signup-->
     <test id="profile-create-req">
         <send id="client1">
             <utopia-req>
-                <profile-create-req portalid="20" applicationid="24" confirmationurl="http://test.walkandplay.com/register.jsp"
-                        nickname="ronald" email="ronald@waag.org" password="ronaldinho" licenseid="${licenseid}"/>
+                <profile-create-req>
+                    <person>
+                        <nickname>PiETT</nickname>
+                        <email>ronald@waag.org</email>
+                        <password>pietje</password>
+                    </person>
+                    <licenseid>120</licenseid>
+                    <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
+                </profile-create-req>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
                 <profile-create-rsp id="${personid}"/>
-            </utopia-rsp>            
+            </utopia-rsp>
         </expect>
     </test>
 
@@ -99,8 +105,8 @@
             <utopia-req>
                 <profile-create-req>
                     <person>
-                        <nickname>PiETT</nickname>
-                        <firstname>piet</firstname>
+                        <nickname>PiETTer</nickname>
+                        <firstname>pieter</firstname>
                         <lastname>janssen</lastname>
                         <email>ronald@waag.org</email>
                         <emailpublic>true</emailpublic>
@@ -114,7 +120,7 @@
                         <mobilenr>34346346346346</mobilenr>
                     </person>
                     <photoid></photoid>
-                    <licenseid>${licensid}</licenseid>
+                    <licenseid>121</licenseid>
                     <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
                     <tag>ffff</tag>
                     <tag>gggg</tag>
@@ -178,7 +184,7 @@
                         <mobilenr>3434346346</mobilenr>
                     </person>
                     <photoid></photoid>
-                    <licenseid>${licensid}</licenseid>
+                    <licenseid>122</licenseid>
                     <tag>kkkk</tag>
                     <tag>llll</tag>
                     <tag>mmmm</tag>
