@@ -2,7 +2,7 @@
  * Copyright 2004 - Waag Society - www.waag.org - See license below *
  ****************************************************************/
 
-package org.walkandplay.server.engine;
+package org.[PORTALNAME].server.engine;
 
 
 /**
@@ -15,7 +15,7 @@ public interface GameDataDef {
     /**
      * Portal name
      */
-    public static final String PORTAL_NAME = "walkandplay";
+    public static final String PORTAL_NAME = "[PORTALNAME]";
 
     /**
      * Table names

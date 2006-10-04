@@ -72,7 +72,7 @@
                         <email>ronald@waag.org</email>
                         <password>pietje</password>
                     </person>
-                    <licenseid>120</licenseid>
+                    <license>by-nc</license>
                     <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
                 </profile-create-req>
             </utopia-req>
@@ -120,7 +120,7 @@
                         <mobilenr>34346346346346</mobilenr>
                     </person>
                     <photoid></photoid>
-                    <licenseid>121</licenseid>
+                    <license>by-nc</license>
                     <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
                     <tag>ffff</tag>
                     <tag>gggg</tag>

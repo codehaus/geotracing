@@ -94,7 +94,7 @@ public class ProfileLogic {
      */
     public int createProfile(String aPortalId, String anApplicationId, String aNickName, String aFirstName, String aLastName,
                               String aStreet, String aStreetNr, String aZipcode, String aCity, String aCountry, String aMobileNr,
-                              String aPhotoId, String[] theTags, boolean profilePublic, String aLicenseId, String anEmail,
+                              String aPhotoId, String[] theTags, boolean profilePublic, String aLicense, String anEmail,
                               boolean emailPublic, String aPassword, String aConfirmationUrl) throws UtopiaException {
 		try {
             // first check required params
@@ -103,7 +103,7 @@ public class ProfileLogic {
             if (aNickName == null || aNickName.length() == 0) throw new UtopiaException("No nickName found.");
             if (anEmail == null || anEmail.length() == 0) throw new UtopiaException("No email found.");
             if (aPassword == null || aPassword.length() == 0) throw new UtopiaException("No password found.");
-            if (aLicenseId == null || aLicenseId.length() == 0) throw new UtopiaException("No license found.");
+            if (aLicense == null || aLicense.length() == 0) throw new UtopiaException("No license found.");
             if (aConfirmationUrl == null || aConfirmationUrl.length() == 0) throw new UtopiaException("No confirmation url found.");
 
             // check if email address already exists
@@ -137,7 +137,8 @@ public class ProfileLogic {
 
             // set the default license
             LicenseLogic licenseLogic = new LicenseLogic(oase);
-            licenseLogic.attachLicenseToPerson("" + person.getId(), aLicenseId);
+            Record license = licenseLogic.getLicense(-1, aLicense, null);
+            licenseLogic.attachLicenseToPerson("" + person.getId(), "" + license.getId());
 
             // attach a photo
             if(aPhotoId!=null && aPhotoId.length() > 0 && Java.isInt(aPhotoId)){
@@ -159,7 +160,11 @@ public class ProfileLogic {
 			String body = "Thanks for registering!\n";
 			body += "To confirm your account please click on the link below!\n";
 			body += confirmationUrl;
-			MailClient.sendMail(mailServer, "info@walkandplay.org", anEmail, "WalkAndPlay account confirmation", body, null, null, null);
+            try{
+                MailClient.sendMail(mailServer, "info@walkandplay.org", anEmail, "WalkAndPlay account confirmation", body, null, null, null);
+            }catch(Throwable t){
+                log.error("************** Mail error!!!! Mail not sent!: " + t.toString());
+            }
 
             return person.getId();
 		} catch (UtopiaException ue) {
@@ -192,12 +197,12 @@ public class ProfileLogic {
      */
 	public void updateProfile(String aPersonId, String aNickName, String aFirstName, String aLastName,
                               String aStreet, String aStreetNr, String aZipcode, String aCity, String aCountry, String aMobileNr,
-                              String aPhotoId, String[] theTags, boolean profilePublic, String aLicenseId, String anEmail,
+                              String aPhotoId, String[] theTags, boolean profilePublic, String aLicense, String anEmail,
                               boolean emailPublic, String aPassword) throws UtopiaException {
 		try {
 			// first check required params
             if (aPersonId == null || aPersonId.length() == 0 || !Java.isInt(aPersonId)) throw new UtopiaException("No personId found.");
-            if (aLicenseId == null || aLicenseId.length() == 0) throw new UtopiaException("No license id found.");
+            if (aLicense == null || aLicense.length() == 0) throw new UtopiaException("No license id found.");
 
             // set privacy params
             JXElement extra = new JXElement("extra");
@@ -219,7 +224,8 @@ public class ProfileLogic {
 
             // set the default license
             LicenseLogic licenseLogic = new LicenseLogic(oase);
-            licenseLogic.attachLicenseToPerson(aPersonId, aLicenseId);
+            Record license = licenseLogic.getLicense(-1, aLicense, null);
+            licenseLogic.attachLicenseToPerson("" + person.getId(), "" + license.getId());
 
             // attach a photo
             if(aPhotoId!=null && aPhotoId.length() > 0 && Java.isInt(aPhotoId)){
@@ -330,9 +336,13 @@ public class ProfileLogic {
 			body += "Send this file to your phone by bluetooth and your installation should start automatically.\n";
 			body += "Enjoy!\n";
 
-			MailClient.sendMail(mailServer, "info@walkandplay.org", email, "WalkAndPlay jad file", body, null, null, fileName);
+            try{
+                MailClient.sendMail(mailServer, "info@walkandplay.org", email, "WalkAndPlay jad file", body, null, null, fileName);
+            }catch(Throwable t){
+                log.error("************** Mail error!!!! Mail not sent!: " + t.getMessage().toString());
+            }
 
-		} catch (UtopiaException ue) {
+        } catch (UtopiaException ue) {
             throw ue;
 		} catch (Throwable t) {
             throw new UtopiaException("Exception in sendJAD()" + t.toString());
@@ -358,9 +368,14 @@ public class ProfileLogic {
 			String body = "You requested an password reset at WalkAndPlay.\n";
 			body += "To confirm it please click on the link below!\n";
 			body += confirmationUrl;
-			MailClient.sendMail(mailServer, "info@walkandplay.org", anEmail, "WalkAndPlay account reset request", body, null, null, null);
-
-		} catch (UtopiaException ue) {
+            
+            try{
+                MailClient.sendMail(mailServer, "info@walkandplay.org", anEmail, "WalkAndPlay account reset request", body, null, null, null);
+            }catch(Throwable t){
+                log.error("************** Mail error!!!! Mail not sent!: " + t.getMessage());
+            }
+            
+        } catch (UtopiaException ue) {
 			throw ue;
 		} catch (Throwable t) {
 			throw new UtopiaException("Exception in requestResetProfile()" + t.toString());

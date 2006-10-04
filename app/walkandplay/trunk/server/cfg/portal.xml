@@ -1,4 +1,4 @@
-<portal name="walkandplay">
+<portal name="[PORTALNAME]">
 
     <config>
         <!-- Oase context file. Context id becomes portal name -->
@@ -10,7 +10,7 @@
     <connectors>
         <!-- Mainly needed for TracerDaemon and LocEmailUploadDaemon -->
         <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
-            <property name="port">4050</property>
+            <property name="port">6050</property>
             <property name="pongTimeoutMillis">30000</property>
         </connector>
     </connectors>

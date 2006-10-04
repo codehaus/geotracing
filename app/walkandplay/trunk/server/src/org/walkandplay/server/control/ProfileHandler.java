@@ -121,7 +121,7 @@ public class ProfileHandler extends DefaultHandler {
             }
 
             String photoId = requestElement.getChildText("mediumid");
-            String licenseId = requestElement.getChildText("licenseid");
+            String license = requestElement.getChildText("license");
             boolean profilePublic = Java.StringToBoolean(person.getChildText("profilepublic"));
             boolean emailPublic = Java.StringToBoolean(person.getChildText("emailpublic"));
             String email = person.getChildText(Person.EMAIL_FIELD);
@@ -133,7 +133,7 @@ public class ProfileHandler extends DefaultHandler {
 
             int personId = logic.createProfile(portalId, applicationId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
-                    tags, profilePublic, licenseId, email, emailPublic, password, confirmationUrl);
+                    tags, profilePublic, license, email, emailPublic, password, confirmationUrl);
 
             JXElement response = createResponse(PROFILE_CREATE_SERVICE);
             response.setAttr("id", personId);
@@ -252,7 +252,7 @@ public class ProfileHandler extends DefaultHandler {
             }
 
             String photoId = requestElement.getChildText("mediumid");
-            String licenseId = requestElement.getChildText("licenseid");
+            String license = requestElement.getChildText("license");
             boolean profilePublic = Java.StringToBoolean(person.getChildText("profilepublic"));
             boolean emailPublic = Java.StringToBoolean(person.getChildText("emailpublic"));
             String email = person.getChildText(Person.EMAIL_FIELD);
@@ -263,7 +263,7 @@ public class ProfileHandler extends DefaultHandler {
 
             logic.updateProfile(personId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
-                    tags, profilePublic, licenseId, email, emailPublic, password);
+                    tags, profilePublic, license, email, emailPublic, password);
 
             return createResponse(PROFILE_UPDATE_SERVICE);
         } catch (UtopiaException ue) {
