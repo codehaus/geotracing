@@ -1,0 +1,98 @@
+Logbook PostGIS research
+
+- environmnent
+Mac OSX Tiger 10.4.7
+installed Devloper tools/Xcode
+installed Darwinports
+port install postgresql8
+this installs PostgreSQL 8.1.3
+(postgresql81 installs 8.1.4 but postgis requires 8.1.3 if using DarwinPorts)
+keyworx with postgresql JDBC driver
+JDBC driver download
+http://jdbc.postgresql.org
+select postgresql-8.1-407.jdbc3.jar (JDBC 3)
+installed pgadminIII download from http://www.pgadmin.org
+installed 1.6.0 beta 1 mac os x
+
+- postgis install
+sudo port install postgis
+installs postgis 1.1.1
+updates /opt/local/lib/pgsql8
+tutorial
+http://www.bostongis.com/?content_name=postgis_tut01
+see http://postgis.refractions.net/docs/ch02.html
+
+test postgis (see tutorial)
+* create DB gistest
+* shell: createlang plpgsql gistest
+* psql -d gistest  -f /opt/local/share/postgis/lwpostgis.sql (loads functions/objects)
+* psql -d gistest  -f /opt/local/share/postgis/spatial_ref_sys.sql (loads EPSG spatial ref system)
+
+
+- postgis Java install
+not part of darwinport install so have to rebuild from source
+build postgis.jar
+http://bindist.finkmirrors.net/bindist/dists/fink-0.8.1/main/source/database/
+download postgis-1.1.1.tar.gz
+unpack
+cd jdbc2
+export POSTGIS_BUILD_CLASSPATH=/Users/just/project/waag/kwx/build/external/postgresql-8.1-407/postgresql.jar
+make
+make zitpfile postgis-jdbc-1.1.1.zip
+put in external and download when GT server is built
+
+- test1 import shapefiles
+An example session using the loader to create an input file and uploading it might look like this:
+
+# shp2pgsql shaperoads myschema.roadstable > roads.sql
+# psql -d roadsdb -f roads.sql
+
+ shp2pgsql dotroads dotroads > ../../dotroads.sql
+OK
+
+- test JDBC
+see TestServer.java
+modified original example:
+when using
+Class.forName("org.postgis.DriverWrapperLW");
+now no need to do AddType
+
+- version test
+** PostGIS jdbc client code **
+	getFullVersion: PostGIS JDBC V1.1.0
+
+** PGJDBC Driver **
+	getVersion: PostgreSQL 8.1 JDBC3 with SSL (build 407)
+	getMajorVersion: 8
+	getMinorVersion: 1
+
+** PostgreSQL Server **
+	version: PostgreSQL 8.1.3 on i686-apple-darwin8.7.1, compiled by GCC i686-apple-darwin8-gcc-4.0.1 (GCC) 4.0.1 (Apple Computer, Inc. build 5363)
+
+** PostGIS Server **
+	postgis_version: 1.1 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
+	postgis_proj_version: Rel. 4.4.9, 29 Oct 2004
+	postgis_scripts_installed: 1.1.1
+	postgis_lib_version: 1.1.1
+	postgis_scripts_released: 1.1.1
+	postgis_uses_stats: t
+	postgis_geos_version: 2.2.1-CAPI-1.0.1
+	postgis_scripts_build_date: 2006-10-04 08:22:06
+	postgis_lib_build_date: 2006-10-04 08:22:06
+	postgis_full_version: POSTGIS="1.1.1" GEOS="2.2.1-CAPI-1.0.1" PROJ="Rel. 4.4.9, 29 Oct 2004" USE_STATS
+
+- test with AddGeometryColumn
+String createSQL = "create table latlon_test (id int4); ";
+String addgeom = "SELECT AddGeometryColumn('gistest', 'latlon_test','geom', 4326,'POINT',2)";
+String dropGeom = "SELECT DropGeometryColumn('gistest', 'latlon_test','geom')";
+String insertPointSQL = "INSERT INTO latlon_test values (10, GeomFromText('POINT (4.92 52.35)', 4326) )";
+
+important note: dimension must reflect number of coordinates
+"the Dimension in this case is not the "mathematical
+dimension" where point = 0, line = 1, area =2, but it rather is the
+dimension of the cooridnates use, ie, 2= x&y, 3 = X&y&z, 4=X&y&z&T(ime)"
+
+
+
+
+
