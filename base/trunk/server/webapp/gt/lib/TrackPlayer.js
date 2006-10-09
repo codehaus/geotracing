@@ -298,7 +298,7 @@ function TrackPlayer() {
 		} catch(e) {
 			// panic
 			this.stop();
-			this.showInfo('error: ' + e);
+			this.showInfo('trackplay canceled');
 		}
 	}
 

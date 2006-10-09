@@ -241,6 +241,7 @@ function Tracer(name, color, iconURL, pt, time) {
 		if (time) {
 			pt.time = new Number(time);
 		}
+
 		// Move TLabel
 		this.setLocation(pt);
 

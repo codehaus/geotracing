@@ -48,6 +48,7 @@ $Id$
 	<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
 	<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
 	<property name="scp" value="${home.bin.dir}/scp.sh"/>
+	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
 
 	<!-- Client midlet stuff -->
 	<property name="home.client.dir" value="${home}/../client/mobitracer"/>
@@ -88,6 +89,9 @@ $Id$
 			<property name="package" value="${servlet}"/>
 		</ant>
 
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${postgis-jdbc}"/>
+		</ant>
 	</target>
 
 	<!-- Compile the java files. -->
@@ -129,6 +133,7 @@ $Id$
 				</section>
 			</manifest>
 			<zipfileset src="${pushlet.jar}"/>
+			<zipfileset src="${postgis-jdbc.jar}"/>
 		</jar>
 	</target>
 

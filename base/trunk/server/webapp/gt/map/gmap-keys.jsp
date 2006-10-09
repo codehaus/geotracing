@@ -9,7 +9,7 @@
 		if (GMAP_KEY != null) {
 			return;
 		}
-
+		
 		Properties properties = Sys.loadProperties(theApp.getRealPath("/map") + "/gmap-keys.properties");
 		InetAddress localHost = InetAddress.getLocalHost();
 		// System.out.println("ADDR=" + localHost.getHostAddress() + " NAME=" + localHost.getHostName());
