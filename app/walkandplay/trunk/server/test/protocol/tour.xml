@@ -36,7 +36,30 @@
                         <invitation>Komt allen</invitation>
                         <startdate>5000111222</startdate>
                         <enddate>5000111223</enddate>
+                        <extra>
+                            <invitees>
+                                <person email="fred@waag.org" />
+                                <person email="karel@waag.org" />
+                            </invitees>
+                        </extra>
                     </tour>
+                    <intro>
+                        <description>introintrointro</description>
+                        <medium id="11" />
+                        <medium id="23" />
+                    </intro>
+                    <outro>
+                        <description>outrooutrooutro</description>
+                        <medium id="11" />
+                        <medium id="23" />
+                    </outro>
+                    <tag>ttttt</tag>
+                    <tag>yyyyy</tag>
+                    <tag>jjjjj</tag>
+                    <person id="14" />
+                    <person id="18" />
+                    <gameplay id="20" />
+                    <gameplay id="22" />
                 </tour-create-req>
             </utopia-req>
         </send>

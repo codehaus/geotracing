@@ -136,7 +136,8 @@
 		<exec executable="${preverify}">
 			<arg line="-classpath ${preverify.classpath}"/>
 			<arg line="-d ${preverify.dir}"/>
-			<arg line="${obf.dir}"/>
+			<!--<arg line="${obf.dir}"/>-->
+			<arg line="${classes.dir}"/>
 		</exec>
 	</target>
 

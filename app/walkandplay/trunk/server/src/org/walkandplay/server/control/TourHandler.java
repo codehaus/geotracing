@@ -380,8 +380,17 @@ public class TourHandler extends DefaultHandler {
                 for(int i=0;i<mediumElms.size();i++){
                     JXElement mediumElm = (JXElement)mediumElms.elementAt(i);
                     String mediumId = mediumElm.getAttr(Medium.ID_FIELD);
+                    String type = mediumElm.getAttr(Constants.TYPE_FIELD);
                     if(mediumId!=null && mediumId.length()>0 && Java.isInt(mediumId)){
-                        relateLogic.relate(tourId, Integer.parseInt(mediumId), null);
+                        if(type!=null && type.length()>0){
+                            if(type.equals(Constants.INTRO_MEDIA)){
+                                relateLogic.relate(tourId, Integer.parseInt(mediumId), Constants.INTRO_MEDIA);
+                            }else if(type.equals(Constants.OUTRO_MEDIA)){
+                                relateLogic.relate(tourId, Integer.parseInt(mediumId), Constants.OUTRO_MEDIA);
+                            }
+                        }else{
+                            relateLogic.relate(tourId, Integer.parseInt(mediumId), null);
+                        }
                     }
                 }
             }

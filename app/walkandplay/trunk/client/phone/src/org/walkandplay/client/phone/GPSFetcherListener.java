@@ -19,3 +19,4 @@ public interface GPSFetcherListener {
 	public void onGPSTimeout();
 
 }
+    

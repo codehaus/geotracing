@@ -9,27 +9,33 @@
 			<field name="name"/>
 			<field name="description"/>
 			<field name="invitation"/>
+            <field name="intro"/>
+            <field name="outro"/>
 			<field name="startdate"/>
 			<field name="enddate"/>
-		</insert>
+        </insert>
 
 		<list>
 			<field name="id"/>
 			<field name="name"/>
 			<field name="description"/>
 			<field name="invitation"/>
+            <field name="intro"/>
+            <field name="outro"/>
 			<field name="startdate"/>
-			<field name="enddate"/>
-		</list>
+            <field name="enddate"/>
+        </list>
 
 		<query>
 			<field name="id"/>
 			<field name="name"/>
 			<field name="description"/>
 			<field name="invitation"/>
-			<field name="startdate"/>
+            <field name="intro"/>
+            <field name="outro"/>
+            <field name="startdate"/>
 			<field name="enddate"/>
-		</query>
+        </query>
 	</views>
 
 	<!--{data -->
@@ -39,6 +45,8 @@
 		<field name="name" type="STRING" size="64" required="true"/>
         <field name="description" type="TEXT" required="true" />
         <field name="invitation" type="TEXT" required="false" />
+        <field name="intro" type="TEXT" required="false" />
+        <field name="outro" type="TEXT" required="false" />
 		<field name="startdate" type="TIMESTAMP"/>
 		<field name="enddate" type="TIMESTAMP"/>
         <field name="creationdate" type="TIMESTAMP"/>

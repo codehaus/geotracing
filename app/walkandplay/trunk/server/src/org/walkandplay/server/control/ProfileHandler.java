@@ -169,7 +169,7 @@ public class ProfileHandler extends DefaultHandler {
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
-    }
+    }   
 
     /**
      * Activates the profile upon confirmation (by email).
