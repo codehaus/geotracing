@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Defines context, only tables for now. -->
+<context id="postgistest">
+	<tables>
+		<table file="tables/spatialone.xml"/>
+	</tables>
+</context>
+
+
