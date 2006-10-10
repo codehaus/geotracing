@@ -6,7 +6,7 @@ import javax.microedition.lcdui.Image;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class SplashScreen extends Canvas {
+public class SplashCanvas extends Canvas {
     private WP midlet;
 
     // image objects
@@ -16,7 +16,7 @@ public class SplashScreen extends Canvas {
     private int screenName;
 
 
-    public SplashScreen(WP aMidlet, int aScreenName) {
+    public SplashCanvas(WP aMidlet, int aScreenName) {
         try {
             midlet = aMidlet;
             setFullScreenMode(true);

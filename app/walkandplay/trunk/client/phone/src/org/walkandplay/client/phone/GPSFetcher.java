@@ -91,7 +91,8 @@ public class GPSFetcher implements Runnable {
 					case CONNECTED:
 						// Read raw GPS sample
 						String nmea = readNMEASentence();
-						if (nmea == null) {
+                        System.out.println("NMEA:" + nmea);
+                        if (nmea == null) {
 							break;
 						}
 
@@ -232,7 +233,7 @@ public class GPSFetcher implements Runnable {
 			// Try reconnecting
 			setState(FAILED);
 		}
-		// System.out.println("res=" + result);
+		System.out.println("res=" + result);
 		return result;
 	}
 

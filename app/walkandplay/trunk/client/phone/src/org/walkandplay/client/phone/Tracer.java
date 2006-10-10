@@ -22,13 +22,15 @@ public class Tracer implements GPSFetcherListener, NetListener {
 	private int sampleCount;
 	private boolean paused = true;
 	private int VOLUME = 70;
-	public TraceScreen traceScreen;
+	//public TraceScreen traceScreen;
+	public MapCanvas traceScreen;
 	private int roadRating = -1;
 
 	/**
 	 * Starts GPS fetching and KW client.
 	 */
-	public Tracer(MIDlet aMIDlet, TraceScreen aTraceScreen) {
+	//public Tracer(MIDlet aMIDlet, TraceScreen aTraceScreen) {
+	public Tracer(MIDlet aMIDlet, MapCanvas aTraceScreen) {
 		traceScreen = aTraceScreen;
 		midlet = aMIDlet;
 		net = Net.getInstance();
@@ -101,7 +103,8 @@ public class Tracer implements GPSFetcherListener, NetListener {
 	}
 
 	public void onGPSConnect() {
-		traceScreen.onGPSStatus("connected");
+        System.out.println("GPS connected");
+        traceScreen.onGPSStatus("connected");
 		traceScreen.setStatus("GPS connected");
 
 		Util.playTone(60, 250, VOLUME);
@@ -109,12 +112,14 @@ public class Tracer implements GPSFetcherListener, NetListener {
 
 	/** From GPSFetcher: GPS meta NMEA sample received. */
 	synchronized public void onGPSInfo(GPSInfo theInfo) {
-		traceScreen.setGPSInfo(theInfo);
+        System.out.println("GPSInfo:" + theInfo.toString());
+        traceScreen.setGPSInfo(theInfo);
 	}
 
 	/** From GPSFetcher: GPS NMEA sample received. */
 	synchronized public void onGPSLocation(GPSLocation aLocation) {
-		Util.playTone(84, 50, VOLUME);
+        System.out.println("GPSlocation:" + aLocation.data);
+        Util.playTone(84, 50, VOLUME);
 
 		traceScreen.onGPSStatus("sample #" + (++sampleCount));
 		if (paused) {
@@ -127,7 +132,8 @@ public class Tracer implements GPSFetcherListener, NetListener {
 
 	/** From GPSFetcher: disconnect */
 	public void onGPSDisconnect() {
-		traceScreen.onGPSStatus("disconnected");
+        System.out.println("GPS disconnected");
+        traceScreen.onGPSStatus("disconnected");
 		traceScreen.setStatus("GPS disconnected");
 	}
 
@@ -143,17 +149,20 @@ public class Tracer implements GPSFetcherListener, NetListener {
 
 	/** From GPSFetcher: status update */
 	public void onGPSStatus(String aStatusMsg) {
-		traceScreen.onGPSStatus(aStatusMsg);
+        System.out.println("GPS status:" + aStatusMsg);
+        traceScreen.onGPSStatus(aStatusMsg);
 		traceScreen.setStatus("GPS " + aStatusMsg);
 	}
 
 	public void onGPSTimeout() {
-		traceScreen.onGPSStatus("timeout");
+        System.out.println("GPS timout");
+        traceScreen.onGPSStatus("timeout");
 		traceScreen.setStatus("GPS timeout");
 	}
 
 	public void onNetInfo(String theInfo) {
-		traceScreen.setStatus(theInfo);
+        System.out.println("Net info:" + theInfo);
+        traceScreen.setStatus(theInfo);
 	}
 
 	public void onNetError(String aReason, Throwable anException) {
@@ -161,7 +170,8 @@ public class Tracer implements GPSFetcherListener, NetListener {
 	}
 
 	public void onNetStatus(String aStatusMsg) {
-		traceScreen.onNetStatus(aStatusMsg);
+        System.out.println("Net status:" + aStatusMsg);
+        traceScreen.onNetStatus(aStatusMsg);
 
 	}
 

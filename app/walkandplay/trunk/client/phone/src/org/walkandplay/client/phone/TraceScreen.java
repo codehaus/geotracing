@@ -55,7 +55,7 @@ public class TraceScreen extends GameCanvas {
 	public TraceScreen(WP aMidlet) {
 		super(false);
 		setFullScreenMode(true);
-		tracer = new Tracer(aMidlet, this);
+		//tracer = new Tracer(aMidlet, this);
 		midlet = aMidlet;
 		traceScreen = this;
 	}

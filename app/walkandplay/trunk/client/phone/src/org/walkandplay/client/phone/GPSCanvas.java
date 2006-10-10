@@ -8,7 +8,7 @@ import javax.microedition.rms.RecordStoreException;
 import javax.bluetooth.*;
 import java.util.Hashtable;
 
-public class GPSScreen extends Canvas implements DiscoveryListener {
+public class GPSCanvas extends Canvas implements DiscoveryListener {
 
     private Hashtable devices = new Hashtable(2);
     private String[] discoveredDevices = new String[20];
@@ -45,7 +45,7 @@ public class GPSScreen extends Canvas implements DiscoveryListener {
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public GPSScreen(WP aMidlet) {
+    public GPSCanvas(WP aMidlet) {
         try {
             midlet = aMidlet;
             w = getWidth();
@@ -166,7 +166,7 @@ public class GPSScreen extends Canvas implements DiscoveryListener {
 			log("[" + connectionURL + "]");
 			log(" ");
 			screenStat = DEVICE_SELECTED_STAT;
-            midlet.setGPSStat(true);
+            midlet.setGPSConnectionStat(true);
             repaint();
         }
 	}
@@ -268,10 +268,10 @@ public class GPSScreen extends Canvas implements DiscoveryListener {
         } else if (key == -7) {
             switch (screenStat) {
                 case HOME_STAT:
-                    midlet.setScreen(WP.HOME_SCREEN);
+                    midlet.setScreen(WP.HOME_CANVAS);
                     break;
                 case DEVICE_SELECTED_STAT:
-                    midlet.setScreen(WP.HOME_SCREEN);
+                    midlet.setScreen(WP.HOME_CANVAS);
                     break;
         }
         // left

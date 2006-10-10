@@ -5,7 +5,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-public class HomeScreen extends Canvas {
+public class HomeCanvas extends Canvas {
 
     // paint vars
     int w, h, fh;
@@ -17,7 +17,12 @@ public class HomeScreen extends Canvas {
     private WP midlet;
 
     // image objects
-    private Image logo, textArea, bg, menuBt, backBt;
+    private Image logo, textArea, bg, menuBt, backBt, msgBar;
+    // icon buttons
+    private Image traceBtOn, traceBtOff, findBtOn, findBtOff, playBtOn, playBtOff;
+    private Image[] theOffIcons = new Image[3];
+    private Image[] theOnIcons = new Image[3];
+
 
     // screenstates
     private int screenStat = 0;
@@ -27,7 +32,7 @@ public class HomeScreen extends Canvas {
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public HomeScreen(WP aMidlet) {
+    public HomeCanvas(WP aMidlet) {
         try {
             midlet = aMidlet;
             w = getWidth();
@@ -39,7 +44,21 @@ public class HomeScreen extends Canvas {
             textArea = Image.createImage("/text_area.png");
             menuBt = Image.createImage("/menu_button.png");
             backBt = Image.createImage("/back_button.png");
+            msgBar = Image.createImage("/msg_bar.png");
+            traceBtOff = Image.createImage("/trace_button_off.png");
+            traceBtOn = Image.createImage("/trace_button_on.png");
+            findBtOff = Image.createImage("/find_button_off.png");
+            findBtOn = Image.createImage("/find_button_on.png");
+            playBtOff = Image.createImage("/play_button_off.png");
+            playBtOn = Image.createImage("/play_button_on.png");
             bg = Image.createImage("/bg.png");
+
+            theOffIcons[0] = traceBtOff;
+            theOffIcons[1] = findBtOff;
+            theOffIcons[2] = playBtOff;
+            theOnIcons[0] = traceBtOn;
+            theOnIcons[1] = findBtOn;
+            theOnIcons[2] = playBtOn;
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
@@ -67,9 +86,12 @@ public class HomeScreen extends Canvas {
             case HOME_STAT:
                 g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
-                String text = "Press menu to see the options";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
+                //g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
+                //String text = "Press menu to see the options";
+                //ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
+
+                ScreenUtil.createIcons(g, 5, 20, theOffIcons, theOnIcons);
+                ScreenUtil.placeMsgBar(g, msgBar, h);
                 ScreenUtil.setLeftBt(g, h, menuBt);
                 ScreenUtil.setRightBt(g, h, w, backBt);
                 break;
@@ -78,13 +100,13 @@ public class HomeScreen extends Canvas {
                 g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
-                text = "Press menu to see the options";
+                String text = "Press menu to see the options";
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);                
                 if(midlet.GPS_OK()){
-                    String[] options = {"exit", "change gps", "play tour", "get tour", "start trace"};
+                    String[] options = {"help", "settings", "change gps"};
                     ScreenUtil.createMenu(g, f, h, fh, options);
                 }else{
-                    String[] options = {"exit", "select gps"};
+                    String[] options = {"help", "settings", "select gps"};
                     ScreenUtil.createMenu(g, f, h, fh, options);
                 }
                 ScreenUtil.setRightBt(g, h, w, backBt);
@@ -110,10 +132,10 @@ public class HomeScreen extends Canvas {
                 case MENU_STAT:
                     if(ScreenUtil.getSelectedMenuItem() == 2){
                         log("going to gps screen!!");
-                        midlet.setScreen(WP.GPS_SCREEN);
+                        midlet.setScreen(WP.GPS_CANVAS);
                     }else if(ScreenUtil.getSelectedMenuItem() == 5){
-                        log("going to trace screen!!");
-                        midlet.setScreen(WP.TRACE_SCREEN);
+                        log("going to map screen!!");
+                        midlet.setScreen(WP.MAP_CANVAS);
                     }
                     break;
             }

@@ -8,7 +8,25 @@ import java.util.Vector;
 public class ScreenUtil {
 
     private static int selectedMenuItem = 0;
+    private static int selectedIcon = 0;
     private static int menuItemLength = 0;
+    private static int iconLength = 0;
+
+    public static void createIcons(Graphics aGraphics, int aXOffSet, int aYOffset, Image[] theOffIcons, Image[] theOnIcons){
+        // TODO: support next row
+        for(int i=0;i<theOffIcons.length;i++){
+            if(i == (selectedIcon - 1)){
+                aGraphics.drawImage(theOnIcons[i], aXOffSet + i*theOnIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+            }else{
+                aGraphics.drawImage(theOffIcons[i], aXOffSet + i*theOffIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+            }
+        }
+    }
+
+    public static void placeMsgBar(Graphics aGraphics, Image theBar, int theHeight){
+        System.out.println("placeMsgBar");
+        aGraphics.drawImage(theBar, 0, theHeight - theBar.getHeight(), Graphics.TOP | Graphics.LEFT);
+    }
 
     public static void createMenu(Graphics aGraphics, Font aFont, int theScreenHeight, int theFontHeight, String[] theMenuItems) {
         // start fresh each time we draw a menu
@@ -39,8 +57,6 @@ public class ScreenUtil {
         aGraphics.setColor(0, 0, 0);
         aFont = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         aGraphics.setFont(aFont);
-
-        System.out.println("created menu with " + menuItemLength + " items.");
     }
 
     public static void resetMenu(){
@@ -48,28 +64,43 @@ public class ScreenUtil {
     }
     
     public static void nextMenuItem() {
-        System.out.println("menuItemLength: " + menuItemLength);
         if(selectedMenuItem == menuItemLength){
             selectedMenuItem = 1;
         }else{
             selectedMenuItem++;
         }
-        System.out.println("selectedMenuItem: " + selectedMenuItem);
     }
 
     public static void prevMenuItem() {
-        System.out.println("menuItemLength: " + menuItemLength);
         if(selectedMenuItem == 1){
             selectedMenuItem = menuItemLength;
         }else{
             selectedMenuItem--;
         }
-        System.out.println("selectedMenuItem: " + selectedMenuItem);
     }
 
     public static int getSelectedMenuItem(){
-        System.out.println("selectedMenuItem: " + selectedMenuItem);
         return selectedMenuItem;
+    }
+
+    public static void nextIcon() {
+        if(selectedIcon == iconLength){
+            selectedIcon = 1;
+        }else{
+            selectedIcon++;
+        }
+    }
+
+    public static void prevIcon() {
+        if(selectedIcon == 1){
+            selectedIcon = iconLength;
+        }else{
+            selectedIcon--;
+        }
+    }
+
+    public static int getSelectedIcon(){
+        return selectedIcon;
     }
 
     public static void setLeftBt(Graphics aGraphics, int theScreenHeight, Image anImage) {
