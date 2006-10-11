@@ -23,7 +23,7 @@
 				// See http://www.petefreitag.com/item/466.cfm
 				// LAST N: select * from table where key > (select max(key) - n from table)
 				String tables = "base_medium,g_location";
-				String fields = "base_medium.id,base_medium.kind,base_medium.mime,base_medium.name,base_medium.description,base_medium.creationdate,g_location.lon,g_location.lat";
+				String fields = "base_medium.id,base_medium.kind,base_medium.name,base_medium.creationdate,g_location.lon,g_location.lat";
 				String where = null;
 				String relations = "base_medium,g_location";
 				String postCond;
