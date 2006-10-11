@@ -101,8 +101,16 @@ public class ImageCapture extends Form implements CommandListener {
  // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
 			status.setText("WAIT, taking photo...");
 
-			photoData = video.getSnapshot(
-					"encoding=jpeg&width=320&height=240");
+
+			try {
+				photoData = video.getSnapshot(
+						"encoding=jpeg&width=320&height=240");
+			} catch(Throwable t) {
+				// Some phones don't support specific encodings
+				// This should fix at least SonyEricsson K800i...
+				photoData = video.getSnapshot(null);
+			}
+
 			photoMime = "image/jpeg";
 
 			player.stop();
