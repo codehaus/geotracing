@@ -37,7 +37,12 @@ public class QueryHandler extends DefaultHandler {
 			"(( REL_ALIAS.rec1 = TABLE1.id AND REL_ALIAS.rec2 = TABLE2.id ) " +
 			"OR ( REL_ALIAS.rec1 = TABLE2.id AND REL_ALIAS.rec2 = TABLE1.id ))";
 
-    /** Clause template for tagged relation queries. */
+	/** Clause template for relation queries. */
+	 public static String IS_RELATED2 =
+			 "( REL_ALIAS.rec1 = TABLE1.id AND REL_ALIAS.rec2 = TABLE2.id ) ";
+
+
+	/** Clause template for tagged relation queries. */
 	public static final String IS_RELATED_WITH_TAG =
 			"(" + IS_RELATED +
 			" AND REL_ALIAS.tag = 'TAG' )";
@@ -225,6 +230,166 @@ public class QueryHandler extends DefaultHandler {
 
 						// Assume no tag
 						String relClause = IS_RELATED;
+
+						// Optional tag as e.g. {base_medium,utopia_person,image}
+						if (relSpec.length == 3) {
+							relClause = IS_RELATED_WITH_TAG.replaceAll("TAG", relSpec[2]);
+						}
+
+						// Replace relation alias
+						relClause = relClause.replaceAll("REL_ALIAS", relAlias);
+
+						// Replace related tables
+						relClause = relClause.replaceAll("TABLE1", table1).replaceAll("TABLE2", table2);
+
+						// Determine if multiple relations need to be AND-ed
+						if (allRelClause.length() == 0) {
+							allRelClause = relClause;
+						} else {
+							allRelClause += (" AND " + relClause);
+						}
+
+						// Extend FROM with relation table alias
+						tables += ",oase_relation " + relAlias;
+					}
+
+					// Make final WHERE dependent if there was a WHERE clause
+					constraintBuf.append(where == null ? allRelClause : (where + " AND " + allRelClause));
+				}
+
+				if (postCond != null) {
+					constraintBuf.append(" " + postCond);
+				}
+
+				constraints = (constraintBuf.length() > 0) ? constraintBuf.toString() : null;
+
+				// Let oase do multi-table query
+				result = oase.getFinder().queryStore(tables, fields, constraints);
+			} else {
+				// Query on single table
+				if (where != null) {
+					constraintBuf.append(where);
+				}
+				if (postCond != null) {
+					constraintBuf.append(" " + postCond);
+				}
+
+				constraints = (constraintBuf.length() > 0) ? constraintBuf.toString() : null;
+
+				// Simple one-table query
+				result = oase.getFinder().queryTable(tables, constraints);
+			}
+			return result;
+		} catch (OaseException oe) {
+			throw oe;
+		} catch (Throwable t) {
+			throw new OaseException("Unexpected error in queryStore()", t);
+		}
+
+	}
+
+	/**
+	 * Executes an full sql query.
+	 *
+	 * Static method to allow usage from different contexts, like REST requests.
+	 *
+	 * @param oase Oase session object
+	 * @param tables one or more comma-separated tables
+	 * @param fields one or more comma-separated fields
+	 * @param where the WHERE clause (without WHERE)
+	 * @param relations one or more relations e.g. utopia_person,utopia_medium
+	 * @param postCond query post fix string (ORDER BY, LIMIT etc)
+	 * @return XML &lt;query-store-rsp /&gt; response
+	 * @exception UtopiaException Standard Utopia exception
+	 */
+	static public JXElement queryStoreReq2(Oase oase, String tables, String fields, String where, String relations, String postCond) throws UtopiaException {
+		JXElement rsp = Protocol.createResponse(QUERY_STORE_SERVICE);
+		rsp.setAttr(ATTR_TABLES, tables);
+		rsp.setAttr(ATTR_FIELDS, fields);
+		try {
+
+			// Do query with Record[] result
+			Record[] result = queryStore2(oase, tables, fields, where, relations, postCond);
+
+			// Convert Record[] to XML
+			JXElement nextRecord = null;
+			for (int i = 0; i < result.length; i++) {
+				nextRecord = result[i].toXML();
+
+				// Fix multi-table query (TODO: move to Oase)
+				nextRecord.removeAttr("table");
+				if (tables.indexOf(",") > 0) {
+					// Multi table query: remove id attr
+					if (nextRecord.hasAttr("id")) {
+						nextRecord.removeAttr("id");
+					}
+				} else {
+					// Single table query: make id attr
+					nextRecord.removeChildByTag("id");
+				}
+
+				rsp.addChild(nextRecord);
+			}
+		} catch (OaseException oe) {
+			rsp = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, ErrorCode.__6006_database_irregularity_error, oe.getMessage());
+			// throw new UtopiaException("DB error " + oe, oe, ErrorCode.__6005_Unexpected_error);
+		} catch (Throwable t) {
+			rsp = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, ErrorCode.__6005_Unexpected_error, t.getMessage());
+		}
+
+		return rsp;
+	}
+
+	/**
+	 * Executes an full Oase sql query.
+	 *
+	 * Static method to allow usage from different contexts, like REST requests.
+	 *
+	 * @param oase Oase session object
+	 * @param tables one or more comma-separated tables
+	 * @param fields one or more comma-separated fields
+	 * @param where the WHERE clause (without WHERE)
+	 * @param relations one or more relations e.g. utopia_person,utopia_medium
+	 * @param postCond query post fix string (ORDER BY, LIMIT etc)
+	 * @return Record[] size >= 0
+	 * @exception OaseException Standard Oase exception
+	 */
+	static public Record[] queryStore2(Oase oase, String tables, String fields, String where, String relations, String postCond) throws OaseException {
+
+		try {
+			Record[] result = null;
+
+			// Init query constraints
+			String constraints = null;
+			StringBuffer constraintBuf = new StringBuffer();
+			if (where != null || relations != null) {
+				constraintBuf.append("WHERE ");
+			}
+
+			// Null means all fields.
+			if (fields == null) {
+				fields = "*";
+			}
+
+			if (tables.indexOf(",") > 0) {
+				// Prepare query store parms
+				if (relations != null) {
+
+					// Prepare relation clause
+					String allRelClause = "";
+
+					// Get all relation specs e.g. (person,medium;account,person)
+					String relSpecs[] = relations.trim().split(REL_SPEC_SEPARATOR);
+					for (int i = 0; i < relSpecs.length; i++) {
+						String relSpec[] = relSpecs[i].trim().split(",");
+						String table1 = relSpec[0].trim();
+						String table2 = relSpec[1].trim();
+
+						// Create alias name (required for multi-relation specs)
+						String relAlias = REL_ALIAS_BASE + i;
+
+						// Assume no tag
+						String relClause = IS_RELATED2;
 
 						// Optional tag as e.g. {base_medium,utopia_person,image}
 						if (relSpec.length == 3) {

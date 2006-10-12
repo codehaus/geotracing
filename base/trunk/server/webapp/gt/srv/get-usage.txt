@@ -119,12 +119,22 @@ get media for single user
 - parms
 * "user" : (m) a user login name
 
+"q-medium-info"
+get all attributes and user name for a medium id
+- parms
+* "id" : (m) a medium id
+
 "q-pois"
 queries on POIs with their locations
 * "type" : (o) specific  type, values: determined by pois in system
 * "bbox" : (o) get in bounding rectangle, values 2 lon/lat pairs (SW,NE)
 * "random" : (o) pick random, values: true/false
 * "max" : (o) maximum number to be returned default 10
+
+"q-user-image"
+get user thumbnail image id by user name
+- parms
+* "user" : (m) a user login name
 
 "q-user-by-name"
 get user record

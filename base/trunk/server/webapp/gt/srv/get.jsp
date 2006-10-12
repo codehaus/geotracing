@@ -37,9 +37,11 @@
 	public static final String CMD_QUERY_MEDIA_BY_USER = "q-media-by-user";
 	public static final String CMD_QUERY_USER_IMAGE = "q-user-image";
 	public static final String CMD_QUERY_USER_BY_NAME = "q-user-by-name";
+	public static final String CMD_QUERY_MEDIUM_INFO = "q-medium-info";
 	public static final String CMD_QUERY_POIS = "q-pois";
 	public static final String CMD_GET_TRACK = "get-track";
 	public static final String CMD_DESCRIBE = "describe";
+	public static final String PAR_ID = "id";
 	public static final String PAR_CMD = "cmd";
 	public static final String PAR_BBOX= "bbox";
 	public static final String PAR_USER_NAME= "user";
@@ -183,12 +185,17 @@
 
 	Record getAccount(Oase oase, String aLoginName) throws Exception  {
 		Finder finder = oase.getFinder();
-		return finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'")[0];
+		Record[] result = finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'");
+		return result.length == 0 ? null : result[0];
 	}
 
 	Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception  {
 		Record account = getAccount(oase, aLoginName);
-		return oase.getRelater().getRelated(account, "utopia_person", null)[0];
+		if (account == null) {
+			return null;
+		}
+		Record[] result =  oase.getRelater().getRelated(account, "utopia_person", null);
+		return result.length == 0 ? null : result[0];
 	}
 
 	/** Performs command and returns XML result. */
@@ -214,17 +221,17 @@
 				String where = "g_track.state=1";
 				String relations = "g_track,g_location,lastpt";
 				String postCond = null;
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
 				addUserAttrs(result);
 
 				// Originele query (duurde heeeeel lang)
-				/*
-				String tables = "utopia_person,utopia_account,g_track,g_location";
-				String fields = "g_track.id,g_track.name,utopia_account.loginname,g_location.lon,g_location.lat";
+
+	/*			String tables = "utopia_person,utopia_account,g_track,g_location";
+				String fields = "g_track.id,g_track.name,utopia_person.extra,utopia_account.loginname,g_location.lon,g_location.lat";
 				String where = "g_track.state=1";
-				String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_person,utopia_account";
+				String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_account,utopia_person";
 				String postCond = "ORDER BY utopia_account.loginname";
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);   */
 			} else if (command.equals(CMD_QUERY_ALL_TRACKS)) {
@@ -240,43 +247,19 @@
 				// This query split for optimization (from 7 seconds to 50 ms)
 
 				// First get Person+Account
-				String tables = "utopia_person,utopia_account";
-				String fields = "utopia_account.loginname,utopia_person.id,utopia_person.extra";
+				String tables = "utopia_person,utopia_account,g_track";
+				String fields = "utopia_account.loginname,utopia_person.id AS personid,utopia_person.extra,g_track.id,g_track.name";
 				String where = "utopia_account.loginname = '" + userName + "'";
-				String relations = "utopia_person,utopia_account";
-				String postCond = null;
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
-				String personId = ((JXElement)result.getChildren().get(0)).getChildText("id");
-
-				// Now query tracks related to person id
-				tables = "utopia_person,g_track";
-				fields = "g_track.id,g_track.name,utopia_person.extra";
-				where = "utopia_person.id = " + personId;
-				relations = "g_track,utopia_person";
-				postCond = "ORDER BY g_track.id";
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
-
-				// Now add login name to each record element in response
-				Vector children = result.getChildren();
-				for (int i=0; i < children.size(); i++) {
-					((JXElement)children.get(i)).setChildText("loginname", userName);
-				}
-	/*			String userName = getParameter(request, PAR_USER_NAME, null);
-				throwOnMissingParm(PAR_USER_NAME, userName);
-
-				String tables = "utopia_person,utopia_account,g_track,g_location";
-				String fields = "g_track.id,g_track.name,g_track.state,utopia_account.loginname,g_location.lon,g_location.lat";
-				String where = "utopia_account.loginname = '" + userName + "'";
-				String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_person,utopia_account";
-				String postCond = "ORDER BY utopia_account.loginname";
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);  */
+				String relations = "utopia_account,utopia_person;g_track,utopia_person";
+				String postCond = "ORDER BY g_track.id";
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 			} else if (command.equals(CMD_QUERY_ALL_USERS)) {
 				String tables = "utopia_person,utopia_account,utopia_role";
 				String fields = "utopia_person.id,utopia_account.id AS accountid, utopia_account.loginname";
 				String where = "utopia_role.name = 'user' AND utopia_account.state = 1";
-				String relations = "utopia_person,utopia_account;utopia_account,utopia_role";
+				String relations = "utopia_account,utopia_person;utopia_account,utopia_role";
 				String postCond = "ORDER BY utopia_account.loginname";
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 			} else if (command.equals(CMD_QUERY_RECENT_TRACKS)) {
 				// Optional number
 				String max = getParameter(request, "max", "5");
@@ -304,12 +287,12 @@
 				String trackId = result.getChildAt(0).getAttr("id");
 
 				// Now get all info for track
-				tables = "utopia_person,utopia_account,g_track,g_location";
+				tables = "g_track,utopia_person,utopia_account,g_location";
 				fields = "g_track.id,g_track.name,g_track.state,utopia_person.extra,utopia_account.loginname,g_location.lon,g_location.lat,g_location.time";
 				where = "g_track.id = " + trackId;
-				relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_person,utopia_account";
+				relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_account,utopia_person";
 				postCond = null;
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 			} else if (command.equals(CMD_QUERY_LOCATIVE_MEDIA)) {
 				// See http://www.petefreitag.com/item/466.cfm
@@ -317,7 +300,7 @@
 				String tables = "base_medium,g_location";
 				String fields = "base_medium.id,base_medium.kind,base_medium.mime,base_medium.name,base_medium.description,base_medium.creationdate,g_location.lon,g_location.lat";
 				String where=null;
-				String relations = "base_medium,g_location";
+				String relations = "g_location,base_medium";
 				String postCond;
 
 				// WHERE clause
@@ -346,7 +329,7 @@
 					postCond += " LIMIT " + Integer.parseInt(limitParm);
 				}
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
 				addUserAttrs(result);
@@ -375,9 +358,9 @@
 				String tables = "utopia_person,utopia_account";
 				String fields = "utopia_account.loginname,utopia_person.id,utopia_person.extra";
 				String where = "utopia_account.loginname = '" + userName + "'";
-				String relations = "utopia_person,utopia_account";
+				String relations = "utopia_account,utopia_person";
 				String postCond = null;
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 				String personId = ((JXElement)result.getChildren().get(0)).getChildText("id");
 
 				// Now query tracks related to person id
@@ -406,7 +389,7 @@
 				String tables = "g_poi,g_location";
 				String fields = "g_location.lon,g_location.lat,g_poi.id,g_poi.name,g_poi.description,g_poi.type,g_poi.time";
 				String where=null;
-				String relations = "g_poi,g_location";
+				String relations = "g_location,g_poi";
 				String postCond;
 
 				// WHERE clause
@@ -435,7 +418,7 @@
 					postCond += " LIMIT " + Integer.parseInt(limitParm);
 				}
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 			} else if (command.equals(CMD_QUERY_USER_BY_NAME)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
@@ -445,15 +428,33 @@
 				String tables = "utopia_person,utopia_account";
 				String fields = "utopia_person.id,utopia_person.extra,utopia_account.loginname";
 				String where = "utopia_account.loginname = '" + loginName + "'";
-				String relations = "utopia_person,utopia_account";
+				String relations = "utopia_account,utopia_person";
 				String postCond = null;
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+
+			} else if (command.equals(CMD_QUERY_MEDIUM_INFO)) {
+				String id = getParameter(request, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
+
+				// First get all active tracks
+				String tables = "base_medium";
+				String fields = null;
+				String where = "base_medium.id = " + id;
+				String relations = null;
+				String postCond = null;
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+
+				// Add account/person attrs to each record
+				addUserAttrs(result);
 
 			} else if (command.equals(CMD_QUERY_USER_IMAGE)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
 				Record person = getPersonForLoginName(oase, loginName);
+				if (person == null) {
+					throw new IllegalArgumentException("No person found for loginname=" + loginName);
+				}
 
 				Record[] thumbRecords = oase.getRelater().getRelated(person, "base_medium", "thumb");
 
@@ -543,7 +544,7 @@
 			 writer.write(result.toFormattedString());
 			 writer.flush();
 			 writer.close();
-			 log.info("cmd " + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() -t1) + " ms");
+			 log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() -t1) + " ms");
 		 } catch (Throwable th) {
 	  		 log.info("error " + command + " writing response");
 		 }
