@@ -67,7 +67,7 @@ public class SplashCanvas extends Canvas {
                     midlet.setScreen(screenName);
                     repaint();
                 } else {
-                    System.out.println("bye bye");
+                    System.out.println("say bye bye");
                     midlet.destroyApp(true);
                     midlet.notifyDestroyed();
                 }

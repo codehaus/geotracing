@@ -114,7 +114,6 @@ public class PlayToursCanvas extends DefaultCanvas {
                     screenStat = MENU_STAT;
                     break;
                 case MENU_STAT:
-                    ScreenUtil.resetMenu();
                     screenStat = HOME_STAT;
                     break;
             }
@@ -134,18 +133,10 @@ public class PlayToursCanvas extends DefaultCanvas {
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            switch (screenStat) {
-                case MENU_STAT:
-                    ScreenUtil.nextMenuItem();
-                    break;
-            }
+            ScreenUtil.nextMenuItem();
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            switch (screenStat) {
-                case MENU_STAT:
-                    ScreenUtil.prevMenuItem();
-                    break;
-            }
+            ScreenUtil.prevMenuItem();
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
         } else if (key == -8) {

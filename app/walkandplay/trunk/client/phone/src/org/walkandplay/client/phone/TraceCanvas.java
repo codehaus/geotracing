@@ -30,7 +30,9 @@ public class TraceCanvas extends GameCanvas {
     private Tracer tracer;
 
     // image objects
-    private Image logo, menuBt, textArea, backBt;
+    private Image logo, menuBt, textArea, backBt, traceLogo, gpsNetBar, redDot, greenDot;
+
+    int margin = 3;
 
     // screenstates
     private int screenStat = 0;
@@ -58,6 +60,10 @@ public class TraceCanvas extends GameCanvas {
             menuBt = Image.createImage("/menu_button.png");
             textArea = Image.createImage("/text_area.png");
             backBt = Image.createImage("/back_button.png");
+            traceLogo = Image.createImage("/trace_button_off_small.png");
+            gpsNetBar = Image.createImage("/gpsnet_bg.png");
+            redDot = Image.createImage("/red_dot.png");
+            greenDot = Image.createImage("/green_dot.png");
 
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
@@ -122,11 +128,23 @@ public class TraceCanvas extends GameCanvas {
             fh = f.getHeight();
         }
 
+        g.drawImage(gpsNetBar, margin + logo.getWidth() + margin, margin, Graphics.TOP | Graphics.LEFT);
+        if (midlet.GPS_OK()) {
+            g.drawImage(greenDot, margin + logo.getWidth() + margin + 4, 10, Graphics.TOP | Graphics.LEFT);
+        } else {
+            g.drawImage(redDot, margin + logo.getWidth() + margin + 4, 10, Graphics.TOP | Graphics.LEFT);
+        }
+        if (midlet.NET_OK()) {
+            g.drawImage(greenDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
+        } else {
+            g.drawImage(redDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
+        }
+
         if (activeTile == null) {
             msg = "No location yet...";
             g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
             String text = "No Location yet";
-            ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
+            ScreenUtil.drawText(g, text, 10, logo.getHeight() + traceLogo.getHeight() + 3 * margin, fh);
             return;
         }
 
