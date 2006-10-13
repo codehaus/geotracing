@@ -1,0 +1,164 @@
+maps:
+http://planner.holland.com/fietsroutes
+via http://www.holland.com/nl/
+http://www.atlasvannederland.nl overzicht planners etc
+http://home.wanadoo.nl/skeelerroutes/ zeeland skeeler routes
+
+td
+kadaster.gisinternet.nl/kaartapp
+http://kadaster.gisinternet.nl/tdn_maps/25000/105600_477600.png
+1600 (x) 1200 (y)
+
+scale 1000000
+step: 64000, 48000
+http://kadaster.gisinternet.nl/tdn_maps/1000000/0_534000.png
+/tdn_maps/1000000/64000_534000.png
+/tdn_maps/1000000/128000_534000.png
+/tdn_maps/1000000/0_486000.png
+/tdn_maps/1000000/64000_486000.png
+/tdn_maps/1000000/128000_486000.png
+/tdn_maps/1000000/0_438000.png
+/tdn_maps/1000000/64000_438000.png
+/tdn_maps/1000000/128000_438000.png
+
+left, bottom 1000000/0_390000.png
+right, bottom 1000000/192000_342000.png
+right, top 1000000/256000_630000.png
+left,top 1000000/0_630000.png
+
+
+USING SATTELITE MAPS
+http://onearth.jpl.nasa.gov
+RD heeft epsg 28992
+werkt niet
+http://wms.jpl.nasa.gov/wms.cgi?REQUEST=GetMap&WIDTH=400&HEIGHT=600&LAYERS=modis&srs=EPSG:4326&format=image/jpeg&bbox=4,51,6,53.5&VERSION=1.1.1&STYLES=
+http://www2.demis.nl/mapserver/request.asp?request=capabilities&wmtver=1.0.0
+http://maps.civicactions.net//cgi/mapserv.cgi?service=WMS&WMTVER=1.0.0&REQUEST=map&SRS=EPSG:4326&LAYERS=bluemarble,landsat7,lakes,rivers,cities,majorroads,minorroads,tiger_polygon,tiger_landmarks,tiger_lakes,tiger_local_roads,tiger_major_roads,lowboundaries,boundaries,coastlines&FORMAT=image/jpeg&STYLES=&TRANSPARENT=TRUE&WIDTH=256&HEIGHT=128&BBOX=3.044334471254177,50.61615022558452,7.538076248144348,53.63327329724305
+need 0_630000_307200_294000_0_sk8.png
+this becomes
+http://maps.civicactions.net//cgi/mapserv.cgi?service=WMS&WMTVER=1.0.0&REQUEST=map&SRS=EPSG:4326&LAYERS=bluemarble,coastlines,lowboundaries&FORMAT=image/jpeg&STYLES=&TRANSPARENT=TRUE&WIDTH=615&HEIGHT=672&BBOX=3.044334471254177,50.61615022558452,7.538076248144348,53.63327329724305
+detail around adam
+http://maps.civicactions.net//cgi/mapserv.cgi?service=WMS&WMTVER=1.0.0&REQUEST=map&SRS=EPSG:4326&LAYERS=bluemarble,landsat7,coastlines,lowboundaries&FORMAT=image/jpeg&STYLES=&TRANSPARENT=TRUE&WIDTH=768&HEIGHT=576&BBOX=4.805576449435453,52.188001618941364,5.366996406647622,52.44827961420997
+or
+http://maps.civicactions.net//cgi/mapserv.cgi?service=WMS&WMTVER=1.0.0&REQUEST=map&SRS=EPSG:4326&LAYERS=landsat7,lowboundaries&FORMAT=image/jpeg&STYLES=&TRANSPARENT=TRUE&WIDTH=768&HEIGHT=576&BBOX=4.805576449435453,52.188001618941364,5.366996406647622,52.44827961420997
+http://maps.civicactions.net//cgi/mapserv.cgi?service=WMS&WMTVER=1.0.0&REQUEST=map&SRS=EPSG:4326&LAYERS=landsat7,bluemarble&FORMAT=image/jpeg&STYLES=&TRANSPARENT=TRUE&width=768&height=576&BBOX=4.66097859387891,52.3821280804565,4.803029190034324,52.44605353141706
+OSM very good:
+http://tile.openstreetmap.org//cgi-bin/steve/mapserv?map=/usr/lib/cgi-bin/steve/wms.map&service=WMS&WMTVER=1.0.0&REQUEST=map&STYLES=&TRANSPARENT=TRUE&LAYERS=landsat&width=700&height=500&bbox=4.805576449435453,52.188001618941364,5.366996406647622,52.44827961420997
+http://tile.openstreetmap.org//cgi-bin/steve/mapserv?map=/usr/lib/cgi-bin/steve/wms.map&service=WMS&WMTVER=1.0.0&REQUEST=map&STYLES=&TRANSPARENT=TRUE&LAYERS=landsat&width=700&height=500&bbox=4.805576449435453,52.188001618941364,5.366996406647622,52.44827961420997
+
+http://wms1.ccgis.de/mapbender/
+
+WMS daar komt van: http://wms.jpl.nasa.gov//wms.cgi?
+biv rond a'dam
+http://wms.jpl.nasa.gov//wms.cgi?&VERSION=1.1.1&REQUEST=GetMap&SERVICE=WMS&LAYERS=global_mosaic&STYLES=&SRS=EPSG:4326&BBOX=4.802174391258024,52.18943517285201,5.367116364679806,52.4468352261658&WIDTH=768&HEIGHT=576&FORMAT=image/png&BGCOLOR=0xffffff&TRANSPARENT=TRUE&EXCEPTIONS=application/vnd.ogc.se_xml
+
+ WMS
+http://wms.geodan.nl/startdata/sclmapserver.exe?service=WMS&request=GetCapabilities
+http://www2.demis.nl/mapserver/wms.asp?service=WMS&request=GetCapabilities
+http://www.geotools.org/display/GEOS/Available+WMS+and+WFS+servers
+http://www.skylab-mobilesystems.com/en/wms_serverlist.html
+http://community.qgis.org/cgi-bin/mapserv?map=%2Fdata%2Ftim%2Fwww%2Fcommunity.qgis.org%2Fmaps%2Fmain.map&service=WMS&request=GetCapabilities
+http://community.qgis.org/cgi-bin/mapserv?map=%2Fdata%2Ftim%2Fwww%2Fcommunity.qgis.org%2Fmaps%2Fmain.map&service=WMS&VERSION=1.1.0&REQUEST=map&SRS=EPSG:4326&LAYERS=Boundaries&FORMAT=image/jpeg&STYLES=&TRANSPARENT=TRUE&WIDTH=615&HEIGHT=672&BBOX=3.044334471254177,50.61615022558452,7.538076248144348,53.63327329724305
+
+http://www.geodan.nl/uk/sc_demo/index.htm
+http://www.geodan.nl//cgi-bin/sc_demo/sclmapserver/sclmapserver.exe/en?version=1.0.2&layers=gs1,gs2,gs3,gs4,gs5,gs6,europe_main,offices&srs=EPSG:28992&bbox=120466.6521,485727.1415,122558.6770,486880.8428&width=1389&height=766&format=gif&exceptions=xml&transparent=TRUE&request=GetMap
+http://www.geodan.nl//cgi-bin/sc_demo/sclmapserver/sclmapserver.exe/en?version=1.0.2&request=GetCapabilities
+
+WFS
+http://www.geodan.nl/cgi-bin/sc_demo/sclfeatureserver/SclFeatureServer.exe
+POST
+<GetFeature maxFeatures="31"><Query typeName="ADDRESS"><Filter><And><PropertyIsEqualTo><PropertyName>postcode</PropertyName><Literal>1181PL</Literal></PropertyIsEqualTo></And></Filter></Query></GetFeature>
+reply
+<?xml version="1.0"  encoding="iso-8859-1" standalone="yes" ?>
+<FeatureCollection typeName="ADDRESS">
+<boundedBy><Box srsName="EPSG:4326"><coordinates>118635,480622 118635,480622</coordinates>
+</Box>
+</boundedBy>
+<featureMember typeName="ADDRESS"><Feature typeName="ADDRESS"><property typeName="id" type="integer">1311078</property>
+<property typeName="straat">van der hoochlaan</property>
+<property typeName="nummerreeks">1 t/m 29</property>
+<property typeName="postcode">1181PL</property>
+<property typeName="plaats">amstelveen</property>
+<property typeName="gemeente">amstelveen</property>
+<geometricProperty typeName="lokatie"><Point srsName="EPSG:4326"><coordinates>118635,480622</coordinates>
+</Point>
+</geometricProperty>
+</Feature>
+</featureMember>
+<featureMember typeName="ADDRESS"><Feature typeName="ADDRESS"><property typeName="id" type="integer">1311079</property>
+<property typeName="straat">van der hoochlaan</property>
+<property typeName="nummerreeks">2 t/m 28</property>
+<property typeName="postcode">1181PL</property>
+<property typeName="plaats">amstelveen</property>
+<property typeName="gemeente">amstelveen</property>
+<geometricProperty typeName="lokatie"><Point srsName="EPSG:4326"><coordinates>118635,480622</coordinates>
+</Point>
+</geometricProperty>
+</Feature>
+</featureMember>
+</FeatureCollection>
+
+
+TERRASERVER
+A'dam
+http://www.terraserver.com/search/intlcity_results.asp?city=Amsterdam&country=NL&lat=52.37&lon=4.89&from=selectpage
+http://image.terraserver.com//ecwp/ecw_img.dll?image?ecw=/image_data/orbimage/Orbimage_amsterdam_netherlands.ecw&sizex=500&sizey=500&worldtlx=626671&worldtly=5805872&worldbrx=630671&worldbry=5801872
+
+GEOTORRENT
+http://www.geotorrent.org
+
+
+MAP NL TOPO
+www.kaart.nieuwekaart.nl/script/geoserver.asp?version=1.0.2&request=GetCapabilities
+
+
+======================== IMPORT FROM KWX ========================
+
+great amsterdam image
+http://www.terraserver.com/imagery/image_ermapper.asp?ulx=625373.7377&uly=5808187.7832&lrx=633373.7377&lry=5800187.7832?=3&provider_id=101&t=pan
+http://adres.asp4all.nl/asp/get.asp?xdl=Stadsplattegrond&xsl=Layout
+
+atlas amsterdam
+
+map nieuwmarkt direct uit atlas a'dam
+http://adres.asp4all.nl/servlet/MapGuideLiteView?REQUEST=map&BBOX=121798.64867200001,487275.21343999996,121898.757472,487358.84864&WIDTH=474&HEIGHT=396&LAYERS=AmsterdamLite_Alleen_Kaart.mwf&FORMAT=PNG&PPIY=72
+bbox is in meters lowerleftX,lowerleftY,upperRightX,upperRightY
+als SRS=ADSK:LL84 is BBOX in lon,lat,lon,lat (lower left naar upper right)
+AmsterdamLite_Alleen_Kaart.mwf --> alleen kaart
+AmsterdamLite_Lufo_zk.mwf --> luchtfoto zonder kaart
+AmsterdamLite_Luchtfoto.mwf --> luchtfoto met kaart
+
+just's buurt direct uit atlas
+http://adres.asp4all.nl//servlet/MapGuideLiteView?REQUEST=map&BBOX=118317.46863999999,480394.079584,118818.01263999998,480812.25558399997&WIDTH=474&HEIGHT=396&LAYERS=AmsterdamLite_Luchtfoto.mwf&FORMAT=PNG&PPIY=72
+
+waag uit atlas met lat/lon
+http://adres.asp4all.nl//servlet/MapGuideLiteView?REQUEST=map&SRS=ADSK:LL84&BBOX=4.9030,52.37,4.9032,52.38&WIDTH=600&HEIGHT=600&LAYERS=AmsterdamLite_Luchtfoto.mwf&FORMAT=PNG&PPIY=72
+
+with RD (lat lon does not work on all maps)
+http://adres.asp4all.nl/servlet/MapGuideLiteView?REQUEST=map&BBOX=120200,485600,123700,489000&WIDTH=600&HEIGHT=600&LAYERS=AmsterdamLite_Lufo_zk.mwf&FORMAT=PNG&PPIY=72
+
+Waag Ingezoomd
+http://adres.asp4all.nl/servlet/MapGuideLiteView?REQUEST=map&BBOX=121803.62982400002,487267.65328,121903.738624,487351.28848000004&WIDTH=600&HEIGHT=600&LAYERS=AmsterdamLite_Lufo_zk.mwf&FORMAT=PNG&PPIY=72
+121603,487100,122103,487518
+
+tensingsks hack link example
+http://lpn.tms.tensingsks.com/tms/scripts/tgigw.dll?APP=tms&CMD=MAP&OUTPUT=GIF&KEY=FAA7D589EC3581C5&WIDTH=600&HEIGHT=600&OUTPUT=GIF&SELECT=ZOOM&LEVEL=1&XCENTRE=1493240&YCENTRE=1962766
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

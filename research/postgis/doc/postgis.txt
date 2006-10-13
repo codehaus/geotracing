@@ -57,6 +57,15 @@ when using
 Class.forName("org.postgis.DriverWrapperLW");
 now no need to do AddType
 
+- test Oase
+cannot use prepared statements
+INSERT INTO spatialone VALUES (?,?,?,?,?)
+INSERT INTO spatialone VALUES (28,TheName,1160432443975,1160432443975,GeomFromText('POINT (4.92 52.35)', 4326))
+
+UPDATE spatialone SET point=GeomFromText('POINT (4.92 52.35)', 4326), modificationdate=1160430674652 WHERE id = 21
+gives
+org.postgresql.util.PSQLException: ERROR: column "point" is of type geometry but expression is of type character varying
+
 - version test
 ** PostGIS jdbc client code **
 	getFullVersion: PostGIS JDBC V1.1.0

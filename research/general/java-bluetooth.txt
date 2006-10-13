@@ -1,0 +1,10 @@
+
+BT
+http://developers.sun.com/techtopics/mobility/apis/articles/bluetoothintro/ (JSR-82 tut)
+http://www.commsdesign.com/design_corner/OEG20030611S0026
+http://www.commsdesign.com/design_center/homenetworking/design_corner/showArticle.jhtml?articleID=16501337
+http://www.benhui.net/modules.php?name=Forums&file=viewtopic&t=77&view=next
+http://www.javabluetooth.org
+
+bluetooth jsr-82 lots of code
+http://wireless.klings.org

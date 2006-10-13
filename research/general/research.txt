@@ -1,0 +1,312 @@
+transformatie topograf map RD naar lat/lon
+http://www.xs4all.nl/~estevenh/1/
+code in
+http://www.xs4all.nl/~estevenh/1/frame/fr1.html
+
+over RD grid
+http://www.xs4all.nl/~atarist/geo/gps_rd.htm
+
+over GPS en RD
+http://www.biodiv.nl/gps/
+http://www.go-gps.nl/pages/gps/handleiding.php
+http://www.rdnap.nl/
+
+MapLinks (1000-en!)
+http://oddens.geog.uu.nl/index.php
+
+GPSDrive (display while driving)
+http://www.gpsdrive.cc
+mac osx port of gpsdrive: http://chrissnell.com/gpsdrive
+
+
+draw from GPS
+http://gpsmap.sourceforge.net/
+http://openmap.bbn.com/
+http://freegis.org
+
+java api by example
+http://www.kickjava.com/
+
+http://www.gpsvisualizer.com/ by Adam Schneider (uses SVG)
+http://www.flashenabled.com/run/
+
+http://www.tjerklangelaar.nl/skating/Tracks/track.php (inline GPS tracks)
+
+http://www.inkscape.org/ (convert SVG to PNG maar kan ook met ImageMagick)
+
+mark Fennell (Flash GeoRendering)
+http://www.markfennell.com/panoramas/index.html
+http://www.zoomify.com/
+
+- video conversion
+3gp to something playable
+http://julian.coccia.com/blog/index.php?p=66&more=1
+install ffmpeg and AMR codecs
+./configure --enable-amr_nb --enable-amr_nb-fixed --enable-mp3lame
+installed mplayer/mencoder and essentail codecs
+modify
+/usr/local/etc/mplayer/codecs.conf
+
+videocodec ffh263
+info "FFmpeg H263+ decoder"
+status working
+fourcc H263,U263,h263,X263
+fourcc viv1 h263
+driver ffmpeg
+dll h263
+out YV12,I420,IYUV
+format 0x33363273
+
+WERKT met ffmpeg !!!!
+ffmpeg -y -i $1 -ar 11025  -sameq -b 81 $1.flv
+ffmpeg -y -i $1.flv -sameq -b 81 $2
+
+COMPILE FFMPEG ON MACOSX WITH AMR SUPPORT
+http://www.n-gage-help.com/modules.php?name=Forums&file=viewtopic&p=22193
+
+in amr/typedefs.h  (last line replace #error)
+#define PC
+#define PLATFORM "PC"
+#undef LSBFIRST
+
+./configure  --enable-amr_nb-fixed --prefix=/usr
+(maar geeft geen LAME support waarschijnlijk vanwege lame in fink root...)
+
+REFS
+http://www.telematicsresearch.com/client/newsSearch.php?id=522&search=
+http://www.engadget.com/entry/1234000503046512/
+http://www.we-make-money-not-art.com/archives/006160.php
+http://geofs.uni-muenster.de/phpBB/viewtopic.php?t=2588
+http://www.smartmobs.com/archive/2005/06/13/geoskating.html
+http://www.100shiki.com
+
+MIGRATIE CHANTAL
+- ffmpeg
+- /opt/bin/exifdate script
+- GeoListener script
+- MapDrawer script
+
+
+POLYLINE SIMPLIFICATION
+- http://uo.space.frot.org/?LondonFreeMap
+- http://geometryalgorithms.com/Archive/algorithm_0205
+
+
+USE JPG
+- MapDrawer: global replace png jpg;  define gridcolor 0xdd ; 1M: white; legend; offset
+- TDMapripper equivalent ok
+- webapp: global replace ??
+- help legend and help page
+- text index.html and style.css
+
+USING GOOGLE MAPS
+http://gmaps.tommangan.us/tlabel.html
+
+overlay with tiles from any WMS server
+http://radar.oreilly.com/archives/2005/07/where_20_first.html
+and the JS
+
+better is
+http://www.spatialdatalogic.com/cs/blogs/brian_flood/archive/2005/07/11/39.aspx
+
+even better is
+http://blog.kylemulka.com/?p=287
+example at: http://personales.jet.es/garfi/gmapicc17.html
+
+correction for Mercator lat projection:
+http://johndeck.blogspot.com/
+
+OPTIMALISATIE KW RELS
+mysql -u <user> -p <dbname>
+ALTER TABLE oase_relation ADD INDEX(rec1,rec2);
+
+GPSBABEL
+www.gpsbabel.org
+install expat (XML)
+make mac-usbfree
+make install
+
+MAPSERVER
+apt-get install mapserver-bin
+apt-get install mapserver-doc
+apt-get install cgi-mapserver
+get running
+http://ms.gis.umn.edu/new_users/index_html#get-mapserver-running
+demo needed tifflib:
+apt-get install libtiff4
+mapserver WMS server HOWTO
+http://mapserver.gis.umn.edu/doc44/wms-server-howto.html#install
+
+http://banda.xs4all.nl/cgi-bin/mapserv?map=/home/httpd/banda/mapserver/gpx2shp/routes.map&service=WMS&request=GetCapabilities
+convert GPX to ESRI SHP
+apt-get install gpx2shp
+
+KA-MAP
+http://www.xml.com/pub/a/2005/08/10/ka-map.html?page=1
+
+GPX
+http://www.topografix.com/gpx.asp
+examples:
+http://jibbering.com/mapping/gpx/
+
+GMAP TO GPX
+http://www.elsewhere.org/GMapToGPX/
+
+JAVA HEADLESS
+problem running Java AWT on server without X
+http://www.xfree86.org/4.0.1/Xvfb.1.html
+apt-get install xvfb
+apt-get install xfree86-common
+
+
+Running Xvfb is pretty simple once you have it installed.  Just use the following commands
+
+export DISPLAY=localhost:99.0
+This sets the DISPLAY environment variable - you don't have to use 99 for the display, that's just a
+display that probably won't be in use.
+
+/usr/X11R6/bin/Xvfb :99 -screen 0 1x1x8 &
+This starts Xvfb.  If Xvfb is located someplace different that the path I specified, then use your path.
+":99" is the display to use - same number as the export DISPLAY command above.  "-screen 0 1x1x8"
+ tells Xvfb to create screen zero with a resolution of 1x1 pixel with 8 bits of color.
+ You don't need a bigger screen since it actually won't be trying to draw to the screen.
+  "&" makes it run in the background so you can now start the PokerApp server.
+
+
+alternative: using headless
+http://javatechniques.com/public/java/docs/hosting/headless-java-x11-libraries.html
+http://forum.java.sun.com/thread.jspa?threadID=650833
+start java with
+-Djava.awt.headless=true
+and install minimal X package libxp6
+apt-get install libxp6
+
+TIME
+GPS time is UTC time + about 13 secs
+http://www.leapsecond.com/java/gpsclock.htm
+
+
+SMS2EMAIL
+KPN	http://www.hi.nl	969	EMAIL naam@provider.nl
+T-Mobile	http://www.tmobile.nl	555  EMAIL naam@provider.com
+Vodafone	http://www.vodafone.nl	125	EMAIL naam@provider.nl
+O2v	http://www.o2.nl	221	EMAIL naam@provider.com
+Orange	http://www.orange.nl	126	EMAIL naam@ provider.nl
+Excell	http://www.excell.to	+39 3334774753	EMAIL naam@provider.nl.
+Sms2email	http://www.sms2mail.ht.st	5454	ORDER MAIL naam@provider.nl
+Tip: Gebruik de e-mailservice van uw gsm-provider of van Excell om het thuisfront
+een e-mailtje te sturen per sms. Dit is niet duurder dan een sms-bericht.
+
+
+Google Map viewer locator (Thomas)
+http://j2memap.landspurg.net
+http://www.mgmaps.com/index.php
+
+OASE Indexing
+- indexes on reltable   ALTER TABLE oase_relation ADD INDEX(rec1,rec2);
+
+SCM/Wiki
+Trac is an enhanced wiki and issue tracking system for software development projects.
+http://www.edgewall.com/trac/
+
+XHTML Mobile
+- http://www.xml.com/pub/a/2004/04/14/mobile.html
+
+SVG (neumann)
+http://www.carto.net/williams/yosemite
+
+FLEET TRACKING
+http://www.engraph.com/
+
+MEDIA CONVERSIE
+http://www.xs4all.nl/~rwvtveer/scilla/
+
+JAVASCRIPT DEVELOPMENT
+http://www.anvilon.com/software/jsjam  (compress js)
+http://jsdoc.sourceforge.net/ (jsdoc)
+http://www.litotes.demon.co.uk/js_info/private_static.html (using static/private functions)
+
+KEYWORX DB MIGRATION (RENAMEING)
+Het is dus mogelijk maar met deze handmatige zaken:
+1. portal.xml nieuwe context naam (maar moet altijd)
+2. nieuwe DB mag niet niet bestaan (zie punt 4), evt dus weggooien
+3. creeer nieuwe DB (mysql CREATE DATABASE <nieuwe naam>
+4. do restore-context.sh <nieuwe naam> <pad naar context-oudenaam-xyz.tar.gz>
+4. nu komt het tricky deel: WIJZIG IN utopia_portal: "name" van <oudenaam> naar <nieuwenaam>. Anders wordt bij opstarten nog een nieuwe portal record toegevoegd, accounts aangemaakt etc.
+
+Punt 2/3 kan evt in restore-context.sh toegevoegd worden (mysql statements). m.a.w. het kan maar omdat in utopia_portal info zit mbt oude context moet die handmatige wijziging onder 4 (Ronald: de portal name is ook beschikbaar via ServerConfig dus mag eignlijk maar op 1 plek voorkomen).
+
+GEOSKATING TO GSOLD OLD MIGRATION
+- warname=gsold dbname=gsold
+- change all geoskating to gsold
+- mapnav/mediaplayer.jsp change media.srv URL
+- update: portal.xml (dbname and comment out GeoLogHandler) and server.properties
+- drop geoskating DB (phpmyadmin)
+- restart
+- change OASE_CONTEXT_NAME in DBDefs.java recompile geotracing.jar
+- replace geoskating.jar
+- update getmap.jsp XY and XYArea
+- all OK and in CVS
+
+GEOSKATING2 to GEOSKATING
+- OK moved DBs
+- todo:
+* interval time config MobiTracer
+
+EXIF UTILS
+exifutils OSX (/opt/exifutils)
+exifdate -a "0000:01:00" (add one month)
+
+- charset
+http://java.sun.com/developer/technicalArticles/Intl/HTTPCharset/
+
+
+- examine stack traces in running Java process
+http://billharlan.com/pub/papers/javatips.html
+Mac:
+ps -e -o "pgid user pid"
+kill -QUIT -27066 (yes "-" and pid is pgid)
+
+OTHER
+http://pasture.ecn.purdue.edu/~abegps/web_ssm/web_GPS.html
+
+GPS and GIS calc basics
+http://www.malaysiagis.com/related_technologies/gps/article3.cfm
+
+geotransform java package
+http://www.geovrml.org/geotransform
+
+transverse mercator calulator (javascript)
+http://www.dmap.co.uk/ll2tm.htm
+
+tensingsks hack link example
+http://lpn.tms.tensingsks.com/tms/scripts/tgigw.dll?APP=tms&CMD=MAP&OUTPUT=GIF&KEY=FAA7D589EC3581C5&WIDTH=600&HEIGHT=600&OUTPUT=GIF&SELECT=ZOOM&LEVEL=1&XCENTRE=1493240&YCENTRE=1962766
+
+geotransform in java
+http://www.geovrml.org/geotransform/
+
+open source gps toolkit
+http://gpstk.sourceforge.net
+
+links
+http://pages.istar.ca/~whamilto/ccge/world_in_spatial_terms.htm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

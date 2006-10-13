@@ -1,0 +1,44 @@
+Do it yourself MIDP on OSX
+
+MIDP1
+http://developers.sun.com/techtopics/mobility/midp/articles/osx
+
+MIDP2.0 OS X
+http://vision.armstrong.edu/burge/27.0.html working on MIDP2.0 port but not yet released
+
+Download Sun MWKT2.0
+http://java.sun.com/products/j2mewtoolkit
+
+Download MPP
+ok
+
+MobGame gamephone build
+- preverify from MPP
+- proguard missing
+
+All working
+http://developer.mpowerplayer.com/
+http://www.avetana-gmbh.de/avetana-gmbh/produkte/jsr82.eng.xml
+
+J2ME tutorials
+http://www.palowireless.com/java/tutorials.asp
+http://www.wirelessdevnet.com/channels/java/features/j2me_http.phtml (very good HTTP examples)
+ http://www.microjava.com/articles/techtalk/recycle
+
+J2ME Tech, also devices
+www.j2mepolish.org
+
+J2ME problem
+geotalker: App. closed jes-e32-java-comms@1442c1  strange error
+                       jes-440-java-comms@14360b
+
+NOKIA 6680 SUPPORT
+http://www.expansys.com/forum.asp?code=119205&page=1
+http://www.newlc.com/article.php3?id_article=109 (memory monitor)
+
+- J2ME commports
+http://developers.sun.com/techtopics/mobility/midp/questions/properties/index.html
+http://forum.nokia.com/Technical_Library/FNTL/Detailed_description_MIDP_system_properties.htm
+
+- voice midlet
+http://www.seeingwithsound.com/midlet.htm
