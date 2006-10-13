@@ -1,9 +1,12 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 
-public class MapCanvas extends GameCanvas {
+public class TraceCanvas extends GameCanvas {
 
     // paint vars
     int w, h, fh;
@@ -15,14 +18,14 @@ public class MapCanvas extends GameCanvas {
     private WP midlet;
     private String tileURL;
     private int zoom = 9;
-	private String activeTile;
+    private String activeTile;
     private Image image;
-	private String mapType="map";
+    private String mapType = "map";
     private String msg;
 
     String gpsStatus = "disconnected";
-	String netStatus = "disconnected";
-	String status = "OK";
+    String netStatus = "disconnected";
+    String status = "OK";
 
     private Tracer tracer;
 
@@ -33,11 +36,11 @@ public class MapCanvas extends GameCanvas {
     private int screenStat = 0;
     private final static int HOME_STAT = 0;
     private final static int MENU_STAT = 1;
-    
+
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public MapCanvas(WP aMidlet) {
+    public TraceCanvas(WP aMidlet) {
         super(false);
         try {
             midlet = aMidlet;
@@ -64,11 +67,11 @@ public class MapCanvas extends GameCanvas {
 
     void start() {
         tracer.start();
-	}
+    }
 
-    Tracer getTracer() {        
+    Tracer getTracer() {
         return tracer;
-	}
+    }
 
     // passes log msg to the main log method
     private void log(String aMsg) {
@@ -76,35 +79,35 @@ public class MapCanvas extends GameCanvas {
     }
 
     void setLocation(String aLon, String aLat) {
-		if (aLon.equals(("0")) || aLat.equals("0")) {
+        if (aLon.equals(("0")) || aLat.equals("0")) {
             msg = "No Location";
-			return;
-		}
-		activeTile = tileURL + "lon=" + aLon + "&lat=" + aLat;
-	}
+            return;
+        }
+        activeTile = tileURL + "lon=" + aLon + "&lat=" + aLat;
+    }
 
     public void setGPSInfo(GPSInfo theInfo) {
-		setLocation(theInfo.lon.toString(), theInfo.lat.toString());
-		status = theInfo.toString();
-		repaint();
-	}
+        setLocation(theInfo.lon.toString(), theInfo.lat.toString());
+        status = theInfo.toString();
+        repaint();
+    }
 
-	public void setStatus(String s) {
-		status = s;
-		Log.log(s);
-		repaint();
-	}
+    public void setStatus(String s) {
+        status = s;
+        Log.log(s);
+        repaint();
+    }
 
-	public void onGPSStatus(String s) {
-		gpsStatus = s;
-		repaint();
-	}
+    public void onGPSStatus(String s) {
+        gpsStatus = s;
+        repaint();
+    }
 
 
-	public void onNetStatus(String s) {
-		netStatus = s;
-		repaint();
-	}
+    public void onNetStatus(String s) {
+        netStatus = s;
+        repaint();
+    }
 
     /**
      * Draws the screen.
@@ -120,34 +123,34 @@ public class MapCanvas extends GameCanvas {
         }
 
         if (activeTile == null) {
-			msg  = "No location yet...";
+            msg = "No location yet...";
             g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
             String text = "No Location yet";
             ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
             return;
-		}
+        }
 
-		/*if (image != null) {
-			msg = null;
-		}
+        /*if (image != null) {
+            msg = null;
+        }
         */
-		try {
-			//msg = "Fetching map image...";
+        try {
+            //msg = "Fetching map image...";
             log("getting the map tile images!!!");
             image = Util.getImage(activeTile + "&zoom=" + zoom + "&type=" + mapType);
-		} catch (Throwable t) {
-			String text = "Error fetching image !!";
-			text += "maybe this zoom-level is not available";
-			text += "try zooming further in or out";
-			Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());
+        } catch (Throwable t) {
+            String text = "Error fetching image !!";
+            text += "maybe this zoom-level is not available";
+            text += "try zooming further in or out";
+            Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());
             g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
             ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
             return;
-		}
+        }
 
         //g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-        if(image!=null){
+        if (image != null) {
             g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
             //String[] options = {"toggle map", "zoom out", "zoom in"};
             //ScreenUtil.createMenu(g, f, h, fh, options);
@@ -155,7 +158,7 @@ public class MapCanvas extends GameCanvas {
         }
         g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
         g.drawString(netStatus, 10, 20, Graphics.TOP | Graphics.LEFT);
-        g.drawString(gpsStatus, 10, 20 + 2*fh, Graphics.TOP | Graphics.LEFT);
+        g.drawString(gpsStatus, 10, 20 + 2 * fh, Graphics.TOP | Graphics.LEFT);
         ScreenUtil.setRightBt(g, h, w, backBt);
     }
 
@@ -175,11 +178,11 @@ public class MapCanvas extends GameCanvas {
                     screenStat = MENU_STAT;
                     break;
                 case MENU_STAT:
-                    if(ScreenUtil.getSelectedMenuItem() == 1){
+                    if (ScreenUtil.getSelectedMenuItem() == 1) {
                         mapType = mapType.equals("sat") ? "map" : "sat";
-                    }else if(ScreenUtil.getSelectedMenuItem() == 2){
+                    } else if (ScreenUtil.getSelectedMenuItem() == 2) {
                         zoom++;
-                    }else if(ScreenUtil.getSelectedMenuItem() == 3){
+                    } else if (ScreenUtil.getSelectedMenuItem() == 3) {
                         zoom--;
                     }
                     break;
@@ -192,9 +195,9 @@ public class MapCanvas extends GameCanvas {
                 case MENU_STAT:
                     screenStat = HOME_STAT;
                     break;
-        }
-        // left
-        }else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
+            }
+            // left
+        } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             switch (screenStat) {
                 case HOME_STAT:
                     break;

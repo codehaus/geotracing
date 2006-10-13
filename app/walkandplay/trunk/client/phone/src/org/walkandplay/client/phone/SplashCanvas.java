@@ -9,8 +9,9 @@ import java.util.TimerTask;
 public class SplashCanvas extends Canvas {
     private WP midlet;
 
+    int w, h;
     // image objects
-    private Image splashLogo;
+    private Image bg, gtLogo, kwxLogo;
 
     // screenstates
     private int screenName;
@@ -20,9 +21,12 @@ public class SplashCanvas extends Canvas {
         try {
             midlet = aMidlet;
             setFullScreenMode(true);
-
+            w = getWidth();
+            h = getHeight();
             // load all images
-            splashLogo = Image.createImage("/splash.png");
+            bg = Image.createImage("/bg.png");
+            gtLogo = Image.createImage("/gt_logo.png");
+            kwxLogo = Image.createImage("/kwx_logo.png");
             screenName = aScreenName;
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
@@ -41,7 +45,9 @@ public class SplashCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        g.drawImage(splashLogo, 0, 0, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(gtLogo, (w - gtLogo.getWidth())/2, (h - gtLogo.getHeight())/2, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
         new Delayer(4);
 
     }
@@ -61,6 +67,7 @@ public class SplashCanvas extends Canvas {
                     midlet.setScreen(screenName);
                     repaint();
                 } else {
+                    System.out.println("bye bye");
                     midlet.destroyApp(true);
                     midlet.notifyDestroyed();
                 }

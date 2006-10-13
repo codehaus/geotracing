@@ -4,19 +4,19 @@ package org.walkandplay.client.phone;
  * Observer for GPSFetcher.
  */
 public interface GPSFetcherListener {
-	public void onGPSConnect();
+    public void onGPSConnect();
 
-	public void onGPSLocation(GPSLocation aLocation);
+    public void onGPSLocation(GPSLocation aLocation);
 
-	public void onGPSInfo(GPSInfo theInfo);
+    public void onGPSInfo(GPSInfo theInfo);
 
-	public void onGPSDisconnect();
+    public void onGPSDisconnect();
 
-	public void onGPSError(String aReason, Throwable anException);
+    public void onGPSError(String aReason, Throwable anException);
 
-	public void onGPSStatus(String aStatusMsg);
+    public void onGPSStatus(String aStatusMsg);
 
-	public void onGPSTimeout();
+    public void onGPSTimeout();
 
 }
     
