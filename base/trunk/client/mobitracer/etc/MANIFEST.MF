@@ -16,7 +16,7 @@ kw-app: geoapp
 kw-role: user
 audio-rate: 8000
 audio-bits: 8
-gps-sample-interval: 12000
+gps-sample-interval: 15000
 gps-min-sats: 4
 gps-min-hdop: 2
 device-screen-width: 176

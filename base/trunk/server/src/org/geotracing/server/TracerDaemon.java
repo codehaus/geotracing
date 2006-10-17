@@ -150,8 +150,10 @@ public class TracerDaemon extends Daemon {
 					}
 				}
 			} catch (KWClientException t) {
-				log.warn("KWClientException in trace()", t);
+				log.warn("KWClientException in worker()", t);
 				stop();
+			} catch (InterruptedException ie) {
+				log.info("InterruptedException in worker() thread=" + thread);
 			} catch (Throwable t) {
 				log.warn("Error in trace()", t);
 				stop();
@@ -168,10 +170,18 @@ public class TracerDaemon extends Daemon {
 			try {
 				kwClient.logout();
 
-				log.trace("logout OK");
+				log.info("logout OK");
 			} catch (Throwable t) {
 				// ignore
+				log.warn("error in kwClient.logout");
 			} finally {
+				try {
+					kwClient.disconnect();
+					log.info("disconnect OK");
+				} catch (Throwable t) {
+					log.warn("error in kwClient.disconnect()");
+				}
+
 				kwClient = null;
 			}
 		}

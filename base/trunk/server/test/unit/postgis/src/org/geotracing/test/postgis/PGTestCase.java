@@ -66,7 +66,7 @@ public class PGTestCase extends TestCase {
 	}
 
 	protected void deleteAll() throws OaseException {
-		deleteAll(SPATIAL_ONE_TABLE_NAME);
+		// deleteAll(SPATIAL_ONE_TABLE_NAME);
 		deleteAll(StoreContextConfig.TABLE_NAME_RELATION);
 		deleteAll(StoreContextConfig.TABLE_NAME_RELATIONDEF);
 	}

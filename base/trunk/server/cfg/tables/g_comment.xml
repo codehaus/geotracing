@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="state" />
+  		</list>
+
+		<query>
+			<field name="id" />
+			<field name="author" />
+           <field name="state" />
+            <field name="extra" />
+   		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="target" type="INTEGER" required="true"  />
+		<field name="owner" type="INTEGER" required="false"  />
+		<field name="author" type="STRING" size="64" required="true" default="anon"/>
+		<field name="email" type="STRING" size="64" required="false" />
+		<field name="url" type="STRING" size="64" required="false" />
+		<field name="ip" type="STRING" size="64" required="false" />
+		<field name="content" type="TEXT" required="true" />
+
+		<field name="state" type="INTEGER" default="1" required="false" />
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML" required="false"/>
+	</data>
+</table>

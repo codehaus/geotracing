@@ -50,6 +50,9 @@ $Id$
 	<property name="scp" value="${home.bin.dir}/scp.sh"/>
 	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
 
+	<!-- All sources to be compiled -->
+	<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
+
 	<!-- Client midlet stuff -->
 	<property name="home.client.dir" value="${home}/../client/mobitracer"/>
 
@@ -63,6 +66,7 @@ $Id$
 	<path id="compile.classpath">
 		<pathelement location="${build.class.dir}"/>
 		<pathelement location="${pushlet.jar}"/>
+		<pathelement location="${postgis-jdbc.jar}"/>
 		<pathelement location="${keyworx.jar}"/>
 		<pathelement location="${servlet.jar}"/>
 	</path>
@@ -109,7 +113,7 @@ $Id$
 			deprecation="${javac.deprecation}"
 			optimize="${javac.optimize}"
 			includes="**/*.java">
-			<src path="${home.src.dir}"/>
+			<src path="${server.src.path}"/>
 
 			<classpath refid="compile.classpath"/>
 		</javac>
