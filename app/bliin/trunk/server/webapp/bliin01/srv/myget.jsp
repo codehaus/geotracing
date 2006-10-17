@@ -25,7 +25,7 @@
 				String tables = "base_medium,g_location";
 				String fields = "base_medium.id,base_medium.kind,base_medium.name,base_medium.creationdate,g_location.lon,g_location.lat";
 				String where = null;
-				String relations = "base_medium,g_location";
+				String relations = "g_location,base_medium";
 				String postCond;
 
 				// WHERE clause
@@ -54,8 +54,8 @@
 				if (limitParm != null) {
 					postCond += " LIMIT " + Integer.parseInt(limitParm);
 				}
-				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				// log.info("[bliin]: q-locative-media: bbox=" + bboxParm + " post=" + postCond);
+				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 				// Add account/person attrs to each record
 				// addUserAttrs(rsp);
 			}

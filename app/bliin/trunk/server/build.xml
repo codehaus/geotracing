@@ -99,6 +99,17 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 	</target>
+	
+	<target name="deploy-local-use">
+		<copy todir="${deploy.local.dir}/use" overwrite="true">
+			<fileset dir="${home}/webapp/use"/>
+		</copy>
+	</target>
 
-
+	<target name="copy-live">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="bliin@test.waag.org:team/just"/>
+		</exec>
+	</target>
 </project>
