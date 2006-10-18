@@ -1,6 +1,9 @@
 /* CSS Document */
 
 input {
+
+  }
+input.small {
   background: transparent;
   border: none;
   font-size: 90%;
@@ -9,7 +12,7 @@ input {
   font-size:12px;
   text-indent:10px;
   background:url(../img/input_bg.jpg) no-repeat;
-  }
+  } 
 input.medium {
   background: transparent;
   border: none;
@@ -19,7 +22,7 @@ input.medium {
   font-size:12px;
   text-indent:10px;
   background:url(../img/input_bg_medium.jpg) no-repeat;
-  }  
+  }     
 input.large {
   background: transparent;
   border: none;
@@ -70,7 +73,7 @@ body {
 }
 
 #buttonbar {
-	top:200px;
+	top:220px;
 	z-index:3;
 }
 #map {
@@ -91,7 +94,7 @@ body {
 	bottom:40px;
 	width:100%;
 	z-index:3;
-	height:100px;
+	height:auto;
 	font-weight:bold;
 	display:block;
 	left:40px;
@@ -177,7 +180,14 @@ a:link, a:active, a:visited {
 }
 
 div#nifty{ margin: 0 10%;background: #FFFFFF	;}
-.contentblock{width:auto;border-left:solid 6px #FFFFFF;border-right:solid 6px #FFFFFF;background: #EEEEEE;text-align:left;}
+.contentblock{
+	width:auto;
+	border-left:solid 6px #FFFFFF;
+	border-right:solid 6px #FFFFFF;
+	background: #EEEEEE;
+	text-align:left;
+	padding: 5px;
+}
 .contentblockgrey{width:auto;border-left:solid 6px #EEEEEE;border-right:solid 6px #EEEEEE;background: #EEEEEE;text-align:left;}
 #tagcloud .contentblockgrey{width:auto;border-left:solid 6px #EEEEEE;border-right:solid 6px #EEEEEE;background: #EEEEEE;margin-right:300px;}
 
@@ -229,5 +239,5 @@ a:link, a:active {
 	width: 700px;
 	position: absolute;
 	left: 52px;
-	top: 200px;
+	top: 212px;
 }

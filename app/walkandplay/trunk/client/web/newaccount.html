@@ -2,24 +2,25 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-	<title>GeoTracing, loading please wait....</title>
-	<link rel="stylesheet" type="text/css" href="css/widget.css"/>
-	<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
-	<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
-	<script type="text/javascript" src="js/dojo-0.3.1-ajax/dojo.js"></script>
-	<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
-	<!-- get Google Maps API with right key for this server/path -->
-	<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAgbRczGdUGFScFxOsmC_JghQHBvw4Dj8Sg5rQsz5g3RvuAbjMvRQzK0V9mdSgW9mk-dHwn7fbIh-5yA" type="text/javascript"></script>
-	<script type="text/javascript" src="lib/DHTML.js"></script>
-	<script type="text/javascript" src="lib/GTApp.js"></script>
-	<link rel="stylesheet" href="css/geotracingfs.css" />
+<title>GeoTracing - walk and play</title>
+<link rel="stylesheet" type="text/css" href="css/widget.css"/>
+<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
+<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
+<script type="text/javascript" src="js/dojo-0.3.1-ajax/dojo.js"></script>
+<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
+<!--
+<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAAnsKeh1eS56d4nSCvWmbcBSurnAizDIuQPYrT1jN4yvuBVLWkhT_FD84oCbtAcZNS3" type="text/javascript"></script>
+-->
+<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAgbRczGdUGFScFxOsmC_JghQHBvw4Dj8Sg5rQsz5g3RvuAbjMvRQzK0V9mdSgW9mk-dHwn7fbIh-5yA" type="text/javascript"></script><script type="text/javascript" src="lib/DHTML.js"></script>
+<script type="text/javascript" src="lib/GTApp.js"></script>
+<script type="text/javascript" src="lib/KWClient.js"></script>
+<link rel="stylesheet" href="css/geotracingfs.css" />
 </head>
 <body>
 <!-- LOGOBOX -->
-<div id="logobox"> 
-<b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-<div class="contentblock"><br />
-    <img src="img/gt_logo.gif" width="221"/> <img src="img/cpv_v_over.gif" width="265" border="0" usemap="#Map" />
+<div id="logobox"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock"><br />
+    <a href="index.html"><img src="img/gt_logo.gif" alt="logo" width="221" border="0"/></a> <img src="img/cpv_v_over.gif" width="265" border="0" usemap="#Map" />
     <map name="Map" id="Map">
       <area shape="rect" coords="2,-1,79,43" href="#" />
       <area shape="rect" coords="90,-1,149,42" href="#" />
@@ -27,112 +28,154 @@
     </map>
     <ul style="text-align:right;">
       <li> <a href="#"><img src="img/mypageBT.gif" width="58" border="0"/></a> </li>
-      <li> <a href="#"><img src="img/aboutBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="#"><img src="img/aboutBT.gif" width="58" border="0" style="position:relative;left:7px;"/></a> </li>
       <li> <a href="#"><img src="img/signinBT.gif" width="58" border="0"/></a> </li>
       <li> <a href="#"><img src="img/help_bt.gif" width="18" border="0" style="margin-right:20px;"/></a> </li>
     </ul>
     <br />
     <br />
   </div>
-  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b>
- </div>
- 
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 <!-- /LOGOBOX -->
- 
-<!-- CONTENT --> 
+<!-- CONTENT -->
 <div id="formblock" style="text-align:left;z-index:15;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock" style="background-color:#E9E9E9;">
     <!--SIGNUP FORM-->
     <img src="img/profile_red.gif" style="padding-left:40px;padding-top:10px;"/><img src="img/mypage.gif" />
-    <form>
-      <div style="width:50%; float:left;">
+    <ul id="tabs" style="list-style:none;">
+      <li style="display:inline; font-weight:bold;" id="tab1">step 1</li>
+      <li style="display:inline;" id="tab2">step 2 </li>
+      <li style="display:inline;" id="tab3">step 3 </li>
+    </ul>
+    <form enctype="application/x-www-form-urlencoded" name="signupform" id="signupform">
+      <div id="tab_1" style="position:relative;display:block;">
         <ul style="list-style:none;">
-          <li> name (as it appears on screen):
-            <input type="text" class="medium" size="38" name="name"/>
+          <li>name (as it appears on screen):</li>
+          <li>
+            <input type="text" class="medium" size="38" name="nickname"/>
           </li>
-          <li> password:
+          <li> password:</li>
+          <li>
             <input type="password" class="medium" size="38" name="password"/>
           </li>
-          <li> e-mail address (sign-up):<br />
-            <input type="text" class="medium" size="20" name="email"/>
-            <select>
-              <option>public</option>
-              <option>private</option>
+          <li> e-mail address (sign-up):</li>
+          <li>
+            <input type="text" class="small" size="20" name="email"/>
+            <select name="emailpublic">
+              <option value="true">public</option>
+              <option onblur="false">private</option>
             </select>
           </li>
-          <li>standard cc-license:
-            <select>
-              <option>license 1</option>
-              <option>license 2</option>
-              <option>license 3</option>
-            </select>
-          </li>
-          <li> mobile phone number:
+          <li> mobile phone number:</li>
+          <li>
             <input type="text" class="medium" size="38" name="phone"/>
           </li>
         </ul>
-      </div>
-      <div height:400px; style="display:inline;"> 
-	 	<img src="img/blanko.jppg.jpg" alt="user image" width="120" style="padding-top:25px;display:inline;"/>
-		<div style="display:block; position:relative; left:250xp; top:-59px; text-align:right"> 
-	  		<img src="img/browseBT.gif"/><br />
-			<img src="img/addphotoBT.gif" />
-		</div>
-        <!--
-<ul>
-	<li style="display:inline;"><input type="file" style=""/></li>
-	<li><input type="button" /></li>
-</ul>	
--->
-      </div>
-      <div style="width:100%; clear:both;">
+        <iframe src="imageUpload.php" style="position:absolute; top:0px; left:400px; list-style:none; border:0px;" allowtransparency="true" scrolling="no">
+		
+		</iframe>
+        &nbsp; </div>
+      <div id="tab_2" style="display:none;">
         <ul style="list-style:none;">
-          <li> real name:
-            <input type="text" size="100" class="large"/>
+          <li> first name:</li>
+          <li>
+            <input type="text" size="100" class="large" name="firstname"/>
           </li>
-          <li> address:
-            <input type="text"  size="100" class="large"/>
+		  <li> last name:</li>
+          <li>
+            <input type="text" size="100" class="large" name="lastname"/>
           </li>
-          <li> postal code:
-            <input type="text"  size="100" class="large"/>
+          <li> street:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="address"/>
           </li>
-          <li> place:
-            <input type="text"  size="100" class="large"/>
+          <li> housenumber:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="streetnr"/>
+          </li>		  
+          <li> postal code:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="zip"/>
           </li>
-          <li> country:
-            <input type="text" size="100" class="large" />
+          <li> city:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="place"/>
           </li>
-          <li> keywords:
+          <li> country:</li>
+          <li>
+            <input type="text" size="100" class="large" name="country"/>
+          </li>
+          <li> keywords:</li>
+          <li>
             <textarea name="keywords" cols="75" rows="3"></textarea>
           </li>
-          <li> <a href="#">make public</a> <a href="#">keep private</a> <a href="#" style="position:absolute;right:40px;">remove profile</a> </li>
+          <li>
+            <p>
+              <label>
+              <input type="radio" name="privacy" value="public" checked/>
+              make profile public</label>
+              <br />
+              <label>
+              <input type="radio" name="privacy" value="private" />
+              keep profile private</label>
+              <br />
+            </p>
+          </li>
         </ul>
-      </div>
+        &nbsp; </div>
+      <div id="tab_3" style="display:none;">
+	  <ul style="list-style:none;">
+        <li> 1. Mogen derden gebruik maken van uw werk voor commerci&euml;le doeleinden? (meer informatie more information)</li>
+		<li>
+          <label>
+          <input type="radio" name="cc1" value="yes" checked/>
+          Ja</label>
+          <br />
+          <label>
+          <input type="radio" name="cc1" value="no" />
+          Nee</label>
+        </li>
+		<li> <br />
+<br />
+2. Mogen derden uw werk bewerken? (meer informatie more information)</li>
+		<li>
+          <label>
+          <input type="radio" name="cc2" value="yes" checked/>
+          Ja</label>
+          <br />
+		   <label>
+          <input type="radio" name="cc2" value="though" />
+          Ja, zolang derden ook gelijk delen (meer informatie more information)</label>
+          <br />
+          <label>
+          <input type="radio" name="cc2" value="no" />
+          Nee</label>
+        </li>
+		<li>
+			<div><br /><br />
+          		<button type="submit">submit</button>
+			</div>	
+        </li>
+		</ul>
+        &nbsp;</div>
     </form>
-    &nbsp; </div>
-	<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
-</div>
-<!-- / CONTENT -->  
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<!-- / CONTENT -->
 <!-- MAP-->
 <div id="map"></div>
 <!-- /MAP -->
 <!--BORDERS-->
-  <div id="mapholder">
-  	<div class="btop"></div>
-	<div class="bbottom"></div>
-  	<div class="bright"></div>
-  	<div class="bleft"></div>
+<div id="mapholder">
+  <div class="btop"></div>
+  <div class="bbottom"></div>
+  <div class="bright"></div>
+  <div class="bleft"></div>
 </div>
 <!--/BORDERS-->
-<!-- CLONE NODES -->
-<div id="clones">
-  <div id="clone_contentblock" class="clone"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-    <div class="contentblock"></div>
-    <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-</div>
-<!--/CLONDE NODES-->
 <!-- EVENTSHANDLERS -->
 <script type="text/javascript" src="js/events.js"></script>
+<script type="text/javascript" src="js/newaccount.js"></script>
 <!-- /EVENTHANDLERS  -->
 </body>
 </html>

@@ -85,12 +85,12 @@ var GTAPP = {
 		// Init gtwidget.js
 		GTW.init();
 
-		GTAPP.createMenu();
+	//	GTAPP.createMenu();
 
 		GTAPP.showStatus('init OK');
 
 		GMAP.resize();
-		DH.addEvent(window, 'resize', GMAP.resize, false);
+	//	DH.addEvent(window, 'resize', GMAP.resize, false);
 
 		// Live Pushlet event setup
 		GTAPP.createLiveListener();
@@ -543,6 +543,11 @@ var GTAPP = {
 	mSetMap: function(type) {
 		GMAP.setMapType(type);
 	}
+
+	
+	
+	
+	
 }
 
 // Starts it all

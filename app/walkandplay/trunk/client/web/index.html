@@ -1,130 +1,201 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-	<title>GeoTracing, loading please wait....</title>
-	<link rel="stylesheet" type="text/css" href="css/widget.css"/>
-	<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
-	<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
-	<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
-
-	<!-- get Google Maps API with right key for this server/path -->
-	<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAgbRczGdUGFScFxOsmC_JghQHBvw4Dj8Sg5rQsz5g3RvuAbjMvRQzK0V9mdSgW9mk-dHwn7fbIh-5yA" type="text/javascript"></script>
-	<script type="text/javascript" src="lib/DHTML.js"></script>
-	<script type="text/javascript" src="lib/GTApp.js"></script>
-
+<title>GeoTracing, loading please wait....</title>
+<link rel="stylesheet" type="text/css" href="css/widget.css"/>
+<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
+<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
+<script type="text/javascript" src="js/dojo-0.3.1-ajax/dojo.js"></script>
+<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
+<!--
+<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAAnsKeh1eS56d4nSCvWmbcBSurnAizDIuQPYrT1jN4yvuBVLWkhT_FD84oCbtAcZNS3" type="text/javascript"></script>
+-->
+<script src="http://maps.google.com/maps?file=api&amp;v=2.48&amp;key=ABQIAAAAgbRczGdUGFScFxOsmC_JghQHBvw4Dj8Sg5rQsz5g3RvuAbjMvRQzK0V9mdSgW9mk-dHwn7fbIh-5yA" type="text/javascript"></script>
+<script type="text/javascript" src="lib/DHTML.js"></script>
+<script type="text/javascript" src="lib/GTApp.js"></script>
+<link rel="stylesheet" href="css/geotracing.css" />
 </head>
 <body onunload="GUnload()">
-<div id="map"></div>
-<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
-<tr height="42">
-	<td bgcolor="#000044">
-		<!-- Main menu starts here -->
-		<jsp:include page="mainmenu.jsp" flush="true" />
-		<!-- Main menu ends here -->
-	</td>
-	<td width="320" bgcolor="#000044" align="right">
-		<span id="title">Untitled</span>
-	</td>
-</tr>
-<tr bgcolor="#000066">
-	<td height="20">
-		<table width="100%" height="20" border="0" cellpadding="0" cellspacing="0">
-			<tr>
-				<td width="33%" align="left">
-					<span id="mode">(select mode in Show)</span>
-				</td>
-				<td width="33%" align="center">
-					<span id="livestatus">&nbsp;</span>
-				</td>
-				<td width="34%" align="right">
-					<span id="status">Status</span>
-				</td>
-			</tr>
-		</table>
+<div id="mapholder">
+  <div id="topanchor"></div>
+  <div id="map"></div>
+  <div class="bbottom"></div>
+  <div class="btop"></div>
+  <div class="bright"></div>
+  <div class="bleft"></div>
+  <div id="bottomanchor">&nbsp;</div>
+</div>
+<div id="logobox"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock"><br />
+    <a href="index.html"><img src="img/gt_logo.gif" alt="logo" width="221" border="0"/></a> <img src="img/cpv_v_over.gif" width="265" border="0" usemap="#Map" id="mainbuttons"/>
+    <map name="Map" id="Map">
+      <area shape="rect" coords="2,-1,79,43" href="#" id="mainbuttonscreate"/>
+      <area shape="rect" coords="90,-1,149,42" href="#" id="mainbuttonsplay"/>
+      <area shape="rect" coords="199,0,258,43" href="#" id="mainbuttonsview"/>
+    </map>
+    <ul style="text-align:right;">
+      <li> <a href="#"><img src="img/mypageBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="about.html"><img src="img/aboutBT.gif" width="58" border="0" style="position:relative;left:7px;"/></a> </li>
+      <li> <a href="#"><img src="img/signinBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="#"><img src="img/help_bt.gif" width="18" border="0" style="margin-right:20px;"/></a> </li>
+    </ul>
+    <br />
+    <br />
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul>
+      <li> <a href="#"><img src="img/archive_bt.gif" alt="archiveButton" width="45" border="0" style=" margin-left:30px;"/></a> </li>
+      <li> <a href="#"><img src="img/map_bt.gif" alt="mapButton" width="45" border="0" /></a> </li>
+      <li> <a href="#"><img src="img/search_bt.gif" alt="search" width="45" border="0" id="search_bt"/></a> </li>
+      <li> <a href="#"><img src="img/score_bt.gif" alt="scores" width="45" border="0"/></a> </li>
+      <li>
+        <div id="searchbox" style="position:absolute; width:226px; left:142px; top:72px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+          <div class="contentblock"> <span>search</span><br/>
+            <br/>
+            <form>
+              <input name="text" type="text" style="background:url(img/input_bg.jpg) no-repeat;" size="18"/>
+              <a href="#">
+              <div class="style2" id="submitSearch" style="text-align:right; text-decoration:underline;margin-right:80px;">submit</div>
+              <br />
+              </a>
+            </form>
+            <img src="img/searchTarget.gif" alt="searchTaget" style="position:absolute; left:172px; width: 33px; top: 30px;"/> </div>
+          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+      </li>
+    </ul>
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul>
+      <li> <a href="#"><img src="img/archive_bt.gif" alt="archiveButton" width="45" border="0" style=" margin-left:30px;"/></a> </li>
+      <li> <a href="#"><img src="img/map_bt.gif" alt="mapButton" width="45" border="0" /></a> </li>
+      <li> <a href="#"><img src="img/search_bt.gif" alt="search" width="45" border="0" id="search_bt"/></a> </li>
+      <li> <a href="#"><img src="img/score_bt.gif" alt="scores" width="45" border="0"/></a> </li>
+      <li>
+        <div id="searchbox" style="position:absolute; width:226px; left:142px; top:72px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+          <div class="contentblock"> <span>search</span><br/>
+            <br/>
+            <form>
+              <input name="text" type="text" style="background:url(img/input_bg.jpg) no-repeat;" size="18"/>
+              <a href="#">
+              <div class="style2" id="submitSearch" style="text-align:right; text-decoration:underline;margin-right:80px;">submit</div>
+              <br />
+              </a>
+            </form>
+            <img src="img/searchTarget.gif" alt="searchTaget" style="position:absolute; left:172px; width: 33px; top: 30px;"/> </div>
+          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+      </li>
+    </ul>
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="loginbox" style="position:absolute; width:120px; left:365px; top:54px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <form name="signinform" id="signinform">
+      username
+      <input type="text" />
+      password
+      <input type="text" />
+    </form>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="mapbox" style="position:absolute; width:200px; left:147px; top:280px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="list-style:none;">
+      <li>street map</li>
+      <li>satellite map</li>
+      <li>street + satellite</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div> 
+<div id="archivenavbox" style="position:absolute; width:162px; left:93px; top:279px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="list-style:none;">
+      <li>archived tours</li>
+      <li>archived traces</li>
+      <li>points of interest</li>
+    </ul>
+	<ul style="list-style:none;">
+      <li>my tours</li>
+      <li>my traces</li>
+      <li>my media</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="livenavbox" style="position:absolute; width:162px; left:250px; top:281px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="list-style:none;">
+      <li>live tours</li>
+      <li>live traces</li>
+      <li>live users</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<script type="text/javascript">
 
-	</td>
-	<td width="320" bgcolor="#000066">&nbsp;
-		
-	</td>
-</tr>
-<tr>
-	<td align="left" valign="top" >
-		<div id="topanchor"></div>
-	</td>
-	<td width="320" valign="top" bgcolor="#CCE9F9">
-
-		<table border="0" align="right" cellpadding="0" cellspacing="0">
-			<tr>
-				<td height="20" bgcolor="#660000" align="center">
-					<div id="tracerinfo" class="infohead">
-						USER INFO
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="20" valign="middle" align="center" bgcolor="#000066">
-					<div id="trackinfo" class="infohead">TRACK INFO</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="60" valign="middle" align="center" bgcolor="#dddddd">
-					<div id="trackview">TRACK PREVIEW</div>
-				</td>
-			</tr>
-			<tr>
-				<td valign="middle" height="18" bgcolor="#111111">
-					<div id="trackcontrols" class="controls">
-						<span class="control" id="trackprev"><img title="prev" src="img/media-seek-backward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="trackplaypause"><img title="play or pause" src="img/media-playback-start.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="trackstop"><img title="stop" src="img/media-playback-stop.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="tracknext"><img title="next GPS point" src="img/media-seek-forward.png" border="0 "alt="ctrl" /></span>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="20" bgcolor="#000066">
-					<div id="featuretitle" class="infohead">FEATURE TITLE</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="240" width="320" valign="middle" align="center" bgcolor="#dddddd">
-					<div id="featurepreview">FEATURE (MEDIA+POIS) PREVIEW</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="20" align="center" bgcolor="#0066FF">
-					<div id="featureinfo" class="infohead">FEATURE INFO</div>
-				</td>
-			</tr>
-			<tr>
-				<td height="18" bgcolor="#111111">
-					<div id="featurecontrols" class="controls">
-						<span class="control" id="featfirst"><img title="first feature" src="img/media-skip-backward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="featprev"><img title="previous feature" src="img/media-seek-backward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="featnext"><img title="next feature" src="img/media-seek-forward.png" border="0 "alt="ctrl" /></span>
-						<span class="control" id="featlast"><img title="last feature" src="img/media-skip-forward.png" border="0 "alt="ctrl" /></span>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td align="left">
-					<div id="featuredesc">feature description (if available)</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div id="bottomanchor">&nbsp;</div>
-				</td>
-			</tr>
-		</table>
-
-	</td>
-</tr>
-</table>
+</script>
+<div id="archivebox" style="position:absolute; width:162px; left:261px; top:283px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="list-style:none;">
+      <li>archive content</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="tagcloud"> <b class="rtopgrey"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblockgrey">
+    <ul>
+      <li style="font-size:20px;"><a href="#">tag1</a></li>
+      <li style="font-size:40px;"><a href="#">tag2</a></li>
+      <li style="font-size:30px;"><a href="#">tag3</a></li>
+      <li style="font-size:30px;"><a href="#">tag4</a></li>
+      <li style="font-size:16px;"><a href="#">tag5</a></li>
+      <li style="font-size:40px;"><a href="#">tag6</a></li>
+      <li style="font-size:50px;"><a href="#">tag7</a></li>
+      <li style="font-size:20px;"><a href="#">tag8</a></li>
+      <li style="font-size:20px;"><a href="#">tag9</a></li>
+      <li style="font-size:40px;"><a href="#">tag7</a></li>
+      <li style="font-size:30px;"><a href="#">tag6</a></li>
+      <li style="font-size:30px;"><a href="#">tag</a></li>
+      <li style="font-size:16px;"><a href="#">tag</a></li>
+      <li style="font-size:40px;"><a href="#">tag</a></li>
+      <li style="font-size:50px;"><a href="#">tag</a></li>
+      <li style="font-size:20px;"><a href="#">tag</a></li>
+      <li style="font-size:20px;"><a href="#">tag</a></li>
+      <li style="font-size:40px;"><a href="#">tag</a></li>
+      <li style="font-size:30px;"><a href="#">tag</a></li>
+      <li style="font-size:30px;"><a href="#">tag</a></li>
+      <li style="font-size:16px;"><a href="#">tag</a></li>
+      <li style="font-size:40px;"><a href="#">tag</a></li>
+      <li style="font-size:50px;"><a href="#">tag</a></li>
+      <li style="font-size:20px;"><a href="#">tag</a></li>
+    </ul>
+  </div>
+  <b class="rbottomgrey"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="tag_block"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <div id="tagblock_title">tours tagged :</div>
+    <ul>
+      <li><a href="#">nieuwmarkt</a></li>
+      <li><a href="#">city centre </a></li>
+      <li><a href="#">cycling</a></li>
+    </ul>
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="signup_block"> <b class="rtopgrey"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblockgrey">
+    <ul>
+      <li><a href="newaccount.html"><span class="style1">sign up!</span></a></li>
+      <li><a href="#">most popular</a></li>
+      <li><a href="#">traces near you</a></li>
+      <li><a href="upcoming.html">upcoming tours</a></li>
+    </ul>
+  </div>
+  <b class="rbottomgrey"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<script type="text/javascript" src="js/events.js"></script>
+<script>
+SRV.url = 'wp/srv/get.jsp?';
 </body>
 </html>
