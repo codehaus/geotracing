@@ -47,7 +47,7 @@ var KW = {
 		KW.onNegRsp = nrspCallback;
 
 		// Set protocol servlet URL
-		KW.url = KW._getWebRoot() + KW.url;
+	//	KW.url = KW._getWebRoot() + KW.url;
 
 		// Set (optional) timeout
 		KW.timeoutMins = theTimeoutMins ? theTimeoutMins : KW.timeoutMins;
@@ -71,7 +71,9 @@ var KW = {
 		// Setup response handling
 		xmlhttp.onreadystatechange = function() {
 			if (xmlhttp.readyState == 4) {
+			//	alert(xmlhttp.responseText);
 				var element = xmlhttp.responseXML.documentElement;
+		//		alert(xmlhttp.responseText);
 				// (new DOMParser()).parseFromString(xmlhttp.responseText, "text/xml").documentElement;
 				if (KW.isPositive(element)) {
 					callback(element);

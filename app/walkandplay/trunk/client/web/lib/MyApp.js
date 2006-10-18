@@ -15,8 +15,8 @@
 // Mainly overrules GTApp.js functions
 var MYAPP = {
 /* Title to appear on top browser. */
-	WINDOW_TITLE: 'GeoTracing - TraceLand',
-	DOC_TITLE: 'TraceLand',
+	WINDOW_TITLE: 'GeoTracing - Walk and Play',
+	DOC_TITLE: 'Walk and Play',
 
 	init: function() {
 		// Overrule GTApp.js functions here
