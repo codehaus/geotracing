@@ -14,12 +14,17 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	<property name="home" value="${basedir}"/>
 	<property name="home.cfg.dir" value="${home}/cfg"/>
 	<property name="home.data.dir" value="${home}/data"/>
-	<property name="home.webapp.dir" value="${home}/webapp/bliin01"/>
+	<property name="home.webapp.dir" value="${home}/webapp"/>
+	<property name="home.webapp.back.dir" value="${home.webapp.dir}/${war.name}"/>
+	<property name="home.webapp.front.dir" value="${home.webapp.dir}/${front.name}"/>
 
 	<property name="build.dir" value="${home}/build"/>
 	<property name="build.war.dir" value="${build.dir}/war"/>
 	<property name="version.dir" value="${home}/version"/>
-	<property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
+	<property name="distro.zip" value="${version.dir}/${project.id}-dist-${version}.zip"/>
+	<property name="deploy-all.zip" value="${version.dir}/${project.id}-${version}.zip"/>
+	<property name="deploy-back.zip" value="${version.dir}/${project.id}-back-${version}.zip"/>
+	<property name="deploy-front.zip" value="${version.dir}/${project.id}-front-${version}.zip"/>
 
 
 	<!-- The .jar -->
@@ -35,7 +40,7 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	<!-- Build the .wars for the project -->
 	<target name="war" depends="init">
 		<echo message="Building webapp..."/>
-		<echo message="using geoTracing war dir: ${gt.war.dir}" />
+		<echo message="using geoTracing war dir: ${gt.war.dir}"/>
 
 		<delete dir="${build.war.dir}"/>
 		<delete file="${project.war}"/>
@@ -52,7 +57,7 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		</copy>
 
 		<copy todir="${build.war.dir}" overwrite="true">
-			<fileset dir="${home.webapp.dir}"/>
+			<fileset dir="${home.webapp.back.dir}"/>
 		</copy>
 
 		<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
@@ -62,6 +67,15 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		<!-- Replace users/passwords with local values as not to have them in repository -->
 		<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
 				 replacefilterfile="${home}/security.properties" summary="true"/>
+
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.back.dir}/version" files="index.html"/>
+			<filelist dir="${gt.war.dir}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
 
 		<!-- Make war -->
 		<jar jarfile="${project.war}">
@@ -74,15 +88,49 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	<!-- Build all clean. -->
 	<target name="build" depends="clean,war"/>
 
-		<!-- Package into archive files -->
-	<target name="package">
-		<echo message="Packaging distribution into ${package.zip}"/>
+	<!-- Package into archive files -->
+	<target name="package-distro">
+		<echo message="Packaging distribution into ${distro.zip}"/>
 		<mkdir dir="${version.dir}"/>
-		<delete file="${package.zip}"/>
-		<zip zipfile="${package.zip}">
+		<delete file="${distro.zip}"/>
+		<zip zipfile="${distro.zip}">
 			<zipfileset dir="${home}"
-				prefix="${project.id}-${version}"
-				excludes="build/**,version/**"/>
+						prefix="${project.id}-${version}"
+						excludes="build/**,version/**"/>
+		</zip>
+	</target>
+
+
+	<!-- Package into archive files -->
+	<target name="package-back" depends="build">
+		<echo message="Packaging distribution into ${deploy-back.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${deploy-back.zip}"/>
+		<zip zipfile="${deploy-back.zip}">
+			<zipfileset dir="${build.dir}"
+						excludes="war/**"/>
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-front" >
+		<echo message="Packaging distribution into ${deploy-front.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${deploy-front.zip}"/>
+		<zip zipfile="${deploy-front.zip}">
+			<zipfileset dir="${home.webapp.dir}"
+						excludes="${war.name}/**"/>
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-deploy" depends="package-back,package-front">
+		<echo message="Packaging distribution into ${deploy-all.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${deploy-all.zip}"/>
+		<zip zipfile="${deploy-all.zip}">
+			<zipfileset src="${deploy-back.zip}"/>
+			<zipfileset src="${deploy-front.zip}"/>
 		</zip>
 	</target>
 
@@ -96,10 +144,10 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 
 	<target name="deploy-local-raw">
 		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
-			<fileset dir="${home.webapp.dir}"/>
+			<fileset dir="${home.webapp.back.dir}"/>
 		</copy>
 	</target>
-	
+
 	<target name="deploy-local-use">
 		<copy todir="${deploy.local.dir}/use" overwrite="true">
 			<fileset dir="${home}/webapp/use"/>
