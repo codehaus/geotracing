@@ -1,0 +1,4 @@
+version: $GT_VERSION
+built: $GT_BUILD_DATE
+builder: $GT_BUILDER
+
