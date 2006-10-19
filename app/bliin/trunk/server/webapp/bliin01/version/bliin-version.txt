@@ -1,0 +1,8 @@
+version: $VERSION
+built: $BUILD_DATE
+builder: $BUILDER
+
+${version}
+${user.name}
+
+
