@@ -1,6 +1,15 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
-1.1.1 - to be released
+1.1.2 - 19.okt.2006
+- query optimizations upto 1000%
+- many other changes not logged here
+- switched to keyworx-1.0.6rc4
+- start PostGIS testing
+- fixed GoogleTiles.java for GMap v2
+- MobiTracer: fixes for map fetching
+- generate version info
+
+1.1.1 - 28.sept.2006
 - more comments in code
 - fixed email upload special chars encoding
 

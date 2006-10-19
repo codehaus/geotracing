@@ -53,6 +53,7 @@
 				</li>
 				<li><a href="#" fn="GTAPP.mShowHelp" arg="content/appabout.html">About TraceLand</a></li>
 				<li><a href="#" fn="GTAPP.mShowHelp" arg="content/gtabout.html">About GeoTracing</a></li>
+				<li><a href="#" fn="GTAPP.mShowHelp" arg="version/index.html">About This Version</a></li>
 			</ul>
 		</li>
 		<li><a href="#">My</a>

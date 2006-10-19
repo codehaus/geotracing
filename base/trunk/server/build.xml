@@ -17,6 +17,7 @@ $Id$
 	<!-- Use server utopia config as base config -->
 	<property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
 
+	<property file="${geotracing.base.dir}/build.properties"/>
 	<property file="build.properties"/>
 
 
@@ -39,7 +40,8 @@ $Id$
 	<property name="build.lib.dir" value="${build.dir}/lib"/>
 	<property name="build.doc.dir" value="${build.dir}/doc"/>
 	<property name="build.war.dir" value="${build.dir}/war"/>
-	<property name="version.dir" value="${home}/version"/>
+	<property name="build.version.dir" value="${build.war.dir}/version"/>
+	<property name="dist.dir" value="${home}/dist"/>
 
 	<property name="external.dir" value="${home}/../external"/>
 <!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
@@ -59,8 +61,8 @@ $Id$
 	<!-- The .jar -->
 	<property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
 	<property name="project.war" value="${build.dir}/${war.name}.war"/>
-	<property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
-	<property name="packagewar.zip" value="${version.dir}/${project.id}-war-${version}.zip"/>
+	<property name="package.zip" value="${dist.dir}/${project.id}-${version}.zip"/>
+	<property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${version}.zip"/>
 
 	<!-- Construct compilation classpath -->
 	<path id="compile.classpath">
@@ -213,6 +215,14 @@ $Id$
 		<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
 				 replacefilterfile="${home}/security.properties" summary="true"/>
 
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.dir}/${war.name}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
 		<!-- Make war -->
 		<jar jarfile="${project.war}">
 			<fileset dir="${build.war.dir}">
@@ -239,7 +249,7 @@ $Id$
 	<!-- Package into archive files -->
 	<target name="package" depends="clean,build">
 		<echo message="Packaging distribution into ${package.zip}"/>
-		<mkdir dir="${version.dir}"/>
+		<mkdir dir="${dist.dir}"/>
 		<copy todir="${build.lib.dir}" file="${keyworx.jar}" overwrite="true"/>
 		<delete file="${package.zip}"/>
 		<zip zipfile="${package.zip}">
