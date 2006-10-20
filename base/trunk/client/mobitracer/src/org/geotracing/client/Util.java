@@ -4,6 +4,7 @@ package org.geotracing.client;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.ContentConnection;
+import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Display;
@@ -18,7 +19,7 @@ import java.util.Vector;
 /**
  * Misc utilities.
  *
- * @author  Just van den Broecke
+ * @author Just van den Broecke
  * @version $Id$
  */
 public class Util {
@@ -44,6 +45,44 @@ public class Util {
 			}
 			connection.close();
 		}
+	}
+
+	/** Get page content from URL. */
+	public static String getPage(String url) throws IOException {
+		DataInputStream dis = null;
+		HttpConnection c = null;
+		String result = null;
+		try {
+			c = (HttpConnection) Connector.open(url);
+			dis = new DataInputStream(c.openInputStream());
+
+			int len = (int) c.getLength();
+			if (len != -1) {
+				// Have length: read in one go
+				byte[] bytes = new byte[len];
+				dis.readFully(bytes);
+
+				// Produce result.
+				result = new String(bytes);
+			} else {
+				// Read until the connection is closed.
+				StringBuffer b = new StringBuffer();
+				int ch;
+				while ((ch = dis.read()) != -1) {
+					b.append((char) ch);
+				}
+				result = b.toString();
+			}
+		} finally {
+			if (dis != null) {
+				dis.close();
+			}
+			if (c != null) {
+				c.close();
+			}
+		}
+		return result;
+
 	}
 
 	/**
@@ -76,21 +115,25 @@ public class Util {
 		return new String(ch);
 	}
 
-	/** Get time corrected with offset (see setTime()). */
+	/**
+	 * Get time corrected with offset (see setTime()).
+	 */
 	static public long getTime() {
-		 return System.currentTimeMillis() + timeOffset;
+		return System.currentTimeMillis() + timeOffset;
 	}
 
-	/** Get time offset with server. */
+	/**
+	 * Get time offset with server.
+	 */
 	static public long getTimeOffset() {
-		 return timeOffset;
+		return timeOffset;
 	}
 
-	 /**
+	/**
 	 * Split string into multiple strings
-	 * @param original      Original string
-	 * @param separator     Separator string in original string
-	 * @return              Splitted string array
+	 * @param original	  Original string
+	 * @param separator	 Separator string in original string
+	 * @return Splitted string array
 	 */
 	/*public static String[] split(String original, String separator) {
 		// Safety check
@@ -127,7 +170,7 @@ public class Util {
 	 * <value>TextUtil.split("one;two;three", ';')</value> results into the array
 	 * <value>{"one", "two", "three"}</value>.
 	 *
-	 * @param value the String which should be split into an array
+	 * @param value	 the String which should be split into an array
 	 * @param delimiter the delimiter which marks the boundaries of the array
 	 * @return an array, when the delimiter was not found, the array will only have a single element.
 	 */
@@ -162,7 +205,9 @@ public class Util {
 		return result;
 	}
 
-	/** Sets time offset to correct for UTC time mismatch on some phones. */
+	/**
+	 * Sets time offset to correct for UTC time mismatch on some phones.
+	 */
 	static public void setTime(long aTimeMillis) {
 		// Calculate offset from (server) time
 		timeOffset = aTimeMillis - System.currentTimeMillis();

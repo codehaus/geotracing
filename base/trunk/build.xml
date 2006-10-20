@@ -11,7 +11,7 @@ $Id$
 	<property name="server.dir" value="${home}/server"/>
 	<property name="version.dir" value="${home}/version"/>
 
-	<property file="${server.dir}/build.properties"/>
+	<property file="${home}/build.properties"/>
 
 	<!-- The .jar -->
 	<property name="distro-src.zip" value="${version.dir}/${project.id}-src-${version}.zip"/>

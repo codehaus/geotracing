@@ -142,11 +142,32 @@
 
 	<target name="jar" depends="preverify">
 		<property name="manifest.file" value="${build.dir}/MANIFEST.MF"/>
+		<property name="jad.file" value="${build.dir}/mt.jad"/>
+		<property name="version.file" value="${build.dir}/version.html"/>
 
-		<copy tofile="${manifest.file}" file="${project.manifest}"/>
+		<!-- Set essential MIDlet properties. -->
+		<concat destfile="${manifest.file}">
+			<filelist dir="${project.etc.dir}" files="MANIFEST.MF"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
 
-		<replace file="${manifest.file}" token="$[MIDLET_NAME]" value="${project.midlet.name}"/>
-		<replace file="${manifest.file}" token="$[MIDLET_CLASS]" value="${project.midlet.class}"/>
+		<!-- Set essential MIDlet properties. -->
+		<concat destfile="${jad.file}">
+			<filelist dir="${project.etc.dir}" files="mt.jad"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Generate version file. -->
+		<concat destfile="${version.file}">
+			<filelist dir="${project.etc.dir}" files="version.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
 
 		<jar basedir="${preverify.dir}"
 			jarfile="${project.jar}"
