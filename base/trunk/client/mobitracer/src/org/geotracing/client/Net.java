@@ -48,6 +48,10 @@ public class Net {
 		return instance;
 	}
 
+	public String getURL() {
+		return url;
+	}
+
 	public void setListener(NetListener aNetListener) {
 		listener = aNetListener;
 	}
@@ -261,8 +265,6 @@ public class Net {
 			listener.onNetStatus("cannot login");
 			listener.onNetInfo("LOGIN FAILED\nreason: \n" + pe.getMessage());
 			kwClient = null;
-		} finally {
-			// traceScreen.showCommands();
 		}
 	}
 

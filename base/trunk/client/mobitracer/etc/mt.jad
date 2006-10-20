@@ -1,13 +1,13 @@
-MIDlet-1: MobiTracer, /app.png, org.geotracing.client.MobiTracer
-MIDlet-Info-URL: http://www.justobjects.nl
-MIDlet-Name: MobiTracer
-MIDlet-Vendor: Just Objects
-MIDlet-Version: 2.25.0
-MIDlet-Icon: /app.png
-MicroEdition-Configuration: CLDC-1.0
-MicroEdition-Profile: MIDP-2.0
-MIDlet-Permissions: javax.microedition.io.Connector.http
-MIDlet-Permissions-Opt: javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot
+MIDlet-1: ${midlet.name}, ${midlet.icon}, ${midlet.class}
+MIDlet-Info-URL: ${midlet.info.url}
+MIDlet-Name: ${midlet.name}
+MIDlet-Vendor: ${midlet.vendor}
+MIDlet-Version: ${midlet.version}
+MIDlet-Icon: ${midlet.icon}
+MicroEdition-Configuration: ${midlet.cldc}
+MicroEdition-Profile: ${midlet.midp}
+MIDlet-Permissions: ${midlet.permissions}
+MIDlet-Permissions-Opt: ${midlet.permissions.opt}
 MIDlet-Jar-Size: JAR_SIZE
 MIDlet-Jar-URL: JAR_URL
 kw-url: KW_PROTO_URL
@@ -18,6 +18,3 @@ kw-app: geoapp
 kw-role: user
 gps-sample-interval: GPS_SAMPLE_INTERVAL
 mt-options: MT_OPTIONS
-
-
-

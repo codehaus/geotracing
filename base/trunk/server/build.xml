@@ -191,11 +191,12 @@ $Id$
 		<copy todir="${build.war.dir}/ota">
 			<fileset dir="${home.client.dir}/etc">
 				<include name="mt.properties"/>
-				<include name="mt.jad"/>
 				<include name="mt.jsp"/>
 			</fileset>
 			<fileset dir="${home.client.dir}/build">
+				<include name="mt.jad"/>
 				<include name="mobitracer.jar"/>
+				<include name="version.html"/>
 			</fileset>
 		</copy>
 
@@ -218,6 +219,7 @@ $Id$
 		<!-- Set version numbers and build info in version/index.html. -->
 		<concat destfile="${build.war.dir}/version/index.html">
 			<filelist dir="${home.webapp.dir}/${war.name}/version" files="index.html"/>
+			<filelist dir="${home.client.dir}/build" files="version.html"/>
 			<filterchain>
 				<expandproperties/>
 			</filterchain>

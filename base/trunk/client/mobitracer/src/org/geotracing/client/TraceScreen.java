@@ -87,6 +87,11 @@ public class TraceScreen extends GameCanvas {
 			}
 		}
 		showCommands();
+
+		String versionMsg = tracer.versionCheck();
+		if (versionMsg != null) {
+			Util.showAlert(midlet, "Version Check", versionMsg);
+		}
 	}
 
 	Tracer getTracer() {

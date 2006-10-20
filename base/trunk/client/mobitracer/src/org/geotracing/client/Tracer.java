@@ -168,6 +168,27 @@ public class Tracer implements GPSFetcherListener, NetListener {
 
 	}
 
+	/** Check local midlet version with the one from server. */
+	public String versionCheck() {
+		String myVersion = midlet.getAppProperty("MIDlet-Version");
+
+		String myName = midlet.getAppProperty("MIDlet-Name");
+		String versionURL = Net.getInstance().getURL() + "/ota/version.html";
+		String result = null;
+		String theirVersion = null;
+		try {
+			theirVersion = Util.getPage(versionURL);
+			if (theirVersion != null && !theirVersion.trim().equals(myVersion)) {
+				result = "Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion;
+			}
+		} catch (Throwable t) {
+			result = "error fetching version from " + versionURL;
+		}
+
+		Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
+		return result;
+	}
+
 	private void startGPSFetcher() {
 		try {
 
@@ -186,5 +207,6 @@ public class Tracer implements GPSFetcherListener, NetListener {
 			gpsFetcher = null;
 		}
 	}
+
 
 }
