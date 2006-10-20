@@ -6,7 +6,7 @@
 				<li><a href="#" fn="GTAPP.mLive">Live Skaters</a></li>
 				<li><a href="#" fn="GTAPP.mArchive">Skate Tracks &gt;</a>
 					<ul>
-						<li><a href="#" fn="GTAPP.mLastTracks" arg="5">Last 5 Added</a></li>
+						<li><a href="#" fn="GTAPP.mLastTracks" arg="10">Last 10 Added</a></li>
 						<li><a href="#" fn="GTAPP.mArchive">Select by User</a></li>
 						<li><a href="#" fn="GTAPP.mAutoPlay">Random Playback</a></li>
 					</ul>
