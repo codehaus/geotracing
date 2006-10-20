@@ -75,8 +75,8 @@ public class GPSFetcher implements Runnable {
 
 	public void run() {
 
-		long lastTimeLocSent = System.currentTimeMillis();
-		long lastTimeStatusSent = System.currentTimeMillis();
+		long lastTimeLocSent = Util.getTime();
+		long lastTimeStatusSent = Util.getTime();
 
 		// when we got the service try sending the location data
 		while (workerThread != null && Thread.currentThread() == workerThread) {
@@ -104,7 +104,7 @@ public class GPSFetcher implements Runnable {
 
 
 						// Send info to observer if interval passed
-						long now = System.currentTimeMillis();
+						long now = Util.getTime();
 						if (now - lastTimeStatusSent > statusIntervalMillis) {
 							lastTimeStatusSent = now;
 							gpsListener.onGPSInfo(info);

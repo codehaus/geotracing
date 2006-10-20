@@ -78,6 +78,7 @@ public class Net {
 			JXElement poiAddReq = new JXElement("t-trk-add-poi-req");
 			poiAddReq.setAttr("type", aType);
 			poiAddReq.setAttr("name", aName);
+			poiAddReq.setAttr("t", Util.getTime());
 			if (aDescription != null) {
 				poiAddReq.setAttr("description", aDescription);
 			}
@@ -94,7 +95,7 @@ public class Net {
 		try {
 			listener.onNetStatus("deltrack");
 			JXElement req = new JXElement("t-trk-delete-req");
-			req.setAttr("t", System.currentTimeMillis());
+			req.setAttr("t", Util.getTime());
 			JXElement rsp = kwClient.utopia(req);
 
 			trackId = rsp.getAttr("id", null);
@@ -110,7 +111,7 @@ public class Net {
 			listener.onNetStatus("creating trk");
 			JXElement req = new JXElement("t-trk-create-req");
 			req.setAttr("name", aName);
-			req.setAttr("t", System.currentTimeMillis());
+			req.setAttr("t", Util.getTime());
 			if (minimal) {
 				// Minimal mode: tracks are made daily (Track type 2)
 				req.setAttr("type", 2);
@@ -130,7 +131,7 @@ public class Net {
 	public void resume() {
 		try {
 			JXElement req = new JXElement("t-trk-resume-req");
-			req.setAttr("t", System.currentTimeMillis());
+			req.setAttr("t", Util.getTime());
 			if (minimal) {
 				// Minimal mode: tracks are made daily (Track type 2)
 				req.setAttr("type", 2);
@@ -183,7 +184,7 @@ public class Net {
 		try {
 			listener.onNetStatus("pausing..");
 			JXElement req = new JXElement("t-trk-suspend-req");
-			req.setAttr("t", System.currentTimeMillis());
+			req.setAttr("t", Util.getTime());
 			JXElement rsp = kwClient.utopia(req);
 			trackId = rsp.getAttr("id", null);
 			listener.onNetStatus("paused");
@@ -195,7 +196,7 @@ public class Net {
 		}
 	}
 
-	public JXElement uploadMedium(String aName, String aType, String aMime, byte[] theData, boolean encode) {
+	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
 
 		// get the current image bytes
 		// byte[] imageBytes = getImgFromRecStore(aKey);
@@ -204,6 +205,7 @@ public class Net {
 		JXElement uploadReq = new JXElement("t-trk-upload-medium-req");
 		uploadReq.setAttr("type", aType);
 		uploadReq.setAttr("mime", aMime);
+		uploadReq.setAttr("t", aTime);
 		if (aName == null) {
 			aName = "mt-upload";
 		}
@@ -234,7 +236,7 @@ public class Net {
 		JXElement rsp = null;
 		try {
 			rsp = kwClient.utopia(aReq);
-			lastCommandTime = System.currentTimeMillis();
+			lastCommandTime = Util.getTime();
 		} catch (Throwable pe) {
 			kwClient = null;
 		}
@@ -247,10 +249,13 @@ public class Net {
 		try {
 			// traceScreen.hideCommands();
 			kwClient = new HTTPClient(url + "/proto.srv");
-			kwClient.login(user, password);
+			JXElement rsp = kwClient.login(user, password);
+			if (rsp.hasAttr("time")) {
+				Util.setTime(rsp.getLongAttr("time"));
+			}
 			kwClient.selectApp(app, role);
 			listener.onNetStatus("login OK");
-			listener.onNetInfo("login OK user=" + user + "\n" + "server=" + url);
+			listener.onNetInfo("login OK user=" + user + "\n" + "server=" + url + "\n" + "timeoffset=" + (Util.getTimeOffset()/1000) + " sec");
 			startHeartbeat();
 		} catch (Throwable pe) {
 			listener.onNetStatus("cannot login");
@@ -287,7 +292,7 @@ public class Net {
 
 		try {
 			listener.onNetStatus("heartbeat..");
-			req.setAttr("t", System.currentTimeMillis());
+			req.setAttr("t", Util.getTime());
 			utopiaReq(req);
 			listener.onNetStatus("heartbeat ok");
 		} catch (Throwable pe) {
@@ -320,7 +325,7 @@ public class Net {
 
 	private class Heartbeat extends TimerTask {
 		public void run() {
-			if (System.currentTimeMillis() - lastCommandTime > HB_INTERVAL || lastCommandTime < 0) {
+			if (Util.getTime() - lastCommandTime > HB_INTERVAL || lastCommandTime < 0) {
 				sendHeartbeat();
 			}
 		}

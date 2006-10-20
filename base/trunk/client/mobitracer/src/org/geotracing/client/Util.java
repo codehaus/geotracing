@@ -23,6 +23,7 @@ import java.util.Vector;
  */
 public class Util {
 	private static boolean soundOn = true;
+	private static long timeOffset = 0;
 
 	public static Image getImage(String url) throws IOException {
 		ContentConnection connection = (ContentConnection) Connector.open(url);
@@ -75,7 +76,17 @@ public class Util {
 		return new String(ch);
 	}
 
-	/**
+	/** Get time corrected with offset (see setTime()). */
+	static public long getTime() {
+		 return System.currentTimeMillis() + timeOffset;
+	}
+
+	/** Get time offset with server. */
+	static public long getTimeOffset() {
+		 return timeOffset;
+	}
+
+	 /**
 	 * Split string into multiple strings
 	 * @param original      Original string
 	 * @param separator     Separator string in original string
@@ -151,6 +162,11 @@ public class Util {
 		return result;
 	}
 
+	/** Sets time offset to correct for UTC time mismatch on some phones. */
+	static public void setTime(long aTimeMillis) {
+		// Calculate offset from (server) time
+		timeOffset = aTimeMillis - System.currentTimeMillis();
+	}
 
 	static public void showAlert(MIDlet aMidlet, String title, String mesg) {
 		Alert a = new Alert(title, mesg, null, AlertType.ALARM);
