@@ -11,7 +11,7 @@
 
 		<expect id="client1">
 
-			<login-rsp/>
+			<login-rsp time=""/>
 
 			<select-app-rsp/>
 		</expect>

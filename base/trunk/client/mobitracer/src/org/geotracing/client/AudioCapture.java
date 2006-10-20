@@ -95,7 +95,7 @@ public class AudioCapture extends Form implements CommandListener {
 			stop();
 			addCommand(play);
 			addCommand(submit);
-			append("OK Recording stopped\n duration=" + (System.currentTimeMillis() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb\n");
+			append("OK Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb\n");
 			append(name);
 			append("press Play to hear recording or Submit to upload");
 		} else if (c == submit) {
@@ -106,7 +106,7 @@ public class AudioCapture extends Form implements CommandListener {
 			}
 			append("SUBMITTING AUDIO...", " (takes a while)");
 
-			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, audioData, false);
+			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, false);
 			if (rsp == null) {
 				append("cannot submit audio !");
 			} else if (Protocol.isPositiveResponse(rsp)) {
@@ -147,7 +147,7 @@ public class AudioCapture extends Form implements CommandListener {
 		try {
 			recordcontrol.startRecord();
 			player.start();
-			startTime = System.currentTimeMillis();
+			startTime = Util.getTime();
 			append("RECORDING AUDIO...", " press Stop to stop recording\n");
 
 			new Thread(new Runnable() {

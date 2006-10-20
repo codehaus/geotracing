@@ -695,18 +695,32 @@ public class TracingHandler extends DefaultHandler {
 
 		// Create medium record
 		Record mediumRecord = null;
+		Record personRecord = null;
 		try {
 			Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 			MediaFiler mediaFiler = oase.getMediaFiler();
 			mediumRecord = mediaFiler.insert(data.getCDATA(), encoding, fields);
-			Record personRecord = oase.getFinder().read(getUserId(anUtopiaReq));
+			if (reqElm.hasAttr(ATTR_T)) {
+				mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(reqElm.getLongAttr(ATTR_T)));
+				oase.getModifier().update(mediumRecord);
+			}
+
+			personRecord = oase.getFinder().read(getUserId(anUtopiaReq));
 			oase.getRelater().relate(mediumRecord, personRecord);
 		} catch (Throwable t) {
 			throw new UtopiaException("Error in uploadMedium() for raw data encoding=" + encoding, t);
 		}
 
 		// Create Location for medium and relate to other objects
-		Location location = trackLogic.createMediumLocation(mediumRecord.getId());
+		Location location;
+		if (reqElm.hasAttr(ATTR_T)) {
+			// if a timestamp was provided we assume we already have the correct creation time
+			location = trackLogic.createLocation(personRecord.getId(), mediumRecord.getId(), reqElm.getLongAttr(ATTR_T), TrackLogic.REL_TAG_MEDIUM);
+		} else {
+			// Determines timestamp from medium (e.g. EXIF) to create location
+			location = trackLogic.createMediumLocation(mediumRecord.getId());
+		}
+
 
 		// Create and return response with open track id.
 		JXElement response = createResponse(T_TRK_UPLOAD_MEDIUM_SERVICE);

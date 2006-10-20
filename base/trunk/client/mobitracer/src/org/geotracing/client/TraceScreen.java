@@ -256,7 +256,6 @@ public class TraceScreen extends GameCanvas {
 		status = s;
 		Log.log(s);
 		redraw();
-
 	}
 
 	public void onGPSStatus(String s) {

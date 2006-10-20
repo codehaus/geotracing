@@ -31,6 +31,7 @@ public class ImageCapture extends Form implements CommandListener {
 	private Image photoPreview;
 	private byte[] photoData;
 	private String photoMime;
+	private long photoTime;
 	private MIDlet midlet;
 	private Displayable prevScreen;
 	private StringItem status = new StringItem("", "Photo Capture");
@@ -112,6 +113,7 @@ public class ImageCapture extends Form implements CommandListener {
 			}
 
 			photoMime = "image/jpeg";
+			photoTime = Util.getTime();
 
 			player.stop();
 			player.close();
@@ -180,7 +182,7 @@ public class ImageCapture extends Form implements CommandListener {
 			} else if (c == submit) {
 				deleteAll();
 				append("SENDING PHOTO...(takes a while)");
-				JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "image", photoMime, photoData, false);
+				JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "image", photoMime, photoTime, photoData, false);
 				if (rsp == null) {
 					append("cannot submit photo !");
 				} else if (Protocol.isPositiveResponse(rsp)) {
