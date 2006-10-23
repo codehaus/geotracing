@@ -61,6 +61,10 @@ public class WP extends MIDlet implements Runnable {
         GPS_CONNECTED = aValue;
     }
 
+    public void setNetConnectionStat(boolean aValue) {
+        NET_CONNECTED = aValue;
+    }
+
     public void setScreen(int aScreenName) {
         switch (aScreenName) {
             case-1:
