@@ -6,7 +6,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 
-public class TraceCanvas extends GameCanvas {
+public class TraceCanvas extends Canvas {
 
     // paint vars
     int w, h, fh;
@@ -26,24 +26,25 @@ public class TraceCanvas extends GameCanvas {
     String gpsStatus = "disconnected";
     String netStatus = "disconnected";
     String status = "OK";
+    boolean showMenu;
 
     private Tracer tracer;
 
     // image objects
-    private Image logo, menuBt, textArea, backBt, traceLogo, gpsNetBar, redDot, greenDot;
+    private Image logo, menuBt, textArea, backBt, traceLogo, gpsNetBar, redDot, greenDot, menuTop, menuMiddle, menuBottom;
 
     int margin = 3;
 
     // screenstates
     private int screenStat = 0;
     private final static int HOME_STAT = 0;
-    private final static int MENU_STAT = 1;
-
+    private final static int ASSIGNMENT_STAT = 1;
+    private final static int DROP_STAT = 2;
 
     private int fontType = Font.FACE_MONOSPACE;
 
     public TraceCanvas(WP aMidlet) {
-        super(false);
+        //super(false);
         try {
             midlet = aMidlet;
             w = getWidth();
@@ -64,6 +65,9 @@ public class TraceCanvas extends GameCanvas {
             gpsNetBar = Image.createImage("/gpsnet_bg.png");
             redDot = Image.createImage("/red_dot.png");
             greenDot = Image.createImage("/green_dot.png");
+            menuTop = Image.createImage("/menu_top.png");
+            menuMiddle = Image.createImage("/menu_middle.png");
+            menuBottom = Image.createImage("/menu_bottom.png");
 
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
@@ -106,12 +110,24 @@ public class TraceCanvas extends GameCanvas {
 
     public void onGPSStatus(String s) {
         gpsStatus = s;
+        if(gpsStatus.equals("connected")){
+            midlet.setGPSConnectionStat(true);
+        }else {
+            midlet.setGPSConnectionStat(false);
+        }
+        Log.log(s);
         repaint();
     }
 
 
     public void onNetStatus(String s) {
         netStatus = s;
+        if(netStatus.equals("heartbeat ok")){
+            midlet.setNetConnectionStat(true);
+        }else {
+            midlet.setNetConnectionStat(false);
+        }
+        log(s);
         repaint();
     }
 
@@ -140,43 +156,64 @@ public class TraceCanvas extends GameCanvas {
             g.drawImage(redDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
         }
 
+        String text = "";
+
         if (activeTile == null) {
-            msg = "No location yet...";
-            g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
-            String text = "No Location yet";
-            ScreenUtil.drawText(g, text, 10, logo.getHeight() + traceLogo.getHeight() + 3 * margin, fh);
-            return;
+            text = "No location yet...";
+        }else{
+
+            try {
+                //msg = "Fetching map image...";
+                log("getting the map tile images!!!");
+                image = Util.getImage(activeTile + "&zoom=" + zoom + "&type=" + mapType);
+            } catch (Throwable t) {
+                text = "Error fetching image !!";
+                text += "maybe this zoom-level is not available";
+                text += "try zooming further in or out";
+                Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());
+            }
         }
 
-        /*if (image != null) {
-            msg = null;
-        }
-        */
-        try {
-            //msg = "Fetching map image...";
-            log("getting the map tile images!!!");
-            image = Util.getImage(activeTile + "&zoom=" + zoom + "&type=" + mapType);
-        } catch (Throwable t) {
-            String text = "Error fetching image !!";
-            text += "maybe this zoom-level is not available";
-            text += "try zooming further in or out";
-            Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());
-            g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
-            ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
-            return;
-        }
-
-        //g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-
+        // draw the google map image
         if (image != null) {
             g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
-            //String[] options = {"toggle map", "zoom out", "zoom in"};
-            //ScreenUtil.createMenu(g, f, h, fh, options);
-            ScreenUtil.setLeftBt(g, h, menuBt);
         }
+
+        ScreenUtil.setLeftBt(g, h, menuBt);
+
+        if(text.length()>0){
+            g.drawImage(textArea, margin, margin + logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+            ScreenUtil.drawText(g, text, 10, logo.getHeight() + 3 * margin, fh);
+        }
+
+        switch(screenStat){
+            case HOME_STAT:
+                if(showMenu){
+                    /*if(text.length()==0){
+                        text += "Select a option from the menu.";
+                    }*/
+                    String[] options = {"switch map","zoom out", "zoom in", "drop media"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
+            case ASSIGNMENT_STAT:
+                if(showMenu){
+                    String[] options = {"answer"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
+            case DROP_STAT:
+                if(showMenu){
+                    String[] options = {"drop message","drop image", "drop video", "drop audio"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
+        }
+
+
         g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
-        g.drawString(netStatus, 10, 20, Graphics.TOP | Graphics.LEFT);
-        g.drawString(gpsStatus, 10, 20 + 2 * fh, Graphics.TOP | Graphics.LEFT);
+        //g.drawString(netStatus, 10, 20, Graphics.TOP | Graphics.LEFT);
+        //g.drawString(gpsStatus, 10, 20 + 2 * fh, Graphics.TOP | Graphics.LEFT);
         ScreenUtil.setRightBt(g, h, w, backBt);
     }
 
@@ -186,22 +223,23 @@ public class TraceCanvas extends GameCanvas {
      * @param key The Key that was hit.
      */
     public void keyPressed(int key) {
-//        log("screenstat: " + screenStat);
-//        log("key: " + key);
-//        log("getGameAction(key): " + getGameAction(key));
         // left soft key & fire
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
             switch (screenStat) {
-                case HOME_STAT:
-                    screenStat = MENU_STAT;
-                    break;
-                case MENU_STAT:
-                    if (ScreenUtil.getSelectedMenuItem() == 1) {
-                        mapType = mapType.equals("sat") ? "map" : "sat";
-                    } else if (ScreenUtil.getSelectedMenuItem() == 2) {
-                        zoom++;
-                    } else if (ScreenUtil.getSelectedMenuItem() == 3) {
-                        zoom--;
+                case HOME_STAT:                    
+                    if(showMenu){
+                        if (ScreenUtil.getSelectedMenuItem() == 1) {
+                            mapType = mapType.equals("sat") ? "map" : "sat";
+                        } else if (ScreenUtil.getSelectedMenuItem() == 2) {
+                            zoom++;
+                        } else if (ScreenUtil.getSelectedMenuItem() == 3) {
+                            zoom--;
+                        } else if (ScreenUtil.getSelectedMenuItem() == 4) {
+                            screenStat = DROP_STAT;
+                            showMenu = false;
+                        }
+                    }else{
+                        showMenu = true;
                     }
                     break;
             }
@@ -209,9 +247,7 @@ public class TraceCanvas extends GameCanvas {
         } else if (key == -7) {
             switch (screenStat) {
                 case HOME_STAT:
-                    break;
-                case MENU_STAT:
-                    screenStat = HOME_STAT;
+                    midlet.setScreen(WP.HOME_CANVAS);
                     break;
             }
             // left
@@ -228,17 +264,13 @@ public class TraceCanvas extends GameCanvas {
             }
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            switch (screenStat) {
-                case MENU_STAT:
-                    ScreenUtil.nextMenuItem();
-                    break;
-            }
             // down
+            if(showMenu){
+                ScreenUtil.nextMenuItem();
+            }
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            switch (screenStat) {
-                case MENU_STAT:
-                    ScreenUtil.prevMenuItem();
-                    break;
+            if(showMenu){
+                ScreenUtil.prevMenuItem();
             }
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
 

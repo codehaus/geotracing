@@ -17,10 +17,9 @@ public class HomeCanvas extends DefaultCanvas {
     String gpsMsg;
 
     // image objects
-    private Image logo, textArea, bg, backBt, msgBar;
+    private Image logo, textArea, bg, backBt, msgBar, iconOverlay;
     // icon buttons
-    private Image[] theOffIcons = new Image[6];
-    private Image[] theOnIcons = new Image[6];
+    private Image[] icons = new Image[6];
 
     // screenstates
     private int screenStat = 0;
@@ -43,31 +42,14 @@ public class HomeCanvas extends DefaultCanvas {
             msgBar = Image.createImage("/msg_bar.png");
             bg = Image.createImage("/bg.png");
 
-            Image traceBtOff = Image.createImage("/trace_button_off.png");
-            Image traceBtOn = Image.createImage("/trace_button_on.png");
-            Image findBtOff = Image.createImage("/find_button_off.png");
-            Image findBtOn = Image.createImage("/find_button_on.png");
-            Image playBtOff = Image.createImage("/play_button_off.png");
-            Image playBtOn = Image.createImage("/play_button_on.png");
-            Image helpBtOff = Image.createImage("/help_button_off.png");
-            Image helpBtOn = Image.createImage("/help_button_on.png");
-            Image settingsBtOff = Image.createImage("/settings_button_off.png");
-            Image settingsBtOn = Image.createImage("/settings_button_on.png");
-            Image gpsBtOff = Image.createImage("/gps_button_off.png");
-            Image gpsBtOn = Image.createImage("/gps_button_on.png");
+            icons[0] = Image.createImage("/trace_icon.png");
+            icons[1] = Image.createImage("/find_icon.png");
+            icons[2] = Image.createImage("/play_icon.png");
+            icons[3] = Image.createImage("/help_icon.png");
+            icons[4] = Image.createImage("/settings_icon.png");
+            icons[5] = Image.createImage("/gps_icon.png");
 
-            theOffIcons[0] = traceBtOff;
-            theOffIcons[1] = findBtOff;
-            theOffIcons[2] = playBtOff;
-            theOffIcons[3] = gpsBtOff;
-            theOffIcons[4] = settingsBtOff;
-            theOffIcons[5] = helpBtOff;
-            theOnIcons[0] = traceBtOn;
-            theOnIcons[1] = findBtOn;
-            theOnIcons[2] = playBtOn;
-            theOnIcons[3] = gpsBtOn;
-            theOnIcons[4] = settingsBtOn;
-            theOnIcons[5] = helpBtOn;
+            iconOverlay = Image.createImage("/icon_overlay.png");
 
             ScreenUtil.resetIcons();
 
@@ -82,6 +64,7 @@ public class HomeCanvas extends DefaultCanvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
+        super.paint(g);
         if (f == null) {
             g.setColor(0, 0, 0);
             f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
@@ -91,34 +74,34 @@ public class HomeCanvas extends DefaultCanvas {
 
         switch (screenStat) {
             case HOME_STAT:
-                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
-                ScreenUtil.createIcons(g, 5, 30, theOffIcons, theOnIcons);
-                String msg = "";
-                switch (ScreenUtil.getSelectedIcon()) {
-                    case 1:
-                        msg = "start a trace";
-                        break;
-                    case 2:
-                        msg = "find a tour";
-                        break;
-                    case 3:
-                        msg = "play a game";
-                        break;
-                    case 4:
-                        msg = "select a gps";
-                        break;
-                    case 5:
-                        msg = "change settings";
-                        break;
-                    case 6:
-                        msg = "get help";
-                        break;
-                }
+                /*g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);*/
+                ScreenUtil.createIcons(g, 5, 30, icons, iconOverlay);
+//                String msg = "";
+//                switch (ScreenUtil.getSelectedIcon()) {
+//                    case 1:
+//                        msg = "start a trace";
+//                        break;
+//                    case 2:
+//                        msg = "find a tour";
+//                        break;
+//                    case 3:
+//                        msg = "play a game";
+//                        break;
+//                    case 4:
+//                        msg = "select a gps";
+//                        break;
+//                    case 5:
+//                        msg = "change settings";
+//                        break;
+//                    case 6:
+//                        msg = "get help";
+//                        break;
+//                }
 
-                if(gpsMsg!=null && gpsMsg.length()>0) msg = gpsMsg;
+//                if(gpsMsg!=null && gpsMsg.length()>0) msg = gpsMsg;
 
-                ScreenUtil.placeMsgBar(g, fh, msg, msgBar, h);
+                //ScreenUtil.placeMsgBar(g, fh, msg, msgBar, h);
                 break;
             case MENU_STAT:
                 g.setColor(0, 0, 0);

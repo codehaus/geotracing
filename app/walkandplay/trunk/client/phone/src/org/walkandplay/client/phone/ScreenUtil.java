@@ -11,21 +11,23 @@ public class ScreenUtil {
     private static int menuItemLength = 0;
     private static int iconLength = 0;
 
-    public static void createIcons(Graphics aGraphics, int aXOffSet, int aYOffset, Image[] theOffIcons, Image[] theOnIcons) {
+    public static void createIcons(Graphics aGraphics, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
         // TODO: support next row properly
-        iconLength = theOnIcons.length;
+        iconLength = theIcons.length;
         for (int i = 0; i < 3; i++) {
             if (i == (selectedIcon - 1)) {
-                aGraphics.drawImage(theOnIcons[i], aXOffSet + i * theOnIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(anIconOverlay, aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
             } else {
-                aGraphics.drawImage(theOffIcons[i], aXOffSet + i * theOffIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
             }
         }
         for (int i = 3; i < 6; i++) {
             if (i == (selectedIcon - 1)) {
-                aGraphics.drawImage(theOnIcons[i], aXOffSet + (i - 3) * theOnIcons[i].getWidth(), aYOffset + theOnIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(anIconOverlay, aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
             } else {
-                aGraphics.drawImage(theOffIcons[i], aXOffSet + (i - 3) * theOffIcons[i].getWidth(), aYOffset + theOnIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
             }
         }
     }
