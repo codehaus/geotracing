@@ -1,10 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
-<!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-<title>GeoTracing, loading please wait....</title>
+<title>GeoTracing</title>
 <link rel="stylesheet" type="text/css" href="css/widget.css"/>
 <link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
 <link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
@@ -20,13 +18,11 @@
 </head>
 <body onunload="GUnload()">
 <div id="mapholder">
-  <div id="topanchor"></div>
   <div id="map"></div>
   <div class="bbottom"></div>
   <div class="btop"></div>
   <div class="bright"></div>
   <div class="bleft"></div>
-  <div id="bottomanchor">&nbsp;</div>
 </div>
 <div id="logobox"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock"><br />
@@ -37,46 +33,22 @@
       <area shape="rect" coords="199,0,258,43" href="#" id="mainbuttonsview"/>
     </map>
     <ul style="text-align:right;">
-      <li> <a href="#"><img src="img/mypageBT.gif" width="58" border="0"/></a> </li>
+      <li> <a href="myaccount.html"><img src="img/mypageBT.gif" width="58" border="0"/></a> </li>
       <li> <a href="about.html"><img src="img/aboutBT.gif" width="58" border="0" style="position:relative;left:7px;"/></a> </li>
-      <li> <a href="#"><img src="img/signinBT.gif" width="58" border="0"/></a> </li>
-      <li> <a href="#"><img src="img/help_bt.gif" width="18" border="0" style="margin-right:20px;"/></a> </li>
+      <li> <img src="img/signinBT.gif" width="58" id="signin_bt"/></li>
+      <li> <img src="img/help_bt.gif" width="18" style="margin-right:20px;" id="help_bt"/></li>
     </ul>
     <br />
     <br />
   </div>
   <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+<div id="buttonbar" style="text-align:left; z-index:1000"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <ul>
-      <li> <a href="#"><img src="img/archive_bt.gif" alt="archiveButton" width="45" border="0" style=" margin-left:30px;"/></a> </li>
-      <li> <a href="#"><img src="img/map_bt.gif" alt="mapButton" width="45" border="0" /></a> </li>
-      <li> <a href="#"><img src="img/search_bt.gif" alt="search" width="45" border="0" id="search_bt"/></a> </li>
-      <li> <a href="#"><img src="img/score_bt.gif" alt="scores" width="45" border="0"/></a> </li>
-      <li>
-        <div id="searchbox" style="position:absolute; width:226px; left:142px; top:72px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-          <div class="contentblock"> <span>search</span><br/>
-            <br/>
-            <form>
-              <input name="text" type="text" style="background:url(img/input_bg.jpg) no-repeat;" size="18"/>
-              <a href="#">
-              <div class="style2" id="submitSearch" style="text-align:right; text-decoration:underline;margin-right:80px;">submit</div>
-              <br />
-              </a>
-            </form>
-            <img src="img/searchTarget.gif" alt="searchTaget" style="position:absolute; left:172px; width: 33px; top: 30px;"/> </div>
-          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-      </li>
-    </ul>
-  </div>
-  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-  <div class="contentblock">
-    <ul>
-      <li> <a href="#"><img src="img/archive_bt.gif" alt="archiveButton" width="45" border="0" style=" margin-left:30px;"/></a> </li>
-      <li> <a href="#"><img src="img/map_bt.gif" alt="mapButton" width="45" border="0" /></a> </li>
-      <li> <a href="#"><img src="img/search_bt.gif" alt="search" width="45" border="0" id="search_bt"/></a> </li>
-      <li> <a href="#"><img src="img/score_bt.gif" alt="scores" width="45" border="0"/></a> </li>
+      <li> <img src="img/archive_bt.gif" alt="archiveButton" id="archive_bt"style="margin-left:30px;"/></li>
+      <li> <img src="img/map_bt.gif" alt="mapButton" id="maps_bt"/></li>
+      <li><img src="img/search_bt.gif" alt="search" id="search_bt"/></li>
+      <li> <img src="img/score_bt.gif" alt="scores" id="live_bt" border="0"/></li>
       <li>
         <div id="searchbox" style="position:absolute; width:226px; left:142px; top:72px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
           <div class="contentblock"> <span>search</span><br/>
@@ -94,17 +66,45 @@
     </ul>
   </div>
   <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="loginbox" style="position:absolute; width:120px; left:365px; top:54px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul>
+      <li> <img src="img/archive_bt.gif" alt="archive button" width="45" style=" margin-left:30px;" id="archive_bt"/> </li>
+      <li> <img src="img/map_bt.gif" alt="mapButton" width="45" border="0" /> </li>
+      <li> <img src="img/search_bt.gif" alt="search" width="45" id="search_bt"/> </li>
+      <li> <img src="img/score_bt.gif" alt="live" id="live_bt" width="45"/></li>
+      <li>
+        <div id="searchbox" style="position:absolute; width:226px; left:142px; top:72px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+          <div class="contentblock"> <span>search</span><br/>
+            <br/>
+            <form>
+              <input name="text" type="text" style="background:url(img/input_bg.jpg) no-repeat;" size="18"/>
+              <a href="#">
+              <div class="style2" id="submitSearch" style="text-align:right; text-decoration:underline;margin-right:80px;">submit</div>
+              <br />
+              </a>
+            </form>
+            <img src="img/searchTarget.gif" alt="searchTaget" style="position:absolute; left:172px; width: 33px; top: 30px;"/> </div>
+          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+      </li>
+    </ul>
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="loginbox" style="position:absolute; width:220px; left:365px; top:54px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <form name="signinform" id="signinform">
       username
       <input type="text" />
       password
       <input type="text" />
+		<div>
+			<span id="forgotpw">forgot password</span>
+			<span id="submit_signin"> submit</span>
+		</div>	
     </form>
   </div>
 <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="mapbox" style="position:absolute; width:200px; left:685px; top:246px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+<div id="mapbox" style="position:absolute; width:200px; left:141px; top:281px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <ul style="list-style:none;">
       <li>street map</li>
@@ -116,7 +116,7 @@
 <script type="text/javascript">
 
 </script>
-<div id="archivenavbox" style="position:absolute; width:162px; left:93px; top:279px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+<div id="archivenavbox" style="position:absolute; width:162px; left:93px; top:279px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <ul style="list-style:none;">
       <li>archived tours</li>
@@ -130,7 +130,7 @@
     </ul>
   </div>
 <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="livenavbox" style="position:absolute; width:162px; left:250px; top:281px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+<div id="livenavbox" style="position:absolute; width:162px; left:250px; top:281px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <ul style="list-style:none;">
       <li>live tours</li>
@@ -139,7 +139,8 @@
     </ul>
   </div>
 <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="archivebox" style="position:absolute; width:162px; left:261px; top:283px; display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+
+<div id="archivebox" style="position:absolute; width:162px; left:261px; top:283px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <ul style="list-style:none;">
       <li>archive content</li>
