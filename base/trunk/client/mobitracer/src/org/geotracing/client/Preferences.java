@@ -47,6 +47,7 @@ public class Preferences {
 
 		try {
 			rs = RecordStore.openRecordStore(mRecordStoreName, true);
+			// Log.log("loaded RMS=" + mRecordStoreName + " size=" + rs.getSize() + " avail=" + rs.getSizeAvailable());
 			re = rs.enumerateRecords(null, null, false);
 			while (re.hasNextElement()) {
 				byte[] raw = re.nextRecord();
