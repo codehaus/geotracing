@@ -1,11 +1,11 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Canvas;
 
-public class HomeCanvas extends DefaultCanvas {
+public class AssignmentCanvas extends DefaultCanvas {
 
     // paint vars
     int w, h, fh;
@@ -14,17 +14,33 @@ public class HomeCanvas extends DefaultCanvas {
     int x0, y0;
     int midx;
 
+    String gpsMsg;
+
     // image objects
-    private Image iconOverlay;
+    private Image logo, textArea, bg, backBt, msgBar, iconOverlay;
     // icon buttons
     private Image[] icons = new Image[6];
 
-    public HomeCanvas(WP aMidlet) {
+    // screenstates
+    private int screenStat = 0;
+    private final static int HOME_STAT = 0;
+    private final static int MENU_STAT = 1;
+
+    private int fontType = Font.FACE_MONOSPACE;
+
+    public AssignmentCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             w = getWidth();
             h = getHeight();
             setFullScreenMode(true);
+
+            // load all images
+            logo = Image.createImage("/logo.png");
+            textArea = Image.createImage("/text_area.png");
+            backBt = Image.createImage("/back_button.png");
+            msgBar = Image.createImage("/msg_bar.png");
+            bg = Image.createImage("/bg.png");
 
             icons[0] = Image.createImage("/trace_icon.png");
             icons[1] = Image.createImage("/find_icon.png");
@@ -55,7 +71,55 @@ public class HomeCanvas extends DefaultCanvas {
             g.setFont(f);
             fh = f.getHeight();
         }
-        ScreenUtil.createIcons(g, 5, 30, icons, iconOverlay);
+
+        switch (screenStat) {
+            case HOME_STAT:
+                /*g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);*/
+                ScreenUtil.createIcons(g, 5, 30, icons, iconOverlay);
+//                String msg = "";
+//                switch (ScreenUtil.getSelectedIcon()) {
+//                    case 1:
+//                        msg = "start a trace";
+//                        break;
+//                    case 2:
+//                        msg = "find a tour";
+//                        break;
+//                    case 3:
+//                        msg = "play a game";
+//                        break;
+//                    case 4:
+//                        msg = "select a gps";
+//                        break;
+//                    case 5:
+//                        msg = "change settings";
+//                        break;
+//                    case 6:
+//                        msg = "get help";
+//                        break;
+//                }
+
+//                if(gpsMsg!=null && gpsMsg.length()>0) msg = gpsMsg;
+
+                //ScreenUtil.placeMsgBar(g, fh, msg, msgBar, h);
+                break;
+            case MENU_STAT:
+                g.setColor(0, 0, 0);
+                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
+                String text = "Press menu to see the options";
+                ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
+                if (midlet.GPS_OK()) {
+                    String[] options = {"help", "settings", "change gps"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                } else {
+                    String[] options = {"help", "settings", "select gps"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                ScreenUtil.setRightBt(g, h, w, backBt);
+                break;
+        }
     }
 
     /**
@@ -76,20 +140,18 @@ public class HomeCanvas extends DefaultCanvas {
                     midlet.setScreen(WP.TRACE_CANVAS);
                     break;
                 case 2:
-                    /*if(midlet.GPS_OK()){
+                    if(midlet.GPS_OK()){
                         midlet.setScreen(WP.FIND_TOURS_CANVAS);
                     }else{
                         gpsMsg = "select a gps first";
-                    }*/
-                    midlet.setScreen(WP.FIND_TOURS_CANVAS);
+                    }
                     break;
                 case 3:
-                    /*if(midlet.GPS_OK()){
+                    if(midlet.GPS_OK()){
                         midlet.setScreen(WP.PLAY_TOURS_CANVAS);
                     }else{
                         gpsMsg = "select a gps first";
-                    }*/
-                    midlet.setScreen(WP.PLAY_TOURS_CANVAS);
+                    }
                     break;
                 case 4:
                     midlet.setScreen(WP.GPS_CANVAS);
