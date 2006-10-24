@@ -32,7 +32,7 @@ public class MediaCanvas extends DefaultCanvas {
     private Image logo, textArea, bg, backBt, iconOverlay, menuBt;
 
     // icon buttons
-    private Image[] icons = new Image[3];
+    private Image[] icons = new Image[5];
 
     // screenstates
     private int screenStat = 0;
@@ -186,7 +186,7 @@ public class MediaCanvas extends DefaultCanvas {
             fh = f.getHeight();
         }
 
-        ScreenUtil.createIcons(g, 5, 30, icons, iconOverlay);
+        ScreenUtil.createIcons(g, w, 5, 30, icons, iconOverlay);
         ScreenUtil.setLeftBt(g, h, menuBt);
         switch (screenStat) {
             case PHOTO_STAT:

@@ -11,28 +11,20 @@ public class ScreenUtil {
     private static int menuItemLength = 0;
     private static int iconLength = 0;
 
-    public static void createIcons(Graphics aGraphics, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
-        // TODO: support next row properly
+    public static void createIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
         iconLength = theIcons.length;
-        for (int i = 0; i < 3; i++) {
+        int availablePixels = theWidth - 2*aXOffSet;
+        int nrOfIcons = availablePixels/theIcons[0].getWidth();
+
+        for (int i = 0; i < theIcons.length; i++) {
+            int layer = i/nrOfIcons;
             if (i == (selectedIcon - 1)) {
-                aGraphics.drawImage(anIconOverlay, aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
-                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(anIconOverlay, aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer*theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer*theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
             } else {
-                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer*theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
             }
-        }
-        
-        if(iconLength > 3){
-            for (int i = 3; i < 6; i++) {
-                if (i == (selectedIcon - 1)) {
-                    aGraphics.drawImage(anIconOverlay, aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
-                    aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
-                } else {
-                    aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
-                }
-            }
-        }
+        }        
     }
 
     public static void placeMsgBar(Graphics aGraphics, int aFontHeight, String aMsg, Image theBar, int theHeight) {

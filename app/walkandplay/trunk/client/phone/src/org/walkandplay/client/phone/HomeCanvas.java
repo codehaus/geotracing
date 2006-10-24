@@ -55,7 +55,7 @@ public class HomeCanvas extends DefaultCanvas {
             g.setFont(f);
             fh = f.getHeight();
         }
-        ScreenUtil.createIcons(g, 5, 30, icons, iconOverlay);
+        ScreenUtil.createIcons(g, w, 5, 30, icons, iconOverlay);
     }
 
     /**
