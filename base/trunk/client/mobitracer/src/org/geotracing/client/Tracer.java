@@ -5,6 +5,9 @@ package org.geotracing.client;
 
 
 import javax.microedition.midlet.MIDlet;
+import java.util.TimeZone;
+import java.util.Date;
+import java.util.Calendar;
 
 
 /**
@@ -60,6 +63,7 @@ public class Tracer implements GPSFetcherListener, NetListener {
 		net.setProperties(midlet);
 		net.start();
 		startGPSFetcher();
+		Log.log("time=" + Calendar.getInstance().getTime() + " timezone=" + TimeZone.getDefault().getID());
 	}
 
 	/**

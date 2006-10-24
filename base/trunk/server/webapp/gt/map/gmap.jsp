@@ -8,6 +8,9 @@
 				 org.keyworx.server.ServerConfig,
 				 org.keyworx.common.log.Log,
 				 org.keyworx.common.log.Logging" %>
+<%@ page import="org.keyworx.common.util.Rand"%>
+<%@ page import="nl.justobjects.jox.dom.JXElement"%>
+<%@ page import="java.io.Writer"%>
 <%!
 	public static final String DRAW_LOC_SCRIPT = ServerConfig.getConfigDir() + "/../bin/drawloc.sh";
 	private static Log log;
@@ -39,6 +42,8 @@
 
 %>
 <%
+	String format = getParameter(request, "format", "image");
+
 	double lon = Double.parseDouble(getParameter(request, "lon", "0"));
 	double lat = Double.parseDouble(getParameter(request, "lat", "0"));
 	int zoom = Integer.parseInt(getParameter(request, "zoom", "10"));
@@ -73,37 +78,50 @@
 		// llBox = GoogleTiles.getBoundingBox(xy.x, xy.y, zoom);
 	}
 
-
-	if (!file.exists()) {
-		Net.fetchURL(tileURL, file);
-	} else {
-		Net.fetchURL(tileURL, file);
-		// log.info("tile=" + tileRef + " from cache");
-	}
-
-	// File with plotted location
-	File locFile = new File(CACHE_DIR + tileRef + "-loc.jpg");
-
 	// Get pixel offsets in tile image
 	GoogleTiles.XY xy = GoogleTiles.getPixelXY(lon, lat, zoom);
-	int x = xy.x;
-	int y = xy.y;
-	int x0 = x + 3;
-	int y0 = y + 3;
 
-	String[] command = {DRAW_LOC_SCRIPT, "" + x, "" + y, "" + x0, "" + y0, file.getAbsolutePath(), locFile.getAbsolutePath()};
+	if (format.equals("image")) {
+		Net.fetchURL(tileURL, file);
 
-	StringBuffer stdout = new StringBuffer(24);
-	StringBuffer stderr = new StringBuffer(24);
-	int exitCode = Sys.execute(command, stdout, stderr);
+		// File with plotted location
+		File locFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
 
-	if (exitCode == 0) {
-		// log.info("drawloc returned " + exitCode);
-	} else {
-		log.warn("drawloc returned " + exitCode + " stderr=" + stderr.toString());
+		int x = xy.x;
+		int y = xy.y;
+		int x0 = x + 3;
+		int y0 = y + 3;
+
+		String[] command = {DRAW_LOC_SCRIPT, "" + x, "" + y, "" + x0, "" + y0, file.getAbsolutePath(), locFile.getAbsolutePath()};
+
+		StringBuffer stdout = new StringBuffer(24);
+		StringBuffer stderr = new StringBuffer(24);
+		int exitCode = Sys.execute(command, stdout, stderr);
+
+		if (exitCode == 0) {
+			// log.info("drawloc returned " + exitCode);
+		} else {
+			log.warn("drawloc returned " + exitCode + " stderr=" + stderr.toString());
+		}
+		Servlets.sendFile(request, response, locFile.getAbsolutePath(), "image/jpeg", false);
+		file.delete();
+		locFile.delete();
+	} else if (format.equals("xml")) {
+
+		response.setContentType("text/xml;charset=utf-8");
+		JXElement rsp = new JXElement("gmap");
+		rsp.setAttr("url", tileURL);
+		rsp.setAttr("x", xy.x);
+		rsp.setAttr("y", xy.y);
+		 try {
+			 Writer writer = response.getWriter();
+			 writer.write(rsp.toFormattedString());
+			 writer.flush();
+			 writer.close();
+		 } catch (Throwable th) {
+	  		 log.info("error gmap writing response");
+		 }
 	}
-	Servlets.sendFile(request, response, locFile.getAbsolutePath(), "image/jpeg", false);
-	locFile.delete();
 %>
 
 

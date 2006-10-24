@@ -85,7 +85,7 @@ public class GPSSmoother {
 				bestLocation = nextLocation;
 			}
 		}
-		Log.log("cnt=" + count + " bestIdx=" + bestIndex);
+		// Log.log("cnt=" + count + " bestIdx=" + bestIndex);
 		return bestLocation;
 	}
 
