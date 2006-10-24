@@ -23,6 +23,8 @@ public class WP extends MIDlet implements Runnable {
     public final static int GPS_CANVAS = 4;
     public final static int SETTINGS_CANVAS = 5;
     public final static int HELP_CANVAS = 6;
+    public final static int MEDIA_CANVAS = 7;
+    public final static int ASSIGNMENT_CANVAS = 8;
 
     private LogScreen logScreen;
 
@@ -96,6 +98,14 @@ public class WP extends MIDlet implements Runnable {
             case HELP_CANVAS:
                 CURRENT_CANVAS = HELP_CANVAS;
                 Display.getDisplay(this).setCurrent(new HelpCanvas(this));
+                break;
+            case MEDIA_CANVAS:
+                CURRENT_CANVAS = MEDIA_CANVAS;
+                Display.getDisplay(this).setCurrent(new MediaCanvas(this));
+                break;
+            case ASSIGNMENT_CANVAS:
+                CURRENT_CANVAS = ASSIGNMENT_CANVAS;
+                Display.getDisplay(this).setCurrent(new AssignmentCanvas(this));
                 break;
         }
     }

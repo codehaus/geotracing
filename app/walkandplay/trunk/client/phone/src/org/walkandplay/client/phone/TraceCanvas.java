@@ -53,15 +53,18 @@ public class TraceCanvas extends Canvas {
 
             tileURL = midlet.getAppProperty("kw-url") + "/tile.jsp?";
             System.out.println("tileUrl:" + tileURL);
-            tracer = new Tracer(aMidlet, this);
-            tracer.start();
-            System.out.println("created the tracer object");
+            // TODO: get this check out. 
+            if(midlet.GPS_OK()){
+                tracer = new Tracer(aMidlet, this);
+                tracer.start();
+                System.out.println("created the tracer object");
+            }
             // load all images
             logo = Image.createImage("/logo.png");
             menuBt = Image.createImage("/menu_button.png");
             textArea = Image.createImage("/text_area.png");
             backBt = Image.createImage("/back_button.png");
-            traceLogo = Image.createImage("/trace_button_off_small.png");
+            traceLogo = Image.createImage("/trace_icon_small.png");
             gpsNetBar = Image.createImage("/gpsnet_bg.png");
             redDot = Image.createImage("/red_dot.png");
             greenDot = Image.createImage("/green_dot.png");
@@ -210,8 +213,6 @@ public class TraceCanvas extends Canvas {
                 break;
         }
 
-
-        g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
         //g.drawString(netStatus, 10, 20, Graphics.TOP | Graphics.LEFT);
         //g.drawString(gpsStatus, 10, 20 + 2 * fh, Graphics.TOP | Graphics.LEFT);
         ScreenUtil.setRightBt(g, h, w, backBt);
@@ -235,7 +236,7 @@ public class TraceCanvas extends Canvas {
                         } else if (ScreenUtil.getSelectedMenuItem() == 3) {
                             zoom--;
                         } else if (ScreenUtil.getSelectedMenuItem() == 4) {
-                            screenStat = DROP_STAT;
+                            midlet.setScreen(WP.MEDIA_CANVAS);
                             showMenu = false;
                         }
                     }else{

@@ -26,17 +26,21 @@ public class MediaCanvas extends DefaultCanvas {
     private int rate, bits;
     private int kbPerSec;
 
+    boolean showMenu;
 
     // image objects
-    private Image logo, textArea, bg, backBt, iconOverlay;
+    private Image logo, textArea, bg, backBt, iconOverlay, menuBt;
 
     // icon buttons
-    private Image[] icons = new Image[4];
+    private Image[] icons = new Image[3];
 
     // screenstates
     private int screenStat = 0;
-    private final static int HOME_STAT = 0;
-    private final static int MENU_STAT = 1;
+    private final static int PHOTO_STAT = 1;
+    private final static int VIDEO_STAT = 2;
+    private final static int AUDIO_STAT = 3;
+    private final static int TEXT_STAT = 4;
+    private final static int POI_STAT = 5;
 
     private int fontType = Font.FACE_MONOSPACE;
 
@@ -56,13 +60,15 @@ public class MediaCanvas extends DefaultCanvas {
             textArea = Image.createImage("/text_area.png");
             backBt = Image.createImage("/back_button.png");
             bg = Image.createImage("/bg.png");
+            menuBt = Image.createImage("/menu_button.png");
 
-            icons[0] = Image.createImage("/assignment_icon.png");
-            icons[1] = Image.createImage("/poi_icon.png");
-            icons[2] = Image.createImage("/photo_icon.png");
-            icons[3] = Image.createImage("/movie_icon.png");
+            icons[0] = Image.createImage("/poi_icon_small.png");
+            icons[1] = Image.createImage("/assignment_icon_small.png");
+            icons[2] = Image.createImage("/photo_icon_small.png");
+            icons[3] = Image.createImage("/movie_icon_small.png");
+            icons[4] = Image.createImage("/movie_icon_small.png");
 
-            iconOverlay = Image.createImage("/icon_overlay.png");
+            iconOverlay = Image.createImage("/icon_overlay_small.png");
 
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
@@ -181,15 +187,49 @@ public class MediaCanvas extends DefaultCanvas {
         }
 
         ScreenUtil.createIcons(g, 5, 30, icons, iconOverlay);
-
+        ScreenUtil.setLeftBt(g, h, menuBt);
         switch (screenStat) {
-            case HOME_STAT:
-                g.drawImage(textArea, margin, margin + logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+            case PHOTO_STAT:
+                g.drawImage(textArea, margin, margin + logo.getHeight() + 3*margin, Graphics.TOP | Graphics.LEFT);
                 //showCamera(2*margin, margin + logo.getHeight() + 2*margin, 160, 120);
+                if(showMenu){
+                    String[] options = {"capture"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
                 break;
-            case MENU_STAT:
+            case VIDEO_STAT:
+                g.drawImage(textArea, margin, margin + logo.getHeight() + 3*margin, Graphics.TOP | Graphics.LEFT);
+                //showCamera(2*margin, margin + logo.getHeight() + 2*margin, 160, 120);
+                if(showMenu){
+                    String[] options = {"record"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
+            case AUDIO_STAT:
+                g.drawImage(textArea, margin, margin + logo.getHeight() + 3*margin, Graphics.TOP | Graphics.LEFT);
+                //showCamera(2*margin, margin + logo.getHeight() + 2*margin, 160, 120);
+                if(showMenu){
+                    String[] options = {"record"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
+            case TEXT_STAT:
+                g.drawImage(textArea, margin, margin + logo.getHeight() + 3*margin, Graphics.TOP | Graphics.LEFT);
+                //showCamera(2*margin, margin + logo.getHeight() + 2*margin, 160, 120);
+                if(showMenu){
+                    String[] options = {"place"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
+            case POI_STAT:
+                g.drawImage(textArea, margin, margin + logo.getHeight() + 3*margin, Graphics.TOP | Graphics.LEFT);
+                //showCamera(2*margin, margin + logo.getHeight() + 2*margin, 160, 120);
+                if(showMenu){
+                    String[] options = {"place"};
+                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                }
+                break;
 
-                break;
         }
     }
 
@@ -201,22 +241,64 @@ public class MediaCanvas extends DefaultCanvas {
     public void keyPressed(int key) {
         // left soft key & fire
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
-
+            showMenu = true;
             // right softkey
         } else if (key == -7) {
-            midlet.setScreen(-1);
+            midlet.setScreen(WP.TRACE_CANVAS);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             ScreenUtil.prevIcon();
+            switch(ScreenUtil.getSelectedIcon()){
+                case 1:
+                    screenStat = AUDIO_STAT;
+                    showMenu= false;
+                    break;
+                case 2:
+                    screenStat = POI_STAT;
+                    showMenu= false;
+                    break;
+                case 3:
+                    screenStat = TEXT_STAT;
+                    showMenu= false;
+                    break;
+                case 4:
+                    screenStat = PHOTO_STAT;
+                    showMenu= false;
+                    break;
+                case 5:
+                    screenStat = VIDEO_STAT;
+                    showMenu= false;
+                    break;
+            }
             // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             ScreenUtil.nextIcon();
+            switch(ScreenUtil.getSelectedIcon()){
+                case 1:
+                    screenStat = TEXT_STAT;
+                    showMenu= false;
+                    break;
+                case 2:
+                    screenStat = PHOTO_STAT;
+                    showMenu= false;
+                    break;
+                case 3:
+                    screenStat = VIDEO_STAT;
+                    showMenu= false;
+                    break;
+                case 4:
+                    screenStat = AUDIO_STAT;
+                    showMenu= false;
+                    break;
+                case 5:
+                    screenStat = POI_STAT;
+                    showMenu= false;
+                    break;
+            }
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.upIcon();
             // down
-        } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.downIcon();
+        } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {            
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
             midlet.setScreen(-1);

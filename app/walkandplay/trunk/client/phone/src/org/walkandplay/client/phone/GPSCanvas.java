@@ -57,7 +57,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
             textArea = Image.createImage("/text_area.png");
             backBt = Image.createImage("/back_button.png");
             bg = Image.createImage("/bg.png");
-            gpsLogo = Image.createImage("/gps_button_off_small.png");
+            gpsLogo = Image.createImage("/gps_icon_small.png");
             menuBt = Image.createImage("/menu_button.png");
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());

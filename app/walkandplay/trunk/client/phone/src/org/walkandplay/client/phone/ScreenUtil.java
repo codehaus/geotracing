@@ -22,12 +22,15 @@ public class ScreenUtil {
                 aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth(), aYOffset, Graphics.TOP | Graphics.LEFT);
             }
         }
-        for (int i = 3; i < 6; i++) {
-            if (i == (selectedIcon - 1)) {
-                aGraphics.drawImage(anIconOverlay, aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
-                aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
-            } else {
-                aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+        
+        if(iconLength > 3){
+            for (int i = 3; i < 6; i++) {
+                if (i == (selectedIcon - 1)) {
+                    aGraphics.drawImage(anIconOverlay, aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+                    aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+                } else {
+                    aGraphics.drawImage(theIcons[i], aXOffSet + (i - 3) * theIcons[i].getWidth(), aYOffset + theIcons[i].getHeight() + 5, Graphics.TOP | Graphics.LEFT);
+                }
             }
         }
     }
