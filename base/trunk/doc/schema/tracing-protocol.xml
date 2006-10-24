@@ -1,0 +1,238 @@
+<!--
+ * Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
+ * Distributable under LGPL license. See terms of license at gnu.org
+-->
+
+		<!--
+	 This file defines the syntax for the GeoTracing tracing handler protocol messages.
+	 The handler is implemented by the class org.geotracing.server.TracingHandler.
+	 This definition uses the Simba schema schema XML language. See the Simba definition
+	 at http://kwx.dev.waag.org/docs/protocol/simba.html
+
+	 See general info on KeyWorx protocols at
+	 http://kwx.dev.waag.org/docs/
+
+	 The tracing protocol is a KeyWorx extension protocol that uses the Utopia service.
+	 The KeyWorx core protocol is defined at:
+	 http://kwx.dev.waag.org/docs/protocol/keyworx-protocol.html
+
+	 The following tracing protocol services are defined:
+	  TRK_CREATE_SERVICE = "t-trk-create" - create a track
+	  TRK_DELETE_SERVICE = "t-trk-delete" - delete a track
+	  TRK_SUSPEND_SERVICE = "t-trk-suspend" - suspend writing to a track
+	  TRK_RESUME_SERVICE = "t-trk-resume" - resume writing to track
+	  TRK_WRITE_SERVICE = "t-trk-write" - write GPS sample or lon/lat location to track
+	  TRK_READ_SERVICE = "t-trk-read" - read raw track data
+	  TRK_ADD_MEDIUM_SERVICE = "t-trk-add-medium" - add medium to track
+	  TRK_UPLOAD_MEDIUM_SERVICE = "t-trk-upload-medium" - upload medium (raw or file)
+	  TRK_DELETE_MEDIUM_SERVICE = "t-trk-delete-medium" - delete medium (also deletes location)
+	  TRK_ADD_POI_SERVICE = "t-trk-add-poi" - add Point of Interest to track
+	  TRK_DELETE_POI_SERVICE = "t-trk-delete-poi" - delete Point of Interest
+	  TRK_UPDATE_POI_SERVICE = "t-trk-update-poi" - update Point of Interest
+	  TRK_IMPORT_SERVICE = "t-trk-import" - import a track (NOT YET IMPLEMENTED)
+	  TRK_EXPORT_SERVICE = "t-trk-export" - export a track as GPX or GTX (internal GT format)
+	  HEARTBEAT_SERVICE = "t-hb" - send heartbeat (keep-alive)
+
+	 $Id:$
+  -->
+<syntax id="tracinghandler-protocol" version="1.0">
+
+	<!-- Common definitions used by protocol messages. -->
+
+	<!-- The track point element used for track write/read. -->
+	<element tag="pt" id="PointDef" comment="track point defined by  lon/lat or GPS sample">
+		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+
+		<!-- Location: either NMEA or lon/lat should be presnt. -->
+		<attribute name="nmea" comment="raw NMEA GPS sentence (GPRMC or GPGGA)" type="string" optional="true"/>
+		<attribute name="lon" comment="longitude in fractional degrees" type="real" optional="true"/>
+		<attribute name="lat" comment="latitude in fractional degrees" type="real" optional="true"/>
+
+		<attribute name="rr" comment="roadrating: application-specific rating e.g. asfalt/scenary rating" type="int" optional="true"/>
+
+	</element>
+
+	<!-- The generic negative response.
+	 Any of the services below will return this response on error.
+	 For example:
+	 <t-trk-write-nrsp errorid="1234" error="invalid attr value" details="cannot parse NMEA string" />
+	 -->
+	<element tag="t-*-nrsp" comment="person requestname negative response">
+		<attribute name="errorid" comment="the errorid" type="int"/>
+		<attribute name="error" comment="the error message" type="string"/>
+		<attribute name="details" comment="the error details" type="string"/>
+	</element>
+
+	<!-- THE PROTOCOL SERVICES -->
+
+	<!-- The track create request. New track becomes active track. -->
+	<element tag="t-trk-create-req" comment="create new track">
+		<attribute name="t" comment="UTC time in millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+		<attribute name="name" comment="track name: if omitted set to yyMMdd" type="string" optional="true"/>
+		<attribute name="type"
+				   comment="track type: 1 is normal track, 2 is day-log track (new track is created daily after 24:00)"
+				   type="int" optional="true" default="1"/>
+	</element>
+
+	<!-- The track create response -->
+	<element tag="t-trk-create-rsp" comment="track create response">
+		<attribute name="id" comment="the track id of created track " type="int"/>
+	</element>
+
+	<!-- The track delete request -->
+	<element tag="t-trk-delete-req"  comment="track delete request">
+		<attribute name="id" comment="the track id: if omitted active track is deleted" type="int" optional="true"/>
+	</element>
+
+	<!-- The track delete response -->
+	<element tag="t-trk-delete-rsp" comment="track delete response">
+		<attribute name="id" comment="the track id of deleted track " type="int"/>
+	</element>
+
+	<!-- The track suspend request.  -->
+	<element tag="t-trk-suspend-req" comment="Suspends active track">
+		<attribute name="t" comment="UTC time in millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+	</element>
+
+	<!-- The track suspend response -->
+	<element tag="t-trk-suspend-rsp"  comment="track suspend response">
+		<attribute name="id" comment="the track id of suspended track " type="int"/>
+	</element>
+
+	<!-- The track resume request -->
+	<element tag="t-trk-resume-req"  comment="Resumes active track">
+		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+	</element>
+
+	<!-- The track resume response -->
+	<element tag="t-trk-resume-rsp"  comment="track resume response">
+		<attribute name="id" comment="the track id of resumed track " type="int"/>
+	</element>
+
+	<!-- The track write request -->
+	<element tag="t-trk-write-req"  comment="writes one or more points to active track">
+		<element-list comment="a list of one or more PointDef elements">
+			<element-ref id="PointDef"/>
+		</element-list>
+	</element>
+
+	<!-- The track write response -->
+	<element tag="t-trk-write-rsp"  comment="track write response"/>
+
+	<!-- The track read request -->
+	<element tag="t-trk-read-req" comment="reads active track">
+	</element>
+
+	<!-- The track read response (DISCOURAGED: USE t-trk-export INSTEAD)-->
+	<element tag="t-trk-read-rsp"  comment="track read response">
+		<element-list comment="a list of mixed suspend/resume and PointDef elements">
+			<element-choice>
+				<element tag="suspend">
+					<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+							   optional="true"/>
+				</element>
+				<element tag="resume">
+					<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+							   optional="true"/>
+				</element>
+				<element-ref id="PointDef"/>
+			</element-choice>
+		</element-list>
+	</element>
+
+	<!-- The track add-medium request -->
+	<element tag="t-trk-add-medium-req"  comment="add existing medium by id to track">
+		<attribute name="id" comment="id of medium to be added to track" type="int"/>
+	</element>
+
+	<!-- The track add-medium response -->
+	<element tag="t-trk-add-medium-rsp"  comment="track add-medium response" >
+		<attribute name="id" comment="id of location record created (relates to medium record)" type="int"/>
+	</element>
+
+	<!-- The track upload-medium request  -->
+	<element tag="t-trk-upload-medium-req"  comment="uploads medium through file/URL or raw data ">
+		<!-- Note: server may attempt to determine time from EXIF data in case of JPEG images. -->
+		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+		<attribute name="name" comment="name of file" type="string" optional="true"/>
+		<attribute name="description" comment="short description" type="string" optional="true"/>
+		<attribute name="type" comment="type (audio, video, image)" type="string" optional="true"/>
+		<attribute name="mime" comment="mime type e.g. image/jpeg" type="string" optional="true"/>
+
+		<!-- Note: either a "file" or encoded file data in <data/> should be present -->
+		<!-- TODO: this is messy: split into two types of service requests. -->
+		<attribute name="file" comment="path or URL to file" type="string" optional="true"/>
+		<element tag="data" comment="encoded file data" optional="true">
+			<attribute name="encoding" comment="encoding format of the data" type="string" values=""/>
+		</element>
+	</element>
+
+	<!-- The track upload-medium response -->
+	<element tag="t-trk-upload-medium-rsp"  comment="upload-medium response" >
+		<attribute name="id" comment="id of medium uploaded/geotagged and added to track" type="int"/>
+	</element>
+
+	<!-- The track delete-medium request  -->
+	<element tag="t-trk-delete-medium-req"  comment="unrelates from related track and deletes location">
+		<attribute name="id" comment="id of medium to be deleted" type="int"/>
+	</element>
+
+	<!-- The track delete-medium response -->
+	<element tag="t-trk-delete-medium-rsp"  comment="delete-medium response" />
+
+	<!-- The track add-POI request -->
+	<element tag="t-trk-add-poi-req"  comment="add Point of Interest to track">
+		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+		<attribute name="name" comment="name of POI" type="string" />
+		<attribute name="type" comment="type of POI" type="string" />
+		<attribute name="description" comment="short description" type="string" optional="true"/>
+		<attribute name="state" comment="initial state of POI" type="int" optional="true"/>
+		<element name="extra" comment="extra elements (app specific)" type="any" optional="true"/>
+	</element>
+
+	<!-- The track add-POI response -->
+	<element tag="t-trk-add-poi-rsp"  comment="Point of Interest to track added" >
+		<attribute name="id" comment="id of POI record" type="int"/>
+	</element>
+
+	<!-- The track add-POI request NOT YET IMPLEMENTED -->
+	<element tag="t-trk-update-poi-req"  comment="update Point of Interest to track">
+		<attribute name="id" comment="id of POI record" type="int"/>
+		<attribute name="name" comment="name of POI" type="string" optional="true" />
+		<attribute name="type" comment="type of POI" type="string" optional="true" />
+		<attribute name="description" comment="short description" type="string" optional="true"/>
+		<attribute name="state" comment="initial state of POI" type="int" optional="true"/>
+		<element name="extra" comment="extra elements (app specific)" type="any" optional="true"/>
+	</element>
+
+	<!-- The track update-POI response -->
+	<element tag="t-trk-update-poi-rsp"  comment="Point of Interest updated" >
+		<attribute name="id" comment="id of POI record" type="int"/>
+	</element>
+
+	<!-- The track delete-poi request  -->
+	<element tag="t-trk-delete-poi-req"  comment="unrelates from related track and deletes location">
+		<attribute name="id" comment="id of poi to be deleted" type="int"/>
+	</element>
+
+	<!-- The track delete-poi response -->
+	<element tag="t-trk-delete-poi-rsp"  comment="delete-poi response" >
+		<attribute name="id" comment="id of poi deleted" type="int"/>
+	</element>
+
+	<!-- The heartbeat request  -->
+	<element tag="t-hb-req"  comment="heartbeat from client">
+		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
+				   optional="true"/>
+	</element>
+
+	<!-- The heartbeat response -->
+	<element tag="t-hb-rsp"  comment="delete-poi response" />
+
+</syntax>
