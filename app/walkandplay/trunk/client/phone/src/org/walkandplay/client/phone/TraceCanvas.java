@@ -1,5 +1,9 @@
 package org.walkandplay.client.phone;
 
+import org.geotracing.client.Util;
+import org.geotracing.client.GPSInfo;
+import org.geotracing.client.Log;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;

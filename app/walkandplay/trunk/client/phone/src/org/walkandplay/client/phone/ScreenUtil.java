@@ -11,7 +11,7 @@ public class ScreenUtil {
     private static int menuItemLength = 0;
     private static int iconLength = 0;
 
-    public static void createIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
+    public static void placeIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
         iconLength = theIcons.length;
         int availablePixels = theWidth - 2*aXOffSet;
         int nrOfIcons = availablePixels/theIcons[0].getWidth();
@@ -33,6 +33,15 @@ public class ScreenUtil {
         Font f = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         aGraphics.setFont(f);
         aGraphics.drawString(aMsg, 3, theHeight - aFontHeight - 2, Graphics.TOP | Graphics.LEFT);
+    }
+
+    public static void drawTextArea(Graphics aGraphics, int aHeight, int aXOffSet, int aYOffSet, Image aTopImage, Image aMiddleImage, Image aBottomImage){
+        aGraphics.drawImage(aTopImage, aXOffSet, aYOffSet, Graphics.TOP | Graphics.LEFT);
+        int nrOfBars = aHeight/aMiddleImage.getHeight();        
+        for(int i=0;i<nrOfBars;i++){
+            aGraphics.drawImage(aMiddleImage, aXOffSet, aYOffSet + (i+1)*aMiddleImage.getHeight(), Graphics.TOP | Graphics.LEFT);
+        }
+        aGraphics.drawImage(aBottomImage, aXOffSet, aYOffSet + nrOfBars*aMiddleImage.getHeight(), Graphics.TOP | Graphics.LEFT);
     }
 
     public static void createMenu(Graphics aGraphics, Font aFont, int theScreenHeight, int theFontHeight, String[] theMenuItems, Image theTop, Image theMiddle, Image theBottom) {
@@ -307,4 +316,6 @@ public class ScreenUtil {
 
         return aText;
     }
+
+    
 }
