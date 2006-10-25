@@ -76,7 +76,7 @@ public class AssignmentCanvas extends DefaultCanvas {
             case HOME_STAT:
                 /*g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);*/
-                ScreenUtil.createIcons(g, w, 5, 30, icons, iconOverlay);
+                ScreenUtil.placeIcons(g, w, 5, 30, icons, iconOverlay);
 //                String msg = "";
 //                switch (ScreenUtil.getSelectedIcon()) {
 //                    case 1:

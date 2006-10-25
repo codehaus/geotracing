@@ -1,5 +1,7 @@
 package org.walkandplay.client.phone;
 
+import org.geotracing.client.Preferences;
+
 import javax.bluetooth.*;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;

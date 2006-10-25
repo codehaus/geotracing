@@ -26,9 +26,6 @@ public class WP extends MIDlet implements Runnable {
     public final static int MEDIA_CANVAS = 7;
     public final static int ASSIGNMENT_CANVAS = 8;
 
-    private LogScreen logScreen;
-
-
     /**
      * Sets up the midlet and the items required for user interaction.
      */
@@ -114,15 +111,11 @@ public class WP extends MIDlet implements Runnable {
      * Starts GPS fetching and KW client.
      */
     public void run() {
-        //TraceScreen traceScreen = new TraceScreen(this);
-        logScreen = new LogScreen();
         Display.getDisplay(this).setCurrent(new SplashCanvas(this, HOME_CANVAS));
-        //traceScreen.start();
     }
 
     public void log(String aMsg) {
-        System.out.println(aMsg);
-        //logScreen.add(aMsg);        
+        System.out.println(aMsg);                
     }
 
 
