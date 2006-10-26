@@ -1,9 +1,5 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.Canvas;
-import java.util.TimerTask;
-import java.util.Timer;
-
 /**
  * Created by IntelliJ IDEA.
  * User: ronald
@@ -14,7 +10,8 @@ import java.util.Timer;
 public class Texter {
 
     private String text = "";
-    public Texter(String theInputString){
+
+    public Texter(String theInputString) {
         text = theInputString;
     }
 

@@ -20,7 +20,9 @@ public class DefaultCanvas extends Canvas {
     protected WP midlet;
 
     // image objects
-    protected Image logo, textArea, bg, backBt, gpsNetBar, redDot, greenDot, menuTop, menuMiddle, menuBottom;
+    protected Image logo, bg, backBt, gpsNetBar, redDot, greenDot;
+    protected Image menuTop, menuMiddle, menuBottom, menuSel;
+    protected Image menuBt, topTextArea, middleTextArea, bottomTextArea;
 
     protected int fontType = Font.FACE_MONOSPACE;
 
@@ -33,7 +35,6 @@ public class DefaultCanvas extends Canvas {
 
             // load all images
             logo = Image.createImage("/logo.png");
-            textArea = Image.createImage("/text_area.png");
             backBt = Image.createImage("/back_button.png");
             bg = Image.createImage("/bg.png");
             gpsNetBar = Image.createImage("/gpsnet_bg.png");
@@ -42,6 +43,11 @@ public class DefaultCanvas extends Canvas {
             menuTop = Image.createImage("/menu_top.png");
             menuMiddle = Image.createImage("/menu_middle.png");
             menuBottom = Image.createImage("/menu_bottom.png");
+            menuSel = Image.createImage("/menu_sel.png");
+            menuBt = Image.createImage("/menu_button.png");
+            topTextArea = Image.createImage("/textarea_1.png");
+            middleTextArea = Image.createImage("/textarea_2.png");
+            bottomTextArea = Image.createImage("/textarea_3.png");
 
             // reset the menu's
             ScreenUtil.resetMenu();
@@ -88,7 +94,7 @@ public class DefaultCanvas extends Canvas {
         g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
         placeMainLogo(g);
         placeGPSNetBar(g);
-        ScreenUtil.setRightBt(g, h, w, backBt);
+        ScreenUtil.drawRightSoftKey(g, h, w, backBt);
     }
 
     // creates a delay for the splashscreen

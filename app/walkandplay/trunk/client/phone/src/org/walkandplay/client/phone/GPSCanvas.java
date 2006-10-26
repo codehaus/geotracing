@@ -214,7 +214,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                 if (GPS != null && GPS.length() > 0) {
                     text = "You previously used a GPS with name " + GPS + ".";
                     text += "To change your GPS choose 'select gps' from the menu.";
-                    ScreenUtil.setLeftBt(g, h, menuBt);
+                    ScreenUtil.drawLeftSoftKey(g, h, menuBt);
                 } else {
                     deviceCounter = 0;
                     searchDevices();
@@ -222,18 +222,18 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                 }
 
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
-                ScreenUtil.setRightBt(g, h, w, backBt);
+                ScreenUtil.drawRightSoftKey(g, h, w, backBt);
                 break;
             case MENU_STAT:
                 String[] options = {"select gps"};
-                ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
-                ScreenUtil.setLeftBt(g, h, menuBt);
+                ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                ScreenUtil.drawLeftSoftKey(g, h, menuBt);
                 break;
             case DEVICES_STAT:
                 log("show devices in menu");
                 text = "Choose your GPS device from the menu";
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
-                ScreenUtil.createMenu(g, f, h, fh, discoveredDevices, menuTop, menuMiddle, menuBottom);
+                ScreenUtil.drawMenu(g, h, discoveredDevices, menuTop, menuMiddle, menuBottom, menuSel);
                 break;
             case SEARCHING_SERVICES_STAT:
                 text = "Completing GPS connection...";
@@ -242,7 +242,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
             case DEVICE_SELECTED_STAT:
                 text = "Your GPS device is stored";
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
-                ScreenUtil.setRightBt(g, h, w, backBt);
+                ScreenUtil.drawRightSoftKey(g, h, w, backBt);
                 new Delayer(WP.HOME_CANVAS, 2);
                 break;
         }
@@ -264,7 +264,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                     }
                     break;
                 case MENU_STAT:
-                    if(ScreenUtil.getSelectedMenuItem() == 1){
+                    if (ScreenUtil.getSelectedMenuItem() == 1) {
                         clearGPSName();
                         screenStat = HOME_STAT;
                     }
@@ -295,10 +295,10 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.nextMenuItem();
+            ScreenUtil.selectNextMenuItem();
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.prevMenuItem();
+            ScreenUtil.selectPrevMenuItem();
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
         } else if (key == -8) {

@@ -1,9 +1,9 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 public class AssignmentCanvas extends DefaultCanvas {
 
@@ -76,7 +76,7 @@ public class AssignmentCanvas extends DefaultCanvas {
             case HOME_STAT:
                 /*g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);*/
-                ScreenUtil.placeIcons(g, w, 5, 30, icons, iconOverlay);
+                ScreenUtil.drawIcons(g, w, 5, 30, icons, iconOverlay);
 //                String msg = "";
 //                switch (ScreenUtil.getSelectedIcon()) {
 //                    case 1:
@@ -101,7 +101,7 @@ public class AssignmentCanvas extends DefaultCanvas {
 
 //                if(gpsMsg!=null && gpsMsg.length()>0) msg = gpsMsg;
 
-                //ScreenUtil.placeMsgBar(g, fh, msg, msgBar, h);
+                //ScreenUtil.drawMessageBar(g, fh, msg, msgBar, h);
                 break;
             case MENU_STAT:
                 g.setColor(0, 0, 0);
@@ -112,12 +112,12 @@ public class AssignmentCanvas extends DefaultCanvas {
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
                 if (midlet.GPS_OK()) {
                     String[] options = {"help", "settings", "change gps"};
-                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                    ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                 } else {
                     String[] options = {"help", "settings", "select gps"};
-                    ScreenUtil.createMenu(g, f, h, fh, options, menuTop, menuMiddle, menuBottom);
+                    ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                 }
-                ScreenUtil.setRightBt(g, h, w, backBt);
+                ScreenUtil.drawRightSoftKey(g, h, w, backBt);
                 break;
         }
     }
@@ -140,16 +140,16 @@ public class AssignmentCanvas extends DefaultCanvas {
                     midlet.setScreen(WP.TRACE_CANVAS);
                     break;
                 case 2:
-                    if(midlet.GPS_OK()){
+                    if (midlet.GPS_OK()) {
                         midlet.setScreen(WP.FIND_TOURS_CANVAS);
-                    }else{
+                    } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
                 case 3:
-                    if(midlet.GPS_OK()){
+                    if (midlet.GPS_OK()) {
                         midlet.setScreen(WP.PLAY_TOURS_CANVAS);
-                    }else{
+                    } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
@@ -168,16 +168,16 @@ public class AssignmentCanvas extends DefaultCanvas {
             midlet.setScreen(-1);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
-            ScreenUtil.prevIcon();
+            ScreenUtil.selectPrevIcon();
             // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
-            ScreenUtil.nextIcon();
+            ScreenUtil.selectNextIcon();
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.upIcon();
+            ScreenUtil.selectUpperIcon();
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.downIcon();
+            ScreenUtil.selectLowerIcon();
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
             midlet.setScreen(-1);

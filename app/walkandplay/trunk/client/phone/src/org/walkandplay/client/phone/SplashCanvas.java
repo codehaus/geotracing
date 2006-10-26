@@ -46,7 +46,7 @@ public class SplashCanvas extends Canvas {
      */
     public void paint(Graphics g) {
         g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-        g.drawImage(gtLogo, (w - gtLogo.getWidth())/2, (h - gtLogo.getHeight())/2, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(gtLogo, (w - gtLogo.getWidth()) / 2, (h - gtLogo.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
         new Delayer(4);
 
