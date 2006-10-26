@@ -206,8 +206,8 @@ public class Tracer implements GPSFetcherListener, NetListener {
             gpsFetcher.start(GPS_SAMPLE_INTERVAL);
         } catch (Throwable t) {
             traceCanvas.onGPSStatus("start error");
-			gpsFetcher = null;
-		}
-	}
+            gpsFetcher = null;
+        }
+    }
 
 }

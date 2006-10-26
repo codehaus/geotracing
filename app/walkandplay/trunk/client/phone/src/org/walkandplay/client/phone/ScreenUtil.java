@@ -11,23 +11,23 @@ public class ScreenUtil {
     private static int menuItemLength = 0;
     private static int iconLength = 0;
 
-    public static void placeIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
+    public static void drawIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
         iconLength = theIcons.length;
-        int availablePixels = theWidth - 2*aXOffSet;
-        int nrOfIcons = availablePixels/theIcons[0].getWidth();
+        int availablePixels = theWidth - 2 * aXOffSet;
+        int nrOfIcons = availablePixels / theIcons[0].getWidth();
 
         for (int i = 0; i < theIcons.length; i++) {
-            int layer = i/nrOfIcons;
+            int layer = i / nrOfIcons;
             if (i == (selectedIcon - 1)) {
-                aGraphics.drawImage(anIconOverlay, aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer*theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
-                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer*theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(anIconOverlay, aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer * theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer * theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
             } else {
-                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer*theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theIcons[i], aXOffSet + i * theIcons[i].getWidth() - layer * nrOfIcons * theIcons[i].getWidth(), aYOffset + layer * theIcons[i].getHeight(), Graphics.TOP | Graphics.LEFT);
             }
-        }        
+        }
     }
 
-    public static void placeMsgBar(Graphics aGraphics, int aFontHeight, String aMsg, Image theBar, int theHeight) {
+    public static void drawMessageBar(Graphics aGraphics, int aFontHeight, String aMsg, Image theBar, int theHeight) {
         aGraphics.drawImage(theBar, 0, theHeight - theBar.getHeight(), Graphics.TOP | Graphics.LEFT);
         aGraphics.setColor(0, 0, 0);
         Font f = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
@@ -35,52 +35,33 @@ public class ScreenUtil {
         aGraphics.drawString(aMsg, 3, theHeight - aFontHeight - 2, Graphics.TOP | Graphics.LEFT);
     }
 
-    public static void drawTextArea(Graphics aGraphics, int aHeight, int aXOffSet, int aYOffSet, Image aTopImage, Image aMiddleImage, Image aBottomImage){
+    public static void drawTextArea(Graphics aGraphics, int aHeight, int aXOffSet, int aYOffSet, Image aTopImage, Image aMiddleImage, Image aBottomImage) {
         aGraphics.drawImage(aTopImage, aXOffSet, aYOffSet, Graphics.TOP | Graphics.LEFT);
-        int nrOfBars = aHeight/aMiddleImage.getHeight();        
-        for(int i=0;i<nrOfBars;i++){
-            aGraphics.drawImage(aMiddleImage, aXOffSet, aYOffSet + (i+1)*aMiddleImage.getHeight(), Graphics.TOP | Graphics.LEFT);
+        int nrOfBars = aHeight / aMiddleImage.getHeight();
+        for (int i = 0; i < nrOfBars; i++) {
+            aGraphics.drawImage(aMiddleImage, aXOffSet, aYOffSet + (i + 1) * aMiddleImage.getHeight(), Graphics.TOP | Graphics.LEFT);
         }
-        aGraphics.drawImage(aBottomImage, aXOffSet, aYOffSet + nrOfBars*aMiddleImage.getHeight(), Graphics.TOP | Graphics.LEFT);
+        aGraphics.drawImage(aBottomImage, aXOffSet, aYOffSet + nrOfBars * aMiddleImage.getHeight(), Graphics.TOP | Graphics.LEFT);
     }
 
-    public static void createMenu(Graphics aGraphics, Font aFont, int theScreenHeight, int theFontHeight, String[] theMenuItems, Image theTop, Image theMiddle, Image theBottom) {
+    public static void drawMenu(Graphics aGraphics, int theScreenHeight, String[] theMenuItems, Image theTop, Image theMiddle, Image theBottom, Image theMiddleSel) {
         int xMargin = 10;
-
-        // start fresh each time we draw a menu
-        //selectedMenuItem = 0;
         menuItemLength = theMenuItems.length;
-        // first store the settings we have coming into this method
-        //Font f = aFont;
-        //int color = aGraphics.getColor();
 
         aGraphics.drawImage(theBottom, xMargin - 4, theScreenHeight - 26, Graphics.TOP | Graphics.LEFT);
 
-        // now set the needed color & font
-        aGraphics.setColor(0, 0, 0);
-        aFont = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        aGraphics.setFont(aFont);
         for (int i = 0; i < theMenuItems.length; i++) {
-            // first place the menu image bg
-            aGraphics.drawImage(theMiddle, xMargin - 4, theScreenHeight - 20 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
             // start from the bottom and build up
             if (i == (selectedMenuItem - 1)) {
                 // highlight this menu item
-                aFont = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_BOLD, Font.SIZE_SMALL);
-                aGraphics.setFont(aFont);
-                aGraphics.drawString(theMenuItems[i], xMargin, theScreenHeight - 22 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight() + 3, Graphics.TOP | Graphics.LEFT);
-                aFont = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-                aGraphics.setFont(aFont);
+                aGraphics.drawImage(theMiddleSel, xMargin - 4, theScreenHeight - 20 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
             } else {
-                aGraphics.drawString(theMenuItems[i], xMargin, theScreenHeight - 22 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight() + 3, Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theMiddle, xMargin - 4, theScreenHeight - 20 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
             }
+            aGraphics.drawString(theMenuItems[i], xMargin, theScreenHeight - 22 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight() + 3, Graphics.TOP | Graphics.LEFT);
         }
 
         aGraphics.drawImage(theTop, xMargin - 4, theScreenHeight - 30 - theMenuItems.length * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
-        // now return the original settings
-        aGraphics.setColor(0, 0, 0);
-        aFont = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        aGraphics.setFont(aFont);
     }
 
     public static void resetMenu() {
@@ -91,7 +72,7 @@ public class ScreenUtil {
         selectedIcon = 1;
     }
 
-    public static void nextMenuItem() {
+    public static void selectNextMenuItem() {
         if (selectedMenuItem == menuItemLength) {
             selectedMenuItem = 1;
         } else {
@@ -99,7 +80,7 @@ public class ScreenUtil {
         }
     }
 
-    public static void prevMenuItem() {
+    public static void selectPrevMenuItem() {
         if (selectedMenuItem == 1) {
             selectedMenuItem = menuItemLength;
         } else {
@@ -111,7 +92,7 @@ public class ScreenUtil {
         return selectedMenuItem;
     }
 
-    public static void nextIcon() {
+    public static void selectNextIcon() {
         if (selectedIcon == iconLength) {
             selectedIcon = 1;
         } else {
@@ -119,7 +100,7 @@ public class ScreenUtil {
         }
     }
 
-    public static void prevIcon() {
+    public static void selectPrevIcon() {
         if (selectedIcon == 1) {
             selectedIcon = iconLength;
         } else {
@@ -127,7 +108,7 @@ public class ScreenUtil {
         }
     }
 
-    public static void upIcon() {
+    public static void selectUpperIcon() {
         switch (selectedIcon) {
             case 4:
                 selectedIcon = 1;
@@ -141,7 +122,7 @@ public class ScreenUtil {
         }
     }
 
-    public static void downIcon() {
+    public static void selectLowerIcon() {
         switch (selectedIcon) {
             case 1:
                 selectedIcon = 4;
@@ -159,11 +140,11 @@ public class ScreenUtil {
         return selectedIcon;
     }
 
-    public static void setLeftBt(Graphics aGraphics, int theScreenHeight, Image anImage) {
+    public static void drawLeftSoftKey(Graphics aGraphics, int theScreenHeight, Image anImage) {
         aGraphics.drawImage(anImage, 0, theScreenHeight - anImage.getHeight(), Graphics.TOP | Graphics.LEFT);
     }
 
-    public static void setRightBt(Graphics aGraphics, int theScreenHeight, int theScreenWidth, Image anImage) {
+    public static void drawRightSoftKey(Graphics aGraphics, int theScreenHeight, int theScreenWidth, Image anImage) {
         aGraphics.drawImage(anImage, theScreenWidth - anImage.getWidth(), theScreenHeight - anImage.getHeight(), Graphics.TOP | Graphics.LEFT);
     }
 
@@ -317,5 +298,4 @@ public class ScreenUtil {
         return aText;
     }
 
-    
 }

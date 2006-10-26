@@ -1,9 +1,9 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 public class POICanvas extends DefaultCanvas {
 
@@ -85,16 +85,16 @@ public class POICanvas extends DefaultCanvas {
             midlet.setScreen(-1);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
-            ScreenUtil.prevIcon();
+            ScreenUtil.selectPrevIcon();
             // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
-            ScreenUtil.nextIcon();
+            ScreenUtil.selectNextIcon();
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.upIcon();
+            ScreenUtil.selectUpperIcon();
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.downIcon();
+            ScreenUtil.selectLowerIcon();
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
             midlet.setScreen(-1);

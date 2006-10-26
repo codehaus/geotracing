@@ -15,6 +15,8 @@
 	<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
 	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
 	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
+	<property name="mobitracer.src" value="${basedir}/../../../../../base/trunk/client/mobitracer/src/org/geotracing/client"/>
+	
 	<!-- Project global properties; overrule by modifying build.properties -->
 	<property file="build.properties"/>
 
@@ -57,10 +59,9 @@
 	<path id="compile.classpath">
 		<pathelement location="${jsr82.zip}"/>
 		<pathelement location="${mmapi.jar}"/>
-
 	</path>
 
-	<path id="emulator.classpath">
+    <path id="emulator.classpath">
 		<pathelement location="${connbridge.jar}"/>
 		<pathelement location="${avetana.jar}"/>
 		<pathelement location="${emulator.jar}"/>
@@ -108,16 +109,31 @@
 
 	</target>
 
-	<target name="compile" depends="clean,externals">
+    <target name="compile" depends="clean,externals">
 		<mkdir dir="${classes.dir}"/>
-		<javac
+
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/GPSFetcher.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/GPSFetcherListener.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/GPSInfo.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/GPSLocation.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/GPSSmoother.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/Log.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/MFloat.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/Net.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/NetListener.java"/>
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/Preferences.java"/>
+        <!--<copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/Tracer.java"/>-->
+        <copy todir="${basedir}/src/org/geotracing/client" file="${mobitracer.src}/Util.java"/>
+
+        <javac
 			destdir="${classes.dir}"
 			target="1.1"
 			bootclasspath="${boot.classpath}">
-			<src path="${project.src.path}"/>
+			<src path="${project.src.path}" />
 			<classpath refid="compile.classpath"/>
 		</javac>
-	</target>
+        
+    </target>
 
 	<target name="obfuscate" depends="compile">
 
@@ -143,13 +159,39 @@
 
 	<target name="jar" depends="preverify">
 		<property name="manifest.file" value="${build.dir}/MANIFEST.MF"/>
+        <property name="jad.file" value="${build.dir}/mt.jad"/>
+		<property name="version.file" value="${build.dir}/version.html"/>
 
-		<copy tofile="${manifest.file}" file="${project.manifest}"/>
+		<!--<copy tofile="${manifest.file}" file="${project.manifest}"/>
 
 		<replace file="${manifest.file}" token="$[MIDLET_NAME]" value="${project.midlet.name}"/>
-		<replace file="${manifest.file}" token="$[MIDLET_CLASS]" value="${project.midlet.class}"/>
+		<replace file="${manifest.file}" token="$[MIDLET_CLASS]" value="${project.midlet.class}"/>-->
 
-		<jar basedir="${preverify.dir}"
+        <!-- Set essential MIDlet properties. -->
+		<concat destfile="${manifest.file}">
+			<filelist dir="${project.etc.dir}" files="MANIFEST.MF"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Set essential MIDlet properties. -->
+		<concat destfile="${jad.file}">
+			<filelist dir="${project.etc.dir}" files="wp.jad"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Generate version file. -->
+		<concat destfile="${version.file}">
+			<filelist dir="${project.etc.dir}" files="version.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+        <jar basedir="${preverify.dir}"
 			jarfile="${project.jar}"
 			manifest="${manifest.file}">
 			<fileset dir="${project.rsc.dir}">

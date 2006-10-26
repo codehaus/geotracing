@@ -115,7 +115,7 @@ public class WP extends MIDlet implements Runnable {
     }
 
     public void log(String aMsg) {
-        System.out.println(aMsg);                
+        System.out.println(aMsg);
     }
 
 

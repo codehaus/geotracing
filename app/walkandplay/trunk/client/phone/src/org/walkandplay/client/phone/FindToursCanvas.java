@@ -51,10 +51,10 @@ public class FindToursCanvas extends DefaultCanvas {
             fh = f.getHeight();
         }
 
-        g.drawImage(textArea, margin, margin + logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+        ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);        
         g.drawImage(helpLogo, margin + margin, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
 
-        ScreenUtil.setLeftBt(g, h, menuBt);
+        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
         String text = "";
         switch (screenStat) {
             case HOME_STAT:
@@ -96,7 +96,7 @@ public class FindToursCanvas extends DefaultCanvas {
                 }
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + helpLogo.getHeight() + 3 * margin, fh);
                 String[] menuItems = {"game 1", "game 2", "game 3"};
-                ScreenUtil.createMenu(g, f, h, fh, menuItems, menuTop, menuMiddle, menuBottom);
+                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
                 break;
         }
     }
@@ -133,10 +133,10 @@ public class FindToursCanvas extends DefaultCanvas {
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.nextMenuItem();
+            ScreenUtil.selectNextMenuItem();
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.prevMenuItem();
+            ScreenUtil.selectPrevMenuItem();
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
         } else if (key == -8) {
