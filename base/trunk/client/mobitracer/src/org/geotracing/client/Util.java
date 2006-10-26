@@ -2,6 +2,9 @@
 // Distributable under LGPL license. See terms of license at gnu.org.$
 package org.geotracing.client;
 
+import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.JXBuilder;
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.ContentConnection;
 import javax.microedition.io.HttpConnection;
@@ -47,7 +50,22 @@ public class Util {
 		}
 	}
 
-	/** Get page content from URL. */
+    public static JXElement getXML(String url) throws IOException {
+		ContentConnection connection = (ContentConnection) Connector.open(url);
+		InputStream is = connection.openInputStream();
+		try {
+			return new JXBuilder().build(is);
+        }catch(Throwable t){
+            return null;
+        } finally {
+			if (is != null) {
+				is.close();
+			}
+			connection.close();
+		}
+	}
+
+    /** Get page content from URL. */
 	public static String getPage(String url) throws IOException {
 		DataInputStream dis = null;
 		HttpConnection c = null;
