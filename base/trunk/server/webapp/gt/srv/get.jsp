@@ -1,4 +1,4 @@
- <%@ page import="nl.justobjects.jox.dom.JXElement,
+<%@ page import="nl.justobjects.jox.dom.JXElement,
 				 org.geotracing.server.QueryHandler,
 				 org.geotracing.server.TrackLogic,
 				 org.keyworx.amuse.core.Amuse,
@@ -8,13 +8,13 @@
 				 org.keyworx.common.util.Sys,
 				 org.keyworx.oase.api.Finder,
 				 org.keyworx.oase.api.Record,
-				  org.keyworx.oase.api.Relater"%>
- <%@ page import="org.keyworx.utopia.core.util.Oase"%>
- <%@ page import="javax.servlet.ServletRequest"%>
- <%@ page import="java.io.Writer"%>
- <%@ page import="java.text.SimpleDateFormat"%>
- <%@ page import="java.util.Date"%>
- <%@ page import="java.util.Vector"%>
+				 org.keyworx.oase.api.Relater" %>
+<%@ page import="org.keyworx.utopia.core.util.Oase" %>
+<%@ page import="javax.servlet.ServletRequest" %>
+<%@ page import="java.io.Writer" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.Vector" %>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -23,15 +23,16 @@
 
 	// This JSP implements a REST-like service to obtain
 	// data (in XML) from the server DB.
-    // $Id: get.jsp,v 1.25 2006-08-28 09:43:23 just Exp $
+	// $Id: get.jsp,v 1.25 2006-08-28 09:43:23 just Exp $
 
 	public static final String CMD_QUERY_STORE = "q-store";
 	public static final String CMD_QUERY_ACTIVE_TRACKS = "q-active-tracks";
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
+	public static final String CMD_QUERY_ROW_COUNT = "q-row-count";
 	public static final String CMD_QUERY_RECENT_TRACKS = "q-recent-tracks";
 	public static final String CMD_QUERY_TRACKS_BY_USER = "q-tracks-by-user";
 	public static final String CMD_QUERY_ALL_USERS = "q-all-users";
-    public static final String CMD_QUERY_RANDOM_TRACK = "q-random-track";
+	public static final String CMD_QUERY_RANDOM_TRACK = "q-random-track";
 	public static final String CMD_QUERY_LOCATIVE_MEDIA = "q-locative-media";
 	public static final String CMD_QUERY_RECENT_MEDIA = "q-recent-media";
 	public static final String CMD_QUERY_MEDIA_BY_USER = "q-media-by-user";
@@ -43,46 +44,56 @@
 	public static final String CMD_DESCRIBE = "describe";
 	public static final String PAR_ID = "id";
 	public static final String PAR_CMD = "cmd";
-	public static final String PAR_BBOX= "bbox";
-	public static final String PAR_USER_NAME= "user";
+	public static final String PAR_BBOX = "bbox";
+	public static final String PAR_USER_NAME = "user";
+	public static final String PAR_TABLE_NAME = "table";
 	public static final String TAG_ERROR = "error";
 
 	public static Oase oase;
 	public static Log log = Logging.getLog("get.jsp");
 
 	String getParameter(ServletRequest req, String name, String defaultValue) {
-	  String value = req.getParameter(name);
-	  if (value == null || value.length() == 0) {
-		return defaultValue;
-	  }
+		String value = req.getParameter(name);
+		if (value == null || value.length() == 0) {
+			return defaultValue;
+		}
 
-	  return value.trim();
-    }
+		return value.trim();
+	}
 
 
 	/**
 	 * Throw exception when parm empty or not present.
 	 */
-	public void throwOnMissingParm(String aName, String aValue) throws IllegalArgumentException  {
+	public void throwOnMissingParm(String aName, String aValue) throws IllegalArgumentException {
 		if (aValue == null || aValue.length() == 0) {
 			throw new IllegalArgumentException("Missing parameter=" + aName);
 		}
 	}
 
 	/** Adds Bounding box WHERE constraint. */
-	public String addBBoxConstraint(String bboxParm, String where) throws Exception  {
+	public String addBBoxConstraint(String bboxParm, String where) throws Exception {
 		String[] bbox = bboxParm.split(",");
 		where = where == null ? "" : where + " AND";
 		where = where
-			+ " g_location.lon >= " + bbox[0]
-			+ " AND g_location.lat >= " + bbox[1]
-			+ " AND g_location.lon <= " + bbox[2]
-			+ " AND g_location.lat <= " + bbox[3];
+				+ " g_location.lon >= " + bbox[0]
+				+ " AND g_location.lat >= " + bbox[1]
+				+ " AND g_location.lon <= " + bbox[2]
+				+ " AND g_location.lat <= " + bbox[3];
 		return where;
 	}
 
-	 /** Adds g_location attrs to query response records. */
-	public void addLocationAttrs(JXElement rsp) throws Exception  {
+	/** Create query-response XML from Record array. */
+	public JXElement createResponse(Record[] theRecords) throws Exception {
+		JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+		for (int i = 0; i < theRecords.length; i++) {
+			result.addChild(theRecords[i].toXML());
+		}
+		return result;
+	}
+
+	/** Adds g_location attrs to query response records. */
+	public void addLocationAttrs(JXElement rsp) throws Exception {
 		Vector records = rsp.getChildren();
 		Finder finder = oase.getFinder();
 		Relater relater = oase.getRelater();
@@ -93,7 +104,7 @@
 		String recordId;
 		Record record;
 		Record[] locationRecords;
-		for (int i=0; i < records.size(); i++) {
+		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
 			// SIngle table responses have id in attr
@@ -120,10 +131,10 @@
 			// Add to response
 			rsp.addChild(nextRecordElm);
 		}
-	 }
+	}
 
 	/** Adds account and person attrs to query response records. */
-	public void addUserAttrs(JXElement rsp) throws Exception  {
+	public void addUserAttrs(JXElement rsp) throws Exception {
 		Vector records = rsp.getChildren();
 		Finder finder = oase.getFinder();
 		Relater relater = oase.getRelater();
@@ -134,7 +145,7 @@
 		String recordId;
 		Record record;
 		Record[] personRecords, accountRecords, thumbRecords;
-		for (int i=0; i < records.size(); i++) {
+		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
 			// SIngle table responses have id in attr
@@ -183,23 +194,23 @@
 		}
 	}
 
-	Record getAccount(Oase oase, String aLoginName) throws Exception  {
+	Record getAccount(Oase oase, String aLoginName) throws Exception {
 		Finder finder = oase.getFinder();
 		Record[] result = finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'");
 		return result.length == 0 ? null : result[0];
 	}
 
-	Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception  {
+	Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception {
 		Record account = getAccount(oase, aLoginName);
 		if (account == null) {
 			return null;
 		}
-		Record[] result =  oase.getRelater().getRelated(account, "utopia_person", null);
+		Record[] result = oase.getRelater().getRelated(account, "utopia_person", null);
 		return result.length == 0 ? null : result[0];
 	}
 
 	/** Performs command and returns XML result. */
-	public JXElement doCommand(HttpServletRequest request, HttpServletResponse response)  {
+	public JXElement doCommand(HttpServletRequest request, HttpServletResponse response) {
 		JXElement result;
 		String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
 		try {
@@ -228,12 +239,12 @@
 
 				// Originele query (duurde heeeeel lang)
 
-	/*			String tables = "utopia_person,utopia_account,g_track,g_location";
-				String fields = "g_track.id,g_track.name,utopia_person.extra,utopia_account.loginname,g_location.lon,g_location.lat";
-				String where = "g_track.state=1";
-				String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_account,utopia_person";
-				String postCond = "ORDER BY utopia_account.loginname";
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);   */
+				/*			String tables = "utopia_person,utopia_account,g_track,g_location";
+								String fields = "g_track.id,g_track.name,utopia_person.extra,utopia_account.loginname,g_location.lon,g_location.lat";
+								String where = "g_track.state=1";
+								String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_account,utopia_person";
+								String postCond = "ORDER BY utopia_account.loginname";
+								result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);   */
 			} else if (command.equals(CMD_QUERY_ALL_TRACKS)) {
 				String tables = "utopia_person,utopia_account,g_track,g_location";
 				String fields = "g_track.id,g_track.name,g_track.state,utopia_account.loginname,g_location.lon,g_location.lat,g_location.time";
@@ -266,7 +277,7 @@
 				Finder finder = oase.getFinder();
 				Record[] trackRecords = finder.freeQuery("select * from g_track order by enddate desc limit " + max);
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-				for (int i=0; i < trackRecords.length; i++) {
+				for (int i = 0; i < trackRecords.length; i++) {
 					result.addChild(trackRecords[i].toXML());
 				}
 
@@ -294,12 +305,21 @@
 				postCond = null;
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
+			} else if (command.equals(CMD_QUERY_ROW_COUNT)) {
+				String tableName = getParameter(request, PAR_TABLE_NAME, null);
+				throwOnMissingParm(PAR_TABLE_NAME, tableName);
+				Record[] records = oase.getFinder().freeQuery("select count(*) from " + tableName);
+				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+				JXElement countElm = new JXElement("count");
+				String count = records[0].getField("count(*)") + "";
+				countElm.setText(count);
+				result.addChild(countElm);
 			} else if (command.equals(CMD_QUERY_LOCATIVE_MEDIA)) {
 				// See http://www.petefreitag.com/item/466.cfm
 				// LAST N: select * from table where key > (select max(key) - n from table)
 				String tables = "base_medium,g_location";
 				String fields = "base_medium.id,base_medium.kind,base_medium.mime,base_medium.name,base_medium.description,base_medium.creationdate,g_location.lon,g_location.lat";
-				String where=null;
+				String where = null;
 				String relations = "g_location,base_medium";
 				String postCond;
 
@@ -340,7 +360,7 @@
 				Finder finder = oase.getFinder();
 				Record[] mediumRecords = finder.freeQuery("select * from base_medium order by creationdate desc limit " + max);
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-				for (int i=0; i < mediumRecords.length; i++) {
+				for (int i = 0; i < mediumRecords.length; i++) {
 					result.addChild(mediumRecords[i].toXML());
 				}
 
@@ -361,7 +381,7 @@
 				String relations = "utopia_account,utopia_person";
 				String postCond = null;
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
-				String personId = ((JXElement)result.getChildren().get(0)).getChildText("id");
+				String personId = ((JXElement) result.getChildren().get(0)).getChildText("id");
 
 				// Now query tracks related to person id
 				tables = "utopia_person,base_medium";
@@ -375,8 +395,8 @@
 				Vector records = result.getChildren();
 				JXElement nextRecord;
 				String creationDate;
-				for (int i=0; i < records.size(); i++) {
-					nextRecord = (JXElement)records.get(i);
+				for (int i = 0; i < records.size(); i++) {
+					nextRecord = (JXElement) records.get(i);
 					creationDate = nextRecord.getChildText("creationdate");
 					creationDate = DATE_FORMAT.format(new Date(Long.parseLong(creationDate)));
 					nextRecord.setChildText("fcreationdate", creationDate);
@@ -388,7 +408,7 @@
 				// See http://www.petefreitag.com/item/466.cfm
 				String tables = "g_poi,g_location";
 				String fields = "g_location.lon,g_location.lat,g_poi.id,g_poi.name,g_poi.description,g_poi.type,g_poi.time";
-				String where=null;
+				String where = null;
 				String relations = "g_location,g_poi";
 				String postCond;
 
@@ -477,16 +497,16 @@
 				// Return documentation file
 				result = null;
 				response.sendRedirect("get-usage.txt");
-			 } else {
+			} else {
 				result = new JXElement(TAG_ERROR);
 				result.setText("unknown command " + command);
 				log.warn("unknown command " + command);
 			}
-		 } catch (IllegalArgumentException iae) {
-			 result = new JXElement(TAG_ERROR);
-			 result.setText("Error in parameter: " + iae.getMessage());
-			 log.error("Unexpected Error during query", iae);
-		 } catch (Throwable t) {
+		} catch (IllegalArgumentException iae) {
+			result = new JXElement(TAG_ERROR);
+			result.setText("Error in parameter: " + iae.getMessage());
+			log.error("Unexpected Error during query", iae);
+		} catch (Throwable t) {
 			result = new JXElement(TAG_ERROR);
 			result.setText("Unexpected Error during query " + t);
 			log.error("Unexpected Error during query", t);
@@ -494,7 +514,7 @@
 		return result;
 	}
 
-    // Defines optional app-specific command processing
+	// Defines optional app-specific command processing
 %>
 <%@ include file="myget.jsp" %>
 <%
@@ -504,24 +524,24 @@
 
 	// Start performance timing
 	long t1 = Sys.now();
-	JXElement result=null;
+	JXElement result = null;
 
-    // Get global Oase (DB) session.
- 	try {
+	// Get global Oase (DB) session.
+	try {
 		// Use one Oase session
-		 if (oase == null) {
+		if (oase == null) {
 			oase = (Oase) application.getAttribute("oase");
 			if (oase == null) {
 				// First time: create and save in app context
 				oase = Oase.createOaseSession(Amuse.server.getPortal().getId());
 				application.setAttribute("oase", oase);
 			}
-		 }
-	 } catch (Throwable th) {
-		 result = new JXElement(TAG_ERROR);
-		 result.setText("error creating oase session" + th);
-		 log.error("error creating oase session", th);
-	 }
+		}
+	} catch (Throwable th) {
+		result = new JXElement(TAG_ERROR);
+		result.setText("error creating oase session" + th);
+		log.error("error creating oase session", th);
+	}
 
 	// Try optional app-specific command handling (see myget.jsp)
 	if (result == null) {
@@ -533,20 +553,20 @@
 		result = doCommand(request, response);
 	}
 
-	 // Send XML response to client (is null when redirected)
-	 if (result != null) {
-		 // Get command parameter
-		 String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
+	// Send XML response to client (is null when redirected)
+	if (result != null) {
+		// Get command parameter
+		String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
 
-		 try {
-			 result.setAttr("cnt", result.getChildCount());
-			 Writer writer = response.getWriter();
-			 writer.write(result.toFormattedString());
-			 writer.flush();
-			 writer.close();
-			 log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() -t1) + " ms");
-		 } catch (Throwable th) {
-	  		 log.info("error " + command + " writing response");
-		 }
-	 }
+		try {
+			result.setAttr("cnt", result.getChildCount());
+			Writer writer = response.getWriter();
+			writer.write(result.toFormattedString());
+			writer.flush();
+			writer.close();
+			log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
+		} catch (Throwable th) {
+			log.info("error " + command + " writing response");
+		}
+	}
 %>

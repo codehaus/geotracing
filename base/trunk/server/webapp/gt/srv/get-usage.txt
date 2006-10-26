@@ -141,6 +141,10 @@ get user record
 - parms
 * "user" : (m) a user login name
 
+"q-row-count"
+get number of records in a table
+- parms
+* "table" : (m) a table name
 
 OTHER COMMANDS
 These are other commands.
