@@ -168,7 +168,7 @@ public class TraceCanvas extends DefaultCanvas {
 
         if (text.length() > 0) {
             ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-            ScreenUtil.drawText(g, text, 10, logo.getHeight() + 3 * margin, fh);
+            ScreenUtil.drawText(g, text, 10, logo.getHeight() + 3 * margin, fh, 100);
         }
 
         switch (screenStat) {

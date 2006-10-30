@@ -14,27 +14,28 @@ public class SettingsCanvas extends DefaultCanvas {
     int x0, y0;
     int midx;
 
-    int menuItem;
+    int item;
 
     // image objects
-    private Image menuBt, helpLogo;
-
-    // screenstates
-    private int screenStat = 0;
-    private final static int HOME_STAT = 0;
-    private final static int MENU_STAT = 1;
+    private Image menuBt, smallLogo;
+    boolean showMenu;
 
     public SettingsCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             w = getWidth();
             h = getHeight();
-            helpLogo = Image.createImage("/settings_button_off_small.png");
+            smallLogo = Image.createImage("/settings_icon_small.png");
             menuBt = Image.createImage("/menu_button.png");
             ScreenUtil.resetMenu();
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
+    }
+
+    private void drawText(Graphics aGraphics, String aText){
+        ScreenUtil.drawTextArea(aGraphics, 100, margin, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+        ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
     }
 
     /**
@@ -44,61 +45,33 @@ public class SettingsCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        if (f == null) {
-            g.setColor(0, 0, 0);
-            f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-            g.setFont(f);
-            fh = f.getHeight();
+        g.setColor(0, 0, 0);
+        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+        g.setFont(f);
+        fh = f.getHeight();
+
+        g.drawImage(smallLogo, margin, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+
+        String text;
+        switch (item) {
+            case 1:
+                text = "description of setting 1";
+                drawText(g, text);
+                break;
+            case 2:
+                text = "description of setting 2";
+                drawText(g, text);
+                break;
+            case 3:
+                text = "description of setting 3";
+                drawText(g, text);
+                break;
         }
-
-        ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-        g.drawImage(helpLogo, margin + margin, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
-
+        if(showMenu){
+            String[] menuItems = {"setting 1", "setting 2", "setting 3"};
+            ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+        }
         ScreenUtil.drawLeftSoftKey(g, h, menuBt);
-        String text = "";
-        switch (screenStat) {
-            case HOME_STAT:
-                switch (ScreenUtil.getSelectedMenuItem()) {
-                    case-1:
-                        text = "select a setting from the menu";
-                        break;
-                    case 1:
-                        text = "setting 1";
-                        break;
-                    case 2:
-                        text = "setting 2";
-                        break;
-                    case 3:
-                        text = "setting 3";
-                        break;
-                    default:
-                        text = "select a setting from the menu";
-                }
-                menuItem = ScreenUtil.getSelectedMenuItem();
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + helpLogo.getHeight() + 3 * margin, fh);
-                break;
-            case MENU_STAT:
-                switch (menuItem) {
-                    case-1:
-                        text = "select a setting from the menu";
-                        break;
-                    case 1:
-                        text = "setting 1";
-                        break;
-                    case 2:
-                        text = "setting 2";
-                        break;
-                    case 3:
-                        text = "setting 3";
-                        break;
-                    default:
-                        text = "select a setting from the menu";
-                }
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + helpLogo.getHeight() + 3 * margin, fh);
-                String[] menuItems = {"setting 1", "setting 2", "setting 3"};
-                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
-                break;
-        }
     }
 
     /**
@@ -109,24 +82,16 @@ public class SettingsCanvas extends DefaultCanvas {
     public void keyPressed(int key) {
         // left soft key & fire
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
-            switch (screenStat) {
-                case HOME_STAT:
-                    screenStat = MENU_STAT;
-                    break;
-                case MENU_STAT:
-                    screenStat = HOME_STAT;
-                    break;
+            if(showMenu){
+                item = ScreenUtil.getSelectedMenuItem();
+                showMenu = false;
+            }else{
+                showMenu = true;
+                ScreenUtil.resetMenu();
             }
             // right softkey
         } else if (key == -7) {
-            switch (screenStat) {
-                case HOME_STAT:
-                    midlet.setScreen(WP.HOME_CANVAS);
-                    break;
-                case MENU_STAT:
-                    midlet.setScreen(WP.HOME_CANVAS);
-                    break;
-            }
+            midlet.setScreen(WP.HOME_CANVAS);            
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             // right
