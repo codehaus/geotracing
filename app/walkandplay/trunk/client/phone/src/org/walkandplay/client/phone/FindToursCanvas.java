@@ -14,29 +14,33 @@ public class FindToursCanvas extends DefaultCanvas {
     int x0, y0;
     int midx;
 
-    int menuItem;
+    int item;
+    int availableHeight = 100;
+    int textHeight;
 
     // image objects
-    private Image menuBt, helpLogo;
-
-    // screenstates
-    private int screenStat = 0;
-    private final static int HOME_STAT = 0;
-    private final static int MENU_STAT = 1;
+    private Image smallLogo, upBt, upDownBt, downBt;
+    boolean showMenu;
 
     public FindToursCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             w = getWidth();
             h = getHeight();
-            helpLogo = Image.createImage("/find_button_off_small.png");
-            menuBt = Image.createImage("/menu_button.png");
+            smallLogo = Image.createImage("/find_icon_small.png");
+            upBt = Image.createImage("/scrollup_button.png");
+            upDownBt = Image.createImage("/scroll_buttons.png");
+            downBt = Image.createImage("/scrolldown_button.png");
             ScreenUtil.resetMenu();
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
     }
 
+    private int drawText(Graphics aGraphics, String aText){
+        ScreenUtil.drawTextArea(aGraphics, availableHeight, margin, margin + logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+        return ScreenUtil.drawText(aGraphics, aText, 2*margin, margin + logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
+    }
     /**
      * Draws the screen.
      *
@@ -44,61 +48,37 @@ public class FindToursCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        if (f == null) {
-            g.setColor(0, 0, 0);
-            f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-            g.setFont(f);
-            fh = f.getHeight();
+
+        g.setColor(0, 0, 0);
+        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+        g.setFont(f);
+        fh = f.getHeight();
+        
+        g.drawImage(smallLogo, margin, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+
+        String text;
+        switch (item) {
+            case 1:
+                text = "description of game 1 sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc bla";
+                textHeight = drawText(g, text);
+                break;
+            case 2:
+                text = "description of game 2";
+                textHeight = drawText(g, text);
+                break;
+            case 3:
+                text = "description of game 3";
+                textHeight = drawText(g, text);
+                break;
         }
 
-        ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);        
-        g.drawImage(helpLogo, margin + margin, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
+        ScreenUtil.drawScrollButtons(g, textHeight, margin + logo.getHeight() + smallLogo.getHeight() + margin + margin + availableHeight, availableHeight, w, fh, downBt, upBt, upDownBt);
 
+        if(showMenu){
+            String[] menuItems = {"game 1", "game 2", "game 3"};
+            ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+        }
         ScreenUtil.drawLeftSoftKey(g, h, menuBt);
-        String text = "";
-        switch (screenStat) {
-            case HOME_STAT:
-                switch (ScreenUtil.getSelectedMenuItem()) {
-                    case-1:
-                        text = "select a game from the menu";
-                        break;
-                    case 1:
-                        text = "description of game 1";
-                        break;
-                    case 2:
-                        text = "description of game 2";
-                        break;
-                    case 3:
-                        text = "description of game 3";
-                        break;
-                    default:
-                        text = "select a game from the menu";
-                }
-                menuItem = ScreenUtil.getSelectedMenuItem();
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + helpLogo.getHeight() + 3 * margin, fh);
-                break;
-            case MENU_STAT:
-                switch (menuItem) {
-                    case-1:
-                        text = "select a game from the menu";
-                        break;
-                    case 1:
-                        text = "description of game 1";
-                        break;
-                    case 2:
-                        text = "description of game 2";
-                        break;
-                    case 3:
-                        text = "description of game 3";
-                        break;
-                    default:
-                        text = "select a game from the menu";
-                }
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + helpLogo.getHeight() + 3 * margin, fh);
-                String[] menuItems = {"game 1", "game 2", "game 3"};
-                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
-                break;
-        }
     }
 
     /**
@@ -109,34 +89,34 @@ public class FindToursCanvas extends DefaultCanvas {
     public void keyPressed(int key) {
         // left soft key & fire
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
-            switch (screenStat) {
-                case HOME_STAT:
-                    screenStat = MENU_STAT;
-                    break;
-                case MENU_STAT:
-                    screenStat = HOME_STAT;
-                    break;
+            if(showMenu){
+                item = ScreenUtil.getSelectedMenuItem();
+                showMenu = false;
+            }else{
+                showMenu = true;
+                ScreenUtil.resetMenu();
             }
             // right softkey
         } else if (key == -7) {
-            switch (screenStat) {
-                case HOME_STAT:
-                    midlet.setScreen(WP.HOME_CANVAS);
-                    break;
-                case MENU_STAT:
-                    midlet.setScreen(WP.HOME_CANVAS);
-                    break;
-            }
+            midlet.setScreen(WP.HOME_CANVAS);            
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.selectNextMenuItem();
+            if(showMenu){
+                ScreenUtil.selectNextMenuItem();
+            }else{
+                ScreenUtil.scrollText(true, textHeight, availableHeight, fh);
+            }
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.selectPrevMenuItem();
+            if(showMenu){
+                ScreenUtil.selectPrevMenuItem();
+            }else{
+                ScreenUtil.scrollText(false, textHeight, availableHeight, fh);
+            }
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
         } else if (key == -8) {

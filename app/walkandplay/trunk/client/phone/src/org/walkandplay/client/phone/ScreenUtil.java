@@ -10,6 +10,8 @@ public class ScreenUtil {
     private static int selectedIcon = 0;
     private static int menuItemLength = 0;
     private static int iconLength = 0;
+    private static int scrollY = 0;
+    private static int tempScrollY = 0;
 
     public static void drawIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
         iconLength = theIcons.length;
@@ -62,6 +64,35 @@ public class ScreenUtil {
         }
 
         aGraphics.drawImage(theTop, xMargin - 4, theScreenHeight - 30 - theMenuItems.length * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
+    }
+
+    public static void drawScrollButtons(Graphics aGraphics, int aTextLength, int anYOffSet, int theAvailableHeight, int theWidth, int aFontHeight, Image aScrollDownBt, Image aScrollUpBt, Image aScrollUpAndDownBt){
+        if(theAvailableHeight > aTextLength) return;
+        System.out.println("scrollY: " + scrollY);
+        System.out.println("tempScrollY: " + tempScrollY);
+        if (scrollY == 0) {
+            System.out.println("a");
+            aGraphics.drawImage(aScrollDownBt, theWidth / 2 - aScrollDownBt.getWidth() / 2, anYOffSet, Graphics.TOP | Graphics.LEFT);
+        } else if (scrollY > 0 && scrollY != tempScrollY) {
+            aGraphics.drawImage(aScrollUpAndDownBt, theWidth / 2 - aScrollUpAndDownBt.getWidth() / 2, anYOffSet, Graphics.TOP | Graphics.LEFT);
+            System.out.println("b");
+            tempScrollY = scrollY;
+        } else {
+            aGraphics.drawImage(aScrollUpBt, theWidth / 2 - aScrollUpBt.getWidth() / 2, anYOffSet, Graphics.TOP | Graphics.LEFT);
+            System.out.println("c");
+        }
+    }
+
+    public static void scrollText(boolean up, int aTextLength, int theAvailableHeight, int aFontHeight) {
+        if (up) {
+            if (scrollY > 0){
+                scrollY--;
+            }
+        } else {
+            if ((aTextLength) >= (theAvailableHeight - aFontHeight)){
+                scrollY++;
+            }
+        }
     }
 
     public static void resetMenu() {
@@ -158,7 +189,9 @@ public class ScreenUtil {
      * @param aFontHeight The font height
      * @return y The y coordinaat of the bottom of the text.
      */
-    public static int drawText(Graphics g, String aText, int aXOffSet, int aYOffset, int aFontHeight) {
+    public static int drawText(Graphics g, String aText, int aXOffSet, int aYOffset, int aFontHeight, int theAvailableHeight) {
+        /*System.out.println("available height:" + theAvailableHeight);
+        System.out.println("scrollY:" + scrollY);*/
         int width = 27;
         int x = aXOffSet;
         int y = aYOffset;
@@ -180,31 +213,50 @@ public class ScreenUtil {
             aText = aText.substring(0, startIndex) + aText.substring(startIndex + 1, length);
         }
 
+        // just drawing 1 line
         if (aText.length() <= width) {
             g.drawString(aText, x, y, Graphics.TOP | Graphics.LEFT);
         } else {
-            boolean notAtTheEnd = true;
+            boolean finished = false;
             int startPoint = 0;
-            while (notAtTheEnd) {
+            int lineCounter = 0;
+            while (!finished) {
                 if (aText.length() - startPoint < lineWidth) {
                     lineToPrint = aText.substring(startPoint, aText.length());
+                    lineCounter++;
                     g.drawString(lineToPrint, x, y, Graphics.TOP | Graphics.LEFT);
-                    notAtTheEnd = false;
+                    finished = true;
                 } else {
                     line = aText.substring(startPoint, printedChars + lineWidth);
                     int lastSpace = lastIndexOfASpace(line);
                     if (lastSpace == -1) {
-                        notAtTheEnd = false;
+                        finished = true;
                         lineToPrint = line;
                     } else {
                         lineToPrint = line.substring(0, lastSpace);
                     }
+                    lineCounter++;
+                    /*System.out.println("linecounter:" + lineCounter);
+                    System.out.println("y:" + y);*/
+                    // don't draw the line if user's has scrolled
+                    if(scrollY < lineCounter){
+                        printedChars += lineToPrint.length() + 1;
+                        /*System.out.println("drawing:" + lineToPrint);*/
+                        g.drawString(lineToPrint, x, y, Graphics.TOP | Graphics.LEFT);
 
-                    printedChars += lineToPrint.length() + 1;
-                    g.drawString(lineToPrint, x, y, Graphics.TOP | Graphics.LEFT);
+                        startPoint = printedChars;
+                        y += aFontHeight;
+                    }else{
+                        printedChars += lineToPrint.length() + 1;
+                        /*System.out.println("not drawing:" + lineToPrint);*/
+                        startPoint = printedChars;
+                    }
 
-                    startPoint = printedChars;
-                    y += aFontHeight;
+                    // check if we have surpassed the available heigtht
+                    if(y/1.5 > theAvailableHeight){
+                        /*System.out.println("at the end...stop drawing");*/
+                        finished = true;
+                    }
                 }
             }
         }

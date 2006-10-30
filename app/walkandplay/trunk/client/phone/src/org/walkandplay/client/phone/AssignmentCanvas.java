@@ -109,7 +109,7 @@ public class AssignmentCanvas extends DefaultCanvas {
                 g.drawImage(logo, 5, 5, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
                 String text = "Press menu to see the options";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh);
+                ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh, 100);
                 if (midlet.GPS_OK()) {
                     String[] options = {"help", "settings", "change gps"};
                     ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);

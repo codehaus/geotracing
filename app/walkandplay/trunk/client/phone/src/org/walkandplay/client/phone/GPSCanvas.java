@@ -221,7 +221,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                     text = "Searching for a GPS device...";
                 }
 
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
+                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
                 ScreenUtil.drawRightSoftKey(g, h, w, backBt);
                 break;
             case MENU_STAT:
@@ -232,16 +232,16 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
             case DEVICES_STAT:
                 log("show devices in menu");
                 text = "Choose your GPS device from the menu";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
+                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
                 ScreenUtil.drawMenu(g, h, discoveredDevices, menuTop, menuMiddle, menuBottom, menuSel);
                 break;
             case SEARCHING_SERVICES_STAT:
                 text = "Completing GPS connection...";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
+                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
                 break;
             case DEVICE_SELECTED_STAT:
                 text = "Your GPS device is stored";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh);
+                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
                 ScreenUtil.drawRightSoftKey(g, h, w, backBt);
                 new Delayer(WP.HOME_CANVAS, 2);
                 break;
