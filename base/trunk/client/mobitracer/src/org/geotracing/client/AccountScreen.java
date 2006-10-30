@@ -91,7 +91,7 @@ public class AccountScreen extends Form implements CommandListener {
 				}
 				Util.showAlert(midlet, "OK", "Account settings saved, please Exit and restart");
 			} catch (Throwable t) {
-				Util.showAlert(midlet, "Error", "Error saving preferences");
+				Util.showAlert(midlet, "Error", "Error saving account preference");
 			}
 		}
 
@@ -99,7 +99,7 @@ public class AccountScreen extends Form implements CommandListener {
 		Display.getDisplay(midlet).setCurrent(prevScreen);
 	}
 
-	private static Preferences getPreferences() {
+	public static Preferences getPreferences() {
 		try {
 			if (preferences == null) {
 				preferences = new Preferences(Net.RMS_STORE_NAME);

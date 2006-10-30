@@ -18,7 +18,7 @@
 	<!-- Project global properties; overrule by modifying build.properties -->
 	<property file="build.properties"/>
 
-	<property name="project.src.path" value="${basedir}/src:${kwclient.src}:${mjox.src}"/>
+	<!-- <property name="project.src.path" value="${basedir}/src:${kwclient.src}:${mjox.src}"/> -->
 	<property name="project.rsc.dir" value="${basedir}/rsc"/>
 	<property name="project.etc.dir" value="${basedir}/etc"/>
 	<property name="project.manifest" value="${project.etc.dir}/MANIFEST.MF"/>
@@ -54,10 +54,15 @@
 	<property name="preverify.classpath" value="${midp2.dir}/classes:${jsr82.zip}"/>
 	<property name="boot.classpath" value="${midp2.dir}/classes"/>
 
+	<path id="compile.sourcepath">
+		<pathelement location="${basedir}/src"/>
+		<pathelement location="${kwclient.src}"/>
+		<pathelement location="${mjox.src}"/>
+	</path>
+
 	<path id="compile.classpath">
 		<pathelement location="${jsr82.zip}"/>
 		<pathelement location="${mmapi.jar}"/>
-
 	</path>
 
 	<path id="emulator.classpath">
@@ -114,8 +119,8 @@
 			destdir="${classes.dir}"
 			target="1.1"
 			bootclasspath="${boot.classpath}">
-			<src path="${project.src.path}"/>
 			<classpath refid="compile.classpath"/>
+			<src refid="compile.sourcepath"/>
 		</javac>
 	</target>
 
