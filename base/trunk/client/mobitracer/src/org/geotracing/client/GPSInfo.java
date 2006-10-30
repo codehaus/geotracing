@@ -13,8 +13,8 @@ public class GPSInfo {
 	static MFloat NULL = new MFloat(0);
 
 	String msg = "";
-	MFloat lat = NULL;
-	MFloat lon = NULL;
+	public MFloat lat = NULL;
+	public MFloat lon = NULL;
 	String speed = "unknown";
 	static MFloat maxSpeed = NULL;
 	String altitude = "unknown";
