@@ -50,22 +50,7 @@ public class Util {
 		}
 	}
 
-    public static JXElement getXML(String url) throws IOException {
-		ContentConnection connection = (ContentConnection) Connector.open(url);
-		InputStream is = connection.openInputStream();
-		try {
-			return new JXBuilder().build(is);
-        }catch(Throwable t){
-            return null;
-        } finally {
-			if (is != null) {
-				is.close();
-			}
-			connection.close();
-		}
-	}
-
-    /** Get page content from URL. */
+	/** Get page content from URL. */
 	public static String getPage(String url) throws IOException {
 		DataInputStream dis = null;
 		HttpConnection c = null;
@@ -101,6 +86,23 @@ public class Util {
 		}
 		return result;
 
+	}
+
+	/** Get page content from URL as XML element. */
+	public static JXElement getXML(String url) throws IOException {
+		HttpConnection c = (HttpConnection) Connector.open(url);
+		InputStream is = c.openInputStream();
+
+		try {
+			return new JXBuilder().build(is);
+		} catch (Throwable t) {
+			throw new IOException("Error parsing from URL " + url);
+		} finally {
+			if (is != null) {
+				is.close();
+			}
+			c.close();
+		}
 	}
 
 	/**
@@ -234,7 +236,7 @@ public class Util {
 	static public void showAlert(MIDlet aMidlet, String title, String mesg) {
 		Alert a = new Alert(title, mesg, null, AlertType.ALARM);
 		a.setTimeout(Alert.FOREVER);
-		Display.getDisplay(aMidlet).setCurrent(a);
+		Display.getDisplay(aMidlet).setCurrent(a, Display.getDisplay(aMidlet).getCurrent());
 	}
 
 	static public boolean hasSound() {
