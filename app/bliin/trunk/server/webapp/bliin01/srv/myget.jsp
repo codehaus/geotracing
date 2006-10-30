@@ -1,7 +1,11 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement" %>
 <%@ page import="org.geotracing.server.QueryHandler"%>
 <%!
+	static JXElement allLocMedia = null;
+	static Object semaphore = new Object();
+	static boolean allLocMediaAvail;
 
+	
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 	// Distributable under LGPL license. See terms of license at gnu.org.
 
@@ -30,6 +34,7 @@
 
 				// WHERE clause
 				// Optional media type
+
 				String type = getParameter(request, "type", null);
 				if (type != null) {
 					where = "base_medium.kind = '" + type + "'";
@@ -53,6 +58,11 @@
 				String limitParm = getParameter(request, "max", null);
 				if (limitParm != null) {
 					postCond += " LIMIT " + Integer.parseInt(limitParm);
+				}
+
+				// If whole world is asked check if cached result can be sent.
+				if (bboxParm == null && type == null && random.equals("false") && limitParm == null) {
+
 				}
 				// log.info("[bliin]: q-locative-media: bbox=" + bboxParm + " post=" + postCond);
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
