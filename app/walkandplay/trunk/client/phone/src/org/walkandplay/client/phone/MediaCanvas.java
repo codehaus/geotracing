@@ -54,21 +54,20 @@ public class MediaCanvas extends DefaultCanvas {
     boolean poiWritten;
 
     // image objects
-    private Image iconOverlay, inputBox, okBt, shootBt, recordBt;
+    private Image iconOverlay, inputBox, okBt, shootBt, recordBt, topWhiteArea, middleWhiteArea, bottomWhiteArea;
 
     // icon buttons
-    private Image[] icons = new Image[4];
+    private Image[] icons = new Image[3];
 
     // screenstates
-    private int screenStat = 0;
+    private int screenStat = 4;
     private final static int PHOTO_STAT = 0;
     private final static int PHOTO_TAG_STAT = 1;
     private final static int AUDIO_STAT = 2;
     private final static int AUDIO_TAG_STAT = 3;
-    private final static int TEXT_STAT = 4;
-    private final static int TEXT_TAG_STAT = 5;
-    private final static int POI_STAT = 6;
-    private final static int POI_TAG_STAT = 7;
+    private final static int POI_STAT = 4;
+    private final static int POI_TAG_STAT = 5;
+    private final static int TAG_STAT = 6;
 
     private int fontType = Font.FACE_MONOSPACE;
 
@@ -86,9 +85,9 @@ public class MediaCanvas extends DefaultCanvas {
             backBt = Image.createImage("/back_button.png");
 
             icons[0] = Image.createImage("/poi_icon_small.png");
-            icons[1] = Image.createImage("/assignment_icon_small.png");
-            icons[2] = Image.createImage("/photo_icon_small.png");
-            icons[3] = Image.createImage("/movie_icon_small.png");
+            icons[1] = Image.createImage("/photo_icon_small.png");
+            icons[2] = Image.createImage("/movie_icon_small.png");
+            //icons[3] = Image.createImage("/movie_icon_small.png");
             //icons[4] = Image.createImage("/movie_icon_small.png");
 
             iconOverlay = Image.createImage("/icon_overlay_small.png");
@@ -96,6 +95,9 @@ public class MediaCanvas extends DefaultCanvas {
             okBt = Image.createImage("/ok_button.png");
             shootBt = Image.createImage("/shoot_button.png");
             recordBt = Image.createImage("/record_button.png");
+            topWhiteArea = Image.createImage("/whitearea_1.png");
+            middleWhiteArea = Image.createImage("/whitearea_2.png");
+            bottomWhiteArea = Image.createImage("/whitearea_3.png");
 
             photoCamera = new PhotoCamera(player, videoControl);
             audioRecorder = new AudioRecorder(player, recordControl, rate, bits);
@@ -135,37 +137,55 @@ public class MediaCanvas extends DefaultCanvas {
                 g.setFont(f);
                 ScreenUtil.drawTextArea(g, 100, margin, 3 * margin + logo.getHeight() + iconOverlay.getHeight(), topTextArea, middleTextArea, bottomTextArea);
                 if(photoShot){
-                    g.drawImage(photoCamera.getPreview(), 2*margin, margin + logo.getHeight() + 2 * margin, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(photoCamera.getPreview(), 2*margin, margin + logo.getHeight() + icons[0].getHeight() + 2 * margin, Graphics.TOP | Graphics.LEFT);
                     ScreenUtil.drawLeftSoftKey(g, h, okBt);
                 }else{
-                    g.drawRect(2*margin, margin + logo.getHeight() + 2 * margin,160, 120);
-                photoCamera.show(2 * margin, margin + logo.getHeight() + 2 * margin, 160, 120);
+                    g.drawRect(2*margin, margin + logo.getHeight() + icons[0].getHeight()+ 2 * margin,160, 120);
+                    //photoCamera.show(2 * margin, margin + logo.getHeight() + 2 * margin, 160, 120);
                     ScreenUtil.drawLeftSoftKey(g, h, shootBt);
                 }
 
+                break;
+            case TAG_STAT:
                 // the text
-                String keySelect1 = "";
+                String keySelect = "";
                 if (keyMajor != -1) {
                     String all = keys[keyMajor];
-                    keySelect1 = all.substring(0, keyMinor) + "[" + all.charAt(keyMinor) + "]" + all.substring(keyMinor + 1);
+                    keySelect = all.substring(0, keyMinor) + "[" + all.charAt(keyMinor) + "]" + all.substring(keyMinor + 1);
                 }
 
                 g.drawString("title", 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight(), Graphics.TOP | Graphics.LEFT);
                 g.drawImage(inputBox, 2 * margin, 5 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
                 g.drawString(inputText, 2 * margin, 5 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + fh + 2, Graphics.TOP | Graphics.LEFT);
-                g.drawString(keySelect1, 2 * margin, 6 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + 2 * fh + 2, Graphics.TOP | Graphics.LEFT);
-
-                break;
-            case AUDIO_STAT:
-                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);                
-                audioRecorder.create();
-                ScreenUtil.drawLeftSoftKey(g, h, recordBt);
-                break;
-            case TEXT_STAT:
-                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+                g.drawString(keySelect, 2 * margin, 6 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + 2 * fh + 2, Graphics.TOP | Graphics.LEFT);
                 ScreenUtil.drawLeftSoftKey(g, h, okBt);
                 break;
+            case AUDIO_STAT:
+                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+                //audioRecorder.create();
+                ScreenUtil.drawLeftSoftKey(g, h, recordBt);
+                break;
             case POI_STAT:
+                ScreenUtil.drawTextArea(g, 80, 2*margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + 2*margin, topWhiteArea, middleWhiteArea, bottomWhiteArea);
+
+                // the text
+                keySelect = "";
+                if (keyMajor != -1) {
+                    String all = keys[keyMajor];
+                    keySelect = all.substring(0, keyMinor) + "[" + all.charAt(keyMinor) + "]" + all.substring(keyMinor + 1);
+                }
+
+                String lin1 = ("" + (f.stringWidth(inputText) / (w - 4 * margin)));
+                int nrOfLines = Integer.parseInt(lin1.substring(0, 1));
+
+                if (nrOfLines < 8) {
+                    for (int i = 0; i < (nrOfLines + 1); i++) {
+                        String txt = inputText.substring(i * 32, inputText.length());
+                        g.drawString(txt, 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
+                    }
+                    g.drawString(keySelect, 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() - fh, Graphics.TOP | Graphics.LEFT);
+                }
+
                 ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
                 ScreenUtil.drawLeftSoftKey(g, h, okBt);
                 break;
@@ -206,14 +226,10 @@ public class MediaCanvas extends DefaultCanvas {
                 case AUDIO_TAG_STAT:
                     audioRecorder.upload();
                     audioRecorded = false;
-                case TEXT_STAT:
-                    break;
-                case TEXT_TAG_STAT:
-                    
-                    textWritten = false;
                 case POI_STAT:
                     break;
                 case POI_TAG_STAT:
+                    textWritten = false;
 
                     poiWritten = false;
             }
@@ -228,9 +244,6 @@ public class MediaCanvas extends DefaultCanvas {
                 case AUDIO_TAG_STAT:
                     screenStat = AUDIO_STAT;
                     audioRecorded = false;
-                    break;
-                case TEXT_TAG_STAT:
-                    screenStat = TEXT_STAT;
                     break;
                 case POI_TAG_STAT:
                     screenStat = POI_STAT;
@@ -255,11 +268,6 @@ public class MediaCanvas extends DefaultCanvas {
                     ScreenUtil.resetMenu();
                     break;
                 case 3:
-                    screenStat = TEXT_STAT;
-                    showMenu = false;
-                    ScreenUtil.resetMenu();
-                    break;
-                case 4:
                     screenStat = PHOTO_STAT;
                     showMenu = false;
                     ScreenUtil.resetMenu();
@@ -271,18 +279,14 @@ public class MediaCanvas extends DefaultCanvas {
             ScreenUtil.selectNextIcon();
             switch (ScreenUtil.getSelectedIcon()) {
                 case 1:
-                    screenStat = TEXT_STAT;
-                    showMenu = false;
-                    break;
-                case 2:
                     screenStat = PHOTO_STAT;
                     showMenu = false;
                     break;
-                case 3:
+                case 2:
                     screenStat = AUDIO_STAT;
                     showMenu = false;
                     break;
-                case 4:
+                case 3:
                     screenStat = POI_STAT;
                     showMenu = false;
                     break;

@@ -243,7 +243,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                 text = "Your GPS device is stored";
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
                 ScreenUtil.drawRightSoftKey(g, h, w, backBt);
-                new Delayer(WP.HOME_CANVAS, 2);
+                new Forwarder(WP.HOME_CANVAS, 2);
                 break;
         }
     }
