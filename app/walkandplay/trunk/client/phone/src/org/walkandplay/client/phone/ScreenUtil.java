@@ -29,12 +29,18 @@ public class ScreenUtil {
         }
     }
 
-    public static void drawMessageBar(Graphics aGraphics, int aFontHeight, String aMsg, Image theBar, int theHeight) {
-        aGraphics.drawImage(theBar, 0, theHeight - theBar.getHeight(), Graphics.TOP | Graphics.LEFT);
+    public static void drawMessageBar(Graphics aGraphics, int aFontHeight, String[] theMsgs, Image theBar, int theHeight) {
         aGraphics.setColor(0, 0, 0);
         Font f = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         aGraphics.setFont(f);
-        aGraphics.drawString(aMsg, 3, theHeight - aFontHeight - 2, Graphics.TOP | Graphics.LEFT);
+        /*aGraphics.drawLine(0, theHeight/2 - theBar.getHeight(), theWidth, 1);*/
+        for(int i=0;i<theMsgs.length;i++){
+            if(theMsgs[i].length()>0){
+                aGraphics.drawImage(theBar, 0, theHeight/2 - theBar.getHeight() + i*theBar.getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawString(theMsgs[i], 3, theHeight/2 - aFontHeight + i*theBar.getHeight() - 2, Graphics.TOP | Graphics.LEFT);
+            }
+        }
+
     }
 
     public static void drawTextArea(Graphics aGraphics, int aHeight, int aXOffSet, int aYOffSet, Image aTopImage, Image aMiddleImage, Image aBottomImage) {

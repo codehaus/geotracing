@@ -27,7 +27,7 @@ public class TraceCanvas extends DefaultCanvas {
     private Image image;
     private String myX, myY;
     private String mapType = "map";
-    private String msg;
+    private String[] msgs = new String[3];
 
     String gpsStatus = "disconnected";
     String netStatus = "disconnected";
@@ -84,7 +84,7 @@ public class TraceCanvas extends DefaultCanvas {
 
     void setLocation(String aLon, String aLat) {
         if (aLon.equals(("0")) || aLat.equals("0")) {
-            msg = "No Location";
+            msgs[2] = "No Location";
             return;
         }
         activeTile = tileURL + "lon=" + aLon + "&lat=" + aLat;
@@ -150,6 +150,7 @@ public class TraceCanvas extends DefaultCanvas {
                     image = Util.getImage(el.getAttr("url"));
                     myX = el.getAttr("x");
                     myY = el.getAttr("y");
+
                 }
             } catch (Throwable t) {
                 text = "Error fetching image !!";
@@ -162,6 +163,7 @@ public class TraceCanvas extends DefaultCanvas {
         // draw the google map image
         if (image != null) {
             g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
+            g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY), Graphics.TOP | Graphics.LEFT);
         }
 
         ScreenUtil.drawLeftSoftKey(g, h, menuBt);
@@ -194,21 +196,26 @@ public class TraceCanvas extends DefaultCanvas {
 
         // if there's a status show it in the status bar
         if(netStatus.length()>0 || gpsStatus.length()>0 || status.length()>0){
-            String msg = "";
             if(netStatus.length()>0){
-                msg += netStatus;
+                msgs[0] = "Net:" + netStatus;
             }
             if(gpsStatus.length()>0){
-                if(msg.length()>0) msg += ",";
-                msg += gpsStatus;
+                msgs[1] = "GPS:" + gpsStatus;
             }
             if(status.length()>0){
-                if(msg.length()>0) msg += ",";
-                msg += status;
+                msgs[2] = status;
             }
-            ScreenUtil.drawMessageBar(g, fh, msg, msgBar, h);
+
+            ScreenUtil.drawMessageBar(g, fh, msgs, msgBar, h);
         }
         ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+
+        if(msgs[0].length()>0 || msgs[1].length()>0 || msgs[2].length()>0){
+            msgs[0] = "";
+            msgs[1] = "";
+            msgs[2] = "";
+            new Delayer(2);
+        }
     }
 
     /**

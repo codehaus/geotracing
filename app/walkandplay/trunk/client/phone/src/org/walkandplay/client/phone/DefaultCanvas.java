@@ -98,14 +98,14 @@ public class DefaultCanvas extends Canvas {
     }
 
     // creates a delay for the splashscreen
-    protected class Delayer {
+    protected class Forwarder {
         Timer timer;
         int screenName;
 
-        public Delayer(int aScreenName, int seconds) {
+        public Forwarder(int aScreenName, int seconds) {
             timer = new Timer();
             screenName = aScreenName;
-            timer.schedule(new DefaultCanvas.Delayer.RemindTask(), seconds * 1000);
+            timer.schedule(new DefaultCanvas.Forwarder.RemindTask(), seconds * 1000);
         }
 
         class RemindTask extends TimerTask {
@@ -121,5 +121,24 @@ public class DefaultCanvas extends Canvas {
             }
         }
     }
+
+    // creates a delay for the splashscreen
+    protected class Delayer {
+        Timer timer;
+
+        public Delayer(int seconds) {
+            timer = new Timer();
+            timer.schedule(new DefaultCanvas.Delayer.RemindTask(), seconds * 1000);
+        }
+
+        class RemindTask extends TimerTask {
+            public void run() {
+                repaint();
+                timer.cancel(); //Terminate the timer thread
+            }
+        }
+    }
+
+
 
 }
