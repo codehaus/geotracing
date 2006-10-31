@@ -11,9 +11,6 @@ import javax.microedition.lcdui.Image;
 
 import nl.justobjects.mjox.JXElement;
 
-import java.util.TimerTask;
-import java.util.Timer;
-
 public class TraceCanvas extends DefaultCanvas{
 
     // paint vars
@@ -32,8 +29,9 @@ public class TraceCanvas extends DefaultCanvas{
     private Image image;
     private String myX, myY;
     private String mapType = "map";
-    private String[] msgs = new String[3];
-    private String[] prevMsgs = new String[3];
+    private String lon="0", lat="0";
+    private String msg = "";
+    private String[] statMsgs = new String[3];
 
     String gpsStatus = "disconnected";
     String netStatus = "disconnected";
@@ -95,10 +93,11 @@ public class TraceCanvas extends DefaultCanvas{
 
     void setLocation(String aLon, String aLat) {
         if (aLon.equals(("0")) || aLat.equals("0")) {
-            msgs[2] = "No Location";
+            statMsgs[2] = "No Location";
             return;
         }
-        activeTile = tileURL + "lon=" + aLon + "&lat=" + aLat;
+        lon = aLon;
+        lat = aLat;
     }
 
     public void setGPSInfo(GPSInfo theInfo) {
@@ -136,6 +135,10 @@ public class TraceCanvas extends DefaultCanvas{
         repaint();
     }
 
+    public boolean hasLocation() {
+		return !lon.equals(("0")) && !lat.equals("0");
+	}
+
     /**
      * Draws the screen.
      *
@@ -147,38 +150,37 @@ public class TraceCanvas extends DefaultCanvas{
         g.setFont(f);
         fh = f.getHeight();
 
-        String text = "";
-
-        if (activeTile == null) {
-            text = "No location yet...";
-        } else {
-            try {
-                //msg = "Fetching map image...";
-                log("getting the map tile images!!!");
-                JXElement el = Util.getXML(activeTile + "&format=xml");
-                if(el!=null){
-                    image = Util.getImage(el.getAttr("url"));
-                    myX = el.getAttr("x");
-                    myY = el.getAttr("y");
-                }
-            } catch (Throwable t) {
-                text = "Error fetching image !!";
-                text += "maybe this zoom-level is not available";
-                text += "try zooming further in or out";
-                Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());
-            }
-        }
-
         switch (screenStat) {
             case HOME_STAT:
                // draw the google map image
+                if (activeTile == null) {
+                    msg = "No location yet...";
+                } else {
+                    try {
+                        //msg = "Fetching map image...";
+                        log("getting the map tile images!!!");
+                        activeTile = tileURL + "&lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType;
+                        JXElement el = Util.getXML(activeTile + "&format=xml");
+                        if(el!=null){
+                            image = Util.getImage(el.getAttr("url"));
+                            myX = el.getAttr("x");
+                            myY = el.getAttr("y");
+                        }
+                    } catch (Throwable t) {
+                        msg = "Error fetching image !!";
+                        msg += "maybe this zoom-level is not available";
+                        msg += "try zooming further in or out";
+                        Log.log("error: MapScreen: t=" + t + " m=" + t.getMessage());
+                    }
+                }
+
                 if (image != null) {
                     g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY), Graphics.TOP | Graphics.LEFT);
                 }else{
-                    if (text.length() > 0) {
+                    if (msg.length() > 0) {
                         ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-                        ScreenUtil.drawText(g, text, 10, logo.getHeight() + 3 * margin, fh, 100);
+                        ScreenUtil.drawText(g, msg, 10, logo.getHeight() + 3 * margin, fh, 100);
                     }
                 }
 
@@ -191,6 +193,7 @@ public class TraceCanvas extends DefaultCanvas{
                         ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                     }
                 }
+                ScreenUtil.drawLeftSoftKey(g, h, menuBt);
                 break;
             case ASSIGNMENT_STAT:
                 if (showMenu) {
@@ -217,26 +220,26 @@ public class TraceCanvas extends DefaultCanvas{
                 }
                 // if there's a status show it in the status bar
                 if(netStatus.length()>0 || gpsStatus.length()>0 || status.length()>0){
-                    if(netStatus.length()>0 && msgs[0]!=null && !msgs[0].equals(netStatus)){
-                        msgs[0] = "Net:" + netStatus;
+                    if(netStatus.length()>0 && statMsgs[0]!=null && !statMsgs[0].equals(netStatus)){
+                        statMsgs[0] = "Net:" + netStatus;
                     }else{
-                        msgs[0] = "";
+                        statMsgs[0] = "";
                     }
-                    if(gpsStatus.length()>0 && msgs[1]!=null && !msgs[1].equals(gpsStatus)){
-                        msgs[1] = "GPS:" + gpsStatus;
+                    if(gpsStatus.length()>0 && statMsgs[1]!=null && !statMsgs[1].equals(gpsStatus)){
+                        statMsgs[1] = "GPS:" + gpsStatus;
                     }else{
-                        msgs[1] = "";
+                        statMsgs[1] = "";
                     }
-                    if(status.length()>0  && msgs[2]!=null && !msgs[2].equals(status)){
-                        msgs[2] = status;
+                    if(status.length()>0  && statMsgs[2]!=null && !statMsgs[2].equals(status)){
+                        statMsgs[2] = status;
                     }else{
-                        msgs[2] = "";
+                        statMsgs[2] = "";
                     }
-                    ScreenUtil.drawMessageBar(g, fh, msgs, msgBar, h);
+                    ScreenUtil.drawMessageBar(g, fh, statMsgs, msgBar, h);
                 }
                 break;
         }
-        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+
         ScreenUtil.drawRightSoftKey(g, h, w, backBt);
 
     }
@@ -258,6 +261,7 @@ public class TraceCanvas extends DefaultCanvas{
                                 showMenu = false;
                             } else if (ScreenUtil.getSelectedMenuItem() == 2) {
                                 tracer.resume();
+                                msg += "Track resumed";
                             } else if (ScreenUtil.getSelectedMenuItem() == 3) {
                                 mapType = mapType.equals("sat") ? "map" : "sat";
                             } else if (ScreenUtil.getSelectedMenuItem() == 4) {
@@ -270,6 +274,8 @@ public class TraceCanvas extends DefaultCanvas{
                             } else if (ScreenUtil.getSelectedMenuItem() == 7) {
                                 screenStat = STATUS_STAT;
                                 showMenu = false;
+                            }else{
+                                showMenu = false;
                             }
                         }else{
                             if (ScreenUtil.getSelectedMenuItem() == 1) {
@@ -277,8 +283,10 @@ public class TraceCanvas extends DefaultCanvas{
                                 showMenu = false;
                             } else if (ScreenUtil.getSelectedMenuItem() == 2) {
                                 tracer.suspend();
+                                msg += "Track suspended";
                             } else if (ScreenUtil.getSelectedMenuItem() == 3) {
                                 tracer.stop();
+                                msg += "Track stopped";
                             } else if (ScreenUtil.getSelectedMenuItem() == 4) {
                                 mapType = mapType.equals("sat") ? "map" : "sat";
                             } else if (ScreenUtil.getSelectedMenuItem() == 5) {
@@ -291,6 +299,8 @@ public class TraceCanvas extends DefaultCanvas{
                             } else if (ScreenUtil.getSelectedMenuItem() == 8) {
                                 screenStat = STATUS_STAT;
                                 showMenu = false;
+                            }else{
+                                showMenu = false;
                             }
                         }
 
@@ -299,8 +309,13 @@ public class TraceCanvas extends DefaultCanvas{
                     }
                     break;
                 case TRACK_STAT:
-                    tracer.suspend();
-                    tracer.getNet().newTrack(inputText);
+                    if(tracer!=null){
+                        tracer.suspend();
+                        tracer.getNet().newTrack(inputText);
+                        msg += "New track created";
+                    }else{
+                        msg += "Could not create new track";
+                    }
                     screenStat = HOME_STAT;
                     showMenu = false;
                     break;
@@ -309,7 +324,24 @@ public class TraceCanvas extends DefaultCanvas{
         } else if (key == -7) {
             switch (screenStat) {
                 case HOME_STAT:
-                    midlet.setScreen(WP.HOME_CANVAS);
+                    if(showMenu) {
+                        showMenu = false;
+                        screenStat = HOME_STAT;
+                    }else{
+                        midlet.setScreen(WP.HOME_CANVAS);                        
+                    }
+                    break;
+                case STATUS_STAT:
+                    showMenu = false;
+                    screenStat = HOME_STAT;
+                    break;
+                case ASSIGNMENT_STAT:
+                    showMenu = false;
+                    screenStat = HOME_STAT;
+                    break;
+                case TRACK_STAT:
+                    showMenu = false;
+                    screenStat = HOME_STAT;
                     break;
             }
             // left
@@ -334,7 +366,7 @@ public class TraceCanvas extends DefaultCanvas{
             /*inputText = inputText.substring(0, inputText.length() - 1);*/
             inputText = texter.deleteChar();
         } else {
-            inputText = texter.write(key);
+            //inputText = texter.write(key);
         }
 
         repaint();

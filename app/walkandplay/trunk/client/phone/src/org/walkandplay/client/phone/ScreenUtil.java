@@ -11,7 +11,6 @@ public class ScreenUtil {
     private static int menuItemLength = 0;
     private static int iconLength = 0;
     private static int scrollY = 0;
-    private static int tempScrollY = 0;
 
     public static void drawIcons(Graphics aGraphics, int theWidth, int aXOffSet, int aYOffset, Image[] theIcons, Image anIconOverlay) {
         iconLength = theIcons.length;
@@ -30,17 +29,12 @@ public class ScreenUtil {
     }
 
     public static void drawMessageBar(Graphics aGraphics, int aFontHeight, String[] theMsgs, Image theBar, int theHeight) {
-        aGraphics.setColor(0, 0, 0);
-        Font f = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        aGraphics.setFont(f);
-        /*aGraphics.drawLine(0, theHeight/2 - theBar.getHeight(), theWidth, 1);*/
         for(int i=0;i<theMsgs.length;i++){
             if(theMsgs[i].length()>0){
                 aGraphics.drawImage(theBar, 0, theHeight/2 - theBar.getHeight() + i*theBar.getHeight(), Graphics.TOP | Graphics.LEFT);
                 aGraphics.drawString(theMsgs[i], 3, theHeight/2 - aFontHeight + i*theBar.getHeight() - 2, Graphics.TOP | Graphics.LEFT);
             }
         }
-
     }
 
     public static void drawTextArea(Graphics aGraphics, int aHeight, int aXOffSet, int aYOffSet, Image aTopImage, Image aMiddleImage, Image aBottomImage) {
@@ -74,18 +68,12 @@ public class ScreenUtil {
 
     public static void drawScrollButtons(Graphics aGraphics, int aTextLength, int anYOffSet, int theAvailableHeight, int theWidth, int aFontHeight, Image aScrollDownBt, Image aScrollUpBt, Image aScrollUpAndDownBt){
         if(theAvailableHeight > aTextLength) return;
-        System.out.println("scrollY: " + scrollY);
-        System.out.println("tempScrollY: " + tempScrollY);
         if (scrollY == 0) {
-            System.out.println("a");
             aGraphics.drawImage(aScrollDownBt, theWidth / 2 - aScrollDownBt.getWidth() / 2, anYOffSet, Graphics.TOP | Graphics.LEFT);
-        } else if (scrollY > 0 && scrollY != tempScrollY) {
+        } else if ((aTextLength) >= 3*theAvailableHeight/2) {
             aGraphics.drawImage(aScrollUpAndDownBt, theWidth / 2 - aScrollUpAndDownBt.getWidth() / 2, anYOffSet, Graphics.TOP | Graphics.LEFT);
-            System.out.println("b");
-            tempScrollY = scrollY;
         } else {
             aGraphics.drawImage(aScrollUpBt, theWidth / 2 - aScrollUpBt.getWidth() / 2, anYOffSet, Graphics.TOP | Graphics.LEFT);
-            System.out.println("c");
         }
     }
 
@@ -95,10 +83,14 @@ public class ScreenUtil {
                 scrollY--;
             }
         } else {
-            if ((aTextLength) >= (theAvailableHeight - aFontHeight)){
+            if ((aTextLength) >= 3*theAvailableHeight/2){
                 scrollY++;
             }
         }
+    }
+
+    public static void resetScroll() {
+        scrollY = 0;
     }
 
     public static void resetMenu() {
