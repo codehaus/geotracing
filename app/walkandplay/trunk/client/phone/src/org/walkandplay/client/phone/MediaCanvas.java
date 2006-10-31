@@ -122,6 +122,7 @@ public class MediaCanvas extends DefaultCanvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
+        log("screenstat:" + screenStat);
         super.paint(g);
         g.setColor(0, 0, 0);
         f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
@@ -165,6 +166,7 @@ public class MediaCanvas extends DefaultCanvas {
                 ScreenUtil.drawLeftSoftKey(g, h, recordBt);
                 break;
             case POI_STAT:
+                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
                 ScreenUtil.drawTextArea(g, 80, 2*margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + 2*margin, topWhiteArea, middleWhiteArea, bottomWhiteArea);
 
                 // the text
@@ -180,12 +182,11 @@ public class MediaCanvas extends DefaultCanvas {
                 if (nrOfLines < 8) {
                     for (int i = 0; i < (nrOfLines + 1); i++) {
                         String txt = inputText.substring(i * 32, inputText.length());
-                        g.drawString(txt, 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
+                        g.drawString(txt, 2 * margin, 3 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
                     }
-                    g.drawString(keySelect, 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() - fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(keySelect, 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + middleTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
                 }
 
-                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
                 ScreenUtil.drawLeftSoftKey(g, h, okBt);
                 break;
         }
@@ -258,18 +259,12 @@ public class MediaCanvas extends DefaultCanvas {
             switch (ScreenUtil.getSelectedIcon()) {
                 case 1:
                     screenStat = AUDIO_STAT;
-                    showMenu = false;
-                    ScreenUtil.resetMenu();
                     break;
                 case 2:
                     screenStat = POI_STAT;
-                    showMenu = false;
-                    ScreenUtil.resetMenu();
                     break;
                 case 3:
                     screenStat = PHOTO_STAT;
-                    showMenu = false;
-                    ScreenUtil.resetMenu();
                     break;
             }
             // right
@@ -279,15 +274,12 @@ public class MediaCanvas extends DefaultCanvas {
             switch (ScreenUtil.getSelectedIcon()) {
                 case 1:
                     screenStat = PHOTO_STAT;
-                    showMenu = false;
                     break;
                 case 2:
                     screenStat = AUDIO_STAT;
-                    showMenu = false;
                     break;
                 case 3:
                     screenStat = POI_STAT;
-                    showMenu = false;
                     break;
             }
             // up

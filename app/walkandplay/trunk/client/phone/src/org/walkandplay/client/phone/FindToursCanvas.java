@@ -59,15 +59,15 @@ public class FindToursCanvas extends DefaultCanvas {
         String text;
         switch (item) {
             case 1:
-                text = "description of game 1 sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc sdvlk sdckljs scljkljscc slcklsdc sdckl s s sdckls s scksc bla";
+                text = "description of game 1 Lorem ipsum qui detracto appetere at, ius at omnes nemore, at tota scripserit mel. Ignota officiis te sit. Malis indoctum conceptam an pro, ad fierent delectus recusabo mei, vim eu solet sententiae. Vim omittam eloquentiam id. Labitur fabellas ex ius, his ut impedit verterem urbanitas.";
                 textHeight = drawText(g, text);
                 break;
             case 2:
-                text = "description of game 2";
+                text = "description of game 2 Lorem ipsum qui detracto appetere at, ius at omnes nemore, at tota scripserit mel. Ignota officiis te sit. Malis indoctum conceptam an pro, ad fierent delectus recusabo mei, vim eu solet sententiae. Vim omittam eloquentiam id. Labitur fabellas ex ius, his ut impedit verterem urbanitas.";
                 textHeight = drawText(g, text);
                 break;
             case 3:
-                text = "description of game 3";
+                text = "description of game 3 Lorem ipsum qui detracto appetere at, ius at omnes nemore, at tota scripserit mel. Ignota officiis te sit. Malis indoctum conceptam an pro, ad fierent delectus recusabo mei, vim eu solet sententiae. Vim omittam eloquentiam id. Labitur fabellas ex ius, his ut impedit verterem urbanitas.";
                 textHeight = drawText(g, text);
                 break;
         }
@@ -91,6 +91,7 @@ public class FindToursCanvas extends DefaultCanvas {
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
             if(showMenu){
                 item = ScreenUtil.getSelectedMenuItem();
+                ScreenUtil.resetScroll();
                 showMenu = false;
             }else{
                 showMenu = true;
