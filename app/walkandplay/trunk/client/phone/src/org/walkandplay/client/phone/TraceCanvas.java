@@ -11,7 +11,10 @@ import javax.microedition.lcdui.Image;
 
 import nl.justobjects.mjox.JXElement;
 
-public class TraceCanvas extends DefaultCanvas {
+import java.util.TimerTask;
+import java.util.Timer;
+
+public class TraceCanvas extends DefaultCanvas{
 
     // paint vars
     int w, h, fh;
@@ -19,6 +22,8 @@ public class TraceCanvas extends DefaultCanvas {
 
     int x0, y0;
     int midx;
+
+    private String inputText = "";
 
     private WP midlet;
     private String tileURL;
@@ -28,6 +33,7 @@ public class TraceCanvas extends DefaultCanvas {
     private String myX, myY;
     private String mapType = "map";
     private String[] msgs = new String[3];
+    private String[] prevMsgs = new String[3];
 
     String gpsStatus = "disconnected";
     String netStatus = "disconnected";
@@ -35,9 +41,10 @@ public class TraceCanvas extends DefaultCanvas {
     boolean showMenu;
 
     private Tracer tracer;
+    private Texter texter;
 
     // image objects
-    private Image msgBar;
+    private Image msgBar, inputBox, okBt;
 
     int margin = 3;
 
@@ -45,7 +52,8 @@ public class TraceCanvas extends DefaultCanvas {
     private int screenStat = 0;
     private final static int HOME_STAT = 0;
     private final static int ASSIGNMENT_STAT = 1;
-    private final static int DROP_STAT = 2;
+    private final static int TRACK_STAT = 2;
+    private final static int STATUS_STAT = 3;
 
     private int fontType = Font.FACE_MONOSPACE;
 
@@ -67,7 +75,10 @@ public class TraceCanvas extends DefaultCanvas {
             }
             // load all images
             msgBar = Image.createImage("/msg_bar.png");
+            inputBox = Image.createImage("/inputbox.png");
+            okBt = Image.createImage("/ok_button.png");
 
+            texter = new Texter(this);
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
@@ -141,7 +152,6 @@ public class TraceCanvas extends DefaultCanvas {
         if (activeTile == null) {
             text = "No location yet...";
         } else {
-
             try {
                 //msg = "Fetching map image...";
                 log("getting the map tile images!!!");
@@ -150,7 +160,6 @@ public class TraceCanvas extends DefaultCanvas {
                     image = Util.getImage(el.getAttr("url"));
                     myX = el.getAttr("x");
                     myY = el.getAttr("y");
-
                 }
             } catch (Throwable t) {
                 text = "Error fetching image !!";
@@ -160,24 +169,27 @@ public class TraceCanvas extends DefaultCanvas {
             }
         }
 
-        // draw the google map image
-        if (image != null) {
-            g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
-            g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY), Graphics.TOP | Graphics.LEFT);
-        }
-
-        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
-
-        if (text.length() > 0) {
-            ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-            ScreenUtil.drawText(g, text, 10, logo.getHeight() + 3 * margin, fh, 100);
-        }
-
         switch (screenStat) {
             case HOME_STAT:
+               // draw the google map image
+                if (image != null) {
+                    g.drawImage(image, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY), Graphics.TOP | Graphics.LEFT);
+                }else{
+                    if (text.length() > 0) {
+                        ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+                        ScreenUtil.drawText(g, text, 10, logo.getHeight() + 3 * margin, fh, 100);
+                    }
+                }
+
                 if (showMenu) {
-                    String[] options = {"switch map", "zoom out", "zoom in", "drop media"};
-                    ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                    if(tracer!=null && tracer.isPaused()){
+                        String[] options = {"new track", "resume track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+                        ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                    }else {
+                        String[] options = {"new track", "suspend track", "stop track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+                        ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                    }
                 }
                 break;
             case ASSIGNMENT_STAT:
@@ -186,36 +198,47 @@ public class TraceCanvas extends DefaultCanvas {
                     ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                 }
                 break;
-            case DROP_STAT:
+            case TRACK_STAT:
+                g.drawString("title", 2 * margin, 4 * margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawImage(inputBox, 2 * margin, 5 * margin + logo.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
+                g.drawString(inputText, 2 * margin, 5 * margin + logo.getHeight() + fh + 2, Graphics.TOP | Graphics.LEFT);
+                g.drawString(texter.getSelectedKey(), 2 * margin, 6 * margin + logo.getHeight() + 2 * fh + 2, Graphics.TOP | Graphics.LEFT);
+                ScreenUtil.drawLeftSoftKey(g, h, okBt);
+                break;
+            case STATUS_STAT:
                 if (showMenu) {
-                    String[] options = {"drop message", "drop image", "drop video", "drop audio"};
-                    ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                    if(tracer!=null && tracer.isPaused()){
+                        String[] options = {"new track", "resume track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+                        ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                    }else {
+                        String[] options = {"new track", "suspend track", "stop track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+                        ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+                    }
+                }
+                // if there's a status show it in the status bar
+                if(netStatus.length()>0 || gpsStatus.length()>0 || status.length()>0){
+                    if(netStatus.length()>0 && msgs[0]!=null && !msgs[0].equals(netStatus)){
+                        msgs[0] = "Net:" + netStatus;
+                    }else{
+                        msgs[0] = "";
+                    }
+                    if(gpsStatus.length()>0 && msgs[1]!=null && !msgs[1].equals(gpsStatus)){
+                        msgs[1] = "GPS:" + gpsStatus;
+                    }else{
+                        msgs[1] = "";
+                    }
+                    if(status.length()>0  && msgs[2]!=null && !msgs[2].equals(status)){
+                        msgs[2] = status;
+                    }else{
+                        msgs[2] = "";
+                    }
+                    ScreenUtil.drawMessageBar(g, fh, msgs, msgBar, h);
                 }
                 break;
         }
-
-        // if there's a status show it in the status bar
-        if(netStatus.length()>0 || gpsStatus.length()>0 || status.length()>0){
-            if(netStatus.length()>0){
-                msgs[0] = "Net:" + netStatus;
-            }
-            if(gpsStatus.length()>0){
-                msgs[1] = "GPS:" + gpsStatus;
-            }
-            if(status.length()>0){
-                msgs[2] = status;
-            }
-
-            ScreenUtil.drawMessageBar(g, fh, msgs, msgBar, h);
-        }
+        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
         ScreenUtil.drawRightSoftKey(g, h, w, backBt);
 
-        if(msgs[0].length()>0 || msgs[1].length()>0 || msgs[2].length()>0){
-            msgs[0] = "";
-            msgs[1] = "";
-            msgs[2] = "";
-            new Delayer(2);
-        }
     }
 
     /**
@@ -229,19 +252,57 @@ public class TraceCanvas extends DefaultCanvas {
             switch (screenStat) {
                 case HOME_STAT:
                     if (showMenu) {
-                        if (ScreenUtil.getSelectedMenuItem() == 1) {
-                            mapType = mapType.equals("sat") ? "map" : "sat";
-                        } else if (ScreenUtil.getSelectedMenuItem() == 2) {
-                            zoom++;
-                        } else if (ScreenUtil.getSelectedMenuItem() == 3) {
-                            zoom--;
-                        } else if (ScreenUtil.getSelectedMenuItem() == 4) {
-                            midlet.setScreen(WP.MEDIA_CANVAS);
-                            showMenu = false;
+                        if(tracer!=null && tracer.isPaused()){
+                            if (ScreenUtil.getSelectedMenuItem() == 1) {
+                                screenStat = TRACK_STAT;
+                                showMenu = false;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 2) {
+                                tracer.resume();
+                            } else if (ScreenUtil.getSelectedMenuItem() == 3) {
+                                mapType = mapType.equals("sat") ? "map" : "sat";
+                            } else if (ScreenUtil.getSelectedMenuItem() == 4) {
+                                zoom++;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 5) {
+                                zoom--;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 6) {
+                                midlet.setScreen(WP.MEDIA_CANVAS);
+                                showMenu = false;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 7) {
+                                screenStat = STATUS_STAT;
+                                showMenu = false;
+                            }
+                        }else{
+                            if (ScreenUtil.getSelectedMenuItem() == 1) {
+                                screenStat = TRACK_STAT;
+                                showMenu = false;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 2) {
+                                tracer.suspend();
+                            } else if (ScreenUtil.getSelectedMenuItem() == 3) {
+                                tracer.stop();
+                            } else if (ScreenUtil.getSelectedMenuItem() == 4) {
+                                mapType = mapType.equals("sat") ? "map" : "sat";
+                            } else if (ScreenUtil.getSelectedMenuItem() == 5) {
+                                zoom++;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 6) {
+                                zoom--;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 7) {
+                                midlet.setScreen(WP.MEDIA_CANVAS);
+                                showMenu = false;
+                            } else if (ScreenUtil.getSelectedMenuItem() == 8) {
+                                screenStat = STATUS_STAT;
+                                showMenu = false;
+                            }
                         }
+
                     } else {
                         showMenu = true;
                     }
+                    break;
+                case TRACK_STAT:
+                    tracer.suspend();
+                    tracer.getNet().newTrack(inputText);
+                    screenStat = HOME_STAT;
+                    showMenu = false;
                     break;
             }
             // right softkey
@@ -253,16 +314,8 @@ public class TraceCanvas extends DefaultCanvas {
             }
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
-            switch (screenStat) {
-                case HOME_STAT:
-                    break;
-            }
             // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
-            switch (screenStat) {
-                case HOME_STAT:
-                    break;
-            }
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
             // down
@@ -278,9 +331,10 @@ public class TraceCanvas extends DefaultCanvas {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
             midlet.setScreen(-1);
         } else if (key == -8) {
-
+            /*inputText = inputText.substring(0, inputText.length() - 1);*/
+            inputText = texter.deleteChar();
         } else {
-
+            inputText = texter.write(key);
         }
 
         repaint();

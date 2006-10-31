@@ -41,7 +41,6 @@ public class MediaCanvas extends DefaultCanvas {
     private String errorMsg;
 
     private String inputText = "";
-
     public static final String[] keys = {" 0", ".,-!?@:;1", "aAbBcC2", "dDeEfF3", "gGhHiI4", "jJkKlL5", "mMnNoO6", "pPqQrRsS7", "tTuUvV8", "wWxXyYzZ9"};
     Timer keyTimer;
     int keyMajor = -1;
