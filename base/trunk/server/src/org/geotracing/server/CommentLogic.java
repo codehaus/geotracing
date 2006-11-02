@@ -13,7 +13,12 @@ import org.keyworx.utopia.core.util.Oase;
 import java.util.Properties;
 
 /**
- * Implements logic for Track manipulation.
+  * Handles all logic related to commenting.
+  * <p/>
+  * Uses Oase directly for DB updates.
+  *
+  * @author Just van den Broecke
+  * @version $Id$
  */
 public class CommentLogic {
 	public static final String TABLE_COMMENT = "kw_comment";

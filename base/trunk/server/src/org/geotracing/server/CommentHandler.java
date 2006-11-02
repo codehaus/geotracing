@@ -36,8 +36,7 @@ public class CommentHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
+	 * @throws UtopiaException standard Utopia exception
 	 */
 	public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		Log log = Logging.getLog(anUtopiaReq);
@@ -46,18 +45,22 @@ public class CommentHandler extends DefaultHandler {
 		String service = anUtopiaReq.getServiceName();
 		log.trace("Handling request for service=" + service);
 
-		JXElement response = null;
+		JXElement response;
 		try {
 			if (service.equals(CMT_INSERT_SERVICE)) {
+				// Add new comment
 				response = insertReq(anUtopiaReq);
 			} else if (service.equals(CMT_READ_SERVICE)) {
+				// Read comments by example
 				response = readReq(anUtopiaReq);
 			} else if (service.equals(CMT_UPDATE_STATE_SERVICE)) {
+				// Update comment state
 				response = updateStateReq(anUtopiaReq);
 			} else if (service.equals(CMT_DELETE_SERVICE)) {
+				// Delete a comment by id
 				response = deleteReq(anUtopiaReq);
 			} else {
-				// To be overridden in subclass
+				// May be overridden in subclass
 				response = unknownReq(anUtopiaReq);
 			}
 		} catch (UtopiaException ue) {
@@ -125,8 +128,7 @@ public class CommentHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
+	 * @throws UtopiaException standard Utopia exception
 	 */
 	protected JXElement readReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -188,8 +190,7 @@ public class CommentHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
+	 * @throws UtopiaException standard Utopia exception
 	 */
 	protected JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -236,19 +237,6 @@ public class CommentHandler extends DefaultHandler {
 	}
 
 	/**
-	 * Get user Account from request.
-	 */
-	protected Account getAccount(UtopiaRequest anUtopiaReq) throws UtopiaException {
-
-		// Get account name for event subject
-		// Expensive but we have to
-		UtopiaSessionContext sc = anUtopiaReq.getUtopiaSession().getContext();
-		Oase oase = sc.getOase();
-		Person person = (Person) oase.get(Person.class, sc.getUserId());
-		return person.getAccount();
-	}
-
-	/**
 	 * Get user (Person) id from request.
 	 */
 	protected CommentLogic createLogic(UtopiaRequest anUtopiaReq) throws UtopiaException {
@@ -260,13 +248,6 @@ public class CommentHandler extends DefaultHandler {
 	 */
 	protected int getUserId(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		return Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-	}
-
-	/**
-	 * Get user (Person) name from request.
-	 */
-	protected String getUserName(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return anUtopiaReq.getUtopiaSession().getContext().getUserName();
 	}
 
 	/**
@@ -298,6 +279,4 @@ public class CommentHandler extends DefaultHandler {
 			throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
 		}
 	}
-
-
 }
