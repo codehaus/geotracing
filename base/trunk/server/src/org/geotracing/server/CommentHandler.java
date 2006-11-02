@@ -145,9 +145,15 @@ public class CommentHandler extends DefaultHandler {
 
 		// Create and return response.
 		JXElement response = createResponse(CMT_READ_SERVICE);
+		JXElement nextChild;
 		for (int i = 0; i < result.length; i++) {
-			response.addChild(result[i].toXML());
+			nextChild = result[i].toXML();
+			// Remove redundant attrs
+			nextChild.removeAttr("table");
+			nextChild.removeAttr(ATTR_ID);
+			response.addChild(nextChild);
 		}
+
 		return response;
 	}
 

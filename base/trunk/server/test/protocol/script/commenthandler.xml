@@ -59,8 +59,7 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<cmt-read-rsp>
-					<record table="kw_comment" id="${cmtid1}">
-						<id>${cmtid1}</id>
+					<record id="${cmtid1}">
 						<owner/>
 						<target>${trkid1}</target>
 						<targettable/>
@@ -93,7 +92,7 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<cmt-read-rsp>
-					<record table="kw_comment" id="${cmtid1}">
+					<record>
 						<id>${cmtid1}</id>
 						<owner/>
 						<target>${trkid1}</target>
@@ -142,7 +141,7 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<cmt-read-rsp>
-					<record table="kw_comment" id="${cmtid1}">
+					<record>
 						<id>${cmtid1}</id>
 						<owner/>
 						<target>${trkid1}</target>
@@ -231,7 +230,7 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<cmt-read-rsp>
-					<record table="kw_comment" id="${cmtid2}">
+					<record>
 						<id>${cmtid2}</id>
 						<owner/>
 						<target>${trkid1}</target>
@@ -247,7 +246,7 @@
 						<modificationdate/>
 						<extra/>
 					</record>
-					<record table="kw_comment" id="${cmtid3}">
+					<record>
 						<id>${cmtid3}</id>
 						<owner/>
 						<target>${trkid}</target>
