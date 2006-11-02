@@ -50,6 +50,7 @@
 		<field name="ip" type="STRING" size="64" required="false" />
 		<field name="content" type="TEXT" required="true" />
 
+		<!-- State: (1) unread (2) read -->
 		<field name="state" type="INTEGER" default="1" required="true" />
 
 		<!-- Automatically set by KeyWorx. -->

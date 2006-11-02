@@ -26,6 +26,7 @@
 
 			<handler id="t" class="org.geotracing.server.TracingHandler"/>
 			<handler id="query" class="org.geotracing.server.QueryHandler"/>
+			<handler id="cmt" class="org.geotracing.server.CommentHandler"/>
 		</handlers>
 
 
