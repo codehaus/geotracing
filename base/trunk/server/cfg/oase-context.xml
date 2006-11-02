@@ -18,6 +18,7 @@
 		<table file="tables/g_poi.xml"/>
 		<table file="tables/g_location.xml"/>
 		<table file="tables/g_area.xml"/>
+		<table file="tables/kw_comment.xml"/>
 	</tables>
 </context>
 

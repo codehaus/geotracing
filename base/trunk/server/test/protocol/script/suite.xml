@@ -1,5 +1,6 @@
 <testsuite>
 	<testset file="tracinghandler.xml" />
-	<testset file="queryhandler.xml"/>
+	<testset file="queryhandler.xml"/> 
+	<testset file="commenthandler.xml"/>
 </testsuite>
 
