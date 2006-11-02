@@ -1,0 +1,123 @@
+<!--
+ * Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
+ * Distributable under LGPL license. See terms of license at gnu.org
+-->
+
+		<!--
+	 This file defines the syntax for the comment handler protocol messages.
+	 The handler is implemented by the class org.geotracing.server.CommentHandler.
+	 This definition uses the Simba schema schema XML language. See the Simba definition
+	 at http://kwx.dev.waag.org/docs/protocol/simba.html
+
+	 See general info on KeyWorx protocols at
+	 http://kwx.dev.waag.org/docs/
+
+	 The comment protocol is a KeyWorx extension protocol that uses the Utopia service.
+	 The KeyWorx core protocol is defined at:
+	 http://kwx.dev.waag.org/docs/protocol/keyworx-protocol.html
+
+	 The following comment protocol services are defined:
+	  CMT_INSERT_SERVICE = "cmt-insert" - insert a comment
+	  CMT_READ_SERVICE = "cmt-read" - read comments (query by example)
+	  CMT_UPDATE_STATE_SERVICE = "cmt-update-state" - update comment state
+	  CMT_DELETE_SERVICE = "cmt-delete" - delete a comment
+
+	 $Id$
+  -->
+<syntax id="commenthandler-protocol" version="1.0">
+
+	<!-- Common definitions used by protocol messages. -->
+	<element id="IdDef" tag="id" comment="id of record" type="int"/>
+	<element id="OwnerDef" tag="owner" comment="id of comment owner" type="int"/>
+	<element id="TargetDef" tag="target" comment="id of record target for comment" type="int"/>
+	<element id="TargetTableDef" tag="targettable" comment="id of table target for comment" type="int"/>
+	<element id="TargetPersonDef" tag="targetperson" comment="id of person target for comment" type="int"/>
+	<element id="AuthorDef" tag="author" comment="author of comment" type="string"/>
+	<element id="EmailDef" tag="email" comment="email of author" type="string"/>
+	<element id="URLDef" tag="url" comment="url of author" type="string"/>
+	<element id="IPDef" tag="ip" comment="IP address of author" type="string"/>
+	<element id="ContentDef" tag="content" comment="comment string (max determined by handler)" type="string"/>
+	<element id="StateDef" tag="state" comment="state of comment unread(1) or read (2)" type="int" range="1..2"/>
+	<element id="CreationDateDef" tag="creationdate" comment="creation date (UTC) of comment" type="long"/>
+	<element id="ModificationDateDef" tag="modificationdate" comment="last modification date(UTC) of comment" type="long"/>
+	<element id="ExtraDef" tag="extra" comment="extra info like attachment" type="any"/>
+
+	<!-- The generic negative response.
+	 Any of the services below will return this response on error.
+	 For example:
+	 <cmt-insert-nrsp errorid="1234" error="invalid attr value" details="cannot parse NMEA string" />
+	 -->
+	<element tag="cmt-*-nrsp" comment="generic negative response">
+		<attribute name="errorid" comment="the errorid" type="int"/>
+		<attribute name="error" comment="the error message" type="string"/>
+		<attribute name="details" comment="the error details" type="string"/>
+	</element>
+
+	<!-- THE PROTOCOL SERVICES -->
+
+	<!-- The comment insert request. -->
+	<element tag="cmt-insert-req" comment="insert new comment">
+		<element-ref id="TargetDef"/>
+		<element-ref id="AuthorDef" optional="true"/>
+		<element-ref id="EmailDef" optional="true"/>
+		<element-ref id="URLDef" optional="true"/>
+		<element-ref id="IPDef" optional="true"/>
+		<element-ref id="ContentDef" />
+		<element-ref id="ExtraDef" optional="true"/>
+	</element>
+
+	<!-- The comment insert response -->
+	<element tag="cmt-insert-rsp" comment="comment insert response">
+		<attribute name="id" comment="the id of inserted comment " type="int"/>
+	</element>
+
+	<!-- The comment delete request -->
+	<element tag="cmt-delete-req"  comment="comment delete request">
+		<attribute name="id" comment="the comment id: if omitted active comment is deleted" type="int" optional="true"/>
+	</element>
+
+	<!-- The comment delete response -->
+	<element tag="cmt-delete-rsp" comment="comment delete response">
+		<attribute name="id" comment="the comment id of deleted comment " type="int"/>
+	</element>
+
+	<!-- The comment read request -->
+	<element tag="cmt-read-req" comment="reads comments by example">
+		<element tag="target" comment="id of record commented" type="int"/>
+	</element>
+
+	<!-- The comment read response -->
+	<element tag="cmt-read-rsp"  comment="comment read response">
+		<element-list comment="a list of records as in QueryHandler">
+			<element tag="record" comment="full record of comment">
+				<element-ref id="IdDef"/>
+				<element-ref id="OwnerDef"/>
+				<element-ref id="TargetDef"/>
+				<element-ref id="TargetTableDef"/>
+				<element-ref id="TargetPersonDef"/>
+				<element-ref id="AuthorDef"/>
+				<element-ref id="EmailDef"/>
+				<element-ref id="URLDef"/>
+				<element-ref id="IPDef"/>
+				<element-ref id="ContentDef"/>
+				<element-ref id="StateDef"/>
+				<element-ref id="CreationDateDef"/>
+				<element-ref id="ModificationDateDef"/>
+				<element-ref id="ExtraDef"/>
+			</element>
+		</element-list>
+	</element>
+
+	<!-- The comment update state request -->
+	<element tag="cmt-update-state-req"  comment="update comment state">
+		<attribute name="id" comment="id of POI record" type="int"/>
+		<attribute name="state" comment="updated state of comment" type="int" />
+	</element>
+
+	<!-- The comment update-state response -->
+	<element tag="cmt-update-state-rsp"  comment="comment state updated" >
+		<attribute name="id" comment="id of comment record" type="int"/>
+	</element>
+
+
+</syntax>
