@@ -26,7 +26,10 @@
 
 			<handler id="t" class="org.geotracing.server.TracingHandler"/>
 			<handler id="query" class="org.geotracing.server.QueryHandler"/>
-			<handler id="cmt" class="org.geotracing.server.CommentHandler"/>
+			<handler id="cmt" class="org.geotracing.server.CommentHandler">
+				<property name="max-content-chars">1024</property>
+				<property name="allow-anonymous">true</property>
+			</handler>
 		</handlers>
 
 

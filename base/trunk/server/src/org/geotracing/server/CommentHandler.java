@@ -5,25 +5,20 @@ package org.geotracing.server;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.oase.api.Record;
-import org.keyworx.oase.api.OaseSession;
-import org.keyworx.oase.api.OaseException;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.data.*;
+import org.keyworx.utopia.core.data.Account;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.session.UtopiaSessionContext;
 import org.keyworx.utopia.core.util.Oase;
 
-import java.util.HashMap;
-import java.util.Vector;
-import java.io.File;
-import java.sql.Timestamp;
-
 /**
  * Handles all operations related to commenting.
- *
+ * <p/>
  * Redirects the requests to CommentLogic methods.
  *
  * @author Just van den Broecke
@@ -32,7 +27,7 @@ import java.sql.Timestamp;
 public class CommentHandler extends DefaultHandler {
 	public final static String CMT_INSERT_SERVICE = "cmt-insert";
 	public final static String CMT_READ_SERVICE = "cmt-read";
-	public final static String CMT_UPDATE_SERVICE = "cmt-update";
+	public final static String CMT_UPDATE_STATE_SERVICE = "cmt-update-state";
 	public final static String CMT_DELETE_SERVICE = "cmt-delete";
 	public final static String ATTR_ID = "id";
 
@@ -57,8 +52,8 @@ public class CommentHandler extends DefaultHandler {
 				response = insertReq(anUtopiaReq);
 			} else if (service.equals(CMT_READ_SERVICE)) {
 				response = readReq(anUtopiaReq);
-			} else if (service.equals(CMT_UPDATE_SERVICE)) {
-				response = updateReq(anUtopiaReq);
+			} else if (service.equals(CMT_UPDATE_STATE_SERVICE)) {
+				response = updateStateReq(anUtopiaReq);
 			} else if (service.equals(CMT_DELETE_SERVICE)) {
 				response = deleteReq(anUtopiaReq);
 			} else {
@@ -155,22 +150,31 @@ public class CommentHandler extends DefaultHandler {
 	}
 
 	/**
-	 * Update Comment.
+	 * Update Comment state.
 	 * <p/>
 	 * Examples
 	 * <code>
-	 * &lt;cmt-create-req &gt; &lt;
+	 * &lt;cmt-update-state-req id="cmt-id" state="new-state" &gt; &lt;
 	 * <p/>
-	 * &lt;cmt-create-rsp id="cmt-id" &gt; &lt;
+	 * &lt;cmt-update-state-rsp id="cmt-id" state="new-state" &gt; &lt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
+	 * @throws UtopiaException Standard Utopia exception
 	 */
-	protected JXElement updateReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return createNegativeResponse(CMT_UPDATE_SERVICE, ErrorCode.__6000_Unknown_command, "not yet implemented service: " + CMT_UPDATE_SERVICE);
+	protected JXElement updateStateReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		JXElement reqElm = anUtopiaReq.getRequestCommand();
+		throwOnNonNumAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
+		throwOnNonNumAttr(CommentLogic.FIELD_STATE, reqElm.getAttr(CommentLogic.FIELD_STATE));
+
+		createLogic(anUtopiaReq).updateState(reqElm.getIntAttr(ATTR_ID), reqElm.getIntAttr(CommentLogic.FIELD_STATE));
+
+		// Create and return response
+		JXElement response = createResponse(CMT_UPDATE_STATE_SERVICE);
+		response.setAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
+
+		return response;
 	}
 
 	/**
@@ -219,6 +223,17 @@ public class CommentHandler extends DefaultHandler {
 	}
 
 	/** Utility methods. */
+
+	/**
+	 * Intercept and pass properties to CommentLogic.
+	 * <p/>
+	 * Since the Handler has no init() we do it this way
+	 * for the time being....
+	 */
+	public void setProperty(String propertyName, String propertyValue) {
+		super.setProperty(propertyName, propertyValue);
+		CommentLogic.setProperty(propertyName, propertyValue);
+	}
 
 	/**
 	 * Get user Account from request.
