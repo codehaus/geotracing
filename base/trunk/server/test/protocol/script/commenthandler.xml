@@ -114,7 +114,56 @@
 		</expect>
 	</test>
 
-	<test id="t-cmt-delete-req">
+
+	<test id="cmt-update-state-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-update-state-req id="${cmtid1}" state="2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-update-state-rsp id="${cmtid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="cmt-read-by-target-new-state-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<target>${trkid1}</target>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp>
+					<record table="kw_comment" id="${cmtid1}">
+						<id>${cmtid1}</id>
+						<owner/>
+						<target>${trkid1}</target>
+						<targettable/>
+						<targetperson/>
+						<author>anon</author>
+						<email/>
+						<url/>
+						<ip/>
+						<content>comments on this track</content>
+						<state>2</state>
+						<creationdate/>
+						<modificationdate/>
+						<extra/>
+					</record>
+				</cmt-read-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-delete-req">
 		<send id="client1">
 			<utopia-req>
 				<cmt-delete-req id="${cmtid1}"/>

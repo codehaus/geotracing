@@ -3,23 +3,14 @@
 
 package org.geotracing.server;
 
-import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.gis.GeoPoint;
-import org.keyworx.common.log.Log;
-import org.keyworx.common.log.Logging;
-import org.keyworx.common.util.Sys;
 import org.keyworx.common.util.IO;
-import org.keyworx.oase.api.*;
-import org.keyworx.oase.store.record.FileFieldImpl;
-import org.keyworx.server.ServerConfig;
-import org.keyworx.utopia.core.data.*;
+import org.keyworx.oase.api.OaseException;
+import org.keyworx.oase.api.Record;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Vector;
+import java.util.Properties;
 
 /**
  * Implements logic for Track manipulation.
@@ -37,6 +28,9 @@ public class CommentLogic {
 
 	public static final int STATE_UNREAD = 1;
 	public static final int STATE_READ = 2;
+	private static final Properties properties = new Properties();
+	public static final String PROP_MAX_CONTENT_CHARS = "max-content-chars";
+	public static final String PROP_ALLOW_ANONYMOUS = "allow-anonymous";
 
 	private Oase oase;
 
@@ -105,7 +99,11 @@ public class CommentLogic {
 	public Record insert(Record aRecord) throws UtopiaException {
 
 		try {
-			// TODO check if anonymous comments allowed
+			// Check if anonymous comments allowed
+			if ((aRecord.getIntField(FIELD_OWNER) < 0)  &&
+				!properties.getProperty(PROP_ALLOW_ANONYMOUS, "false").equals("true")) {
+				throw new UtopiaException("Anonymous commenting not allowed");
+			}
 
 			int targetId = aRecord.getIntField(FIELD_TARGET);
 			Record targetRecord = oase.getFinder().read(targetId);
@@ -127,13 +125,14 @@ public class CommentLogic {
 
 			// Escape special chars in content
 			String content = aRecord.getStringField(FIELD_CONTENT);
-			aRecord.setStringField(FIELD_CONTENT, IO.forHTMLTag(content));
 
-			// TODO check maximum size
+			// Check and optionally trim maximum size allowed
+			content = trimContent(content);
+			aRecord.setStringField(FIELD_CONTENT, IO.forHTMLTag(content));
 
 			// Finally try to insert
 			oase.getModifier().insert(aRecord);
-            return aRecord;
+			return aRecord;
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot insert comment record", oe, ErrorCode.__6006_database_irregularity_error);
 		} catch (Throwable t) {
@@ -156,32 +155,29 @@ public class CommentLogic {
 	}
 
 	/**
-	 * Updates a comment.
+	 * Updates a comment state.
 	 *
-	 * @param aRecord a comment record
-	 * @return the inserted record
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard exception
+	 * This may be used to mark a comment as read or reset to unread.
+	 *
+	 * @param aCommentId a comment id
+	 * @throws UtopiaException Standard exception
 	 */
-	public Record update(Record aRecord) throws UtopiaException {
+	public void updateState(int aCommentId, int aNewState) throws UtopiaException {
 		try {
-			// TODO implement
-			// TODO check maximum size
+			Record record = oase.getFinder().read(aCommentId, TABLE_COMMENT);
+			if (record == null) {
+				throw new UtopiaException("Cannot read record for update id=" + aCommentId, ErrorCode.__6006_database_irregularity_error);
+			}
 
-			// Escape special chars in content
-			//String content = aRecord.getStringField(FIELD_CONTENT);
-			//aRecord.setStringField(FIELD_CONTENT, IO.forHTMLTag(content));
-
-			// Reset to initial state
-			//aRecord.setIntField(FIELD_STATE, STATE_UNREAD);
+			// Set to new state
+			record.setIntField(FIELD_STATE, aNewState);
 
 			// Finally try to update
-			//oase.getModifier().update(aRecord);
-            return aRecord;
-//		} catch (OaseException oe) {
-//			throw new UtopiaException("Cannot insert comment record", oe, ErrorCode.__6006_database_irregularity_error);
+			oase.getModifier().update(record);
+		} catch (OaseException oe) {
+			throw new UtopiaException("Cannot read or update comment record", oe, ErrorCode.__6006_database_irregularity_error);
 		} catch (Throwable t) {
-			throw new UtopiaException("Exception in CommentLogic.insert() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
+			throw new UtopiaException("Exception in CommentLogic.updateState() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
 		}
 	}
 
@@ -198,6 +194,26 @@ public class CommentLogic {
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot delete comment record with id=" + aCommentId, oe, ErrorCode.__6006_database_irregularity_error);
 		}
+	}
+
+	public static String getProperty(String propertyName) {
+		return (String) properties.get(propertyName);
+	}
+
+	protected static void setProperty(String propertyName, String propertyValue) {
+		properties.put(propertyName, propertyValue);
+	}
+
+	/** Trim content for empty begin/end and maximum chars allowed. */
+	protected String trimContent(String aContentString) {
+		String result = aContentString.trim();
+
+		// Check for maximum allowed content size, trim if necessary
+		int maxContentSize = Integer.parseInt(properties.getProperty(PROP_MAX_CONTENT_CHARS, "512"));
+		if (aContentString.length() > maxContentSize) {
+			result = result.substring(0, maxContentSize);
+		}
+		return result;
 	}
 
 }
