@@ -25,6 +25,4 @@
         success = false;
         msg = "Oeps no code found!";
     }
-
-
 %>
