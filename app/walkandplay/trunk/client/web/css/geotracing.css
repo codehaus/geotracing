@@ -256,3 +256,8 @@ a:link, a:active {
 #upcoming .contentblock {
 	height:400px;
 }
+
+
+#buttonbar li img, #archivenavbox li, #livenavbox li {
+	cursor:pointer;
+}

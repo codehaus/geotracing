@@ -49,6 +49,7 @@
       <li style="display:inline;" id="tab3">step 3 </li>
     </ul>
     <form enctype="application/x-www-form-urlencoded" name="signupform" id="signupform">
+	<input type="hidden" id="imageId" name="photoid" value="" />
       <div id="tab_1" style="position:relative;display:block;">
         <ul style="list-style:none;">
           <li>name (as it appears on screen):</li>
@@ -159,69 +160,15 @@
         </ul>
         &nbsp;</div>
     </form>
-		<form id="addmediumform" name="addmediumform" enctype="multipart/form-data" target="uploadFrame" method="post" action="wp/media.srv" >
-<table>
-	<tr>
-		<td>name *</td><td><input name="name" id="name" type="text" /></td>
-	</tr>
-	<tr>
-		<td>description</td><td><input name="description" id="description" type="text"  /></td>
-	</tr>
-	<tr>
-		<td>file</td><td>
+	<form id="addmediumform" name="addmediumform" enctype="multipart/form-data" target="uploadFrame" method="post" action="wp/media.srv" >
 		<input name="file" id="file" type="file"  />
+		<input name="description" id="name" type="hidden" value="null" />
+		<input name="name" id="description" type="hidden" value="null" />
 		<input name="agentkey" id="agentkey" type="hidden" value="null" />
 		<input name="xmlrsp" id="xmlrsp" type="hidden" value="true" />
-	</td>
-	</tr>
-	   <tr>
-	<td colspan="2">
-		<a href="#" onclick="return addMedium();">[Add Medium]</a>
-	</td>
-	</tr>
-	</table>
-</form>
-<script>
-function addMedium () {
-		document.addmediumform.agentkey.value = KW.agentKey;
-		document.addmediumform.submit();
-		_checkIFrameRsp();
-		var form = document.getElementById('addmediumform');
-		form.submit();
-		return false;
-	}
-	
-	 function _checkIFrameRsp() {
-		var iframe = DH.getObject('uploadFrame');
-		if (!iframe) {
-			alert('cannot get uploadFrame');
-			return;
-		}
-
-		var iframeDoc = null;
-
-		if (iframe.contentDocument) {
-			// For NS6
-			iframeDoc = iframe.contentDocument;
-		} else if (iframe.contentWindow) {
-			// For IE5.5 and IE6
-			iframeDoc = iframe.contentWindow.document;
-		} else if (iframe.document) {
-			// For IE5
-			iframeDoc = iframe.document;
-		}
-		if (iframeDoc.getElementsByTagName('medium-insert-rsp').length > 0) {
-			//setTimeout('_checkIFrameRsp()', 2000);
-			alert(iframeDoc.getElementsByTagName('medium-insert-rsp')[0].getAttribute('id'));
-		} else {
-			// WT.onRsp(iframeDoc.documentElement);
-			alert(iframeDoc.documentElement.innerHTML);
-				setTimeout('_checkIFrameRsp()', 2000);
-
-		}
-	}	
-</script>
-
+		<div id="add">voeg afbeelding toe</div>
+	</form>
+	<img id="previewImage" style="display:none"/>
   </div>
   <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 <!-- / CONTENT -->
