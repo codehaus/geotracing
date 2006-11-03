@@ -114,7 +114,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	
 		person.appendChild(streetnr);
 	txt = doc.createTextNode(document.signupform.streetnr.value);
-	password.appendChild(txt);	
+	streetnr.appendChild(txt);	
 	
 		person.appendChild(mobilenr);
 	txt = doc.createTextNode(document.signupform.phone.value);
@@ -170,15 +170,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	}
 	alert(dojo.dom.innerXML(xml));
 	KW.utopia(doc);
-	/*
-	by (ja/ja)
-by-sa (ja/mits)
-by-nc (nee/ja)
-by-nd (ja/nee)
-by-sa-nc (nee/mits)
-by-nc-nd (nee/nee)
-*/
-
+	
 });
 dojo.event.connect(document.getElementById('tab1'),'onclick', function(evt) {
 	document.getElementById('tab_1').style.display = 'block';
