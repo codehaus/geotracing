@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Image;
 public class ScreenUtil {
 
     private static int selectedMenuItem = 0;
-    private static int selectedIcon = 0;
+    private static int selectedIcon = 1;
     private static int menuItemLength = 0;
     private static int iconLength = 0;
     private static int scrollY = 0;
