@@ -15,9 +15,11 @@ public class PlayToursCanvas extends DefaultCanvas {
     int midx;
 
     int item;
+    int availableHeight = 100;
+    int textHeight;
 
     // image objects
-    private Image menuBt, smallLogo;
+    private Image smallLogo, upBt, upDownBt, downBt;
     boolean showMenu;
 
     public PlayToursCanvas(WP aMidlet) {
@@ -26,16 +28,18 @@ public class PlayToursCanvas extends DefaultCanvas {
             w = getWidth();
             h = getHeight();
             smallLogo = Image.createImage("/play_icon_small.png");
-            menuBt = Image.createImage("/menu_button.png");
+            upBt = Image.createImage("/scrollup_button.png");
+            upDownBt = Image.createImage("/scroll_buttons.png");
+            downBt = Image.createImage("/scrolldown_button.png");
             ScreenUtil.resetMenu();
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
     }
 
-    private void drawText(Graphics aGraphics, String aText){
+    private int drawText(Graphics aGraphics, String aText){
         ScreenUtil.drawTextArea(aGraphics, 100, margin, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-        ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
+        return ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
     }
 
     /**
@@ -56,18 +60,21 @@ public class PlayToursCanvas extends DefaultCanvas {
         String text;
         switch (item) {
             case 1:
-                text = "description of game 1";
-                drawText(g, text);
+                text = "description of game 1 Lorem ipsum qui detracto appetere at, ius at omnes nemore, at tota scripserit mel. Ignota officiis te sit. Malis indoctum conceptam an pro, ad fierent delectus recusabo mei, vim eu solet sententiae. Vim omittam eloquentiam id. Labitur fabellas ex ius, his ut impedit verterem urbanitas.";
+                textHeight = drawText(g, text);
                 break;
             case 2:
-                text = "description of game 2";
-                drawText(g, text);
+                text = "description of game 2 Lorem ipsum qui detracto appetere at, ius at omnes nemore, at tota scripserit mel. Ignota officiis te sit. Malis indoctum conceptam an pro, ad fierent delectus recusabo mei, vim eu solet sententiae. Vim omittam eloquentiam id. Labitur fabellas ex ius, his ut impedit verterem urbanitas.";
+                textHeight = drawText(g, text);
                 break;
             case 3:
-                text = "description of game 3";
-                drawText(g, text);
+                text = "description of game 3 Lorem ipsum qui detracto appetere at, ius at omnes nemore, at tota scripserit mel. Ignota officiis te sit. Malis indoctum conceptam an pro, ad fierent delectus recusabo mei, vim eu solet sententiae. Vim omittam eloquentiam id. Labitur fabellas ex ius, his ut impedit verterem urbanitas.";
+                textHeight = drawText(g, text);
                 break;
         }
+
+        ScreenUtil.drawScrollButtons(g, textHeight, margin + logo.getHeight() + smallLogo.getHeight() + margin + margin + availableHeight, availableHeight, w, fh, downBt, upBt, upDownBt);
+        
         if(showMenu){
             String[] menuItems = {"game 1", "game 2", "game 3"};
             ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);

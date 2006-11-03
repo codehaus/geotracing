@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import org.geotracing.client.Util;
 
 public class SettingsCanvas extends DefaultCanvas {
 
@@ -15,10 +16,16 @@ public class SettingsCanvas extends DefaultCanvas {
     int midx;
 
     int item;
+    int availableHeight = 100;
+    int textHeight;
 
     // image objects
-    private Image menuBt, smallLogo;
+    private Image smallLogo;
     boolean showMenu;
+
+    private int screenStat = 0;
+    private final static int SOUND_STAT = 0;
+    private final static int ACCOUNT_STAT = 1;
 
     public SettingsCanvas(WP aMidlet) {
         super(aMidlet);
@@ -26,16 +33,15 @@ public class SettingsCanvas extends DefaultCanvas {
             w = getWidth();
             h = getHeight();
             smallLogo = Image.createImage("/settings_icon_small.png");
-            menuBt = Image.createImage("/menu_button.png");
             ScreenUtil.resetMenu();
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
     }
 
-    private void drawText(Graphics aGraphics, String aText){
+    private int drawText(Graphics aGraphics, String aText){
         ScreenUtil.drawTextArea(aGraphics, 100, margin, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-        ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
+        return ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
     }
 
     /**
@@ -49,27 +55,31 @@ public class SettingsCanvas extends DefaultCanvas {
         f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         g.setFont(f);
         fh = f.getHeight();
-
         g.drawImage(smallLogo, margin, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
-
-        String text;
-        switch (item) {
-            case 1:
-                text = "description of setting 1";
+        String text = "";
+        switch (screenStat) {
+            case SOUND_STAT:
+                if(Util.hasSound()){
+                    text = "Sound is currently turned on.";
+                }else{
+                    text = "Sound is currently turned off.";
+                }
                 drawText(g, text);
                 break;
-            case 2:
-                text = "description of setting 2";
-                drawText(g, text);
-                break;
-            case 3:
-                text = "description of setting 3";
+            case ACCOUNT_STAT:
+                text = "Create an account to start using the application.";
                 drawText(g, text);
                 break;
         }
+
         if(showMenu){
-            String[] menuItems = {"setting 1", "setting 2", "setting 3"};
-            ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+            if(Util.hasSound()){
+                String[] menuItems = {"sound off", "new account"};
+                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+            }else{
+                String[] menuItems = {"sound on", "new account"};
+                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+            }
         }
         ScreenUtil.drawLeftSoftKey(g, h, menuBt);
     }
@@ -84,6 +94,15 @@ public class SettingsCanvas extends DefaultCanvas {
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
             if(showMenu){
                 item = ScreenUtil.getSelectedMenuItem();
+                switch(item){
+                    case 1:
+                        Util.toggleSound();
+                        screenStat = SOUND_STAT;
+                        break;
+                    case 2:
+                        screenStat = ACCOUNT_STAT;
+                        break;
+                }
                 showMenu = false;
             }else{
                 showMenu = true;

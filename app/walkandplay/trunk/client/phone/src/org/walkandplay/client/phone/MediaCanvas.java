@@ -49,7 +49,6 @@ public class MediaCanvas extends DefaultCanvas {
     boolean showMenu;
     boolean photoShot;
     boolean audioRecorded;
-    boolean textWritten;
     boolean poiWritten;
 
     // image objects
@@ -69,6 +68,10 @@ public class MediaCanvas extends DefaultCanvas {
     private final static int TAG_STAT = 6;
 
     private int fontType = Font.FACE_MONOSPACE;
+
+    private int selectedTag = -1;
+    private String myTags = "";    
+    private String[] tags = {"tag1", "tag2", "tag3", "tag4"};
 
     public MediaCanvas(WP aMidlet) {
         super(aMidlet);
@@ -105,15 +108,60 @@ public class MediaCanvas extends DefaultCanvas {
         }
     }
 
-/*
-    private boolean submitText(){
-        JXElement rsp = Net.getInstance().uploadMedium(mediumName, "text", textMime, photoTime, photoData, false);
-        if(rsp == null || rsp.getTag().indexOf("nrsp")!=-1){
-            return false;
+    private void drawTags(Graphics aGraphics, int anXOffset, int anYOffset) {
+        int lineLength = 0;
+        int ypos = anYOffset;
+        for (int i = 0; i < tags.length; i++) {
+            String txt = tags[i];
+            int length = lineLength + f.stringWidth(txt) + margin;
+            if (length > w) {
+                ypos += fh;
+                // start at the beginning again
+                lineLength = 0;
+            }
+            if (selectedTag == i) {
+                f = Font.getFont(fontType, Font.STYLE_UNDERLINED, Font.SIZE_SMALL);
+                aGraphics.setFont(f);
+                //txt = "*" + txt + "*";
+                aGraphics.drawString(txt, anXOffset + lineLength + 1, ypos, Graphics.TOP | Graphics.LEFT);
+                f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+                aGraphics.setFont(f);
+            } else {
+                aGraphics.drawString(txt, anXOffset + lineLength, ypos, Graphics.TOP | Graphics.LEFT);
+            }
+            // after placing
+            lineLength += f.stringWidth(txt);
         }
-        return true;
     }
-*/
+
+    private void addTag(){
+        if(myTags.length() == 0){
+            myTags += tags[selectedTag];
+        }else{
+            myTags += " " + tags[selectedTag];
+        }        
+    }
+
+    private void selectNextTag() {
+        if (tags != null) {
+            if (selectedTag == (tags.length - 1)) {
+                selectedTag = 0;
+            } else {
+                selectedTag++;
+            }
+        }
+    }
+
+    private void selectPrevTag() {
+        if (tags != null) {
+            if (selectedTag == 0) {
+                selectedTag = (tags.length - 1);
+            } else {
+                selectedTag--;
+            }
+        }
+    }
+
 
 
     /**
@@ -122,31 +170,34 @@ public class MediaCanvas extends DefaultCanvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        log("screenstat:" + screenStat);
         super.paint(g);
         g.setColor(0, 0, 0);
         f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         g.setFont(f);
         fh = f.getHeight();
 
-        ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
         switch (screenStat) {
             case PHOTO_STAT:
                 g.setColor(0, 0, 0);
                 f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
                 g.setFont(f);
-                ScreenUtil.drawTextArea(g, 100, margin, 3 * margin + logo.getHeight() + iconOverlay.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+
+                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
+
                 if(photoShot){
                     g.drawImage(photoCamera.getPreview(), 2*margin, margin + logo.getHeight() + icons[0].getHeight() + 2 * margin, Graphics.TOP | Graphics.LEFT);
                     ScreenUtil.drawLeftSoftKey(g, h, okBt);
                 }else{
                     g.drawRect(2*margin, margin + logo.getHeight() + icons[0].getHeight()+ 2 * margin,160, 120);
-                    //photoCamera.show(2 * margin, margin + logo.getHeight() + 2 * margin, 160, 120);
+                    photoCamera.show(2 * margin, margin + logo.getHeight() + 2 * margin, 160, 120);
                     ScreenUtil.drawLeftSoftKey(g, h, shootBt);
                 }
 
                 break;
-            case TAG_STAT:
+            case POI_TAG_STAT:
+                ScreenUtil.drawTextArea(g, 100, margin, 2*margin + logo.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+                String text = "Now add tags...";
+                int height = ScreenUtil.drawText(g, text, 2*margin, 3*margin + logo.getHeight(), fh, 100);
                 // the text
                 String keySelect = "";
                 if (keyMajor != -1) {
@@ -154,18 +205,23 @@ public class MediaCanvas extends DefaultCanvas {
                     keySelect = all.substring(0, keyMinor) + "[" + all.charAt(keyMinor) + "]" + all.substring(keyMinor + 1);
                 }
 
-                g.drawString("title", 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawImage(inputBox, 2 * margin, 5 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
-                g.drawString(inputText, 2 * margin, 5 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + fh + 2, Graphics.TOP | Graphics.LEFT);
-                g.drawString(keySelect, 2 * margin, 6 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + 2 * fh + 2, Graphics.TOP | Graphics.LEFT);
+                g.drawString("title", 2 * margin, height + 4*margin + logo.getHeight() + topTextArea.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawImage(inputBox, 2 * margin, height + 4*margin + logo.getHeight() + topTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
+                g.drawString(inputText, 2 * margin, height + 4*margin + logo.getHeight() + topTextArea.getHeight() + fh + 2, Graphics.TOP | Graphics.LEFT);
+                g.drawString(keySelect, 2 * margin, height + 4*margin + logo.getHeight() + topTextArea.getHeight() + 2*fh, Graphics.TOP | Graphics.LEFT);
+
+                drawTags(g, 2 * margin, 8 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + 3 * fh + 2);
+
                 ScreenUtil.drawLeftSoftKey(g, h, okBt);
                 break;
             case AUDIO_STAT:
+                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
                 ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
                 //audioRecorder.create();
                 ScreenUtil.drawLeftSoftKey(g, h, recordBt);
                 break;
             case POI_STAT:
+                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
                 ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
                 ScreenUtil.drawTextArea(g, 80, 2*margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + 2*margin, topWhiteArea, middleWhiteArea, bottomWhiteArea);
 
@@ -182,9 +238,9 @@ public class MediaCanvas extends DefaultCanvas {
                 if (nrOfLines < 8) {
                     for (int i = 0; i < (nrOfLines + 1); i++) {
                         String txt = inputText.substring(i * 32, inputText.length());
-                        g.drawString(txt, 2 * margin, 3 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
+                        g.drawString(txt, 3 * margin, 2 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
                     }
-                    g.drawString(keySelect, 2 * margin, 4 * margin + logo.getHeight() + iconOverlay.getHeight() + middleTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(keySelect, 2 * margin, 80 + 4 * margin + logo.getHeight() + iconOverlay.getHeight() + middleTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
                 }
 
                 ScreenUtil.drawLeftSoftKey(g, h, okBt);
@@ -199,7 +255,6 @@ public class MediaCanvas extends DefaultCanvas {
      */
     public void keyPressed(int key) {
         // left soft key & fire
-        log("key:" + key);
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
             /*if (key == -6 || key == -5) {*/
             switch(screenStat){
@@ -227,11 +282,16 @@ public class MediaCanvas extends DefaultCanvas {
                     audioRecorder.upload();
                     audioRecorded = false;
                 case POI_STAT:
+                    if(inputText.length()>0){
+                        poiWritten = true;
+                        poiDesc = inputText;
+                        inputText = "";
+                        screenStat = POI_TAG_STAT;
+                    }
                     break;
                 case POI_TAG_STAT:
-                    textWritten = false;
-
                     poiWritten = false;
+                    inputText = "";                    
             }
 
             // right softkey
@@ -247,6 +307,7 @@ public class MediaCanvas extends DefaultCanvas {
                     break;
                 case POI_TAG_STAT:
                     screenStat = POI_STAT;
+                    inputText = poiDesc;
                     break;
                 default:
                     midlet.setScreen(WP.TRACE_CANVAS);
@@ -254,33 +315,47 @@ public class MediaCanvas extends DefaultCanvas {
 
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
-            /*} else if (key == -3) {*/
-            ScreenUtil.selectPrevIcon();
-            switch (ScreenUtil.getSelectedIcon()) {
-                case 1:
-                    screenStat = AUDIO_STAT;
-                    break;
-                case 2:
-                    screenStat = POI_STAT;
-                    break;
-                case 3:
-                    screenStat = PHOTO_STAT;
-                    break;
+            if(screenStat==TAG_STAT){
+                selectPrevTag();
+            }else{
+               /*} else if (key == -3) {*/
+                switch (ScreenUtil.getSelectedIcon()) {
+                    // poi
+                    case 1:
+                        screenStat = AUDIO_STAT;
+                        break;
+                    // photo
+                    case 2:
+                        screenStat = POI_STAT;
+                        break;
+                    // audio
+                    case 3:
+                        screenStat = PHOTO_STAT;
+                        break;
+                }
+                ScreenUtil.selectPrevIcon();
             }
             // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
 /*        } else if (key == -4) {*/
-            ScreenUtil.selectNextIcon();
-            switch (ScreenUtil.getSelectedIcon()) {
-                case 1:
-                    screenStat = PHOTO_STAT;
-                    break;
-                case 2:
-                    screenStat = AUDIO_STAT;
-                    break;
-                case 3:
-                    screenStat = POI_STAT;
-                    break;
+            if(screenStat==TAG_STAT){
+                selectNextTag();
+            }else{
+                switch (ScreenUtil.getSelectedIcon()) {
+                    // poi
+                    case 1:
+                        screenStat = PHOTO_STAT;
+                        break;
+                    // photo
+                    case 2:
+                        screenStat = AUDIO_STAT;
+                        break;
+                    // audio
+                    case 3:
+                        screenStat = POI_STAT;
+                        break;
+                }
+                ScreenUtil.selectNextIcon();
             }
             // up
             /*} else if (key == -1 || getGameAction(key) == Canvas.UP) {*/
