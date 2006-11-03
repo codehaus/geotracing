@@ -72,7 +72,7 @@
             <input type="text" class="medium" size="38" name="phone"/>
           </li>
         </ul>
-        <iframe id="uploadFrame" style="display:none;"> </iframe>
+        <iframe id="uploadFrame" style="display:none;" name="uploadFrame"> </iframe>
         &nbsp; </div>
       <div id="tab_2" style="display:none;">
         <ul style="list-style:none;">
@@ -183,20 +183,18 @@
 </form>
 <script>
 function addMedium () {
-		alert(KW.agentKey);
 		document.addmediumform.agentkey.value = KW.agentKey;
 		document.addmediumform.submit();
 		_checkIFrameRsp();
-		//var form = DH.getElementById('addmediumform');
-		//form.agentkey.value = KW.agentKey;
-		// form.submit();
-		// WT.pr('add Medium sent name=' + name);
+		var form = document.getElementById('addmediumform');
+		form.submit();
 		return false;
 	}
+	
 	 function _checkIFrameRsp() {
 		var iframe = DH.getObject('uploadFrame');
 		if (!iframe) {
-			WT.pr('cannot get uploadFrame');
+			alert('cannot get uploadFrame');
 			return;
 		}
 
@@ -212,13 +210,13 @@ function addMedium () {
 			// For IE5
 			iframeDoc = iframe.document;
 		}
-		alert(iframeDoc);
-		if (iframeDoc == null) {
-			setTimeout('WT._checkIFrameRsp()', 2000);
+		if (iframeDoc.getElementsByTagName('medium-insert-rsp').length > 0) {
+			//setTimeout('_checkIFrameRsp()', 2000);
+			alert(iframeDoc.getElementsByTagName('medium-insert-rsp')[0].getAttribute('id'));
 		} else {
 			// WT.onRsp(iframeDoc.documentElement);
 			alert(iframeDoc.documentElement.innerHTML);
-						setTimeout('WT._checkIFrameRsp()', 2000);
+				setTimeout('_checkIFrameRsp()', 2000);
 
 		}
 	}	
