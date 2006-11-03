@@ -66,22 +66,31 @@ dojo.event.connect(document.getElementById('mainbuttonsview'),'onmouseout',funct
 	document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
 });			
 dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[0],'onclick', function(evt) {
-	GTAPP.mSetMap('streets');
+	WP.mSetMap('streets');
 });
 dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[1],'onclick', function(evt) {
-	GTAPP.mSetMap('satellite');
+	WP.mSetMap('satellite');
 });
 dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[2],'onclick', function(evt) {
-	GTAPP.mSetMap('hybrid');
+	WP.mSetMap('hybrid');
 });
 dojo.event.connect(document.getElementById('livenavbox').getElementsByTagName('li')[0],'onclick',function(evt) {
-	GTAPP.mLive();
+	WP.mLive();
 });	
 dojo.event.connect(document.getElementById('livenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
-	GTAPP.mLive();
+	WP.mLive();
 });
 dojo.event.connect(document.getElementById('livenavbox').getElementsByTagName('li')[2],'onclick',function(evt) {
-	GTAPP.mLive();
+	WP.mLive();
+});
+dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[0],'onclick',function(evt) {
+	WP.mLastTracks(100);
+});	
+dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
+	WP.mAutoPlay();
+});
+dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[2],'onclick',function(evt) {
+	WP.mAutoPlay();
 });
 dojo.event.connect(search_bt,'onclick',function(evt) {
 	toggle('searchbox');

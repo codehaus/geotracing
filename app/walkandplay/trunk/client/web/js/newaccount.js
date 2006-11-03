@@ -34,11 +34,59 @@ function pwNegResp(elm) {
 alert(elm);
 
 }
+dojo.event.connect(document.getElementById('add'),'onclick',function(evt) {
+		addMedium();																 
+																	 });
+
+function addMedium () {
+		document.addmediumform.agentkey.value = KW.agentKey;
+		document.addmediumform.submit();
+		_checkIFrameRsp();
+		var form = document.getElementById('addmediumform');
+		form.submit();
+		return false;
+	}
+
+
+function _checkIFrameRsp() {
+		var iframe = DH.getObject('uploadFrame');
+		if (!iframe) {
+			alert('cannot get uploadFrame');
+			return;
+		}
+
+		var iframeDoc = null;
+
+		if (iframe.contentDocument) {
+			// For NS6
+			iframeDoc = iframe.contentDocument;
+		} else if (iframe.contentWindow) {
+			// For IE5.5 and IE6
+			iframeDoc = iframe.contentWindow.document;
+		} else if (iframe.document) {
+			// For IE5
+			iframeDoc = iframe.document;
+		}
+		if (iframeDoc.getElementsByTagName('medium-insert-rsp').length > 0) {
+			//setTimeout('_checkIFrameRsp()', 2000);
+			var imageId = iframeDoc.getElementsByTagName('medium-insert-rsp')[0].getAttribute('id');
+			document.getElementById('imageId').value = imageId;
+			document.getElementById('previewImage').src = 'wp/media.srv?id='+imageId+'&resize=160x120';
+			document.getElementById('addmediumform').style.display = 'none';
+			document.getElementById('previewImage').style.display = 'block';
+
+		} else {
+			// WT.onRsp(iframeDoc.documentElement);
+			alert(iframeDoc.documentElement.innerHTML);
+				setTimeout('_checkIFrameRsp()', 2000);
+
+		}
+	}	
 dojo.event.connect(window,'onload',function(evt) {
 
 KW.url = 'wp/proto.srv';
 KW.init(pwCallback, pwNegResp, 60);
-KW.login('walkandplay','wp-user','user');
+KW.login('wp-user','user');
 
 });
 dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt) {
@@ -57,6 +105,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	var zipcode = doc.createElement('zipcode');	
 	var city = doc.createElement('city');
 	var country = doc.createElement('country');
+	var photoid = doc.createElement('photoid');
 	var keywords = doc.createElement('keywords');	
 	var street = doc.createElement('street');	
 	var streetnr = doc.createElement('streetnr');	
@@ -151,6 +200,9 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	xml.appendChild(license);		
 	txt = doc.createTextNode(cc);
 	license.appendChild(txt);
+	xml.appendChild(photoid);		
+	txt = doc.createTextNode(document.signupform.photoid.value);
+	photoid.appendChild(txt);
 	xml.appendChild(profilepublic);
 	if(document.signupform.privacy[0].checked == true) {
 		txt = doc.createTextNode('true');
@@ -168,7 +220,6 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 		txt = doc.createTextNode(keywords[i]);
 		tag.appendChild(txt);
 	}
-	alert(dojo.dom.innerXML(xml));
 	KW.utopia(doc);
 	
 });
