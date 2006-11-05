@@ -17,6 +17,7 @@ var DH = {
 	initialized: false,
 	isIE6CSS: (document.compatMode && document.compatMode.indexOf("CSS1") >= 0) ? true : false,
 	isIE: false,
+	isSafari : (navigator.userAgent && navigator.vendor && (navigator.userAgent.toLowerCase().indexOf("applewebkit") != -1 || navigator.vendor.indexOf("Apple") != -1)),
 	baseDir: null,
 /*************** Debug utility *******************************/
 	timestamp: 0,
@@ -147,6 +148,29 @@ var DH = {
 			};
 		}
 
+	   	/*
+	 * xml getter
+	 *
+	 * This serializes the DOM tree to an XML String
+	 *
+	 * Usage: var sXml = oNode.xml
+	 *
+	 */
+	// XMLDocument did not extend the Document interface in some versions
+	// of Mozilla. Extend both!
+	/*
+	XMLDocument.prototype.__defineGetter__("xml", function () {
+		return (new XMLSerializer()).serializeToString(this);
+	});
+	*/
+	try {
+
+		Document.prototype.__defineGetter__("xml", function () {
+			return (new XMLSerializer()).serializeToString(this);
+		});
+	} catch(e) {
+
+	}
 		// Dynamic script loading
 		if (DH.onReady != null) {
 			//DH.debug(true, 'ready=' + document.readyState, 'start loading...')
@@ -504,10 +528,68 @@ var DH = {
 	}
 	,
 
-	/******* XMLHTTPrequest (XHR) functions.  **********/
+/******* START XML DOM Functions. *************/
 
-	// Get XML doc from server
-	// On response  optional callback fun is called with optional user data.
+	/** Find MSXML prefix for DomDocument object. */
+	getMSDomDocumentPrefix:  function() {
+		if (DH.msDomDocumentPrefix) {
+			return DH.msDomDocumentPrefix;
+		}
+
+		var prefixes = ["MSXML2", "Microsoft", "MSXML", "MSXML3"];
+		var o;
+		for (var i = 0; i < prefixes.length; i++) {
+			try {
+				// try to create the objects
+				o = new ActiveXObject(prefixes[i] + ".DomDocument");
+
+				// Found it: save and return
+				return DH.msDomDocumentPrefix = prefixes[i];
+			}
+			catch (ex) {
+				// Not found, try next
+			}
+		}
+
+		alert("Could not find an installed MSXML parser");
+	},
+
+	/** Cross-browser create XML DOM document. */
+	createXmlDocument: function () {
+		try {
+			// DOM2
+			if (document.implementation && document.implementation.createDocument) {
+				var doc = document.implementation.createDocument("", "", null);
+
+				// some versions of Moz do not support the readyState property
+				// and the onreadystate event so we patch it!
+				if (doc.readyState == null) {
+					doc.readyState = 1;
+					doc.addEventListener("load", function () {
+						doc.readyState = 4;
+						if (typeof doc.onreadystatechange == "function")
+							doc.onreadystatechange();
+					}, false);
+				}
+
+				return doc;
+			}
+
+			// MS IE case
+			if (window.ActiveXObject) {
+				return new ActiveXObject(DH.getMSDomDocumentPrefix() + ".DomDocument");
+			}
+		}
+		catch (ex) {
+		}
+		alert("Sorry, your browser does not support XmlDocument objects");
+	},
+/******* END XML DOM Functions. *************/
+
+/******* XMLHTTPrequest (XHR) functions.  **********/
+
+// Get XML doc from server
+// On response  optional callback fun is called with optional user data.
 	getXML: function(url, callback) {
 		DH._xhrBusy();
 
@@ -549,6 +631,63 @@ var DH = {
 			DH._xhrReady();
 			if (xmlhttp.status != 200) {
 				alert('Problem retrieving XML data:\n' + xmlhttp.statusText);
+				return null;
+			}
+			// Sync mode (no callback)
+			return xmlhttp.responseXML;
+		}
+	}
+	,
+
+// Post XML doc to server
+// On response  optional callback fun is called with optional XML response doc.
+	postXML: function(url, doc, callback) {
+		DH._xhrBusy();
+
+		// Obtain XMLHttpRequest object
+		var xmlhttp = new XMLHttpRequest();
+		if (!xmlhttp || xmlhttp == null) {
+			alert('No browser XMLHttpRequest (AJAX) support');
+			return;
+		}
+
+		// Setup optional async response handling via callback
+		var cb = callback;
+		var async = false;
+
+		if (cb) {
+			// Async mode
+			async = true;
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4) {
+					if (xmlhttp.status == 200) {
+						// Processing statements go here...
+						cb(xmlhttp.responseXML);
+						DH._xhrReady();
+					} else {
+						alert('Problem retrieving XML data using async POST:\n' + xmlhttp.statusText);
+					}
+				}
+			};
+		}
+
+
+		// Open URL
+		xmlhttp.open('POST', url, async);
+		// xmlhttp.setRequestHeader("Content-Type", "text/xml;charset=utf-8");
+
+		// POST XML to KW server
+		// Safari needs just doc, others support doc.xml
+		if (this.isSafari) {
+			xmlhttp.send(doc);
+		} else {
+			xmlhttp.send(doc.xml);
+		}
+
+		if (!cb) {
+			DH._xhrReady();
+			if (xmlhttp.status != 200) {
+				alert('Problem retrieving XML data using async POST:\n' + xmlhttp.statusText);
 				return null;
 			}
 			// Sync mode (no callback)
@@ -609,11 +748,11 @@ var DH = {
 	}
 	,
 
-	/** Interceptor functions , replace to use these. */
+/** Interceptor functions , replace to use these. */
 	_xhrBusy: function() {
 	},
 
-	/** Interceptor functions , replace to use these. */
+/** Interceptor functions , replace to use these. */
 	_xhrReady: function(httpStatus) {
 	},
 

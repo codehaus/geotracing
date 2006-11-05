@@ -15,6 +15,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Vector" %>
+<%@ page import="java.util.Enumeration"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -28,6 +29,7 @@
 	public static final String CMD_QUERY_STORE = "q-store";
 	public static final String CMD_QUERY_ACTIVE_TRACKS = "q-active-tracks";
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
+	public static final String CMD_QUERY_BY_EXAMPLE = "q-by-example";
 	public static final String CMD_QUERY_ROW_COUNT = "q-row-count";
 	public static final String CMD_QUERY_RECENT_TRACKS = "q-recent-tracks";
 	public static final String CMD_QUERY_TRACKS_BY_USER = "q-tracks-by-user";
@@ -134,7 +136,7 @@
 	}
 
 	/** Adds account and person attrs to query response records. */
-	public void addUserAttrs(JXElement rsp) throws Exception {
+	public void addUserAttrs(JXElement rsp, String aTableName) throws Exception {
 		Vector records = rsp.getChildren();
 		Finder finder = oase.getFinder();
 		Relater relater = oase.getRelater();
@@ -156,8 +158,9 @@
 				recordId = nextRecordElm.getAttr("id");
 			}
 
+
 			// Must have the real record
-			record = finder.read(Integer.parseInt(recordId));
+			record = finder.read(Integer.parseInt(recordId), aTableName);
 
 			// Get related person
 			personRecords = relater.getRelated(record, "utopia_person", null);
@@ -184,14 +187,35 @@
 				nextRecordElm.setChildText("extra", personRecords[0].getStringField("extra"));
 			}
 
-			/* thumbRecords = relater.getRelated(personRecords[0], "base_medium", "thumb");
-			if (thumbRecords.length > 0) {
-				nextRecordElm.setChildText("thumbid", thumbRecords[0].getId() + "");
-			} */
-
 			// Add to response
 			rsp.addChild(nextRecordElm);
 		}
+	}
+
+	/** Adds account and person attrs to query response records. */
+	public void addCommentCounts(JXElement rsp) throws Exception {
+		Vector records = rsp.getChildren();
+		JXElement nextRecordElm;
+		String recordId;
+		for (int i = 0; i < records.size(); i++) {
+			nextRecordElm = (JXElement) records.get(i);
+
+			// SIngle table responses have id in attr
+			// Multi table in record elm
+			// TODO FIX!!
+			recordId = nextRecordElm.getChildText("id");
+			if (recordId == null) {
+				recordId = nextRecordElm.getAttr("id");
+			}
+
+			// Add the location attrs
+			nextRecordElm.setChildText("comments", getCommentCount(recordId) + "");
+		}
+	}
+
+	int getCommentCount(String aTargetId) throws Exception {
+		Record[] records = oase.getFinder().freeQuery("select count(id) AS comments from kw_comment where target =" + aTargetId);
+		return records.length == 0 ? 0 : Integer.parseInt(records[0].getField("comments").toString());
 	}
 
 	Record getAccount(Oase oase, String aLoginName) throws Exception {
@@ -223,6 +247,32 @@
 				String relations = getParameter(request, "rels", null);
 				String postCond = getParameter(request, "postcond", null);
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+			} else if (command.equals(CMD_QUERY_BY_EXAMPLE)) {
+				// Query for single table by providing partial example record
+
+				// Table is required
+				String table = getParameter(request, PAR_TABLE_NAME, null);
+				throwOnMissingParm(PAR_TABLE_NAME, table);
+
+				// Create example Record from other parms
+				Record exampleRecord = oase.getFinder().createExampleRecord(table);
+
+				// Fill in all field name/values (except table)
+				Enumeration fields = request.getParameterNames();
+				String name, value;
+				while (fields.hasMoreElements()) {
+					name = (String) fields.nextElement();
+					if (name.equals("table") || name.equals("cmd")) {
+						// Skip
+						continue;
+					}
+					value = getParameter(request, name, null);
+					if (value != null) {
+						exampleRecord.setField(name, value);
+					}
+				}
+
+				result = createResponse(oase.getFinder().queryTable(exampleRecord));
 			} else if (command.equals(CMD_QUERY_ACTIVE_TRACKS)) {
 				// Niet mooi maar wel optimized!!
 
@@ -235,7 +285,7 @@
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
-				addUserAttrs(result);
+				addUserAttrs(result, "g_track");
 
 				// Originele query (duurde heeeeel lang)
 
@@ -282,7 +332,7 @@
 				}
 
 				// Add account/person attrs to each record
-				addUserAttrs(result);
+				addUserAttrs(result, "g_track");
 
 			} else if (command.equals(CMD_QUERY_RANDOM_TRACK)) {
 				// (do this in two queries for performance reasons)
@@ -352,23 +402,19 @@
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
-				addUserAttrs(result);
+				addUserAttrs(result, "base_medium");
 
 			} else if (command.equals(CMD_QUERY_RECENT_MEDIA)) {
 				// Optional number
 				String max = getParameter(request, "max", "10");
 				Finder finder = oase.getFinder();
-				Record[] mediumRecords = finder.freeQuery("select * from base_medium order by creationdate desc limit " + max);
-				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-				for (int i = 0; i < mediumRecords.length; i++) {
-					result.addChild(mediumRecords[i].toXML());
-				}
+				result = createResponse(finder.freeQuery("select * from base_medium order by creationdate desc limit " + max));
 
 				// Add lon/lat attrs to each record
 				addLocationAttrs(result);
 
 				// Add account/person attrs to each record
-				addUserAttrs(result);
+				addUserAttrs(result, "base_medium");
 			} else if (command.equals(CMD_QUERY_MEDIA_BY_USER)) {
 				String userName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, userName);
@@ -465,8 +511,10 @@
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
-				addUserAttrs(result);
+				addUserAttrs(result, "base_medium");
 
+				// Add number of comments
+				addCommentCounts(result);
 			} else if (command.equals(CMD_QUERY_USER_IMAGE)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);

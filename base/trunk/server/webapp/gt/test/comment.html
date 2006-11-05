@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+	<title>Commenting Test</title>
+	<link rel="stylesheet" type="text/css" href="widget.css">
+	<script type="text/javascript" src="../lib/DHTML.js" ></script>
+	<script type="text/javascript" src="comment.js" ></script>
+  </head>
+
+  <body>
+ <h3>Add comment test</h3>
+<form id="commentform" name="commentform" method="get" action="#" onsubmit="return APP.addComment();">
+<table>
+	<tr>
+		<td>target id</td><td><input name="targetid" id="targetid" type="text" /> e.g. a medium, person or track id</td>
+	</tr>
+	 	<tr>
+		<td>content</td><td><input name="content" id="content" type="text" /> the comment text</td>
+	    </tr>
+	<tr>
+   <td>name</td><td><input name="name" id="name" type="text" /> your name (optional)</td>
+   </tr>
+	<tr>
+   <td>url</td><td><input name="url" id="url" type="text" /> your url  (optional)</td>
+   </tr>
+	<tr>
+   <td>email</td><td><input name="email" id="email" type="text" /> your email  (optional)</td>
+   </tr>
+	   <tr>
+	<td colspan="2"><input type="submit" name="submit" value="Add Comment"/></td>
+	</tr>
+</table>
+</form>
+ <p>logging</p>
+ <div id="debug">
+		ok<br/>
+	</div>
+  </body>
+</html>
