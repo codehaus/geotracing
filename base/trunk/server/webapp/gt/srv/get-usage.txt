@@ -71,6 +71,12 @@ optional (o).
 "q-store"
 full query of the database (will be disabled in production versions)
 
+"q-by-example"
+- query single table by providing an example record
+- parms
+* "table" : name of the table
+* "*" : any valid field and value of the table
+
 "q-active-tracks"
 - get all active (latest) tracks with their users
 - parms
