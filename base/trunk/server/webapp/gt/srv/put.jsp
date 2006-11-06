@@ -69,6 +69,15 @@
 				CommentLogic logic = new CommentLogic(oase);
 				Record record = logic.createRecord();
 
+				String ip = request.getRemoteHost();
+				if (ip == null) {
+					ip = request.getRemoteAddr();
+				}
+
+				if (ip != null) {
+					anAppRequest.setChildText("ip", ip);
+				}
+				
 				// Set fields directly from request
 				// May throw IllegalArgumentException if non-existing fields added
 				record.setFields(anAppRequest);

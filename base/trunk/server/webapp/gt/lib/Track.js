@@ -246,7 +246,11 @@ function Track(id, name, tracer) {
 
 	// Show general track info
 	this.showInfo = function() {
-		DH.setHTML('trackview', 'start: ' + GTW.formatDateAndTime(this.startDate) + '<br/>end: ' + GTW.formatDateAndTime(this.endDate) + '<br/>distance: ' + this.distance.toFixed(2) + ' km');
+		DH.setHTML('trackview', 'start: ' + GTW.formatDateAndTime(this.startDate) + '<br/>end: ' + GTW.formatDateAndTime(this.endDate) + '<br/>distance: ' + this.distance.toFixed(2) + ' km' 
+				+ '<br/><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'track\',\'' + this.name + '\')" >[comments]</a>');
+		if (CMT.isCommentPanelOpen() == true) {
+			CMT.showCommentPanel(this.id, 'track', this.name);
+		}
 	}
 	
 	// Show general track info

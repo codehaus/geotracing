@@ -2,7 +2,7 @@ var APP = {
 
 
 	init: function() {
-
+	   SRV.init();
 	},
 
 	addComment: function(id, content) {
@@ -11,40 +11,16 @@ var APP = {
 		var cmtForm = document.getElementById('commentform');
 
 		// Do the comment
-		var req = APP.createCommentReq(cmtForm.targetid.value,
-				cmtForm.content.value, cmtForm.name.value, cmtForm.url.value, cmtForm.email.value);
+		var req = SRV.createXMLReq('cmt-insert-req',
+				'target', cmtForm.targetid.value,
+				'content', cmtForm.content.value,
+				'author', cmtForm.name.value,
+				'url', cmtForm.url.value,
+				'email', cmtForm.email.value);
 		APP.pr('request created: ' + req.documentElement.nodeName);
-		DH.postXML(DH.getBaseDir() + '/../srv/put.jsp', req, APP.commentRsp);
+		SRV.put(req, APP.commentRsp);
 		APP.pr('comment posted...');
 		return false;
-	},
-
-	createCommentReq: function(id, content, name, url, email) {
-		// Create put request
-		var doc = DH.createXmlDocument();
-		var reqElm = doc.createElement('cmt-insert-req');
-
-		APP.addChildTextNode(doc, reqElm, 'target', id);
-		APP.addChildTextNode(doc, reqElm, 'content', content);
-
-		if (name) {
-			APP.addChildTextNode(doc, reqElm, 'author', name);
-		}
-		if (url) {
-			APP.addChildTextNode(doc, reqElm, 'url', url);
-		}
-		if (email) {
-			APP.addChildTextNode(doc, reqElm, 'email', email);
-		}
-		doc.appendChild(reqElm);
-		return doc;
-	},
-
-	addChildTextNode: function(doc, parent, tag, text) {
-		var elm = doc.createElement(tag);
-		var textNode = doc.createTextNode(text);
-		elm.appendChild(textNode);
-		parent.appendChild(elm);
 	},
 
 	commentRsp: function(rsp) {

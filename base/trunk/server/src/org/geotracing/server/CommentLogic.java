@@ -27,6 +27,7 @@ public class CommentLogic {
 	public static final String FIELD_CONTENT = "content";
 	public static final String FIELD_OWNER = "owner";
 	public static final String FIELD_STATE = "state";
+	public static final String FIELD_URL = "url";
 	public static final String FIELD_TARGET = "target";
 	public static final String FIELD_TARGET_TABLE = "targettable";
 	public static final String FIELD_TARGET_PERSON = "targetperson";
@@ -134,6 +135,14 @@ public class CommentLogic {
 			// Check and optionally trim maximum size allowed
 			content = trimContent(content);
 			aRecord.setStringField(FIELD_CONTENT, IO.forHTMLTag(content));
+
+			// Escape special chars in content
+			String url = aRecord.getStringField(FIELD_URL);
+
+			// Optionally prefix URL with "http://"
+			if (url != null && url.length() > 0 && !url.startsWith("http://")) {
+				aRecord.setStringField(FIELD_URL, "http://" + url);
+			}
 
 			// Finally try to insert
 			oase.getModifier().insert(aRecord);
