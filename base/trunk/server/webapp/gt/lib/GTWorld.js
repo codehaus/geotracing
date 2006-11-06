@@ -197,6 +197,8 @@ var GTW = {
 		return GTW.imageFullPanel;
 	},
 
+
+
 // Get tracer by name
 	getTracer: function(name) {
 		return GTW.tracers[name];

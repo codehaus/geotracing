@@ -23,7 +23,40 @@
 var SRV = {
 // Query/get data URL to server (note: set this if invoked outside webapp)
 	url: 'srv/get.jsp?',
+	putURL: null,
 	initialized: false,
+
+	addChildTextNode: function(doc, parent, tag, text) {
+		if (!text || text == null) {
+			return false;
+		}
+
+		if (typeof text != 'string') {
+			text = text + '';
+		}
+		var elm = doc.createElement(tag);
+		var textNode = doc.createTextNode(text);
+		elm.appendChild(textNode);
+		parent.appendChild(elm);
+	},
+
+// arg[2]...arg[2+2N] N arguments specific to command
+// each argument has a name and a value like "tables", "person"
+// example:
+// SRV.createXMLReq("cmt-insert-req", "target", "12345", "content", "the comment text");
+	createXMLReq: function(aTag, theFields) {
+		// Create put request
+		var doc = DH.createXmlDocument();
+		var reqElm = doc.createElement(aTag);
+		var argv = SRV.createXMLReq.arguments;
+		var argc = arguments.length;
+		for (var i = 1; i < argc; i++) {
+			SRV.addChildTextNode(doc, reqElm, argv[i], argv[++i]);
+		}
+
+		doc.appendChild(reqElm);
+		return doc;
+	},
 
 // Initialization: must be called before anything
 	init: function() {
@@ -39,11 +72,14 @@ var SRV = {
 
 		// Init DHTML lib
 		DH.init();
+
+		SRV.putURL = DH.getBaseDir() + '/../srv/put.jsp';
+
 		// alert(SRV.url);
 		SRV.initialized = true;
 	},
 
-// Generic varargs command function for all requests to server.
+// Generic varargs command function for all query requests to server.
 // arg[0] command
 // arg[1] optional user supplied callback function or null (return result sync)
 // arg[2]...arg[2+2N] N arguments specific to command
@@ -91,6 +127,18 @@ var SRV = {
 			} else {
 				return DH.getXML(url);
 			}
+		}
+	},
+
+// Generic function for put request to server.
+// arg[0] XML document with request
+// arg[1] optional user supplied callback function or null (return result sync)
+// SRV.put(commentReqDoc, myfun);
+	put: function(aReq, aCallback) {
+		if (aCallback != null) {
+			DH.postXML(SRV.putURL, aReq, aCallback);
+		} else {
+			DH.postXML(SRV.putURL, aReq);
 		}
 	},
 

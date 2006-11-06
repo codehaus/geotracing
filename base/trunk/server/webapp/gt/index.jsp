@@ -101,11 +101,6 @@
 				</td>
 			</tr>
 			<tr>
-				<td height="20" align="center" bgcolor="#0066FF">
-					<div id="featureinfo" class="infohead">FEATURE INFO</div>
-				</td>
-			</tr>
-			<tr>
 				<td height="18" bgcolor="#111111">
 					<div id="featurecontrols" class="controls">
 						<span class="control" id="featfirst"><img title="first feature" src="img/media-skip-backward.png" border="0 "alt="ctrl"onload="DH.fixPNG(this)"  /></span>
@@ -117,6 +112,7 @@
 			</tr>
 			<tr>
 				<td align="left">
+					<div id="featureinfo">FEATURE INFO</div>
 					<div id="featuredesc">feature description (if available)</div>
 				</td>
 			</tr>

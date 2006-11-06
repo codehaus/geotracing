@@ -11,6 +11,7 @@
  * $Id$
  */
 
+DH.include('Comment.js');
 DH.include('Date.js');
 DH.include('FeatureSet.js');
 DH.include('FeaturePlayer.js');

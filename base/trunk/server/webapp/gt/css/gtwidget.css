@@ -32,7 +32,7 @@
 	font-size: 9px;
 }
 
-#featureinfo, #tracerinfo, #trackinfo {
+#tracerinfo, #trackinfo {
 	color: #eee;
 	text-align: center;
 }
@@ -46,6 +46,14 @@
 	text-align: center;
 }
 
+#featureinfo {
+	padding-top: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+	text-align: left;
+	font-style: italic;
+}
+
 #featuredesc {
 	padding: 8px;
 	text-align: left;
@@ -55,10 +63,16 @@
 	padding-left: 8px;
 }
 
-
-
 #featurecontrols, #trackcontrols {
 	visibility: hidden;
+}
+
+#commentpanel {
+	padding: 8px;
+}
+
+#commentform {
+	display: none;
 }
 
 .infohead {

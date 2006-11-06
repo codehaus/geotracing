@@ -117,11 +117,15 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 			tracer.showInfo();
 		}
 	}
+
 	this._displayInfo = function() {
-		DH.setHTML('featureinfo', this.type + ' ' + this.getDate());
+		DH.setHTML('featureinfo', this.getDate() + ' <a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'' + this.type + '\',\'' + this.name + '\')" >[comments]</a>');
+		if (CMT.isCommentPanelOpen() == true) {
+			CMT.showCommentPanel(this.id, this.type, this.name);
+		}
 	}
 
-	  this._displayDescr = function() {
+	this._displayDescr = function() {
 		DH.setHTML('featuredesc', this.desc);
 	}
 }
