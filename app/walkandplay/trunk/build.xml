@@ -26,6 +26,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="build.lib.dir" value="${build.dir}/lib"/>
     <property name="build.zip.dir" value="${build.dir}/zip"/>
     <property name="home.src.dir" value="${home}/server/src"/>
+    <property name="home.data.dir" value="${home}/server/data"/>
     <property name="build.war.dir" value="${build.dir}/war"/>
     <property name="version.dir" value="${home}/version"/>
     <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
@@ -213,6 +214,10 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <!-- just to be on the safe side -->
         <copy file="${keyworx.jar}" todir="${build.war.dir}/WEB-INF/lib" overwrite="true"/>
 
+        <!-- copy data for tracerdaemon -->
+        <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+          <fileset dir="${home.data.dir}"/>
+        </copy>
 
         <!-- Make war -->
         <jar jarfile="${project.war}">

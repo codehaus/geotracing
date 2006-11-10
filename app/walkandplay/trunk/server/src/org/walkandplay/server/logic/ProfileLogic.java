@@ -84,7 +84,6 @@ public class ProfileLogic {
      * @param aPhotoId
      * @param theTags
      * @param profilePublic
-     * @param aLicenseId
      * @param anEmail
      * @param emailPublic
      * @param aPassword
@@ -189,7 +188,6 @@ public class ProfileLogic {
      * @param aPhotoId
      * @param theTags
      * @param profilePublic
-     * @param aLicenseId
      * @param anEmail
      * @param emailPublic
      * @param aPassword
