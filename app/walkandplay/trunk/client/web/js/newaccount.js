@@ -86,7 +86,7 @@ dojo.event.connect(window,'onload',function(evt) {
 
 KW.url = 'wp/proto.srv';
 KW.init(pwCallback, pwNegResp, 60);
-KW.login('wp-user','user');
+KW.login('geo-user','user');
 
 });
 dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt) {
