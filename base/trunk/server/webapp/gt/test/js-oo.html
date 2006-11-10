@@ -1,85 +1,95 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<script type="text/javascript">
-	   //<![CDATA[
+<script type="text/javascript">
+//<![CDATA[
 
-	   function pr(s) {
-		   var elm = document.getElementById('result');
-		   elm.innerHTML = elm.innerHTML + '<br/>' + s;
-	   }
-		   /**
-		 * A function used to extend one class with another
-		 *
-		 * @param {Object} subClass
-		 * 		The inheriting class, or subclass
-		 * @param {Object} baseClass
-		 * 		The class from which to inherit
-		 */
-		extend = function(subclass, superclass) {
-					subclass.prototype = new superclass();
-					subclass.prototype.constructor = subclass;
-					subclass.superclass = superclass.prototype;
-					// DEPRICATED: super is a reserved word, use 'superclass'
-					subclass['super'] = superclass.prototype;
-	/*		subclass.prototype = new superclass();
-			subclass.prototype.constructor = subclass;
-			subclass.superclass = superclass.prototype;
-			// DEPRICATED: super is a reserved word, use 'superclass'
-			subclass['super'] = superclass.prototype;     */
-/*		   function inheritance() {}
-		   inheritance.prototype = baseClass.prototype;
+function pr(s) {
+	var elm = document.getElementById('result');
+	elm.innerHTML = elm.innerHTML + '<br/>' + s;
+}
 
-		   subClass.prototype = new inheritance();
-		   subClass.prototype.constructor = subClass;
-		   subClass.baseConstructor = baseClass;
-		   subClass.superClass = baseClass.prototype;  */
+Class = {
+	isPrototype: function () {
+	}, // magic anonymous value
+
+	create: function() {
+		return function() {
+			if (arguments && arguments[0] != Class.isPrototype) {
+				this.initialize.apply(this, arguments);
+			}
 		}
+	},
 
-	   function Animal(name) {
-		 this.name = name;
-	   }
-
-
-	   Animal.prototype.introduce = function() {
-		   pr('Animal.prototype: introduce: ' + this.name);
-	   }
-
-	   Animal.prototype.paint = function() {
-		   pr('Animal.prototype: paint');
-	   }
-
-	   Animal.prototype.sound = function() {
-		   pr('Animal.prototype: sound');
-	   }
-
-	   function Dog(name) {
-		  extend(Dog, Animal);
- 		  Animal.call(this, name);
-	   }
-
-	   Dog.prototype.sound = function() {
-		   pr('Dog.prototype: bark');
-	   }
-
-	   Dog.prototype.paint = function() {
-		   pr('Dog.prototype.paint: overridden ');
-	   }
-
-	function go()  {
-		pr('start');
-
-	   var animal = new Animal('Animal-1');
-	   animal.sound();
-	   animal.introduce();
-
-	   var dog = new Dog('Dog-1');
-	   dog.sound();
-	   dog.introduce();
-	   dog.paint();
+	inherit: function () {
+		var superClass = arguments[0];
+		var proto = new superClass(Class.isPrototype);
+		for (var i = 1; i < arguments.length; i++) {
+			if (typeof arguments[i] == "function") {
+				var mixin = arguments[i];
+				arguments[i] = new mixin(Class.isPrototype);
+			}
+			for (property in arguments[i]) {
+				proto[property] = arguments[i][property];
+			}
 		}
-	   //]]>
-   </script>
+		return proto;
+	}
+};
+
+Animal = Class.create();
+
+Animal.prototype = {
+	name: null,
+
+	initialize : function(name) {
+		this.name = name;
+	},
+
+	introduce : function() {
+		pr('Animal.prototype: introduce: ' + this.name);
+	},
+
+	paint : function() {
+		pr('Animal.prototype: paint');
+	},
+
+	sound : function() {
+		pr('Animal.prototype: sound');
+	}
+}
+
+Dog = Class.create();
+Dog.prototype = Class.inherit(Animal,
+	{
+		initialize: function (name) {
+			Animal.prototype.initialize.apply(this, arguments);
+		},
+
+		sound : function() {
+			pr('Dog.prototype: bark');
+		},
+
+		paint : function() {
+			pr('Dog.prototype.paint: overridden ');
+		}
+	}
+);
+
+function go() {
+	pr('start');
+
+	var animal = new Animal('Animal-1');
+	animal.sound();
+	animal.introduce();
+
+	var dog = new Dog('Dog-1');
+	dog.sound();
+	dog.introduce();
+	dog.paint();
+}
+//]]>
+</script>
 
 
 </head>

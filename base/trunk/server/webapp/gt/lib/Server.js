@@ -110,7 +110,8 @@ var SRV = {
 		}
 
 		// Query commands get intercepted to convert to Record array
-		var url = SRV.url + qs;
+		// &t=UTC-time makes URL random to prevent possible (IE) caching
+		var url = SRV.url + qs + '&t=' + (new Date().getTime());
 
 		if (cmd.indexOf("q-") != -1) {
 			// Query-type request: intercept and convert result to records
@@ -135,10 +136,12 @@ var SRV = {
 // arg[1] optional user supplied callback function or null (return result sync)
 // SRV.put(commentReqDoc, myfun);
 	put: function(aReq, aCallback) {
+		// &t=UTC-time makes URL random to prevent possible (IE) caching
+		var url = SRV.putURL + '?t=' + (new Date().getTime());
 		if (aCallback != null) {
-			DH.postXML(SRV.putURL, aReq, aCallback);
+			DH.postXML(url, aReq, aCallback);
 		} else {
-			DH.postXML(SRV.putURL, aReq);
+			DH.postXML(url, aReq);
 		}
 	},
 

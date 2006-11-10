@@ -262,7 +262,7 @@
 				String name, value;
 				while (fields.hasMoreElements()) {
 					name = (String) fields.nextElement();
-					if (name.equals("table") || name.equals("cmd")) {
+					if (name.equals("table") || name.equals("cmd") || name.equals("t")) {
 						// Skip
 						continue;
 					}
