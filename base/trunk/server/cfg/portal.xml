@@ -18,7 +18,7 @@
 	<!-- Application context -->
 	<application name="geoapp" organisation="Just Objects">
 
-		<!-- Utopia handlers -->
+		<!-- Utopia protocol handlers -->
 		<handlers>
 			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
 				<property name="max-file-size">1000000</property>
@@ -30,6 +30,9 @@
 				<property name="max-content-chars">1024</property>
 				<property name="allow-anonymous">true</property>
 			</handler>
+
+			<!-- External KWX plugin for generic tagging. -->
+			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
 		</handlers>
 
 

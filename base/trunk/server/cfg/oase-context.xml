@@ -19,6 +19,10 @@
 		<table file="tables/g_location.xml"/>
 		<table file="tables/g_area.xml"/>
 		<table file="tables/kw_comment.xml"/>
+
+		<!-- External KWX plugin for tagging -->
+		<table file="tables/cc_tag.xml"/>
+		<table file="tables/cc_tagrelation.xml"/>
 	</tables>
 </context>
 
