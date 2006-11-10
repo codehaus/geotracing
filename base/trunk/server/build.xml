@@ -47,6 +47,7 @@ $Id$
 <!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
 	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
 	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
 	<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
 	<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
 	<property name="scp" value="${home.bin.dir}/scp.sh"/>
@@ -98,6 +99,9 @@ $Id$
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${postgis-jdbc}"/>
 		</ant>
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${kwx-tagging}"/>
+		</ant>
 	</target>
 
 	<!-- Compile the java files. -->
@@ -138,8 +142,6 @@ $Id$
 					<attribute name="Implementation-Vendor" value="Just Objects"/>
 				</section>
 			</manifest>
-			<zipfileset src="${pushlet.jar}"/>
-			<zipfileset src="${postgis-jdbc.jar}"/>
 		</jar>
 	</target>
 
@@ -180,12 +182,29 @@ $Id$
 			<fileset dir="${home.data.dir}"/>
 		</copy>
 
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true" >
+			<fileset dir="${pushlet.dir}/lib">
+				<include name="pushlet.jar"/>
+			</fileset>
+			<fileset dir="${postgis-jdbc.dir}">
+				<include name="postgis.jar"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/lib">
+				<include name="kwx-tagging.jar"/>
+			</fileset>
+		</copy>
+
 		<copy todir="${build.war.dir}/WEB-INF/classes">
 			<fileset dir="${home.cfg.dir}">
 				<include name="pushlet.properties"/>
 				<include name="sources.properties"/>
 			</fileset>
 		</copy>
+
+		<!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
+		 <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
+			 <fileset dir="${kwx-tagging.dir}/cfg/tables"/>
+		 </copy>
 
 		<!-- OTA for MobiTracer download -->
 		<copy todir="${build.war.dir}/ota">

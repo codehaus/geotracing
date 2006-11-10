@@ -210,10 +210,12 @@ public class CommentLogic {
 		}
 	}
 
+	/** Properties passed on from Handler. */
 	public static String getProperty(String propertyName) {
 		return (String) properties.get(propertyName);
 	}
 
+	/** Properties passed on from Handler. */
 	protected static void setProperty(String propertyName, String propertyValue) {
 		properties.put(propertyName, propertyValue);
 	}
