@@ -9,7 +9,7 @@ function pwCallback(element) {
 		{
 	//LOGIN 		
 			case 'login-rsp':
-				KW.selectApp('wp','user');
+				KW.selectApp('geoapp','user');
 
 			break;	
 			case 'select-app-rsp':
