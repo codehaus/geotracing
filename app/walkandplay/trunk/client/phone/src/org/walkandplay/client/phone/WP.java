@@ -26,6 +26,8 @@ public class WP extends MIDlet implements Runnable {
     public final static int MEDIA_CANVAS = 7;
     public final static int ASSIGNMENT_CANVAS = 8;
 
+    public static TraceCanvas traceCanvas = null;
+
     /**
      * Sets up the midlet and the items required for user interaction.
      */
@@ -74,7 +76,8 @@ public class WP extends MIDlet implements Runnable {
                 break;
             case TRACE_CANVAS:
                 CURRENT_CANVAS = TRACE_CANVAS;
-                Display.getDisplay(this).setCurrent(new TraceCanvas(this));
+                traceCanvas = new TraceCanvas(this);
+                Display.getDisplay(this).setCurrent(traceCanvas);
                 break;
             case FIND_TOURS_CANVAS:
                 CURRENT_CANVAS = FIND_TOURS_CANVAS;
