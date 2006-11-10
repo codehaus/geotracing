@@ -36,7 +36,8 @@
             <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
             <handler id="content" class="org.keyworx.utopia.core.control.ContentHandler"/>
             <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>
-            <!-- plugin hanlders -->
+            <!-- plugin handlers -->
+            <handler id="tagging" class="org.keyworx.plugin.tagging.control.TaggingHandler"/>
             <handler id="license" class="org.keyworx.plugin.metadata.control.LicenseHandler"/>
         </handlers>
 
