@@ -183,8 +183,8 @@ var WP = {
 		var tracks = cont.getElementsByTagName('div');
 		for(var i = 0; i < tracks.length; i++) {
 			dojo.event.connect(tracks[i],'onclick',function(evt) {
-				SRV.get('get-track', WP.onTrackSelect, 'id', evt.target.getAttribute('id'));
-				
+				alert(evt.target.getAttribute('id'));
+				SRV.get('get-track', WP.onTrackSelect, 'trackId', evt.target.getAttribute('id'));
 															});
 				
 				
@@ -297,9 +297,7 @@ var WP = {
 	onTrackSelect: function(trackId, trackName, tracerName) {
 		// alert('select track: id=' + trackId + ' tracer=' + tracerName + ' trkName=' + trackName);
 		// WP.clearMap();
-		GTW.displayTrackPlayer();
-
-
+	//	GTW.displayTrackPlayer();
 		var tracer = GTW.createTracer(tracerName);
 		tracer.readTrack(trackId, trackName, true);
 		tracer.show();
