@@ -10,12 +10,10 @@ import java.util.TimerTask;
 public class DefaultCanvas extends Canvas {
 
     // paint vars
-    int w, h, fh;
-    Font f;
+    protected int w, h, fh;
+    protected Font f;
 
-    int x0, y0;
-    int midx;
-    int margin = 3;
+    protected int margin = 3;
 
     protected WP midlet;
 
@@ -66,16 +64,16 @@ public class DefaultCanvas extends Canvas {
     }
 
     protected void placeGPSNetBar(Graphics aGraphics) {
-        aGraphics.drawImage(gpsNetBar, margin + logo.getWidth() + margin, margin, Graphics.TOP | Graphics.LEFT);
+        aGraphics.drawImage(gpsNetBar, w - gpsNetBar.getWidth() - margin, margin, Graphics.TOP | Graphics.LEFT);
         if (midlet.GPS_OK()) {
-            aGraphics.drawImage(greenDot, margin + logo.getWidth() + margin + 4, 10, Graphics.TOP | Graphics.LEFT);
+            aGraphics.drawImage(greenDot, w - gpsNetBar.getWidth() - margin + 4, 10, Graphics.TOP | Graphics.LEFT);
         } else {
-            aGraphics.drawImage(redDot, margin + logo.getWidth() + margin + 4, 10, Graphics.TOP | Graphics.LEFT);
+            aGraphics.drawImage(redDot, w - gpsNetBar.getWidth() - margin + 4, 10, Graphics.TOP | Graphics.LEFT);
         }
         if (midlet.NET_OK()) {
-            aGraphics.drawImage(greenDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
+            aGraphics.drawImage(greenDot, w - gpsNetBar.getWidth() - margin + 41, 10, Graphics.TOP | Graphics.LEFT);
         } else {
-            aGraphics.drawImage(redDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
+            aGraphics.drawImage(redDot, w - gpsNetBar.getWidth() - margin + 41, 10, Graphics.TOP | Graphics.LEFT);
         }
     }
 
@@ -85,16 +83,20 @@ public class DefaultCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        if (f == null) {
-            g.setColor(0, 0, 0);
-            f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-            g.setFont(f);
-            fh = f.getHeight();
-        }
-        g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+        //g.setColor(153, 179, 204);
+        g.setColor(255, 255, 255);
+        g.fillRect(0, 0, w, h);
+
+        g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);
         placeMainLogo(g);
         placeGPSNetBar(g);
-        ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+        ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
+
+        g.setColor(0, 0, 0);
+        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+        g.setFont(f);
+        fh = f.getHeight();
+
     }
 
     // creates a delay for the splashscreen
@@ -138,7 +140,6 @@ public class DefaultCanvas extends Canvas {
             }
         }
     }
-
 
 
 }

@@ -50,20 +50,20 @@ public class ScreenUtil {
         int xMargin = 10;
         menuItemLength = theMenuItems.length;
 
-        aGraphics.drawImage(theBottom, xMargin - 4, theScreenHeight - 26, Graphics.TOP | Graphics.LEFT);
+        aGraphics.drawImage(theBottom, xMargin - 4, theScreenHeight - 30, Graphics.TOP | Graphics.LEFT);
 
         for (int i = 0; i < theMenuItems.length; i++) {
             // start from the bottom and build up
             if (i == (selectedMenuItem - 1)) {
                 // highlight this menu item
-                aGraphics.drawImage(theMiddleSel, xMargin - 4, theScreenHeight - 20 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theMiddleSel, xMargin - 4, theScreenHeight - 24 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
             } else {
-                aGraphics.drawImage(theMiddle, xMargin - 4, theScreenHeight - 20 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
+                aGraphics.drawImage(theMiddle, xMargin - 4, theScreenHeight - 24 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
             }
-            aGraphics.drawString(theMenuItems[i], xMargin, theScreenHeight - 22 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight() + 3, Graphics.TOP | Graphics.LEFT);
+            aGraphics.drawString(theMenuItems[i], xMargin, theScreenHeight - 22 - theBottom.getHeight() - (i + 1) * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
         }
 
-        aGraphics.drawImage(theTop, xMargin - 4, theScreenHeight - 30 - theMenuItems.length * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
+        aGraphics.drawImage(theTop, xMargin - 4, theScreenHeight - 34 - theMenuItems.length * theMiddle.getHeight(), Graphics.TOP | Graphics.LEFT);
     }
 
     public static void drawScrollButtons(Graphics aGraphics, int aTextLength, int anYOffSet, int theAvailableHeight, int theWidth, int aFontHeight, Image aScrollDownBt, Image aScrollUpBt, Image aScrollUpAndDownBt){
@@ -169,12 +169,12 @@ public class ScreenUtil {
         return selectedIcon;
     }
 
-    public static void drawLeftSoftKey(Graphics aGraphics, int theScreenHeight, Image anImage) {
-        aGraphics.drawImage(anImage, 0, theScreenHeight - anImage.getHeight(), Graphics.TOP | Graphics.LEFT);
+    public static void drawLeftSoftKey(Graphics aGraphics, int theScreenHeight, Image anImage, int aMargin) {
+        aGraphics.drawImage(anImage, aMargin, theScreenHeight - anImage.getHeight() - aMargin, Graphics.TOP | Graphics.LEFT);
     }
 
-    public static void drawRightSoftKey(Graphics aGraphics, int theScreenHeight, int theScreenWidth, Image anImage) {
-        aGraphics.drawImage(anImage, theScreenWidth - anImage.getWidth(), theScreenHeight - anImage.getHeight(), Graphics.TOP | Graphics.LEFT);
+    public static void drawRightSoftKey(Graphics aGraphics, int theScreenHeight, int theScreenWidth, Image anImage, int aMargin) {
+        aGraphics.drawImage(anImage, theScreenWidth - anImage.getWidth() - aMargin, theScreenHeight - anImage.getHeight() - aMargin, Graphics.TOP | Graphics.LEFT);
     }
 
     /**

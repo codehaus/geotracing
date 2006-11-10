@@ -1,6 +1,8 @@
 package org.walkandplay.client.phone;
 
 
+import org.geotracing.client.Log;
+
 import javax.microedition.lcdui.Display;
 import javax.microedition.midlet.MIDlet;
 
@@ -68,7 +70,8 @@ public class WP extends MIDlet implements Runnable {
 
     public void setScreen(int aScreenName) {
         switch (aScreenName) {
-            case-1:
+            case -1:
+                log("going to the splashscreen");
                 Display.getDisplay(this).setCurrent(new SplashCanvas(this, -1));
             case HOME_CANVAS:
                 CURRENT_CANVAS = HOME_CANVAS;
@@ -119,6 +122,7 @@ public class WP extends MIDlet implements Runnable {
 
     public void log(String aMsg) {
         System.out.println(aMsg);
+        Log.log(aMsg);
     }
 
 

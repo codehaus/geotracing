@@ -19,9 +19,9 @@ audio-bits: 8
 gps-sample-interval: 15000
 gps-min-sats: 4
 gps-min-hdop: 2
-device-screen-width: 176
-device-screen-height: 208
+device-screen-width: 240
+device-screen-height: 320
 MPP-Show-Keypad: true
-MPP-Width: 176
-MPP-Height: 208
+MPP-Width: 240
+MPP-Height: 320
 mt-options: full

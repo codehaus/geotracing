@@ -1,19 +1,10 @@
 package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 public class PlayToursCanvas extends DefaultCanvas {
-
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
-
     int item;
     int availableHeight = 100;
     int textHeight;
@@ -25,8 +16,6 @@ public class PlayToursCanvas extends DefaultCanvas {
     public PlayToursCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            w = getWidth();
-            h = getHeight();
             smallLogo = Image.createImage("/play_icon_small.png");
             upBt = Image.createImage("/scrollup_button.png");
             upDownBt = Image.createImage("/scroll_buttons.png");
@@ -38,8 +27,8 @@ public class PlayToursCanvas extends DefaultCanvas {
     }
 
     private int drawText(Graphics aGraphics, String aText){
-        ScreenUtil.drawTextArea(aGraphics, 100, margin, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-        return ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
+        ScreenUtil.drawTextArea(aGraphics, 100, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+        return ScreenUtil.drawText(aGraphics, aText, (w - middleTextArea.getWidth())/2, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
     }
 
     /**
@@ -50,12 +39,7 @@ public class PlayToursCanvas extends DefaultCanvas {
     public void paint(Graphics g) {
         super.paint(g);
 
-        g.setColor(0, 0, 0);
-        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        g.setFont(f);
-        fh = f.getHeight();    
-
-        g.drawImage(smallLogo, margin, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(smallLogo, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
 
         String text;
         switch (item) {
@@ -79,7 +63,7 @@ public class PlayToursCanvas extends DefaultCanvas {
             String[] menuItems = {"game 1", "game 2", "game 3"};
             ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
         }
-        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+        ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
     }
 
     /**
@@ -106,10 +90,18 @@ public class PlayToursCanvas extends DefaultCanvas {
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.selectNextMenuItem();
+            if(showMenu){
+                ScreenUtil.selectNextMenuItem();
+            }else{
+                ScreenUtil.scrollText(true, textHeight, availableHeight, fh);
+            }
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.selectPrevMenuItem();
+            if(showMenu){
+                ScreenUtil.selectPrevMenuItem();
+            }else{
+                ScreenUtil.scrollText(false, textHeight, availableHeight, fh);
+            }
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
         } else if (key == -8) {

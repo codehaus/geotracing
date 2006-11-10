@@ -95,7 +95,7 @@ public class DefaultGameCanvas extends GameCanvas {
         g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
         placeMainLogo(g);
         placeGPSNetBar(g);
-        ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+        ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
     }
 
     // creates a delay for the splashscreen
