@@ -1,19 +1,11 @@
 package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import org.geotracing.client.Util;
 
 public class SettingsCanvas extends DefaultCanvas {
-
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
 
     int item;
     int availableHeight = 100;
@@ -30,8 +22,6 @@ public class SettingsCanvas extends DefaultCanvas {
     public SettingsCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            w = getWidth();
-            h = getHeight();
             smallLogo = Image.createImage("/settings_icon_small.png");
             ScreenUtil.resetMenu();
         } catch (Throwable t) {
@@ -40,8 +30,8 @@ public class SettingsCanvas extends DefaultCanvas {
     }
 
     private int drawText(Graphics aGraphics, String aText){
-        ScreenUtil.drawTextArea(aGraphics, 100, margin, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-        return ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
+        ScreenUtil.drawTextArea(aGraphics, 100, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+        return ScreenUtil.drawText(aGraphics, aText, (w - middleTextArea.getWidth())/2, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
     }
 
     /**
@@ -51,11 +41,7 @@ public class SettingsCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(0, 0, 0);
-        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        g.setFont(f);
-        fh = f.getHeight();
-        g.drawImage(smallLogo, margin, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(smallLogo, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
         String text = "";
         switch (screenStat) {
             case SOUND_STAT:
@@ -81,7 +67,7 @@ public class SettingsCanvas extends DefaultCanvas {
                 ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
             }
         }
-        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+        ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
     }
 
     /**

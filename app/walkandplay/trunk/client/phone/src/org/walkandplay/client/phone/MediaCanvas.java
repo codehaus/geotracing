@@ -11,14 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MediaCanvas extends DefaultCanvas {
-
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
-
     private Player player;
     private VideoControl videoControl;
     private RecordControl recordControl;
@@ -73,8 +65,6 @@ public class MediaCanvas extends DefaultCanvas {
     public MediaCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            w = getWidth();
-            h = getHeight();
             setFullScreenMode(true);
 
             int rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
@@ -133,6 +123,9 @@ public class MediaCanvas extends DefaultCanvas {
     }
 
     private void addTag(){
+        // first check if it's already added
+        if(tagText.indexOf(tagCloud[selectedTag])!=-1) return;
+
         if(tagText.length() == 0){
             tagText += tagCloud[selectedTag];
         }else{
@@ -141,11 +134,11 @@ public class MediaCanvas extends DefaultCanvas {
     }
 
     private void selectFirstTag(){
-        selectedTag = 1;        
+        selectedTag = 0;
     }
 
     private void deselectTagCloud(){
-        selectedTag = 1;
+        selectedTag = -1;
     }
 
     private void selectNextTag() {
@@ -175,33 +168,26 @@ public class MediaCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(0, 0, 0);
-        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        g.setFont(f);
-        fh = f.getHeight();
-        h = getHeight();
-        w = getWidth();
-
         switch (screenStat) {
             case PHOTO_STAT:
                 g.setColor(0, 0, 0);
                 f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
                 g.setFont(f);
 
-                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
+                ScreenUtil.drawIcons(g, w, (w - 2*margin - middleTextArea.getWidth())/2, margin + logo.getHeight() + margin, icons, iconOverlay);
 
                 if(photoShot){
-                    g.drawImage(photoCamera.getPreview(), 2*margin, margin + logo.getHeight() + icons[0].getHeight() + 2 * margin, Graphics.TOP | Graphics.LEFT);
-                    ScreenUtil.drawLeftSoftKey(g, h, okBt);
+                    g.drawImage(photoCamera.getPreview(), (w - 2*margin - middleTextArea.getWidth())/2, margin + logo.getHeight() + icons[0].getHeight() + 2 * margin, Graphics.TOP | Graphics.LEFT);
+                    ScreenUtil.drawLeftSoftKey(g, h, okBt, margin);
                 }else{
-                    g.drawRect(2*margin, margin + logo.getHeight() + icons[0].getHeight()+ 2 * margin,160, 120);
-                    photoCamera.show(2 * margin, margin + logo.getHeight() + 2 * margin, 160, 120);
-                    ScreenUtil.drawLeftSoftKey(g, h, shootBt);
+                    g.drawRect((w - 2*margin - middleTextArea.getWidth())/2, margin + logo.getHeight() + icons[0].getHeight()+ 2 * margin,160, 120);
+                    photoCamera.show((w - 2*margin - middleTextArea.getWidth())/2, margin + logo.getHeight() + 2 * margin, 160, 120);
+                    ScreenUtil.drawLeftSoftKey(g, h, shootBt, margin);
                 }
 
                 break;
             case TAG_STAT:
-                ScreenUtil.drawTextArea(g, 100, margin, 2*margin + logo.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+                ScreenUtil.drawTextArea(g, 100, (w - 2*margin - middleTextArea.getWidth())/2, 3*margin + logo.getHeight() + iconOverlay.getHeight(), topTextArea, middleTextArea, bottomTextArea);
 
                 String keySelect = "";
                 if (keyMajor != -1) {
@@ -209,38 +195,38 @@ public class MediaCanvas extends DefaultCanvas {
                     keySelect = all.substring(0, keyMinor) + "[" + all.charAt(keyMinor) + "]" + all.substring(keyMinor + 1);
                 }
 
-                g.drawString("add a title", 2 * margin, 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawImage(inputBox, 2 * margin, fh + 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawString(titleText, 2 + 2 * margin, fh + 2 + 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawString("and some tags", 2 * margin, fh + inputBox.getHeight() + 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawImage(inputBox, 2 * margin, 2*fh + inputBox.getHeight() + 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawString(tagText, 2 + 2 * margin, 2*fh + 2 + inputBox.getHeight() + 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
-                g.drawString(keySelect, 2 * margin, 2*fh + 2*inputBox.getHeight() + 3*margin + logo.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawString("add a title", (w - middleTextArea.getWidth())/2, 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawImage(inputBox, (w - middleTextArea.getWidth())/2, fh + 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawString(titleText, (w - middleTextArea.getWidth() + 4)/2, fh + 2 + 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawString("and some tags", (w - middleTextArea.getWidth())/2, fh + inputBox.getHeight() + 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawImage(inputBox, (w - middleTextArea.getWidth())/2, 2*fh + inputBox.getHeight() + 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawString(tagText, (w - middleTextArea.getWidth() + 4)/2, 2*fh + 2 + inputBox.getHeight() + 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
+                g.drawString(keySelect, (w - middleTextArea.getWidth())/2, 2*fh + 2*inputBox.getHeight() + 4*margin + logo.getHeight() + iconOverlay.getHeight(), Graphics.TOP | Graphics.LEFT);
 
-                drawTags(g, 2 * margin, 4*fh + 2*inputBox.getHeight() + 3*margin + logo.getHeight());
+                drawTags(g, (w - middleTextArea.getWidth())/2, 4*fh + 2*inputBox.getHeight() + 4*margin + logo.getHeight() + iconOverlay.getHeight());
 
                 if(tagCloudSelected){
-                    ScreenUtil.drawLeftSoftKey(g, h, addTagBt);
+                    ScreenUtil.drawLeftSoftKey(g, h, addTagBt, margin);
                 }else{
-                    ScreenUtil.drawLeftSoftKey(g, h, okBt);
+                    ScreenUtil.drawLeftSoftKey(g, h, okBt, margin);
                 }
                 break;
             case AUDIO_STAT:
-                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
-                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+                ScreenUtil.drawIcons(g, w, (w - 2*margin - middleTextArea.getWidth())/2, 2* margin + logo.getHeight(), icons, iconOverlay);
+                ScreenUtil.drawTextArea(g, 100, (w - 2*margin - middleTextArea.getWidth())/2, 3*margin + logo.getHeight() + iconOverlay.getHeight(), topTextArea, middleTextArea, bottomTextArea);
                 audioRecorder.create();
-                ScreenUtil.drawLeftSoftKey(g, h, recordBt);
+                ScreenUtil.drawLeftSoftKey(g, h, recordBt, margin);
                 break;
             case POI_STAT:
-                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
-                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-                ScreenUtil.drawText(g, "press OK to start writing your poi.", 2 * margin, 4*margin + logo.getHeight() + iconOverlay.getHeight(), fh, 60);
-                ScreenUtil.drawLeftSoftKey(g, h, okBt);
+                ScreenUtil.drawIcons(g, w, (w - 2*margin - middleTextArea.getWidth())/2, 2*margin + logo.getHeight(), icons, iconOverlay);
+                ScreenUtil.drawTextArea(g, 100, (w - 2*margin - middleTextArea.getWidth())/2, 3*margin + logo.getHeight() + iconOverlay.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+                ScreenUtil.drawText(g, "press OK to start writing your poi.", (w - middleTextArea.getWidth())/2, 4*margin + logo.getHeight() + iconOverlay.getHeight(), fh, 60);
+                ScreenUtil.drawLeftSoftKey(g, h, okBt, margin);
                 break;
             case POI_INPUT_STAT:
-                ScreenUtil.drawIcons(g, w, margin, margin + logo.getHeight() + margin, icons, iconOverlay);
-                ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-                ScreenUtil.drawTextArea(g, 80, 2*margin, margin + logo.getHeight() + margin + iconOverlay.getHeight() + 2*margin, topWhiteArea, middleWhiteArea, bottomWhiteArea);
+                ScreenUtil.drawIcons(g, w, (w - 2*margin - middleTextArea.getWidth())/2, 2*margin + logo.getHeight(), icons, iconOverlay);
+                ScreenUtil.drawTextArea(g, 100, (w - 2*margin - middleTextArea.getWidth())/2, 3*margin + logo.getHeight() + iconOverlay.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+                ScreenUtil.drawTextArea(g, 80, (w - middleTextArea.getWidth())/2, 4*margin + logo.getHeight() + iconOverlay.getHeight(), topWhiteArea, middleWhiteArea, bottomWhiteArea);
 
                 // the text
                 keySelect = "";
@@ -255,12 +241,12 @@ public class MediaCanvas extends DefaultCanvas {
                 if (nrOfLines < 8) {
                     for (int i = 0; i < (nrOfLines + 1); i++) {
                         String txt = inputText.substring(i * 32, inputText.length());
-                        g.drawString(txt, 3 * margin, 2 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
+                        g.drawString(txt, (w - middleTextArea.getWidth())/2, 2 * margin + logo.getHeight() + iconOverlay.getHeight() + topTextArea.getHeight() + i * fh, Graphics.TOP | Graphics.LEFT);
                     }
-                    g.drawString(keySelect, 2 * margin, 80 + 4 * margin + logo.getHeight() + iconOverlay.getHeight() + middleTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(keySelect, (w - middleTextArea.getWidth())/2, 80 + 4 * margin + logo.getHeight() + iconOverlay.getHeight() + middleTextArea.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
                 }
 
-                ScreenUtil.drawLeftSoftKey(g, h, okBt);
+                ScreenUtil.drawLeftSoftKey(g, h, okBt, margin);
                 break;
         }
     }

@@ -117,7 +117,7 @@ public class AssignmentCanvas extends DefaultCanvas {
                     String[] options = {"help", "settings", "select gps"};
                     ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                 }
-                ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+                ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
                 break;
         }
     }

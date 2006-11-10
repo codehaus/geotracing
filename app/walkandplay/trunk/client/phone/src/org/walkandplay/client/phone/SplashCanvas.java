@@ -8,8 +8,8 @@ import java.util.TimerTask;
 
 public class SplashCanvas extends Canvas {
     private WP midlet;
-
     int w, h;
+
     // image objects
     private Image bg, gtLogo, kwxLogo;
 
@@ -20,24 +20,20 @@ public class SplashCanvas extends Canvas {
     public SplashCanvas(WP aMidlet, int aScreenName) {
         try {
             midlet = aMidlet;
-            setFullScreenMode(true);
             w = getWidth();
             h = getHeight();
+            setFullScreenMode(true);
             // load all images
             bg = Image.createImage("/bg.png");
             gtLogo = Image.createImage("/gt_logo.png");
             kwxLogo = Image.createImage("/kwx_logo.png");
             screenName = aScreenName;
+            midlet.log("new splashscreen!! : " + screenName);
+            repaint();
         } catch (Throwable t) {
-            log("could not load all images : " + t.toString());
+            midlet.log("could not load all images : " + t.toString());
         }
     }
-
-    // passes log msg to the main log method
-    private void log(String aMsg) {
-        midlet.log(aMsg);
-    }
-
 
     /**
      * Draws the screen.
@@ -45,7 +41,9 @@ public class SplashCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+        g.setColor(255, 255, 255);
+        g.fillRect(0, 0, w, h);
+        g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(gtLogo, (w - gtLogo.getWidth()) / 2, (h - gtLogo.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
         new Delayer(4);
@@ -57,6 +55,7 @@ public class SplashCanvas extends Canvas {
         Timer timer;
 
         public Delayer(int seconds) {
+            midlet.log("new delayer!!");
             timer = new Timer();
             timer.schedule(new RemindTask(), seconds * 1000);
         }
@@ -67,7 +66,7 @@ public class SplashCanvas extends Canvas {
                     midlet.setScreen(screenName);
                     repaint();
                 } else {
-                    System.out.println("say bye bye");
+                    midlet.log("say bye bye");
                     midlet.destroyApp(true);
                     midlet.notifyDestroyed();
                 }

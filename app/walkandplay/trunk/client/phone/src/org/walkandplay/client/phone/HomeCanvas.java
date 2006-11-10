@@ -1,18 +1,13 @@
 package org.walkandplay.client.phone;
 
+import org.geotracing.client.Log;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 public class HomeCanvas extends DefaultCanvas {
-
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
 
     // image objects
     private Image iconOverlay;
@@ -22,8 +17,6 @@ public class HomeCanvas extends DefaultCanvas {
     public HomeCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            w = getWidth();
-            h = getHeight();
             setFullScreenMode(true);
 
             icons[0] = Image.createImage("/trace_icon.png");
@@ -49,12 +42,6 @@ public class HomeCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        if (f == null) {
-            g.setColor(0, 0, 0);
-            f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-            g.setFont(f);
-            fh = f.getHeight();
-        }
         ScreenUtil.drawIcons(g, w, 5, 30, icons, iconOverlay);
     }
 
@@ -103,6 +90,7 @@ public class HomeCanvas extends DefaultCanvas {
             }
             // right softkey
         } else if (key == -7) {
+            midlet.log("exit application");
             midlet.setScreen(-1);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
@@ -112,12 +100,14 @@ public class HomeCanvas extends DefaultCanvas {
             ScreenUtil.selectNextIcon();
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.selectUpperIcon();
+            /*ScreenUtil.selectUpperIcon();*/
             // down
         } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.selectLowerIcon();
+            /*ScreenUtil.selectLowerIcon();*/
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
+            Log.view(midlet);
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
+            midlet.log("exit application");
             midlet.setScreen(-1);
         } else if (key == -8) {
         } else {

@@ -26,15 +26,8 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
     public static final String RMS_GPS_NAME = "name";
     public static final String RMS_GPS_URL = "url";
 
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
-
     // image objects
-    private Image logo, textArea, backBt, gpsLogo, menuBt;
+    private Image smallLogo;
 
     // screenstates
     private int screenStat = 0;
@@ -49,18 +42,11 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
     public GPSCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            w = getWidth();
-            h = getHeight();
             setFullScreenMode(true);
             ScreenUtil.resetMenu();
 
             // load all images
-            logo = Image.createImage("/logo.png");
-            textArea = Image.createImage("/text_area.png");
-            backBt = Image.createImage("/back_button.png");
-            bg = Image.createImage("/bg.png");
-            gpsLogo = Image.createImage("/gps_icon_small.png");
-            menuBt = Image.createImage("/menu_button.png");
+            smallLogo = Image.createImage("/gps_icon_small.png");
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
@@ -190,6 +176,11 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
         }
     }
 
+    private int drawText(Graphics aGraphics, String aText){
+        ScreenUtil.drawTextArea(aGraphics, 100, (w - 2*margin - middleTextArea.getWidth())/2, margin + smallLogo.getHeight() + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+        return ScreenUtil.drawText(aGraphics, aText, (w - middleTextArea.getWidth())/2, margin + smallLogo.getHeight() + logo.getHeight() + 2*margin, fh, 100);
+    }
+
     /**
      * Draws the screen.
      *
@@ -197,16 +188,8 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        if (f == null) {
-            g.setColor(0, 0, 0);
-            f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-            g.setFont(f);
-            fh = f.getHeight();
-        }
 
-        g.drawImage(textArea, margin, margin + logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
-        g.drawImage(gpsLogo, margin + margin, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
-
+        g.drawImage(smallLogo, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
         switch (screenStat) {
             case HOME_STAT:
                 String GPS = getGPSName();
@@ -214,35 +197,34 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                 if (GPS != null && GPS.length() > 0) {
                     text = "You previously used a GPS with name " + GPS + ".";
                     text += "To change your GPS choose 'select gps' from the menu.";
-                    ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+                    ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
                 } else {
                     deviceCounter = 0;
                     searchDevices();
                     text = "Searching for a GPS device...";
                 }
-
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
-                ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+                drawText(g, text);
+                ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
                 break;
             case MENU_STAT:
                 String[] options = {"select gps"};
                 ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
-                ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+                ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
                 break;
             case DEVICES_STAT:
                 log("show devices in menu");
                 text = "Choose your GPS device from the menu";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
+                drawText(g, text);
                 ScreenUtil.drawMenu(g, h, discoveredDevices, menuTop, menuMiddle, menuBottom, menuSel);
                 break;
             case SEARCHING_SERVICES_STAT:
                 text = "Completing GPS connection...";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
+                drawText(g, text);
                 break;
             case DEVICE_SELECTED_STAT:
-                text = "Your GPS device is stored";
-                ScreenUtil.drawText(g, text, 10, logo.getHeight() + gpsLogo.getHeight() + 3 * margin, fh, 100);
-                ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+                text = "Your GPS device is stored";                
+                drawText(g, text);
+                ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
                 new Forwarder(WP.HOME_CANVAS, 2);
                 break;
         }

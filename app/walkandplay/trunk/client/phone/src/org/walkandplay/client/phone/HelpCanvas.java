@@ -1,18 +1,10 @@
 package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 public class HelpCanvas extends DefaultCanvas {
-
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
 
     int availableHeight = 100;
     int textHeight;
@@ -26,8 +18,6 @@ public class HelpCanvas extends DefaultCanvas {
     public HelpCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            w = getWidth();
-            h = getHeight();
             smallLogo = Image.createImage("/help_icon_small.png");
             upBt = Image.createImage("/scrollup_button.png");
             upDownBt = Image.createImage("/scroll_buttons.png");
@@ -39,8 +29,8 @@ public class HelpCanvas extends DefaultCanvas {
     }
 
     private int drawText(Graphics aGraphics, String aText){
-        ScreenUtil.drawTextArea(aGraphics, 100, margin, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-        return ScreenUtil.drawText(aGraphics, aText, 2*margin, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
+        ScreenUtil.drawTextArea(aGraphics, 100, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + smallLogo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
+        return ScreenUtil.drawText(aGraphics, aText, (w - middleTextArea.getWidth())/2, logo.getHeight() + smallLogo.getHeight() + 2*margin, fh, 100);
     }
 
     /**
@@ -50,12 +40,7 @@ public class HelpCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(0, 0, 0);
-        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        g.setFont(f);
-        fh = f.getHeight();
-
-        g.drawImage(smallLogo, margin, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(smallLogo, (w - 2*margin - middleTextArea.getWidth())/2, logo.getHeight() + margin, Graphics.TOP | Graphics.LEFT);
         String text;
         switch (item) {
             case 1:
@@ -78,7 +63,7 @@ public class HelpCanvas extends DefaultCanvas {
             String[] menuItems = {"topic 1", "topic 2", "topic 3"};
             ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
         }
-        ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+        ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
     }
 
     /**

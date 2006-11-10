@@ -13,13 +13,6 @@ import nl.justobjects.mjox.JXElement;
 
 public class TraceCanvas extends DefaultCanvas{
 
-    // paint vars
-    int w, h, fh;
-    Font f;
-
-    int x0, y0;
-    int midx;
-
     private String inputText = "";
 
     private WP midlet;
@@ -59,8 +52,6 @@ public class TraceCanvas extends DefaultCanvas{
         super(aMidlet);
         try {
             midlet = aMidlet;
-            w = getWidth();
-            h = getHeight();
             setFullScreenMode(true);
 
             tileURL = midlet.getAppProperty("kw-url") + "/tile.jsp?";
@@ -145,11 +136,7 @@ public class TraceCanvas extends DefaultCanvas{
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        g.setColor(0, 0, 0);
-        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        g.setFont(f);
-        fh = f.getHeight();
-
+        super.paint(g);
         switch (screenStat) {
             case HOME_STAT:
                // draw the google map image
@@ -179,8 +166,8 @@ public class TraceCanvas extends DefaultCanvas{
                     g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY), Graphics.TOP | Graphics.LEFT);
                 }else{
                     if (msg.length() > 0) {
-                        ScreenUtil.drawTextArea(g, 100, margin, margin + logo.getHeight() + margin, topTextArea, middleTextArea, bottomTextArea);
-                        ScreenUtil.drawText(g, msg, 10, logo.getHeight() + 3 * margin, fh, 100);
+                        ScreenUtil.drawTextArea(g, 100, (w - 2*margin - middleTextArea.getWidth())/2, 4*margin + logo.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+                        ScreenUtil.drawText(g, msg, (w - middleTextArea.getWidth())/2, logo.getHeight() + 5 * margin, fh, 100);
                     }
                 }
 
@@ -193,7 +180,7 @@ public class TraceCanvas extends DefaultCanvas{
                         ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                     }
                 }
-                ScreenUtil.drawLeftSoftKey(g, h, menuBt);
+                ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
                 break;
             case ASSIGNMENT_STAT:
                 if (showMenu) {
@@ -206,7 +193,7 @@ public class TraceCanvas extends DefaultCanvas{
                 g.drawImage(inputBox, 2 * margin, 5 * margin + logo.getHeight() + fh, Graphics.TOP | Graphics.LEFT);
                 g.drawString(inputText, 2 * margin, 5 * margin + logo.getHeight() + fh + 2, Graphics.TOP | Graphics.LEFT);
                 g.drawString(texter.getSelectedKey(), 2 * margin, 6 * margin + logo.getHeight() + 2 * fh + 2, Graphics.TOP | Graphics.LEFT);
-                ScreenUtil.drawLeftSoftKey(g, h, okBt);
+                ScreenUtil.drawLeftSoftKey(g, h, okBt, margin);
                 break;
             case STATUS_STAT:
                 if (showMenu) {
@@ -240,7 +227,7 @@ public class TraceCanvas extends DefaultCanvas{
                 break;
         }
 
-        ScreenUtil.drawRightSoftKey(g, h, w, backBt);
+        ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
 
     }
 
