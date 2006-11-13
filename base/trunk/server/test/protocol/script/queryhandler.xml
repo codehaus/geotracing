@@ -4,7 +4,7 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="geoapp-user" password="user" portalname="geotracing" protocolversion="4.0"/>
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 

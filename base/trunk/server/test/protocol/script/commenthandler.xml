@@ -4,7 +4,7 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="geoapp-user" password="user" portalname="geotracing" protocolversion="4.0"/>
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 
@@ -59,7 +59,8 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<cmt-read-rsp>
-					<record id="${cmtid1}">
+					<record>
+						<id>${cmtid1}</id>
 						<owner/>
 						<target>${trkid1}</target>
 						<targettable/>
