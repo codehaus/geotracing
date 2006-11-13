@@ -31,7 +31,7 @@
 				<property name="allow-anonymous">true</property>
 			</handler>
 
-			<!-- External KWX plugin for generic tagging. -->
+			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
 			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
 		</handlers>
 

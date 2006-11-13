@@ -6,6 +6,7 @@ import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.OaseException;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.Account;
 import org.keyworx.utopia.core.data.ErrorCode;
@@ -104,7 +105,7 @@ public class CommentHandler extends DefaultHandler {
 		record.setFields(reqElm);
 
 		// Add user id as owner
-		record.setIntField(CommentLogic.FIELD_OWNER, getUserId(anUtopiaReq));
+		record.setIntField(CommentLogic.FIELD_OWNER, getPersonId(anUtopiaReq));
 
 		// Add person id as comment owner
 		logic.insert(record);
@@ -138,7 +139,13 @@ public class CommentHandler extends DefaultHandler {
 		Record exampleRecord = logic.createExampleRecord();
 
 		// Set the fields (these will be matched exactly)
-		exampleRecord.setFields(reqElm);
+		if (reqElm.getChildByTag(ATTR_ID) != null) {
+			// If only id specified: set explicitly (this matches only one record)
+			exampleRecord.setField(ATTR_ID, reqElm.getChildText(ATTR_ID));
+		} else {
+			// Set zero/or more fields (no fields matches all comments)
+			exampleRecord.setFields(reqElm);
+		}
 
 		// Do the query by example
 		Record[] result = logic.read(exampleRecord);
@@ -176,6 +183,13 @@ public class CommentHandler extends DefaultHandler {
 		throwOnNonNumAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
 		throwOnNonNumAttr(CommentLogic.FIELD_STATE, reqElm.getAttr(CommentLogic.FIELD_STATE));
 
+		// Only comment owner or target person can update comment state.
+		if (!isOwnerOrTargetPerson(anUtopiaReq.getUtopiaSession().getContext().getOase(), getPersonId(anUtopiaReq), reqElm.getIntAttr(ATTR_ID)))
+		{
+			throw new UtopiaException("You must be owner or target person of comment to update state", ErrorCode.__6007_insufficient_rights_error);
+		}
+
+
 		createLogic(anUtopiaReq).updateState(reqElm.getIntAttr(ATTR_ID), reqElm.getIntAttr(CommentLogic.FIELD_STATE));
 
 		// Create and return response
@@ -201,6 +215,12 @@ public class CommentHandler extends DefaultHandler {
 	protected JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		throwOnNonNumAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
+
+		// Only comment owner or target person can delete a  comment.
+		if (!isOwnerOrTargetPerson(anUtopiaReq.getUtopiaSession().getContext().getOase(), getPersonId(anUtopiaReq), reqElm.getIntAttr(ATTR_ID)))
+		{
+			throw new UtopiaException("You must be owner or target person of comment to delete", ErrorCode.__6007_insufficient_rights_error);
+		}
 
 		createLogic(anUtopiaReq).delete(reqElm.getIntAttr(ATTR_ID));
 
@@ -252,8 +272,22 @@ public class CommentHandler extends DefaultHandler {
 	/**
 	 * Get user (Person) id from request.
 	 */
-	protected int getUserId(UtopiaRequest anUtopiaReq) throws UtopiaException {
+	protected int getPersonId(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		return Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+	}
+
+	/**
+	 * Is person the owner or target person of comment ?
+	 */
+	protected boolean isOwnerOrTargetPerson(Oase anOase, int aPersonId, int aCommentId) throws UtopiaException {
+		Record record;
+		try {
+			record = anOase.getFinder().read(aCommentId, CommentLogic.TABLE_COMMENT);
+		} catch (OaseException oe) {
+			throw new UtopiaException("Cannot read comment with id=" + aCommentId, ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		return record.getIntField(CommentLogic.FIELD_OWNER) == aPersonId || record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
 	}
 
 	/**
