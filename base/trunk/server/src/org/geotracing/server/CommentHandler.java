@@ -114,6 +114,8 @@ public class CommentHandler extends DefaultHandler {
 		JXElement response = createResponse(CMT_INSERT_SERVICE);
 		response.setAttr(ATTR_ID, record.getId());
 
+		EventPublisher.commentAdd(record, anUtopiaReq.getUtopiaSession().getContext().getOase());
+
 		return response;
 	}
 
