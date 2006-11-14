@@ -16,6 +16,8 @@ import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaSessionContext;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.Finder;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -27,8 +29,11 @@ import java.util.Vector;
  * @version $Id$
  */
 public class EventPublisher {
-	/** Pushlet topic (subject) */
+	/**
+	 * Pushlet topic (subject)
+	 */
 	public static final String PUSHLET_SUBJECT = "/gt";
+	public static final String PERSON_SUBJECT = "/person/";
 	public static final String FIELD_EVENT = "event";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_USER_ID = "userid";
@@ -44,9 +49,12 @@ public class EventPublisher {
 	public static final String FIELD_OWNER_NAME = "ownername";
 	public static final String FIELD_OWNER_ID = "ownerid";
 
-	/** Event types. */
+	/**
+	 * Event types.
+	 */
 	public static final String EVENT_USER_HEARTBEAT = "user-hb";
 	public static final String EVENT_USER_MOVE = "user-move";
+	public static final String EVENT_COMMENT_ADD = "comment-add";
 	public static final String EVENT_MEDIUM_ADD = "medium-add";
 	public static final String EVENT_POI_ADD = "poi-add";
 	public static final String EVENT_POI_DELETE = "poi-delete";
@@ -56,6 +64,58 @@ public class EventPublisher {
 	public static final String EVENT_TRACK_DELETE = "track-delete";
 	public static final String EVENT_TRACK_SUSPEND = "track-suspend";
 	public static final String EVENT_TRACK_RESUME = "track-resume";
+
+	/**
+	 * Publish comment added event.
+	 */
+	public static void commentAdd(Record aCommentRecord, Oase anOase) {
+		Log log = Logging.getLog(EVENT_COMMENT_ADD);
+		int commentId = aCommentRecord.getId();
+
+		try {
+			// Get account name for event subject
+			// Expensive but we have to
+			int ownerId = -1;
+			String accountName = null;
+			if (!aCommentRecord.isNull(CommentLogic.FIELD_OWNER)) {
+				ownerId = aCommentRecord.getIntField(CommentLogic.FIELD_OWNER);
+				Person ownerPerson = (Person) anOase.get(Person.class,  ownerId + "");
+				accountName = ownerPerson.getAccount().getLoginName();
+			}
+
+			// Send to
+			// - owner of target (targetperson)
+			// - to all users that have commented on this target (owners)
+			int targetId = aCommentRecord.getIntField(CommentLogic.FIELD_TARGET);
+			int targetPersonId = aCommentRecord.getIntField(CommentLogic.FIELD_TARGET_PERSON);
+			int[] commenterIds = CommentLogic.getCommenterIds(anOase, targetId);
+
+			for (int i = -1; i < commenterIds.length; i++) {
+				// Include sending to owner of item that is commented
+				int personId = (i == -1) ? targetPersonId : commenterIds[i];
+
+				// Create and send Pushlet event
+
+				// Subject is /person/id, i.e. only to specific person (if online)
+				Event event = Event.createDataEvent(PERSON_SUBJECT + personId);
+				event.setField(FIELD_EVENT, EVENT_COMMENT_ADD);
+				event.setField(FIELD_ID, commentId);
+
+				// Only include owner if not anonymous commenting
+				if (ownerId != -1) {
+					event.setField(FIELD_USER_NAME, accountName);
+					event.setField(FIELD_USER_ID, ownerId);
+				}
+
+				// Send pushlet event
+				multicast(event);
+				log.trace("Published: " + event);
+			}
+
+		} catch (Throwable t) {
+			log.warn("Cannot publish event " + EVENT_COMMENT_ADD + " for commentId=" + commentId, t);
+		}
+	}
 
 	/**
 	 * Publish new medium with location added.
@@ -78,7 +138,7 @@ public class EventPublisher {
 			event.setField(FIELD_ID, person.getId());
 			event.setField(FIELD_USER_NAME, accountName);
 			event.setField(FIELD_TIME, aTime);
-            if (aTrack != null) {
+			if (aTrack != null) {
 				event.setField(FIELD_TRACK_NAME, aTrack.getName());
 			}
 			multicast(event);
@@ -226,7 +286,7 @@ public class EventPublisher {
 	 */
 	public static void poiHit(int aPOIid, UtopiaRequest anUtopiaRequest) {
 		Log log = Logging.getLog(anUtopiaRequest);
-        POI poi = null;
+		POI poi = null;
 		try {
 			// Get account name for event subject
 			// Expensive but we have to
@@ -352,8 +412,8 @@ public class EventPublisher {
 			Person person = (Person) oase.get(Person.class, sc.getUserId());
 			Account account = person.getAccount();
 			String accountName = account.getLoginName();
-            String trackName = aTrack.getName();
-		    int trackId = aTrack.getId();
+			String trackName = aTrack.getName();
+			int trackId = aTrack.getId();
 
 			JXElement nextElement = null;
 			for (int i = 0; i < theElements.size(); i++) {
@@ -369,8 +429,8 @@ public class EventPublisher {
 				event.setField(FIELD_EVENT, EVENT_USER_MOVE);
 				event.setField(FIELD_ID, person.getId());
 				event.setField(FIELD_USER_NAME, accountName);
-                event.setField(FIELD_TRACK_ID, trackId);
-                event.setField(FIELD_TRACK_NAME, trackName);
+				event.setField(FIELD_TRACK_ID, trackId);
+				event.setField(FIELD_TRACK_NAME, trackName);
 
 				// For now just copy (almost) all attrs
 				String nextField = null;
@@ -404,7 +464,7 @@ public class EventPublisher {
 	private static void multicast(Event anEvent) {
 		// Add time attr if not present
 		if (anEvent.getField(FIELD_TIME) == null) {
-			anEvent.setField(FIELD_TIME, System.currentTimeMillis());		
+			anEvent.setField(FIELD_TIME, System.currentTimeMillis());
 		}
 		Dispatcher.getInstance().multicast(anEvent);
 	}

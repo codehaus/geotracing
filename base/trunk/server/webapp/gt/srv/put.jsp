@@ -11,6 +11,7 @@
 				 org.keyworx.utopia.core.util.Oase,
 				 javax.servlet.http.HttpServletRequest,
 				 javax.servlet.http.HttpServletResponse,java.io.PrintWriter"%>
+<%@ page import="org.geotracing.server.EventPublisher"%>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
@@ -88,6 +89,8 @@
 				// Create and return response with open comment id.
 				appResponse = Protocol.createResponse(CommentHandler.CMT_INSERT_SERVICE);
 				appResponse.setAttr(ATTR_ID, record.getId());
+
+				EventPublisher.commentAdd(record, oase);
 			} else {
 				appResponse = Protocol.createNegativeResponse(service, Protocol.__4000_Unknown_command, "unknown request tag");
 				log.warn("unknown request tag " + reqTag);

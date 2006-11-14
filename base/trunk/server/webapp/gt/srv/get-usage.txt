@@ -107,6 +107,22 @@ get random track
 - parms
 * no parms
 
+"q-comments-for-target"
+get comments for given target record
+- parms
+* "target" : (m) id of target record
+* "ownerinfo" : (o) if "true" include ownername (=loginname) and ownericon (user thumb id) in result
+
+"q-commenters-for-target"
+get commenter ids (person ids) that have commented on target record
+- parms
+* "target" : (m) id of target record
+
+"q-comment-count-for-target"
+get number of comments for given target record
+- parms
+* "target" : (m) id of target record
+
 "q-locative-media"
 queries on media with their locations
 - parms

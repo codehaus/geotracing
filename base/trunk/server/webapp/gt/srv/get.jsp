@@ -16,6 +16,8 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Vector" %>
 <%@ page import="java.util.Enumeration"%>
+<%@ page import="org.geotracing.server.CommentLogic"%>
+<%@ page import="java.util.HashMap"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -30,6 +32,9 @@
 	public static final String CMD_QUERY_ACTIVE_TRACKS = "q-active-tracks";
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
 	public static final String CMD_QUERY_BY_EXAMPLE = "q-by-example";
+	public static final String CMD_QUERY_COMMENTS_FOR_TARGET = "q-comments-for-target";
+	public static final String CMD_QUERY_COMMENTERS_FOR_TARGET = "q-commenters-for-target";
+	public static final String CMD_QUERY_COMMENT_COUNT_FOR_TARGET = "q-comment-count-for-target";
 	public static final String CMD_QUERY_ROW_COUNT = "q-row-count";
 	public static final String CMD_QUERY_RECENT_TRACKS = "q-recent-tracks";
 	public static final String CMD_QUERY_TRACKS_BY_USER = "q-tracks-by-user";
@@ -49,6 +54,8 @@
 	public static final String PAR_BBOX = "bbox";
 	public static final String PAR_USER_NAME = "user";
 	public static final String PAR_TABLE_NAME = "table";
+	public static final String PAR_OWNER_INFO = "ownerinfo";
+	public static final String PAR_TARGET = CommentLogic.FIELD_TARGET;
 	public static final String TAG_ERROR = "error";
 
 	public static Oase oase;
@@ -135,13 +142,91 @@
 		}
 	}
 
+
+	/** Adds owner info (loginname and user icon id). */
+	public void addOwnerFields(JXElement rsp) throws Exception {
+		// Add extra fields: user name (loginname) and user icon (thumb) id
+		Vector records = rsp.getChildren();
+		rsp.removeChildren();
+		JXElement nextRecordElm;
+		String personId;
+		Record personRecord, accountRecord;
+		String iconRecordId;
+		HashMap personsForPersonId=new HashMap(3);
+		HashMap accountsForPersonId=new HashMap(3);
+		HashMap iconIdForPersonId=new HashMap(3);
+		for (int i = 0; i < records.size(); i++) {
+			nextRecordElm = (JXElement) records.get(i);
+
+			// Get owner (person) id
+			personId = nextRecordElm.getChildText(CommentLogic.FIELD_OWNER);
+			if (personId == null || personId.length() == 0) {
+				// No owner (anon comment) add to rsp and proceed
+				rsp.addChild(nextRecordElm);
+				continue;
+			}
+
+			// ASSERT: has owner: now get loginname and thumb (icon, optional) id
+			// ASSERT : got valid person, now get logginname
+			personRecord = (Record) personsForPersonId.get(personId);
+			if (personRecord == null) {
+				personRecord = oase.getFinder().read(Integer.parseInt(personId), "utopia_person");
+				if (personRecord == null) {
+					// Rare case: person non-existent
+					log.warn(CMD_QUERY_COMMENTS_FOR_TARGET + ": no person record for id=" + personId);
+					rsp.addChild(nextRecordElm);
+					continue;
+				} else {
+					// Add to cache
+					personsForPersonId.put(personId, personRecord);
+				}
+			}
+
+			// ASSERT : got valid person, now get logginname
+			accountRecord = (Record) accountsForPersonId.get(personId);
+			if (accountRecord == null) {
+				accountRecord = oase.getRelater().getRelated(personRecord, "utopia_account", null)[0];
+				// Add to cache
+				accountsForPersonId.put(personId, accountRecord);
+			}
+
+			// Skip records for disabled account
+			if (accountRecord.getIntField("state") != 1) {
+				rsp.addChild(nextRecordElm);
+				continue;
+			}
+
+			// Add user name (loginname)
+			nextRecordElm.setChildText("ownername", accountRecord.getStringField("loginname"));
+
+			iconRecordId = (String) iconIdForPersonId.get(personId);
+			if (iconRecordId == null) {
+				Record[] iconRecords = oase.getRelater().getRelated(personRecord, "base_medium", "thumb");
+				if (iconRecords.length > 0) {
+					// Add to cache
+					iconRecordId = iconRecords[0].getIdString();
+				} else {
+					// Put empty string so we won't do query next time
+					iconRecordId = "";
+				}
+				iconIdForPersonId.put(personId, iconRecordId);
+			}
+
+			if (iconRecordId != null && iconRecordId.length() > 0) {
+				nextRecordElm.setChildText("ownericon", iconRecordId);
+			}
+
+			// Finally ad to rsp
+			rsp.addChild(nextRecordElm);
+		}
+	}
 	/** Adds account and person attrs to query response records. */
 	public void addUserAttrs(JXElement rsp, String aTableName) throws Exception {
-		Vector records = rsp.getChildren();
 		Finder finder = oase.getFinder();
 		Relater relater = oase.getRelater();
 
 		// Start with empty
+		Vector records = rsp.getChildren();
 		rsp.removeChildren();
 		JXElement nextRecordElm;
 		String recordId;
@@ -150,7 +235,7 @@
 		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
-			// SIngle table responses have id in attr
+			// Single table responses have id in attr
 			// Multi table in record elm
 			// TODO FIX!!
 			recordId = nextRecordElm.getChildText("id");
@@ -196,26 +281,21 @@
 	public void addCommentCounts(JXElement rsp) throws Exception {
 		Vector records = rsp.getChildren();
 		JXElement nextRecordElm;
-		String recordId;
+		String targetId;
 		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
 			// SIngle table responses have id in attr
 			// Multi table in record elm
 			// TODO FIX!!
-			recordId = nextRecordElm.getChildText("id");
-			if (recordId == null) {
-				recordId = nextRecordElm.getAttr("id");
+			targetId = nextRecordElm.getChildText("id");
+			if (targetId == null) {
+				targetId = nextRecordElm.getAttr("id");
 			}
 
 			// Add the location attrs
-			nextRecordElm.setChildText("comments", getCommentCount(recordId) + "");
+			nextRecordElm.setChildText("comments", CommentLogic.getCommentCount(oase, Integer.parseInt(targetId)) + "");
 		}
-	}
-
-	int getCommentCount(String aTargetId) throws Exception {
-		Record[] records = oase.getFinder().freeQuery("select count(id) AS comments from kw_comment where target =" + aTargetId);
-		return records.length == 0 ? 0 : Integer.parseInt(records[0].getField("comments").toString());
 	}
 
 	Record getAccount(Oase oase, String aLoginName) throws Exception {
@@ -362,6 +442,41 @@
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
 				JXElement countElm = new JXElement("count");
 				String count = records[0].getField("count(*)") + "";
+				countElm.setText(count);
+				result.addChild(countElm);
+			} else if (command.equals(CMD_QUERY_COMMENTS_FOR_TARGET)) {
+				String targetId = getParameter(request, PAR_TARGET, null);
+				throwOnMissingParm(PAR_TARGET, targetId);
+
+				// Create example Record
+				//Record exampleRecord = oase.getFinder().createExampleRecord(CommentLogic.TABLE_COMMENT);
+				//exampleRecord.setField(CommentLogic.FIELD_TARGET, targetId);
+				//result = createResponse(oase.getFinder().queryTable(exampleRecord));
+				result = createResponse(oase.getFinder().freeQuery("select * from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + targetId, CommentLogic.TABLE_COMMENT));
+
+				String ownerInfo = getParameter(request, PAR_OWNER_INFO, "false");
+				if (ownerInfo.equals("true")) {
+					addOwnerFields(result);
+				}
+
+			} else if (command.equals(CMD_QUERY_COMMENTERS_FOR_TARGET)) {
+				String targetId = getParameter(request, PAR_TARGET, null);
+				throwOnMissingParm(PAR_TARGET, targetId);
+
+				int[] commenterIds = CommentLogic.getCommenterIds(oase, Integer.parseInt(targetId));
+				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+				for (int i=0; i < commenterIds.length; i++) {
+					JXElement elm = new JXElement("record");
+					elm.setChildText("id", commenterIds[i]+"");
+					result.addChild(elm);				
+				}
+			} else if (command.equals(CMD_QUERY_COMMENT_COUNT_FOR_TARGET)) {
+				String targetId = getParameter(request, PAR_TARGET, null);
+				throwOnMissingParm(PAR_TARGET, targetId);
+				String count = CommentLogic.getCommentCount(oase, Integer.parseInt(targetId)) + "";
+
+				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+				JXElement countElm = new JXElement("count");
 				countElm.setText(count);
 				result.addChild(countElm);
 			} else if (command.equals(CMD_QUERY_LOCATIVE_MEDIA)) {

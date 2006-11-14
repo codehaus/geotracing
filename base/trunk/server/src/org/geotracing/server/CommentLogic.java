@@ -11,6 +11,8 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
   * Handles all logic related to commenting.
@@ -35,8 +37,9 @@ public class CommentLogic {
 	public static final int STATE_UNREAD = 1;
 	public static final int STATE_READ = 2;
 	private static final Properties properties = new Properties();
-	public static final String PROP_MAX_CONTENT_CHARS = "max-content-chars";
 	public static final String PROP_ALLOW_ANONYMOUS = "allow-anonymous";
+	public static final String PROP_MAX_COMMENTS_PER_TARGET = "max-commments-per-target";
+	public static final String PROP_MAX_CONTENT_CHARS = "max-content-chars";
 
 	private Oase oase;
 
@@ -94,6 +97,45 @@ public class CommentLogic {
 		}
 	}
 
+
+	/**
+	 * Util: get number of comments for given target record.
+	 *
+	 * @param oase oase session (for using this in multiple contexts)
+	 * @param aTargetId id of target record
+	 * @return the number of comments
+	 * @throws UtopiaException Standard exception
+	 */
+	public static int getCommentCount(Oase oase, int aTargetId) throws UtopiaException {
+		try {
+			Record[] records = oase.getFinder().freeQuery("select count(target) AS comments from " + TABLE_COMMENT + " where " + FIELD_TARGET + " = " + aTargetId);
+			return records.length == 0 ? 0 : Integer.parseInt(records[0].getField("comments").toString());
+		} catch (Throwable t) {
+			throw new UtopiaException("Cannot count comment records for target=" + aTargetId, t, ErrorCode.__6006_database_irregularity_error);
+		}
+	}
+
+	/**
+	 * Util: get person ids of all users that have commented on a target.
+	 *
+	 * @param oase oase session (for using this in multiple contexts)
+	 * @param aTargetId id of target record
+	 * @return the array of commenter (person) ids
+	 * @throws UtopiaException Standard exception
+	 */
+	public static int[] getCommenterIds(Oase oase, int aTargetId) throws UtopiaException {
+		try {
+			Record[] records = oase.getFinder().freeQuery("select DISTINCT(owner) from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + aTargetId + " AND owner IS NOT NULL");
+			int[] result = new int[records.length];
+			for (int i=0; i < records.length; i++) {
+				result[i] = records[i].getIntField(FIELD_OWNER);
+			}
+			return result;
+		} catch (Throwable t) {
+			throw new UtopiaException("Cannot get commenters records for target=" + aTargetId, t, ErrorCode.__6006_database_irregularity_error);
+		}
+	}
+	
 	/**
 	 * Inserts a comment.
 	 *
@@ -111,12 +153,19 @@ public class CommentLogic {
 				throw new UtopiaException("Anonymous commenting not allowed");
 			}
 
+
 			int targetId = aRecord.getIntField(FIELD_TARGET);
 			Record targetRecord = oase.getFinder().read(targetId);
 
 			// Determine and set target table id
 			int targetTableId = targetRecord.getTableDef().getId();
 			aRecord.setIntField(FIELD_TARGET_TABLE, targetTableId);
+
+			// Check if max comment count exceeded
+			if ((getCommentCount(oase, targetId) >=
+				Integer.parseInt(properties.getProperty(PROP_MAX_COMMENTS_PER_TARGET, "128")))) {
+				throw new UtopiaException("Maximum comment count exceeded");
+			}
 
 			// Determine and set target person if possible
 			Record persons[] = oase.getRelater().getRelated(targetRecord, TABLE_PERSON, null);
