@@ -1,5 +1,4 @@
-<%@ page import="java.util.Date,org.keyworx.oase.api.MediaFiler,org.keyworx.oase.api.Record" %>
-<%@ page import="org.geotracing.server.POI"%>
+<%@ page import="org.geotracing.server.POI,org.keyworx.oase.api.MediaFiler,java.util.Date" %>
 <%@ include file="../model.jsp" %>
 <%
 	String msg="";

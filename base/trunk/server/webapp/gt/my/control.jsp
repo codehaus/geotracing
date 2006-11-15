@@ -5,7 +5,6 @@
 				org.keyworx.amuse.core.Protocol,
 				org.keyworx.common.net.Servlets,
 				org.keyworx.common.util.IO,
-				org.keyworx.oase.util.Log,
 				org.keyworx.utopia.core.data.Account" %>
 <%@ page import="org.keyworx.utopia.core.data.Application"%>
 <%@ page import="org.keyworx.utopia.core.data.Portal"%>
@@ -17,6 +16,11 @@
 <%@ page import="javax.servlet.http.HttpServletResponse"%>
 <%@ page import="javax.servlet.http.HttpSession"%>
 <%@ page import="java.util.ArrayList"%>
+<%@ page import="org.keyworx.common.util.MD5"%>
+<%@ page import="org.keyworx.oase.api.MediaFiler"%>
+<%@ page import="org.keyworx.oase.service.MediaFilerImpl"%>
+<%@ page import="java.util.Enumeration"%>
+<%@ page import="java.io.File"%>
 <%@ include file="model.jsp" %>
 <%!
 
@@ -35,7 +39,22 @@
 
 private void doCommand(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
     String command = null;
- 	try {
+	MultipartRequest multipartRequest = null;
+
+	String requestEncoding = request.getContentType();
+
+	// Use MultiparRequest whenever "multipart/form-data" FORMs are submitted.
+	if (requestEncoding != null && requestEncoding.trim().startsWith("multipart/form-data")) {
+			try {
+				MediaFiler mediaFiler = (MediaFilerImpl) model.getOase().getMediaFiler();
+				 multipartRequest = new MultipartRequest(request, mediaFiler.getIncomingDir(), (int) 10000000);
+			} catch (Exception e) {
+				model.setResultMsg("Create MultipartRequest failed: " + e);
+				return;
+			}
+	}
+
+	try {
 		// model.setResultMsg("OK");
 		command = getParameter(request, "cmd", null);
 		if (command == null) {
@@ -55,6 +74,7 @@ private void doCommand(HttpServletRequest request, HttpServletResponse response,
 				}
 			}
 		}
+
 		if ("login".equals(command)) {
 		String userName = request.getParameter("username");
           String password = request.getParameter("password");
@@ -121,15 +141,27 @@ private void doCommand(HttpServletRequest request, HttpServletResponse response,
 			model.set(ATTR_CONTENT_URL, "content/login-form.jsp");
 			model.setResultMsg("register ok user=" + loginName);
 		} else if ("nav-media".equals(command)) {
-			model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
+			model.set(ATTR_LEFT_MENU_URL, "menu/left-media.html");
+			model.set(ATTR_CONTENT_URL, "content/media.jsp");
+			model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
+		} else if ("nav-media-list".equals(command)) {
+			model.set(ATTR_LEFT_MENU_URL, "menu/left-media.html");
 			model.set(ATTR_CONTENT_URL, "content/media-list.jsp");
 			model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
-			} else if ("nav-tracks".equals(command)) {
+		} else if ("nav-media-upload".equals(command)) {
+			model.set(ATTR_LEFT_MENU_URL, "menu/left-media.html");
+			model.set(ATTR_CONTENT_URL, "content/media-upload.jsp");
+			model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
+		} else if ("nav-tracks".equals(command)) {
 			model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
 			model.set(ATTR_CONTENT_URL, "content/track-list.jsp");
 		} else if ("nav-pois".equals(command)) {
 			model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
 			model.set(ATTR_CONTENT_URL, "content/poi-list.jsp");
+			model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
+		} else if ("nav-profile".equals(command)) {
+			model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
+			model.set(ATTR_CONTENT_URL, "content/profile-form.jsp");
 			model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
 	    } else if ("nav-init".equals(command)) {
 		   model.set(ATTR_STATUS_MSG, STATUS_MSG_NULL);
@@ -205,8 +237,42 @@ private void doCommand(HttpServletRequest request, HttpServletResponse response,
 			model.setResultMsg("Delete Medium OK id=" + id);
 			model.set(ATTR_CONTENT_URL, model.getObject(ATTR_PREV_CONTENT_URL));
 		} else if ("media-upload".equals(command)) {
-/*			Record[] records = DB.uploadLocationMedia(request, DBDefs.VAL_JUST, 0L);
-			result.setMessage("Upload ok record count=" + records.length); */
+			String cancel = getParameter(multipartRequest, "cancel", null);
+			if (cancel != null) {
+				model.set(ATTR_CONTENT_URL, "content/media.jsp");
+				return;
+			}
+
+			// Get the files and possible parameters from the MultipartRequest
+			Enumeration fileNames = multipartRequest.getFileNames();
+
+			// Go through all uploaded files.
+			while (fileNames.hasMoreElements()) {
+				String nextFileName = (String) fileNames.nextElement();
+
+				// Get the next uploaded file
+				File nextFile = multipartRequest.getFile(nextFileName);
+
+				// Form field may be empty
+				if (nextFile == null) {
+					continue;
+				}
+
+				// Do upload and location determiniation
+				JXElement req = Protocol.createRequest(TracingHandler.T_TRK_UPLOAD_MEDIUM_SERVICE);
+				req.setAttr(TracingHandler.ATTR_FILE, nextFile.getAbsolutePath());
+				req.setAttr(TracingHandler.ATTR_NAME, IO.forHTMLTag(getParameter(multipartRequest, "name", "")));
+				req.setAttr(TracingHandler.ATTR_DESCRIPTION, IO.forHTMLTag(getParameter(multipartRequest, "description", "")));
+				JXElement rspElm = HttpConnector.executeRequest(session, req);
+				if (Protocol.isNegativeResponse(rspElm)) {
+					model.logWarning("upload Medium failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
+					model.setResultMsg("upload Medium failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
+					continue;
+				}
+				model.logInfo("upload-media: uploaded " + nextFile.getAbsolutePath());
+			}
+
+			model.set(ATTR_CONTENT_URL, "content/ok.html");
 		} else if ("medium-update".equals(command)) {
 			// Go back to track edit
 			/* String trackId = getParameter(request, "trackid", null);
@@ -254,6 +320,71 @@ private void doCommand(HttpServletRequest request, HttpServletResponse response,
 			}
 
 			model.set(ATTR_CONTENT_URL, model.getObject(ATTR_PREV_CONTENT_URL));
+		} else if ("profile-update".equals(command)) {
+			String cancel = getParameter(multipartRequest, "cancel", null);
+			if (cancel != null) {
+				model.set(ATTR_CONTENT_URL, "content/cancel.html");
+				return;
+			}
+
+			String msg = "";
+			Record person, account, thumb=null;
+			try {
+				person = model.getOase().getFinder().read(Integer.parseInt(model.getPersonId()));
+				account = model.getOase().getRelater().getRelated(person, "utopia_account", null)[0];
+				Record[] thumbs = model.getOase().getRelater().getRelated(person, "base_medium", "thumb");
+				if (thumbs.length > 0) {
+					thumb = thumbs[0];
+				}
+			} catch (Throwable t) {
+				msg = "Error t=" + t;
+				model.setResultMsg(msg);
+				return;
+			}
+
+			// Account updates
+			String password1 = getParameter(multipartRequest, "password1", null);
+			if (password1 != null) {
+				String password2 = getParameter(multipartRequest, "password2", "");
+				if (!password1.equals(password2)) {
+					model.setResultMsg("passwords not equal");
+					return;
+				}
+				account.setStringField("password", MD5.createStringDigest(password1));
+				model.getOase().getModifier().update(account);
+			}
+
+			// Person updates
+			String firstname = getParameter(multipartRequest, "firstname", null);
+			person.setStringField("firstname", firstname);
+
+			String lastname = getParameter(multipartRequest, "lastname", null);
+			person.setStringField("lastname", lastname);
+
+			String mobilenr = getParameter(multipartRequest, "mobilenr", null);
+			person.setStringField("mobilenr", mobilenr);
+
+			String emails = getParameter(multipartRequest, "emails", null);
+			person.setStringField("email", emails);
+			model.getOase().getModifier().update(person);
+
+			// Person Icon update
+			// Upload and insert new user icon file
+			Record[] newThumbs = ((MediaFilerImpl)model.getOase().getMediaFiler()).upload(multipartRequest);
+
+			if (newThumbs.length > 0) {
+				// Relate icon to person
+				model.getOase().getRelater().relate(person, newThumbs[0], "thumb");
+
+				// Delete old user icon if available
+				if (thumb != null) {
+					model.getOase().getModifier().delete(thumb);
+				}
+			} else {
+				model.setResultMsg("no user icon uploaded");
+			}
+
+			model.set(ATTR_CONTENT_URL, "content/ok.html");
 		}  else if ("track-delete".equals(command)) {
 			String id = getParameter(request, "id", null);
 			if (id == null) {
@@ -401,10 +532,15 @@ private void doCommand(HttpServletRequest request, HttpServletResponse response,
 			model.setResultMsg("unknown cmd: " + command);
 
 		}
+
+		// Log only "real" actions
+		if (!command.startsWith("nav")) {
+			model.logInfo("command handled cmd=" + command);
+		}
 	} catch (Throwable t) {
 		model.setResultMsg("error during processing of cmd=" + command + "; details: \n" + t);
-		 Log.warn("error during processing of cmd=" + command + "; details: \n" + t);
-		t.printStackTrace();
+		model.logWarning("error during processing of cmd=" + command, t);
+		return;
 	}
 }
 %>

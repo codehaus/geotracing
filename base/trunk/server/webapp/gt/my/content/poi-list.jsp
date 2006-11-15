@@ -1,4 +1,4 @@
-<%@ page import="org.keyworx.oase.api.Record,java.util.Date"%>
+<%@ page import="java.util.Date"%>
 <%@ include file="../model.jsp" %>
 
 <%

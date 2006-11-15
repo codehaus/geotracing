@@ -2,10 +2,11 @@
 <%@ page import="org.keyworx.utopia.core.util.Oase"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="org.keyworx.oase.api.Record"%>
-<%@ page import="org.keyworx.oase.api.OaseException"%>
 <%@ page import="org.geotracing.server.QueryHandler"%>
 <%@ page import="org.keyworx.amuse.client.web.HttpConnector"%>
 <%@ page import="org.keyworx.common.util.Sys"%>
+<%@ page import="org.keyworx.common.log.Logging"%>
+<%@ page import="org.keyworx.common.log.Log"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("E' 'dd' 'MMM', 'yyyy");
@@ -35,6 +36,7 @@
 		/** All model data is held in HttpSession */
 		private HttpSession session;
 		private ServletContext application;
+		private Log log = Logging.getLog("my");
 
 		public Model(ServletContext anApplication, HttpSession aSession) {
 			session = aSession;
@@ -99,6 +101,26 @@
 
 		public boolean isLoggedIn() {
 			return session.getAttribute(ATTR_USER_NAME) != null && HttpConnector.getContextParam(session, "portal-context") != null;
+		}
+
+		public void logInfo(String s) {
+			log.info("[" + getString(ATTR_USER_NAME) + "] " + s);
+		}
+
+		public void logWarning(String s) {
+			log.warn("[" + getString(ATTR_USER_NAME) + "] " + s);
+		}
+
+		public void logWarning(String s, Throwable t) {
+			log.warn("[" + getString(ATTR_USER_NAME) + "] " + s, t);
+		}
+
+		public void logError(String s) {
+			log.error("[" + getString(ATTR_USER_NAME) + "] " + s);
+		}
+
+		public void logError(String s, Throwable t) {
+			log.error("[" + getString(ATTR_USER_NAME) + "] " + s, t);
 		}
 
 		public void reset() {
