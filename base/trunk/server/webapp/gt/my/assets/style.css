@@ -46,6 +46,12 @@ html, body {
 	background-color: #ccc;
 }
 
+#leftcol a {
+	padding-left: 8px;
+	text-decoration: none;
+	color: #660000;
+}
+
 #content {
 	margin: 0px;
 	margin-left: 200px;

@@ -1,5 +1,4 @@
-<%@ page import="java.util.Date,org.keyworx.oase.api.MediaFiler,org.keyworx.oase.api.Record" %>
-<%@ page import="org.geotracing.server.Track"%>
+<%@ page import="org.geotracing.server.Track,java.util.Date" %>
 <%@ include file="../model.jsp" %>
 <%
 	int id = Integer.parseInt(request.getParameter("id"));
