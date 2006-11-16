@@ -5,6 +5,7 @@
 	int thumbId=-1;
 	String iconDisp = "No user icon yet";
 	String firstName="", lastName="", loginName="", emails="", mobilenr="";
+	String tags, tagCloud="", myTagCloud="";
 	try {
 		person = model.getOase().getFinder().read(Integer.parseInt(model.getPersonId()));
 		if (!person.isNull("firstname")) {
@@ -26,6 +27,15 @@
 			thumbId = thumb[0].getId();
 			iconDisp = "<img src=\"../media.srv?id=" + thumbId + "&resize=" + 100 + "\" border=0 />";
 		}
+
+
+		// Get tag info for this id and general tags
+		int personId = Integer.parseInt(model.getPersonId());
+		TagLogic tagLogic = new TagLogic(model.getOase().getOaseSession());
+		tags = tagLogic.getTagsString(personId, personId);
+		tagCloud = model.getTagCloud();
+		myTagCloud = model.getMyTagCloud();
+
 	} catch (Throwable t) {
 		msg = "Error t=" + t;
 		model.setResultMsg(msg);
@@ -33,7 +43,7 @@
 	}
 
 %>
-<p>This page allows you to edit your profile settings.</p>
+<p>This page allows you to edit your profile settings. </p>
 
 <form id="profileform" name="profileform" method="post" action="control.jsp?cmd=profile-update" enctype="multipart/form-data">
 	<table cellspacing="4" cellpadding="4" border="0">
@@ -55,7 +65,7 @@
 		<tr>
 			<td>new password</td>
 			<td><input name="password1" id="password1" type="password"/></td>
-			<td>&nbsp;</td>
+			<td>(note: you will also need to update MobiTracer "Account" settings!!)</td>
 		</tr>
 		<tr>
 			<td>retype password</td>
@@ -81,6 +91,20 @@
 				<input name="description" id="description" type="hidden" value="user icon for <%= loginName %>" />
 			</td>
 			<td>(use a 4x3 picture dimension; picture will be scaled)</td>
+		</tr>
+		<tr>
+			<td>tags</td>
+			<td>
+				<input name="tags" id="tags" type="text" size="40" value="<%= tags %>"/>
+				<input name="otags" id="otags" type="hidden" value="<%= tags %>"/>
+				<p>
+					<strong>My Tags: </strong> <%= myTagCloud %>
+				</p>
+				<p>
+					<strong>All Tags: </strong> <%= tagCloud %>
+				</p>
+			</td>
+			<td>(tag yourself using this field)</td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>

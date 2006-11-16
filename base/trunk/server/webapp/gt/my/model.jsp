@@ -7,6 +7,8 @@
 <%@ page import="org.keyworx.common.util.Sys"%>
 <%@ page import="org.keyworx.common.log.Logging"%>
 <%@ page import="org.keyworx.common.log.Log"%>
+<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
+<%@ page import="org.keyworx.utopia.core.data.UtopiaException"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("E' 'dd' 'MMM', 'yyyy");
@@ -98,6 +100,16 @@
 			return (String) getObject(aName);
 		}
 
+		public String getMyTagCloud() throws Exception {
+			int personId = Integer.parseInt(getPersonId());
+			TagLogic tagLogic = new TagLogic(getOase().getOaseSession());
+			return tags2Cloud(tagLogic.getTagsBy(new int[] { personId }, -1, -1));
+		}
+
+		public String getTagCloud() throws Exception {
+			TagLogic tagLogic = new TagLogic(getOase().getOaseSession());
+			return tags2Cloud(tagLogic.getTags(-1, -1));
+		}
 
 		public boolean isLoggedIn() {
 			return session.getAttribute(ATTR_USER_NAME) != null && HttpConnector.getContextParam(session, "portal-context") != null;
@@ -158,6 +170,17 @@
 				setResultMsg("ERROR during query: " + t);
 				return new Record[0];
 			}
+		}
+
+		private String tags2Cloud(Record[] tags) {
+			StringBuffer sb = new StringBuffer("");
+			for (int i=0; i < tags.length; i++) {
+				sb.append(tags[i].getStringField("name"));
+				sb.append("(");
+				sb.append(tags[i].getField("usecount"));
+				sb.append(") ");
+			}
+			return sb.toString();
 		}
 	}
 

@@ -452,7 +452,7 @@
 				//Record exampleRecord = oase.getFinder().createExampleRecord(CommentLogic.TABLE_COMMENT);
 				//exampleRecord.setField(CommentLogic.FIELD_TARGET, targetId);
 				//result = createResponse(oase.getFinder().queryTable(exampleRecord));
-				result = createResponse(oase.getFinder().freeQuery("select * from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + targetId, CommentLogic.TABLE_COMMENT));
+				result = createResponse(oase.getFinder().freeQuery("select * from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + targetId + " ORDER BY id", CommentLogic.TABLE_COMMENT));
 
 				String ownerInfo = getParameter(request, PAR_OWNER_INFO, "false");
 				if (ownerInfo.equals("true")) {
@@ -468,7 +468,7 @@
 				for (int i=0; i < commenterIds.length; i++) {
 					JXElement elm = new JXElement("record");
 					elm.setChildText("id", commenterIds[i]+"");
-					result.addChild(elm);				
+					result.addChild(elm);
 				}
 			} else if (command.equals(CMD_QUERY_COMMENT_COUNT_FOR_TARGET)) {
 				String targetId = getParameter(request, PAR_TARGET, null);

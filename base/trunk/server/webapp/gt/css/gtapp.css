@@ -42,7 +42,7 @@ html,body {
   padding-right: 8px;
 }
 
-#livestatus, #livestatus a, #livestatus a:visited {
+#livestatus, #livestatus a, #livestatus a:visited, #cmtlink, #cmtlink a, #cmtlink a:visited {
   font-size: 10px;
   color: #33ff33;
   text-decoration: none;
