@@ -27,6 +27,14 @@
 
 			<handler id="t" class="org.geotracing.server.TracingHandler"/>
 			<handler id="query" class="org.geotracing.server.QueryHandler"/>
+			<handler id="cmt" class="org.geotracing.server.CommentHandler">
+				<property name="allow-anonymous">true</property>
+				<property name="max-commments-per-target">256</property>
+				<property name="max-content-chars">1024</property>
+			</handler>
+
+			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
+			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
 		</handlers>
 
 
