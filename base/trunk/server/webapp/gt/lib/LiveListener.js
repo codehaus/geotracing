@@ -131,6 +131,7 @@ function LiveListener(aStatusElm) {
 		// "track-delete": id, name, userid, username
 		// "track-suspend": id, name, userid, username
 		// "track-resume": id, name, userid, username
+		// "comment-add" : id, target, ownerid, ownername (only sent to relevant /person/personid subjects)
 
 		var eventType = event.get('event');
 

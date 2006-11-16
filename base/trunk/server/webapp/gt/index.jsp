@@ -52,8 +52,8 @@
 		</table>
 
 	</td>
-	<td width="320" bgcolor="#000066">
-		&nbsp;
+	<td width="320" bgcolor="#000066" align="right">
+		<span id="cmtlink"><a href="#" onclick="CMT.showCommentPanel(23, '', 'This Site')" >[comments]</a>&nbsp;&nbsp;</span>
 	</td>
 </tr>
 <tr>

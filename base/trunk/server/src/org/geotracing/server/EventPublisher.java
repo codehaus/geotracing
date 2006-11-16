@@ -37,6 +37,7 @@ public class EventPublisher {
 	public static final String FIELD_EVENT = "event";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_USER_ID = "userid";
+	public static final String FIELD_TARGET = "target";
 	public static final String FIELD_TRACK_ID = "trackid";
 	public static final String FIELD_TRACK_NAME = "trackname";
 	public static final String FIELD_NAME = "name";
@@ -100,6 +101,7 @@ public class EventPublisher {
 				Event event = Event.createDataEvent(PERSON_SUBJECT + personId);
 				event.setField(FIELD_EVENT, EVENT_COMMENT_ADD);
 				event.setField(FIELD_ID, commentId);
+				event.setField(FIELD_TARGET, targetId);
 
 				// Only include owner if not anonymous commenting
 				if (ownerId != -1) {
