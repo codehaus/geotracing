@@ -82,6 +82,9 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 
         <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
                  token="walkandplay" value="[PORTALNAME]" excludes="org.walkandplay.server"/>
+
+        <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
+                 token=".[PORTALNAME]" value=".walkandplay" excludes="org.walkandplay.server"/>
     </target>
 
     <!-- Compile the java files. -->
@@ -178,11 +181,11 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         </copy>
 
         <!-- Replace users/passwords with local values as not to have them in repository -->
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
-                 replacefilterfile="${home}/security.properties" summary="true"/>
+        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${home}/security.properties" summary="true"/>
 
         <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplay" token="[PORTALNAME]"/>
-
+        <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplay" token="[PORTALNAME]"/>
+        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6050" token="[PORTNR]"/>
         <copy todir="${build.war.dir}/WEB-INF/lib" file="${project.jar}"/>
 
         <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
@@ -228,7 +231,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <!-- Build the .wars for the project -->
-    <target name="deploy-test" depends="jartest">
+    <target name="wartest" depends="jartest">
         <echo message="Building webapp..."/>
         <echo message="using geoTracing war dir: ${gt.war.dir}"/>
 
@@ -251,7 +254,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         </copy>
 
         <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplaytest" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6051" token="6050"/>
+        <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplaytest" token="[PORTALNAME]"/>
+        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6051" token="[PORTNR]"/>
 
         <copy todir="${build.war.dir}/WEB-INF/lib" file="${project.jar}"/>
 
@@ -291,11 +295,12 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
             </fileset>
         </jar>
 
-        <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
 
     <!-- Build all clean. -->
     <target name="build" depends="clean,war"/>
+
+    <target name="buildtest" depends="clean,wartest"/>
 
     <!-- Package into archive files -->
     <target name="package" depends="build">
@@ -325,11 +330,18 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <target name="deploy-local" depends="build">
-        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>        
     </target>
+
+    <target name="deploy-test-local" depends="buildtest">
+        <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+    </target>
+
+    <target name="deploy-all-local" depends="deploy-local, deploy-test-local" />
 
     <target name="deploy-local++" depends="replace metadata plugin, build">
         <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+        <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
 
     <target name="deploy-local-raw">
