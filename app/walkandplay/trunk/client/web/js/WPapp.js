@@ -15,6 +15,7 @@ DH.include('Date.js');
 DH.include('FeatureSet.js');
 DH.include('FeaturePlayer.js');
 DH.include('GMap.js');
+DH.include('GTWorld.js');
 DH.include('LiveListener.js');
 DH.include('Medium.js');
 DH.include('Panel.js');

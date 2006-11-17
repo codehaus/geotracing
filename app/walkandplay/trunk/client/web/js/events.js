@@ -119,19 +119,3 @@ dojo.event.connect(live_bt,'onclick',function(evt) {
 	hide('searchbox');
 	hide('archivenavbox');	
 });
-dojo.event.connect(archive_bt,'onclick',function(evt) {
-	toggle('archivenavbox');	
-	hide('mapbox');
-	hide('livenavbox');
-	hide('searchbox');	
-});
-dojo.event.connect(signin_bt,'onclick',function(evt) {
-	toggle('loginbox');												
-	hide('archivenavbox');	
-	hide('mapbox');
-	hide('livenavbox');
-	hide('searchbox');	
-});
-dojo.event.connect(help_bt,'onclick',function(evt) {
-											  
-});
