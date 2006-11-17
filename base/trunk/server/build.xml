@@ -102,6 +102,9 @@ $Id$
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${kwx-tagging}"/>
 		</ant>
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${kwx-metadata}"/>
+		</ant>
 	</target>
 
 	<!-- Compile the java files. -->
@@ -192,6 +195,9 @@ $Id$
 			<fileset dir="${kwx-tagging.dir}/lib">
 				<include name="kwx-tagging.jar"/>
 			</fileset>
+			<fileset dir="${kwx-metadata.dir}/lib">
+				<include name="metadata.jar"/>
+			</fileset>
 		</copy>
 
 		<copy todir="${build.war.dir}/WEB-INF/classes">
@@ -202,7 +208,11 @@ $Id$
 		</copy>
 
 		<!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
-		 <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
+		 <copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			 <fileset dir="${kwx-metadata.dir}/cfg/tables">
+				 <exclude name="cc_tag.xml"/>
+				 <exclude name="cc_tagrelation.xml"/>
+			 </fileset>
 			 <fileset dir="${kwx-tagging.dir}/cfg/tables"/>
 		 </copy>
 
