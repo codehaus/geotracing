@@ -1,0 +1,101 @@
+<!--
+
+ANT Build file for W&P Web Client.
+
+$Id$
+-->
+<project name="wp-web" default="build" basedir=".">
+
+	<!-- Initialization of properties (dirs, files) -->
+
+	<!-- Project global properties; overrule by modifying build.properties -->
+    <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+	<property file="build.properties"/>
+
+
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+
+	<property name="build.dir" value="${home}/build"/>
+
+	<!-- The .jar -->
+	<property name="package.zip" value="${build.dir}/${project.id}-${project.version}.zip"/>
+
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+		<delete dir="${home}/js/gt"/>
+		<delete dir="${home}/js/dojo"/>
+	</target>
+
+	<!-- Initialize: create dirs and set timestamp.. -->
+	<target name="init" depends="clean">
+		<mkdir dir="${build.dir}"/>
+		<tstamp/>
+	</target>
+
+	<!-- Optional download/upack of external packages. -->
+	<target name="externals" depends="init">
+		<echo message="downloading and unpacking external packages"/>
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${dojo-ajax}"/>
+		</ant>
+	</target>
+
+	<!-- Assemble external files -->
+	<target name="assemble" depends="externals">
+		<echo message="Assembling files..."/>
+
+		<!-- Copy external JS libs. -->
+		<copy todir="${home}/js/gt">
+
+			<!-- GeoTracing base JS files. -->
+			<fileset dir="${geotracing.base.dir}/server/webapp/gt/lib">
+				<include name="DHTML.js"/>
+				<include name="Server.js"/>
+				<include name="Record.js"/>
+			</fileset>
+
+			<!-- Pushlet AJAX client. -->
+			<fileset dir="${pushlet.dir}/webapps/pushlet/lib">
+				<include name="ajax-pushlet-client.js"/>
+			</fileset>
+
+			<!-- KWX AJAX client. -->
+			<fileset dir="${keyworx.dir}/client/ajax/kwclient/src">
+				<include name="KWClient.js"/>
+			</fileset>
+		</copy>
+		<!-- Copy external JS libs. -->
+		<copy todir="${home}/js/dojo">
+
+			<!-- GeoTracing base JS files. -->
+			<fileset dir="${dojo-ajax.dir}">
+				<exclude name="demos/**"/>
+				<exclude name="release/**"/>
+				<exclude name="tests/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package" depends="assemble">
+		<echo message="Packaging distribution into ${package.zip}"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${home}"
+				excludes="build.xml,build/**"/>
+		</zip>
+	</target>
+
+	<!-- Build all clean. -->
+	<target name="build" depends="package"/>
+
+	<target name="sync-site-local">
+		<copy todir="${deploy.local.dir}/web" overwrite="true">
+			<fileset dir="${home}"/>
+		</copy>
+	</target>
+
+</project>
