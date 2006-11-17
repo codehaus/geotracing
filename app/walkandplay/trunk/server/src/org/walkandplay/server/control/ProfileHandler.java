@@ -43,6 +43,7 @@ public class ProfileHandler extends DefaultHandler {
 
     private Log log = Logging.getLog("ProfileHandler");
     private ContentHandlerConfig config;
+    private ProfileLogic logic;
 
     /**
      * Processes the Client Request.
@@ -57,6 +58,8 @@ public class ProfileHandler extends DefaultHandler {
         log.info("Handling request for service=" + service);
         log.info(new String(anUtopiaRequest.getRequestCommand().toBytes(false)));
 
+        if(logic == null) logic = new ProfileLogic(anUtopiaRequest.getUtopiaSession().getContext().getOase(), config);
+        
         JXElement response;
         try {
             if (service.equals(PROFILE_CREATE_SERVICE)) {
@@ -130,9 +133,6 @@ public class ProfileHandler extends DefaultHandler {
             String password = person.getChildText(Account.PASSWORD_FIELD);
             String confirmationUrl = requestElement.getChildText("confirmationurl");
 
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
-            ProfileLogic logic = new ProfileLogic(oase);
-
             int personId = logic.createProfile(portalId, applicationId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
                     tags, profilePublic, license, email, emailPublic, password, confirmationUrl);
@@ -159,8 +159,6 @@ public class ProfileHandler extends DefaultHandler {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             String personId = requestElement.getAttr(Person.ID_FIELD);
 
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
-            ProfileLogic logic = new ProfileLogic(oase);
             JXElement profile = logic.getProfile(personId);
 
             JXElement response = createResponse(PROFILE_GET_SERVICE);
@@ -183,10 +181,8 @@ public class ProfileHandler extends DefaultHandler {
     public JXElement activateProfile(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String code = requestElement.getAttr("code");
 
-            ProfileLogic logic = new ProfileLogic(oase);
             logic.activateProfile(code);
 
             return createResponse(PROFILE_ACTIVATE_SERVICE);
@@ -207,10 +203,8 @@ public class ProfileHandler extends DefaultHandler {
     public JXElement sendJad(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String personId = requestElement.getAttr(Person.ID_FIELD);
 
-            ProfileLogic logic = new ProfileLogic(oase);
             logic.sendJAD(personId);
 
             return createResponse(PROFILE_SENDJAD_SERVICE);
@@ -259,9 +253,6 @@ public class ProfileHandler extends DefaultHandler {
             String email = person.getChildText(Person.EMAIL_FIELD);
             String password = person.getChildText(Account.PASSWORD_FIELD);
 
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
-            ProfileLogic logic = new ProfileLogic(oase);
-
             logic.updateProfile(personId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
                     tags, profilePublic, license, email, emailPublic, password);
@@ -277,11 +268,9 @@ public class ProfileHandler extends DefaultHandler {
     public JXElement resetPassword(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String email = requestElement.getAttr(Person.EMAIL_FIELD);
             String confirmationUrl = requestElement.getAttr("confirmationurl");
 
-            ProfileLogic logic = new ProfileLogic(oase);
             logic.resetPassword(email, confirmationUrl);
 
             return createResponse(PROFILE_RESETPASSWORD_SERVICE);

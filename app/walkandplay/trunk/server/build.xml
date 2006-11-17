@@ -307,11 +307,11 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 
     <target name="deploy-all-local" depends="deploy-local, deploy-test-local" />
 
-    <target name="deploy-local++" depends="replace metadata plugin, build">
+    <!--<target name="deploy-local++" depends="replace metadata plugin, build">
         <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
         <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
-
+-->
     <target name="deploy-local-raw">
         <copy todir="${deploy.test.dir}/${war.name}" overwrite="true">
             <fileset dir="${home.webapp.dir}"/>

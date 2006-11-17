@@ -21,6 +21,8 @@ import org.keyworx.utopia.core.logic.AccountLogic;
 import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.utopia.core.util.Core;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.utopia.core.util.Translator;
+import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.plugin.metadata.core.LicenseLogic;
 import org.keyworx.plugin.metadata.MetadataPlugin;
 import org.keyworx.plugin.tagging.logic.TagLogic;
@@ -41,9 +43,11 @@ public class ProfileLogic {
 	private String mailServer;
 	private String mailSender;
 	private String host;
+    private ContentHandlerConfig config;
 
-	public ProfileLogic(Oase o) {
+    public ProfileLogic(Oase o, ContentHandlerConfig aConfig) {
 		oase = o;
+        config = aConfig;
         mailServer = ServerConfig.getProperty("keyworx.mail.server");
         mailSender = ServerConfig.getProperty("keyworx.mail.sender");
         host = ServerConfig.getProperty("host.name");
@@ -279,8 +283,7 @@ public class ProfileLogic {
                 throw new UtopiaException("This should not have happened! Profile found without a default license");
             }
 
-            LicenseLogic licenseLogic = new LicenseLogic(oase);
-            personElement.addChild(licenseLogic.toXML(licenses[0].getId()));
+            personElement.addChild(Translator.toProtocolNames(licenses[0].toXML(), null, config));
 
             // and get the tags
             TagLogic tagLogic = new TagLogic(oase.getOaseSession());
