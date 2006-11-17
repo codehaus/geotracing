@@ -74,7 +74,8 @@
 		file = new File(CACHE_DIR + fileRef + ".png");
 
 		// e.g. http://mt.google.com/mt?v=.1&x=480&y=-109&zoom=5;
-		tileURL = "http://mt" + GoogleTiles.getTileServerNo(xy.x, xy.y) + ".google.com/mt?v=w2.21&" + tileRef;
+		// v=ap.31
+		tileURL = "http://mt" + GoogleTiles.getTileServerNo(xy.x, xy.y) + ".google.com/mt?v=ap.31&" + tileRef;
 		// llBox = GoogleTiles.getBoundingBox(xy.x, xy.y, zoom);
 	}
 
