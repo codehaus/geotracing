@@ -35,7 +35,7 @@ DH.include('../js/MyApp.js');
 
 // Pushlet Data Event Callback from Server
 // These are PushletEvents sent by tracing users (e.g. from mobile phone)
-// lib/ajax-pushlet-client.js
+// js/gt/ajax-pushlet-client.js
 function onData(anEvent) {
 	WP.liveListener.onEvent(anEvent);
 }
