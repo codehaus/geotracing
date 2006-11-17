@@ -39,11 +39,16 @@ public class ProfileLogic {
 	private Oase oase;
 	private Log log = Logging.getLog("ProfileLogic");
 	private String mailServer;
+	private String mailSender;
+	private String host;
 
 	public ProfileLogic(Oase o) {
 		oase = o;
         mailServer = ServerConfig.getProperty("keyworx.mail.server");
+        mailSender = ServerConfig.getProperty("keyworx.mail.sender");
+        host = ServerConfig.getProperty("host.name");
         log.info("Using mailsever: " + mailServer);
+        log.info("Using host: " + host);
     }
 
 	/**
@@ -54,7 +59,7 @@ public class ProfileLogic {
 	 */
 	public void activateProfile(String aCode) throws UtopiaException {
 		try {
-			Record[] accounts = oase.getFinder().queryTable(Account.TABLE_NAME, Account.EXTRA_FIELD + " LIKE '%" + aCode + "%'", null, null);
+			Record[] accounts = oase.getFinder().queryTable(Account.TABLE_NAME, Account.SESSIONKEY_FIELD + " = '" + aCode + "'", null, null);
 			if (accounts == null || accounts.length == 0) {
 				throw new UtopiaException("This code is not valid.", ErrorCode.__6005_Unexpected_error);
 			}
@@ -129,10 +134,9 @@ public class ProfileLogic {
             String[] rolesIdList = {"" + roles[0].getId()};
 
             // create the confirmation code and set it
-            String code = MD5.createStringDigest(anEmail + anEmail + anEmail);
+            String code = creatProfileCode(anEmail);
             log.info("confirmationcode:" + code);
-            JXElement confirmationCode = new JXElement(code);
-            accountLogic.insertAccount(aPortalId, "" + person.getId(), rolesIdList, anEmail, aPassword, null, Account.INACTIVE_STATE_VALUE, confirmationCode);
+            accountLogic.insertAccount(aPortalId, "" + person.getId(), rolesIdList, anEmail, aPassword, code, Account.INACTIVE_STATE_VALUE, null);
 
             // set the default license
             LicenseLogic licenseLogic = new LicenseLogic(oase);
@@ -155,12 +159,16 @@ public class ProfileLogic {
             }
             
             // now create a url for confirmation and send it by mail.
-			String confirmationUrl = aConfirmationUrl + "?action=activate&code=" + code;
-			String body = "Thanks for registering!\n";
+             if(aConfirmationUrl.indexOf("?")!=-1){
+                aConfirmationUrl += "&code=" + code;
+            }else{
+                aConfirmationUrl += "?code=" + code;
+            }
+            String body = "Thanks for registering!\n";
 			body += "To confirm your account please click on the link below!\n";
-			body += confirmationUrl;
+			body += host + aConfirmationUrl;
             try{
-                MailClient.sendMail(mailServer, "info@walkandplay.org", anEmail, "WalkAndPlay account confirmation", body, null, null, null);
+                MailClient.sendMail(mailServer, mailSender, anEmail, "WalkAndPlay account confirmation", body, null, null, null);
             }catch(Throwable t){
                 log.error("************** Mail error!!!! Mail not sent!: " + t.toString());
             }
@@ -217,7 +225,7 @@ public class ProfileLogic {
                 // check if email address already exists
                 Record[] people = oase.getFinder().queryTable(Person.TABLE_NAME, Person.EMAIL_FIELD + "='" + anEmail + "'", null, null);
                 if (people != null && people.length > 0 && Integer.parseInt(aPersonId)!=people[0].getId()) throw new UtopiaException("This email address is already registered.", ErrorCode.__6207_Value_already_in_use);
-                person.getAccount().update(anEmail, aPassword, null, null, null);
+                person.getAccount().update(anEmail, aPassword, null, creatProfileCode(anEmail), null);
             }
 
             // set the default license
@@ -334,11 +342,7 @@ public class ProfileLogic {
 			body += "Send this file to your phone by bluetooth and your installation should start automatically.\n";
 			body += "Enjoy!\n";
 
-            try{
-                MailClient.sendMail(mailServer, "info@walkandplay.org", email, "WalkAndPlay jad file", body, null, null, fileName);
-            }catch(Throwable t){
-                log.error("************** Mail error!!!! Mail not sent!: " + t.getMessage().toString());
-            }
+            MailClient.sendMail(mailServer, mailSender, email, "WalkAndPlay jad file", body, null, null, fileName);
 
         } catch (UtopiaException ue) {
             throw ue;
@@ -351,28 +355,30 @@ public class ProfileLogic {
 	 * Request to reset a password and sends a confirm email.
 	 *
 	 * @param anEmail The email address
+     * @param aConfirmationUrl forward url
 	 * @throws UtopiaException
 	 */
-	public void resetPassword(String anEmail) throws UtopiaException {
+	public void resetPassword(String anEmail, String aConfirmationUrl) throws UtopiaException {
 		try {
 			Record[] people = oase.getFinder().queryTable(Person.TABLE_NAME, Person.EMAIL_FIELD + "='" + anEmail + "'", null, null);
 			if (people == null || people.length == 0) {
 				throw new UtopiaException("No account found for " + anEmail, ErrorCode.__6004_Invalid_attribute_value);
 			}
 
-			String code = MD5.createStringDigest(anEmail + anEmail + anEmail);
+			String code = creatProfileCode(anEmail);
 
-			String confirmationUrl = "http://www.walkandplay.org/wp/register.jsp?action=reset&email=" + URLEncoder.encode(anEmail, "UTF-8") + "&code=" + code;
-			String body = "You requested an password reset at WalkAndPlay.\n";
-			body += "To confirm it please click on the link below!\n";
-			body += confirmationUrl;
-            
-            try{
-                MailClient.sendMail(mailServer, "info@walkandplay.org", anEmail, "WalkAndPlay account reset request", body, null, null, null);
-            }catch(Throwable t){
-                log.error("************** Mail error!!!! Mail not sent!: " + t.getMessage());
+            if(aConfirmationUrl.indexOf("?")!=-1){
+                aConfirmationUrl += "&code=" + code;
+            }else{
+                aConfirmationUrl += "?code=" + code;
             }
+                
+            String body = "You requested an password reset at WalkAndPlay.\n";
+			body += "To confirm please click on the link below!\n";
+			body += host + aConfirmationUrl;
             
+            MailClient.sendMail(mailServer, mailSender, anEmail, "WalkAndPlay account reset request", body, null, null, null);
+
         } catch (UtopiaException ue) {
 			throw ue;
 		} catch (Throwable t) {
@@ -380,6 +386,14 @@ public class ProfileLogic {
 		}
 	}
 
+    private String creatProfileCode(String anEmail) throws UtopiaException{
+        try{
+        return MD5.createStringDigest(anEmail + anEmail + anEmail);
+        } catch (Throwable t) {
+			throw new UtopiaException("Exception in creatProfileCode()" + t.toString());
+		}
+    }
+    
 }
 
 /*

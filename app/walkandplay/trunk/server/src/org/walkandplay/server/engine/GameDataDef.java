@@ -2,7 +2,7 @@
  * Copyright 2004 - Waag Society - www.waag.org - See license below *
  ****************************************************************/
 
-package org.[PORTALNAME].server.engine;
+package org.walkandplay.server.engine;
 
 
 /**

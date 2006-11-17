@@ -3,8 +3,8 @@
     <test id="login-selapp">
 
         <send id="client1">
-            <login-req name="wp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
-            <select-app-req appname="wp" rolename="user"/>
+            <login-req name="geoapp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
         </send>
 
         <expect id="client1">

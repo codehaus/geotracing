@@ -14,6 +14,7 @@ import org.keyworx.utopia.core.logic.RelateLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.oase.api.Record;
 import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.walkandplay.server.util.Constants;
@@ -38,6 +39,9 @@ public class TourHandler extends DefaultHandler {
     public final static String TOUR_CREATE_SERVICE = "tour-create";
     public final static String TOUR_UPDATE_SERVICE = "tour-update";
     public final static String TOUR_DELETE_SERVICE = "tour-delete";
+
+    private Log log = Logging.getLog("TourHandler");
+    private ContentHandlerConfig config;
 
     /**
      * Processes the Client Request.
@@ -416,6 +420,26 @@ public class TourHandler extends DefaultHandler {
         } catch (Throwable t) {
             throw new UtopiaException(t);
 		}
+	}
+
+    /**
+	 * Overridden to have a hook to do the initialisation.
+	 * @param aKey
+	 * @param aValue
+	 * @see org.keyworx.utopia.core.control.Handler#setProperty(java.lang.String, java.lang.String)
+	 */
+	public void setProperty(String aKey, String aValue) {
+		if (aKey.equals("config")) {
+			try {
+				config = ContentHandlerConfig.getConfiguration(aValue);
+			}
+			catch (Exception e) {
+				log.error("Exception while processing content handler configuration.", e);
+				throw new RuntimeException("Exception while processing content handler configuration.", e);
+			}
+
+		}
+		super.setProperty(aKey, aValue);
 	}
 
 }

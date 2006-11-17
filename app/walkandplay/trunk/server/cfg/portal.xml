@@ -10,7 +10,7 @@
     <connectors>
         <!-- Mainly needed for TracerDaemon and LocEmailUploadDaemon -->
         <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
-            <property name="port">6050</property>
+            <property name="port">[PORTNR]</property>
             <property name="pongTimeoutMillis">30000</property>
         </connector>
     </connectors>
@@ -31,13 +31,17 @@
 
             <handler id="t" class="org.geotracing.server.TracingHandler"/>
             <handler id="query" class="org.geotracing.server.QueryHandler"/>
-            <handler id="profile" class="org.walkandplay.server.control.ProfileHandler"/>
-            <handler id="tour" class="org.walkandplay.server.control.TourHandler"/>
+            <handler id="profile" class="org.walkandplay.server.control.ProfileHandler">
+                <property name="config">content-config.xml</property>
+            </handler>
+            <handler id="tour" class="org.walkandplay.server.control.TourHandler">
+                <property name="config">content-config.xml</property>
+            </handler>
             <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
             <handler id="content" class="org.keyworx.utopia.core.control.ContentHandler"/>
             <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>
             <!-- plugin handlers -->
-            <handler id="tagging" class="org.keyworx.plugin.tagging.control.TaggingHandler"/>
+            <handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
             <handler id="license" class="org.keyworx.plugin.metadata.control.LicenseHandler"/>
         </handlers>
 
@@ -63,9 +67,9 @@
             </daemon>
 
             <!-- Tracer Bot -->
-			<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
+			<!--<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
 				<property name="intervalMillis">25000</property>
-			</daemon>
+			</daemon>-->
         </daemons>
     </application>
 </portal>
