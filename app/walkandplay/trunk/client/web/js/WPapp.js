@@ -15,9 +15,7 @@ DH.include('Date.js');
 DH.include('FeatureSet.js');
 DH.include('FeaturePlayer.js');
 DH.include('GMap.js');
-DH.include('GTWidget.js');
 DH.include('LiveListener.js');
-
 DH.include('Medium.js');
 DH.include('Panel.js');
 DH.include('POI.js');
@@ -29,8 +27,7 @@ DH.include('Track.js');
 DH.include('TrackAutoPlayer.js');
 DH.include('TrackPlayer.js');
 DH.include('Widget.js');
-
-DH.include('../js/MyApp.js');
+DH.include('../MyApp.js');
 
 
 // Pushlet Data Event Callback from Server
@@ -55,7 +52,6 @@ var WP = {
 		if (WP.initialized == true) {
 			return;
 		}
-
 		// Initialize user app
 		MYAPP.init();
 		// Init server.js
@@ -63,7 +59,7 @@ var WP = {
 		// Creates Google Map object
 		WP.createMap();
 		// Init gtwidget.js
-		GTW.init();
+	//	GTW.init();
 		// Live Pushlet event setup
 		WP.createLiveListener();
 		PL.joinListen('/gt')

@@ -31,11 +31,8 @@ var MYAPP = {
    },
 
 	createMap: function() {
-		WP.blinkStatus('Creating map...');
-
 		var WMS_URL_GREY = 'img/greysquare.jpg?';
 		var G_MAP_GREY = createWMSSpec(WMS_URL_GREY, "Blank", "Blank", "bl", "bla", "image/jpeg", "1.1.1");
-
 		CustomGetTileUrl = function(a, b) {
 			var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
 			var lURL = "map/gmap-sk8-tile.jsp";
@@ -55,7 +52,6 @@ var MYAPP = {
 			return 1.0;
 		}
 
-
 		var satLayers = [G_SATELLITE_MAP.getTileLayers()[0], tile];
 		var mapLayers = [G_NORMAL_MAP.getTileLayers()[0], tile];
 		var blancLayers = [G_MAP_GREY.getTileLayers()[0], tile];
@@ -73,10 +69,23 @@ var MYAPP = {
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);
 		GMAP.addMapType('hybrid', G_HYBRID_MAP);
 		GMAP.addMapType('blanc', G_MAP_GREY);
-
 		// Create the Google Map
+		GMAP.createGMap = function(divId) {		
+			GMAP.mapDiv = DH.getObject(divId);
+			var mapOpts = {
+				size: GMAP.getMapSize()
+				// mapTypes: GMAP.mapTypes
+			}
+		// GLog.write('after' + GMAP.getMapSize().toString());
+			GMAP.map = new GMap2(GMAP.mapDiv, mapOpts);
+			for (var i in GMAP.mapTypes) {
+				GMAP.map.addMapType(GMAP.mapTypes[i]);
+			}		
+		}
+		
+		
 		GMAP.createGMap('map');
-
+	//	alert('test');
 		//GMAP.map.addControl(new GOverviewMapControl());
 		GMAP.map.setCenter(new GLatLng(52.37261, 4.900435), 9, GMAP.mapTypes['maproutes']);
 		GMAP.map.addControl(new GLargeMapControl(),
