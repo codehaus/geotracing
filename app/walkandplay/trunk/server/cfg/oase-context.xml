@@ -13,6 +13,7 @@
         <table file="tables/utopia_person.xml"/>
         <table file="tables/utopia_right.xml"/>
         <table file="tables/utopia_role.xml"/>
+        <table file="tables/utopia_url.xml"/>
 
         <table file="tables/utopia_item.xml"/>
 

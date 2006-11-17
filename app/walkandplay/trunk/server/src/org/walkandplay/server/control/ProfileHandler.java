@@ -19,6 +19,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.walkandplay.server.logic.ProfileLogic;
 
 import java.util.Vector;
@@ -40,6 +41,9 @@ public class ProfileHandler extends DefaultHandler {
     public final static String PROFILE_RESETPASSWORD_SERVICE = "profile-resetpassword";
     public final static String PROFILE_SENDJAD_SERVICE = "profile-sendjad";
 
+    private Log log = Logging.getLog("ProfileHandler");
+    private ContentHandlerConfig config;
+
     /**
      * Processes the Client Request.
      *
@@ -48,8 +52,6 @@ public class ProfileHandler extends DefaultHandler {
      * @throws UtopiaException Standard Utopia exception
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-        Log log = Logging.getLog(anUtopiaRequest);
-
         // Get the service name for the request
         String service = anUtopiaRequest.getServiceName();
         log.info("Handling request for service=" + service);
@@ -183,7 +185,6 @@ public class ProfileHandler extends DefaultHandler {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String code = requestElement.getAttr("code");
-            /*String key = requestElement.getAttr("key");*/
 
             ProfileLogic logic = new ProfileLogic(oase);
             logic.activateProfile(code);
@@ -278,9 +279,10 @@ public class ProfileHandler extends DefaultHandler {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String email = requestElement.getAttr(Person.EMAIL_FIELD);
+            String confirmationUrl = requestElement.getAttr("confirmationurl");
 
             ProfileLogic logic = new ProfileLogic(oase);
-            logic.resetPassword(email);
+            logic.resetPassword(email, confirmationUrl);
 
             return createResponse(PROFILE_RESETPASSWORD_SERVICE);
         } catch (UtopiaException ue) {
@@ -290,6 +292,25 @@ public class ProfileHandler extends DefaultHandler {
         }
     }
 
+    /**
+	 * Overridden to have a hook to do the initialisation.
+	 * @param aKey
+	 * @param aValue
+	 * @see org.keyworx.utopia.core.control.Handler#setProperty(java.lang.String, java.lang.String)
+	 */
+	public void setProperty(String aKey, String aValue) {
+		if (aKey.equals("config")) {
+			try {
+				config = ContentHandlerConfig.getConfiguration(aValue);
+			}
+			catch (Exception e) {
+				log.error("Exception while processing content handler configuration.", e);
+				throw new RuntimeException("Exception while processing content handler configuration.", e);
+			}
+
+		}
+		super.setProperty(aKey, aValue);
+	}
 
 }
 

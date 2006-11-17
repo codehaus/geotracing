@@ -3,8 +3,8 @@
     <test id="login-selapp">
 
         <send id="client1">
-            <login-req name="wp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
-            <select-app-req appname="wp" rolename="user"/>
+            <login-req name="geoapp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
         </send>
 
         <expect id="client1">
@@ -73,7 +73,7 @@
                         <password>pietje</password>
                     </person>
                     <license>by-nc</license>
-                    <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
+                    <confirmationurl>register.jsp</confirmationurl>
                 </profile-create-req>
             </utopia-req>
         </send>
@@ -121,7 +121,7 @@
                     </person>
                     <photoid></photoid>
                     <license>by-nc</license>
-                    <confirmationurl>http://test.walkandplay.com/register</confirmationurl>
+                    <confirmationurl>register.jsp</confirmationurl>
                     <tag>ffff</tag>
                     <tag>gggg</tag>
                     <tag>hhhh</tag>
@@ -194,7 +194,7 @@
 
         <expect id="client1">
             <utopia-rsp>
-                <profile-update-rsp id="${personid}"/>
+                <profile-update-rsp/>
             </utopia-rsp>
         </expect>
     </test>
@@ -216,7 +216,7 @@
     <test id="profile-resetpassword-req">
         <send id="client1">
             <utopia-req>
-                <profile-resetpassword-req email="ronald@waag.org" />
+                <profile-resetpassword-req confirmationurl="profile.jsp" email="ronald@waag.org" />
             </utopia-req>
         </send>
 
