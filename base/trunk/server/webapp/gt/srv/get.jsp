@@ -18,6 +18,7 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="org.geotracing.server.CommentLogic"%>
 <%@ page import="java.util.HashMap"%>
+<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -47,6 +48,8 @@
 	public static final String CMD_QUERY_USER_BY_NAME = "q-user-by-name";
 	public static final String CMD_QUERY_MEDIUM_INFO = "q-medium-info";
 	public static final String CMD_QUERY_POIS = "q-pois";
+	public static final String CMD_QUERY_TAGS= "q-tags";
+	public static final String CMD_QUERY_TAGGED= "q-tagged";
 	public static final String CMD_GET_TRACK = "get-track";
 	public static final String CMD_DESCRIBE = "describe";
 	public static final String PAR_ID = "id";
@@ -56,6 +59,13 @@
 	public static final String PAR_TABLE_NAME = "table";
 	public static final String PAR_OWNER_INFO = "ownerinfo";
 	public static final String PAR_TARGET = CommentLogic.FIELD_TARGET;
+	public static final String PAR_ITEMS = "items";
+	public static final String PAR_OFFSET = "offset";
+	public static final String PAR_ROW_COUNT = "rowcount";
+	public static final String PAR_TAGGERS = "taggers";
+	public static final String PAR_TAGS = "tags";
+	public static final String PAR_TYPES = "types";
+	public static final String PAR_TYPE = "type";
 	public static final String TAG_ERROR = "error";
 
 	public static Oase oase;
@@ -313,21 +323,32 @@
 		return result.length == 0 ? null : result[0];
 	}
 
+	/** Convert string like "22,34,56" to int array. */
+	int[] string2IntArray(String anIntList) throws NumberFormatException {
+		String[] ids = anIntList.split(",");
+		int[] values = new int[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			values[i] = Integer.parseInt(ids[i]);
+		}
+		return values;
+	}
+
 	/** Performs command and returns XML result. */
 	public JXElement doCommand(HttpServletRequest request, HttpServletResponse response) {
 		JXElement result;
 		String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
 		try {
 
-			if (command.equals(CMD_QUERY_STORE)) {
-				// Generic query
+	/*		if (command.equals(CMD_QUERY_STORE)) {
 				String tables = getParameter(request, "tables", null);
 				String fields = getParameter(request, "fields", null);
 				String where = getParameter(request, "where", null);
 				String relations = getParameter(request, "rels", null);
 				String postCond = getParameter(request, "postcond", null);
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
-			} else if (command.equals(CMD_QUERY_BY_EXAMPLE)) {
+			} else      */
+
+			if (command.equals(CMD_QUERY_BY_EXAMPLE)) {
 				// Query for single table by providing partial example record
 
 				// Table is required
@@ -600,6 +621,38 @@
 				}
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+
+			} else if (command.equals(CMD_QUERY_TAGS)) {
+	            // Get tag clouds
+				// Parameters:
+				// items (item ids), taggers (tagger ids), types (table names), offset, rowcount
+				String parItems = getParameter(request, PAR_ITEMS, null);
+				String parTaggers = getParameter(request, PAR_TAGGERS, null);
+				String parTypes = getParameter(request, PAR_TYPES, null);
+				String parOffset = getParameter(request, PAR_OFFSET, null);
+				String parRowcount = getParameter(request, PAR_ROW_COUNT, null);
+
+				int items[] = parItems == null ? null : string2IntArray(parItems);
+				int taggers[] = parTaggers == null ? null : string2IntArray(parTaggers);
+				String types[] = parTypes == null ? null : parTypes.split(",");
+	            int offset = parOffset == null ? -1 : Integer.parseInt(parOffset);
+				int rowcount = parRowcount == null ? -1 : Integer.parseInt(parRowcount);
+
+				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
+				result = createResponse(tagLogic.getTags(taggers, items, offset, rowcount));
+
+			} else if (command.equals(CMD_QUERY_TAGGED)) {
+				String parType = getParameter(request, PAR_TYPE, null);
+				String parTags = getParameter(request, PAR_TAGS, null);
+				String parOffset = getParameter(request, PAR_OFFSET, null);
+				String parRowcount = getParameter(request, PAR_ROW_COUNT, null);
+
+				String tags[] = parTags == null ? null : parTags.split(",");
+				int offset = parOffset == null ? -1 : Integer.parseInt(parOffset);
+				int rowcount = parRowcount == null ? -1 : Integer.parseInt(parRowcount);
+
+				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
+				result = createResponse(tagLogic.getItemsTaggedWith(parType, tags, "AND", null, offset, rowcount));
 
 			} else if (command.equals(CMD_QUERY_USER_BY_NAME)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);

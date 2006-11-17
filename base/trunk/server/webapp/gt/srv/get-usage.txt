@@ -65,11 +65,8 @@ The field names for each <record/> are specific for each query command.
 
 QUERY COMMANDS
 The following query commands are available for queries.
-Each will be documented below. Paramteers may be mandatory (m) or
+Each will be documented below. Parameters are mandatory (m) or
 optional (o).
-
-"q-store"
-full query of the database (will be disabled in production versions)
 
 "q-by-example"
 - query single table by providing an example record

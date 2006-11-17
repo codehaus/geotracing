@@ -1,5 +1,11 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
+1.1.6 - 15.nov.2006
+- "my" pages; handle profile, media upload and tagging
+
+1.1.5 - 13.nov.2006
+- commenting and tagging added
+
 1.1.2 - 19.okt.2006
 - query optimizations upto 1000%
 - many other changes not logged here
