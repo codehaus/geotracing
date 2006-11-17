@@ -38,7 +38,7 @@ $Id$
 	<!-- Optional download/upack of external packages. -->
 	<target name="externals" depends="init">
 		<echo message="downloading and unpacking external packages"/>
-		
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${keyworx}"/>
 		</ant>
@@ -97,8 +97,16 @@ $Id$
 	<!-- Build all clean. -->
 	<target name="build" depends="package"/>
 
-	<target name="sync-site-local">
-		<copy todir="${deploy.local.dir}/web" overwrite="true">
+
+	<target name="sync-test">
+		<exec executable="scp">
+			<arg line="${home}"/>
+			<arg line="${deploy.test.dir}"/>
+		</exec>
+	</target>
+
+	<target name="sync-local">
+		<copy todir="${deploy.local.dir}" overwrite="true">
 			<fileset dir="${home}"/>
 		</copy>
 	</target>
