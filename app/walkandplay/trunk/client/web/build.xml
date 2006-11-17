@@ -51,11 +51,7 @@ $Id$
 		<copy todir="${home}/js/gt">
 
 			<!-- GeoTracing base JS files. -->
-			<fileset dir="${geotracing.base.dir}/server/webapp/gt/lib">
-				<include name="DHTML.js"/>
-				<include name="Server.js"/>
-				<include name="Record.js"/>
-			</fileset>
+			<fileset dir="${geotracing.base.dir}/server/webapp/gt/lib"/>
 
 			<!-- Pushlet AJAX client. -->
 			<fileset dir="${pushlet.dir}/webapps/pushlet/lib">
