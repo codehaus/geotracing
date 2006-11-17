@@ -40,6 +40,11 @@
 		<field name="enddate" listed="true" searchable="true"/>
 	</type>
 
+    <type name="gameplay" table="gameplay">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>
+
     <type name="tag" table="cc_tag">
 		<field name="name" listed="true" searchable="true"/>
 	</type>

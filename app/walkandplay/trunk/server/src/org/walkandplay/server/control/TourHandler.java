@@ -14,6 +14,7 @@ import org.keyworx.utopia.core.logic.RelateLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.utopia.core.util.Translator;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.oase.api.Record;
 import org.keyworx.plugin.tagging.logic.TagLogic;
@@ -179,6 +180,7 @@ public class TourHandler extends DefaultHandler {
 
             int tourId = Integer.parseInt(id);
             JXElement content = contentLogic.getContent(tourId);
+            Translator.toProtocolNames(content, null, config);
 
             // get known invitees
             RelateLogic relateLogic = new RelateLogic(oase, null);
@@ -200,9 +202,9 @@ public class TourHandler extends DefaultHandler {
             Record[] tags = tagLogic.getTagsFor(items, -1, -1);
             if(tags!=null){
                 for(int i=0;i<tags.length;i++){
-                    JXElement tagElm = new JXElement(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
-                    tagElm.setText(tags[i].getStringField(org.keyworx.plugin.tagging.util.Constants.NAME_COLUMN));
-                    content.addChild(tagElm);
+                    JXElement tag = tags[i].toXML();
+                    Translator.toProtocolNames(tag, null, config);
+                    content.addChild(tag);
                 }
             }
 
@@ -213,7 +215,9 @@ public class TourHandler extends DefaultHandler {
             JXElement[] gameplayElms = relateLogic.getRelated(tourId, Constants.GAMEPLAY_TABLE, null, fields2);
             if(gameplayElms!=null){
                 for(int i=0;i<gameplayElms.length;i++){
-                    content.addChild(gameplayElms[i]);
+                    JXElement gameplay = gameplayElms[i];
+                    Translator.toProtocolNames(gameplay, null, config);
+                    content.addChild(gameplay);
                 }
             }
 
@@ -267,13 +271,15 @@ public class TourHandler extends DefaultHandler {
             columns.add(Constants.ID_FIELD);
             columns.add(Constants.NAME_FIELD);
             columns.add(Constants.DESCRIPTION_FIELD);
-            JXElement[] content = contentLogic.listContent(Constants.TOUR_TABLE, columns, null, -1, -1, -1);
+            JXElement[] tours = contentLogic.listContent(Constants.TOUR_TABLE, columns, null, -1, -1, -1);
 
             JXElement response = createResponse(TOUR_GETLIST_SERVICE);
 
-            if (content != null) {
-                for (int i = 0; i < content.length; i++) {
-                    response.addChild(content[i]);
+            if (tours != null) {
+                for (int i = 0; i < tours.length; i++) {
+                    JXElement tour = tours[i];
+                    Translator.toProtocolNames(tour, null, config);
+                    response.addChild(tour);
                 }
             }
 
