@@ -19,7 +19,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="server.cfg.dir" value="${home}/server/cfg"/>
     <property name="server.test.dir" value="${home}/server/test"/>
     <!--<property name="home.webapp.dir" value="${home}/server/webapp/wp"/>-->
-    <property name="home.webapp.dir" value="${home}/client/web/wp"/>
+  <!--  <property name="home.webapp.dir" value="${home}/client/web/wp"/> -->
 
     <property name="build.dir" value="${home}/build"/>
     <property name="build.class.dir" value="${build.dir}/class"/>
@@ -32,12 +32,13 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
     <property name="deploy.zip" value="${build.dir}/${project.id}-${version}.zip"/>
 
-    <!-- plugins -->
+    <!-- plugins
     <property name="plugins.dir" value="${home}/server/plugins"/>
     <property name="tagging.plugin.dir" value="${plugins.dir}/tagging"/>
-    <property name="metadata.plugin.dir" value="${plugins.dir}/metadata"/>
-    <property name="tagging.jar" value="${tagging.plugin.dir}/lib/tagging.jar"/>
-    <property name="metadata.jar" value="${metadata.plugin.dir}/lib/metadata.jar"/>
+    <property name="metadata.plugin.dir" value="${plugins.dir}/metadata"/>  -->
+
+	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
+    <property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
 
     <!-- The .jar -->
     <property name="project.jad" value="${home}/client/phone/etc/wp.jad"/>
@@ -176,10 +177,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
             <fileset dir="${server.cfg.dir}"/>
         </copy>
 
-        <copy todir="${build.war.dir}" overwrite="true">
-            <fileset dir="${home.webapp.dir}"/>
-        </copy>
-
         <!-- Replace users/passwords with local values as not to have them in repository -->
         <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${home}/security.properties" summary="true"/>
 
@@ -197,25 +194,13 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <!-- copy the jad so it can be send to users later... -->
         <copy file="${project.jad}" todir="${build.war.dir}/WEB-INF/cfg"/>
 
-        <!-- copy plugins -->
+        <!-- copy plugins
         <mkdir dir="${build.war.dir}/WEB-INF/plugins"/>
-        <mkdir dir="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/>
+        <copydir src="${kwx-tagging.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
+        <copydir src="${kwx-metadata.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/>  -->
 
         <!-- TODO: change this eventually -->
         <!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${tagging.plugin.dir}/cfg/tables"/>
-        </copy>
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${metadata.plugin.dir}/cfg/tables"/>
-        </copy>
-        <copy file="${tagging.jar}" todir="${build.war.dir}/WEB-INF/lib"/>
-        <copy file="${metadata.jar}" todir="${build.war.dir}/WEB-INF/lib"/>
-
-        <!-- just to be on the safe side -->
-        <copy file="${keyworx.jar}" todir="${build.war.dir}/WEB-INF/lib" overwrite="true"/>
 
         <!-- copy data for tracerdaemon -->
         <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
@@ -249,11 +234,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
             <fileset dir="${server.cfg.dir}"/>
         </copy>
 
-        <copy todir="${build.war.dir}" overwrite="true">
-            <fileset dir="${home.webapp.dir}"/>
-        </copy>
-
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplaytest" token="[PORTALNAME]"/>
+       <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplaytest" token="[PORTALNAME]"/>
         <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplaytest" token="[PORTALNAME]"/>
         <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6051" token="[PORTNR]"/>
 
@@ -268,22 +249,10 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <!-- copy the jad so it can be send to users later... -->
         <copy file="${project.jad}" todir="${build.war.dir}/WEB-INF/cfg"/>
 
-        <!-- copy plugins -->
+        <!-- copy plugins
         <mkdir dir="${build.war.dir}/WEB-INF/plugins"/>
-        <mkdir dir="${build.war.dir}/WEB-INF/plugins/tagging"/>
         <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/>
-
-        <!-- TODO: change this eventually -->
-        <!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${tagging.plugin.dir}/cfg/tables"/>
-        </copy>
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${metadata.plugin.dir}/cfg/tables"/>
-        </copy>
-        <copy file="${tagging.jar}" todir="${build.war.dir}/WEB-INF/lib"/>
-        <copy file="${metadata.jar}" todir="${build.war.dir}/WEB-INF/lib"/>
+        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/> -->
 
         <!-- just to be on the safe side -->
         <copy file="${keyworx.jar}" todir="${build.war.dir}/WEB-INF/lib" overwrite="true"/>
@@ -330,7 +299,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <target name="deploy-local" depends="build">
-        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>        
+        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
 
     <target name="deploy-test-local" depends="buildtest">
