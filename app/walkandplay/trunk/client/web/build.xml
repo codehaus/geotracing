@@ -38,6 +38,15 @@ $Id$
 	<!-- Optional download/upack of external packages. -->
 	<target name="externals" depends="init">
 		<echo message="downloading and unpacking external packages"/>
+		
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${keyworx}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${pushlet}"/>
+		</ant>
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${dojo-ajax}"/>
 		</ant>
