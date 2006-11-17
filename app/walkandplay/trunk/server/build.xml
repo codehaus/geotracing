@@ -4,7 +4,7 @@ ANT Build file for WalkAndPlay.
 
 $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 -->
-<project name="WalkAndPlayServer" default="build" basedir=".">
+<project name="WP Server" default="build" basedir=".">
 
     <!-- Initialization of properties (dirs, files) -->
     <!-- Project global properties; overrule by modifying build.properties -->
@@ -25,6 +25,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="build.zip.dir" value="${build.dir}/zip"/>
     <property name="home.src.dir" value="${home}/src"/>
     <property name="home.data.dir" value="${home}/data"/>
+    <property name="home.webapp.dir" value="${home}/../client/web"/>
     <property name="build.war.dir" value="${build.dir}/war"/>
     <property name="version.dir" value="${home}/version"/>
     <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
@@ -33,11 +34,11 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <!-- plugins
     <property name="plugins.dir" value="${home}/plugins"/>
     <property name="tagging.plugin.dir" value="${plugins.dir}/tagging"/>
-    <property name="metadata.plugin.dir" value="${plugins.dir}/metadata"/>  -->
+    <property name="metadata.plugin.dir" value="${plugins.dir}/metadata"/> -->
 
 	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
     <property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
-
+    
     <!-- The .jar -->
     <property name="project.jad" value="${home}/../client/phone/etc/wp.jad"/>
     <property name="project.jar" value="${build.lib.dir}/${war.name}.jar"/>
@@ -333,12 +334,12 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         </copy>
     </target>
 
-    <target name="replace metadata plugin">
-        <!-- build it -->
+    <!--<target name="replace metadata plugin">
+        --><!-- build it --><!--
         <ant antfile="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build.xml" target="package"
              inheritall="false"/>
 
-        <!-- and move it -->
+        --><!-- and move it --><!--
         <copy todir="${metadata.plugin.dir}" overwrite="true">
             <fileset dir="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build/plugin/packaged">
                 <excludesfile
@@ -348,16 +349,16 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <target name="replace tagging plugin">
-        <!-- build it -->
+        --><!-- build it --><!--
         <ant antfile="/Users/Ronald/workspaces/workspace-kwx/tagging/build.xml" target="package" inheritall="false"/>
 
-        <!-- and move it -->
+        --><!-- and move it --><!--
         <copy todir="${tagging.plugin.dir}" overwrite="true">
             <fileset dir="/Users/Ronald/workspaces/workspace-kwx/tagging/build/packaged">
                 <excludesfile name="/Users/Ronald/workspaces/workspace-kwx/tagging/build/packaged/tagging.tar.gz"/>
             </fileset>
         </copy>
-    </target>
+    </target>-->
 
     <!-- Run protocol test client. -->
     <target name="protocoltest" description="Runs protocol test client">
