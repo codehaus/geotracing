@@ -101,7 +101,7 @@ public class PlayToursCanvas extends DefaultCanvas {
                 ScreenUtil.selectPrevMenuItem();
             }else{
                 ScreenUtil.scrollText(false, textHeight, availableHeight, fh);
-            }
+            }   
         } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
         } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
         } else if (key == -8) {
