@@ -82,13 +82,15 @@ function _checkIFrameRsp() {
 
 		}
 	}	
+
+
 dojo.event.connect(window,'onload',function(evt) {
-
-KW.url = 'wp/proto.srv';
-KW.init(pwCallback, pwNegResp, 60);
-KW.login('geo-user','user');
-
+	//KW.url = '../../wp/proto.srv';
+	KW.init(pwCallback, pwNegResp, 60,'/wp');
+	KW.login('geoapp-user','user');
 });
+
+
 dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt) {
 	evt.preventDefault();
 	var txt;
