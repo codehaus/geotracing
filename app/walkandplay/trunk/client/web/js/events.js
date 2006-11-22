@@ -19,6 +19,7 @@ var archive_bt = document.getElementById('archive_bt');
 var live_bt = document.getElementById('live_bt');
 var signin_bt = document.getElementById('signin_bt');
 var help_bt = document.getElementById('help_bt');
+var archivetoursbox = document.getElementById('archivetoursbox');
 /*
 FUNCTIONS
 */
@@ -37,7 +38,9 @@ function toggle(elm) {
 function hide(elm) {
 	document.getElementById(elm).style.display = 'none';	
 }
-
+function show(elm) {
+	document.getElementById(elm).style.display = 'block';	
+}
 
 /*
 EVENTS
@@ -93,6 +96,7 @@ if(document.getElementById('livenavbox')) {
 if(document.getElementById('archivenavbox')) {
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[0],'onclick',function(evt) {
 		WP.mLastTracks(10);
+		show('archivetoursbox');
 	});	
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
 		WP.mAutoPlay();
@@ -106,24 +110,30 @@ dojo.event.connect(search_bt,'onclick',function(evt) {
 	hide('mapbox');
 	hide('archivenavbox');
 	hide('livenavbox');
+	hide('archivetoursbox');
+
 });
+
 dojo.event.connect(maps_bt,'onclick',function(evt) {
 	toggle('mapbox');
 	hide('searchbox');
 	hide('archivenavbox');
 	hide('livenavbox');	
+	hide('archivetoursbox');	
 });
 dojo.event.connect(live_bt,'onclick',function(evt) {
 	toggle('livenavbox');
 	hide('mapbox');
 	hide('searchbox');
 	hide('archivenavbox');	
+	hide('archivetoursbox');	
 });
 dojo.event.connect(archive_bt,'onclick',function(evt) {
 	toggle('archivenavbox');	
 	hide('mapbox');
 	hide('livenavbox');
 	hide('searchbox');	
+	hide('archivetoursbox');	
 });
 dojo.event.connect(signin_bt,'onclick',function(evt) {
 	toggle('loginbox');												
@@ -131,6 +141,8 @@ dojo.event.connect(signin_bt,'onclick',function(evt) {
 	hide('mapbox');
 	hide('livenavbox');
 	hide('searchbox');	
+	hide('archivetoursbox');
+	
 });
 dojo.event.connect(help_bt,'onclick',function(evt) {
 											  
