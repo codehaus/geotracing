@@ -86,7 +86,7 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 		var medium = this;
 		this.onClick = function(e) {
 			DH.cancelEvent(e);
-			medium.displayImageFull();
+			//medium.displayImageFull();
 		}
 
 		DH.addEvent(this.previewId, 'click', this.onClick, false);
