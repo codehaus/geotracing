@@ -179,7 +179,7 @@ var WP = {
 			trackName = records[i].getField('name');
 			tracerName = records[i].getField('loginname');
 			//WP.trackSelector.addOption(trackId, tracerName + ' - ' + trackName, tracerName);
-			cont.innerHTML = cont.innerHTML + '<a><div id="'+trackId+'">'+tracerName+'</div></a>';
+			cont.innerHTML = cont.innerHTML + '<a href="#"><div id="'+trackId+'">'+tracerName+'</div></a>';
 		}
 		var tracks = cont.getElementsByTagName('div');
 		for(var i = 0; i < tracks.length; i++) {
