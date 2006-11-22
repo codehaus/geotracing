@@ -20,7 +20,7 @@ DH.include('LiveListener.js');
 DH.include('Factory.js');
 DH.include('Comment.js');
 DH.include('TLabel.js');
-DH.include('Medium.js');
+DH.include('../Medium.js');
 DH.include('Panel.js');
 DH.include('POI.js');
 DH.include('Record.js');
