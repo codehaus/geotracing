@@ -92,7 +92,7 @@ if(document.getElementById('livenavbox')) {
 }
 if(document.getElementById('archivenavbox')) {
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[0],'onclick',function(evt) {
-		WP.mLastTracks(100);
+		WP.mLastTracks(20);
 	});	
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
 		WP.mAutoPlay();
@@ -118,4 +118,20 @@ dojo.event.connect(live_bt,'onclick',function(evt) {
 	hide('mapbox');
 	hide('searchbox');
 	hide('archivenavbox');	
+});
+dojo.event.connect(archive_bt,'onclick',function(evt) {
+	toggle('archivenavbox');	
+	hide('mapbox');
+	hide('livenavbox');
+	hide('searchbox');	
+});
+dojo.event.connect(signin_bt,'onclick',function(evt) {
+	toggle('loginbox');												
+	hide('archivenavbox');	
+	hide('mapbox');
+	hide('livenavbox');
+	hide('searchbox');	
+});
+dojo.event.connect(help_bt,'onclick',function(evt) {
+											  
 });
