@@ -92,7 +92,7 @@ if(document.getElementById('livenavbox')) {
 }
 if(document.getElementById('archivenavbox')) {
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[0],'onclick',function(evt) {
-		WP.mLastTracks(20);
+		WP.mLastTracks(10);
 	});	
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
 		WP.mAutoPlay();
