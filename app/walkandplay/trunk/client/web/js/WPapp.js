@@ -174,6 +174,7 @@ var WP = {
 	onQueryTracks: function (records) {
 		var cont = document.getElementById('archivetoursbox').getElementsByTagName('div')[0];
 		var trackId, trackName, tracerName;
+		cont.innerHTML = '';
 		for (var i = 0; i < records.length; i++) {
 			trackId = records[i].getField('id');
 			trackName = records[i].getField('name');
@@ -194,7 +195,6 @@ var WP = {
 
 	onQueryAllUsers: function (records) {
 		WP.showStatus('Got ' + records.length + ' users');
-
 		WP.userSelector = new Selector('Select a User', 'usersel', WP.onUserSelect);
 		WP.userSelector.hide();
 

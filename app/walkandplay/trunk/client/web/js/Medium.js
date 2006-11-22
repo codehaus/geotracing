@@ -22,7 +22,7 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Shows icon on map
 	this.getIconDiv = function() {
-		return '<div class="medicon" id="' + this.iconId + '" style="background-color:' + this.getBGColor() + ';" >&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+		return '<div class="medicon" id="' + this.iconId + '"><img src="img/photoicon.png" /></div>';
 	}
 
 	this.getTitle = function() {
