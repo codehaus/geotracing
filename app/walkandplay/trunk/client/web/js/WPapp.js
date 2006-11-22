@@ -17,6 +17,9 @@ DH.include('FeaturePlayer.js');
 DH.include('GMap.js');
 DH.include('GTWorld.js');
 DH.include('LiveListener.js');
+DH.include('Factory.js');
+DH.include('Comment.js');
+DH.include('TLabel.js');
 DH.include('Medium.js');
 DH.include('Panel.js');
 DH.include('POI.js');
@@ -53,6 +56,7 @@ var WP = {
 		if (WP.initialized == true) {
 			return;
 		}
+		GTW.boot();
 		// Initialize user app
 		MYAPP.init();
 		// Init server.js
@@ -60,7 +64,7 @@ var WP = {
 		// Creates Google Map object
 		WP.createMap();
 		// Init gtwidget.js
-	//	GTW.init();
+		GTW.init();
 		// Live Pushlet event setup
 		WP.createLiveListener();
 		PL.joinListen('/gt')
@@ -180,9 +184,8 @@ var WP = {
 		var tracks = cont.getElementsByTagName('div');
 		for(var i = 0; i < tracks.length; i++) {
 			dojo.event.connect(tracks[i],'onclick',function(evt) {
-				alert(evt.target.getAttribute('id'));
-				SRV.get('get-track', WP.onTrackSelect, 'trackId', evt.target.getAttribute('id'));
-															});
+				SRV.get('get-track', WP.onTrackSelect, 'id', evt.target.getAttribute('id'));
+			});
 				
 				
 		}
@@ -291,10 +294,12 @@ var WP = {
 //
 
 // Track selected e.g. in combo box
-	onTrackSelect: function(trackId, trackName, tracerName) {
-		// alert('select track: id=' + trackId + ' tracer=' + tracerName + ' trkName=' + trackName);
-		// WP.clearMap();
-	//	GTW.displayTrackPlayer();
+	onTrackSelect: function(trackXML) {
+		var trackId = (trackXML.getElementsByTagName('info')[0].getAttribute('id'));
+		var tracerName = (trackXML.getElementsByTagName('info')[0].getAttribute('name'));
+		var trackName = (trackXML.getElementsByTagName('info')[0].getAttribute('name'));
+		WP.clearMap();
+		GTW.displayTrackPlayer();
 		var tracer = GTW.createTracer(tracerName);
 		tracer.readTrack(trackId, trackName, true);
 		tracer.show();
@@ -373,14 +378,13 @@ var WP = {
 	},
 
 	mLastTracks: function(max) {
-		WP.mode = 'tracks';
-		WP.showMode();
+	//	WP.mode = 'tracks';
+	//	WP.showMode();
 
 		// Get all active tracks
-		WP.clearMap();
-		WP._deleteSelectors();
+	//	WP.clearMap();
+	//	WP._deleteSelectors();
 
-		WP.blinkStatus('Getting last ' + max + ' tracks...');
 		SRV.get('q-recent-tracks', WP.onQueryTracks, 'max', max);
 	},
 
