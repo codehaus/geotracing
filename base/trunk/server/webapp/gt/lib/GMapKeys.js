@@ -7,3 +7,5 @@ GMAP.addKey('test',
 		'^https?://test.geotracing.com/gt/.*' );
 
 
+GMAP.loadGoogleMapScript();
+
