@@ -1,380 +1,90 @@
 <!--
 
-ANT Build file for WalkAndPlay.
+ANT Build file for WalkAndPlay deployables.
 
-$Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
+$Id: build.xml 108 2006-10-20 21:45:17Z just $
 -->
-<project name="WalkAndPlayServer" default="build" basedir=".">
-
-    <!-- Initialization of properties (dirs, files) -->
-    <!-- Project global properties; overrule by modifying build.properties -->
-    <property file="build.properties"/>
-
-    <property name="geotracing.external.dir" value="${basedir}/../../../base/trunk/external"/>
-    <property file="${geotracing.external.dir}/build.properties"/>
-    <property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
-
-    <!-- Directory locations -->
-    <property name="home" value="${basedir}"/>
-    <property name="server.cfg.dir" value="${home}/server/cfg"/>
-    <property name="server.test.dir" value="${home}/server/test"/>
-    <!--<property name="home.webapp.dir" value="${home}/server/webapp/wp"/>-->
-  <!--  <property name="home.webapp.dir" value="${home}/client/web/wp"/> -->
-
-    <property name="build.dir" value="${home}/build"/>
-    <property name="build.class.dir" value="${build.dir}/class"/>
-    <property name="build.lib.dir" value="${build.dir}/lib"/>
-    <property name="build.zip.dir" value="${build.dir}/zip"/>
-    <property name="home.src.dir" value="${home}/server/src"/>
-    <property name="home.data.dir" value="${home}/server/data"/>
-    <property name="build.war.dir" value="${build.dir}/war"/>
-    <property name="version.dir" value="${home}/version"/>
-    <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
-    <property name="deploy.zip" value="${build.dir}/${project.id}-${version}.zip"/>
-
-    <!-- plugins
-    <property name="plugins.dir" value="${home}/server/plugins"/>
-    <property name="tagging.plugin.dir" value="${plugins.dir}/tagging"/>
-    <property name="metadata.plugin.dir" value="${plugins.dir}/metadata"/>  -->
-
-	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
-    <property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
-
-    <!-- The .jar -->
-    <property name="project.jad" value="${home}/client/phone/etc/wp.jad"/>
-    <property name="project.jar" value="${build.lib.dir}/${war.name}.jar"/>
-    <property name="project.war" value="${build.dir}/${war.name}.war"/>
-    <property name="test.project.war" value="${build.dir}/${war.name}test.war"/>
-
-    <path id="compile.classpath">
-        <pathelement location="${build.class.dir}"/>
-        <pathelement location="${keyworx.jar}"/>
-        <pathelement location="${tagging.jar}"/>
-        <pathelement location="${metadata.jar}"/>
-    </path>
-
-    <!-- Initialize: create dirs and set timestamp.. -->
-    <target name="init">
-        <mkdir dir="${build.dir}"/>
-        <tstamp/>
-    </target>
-
-    <!-- Compile the java files. -->
-    <target name="compile" depends="init">
-        <echo message="Compiling java files..."/>
-
-        <!-- Always do clean build -->
-        <delete dir="${build.class.dir}"/>
-        <mkdir dir="${build.class.dir}"/>
-
-        <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
-                 value="walkandplay" token="[PORTALNAME]"/>
-        <!-- Compile all java files-->
-        <javac
-                destdir="${build.class.dir}"
-                debug="${javac.debug}"
-                deprecation="${javac.deprecation}"
-                optimize="${javac.optimize}"
-                includes="**/*.java">
-            <src path="${home.src.dir}"/>
-
-            <classpath refid="compile.classpath"/>
-        </javac>
-
-        <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
-                 token="walkandplay" value="[PORTALNAME]" excludes="org.walkandplay.server"/>
-
-        <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
-                 token=".[PORTALNAME]" value=".walkandplay" excludes="org.walkandplay.server"/>
-    </target>
-
-    <!-- Compile the java files. -->
-    <target name="compiletest" depends="init">
-        <echo message="Compiling java files..."/>
-
-        <!-- Always do clean build -->
-        <delete dir="${build.class.dir}"/>
-        <mkdir dir="${build.class.dir}"/>
-
-        <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
-                 value="walkandplaytest" token="[PORTALNAME]"/>
-
-        <!-- Compile all java files-->
-        <javac
-                destdir="${build.class.dir}"
-                debug="${javac.debug}"
-                deprecation="${javac.deprecation}"
-                optimize="${javac.optimize}"
-                includes="**/*.java">
-            <src path="${home.src.dir}"/>
-
-            <classpath refid="compile.classpath"/>
-        </javac>
-
-        <replace file="${home}/server/src/org/walkandplay/server/engine/GameDataDef.java"
-                 token="walkandplaytest" value="[PORTALNAME]" excludes="org.walkandplay.server"/>
-    </target>
-
-    <!-- Build the .jar for the project -->
-    <target name="jar" depends="compile">
-        <echo message="Building ${project.jar}..."/>
-        <mkdir dir="${build.lib.dir}"/>
-
-        <!-- Always do clean build -->
-        <delete file="${project.jar}"/>
-
-        <!-- Create the jar file -->
-        <jar jarfile="${project.jar}" basedir="${build.class.dir}">
-            <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
-                <section name="org/walkandplay">
-                    <attribute name="Implementation-Title" value="${project.name}"/>
-                    <attribute name="Implementation-Version" value="${version}-${DSTAMP}-${TSTAMP}"/>
-                    <attribute name="Implementation-Vendor" value="Just Objects"/>
-                </section>
-            </manifest>
-        </jar>
-    </target>
-
-    <!-- Build the .jar for the project -->
-    <target name="jartest" depends="compiletest">
-        <echo message="Building ${project.jar}..."/>
-        <mkdir dir="${build.lib.dir}"/>
-
-        <!-- Always do clean build -->
-        <delete file="${project.jar}"/>
-
-        <!-- Create the jar file -->
-        <jar jarfile="${project.jar}" basedir="${build.class.dir}">
-            <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
-                <section name="org/walkandplay">
-                    <attribute name="Implementation-Title" value="${project.name}"/>
-                    <attribute name="Implementation-Version" value="${version}-${DSTAMP}-${TSTAMP}"/>
-                    <attribute name="Implementation-Vendor" value="Just Objects"/>
-                </section>
-            </manifest>
-        </jar>
-    </target>
-
-
-    <!-- Build the .wars for the project -->
-    <target name="war" depends="jar">
-        <echo message="Building webapp..."/>
-        <echo message="using geoTracing war dir: ${gt.war.dir}"/>
-
-        <delete dir="${build.war.dir}"/>
-        <delete file="${project.war}"/>
-        <mkdir dir="${build.war.dir}"/>
-
-        <copy todir="${build.war.dir}">
-            <fileset dir="${gt.war.dir}">
-                <exclude name="WEB-INF/data/**"/>
-            </fileset>
-        </copy>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg" overwrite="true">
-            <fileset dir="${server.cfg.dir}"/>
-        </copy>
-
-        <!-- Replace users/passwords with local values as not to have them in repository -->
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${home}/security.properties" summary="true"/>
-
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplay" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplay" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6050" token="[PORTNR]"/>
-        <copy todir="${build.war.dir}/WEB-INF/lib" file="${project.jar}"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${server.cfg.dir}/tables"/>
-        </copy>
-
-        <copy file="${server.cfg.dir}/oase-context.xml" todir="${build.war.dir}/WEB-INF/cfg" overwrite="true"/>
-
-        <!-- copy the jad so it can be send to users later... -->
-        <copy file="${project.jad}" todir="${build.war.dir}/WEB-INF/cfg"/>
-
-        <!-- copy plugins
-        <mkdir dir="${build.war.dir}/WEB-INF/plugins"/>
-        <copydir src="${kwx-tagging.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${kwx-metadata.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/>  -->
-
-        <!-- TODO: change this eventually -->
-        <!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
-
-        <!-- copy data for tracerdaemon -->
-        <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
-          <fileset dir="${home.data.dir}"/>
-        </copy>
-
-        <!-- Make war -->
-        <jar jarfile="${project.war}">
-            <fileset dir="${build.war.dir}">
-                <include name="**"/>
-            </fileset>
-        </jar>
-    </target>
-
-    <!-- Build the .wars for the project -->
-    <target name="wartest" depends="jartest">
-        <echo message="Building webapp..."/>
-        <echo message="using geoTracing war dir: ${gt.war.dir}"/>
-
-        <delete dir="${build.war.dir}"/>
-        <delete file="${test.project.war}"/>
-        <mkdir dir="${build.war.dir}"/>
-
-        <copy todir="${build.war.dir}">
-            <fileset dir="${gt.war.dir}">
-                <exclude name="WEB-INF/data/**"/>
-            </fileset>
-        </copy>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg" overwrite="true">
-            <fileset dir="${server.cfg.dir}"/>
-        </copy>
-
-       <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplaytest" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplaytest" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6051" token="[PORTNR]"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/lib" file="${project.jar}"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${server.cfg.dir}/tables"/>
-        </copy>
-
-        <copy file="${server.cfg.dir}/oase-context.xml" todir="${build.war.dir}/WEB-INF/cfg" overwrite="true"/>
-
-        <!-- copy the jad so it can be send to users later... -->
-        <copy file="${project.jad}" todir="${build.war.dir}/WEB-INF/cfg"/>
-
-        <!-- copy plugins
-        <mkdir dir="${build.war.dir}/WEB-INF/plugins"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/> -->
-
-        <!-- just to be on the safe side -->
-        <copy file="${keyworx.jar}" todir="${build.war.dir}/WEB-INF/lib" overwrite="true"/>
-
-        <!-- Make war -->
-        <jar jarfile="${test.project.war}">
-            <fileset dir="${build.war.dir}">
-                <include name="**"/>
-            </fileset>
-        </jar>
-
-    </target>
-
-    <!-- Build all clean. -->
-    <target name="build" depends="clean,war"/>
-
-    <target name="buildtest" depends="clean,wartest"/>
-
-    <!-- Package into archive files -->
-    <target name="package" depends="build">
-        <delete dir="${build.zip.dir}"/>
-        <mkdir dir="${build.zip.dir}"/>
-        <copy file="${project.war}" todir="${build.zip.dir}"/>
-        <copy todir="${build.zip.dir}">
-            <fileset dir="${home}/client/web" excludes="wp/"/>
-        </copy>
-
-        <!-- copy files over from the base client lib -->
-        <copy todir="${build.zip.dir}/lib" overwrite="true">
-            <fileset dir="${basedir}/../../../base/trunk/server/webapp/gt/lib" />
-        </copy>
-
-        <property name="geotracing.external.dir" value="${basedir}/../../../base/trunk/server"/>
-
-        <zip zipfile="${deploy.zip}">
-            <zipfileset dir="${build.zip.dir}"
-                        prefix="${project.id}-${version}"
-                        excludes="build/**,version/**"/>
-        </zip>
-    </target>
-
-    <target name="clean" depends="init">
-        <delete dir="${build.dir}"/>
-    </target>
-
-    <target name="deploy-local" depends="build">
-        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
-    </target>
-
-    <target name="deploy-test-local" depends="buildtest">
-        <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
-    </target>
-
-    <target name="deploy-all-local" depends="deploy-local, deploy-test-local" />
-
-    <target name="deploy-local++" depends="replace metadata plugin, build">
-        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
-        <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
-    </target>
-
-    <target name="deploy-local-raw">
-        <copy todir="${deploy.test.dir}/${war.name}" overwrite="true">
-            <fileset dir="${home.webapp.dir}"/>
-        </copy>
-    </target>
-
-    <target name="deploy-live">
-        <copy file="${project.war}" todir="${deploy.live.dir}" overwrite="true"/>
-    </target>
-
-    <target name="deploy-live-raw">
-        <!--		<copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
-                   <fileset dir="${gt.war.dir}">
-                       <exclude name="WEB-INF/data/**"/>
-                   </fileset>
-               </copy>
-        -->
-        <copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
-            <fileset dir="${home.webapp.dir}"/>
-        </copy>
-    </target>
-
-    <target name="replace metadata plugin">
-        <!-- build it -->
-        <ant antfile="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build.xml" target="package"
-             inheritall="false"/>
-
-        <!-- and move it -->
-        <copy todir="${metadata.plugin.dir}" overwrite="true">
-            <fileset dir="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build/plugin/packaged">
-                <excludesfile
-                        name="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build/plugin/packaged/metadata.tar.gz"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <target name="replace tagging plugin">
-        <!-- build it -->
-        <ant antfile="/Users/Ronald/workspaces/workspace-kwx/tagging/build.xml" target="package" inheritall="false"/>
-
-        <!-- and move it -->
-        <copy todir="${tagging.plugin.dir}" overwrite="true">
-            <fileset dir="/Users/Ronald/workspaces/workspace-kwx/tagging/build/packaged">
-                <excludesfile name="/Users/Ronald/workspaces/workspace-kwx/tagging/build/packaged/tagging.tar.gz"/>
-            </fileset>
-        </copy>
-    </target>
-
-    <!-- Run protocol test client. -->
-    <target name="protocoltest" description="Runs protocol test client">
-
-        <java classname="org.keyworx.amuse.test.protocol.Main"
-              fork="true"
-              failonerror="true"
-              maxmemory="128m"
-                >
-            <arg value="${server.test.dir}/cfg/test.properties"/>
-
-            <classpath>
-                <pathelement location="${keyworx.jar}"/>
-            </classpath>
-        </java>
-    </target>
+<project name="walkandplay" default="package" basedir=".">
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+	<property name="client.dir" value="${home}/client"/>
+	<property name="client.phone.dir" value="${client.dir}/phone"/>
+	<property name="client.web.dir" value="${client.dir}/web"/>
+	<property name="server.dir" value="${home}/server"/>
+	<property name="build.dir" value="${home}/build"/>
+
+	<property file="${home}/build.properties"/>
+
+	<!-- The .zips for deployment -->
+	<property name="package-all.zip" value="${build.dir}/${project.id}-${version}.zip"/>
+	<property name="package-back.zip" value="${build.dir}/${project.id}-back-${version}.zip"/>
+	<property name="package-front.zip" value="${build.dir}/${project.id}-front-${version}.zip"/>
+
+	<!-- Build all -->
+	<target name="build-front">
+		<echo message="Building front of ${project.name}..."/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>
+
+	</target>
+
+	<!-- Build all -->
+	<target name="build-back">
+		<echo message="Building back-end of ${project.name}..."/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
+
+		<!-- Builds server and all server depends on. -->
+		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
+
+	</target>
+
+	<!-- Build all -->
+	<target name="build" depends="build-back,build-front">
+		<echo message="Building all of ${project.name}..."/>
+
+		<!-- Builds server and all server depends on. -->
+		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>
+
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-back" depends="build-back">
+		<echo message="Packaging distribution into ${package-back.zip}"/>
+		<mkdir dir="${build.dir}"/>
+		<delete file="${package-back.zip}"/>
+		<zip zipfile="${package-back.zip}">
+			<zipfileset dir="${server.dir}/build" includes="*.war"/>
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-front" depends="build-front">
+		<echo message="Packaging distribution into ${package-front.zip}"/>
+		<mkdir dir="${build.dir}"/>
+		<delete file="${package-front.zip}"/>
+		<zip zipfile="${package-front.zip}">
+			<zipfileset dir="${client.web.dir}" excludes="build/**,build.*"/>
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package" depends="package-back,package-front">
+		<echo message="Packaging distribution into ${package-all.zip}"/>
+		<mkdir dir="${build.dir}"/>
+		<delete file="${package-all.zip}"/>
+		<zip zipfile="${package-all.zip}">
+			<zipfileset src="${package-back.zip}"/>
+			<zipfileset src="${package-front.zip}"/>
+		</zip>
+	</target>
 
 </project>
