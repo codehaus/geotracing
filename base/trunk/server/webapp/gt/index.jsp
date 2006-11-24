@@ -52,22 +52,35 @@
 		</table>
 
 	</td>
-	<td width="320" bgcolor="#000066" align="right">
+	<td width="320" bgcolor="#000066" align="left">
 		<span id="cmtlink"><a href="#" onclick="CMT.showCommentPanel(23, '', 'This Site')" >[comments]</a>&nbsp;&nbsp;</span>
 	</td>
 </tr>
 <tr>
-	<td align="left" valign="top" >
+	<td align="left" valign="top">
 		<div id="topanchor"></div>
 	</td>
 	<td width="320" valign="top" bgcolor="#CCE9F9">
-
 		<table border="0" align="right" cellpadding="0" cellspacing="0">
 			<tr>
-				<td height="20" bgcolor="#660000" align="center">
-					<div id="tracerinfo" class="infohead">
-						USER INFO
-					</div>
+				<td height="60" bgcolor="#dddddd" align="center">
+					<table border="0" cellpadding="0" cellspacing="0">
+						<tr>
+							<td align="center" width="240">
+								<span id="tracerid">user</span>
+							</td>
+							<td rowspan="2" width="80">
+								<img id="tracerimg" height="60" width="80" src="img/default-user-thumb-4x3.jpg" align="right" alt="user thumb" hspace="0" vspace="0"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" width="240">
+								<div id="tracerdesc" >
+									&nbsp;
+								</div>
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>

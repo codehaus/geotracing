@@ -3,6 +3,10 @@
 
 // $Id$
 
+var FEAT = {
+	current: null
+}
+
 /**
  * Location-based item on map.
  * GIS-folks call that a "feature".
@@ -27,6 +31,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	this.fgColor = GTW.FEATURE_FG_COLOR;
 	this.gLatLng = new GLatLng(lat, lon);
 	this.userName = null;
+	this.record = null;
 
 	this.blink = function(cnt) {
 		DH.blink(this.iconId, cnt, 150);
@@ -38,11 +43,14 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 
 	// Displays feature in Panel
 	this.display = function() {
-		this._displayTitle();
-		this._displayInfo();
-		this._displayPreview();
-		this._displayDescr();
-		this._displayUser();
+		FEAT.current = this;
+		if (this.record != null && this.record != -1) {
+			this._display();
+			return;
+		}
+
+		// No record: fetch and display later
+		this._queryInfo();
 	}
 
 	this.getBGColor = function() {
@@ -103,11 +111,25 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 		DH.addEvent(DH.getObject(this.iconId), 'mouseover', this.onMouseOverIcon, false);
 	}
 
+	/** Internal display function. */
+	this._display = function() {
+		if (FEAT.current != this && this.record != null && this.record != -1) {
+			return;
+		}
+		this._displayTitle();
+		this._displayInfo();
+		this._displayPreview();
+		this._displayDescr();
+		this._displayUser();
+	}
+
 	this._displayTitle = function() {
 		DH.setHTML('featuretitle', this.getTitle());
 	}
 
 	this._displayUser = function() {
+		this.userName = this.record.getField('loginname');
+
 		if (this.userName != null) {
 			DH.setHTML('tracerinfo', this.userName);
 			var tracer = GTW.getTracer(this.userName);
@@ -119,7 +141,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	}
 
 	this._displayInfo = function() {
-		DH.setHTML('featureinfo', this.getDate() + ' <a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'' + this.type + '\',\'' + this.name + '\')" >[comments]</a>');
+		DH.setHTML('featureinfo', this.getDate() + ' <a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'' + this.type + '\',\'' + this.name + '\')" >comments (' + this.record.getField('comments') + ')</a>');
 		if (CMT.isCommentPanelOpen() == true) {
 			CMT.showCommentPanel(this.id, this.type, this.name);
 		}
@@ -127,6 +149,25 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 
 	this._displayDescr = function() {
 		DH.setHTML('featuredesc', this.desc);
+	}
+
+	this._queryInfo = function() {
+		if (this.record == -1) {
+			return;
+		}
+		
+		// Define callback for async response
+		var self = this;
+		this.onGetRecord = function(result) {
+			self.record = -1;
+			if (result != null && result.length > 0) {
+				self.record = result[0];
+			}
+			self._display();
+		}
+		//alert('getting thumbid for ' + this.name);
+		this.record = -1;
+		SRV.get("q-feature-info", this.onGetRecord, "id", this.id);
 	}
 }
 

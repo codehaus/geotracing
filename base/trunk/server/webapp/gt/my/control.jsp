@@ -398,6 +398,19 @@
 
 				String emails = getParameter(multipartRequest, "emails", null);
 				person.setStringField("email", emails);
+
+				String desc = getParameter(multipartRequest, "desc", null);
+				if (desc != null) {
+					JXElement extra = person.getXMLField("extra");
+					if (extra == null) {
+						extra = new JXElement("profile");
+					} else {
+						extra.removeChildByTag("desc");
+					}
+					extra.setChildText("desc", desc);
+					person.setXMLField("extra", extra);
+				}
+
 				model.getOase().getModifier().update(person);
 
 				// Person Icon update

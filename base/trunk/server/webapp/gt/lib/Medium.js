@@ -119,7 +119,6 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 		DH.addEvent(this.previewId, 'click', this.onClick, false);
 	}
-
 }
 
 

@@ -40,7 +40,7 @@ function FeatureSet() {
 				record.getField('lat'));
 
 		// Optional
-		medium.userName = record.getField('loginname');
+		// medium.userName = record.getField('loginname');
 		
 		this.addFeature(medium);
 	}

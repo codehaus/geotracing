@@ -32,14 +32,19 @@
 	font-size: 9px;
 }
 
-#tracerinfo, #trackinfo {
+#trackinfo {
 	color: #eee;
 	text-align: center;
 }
 
-#tracerinfo {
+#tracerid {
 	font-size: 12px;
 	text-transform: uppercase;
+	font-weight: bold;
+}
+
+#tracerdesc {
+	padding-left: 8px;
 }
 
 #featurepreview {

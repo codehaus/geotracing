@@ -1,10 +1,11 @@
+<%@ page import="nl.justobjects.jox.dom.JXElement"%>
 <%@ include file="../model.jsp" %>
 <%
 	String msg = "";
 	Record person, account, thumb[];
 	int thumbId=-1;
 	String iconDisp = "No user icon yet";
-	String firstName="", lastName="", loginName="", emails="", mobilenr="";
+	String firstName="", lastName="", loginName="", emails="", mobilenr="", desc="";
 	String tags, tagCloud="", myTagCloud="";
 	try {
 		person = model.getOase().getFinder().read(Integer.parseInt(model.getPersonId()));
@@ -20,6 +21,15 @@
 		if (!person.isNull("mobilenr")) {
 			mobilenr = person.getStringField("mobilenr");
 		}
+
+		if (!person.isNull("extra")) {
+			JXElement extra = person.getXMLField("extra");
+			desc = extra.getChildText("desc");
+			if (desc == null) {
+				desc = "";
+			}
+		}
+
 		account = model.getOase().getRelater().getRelated(person, "utopia_account", null)[0];
 		loginName =account.getStringField("loginname");
 		thumb = model.getOase().getRelater().getRelated(person, "base_medium", "thumb");
@@ -83,15 +93,20 @@
 			<td>(full mobile nr, e.g +31654268628)</td>
 		</tr>
 		<tr>
+			<td>description</td>
+			<td><textarea cols="40" rows="2" name="desc" id="desc"><%= desc %></textarea></td>
+			<td>(optional short description of yourself)</td>
+		</tr>
+		<tr>
 			<td>your icon</td>
-			<td>
-				<p><%= iconDisp %></p>
-				<input name="iconfile" id="iconfile" type="file" />
+			<td valign="middle">
+				<p><%= iconDisp %>&nbsp;&nbsp; <input name="iconfile" id="iconfile" type="file" /></p>
 				<input name="name" id="name" type="hidden" value="thumb-<%= loginName %>" />
 				<input name="description" id="description" type="hidden" value="user icon for <%= loginName %>" />
 			</td>
 			<td>(use a 4x3 picture dimension; picture will be scaled)</td>
 		</tr>
+
 		<tr>
 			<td>tags</td>
 			<td>
