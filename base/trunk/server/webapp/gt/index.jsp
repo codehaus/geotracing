@@ -13,9 +13,6 @@
 	<script type="text/javascript" src="lib/DHTML.js"></script>
 	<script type="text/javascript" src="lib/GMap.js"></script>
 	<script type="text/javascript" src="lib/GMapKeys.js"></script>
-	<script type="text/javascript">
-		GMAP.loadGoogleMapScript();
-    </script>
 	<script type="text/javascript" src="lib/GTApp.js"></script>
 </head>
 
