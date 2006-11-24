@@ -13,6 +13,7 @@
 
 // The TraceLand application functions
 // Mainly overrules GTApp.js functions
+
 var MYAPP = {
 /* Title to appear on top browser. */
 	WINDOW_TITLE: 'GeoTracing - TraceLand',
