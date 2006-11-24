@@ -17,11 +17,22 @@ var GMAP = {
 	map: null,
 	mapDiv: null,
 	mapTypes: [],
-	defaultCenter: new GLatLng(52.37261, 4.900435),
+	defaultCenter: null,
 	defaultZoom: 10,
 	defaultMapName: 'satellite',
 	DEGREES_PER_RADIAN: 360 / (2 * Math.PI),
 	RAD_PER_DEGREE: 0.01745566,
+	// Backup (last) key for e.g. file:// urls
+	keyNone : {
+	    key: "",
+	    reg: "^"
+	},
+	keyArray : new Array(),
+
+	/** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
+	addKey: function(aName, aKey, aURLRegExp) {
+		GMAP.keyArray[aName] = { key: aKey, reg: aURLRegExp };
+	},
 
 	addMapType: function(aName, aSpec) {
 		GMAP.mapTypes[aName] = aSpec;
@@ -33,6 +44,19 @@ var GMAP = {
 
 	getMapSize: function(aName) {
 		return new GSize(DH.getObjectWidth(GMAP.mapDiv), DH.getObjectHeight(GMAP.mapDiv));
+	},
+
+	loadGoogleMapScript: function() {
+		 for (k in GMAP.keyArray) {
+			var key = GMAP.keyArray[k];
+			var regexp = new RegExp(key.reg);
+
+			if (regexp.test(window.location.href)) {
+				// alert('load key=' + key.key);
+				document.write('<' + 'script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=' + key.key  + '" type="text/javascript"><' + '/script>');
+				break;
+			}
+		}
 	},
 
 	setDefaultMapParms: function(aCenter, aZoom, aMapName) {
@@ -47,6 +71,9 @@ var GMAP = {
 		// http://test.geotracing.com/gt/?center=-2.25,53.4833&map=satellite&zoom=14&cmd=live
 		var center = DH.getPageParameter('center', null);
 		if (center == null) {
+			if (GMAP.defaultCenter == null) {
+				GMAP.defaultCenter = new GLatLng(52.37261, 4.900435);
+			}
 			center = GMAP.defaultCenter;
 			// new GLatLng(52.37261, 4.900435);
 		} else {

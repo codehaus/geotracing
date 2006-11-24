@@ -1,7 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<%@ include file="map/gmap-keys.jsp" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> -->
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> -->
@@ -11,15 +8,15 @@
 	<link rel="stylesheet" type="text/css" href="css/widget.css"/>
 	<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
 	<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
+
 	<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
-
-	<!-- get Google Maps API with right key for this server/path -->
-	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<%= getGmapKey() %>"
-			type="text/javascript"></script>
-
 	<script type="text/javascript" src="lib/DHTML.js"></script>
+	<script type="text/javascript" src="lib/GMap.js"></script>
+	<script type="text/javascript" src="lib/GMapKeys.js"></script>
+	<script type="text/javascript">
+		GMAP.loadGoogleMapScript();
+    </script>
 	<script type="text/javascript" src="lib/GTApp.js"></script>
-
 </head>
 
 <body onunload="GUnload()">
