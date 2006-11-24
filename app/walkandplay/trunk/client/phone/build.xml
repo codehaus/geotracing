@@ -3,7 +3,7 @@
 
   $Id: build.xml 8 2006-08-28 15:36:01Z just $
 -->
-<project name="WalkAndPlayPhone" default="build" basedir=".">
+<project name="WP Phone" default="build" basedir=".">
     <property name="geotracing.base.dir" value="${basedir}/../../../.."/>
     <property name="geotracing.external.dir" value="${basedir}/../../../../../base/trunk/external"/>
 
@@ -212,7 +212,7 @@
 		</java>
 	</target>
 
-	<target name="install">
+	<target name="install" depends="build">
 		
 		<exec executable="chmod">
 			<arg line="+x ${btsend}"/>
