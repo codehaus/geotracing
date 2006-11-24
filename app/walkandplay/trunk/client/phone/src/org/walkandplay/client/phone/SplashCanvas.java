@@ -19,10 +19,7 @@ public class SplashCanvas extends Canvas {
 
     public SplashCanvas(WP aMidlet, int aScreenName) {
         try {
-            midlet = aMidlet;
-            w = getWidth();
-            h = getHeight();
-            setFullScreenMode(true);
+            midlet = aMidlet;            
             // load all images
             bg = Image.createImage("/bg.png");
             gtLogo = Image.createImage("/gt_logo.png");
@@ -41,6 +38,10 @@ public class SplashCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
+        w = getWidth();
+        h = getHeight();
+        setFullScreenMode(true);
+
         g.setColor(255, 255, 255);
         g.fillRect(0, 0, w, h);
         g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);

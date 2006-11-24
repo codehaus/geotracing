@@ -27,8 +27,9 @@ public class DefaultCanvas extends Canvas {
     public DefaultCanvas(WP aMidlet) {
         try {
             midlet = aMidlet;
-            w = getWidth();
+            /*w = getWidth();
             h = getHeight();
+            setFullScreenMode(true);*/
             setFullScreenMode(true);
 
             // load all images
@@ -83,6 +84,13 @@ public class DefaultCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
+        w = getWidth();
+        h = getHeight();
+        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+        g.setFont(f);
+        fh = f.getHeight();
+
+
         //g.setColor(153, 179, 204);
         g.setColor(255, 255, 255);
         g.fillRect(0, 0, w, h);
@@ -93,10 +101,6 @@ public class DefaultCanvas extends Canvas {
         ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
 
         g.setColor(0, 0, 0);
-        f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        g.setFont(f);
-        fh = f.getHeight();
-
     }
 
     // creates a delay for the splashscreen
