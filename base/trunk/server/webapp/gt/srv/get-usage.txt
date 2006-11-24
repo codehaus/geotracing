@@ -138,10 +138,34 @@ get media for single user
 - parms
 * "user" : (m) a user login name
 
-"q-medium-info"
-get all attributes and user name for a medium id
+"q-medium-info"/"q-feature-info"
+get all attributes and user name for a medium or POI id
 - parms
-* "id" : (m) a medium id
+* "id" : (m) a medium or POI id
+
+- result
+all regular base_medium fields (id, name, description etc) plus:
+* "meta" : (o) extra medium meta info if defined
+* "loginname" : (m) user account name
+* "profile" : (o) user profile info if defined
+* "comments" : (m) number of comments for this medium
+
+"q-tags"
+get tag collection
+- parms
+* "items" : (o) comma-separated item id's e.g. 123,456,789,..
+* "taggers" : (o) comma-separated tagger id's e.g. person ids, 123,456,789,..
+* "types" : (o) comma-separated type names, i.e. table names, e.g. base_medium,utopia_person,..
+* "offset" : (o) offset in result array to render result from
+* "rowcount" : (o) number of rows (records) to return, default is all rows
+
+"q-tagged"
+get records by tags
+- parms
+* "tags" : (o) comma-separated tags, e.g. "beach,amsterdam,apple,.."
+* "type" : (o) type name for records to return e.g. base_medium
+* "offset" : (o) offset in result array to render result from
+* "rowcount" : (o) number of rows (records) to return, default is all rows
 
 "q-pois"
 queries on POIs with their locations
@@ -149,6 +173,18 @@ queries on POIs with their locations
 * "bbox" : (o) get in bounding rectangle, values 2 lon/lat pairs (SW,NE)
 * "random" : (o) pick random, values: true/false
 * "max" : (o) maximum number to be returned default 10
+
+"q-user-info"
+get essential user attributes
+- parms
+* "user" : (m) a user login name
+
+- result
+* "id" : (m) person id
+* "loginname" : (m) user account name
+* "thumbid" : (o) medium id of user icon if defined
+* "profile" : (o) extra profile info if defined
+* "comments" : (m) number of comments for this user (person)
 
 "q-user-image"
 get user thumbnail image id by user name

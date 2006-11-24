@@ -113,7 +113,6 @@ TLabel.prototype.moveToXY = function() {
 
 TLabel.prototype.getXY = function(a, b) {
 	return this.map.fromLatLngToDivPixel(this.anchorLatLng);
-
 }
 /*
 function normSin(a) {

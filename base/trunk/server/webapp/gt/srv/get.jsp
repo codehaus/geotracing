@@ -45,8 +45,10 @@
 	public static final String CMD_QUERY_RECENT_MEDIA = "q-recent-media";
 	public static final String CMD_QUERY_MEDIA_BY_USER = "q-media-by-user";
 	public static final String CMD_QUERY_USER_IMAGE = "q-user-image";
+	public static final String CMD_QUERY_USER_INFO = "q-user-info";
 	public static final String CMD_QUERY_USER_BY_NAME = "q-user-by-name";
 	public static final String CMD_QUERY_MEDIUM_INFO = "q-medium-info";
+	public static final String CMD_QUERY_FEATURE_INFO = "q-feature-info";
 	public static final String CMD_QUERY_POIS = "q-pois";
 	public static final String CMD_QUERY_TAGS= "q-tags";
 	public static final String CMD_QUERY_TAGGED= "q-tagged";
@@ -242,6 +244,8 @@
 		String recordId;
 		Record record;
 		Record[] personRecords, accountRecords, thumbRecords;
+		HashMap cache = new HashMap(3);
+		Vector userElms;
 		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
@@ -253,7 +257,6 @@
 				recordId = nextRecordElm.getAttr("id");
 			}
 
-
 			// Must have the real record
 			record = finder.read(Integer.parseInt(recordId), aTableName);
 
@@ -264,23 +267,41 @@
 				continue;
 			}
 
-			// Get related account
-			accountRecords = relater.getRelated(personRecords[0], "utopia_account", null);
-			if (accountRecords.length == 0) {
-				log.warn("no account record found for person id=" + record.getId());
-				continue;
+			// See if already cached
+			userElms = (Vector) cache.get(personRecords[0].getIdString());
+			if (userElms == null) {
+				// Get related account
+				accountRecords = relater.getRelated(personRecords[0], "utopia_account", null);
+				if (accountRecords.length == 0) {
+					log.warn("no account record found for person id=" + record.getId());
+					continue;
+				}
+
+				// Skip records for disabled account
+				if (accountRecords[0].getIntField("state") != 1) {
+					continue;
+				}
+
+				userElms = new Vector(2);
+
+				// Add the user login nane
+				JXElement loginNameElm = new JXElement("loginname");
+				loginNameElm.setText(accountRecords[0].getStringField("loginname"));
+				userElms.add(loginNameElm);
+
+				// Extra field with profile info
+				if (!personRecords[0].isNull("extra")) {
+					userElms.add(personRecords[0].getXMLField("extra"));
+				}
+
+				// Add to cache
+				cache.put(personRecords[0].getIdString(), userElms);
+			} else {
+				// log.info("cache hit for person=" + personRecords[0].getIdString());
 			}
 
-			// Skip records for disabled account
-			if (accountRecords[0].getIntField("state") != 1) {
-				continue;
-			}
-
-			// Add the user attrs
-			nextRecordElm.setChildText("loginname", accountRecords[0].getStringField("loginname"));
-			if (personRecords[0].getStringField("extra") != null) {
-				nextRecordElm.setChildText("extra", personRecords[0].getStringField("extra"));
-			}
+			// User user elms to add to result
+			nextRecordElm.addChildren(userElms);
 
 			// Add to response
 			rsp.addChild(nextRecordElm);
@@ -538,7 +559,7 @@
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
-				addUserAttrs(result, "base_medium");
+				// addUserAttrs(result, "base_medium");
 
 			} else if (command.equals(CMD_QUERY_RECENT_MEDIA)) {
 				// Optional number
@@ -654,6 +675,35 @@
 				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
 				result = createResponse(tagLogic.getItemsTaggedWith(parType, tags, "AND", null, offset, rowcount));
 
+
+			} else if (command.equals(CMD_QUERY_MEDIUM_INFO) || command.equals(CMD_QUERY_FEATURE_INFO)) {
+				String id = getParameter(request, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
+				Record[] records = new Record[1];
+				if (command.equals(CMD_QUERY_MEDIUM_INFO))  {
+					records[0] = oase.getFinder().read(Integer.parseInt(id), "base_medium");
+				} else {
+					records[0] = oase.getFinder().read(Integer.parseInt(id));
+				}
+
+				// Normalize extra field (e.g. meta info for image)  if present
+				JXElement extra = null;
+				if (!records[0].isNull("extra")) {
+					extra = records[0].getXMLField("extra");
+					records[0].setXMLField("extra", null);
+				}
+
+				result = createResponse(records);
+				if (extra != null && extra.hasChildren()) {
+					result.getChildAt(0).removeChildByTag("extra");
+					result.getChildAt(0).addChild(extra);
+				}
+
+				// Add account/person attrs to each record
+				addUserAttrs(result, records[0].getTableName());
+
+				// Add number of comments
+				addCommentCounts(result);
 			} else if (command.equals(CMD_QUERY_USER_BY_NAME)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
@@ -665,22 +715,40 @@
 				String relations = "utopia_account,utopia_person";
 				String postCond = null;
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+			} else if (command.equals(CMD_QUERY_USER_INFO)) {
+				String loginName = getParameter(request, PAR_USER_NAME, null);
+				throwOnMissingParm(PAR_USER_NAME, loginName);
 
-			} else if (command.equals(CMD_QUERY_MEDIUM_INFO)) {
-				String id = getParameter(request, PAR_ID, null);
-				throwOnMissingParm(PAR_ID, id);
+				Record account = getAccount(oase, loginName);
+				if (account == null || account.getIntField("state") != 1) {
+					throw new IllegalArgumentException("No (active) account found for loginname=" + loginName);
+				}
 
-				// First get all active tracks
-				String tables = "base_medium";
-				String fields = null;
-				String where = "base_medium.id = " + id;
-				String relations = null;
-				String postCond = null;
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				// We must have a related person otherwise we fail
+				Record person = oase.getRelater().getRelated(account, "utopia_person", null)[0];
 
-				// Add account/person attrs to each record
-				addUserAttrs(result, "base_medium");
+				// We have valid person/account: create user info record custom
+				JXElement userInfo = new JXElement("record");
 
+				// Add account name
+				userInfo.setChildText("id", person.getIdString());
+				userInfo.setChildText("loginname", loginName);
+
+				// Optional profile info
+				if (!person.isNull("extra")) {
+					userInfo.addChild(person.getXMLField("extra"));
+				}
+
+				// Add optional thumb (icon) id
+				Record[] thumbRecords = oase.getRelater().getRelated(person, "base_medium", "thumb");
+				if (thumbRecords.length > 0) {
+					userInfo.setChildText("thumbid", thumbRecords[0].getIdString());
+				}
+
+				// Construct final result
+				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+				result.addChild(userInfo);
+				
 				// Add number of comments
 				addCommentCounts(result);
 			} else if (command.equals(CMD_QUERY_USER_IMAGE)) {

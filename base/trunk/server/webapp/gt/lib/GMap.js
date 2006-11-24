@@ -84,7 +84,9 @@ var GMAP = {
 				}  */
 
 		var mapOpts = {
-			size: GMAP.getMapSize()
+			size: GMAP.getMapSize(),
+			draggableCursor:"default",
+			draggingCursor:"default"
 			// mapTypes: GMAP.mapTypes
 		}
 		// GLog.write('after' + GMAP.getMapSize().toString());

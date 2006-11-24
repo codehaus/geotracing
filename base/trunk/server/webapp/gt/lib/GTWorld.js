@@ -139,7 +139,7 @@ var GTW = {
 		var tracer = GTW.createTracer(record.getField('loginname'),
 				record.getField('lon'), record.getField('lat'), record.getField('time'));
 
-		tracer.record = record;
+		// tracer.record = record;
 		return tracer;
 	},
 
