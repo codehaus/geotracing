@@ -11,15 +11,14 @@
  * $Id: WP.js,v 1.25 2006-07-22 22:51:35 just Exp $
  */
 
+
 DH.include('Date.js');
 DH.include('FeatureSet.js');
 DH.include('FeaturePlayer.js');
-DH.include('GMap.js');
 DH.include('GTWorld.js');
 DH.include('LiveListener.js');
 DH.include('Factory.js');
 DH.include('Comment.js');
-DH.include('TLabel.js');
 DH.include('../Medium.js');
 DH.include('Panel.js');
 DH.include('POI.js');
@@ -32,6 +31,7 @@ DH.include('TrackAutoPlayer.js');
 DH.include('TrackPlayer.js');
 DH.include('Widget.js');
 DH.include('../MyApp.js');
+DH.include('TLabel.js');
 
 
 // Pushlet Data Event Callback from Server
@@ -165,7 +165,7 @@ var WP = {
 		WP.showMode();
 
 		// Hide status div
-	
+
 
 		WP.showStatus('Live Mode - ' + records.length + ' users');
 	},
@@ -186,15 +186,15 @@ var WP = {
 			dojo.event.connect(tracks[i],'onclick',function(evt) {
 				SRV.get('get-track', WP.onTrackSelect, 'id', evt.target.getAttribute('id'));
 			});
-				
-				
+
+
 		}
 
 	},
 
 	onQueryAllUsers: function (records) {
 		var cont = document.getElementById('archivetoursbox').getElementsByTagName('div')[0];
-		cont.innerHTML = '<b>select user</b><br/><br/>';			
+		cont.innerHTML = '<b>select user</b><br/><br/>';
 		var userId, userName;
 		var string = '';
 		for (var i = 0; i < records.length; i++) {
@@ -203,14 +203,14 @@ var WP = {
 			string = string + '<a href="#"><div id="'+userName+'">'+userName+'</div></a>';
 		}
 		cont.innerHTML = cont.innerHTML + string;
-		var users = cont.getElementsByTagName('div');		
+		var users = cont.getElementsByTagName('div');
 		for(var i = 0; i < users.length; i++) {
 			dojo.event.connect(users[i],'onclick',function(evt) {
-				loginName = evt.target.getAttribute('id');										   	
+				loginName = evt.target.getAttribute('id');
 				SRV.get('q-tracks-by-user', WP.onQueryUserTracks, 'user', loginName);
 			});
-				
-				
+
+
 		}
 	},
 
@@ -227,14 +227,14 @@ var WP = {
 			string = string + '<a href="#"><div id="'+trackId+'">'+trackName+'</div></a>';
 		}
 		cont.innerHTML = cont.innerHTML + string;
-		var tracks = cont.getElementsByTagName('div');		
+		var tracks = cont.getElementsByTagName('div');
 		for(var i = 0; i < tracks.length; i++) {
 			dojo.event.connect(tracks[i],'onclick',function(evt) {
-				id = evt.target.getAttribute('id');										   	
+				id = evt.target.getAttribute('id');
 				SRV.get('get-track', WP.onTrackSelect, 'id', evt.target.getAttribute('id'));
 			});
-				
-				
+
+
 		}
 	},
 
