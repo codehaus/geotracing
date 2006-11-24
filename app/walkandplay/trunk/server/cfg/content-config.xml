@@ -28,8 +28,6 @@
 		<field name="state" listed="false" searchable="false"/>
 	</type>
 
-
-
     <type name="tour" table="tour">
 		<field name="name" listed="true" searchable="true"/>
 		<field name="description" listed="true" searchable="true"/>
