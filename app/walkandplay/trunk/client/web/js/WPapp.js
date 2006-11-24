@@ -138,7 +138,6 @@ var WP = {
 // Query active tracks callback
 	onQueryActiveUsers: function(records) {
 		WP.showStatus(records.length + ' active users');
-
 		WP.userSelector = new Selector('Follow User', 'usersel', WP.onActiveUserSelect);
 		WP.userSelector.hide();
 
@@ -150,7 +149,7 @@ var WP = {
 				WP.userSelector.addOption(trackId, tracerName + ' - ' + trackName, tracerName);
 
 			tracer = GTW.createTracer(records[i].getField('loginname'),
-					records[i].getField('lon'), records[i].getField('lat'));
+			records[i].getField('lon'), records[i].getField('lat'));
 			tracer.show();
 
 			// If we need to immediately see a tracer
@@ -194,40 +193,49 @@ var WP = {
 	},
 
 	onQueryAllUsers: function (records) {
-		WP.showStatus('Got ' + records.length + ' users');
-		WP.userSelector = new Selector('Select a User', 'usersel', WP.onUserSelect);
-		WP.userSelector.hide();
-
+		var cont = document.getElementById('archivetoursbox').getElementsByTagName('div')[0];
+		cont.innerHTML = '<b>select user</b><br/><br/>';			
 		var userId, userName;
+		var string = '';
 		for (var i = 0; i < records.length; i++) {
 			userId = records[i].getField('id');
 			userName = records[i].getField('loginname');
-			WP.userSelector.addOption(userId, userName, userName);
+			string = string + '<a href="#"><div id="'+userName+'">'+userName+'</div></a>';
 		}
-
-		WP.userSelector.setWidth(10);
-
-		// PL.debugOn = true;
-
-		WP.showStatus('Archive Mode - ' + records.length + ' users');
+		cont.innerHTML = cont.innerHTML + string;
+		var users = cont.getElementsByTagName('div');		
+		for(var i = 0; i < users.length; i++) {
+			dojo.event.connect(users[i],'onclick',function(evt) {
+				loginName = evt.target.getAttribute('id');										   	
+				SRV.get('q-tracks-by-user', WP.onQueryUserTracks, 'user', loginName);
+			});
+				
+				
+		}
 	},
 
 	onQueryUserTracks: function (records) {
-		WP.trackSelector = new Selector('Select a Track', 'tracksel', WP.onTrackSelect);
-		WP.trackSelector.hide();
-
 		var trackId, trackName, userName;
+		show('archivetracksbox');
+		var cont = archivetracksbox.getElementsByTagName('div')[0];
+		cont.innerHTML = '<b>select track</b><br/><br/>';
+		var stringt ='';
 		for (var i = 0; i < records.length; i++) {
 			trackId = records[i].getField('id');
 			trackName = records[i].getField('name');
 			userName = records[i].getField('loginname');
-			WP.trackSelector.addOption(trackId, trackName, userName);
+			string = string + '<a href="#"><div id="'+trackId+'">'+trackName+'</div></a>';
 		}
-
-		var bbox = WP.userSelector.getBBox();
-		WP.trackSelector.setXY((bbox.x + bbox.w + 40), bbox.y);
-		WP.trackSelector.show();
-		WP.showStatus('Archive - user has ' + records.length + ' tracks');
+		cont.innerHTML = cont.innerHTML + string;
+		var tracks = cont.getElementsByTagName('div');		
+		for(var i = 0; i < tracks.length; i++) {
+			dojo.event.connect(tracks[i],'onclick',function(evt) {
+				id = evt.target.getAttribute('id');										   	
+				SRV.get('get-track', WP.onTrackSelect, 'id', evt.target.getAttribute('id'));
+			});
+				
+				
+		}
 	},
 
 	onQueryMedia: function (records) {
@@ -333,6 +341,7 @@ var WP = {
 //
 // MENU CALLBACK FUNCTIONS
 //
+
 	mAutoPlay: function() {
 		if (WP.mode == 'autoplay') {
 			return;

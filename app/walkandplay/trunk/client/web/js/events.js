@@ -20,6 +20,8 @@ var live_bt = document.getElementById('live_bt');
 var signin_bt = document.getElementById('signin_bt');
 var help_bt = document.getElementById('help_bt');
 var archivetoursbox = document.getElementById('archivetoursbox');
+var archivetracksbox = document.getElementById('archivetracksbox');
+
 /*
 FUNCTIONS
 */
@@ -99,10 +101,12 @@ if(document.getElementById('archivenavbox')) {
 		show('archivetoursbox');
 	});	
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
-		WP.mAutoPlay();
+		show('archivetoursbox');																												 
+		WP.mArchive();
+		
 	});
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[2],'onclick',function(evt) {
-		WP.mAutoPlay();
+		WP.mShowPOIsInBbox();
 	});
 }
 dojo.event.connect(search_bt,'onclick',function(evt) {
@@ -111,6 +115,7 @@ dojo.event.connect(search_bt,'onclick',function(evt) {
 	hide('archivenavbox');
 	hide('livenavbox');
 	hide('archivetoursbox');
+	hide('archivetracksbox');	
 
 });
 
@@ -119,21 +124,25 @@ dojo.event.connect(maps_bt,'onclick',function(evt) {
 	hide('searchbox');
 	hide('archivenavbox');
 	hide('livenavbox');	
-	hide('archivetoursbox');	
+	hide('archivetoursbox');
+	hide('archivetracksbox');
+	
 });
 dojo.event.connect(live_bt,'onclick',function(evt) {
 	toggle('livenavbox');
 	hide('mapbox');
 	hide('searchbox');
 	hide('archivenavbox');	
-	hide('archivetoursbox');	
+	hide('archivetoursbox');
+	hide('archivetracksbox');	
 });
 dojo.event.connect(archive_bt,'onclick',function(evt) {
 	toggle('archivenavbox');	
 	hide('mapbox');
 	hide('livenavbox');
 	hide('searchbox');	
-	hide('archivetoursbox');	
+	hide('archivetoursbox');
+	hide('archivetracksbox');	
 });
 dojo.event.connect(signin_bt,'onclick',function(evt) {
 	toggle('loginbox');												
@@ -142,6 +151,7 @@ dojo.event.connect(signin_bt,'onclick',function(evt) {
 	hide('livenavbox');
 	hide('searchbox');	
 	hide('archivetoursbox');
+	hide('archivetracksbox');
 	
 });
 dojo.event.connect(help_bt,'onclick',function(evt) {
