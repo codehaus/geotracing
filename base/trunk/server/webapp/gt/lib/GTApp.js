@@ -168,8 +168,15 @@ var GTAPP = {
 		alert('createMap needs to be defined in your app');
 	},
 
-// Setup callbacks in CSS drop-down menu
-	createMenu: function() {
+	/** Load file that contains app-specific menu. */
+	createMenu: function(aMenuContent) {
+		if (!aMenuContent) {
+			DH.getURL('mainmenu.html', this.createMenu);
+			return;
+		}
+
+		// Content loaded: setup menu
+		DH.setHTML('menucontainer', aMenuContent);
 		GTAPP.menu = new Menu('mainmenu');
 	},
 
@@ -230,6 +237,8 @@ var GTAPP = {
 			return false;
 		}
 	},
+
+
 
 // Query active tracks callback
 	onQueryActiveUsers: function(records) {
