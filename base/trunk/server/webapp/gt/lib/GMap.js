@@ -22,14 +22,14 @@ var GMAP = {
 	defaultMapName: 'satellite',
 	DEGREES_PER_RADIAN: 360 / (2 * Math.PI),
 	RAD_PER_DEGREE: 0.01745566,
-	// Backup (last) key for e.g. file:// urls
+// Backup (last) key for e.g. file:// urls
 	keyNone : {
-	    key: "",
-	    reg: "^"
+		key: "",
+		reg: "^"
 	},
 	keyArray : new Array(),
 
-	/** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
+/** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
 	addKey: function(aName, aKey, aURLRegExp) {
 		GMAP.keyArray[aName] = { key: aKey, reg: aURLRegExp };
 	},
@@ -46,14 +46,20 @@ var GMAP = {
 		return new GSize(DH.getObjectWidth(GMAP.mapDiv), DH.getObjectHeight(GMAP.mapDiv));
 	},
 
-	loadGoogleMapScript: function() {
-		 for (k in GMAP.keyArray) {
+	loadGoogleMapScript: function(aVersion) {
+		var version = '2';
+		if (aVersion) {
+			version = aVersion;
+		}
+
+		// Find the GMap key based on our URL regular expression
+		for (k in GMAP.keyArray) {
 			var key = GMAP.keyArray[k];
 			var regexp = new RegExp(key.reg);
 
 			if (regexp.test(window.location.href)) {
 				// alert('load key=' + key.key);
-				document.write('<' + 'script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=' + key.key  + '" type="text/javascript"><' + '/script>');
+				document.write('<' + 'script src="http://maps.google.com/maps?file=api&amp;v=' + version + '&amp;key=' + key.key + '" type="text/javascript"><' + '/script>');
 				break;
 			}
 		}
