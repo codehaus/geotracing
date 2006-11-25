@@ -53,6 +53,15 @@ $Id: build.xml,v 1.3 2006-04-26 12:39:44 just Exp $
 		<copy todir="${build.war.dir}" overwrite="true">
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
+		
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.dir}/version" files="index.html"/>
+			<filelist dir="${gt.war.dir}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
 
 		<!-- Make war -->
 		<jar jarfile="${project.war}">
