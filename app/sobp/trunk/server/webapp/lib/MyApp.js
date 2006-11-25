@@ -47,7 +47,7 @@ var MYAPP = {
 
 		// Overrule creation of GT base classes with our
 		// own specific classes.
-		GTW.getFactory().setClassDef('Tracer', 'MyTracer');
+		// GTW.getFactory().setClassDef('Tracer', 'MyTracer');
 		GTW.getFactory().setClassDef('Medium', 'MyMedium');
 
 		// Manage media (features)

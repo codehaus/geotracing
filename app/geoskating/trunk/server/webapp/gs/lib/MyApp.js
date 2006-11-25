@@ -26,7 +26,7 @@ var MYAPP = {
 			// http://test.geoskating.com/gs/?cmd=showtrack&user=just&id=3804&map=map
 			// 3852 (d2) 3866 (d3)
 			// GTAPP.mShowHelp("content/appabout.html");
-			GTAPP.mShowMediaInBbox(10);
+			GTAPP.mShowMediaInBbox(25);
  		}
    },
 

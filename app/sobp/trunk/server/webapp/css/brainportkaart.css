@@ -173,7 +173,7 @@ a:active {
 	border: 10px solid #eeeeee;
 }
 
-.deelnemertitel {
+.deelnemertitel, #tracerinfo {
 	font-family: Verdana, Helvetica, sans-serif;
 	font-size: 11px;
 	font-style: normal;
