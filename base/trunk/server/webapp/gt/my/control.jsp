@@ -21,6 +21,7 @@
 <%@ page import="org.keyworx.oase.service.MediaFilerImpl" %>
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="java.io.File" %>
+<%@ page import="nl.justobjects.jox.parser.JXBuilder"%>
 <%@ include file="model.jsp" %>
 <%!
 
@@ -172,8 +173,14 @@
 				model.set(ATTR_CONTENT_URL, "content/media-upload.jsp");
 				model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
 			} else if ("nav-tracks".equals(command)) {
-				model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
+				model.set(ATTR_LEFT_MENU_URL, "menu/left-tracks.html");
+				model.set(ATTR_CONTENT_URL, "content/tracks.jsp");
+			} else if ("nav-track-list".equals(command)) {
+				model.set(ATTR_LEFT_MENU_URL, "menu/left-tracks.html");
 				model.set(ATTR_CONTENT_URL, "content/track-list.jsp");
+			} else if ("nav-track-upload".equals(command)) {
+				model.set(ATTR_LEFT_MENU_URL, "menu/left-tracks.html");
+				model.set(ATTR_CONTENT_URL, "content/track-upload.jsp");
 			} else if ("nav-pois".equals(command)) {
 				model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
 				model.set(ATTR_CONTENT_URL, "content/poi-list.jsp");
@@ -455,6 +462,52 @@
 
 				model.setResultMsg("Delete track OK id=" + id);
 				model.set(ATTR_CONTENT_URL, "content/track-list.jsp");
+			} else if ("track-upload".equals(command)) {
+				String cancel = getParameter(multipartRequest, "cancel", null);
+				if (cancel != null) {
+					model.set(ATTR_CONTENT_URL, "content/tracks.jsp");
+					return;
+				}
+
+				// Get the files and possible parameters from the MultipartRequest
+				Enumeration fileNames = multipartRequest.getFileNames();
+				File file=null;
+				// Go through all uploaded files.
+				while (fileNames.hasMoreElements()) {
+					String nextFileName = (String) fileNames.nextElement();
+
+					// Get the next uploaded file
+					file = multipartRequest.getFile(nextFileName);
+
+					// Form field may be empty
+					if (file != null) {
+						break;
+					}
+				}
+
+				if (file == null) {
+					model.logWarning("upload Track: no file uploaded: ");
+					model.setResultMsg("upload Track: failed, no file specified");
+					model.set(ATTR_CONTENT_URL, "content/error.jsp");
+					return;
+				}
+
+				// Do upload
+				JXElement req = Protocol.createRequest(TracingHandler.T_TRK_IMPORT_SERVICE);
+				req.setAttr(TracingHandler.ATTR_NAME, IO.forHTMLTag(getParameter(multipartRequest, "name", "trk-upload")));
+				JXElement trackDoc = new JXBuilder().build(file);
+				JXElement data = new JXElement("data");
+				data.addChild(trackDoc);
+				req.addChild(data);
+				JXElement rspElm = HttpConnector.executeRequest(session, req);
+				if (Protocol.isNegativeResponse(rspElm)) {
+					model.logWarning("upload Track failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
+					model.setResultMsg("upload Track failed: " + rspElm.toEscapedString());
+					model.set(ATTR_CONTENT_URL, "content/error.jsp");
+					return;
+				}
+				model.logInfo("upload-track: uploaded " + file.getAbsolutePath());
+				model.set(ATTR_CONTENT_URL, "content/ok.html");
 			} else if ("poi-update".equals(command)) {
 				// Go back to track edit
 				/* String trackId = getParameter(request, "trackid", null);
