@@ -16,6 +16,8 @@ import org.keyworx.utopia.core.util.Oase;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -35,7 +37,7 @@ public class TrackLogic {
 	 * Script to find timestamp (EXIF) in JPEG file.
 	 */
 	public static final String EXIF_DATE_SCRIPT = ServerConfig.getConfigDir() + "/../bin/exifdate.sh";
-	public static final SimpleDateFormat GPX_TIME_FORMAT = new SimpleDateFormat("yyMMdd'T'HH:mm:ss'Z'");
+	public static final SimpleDateFormat GPX_TIME_FORMAT = TrackExport.GPX_TIME_FORMAT;
 
 	private Oase oase;
 	static private Log log;
@@ -91,7 +93,7 @@ public class TrackLogic {
 					} else {
 						activeTrack.setState(Track.VAL_INACTIVE);
 						activeTrack.saveUpdate();
-						log.info("make daytrack inactive " + activeTrack);						
+						log.info("make daytrack inactive " + activeTrack);
 					}
 				}
 			}
@@ -602,6 +604,113 @@ public class TrackLogic {
 
 		// Expired if we are on a different day (aTime is always later)
 		return !trackEndDate.equals(nowDate);
+	}
+
+	/**
+	 * Import a track.
+	 *
+	 * @param aPersonId a person id
+	 * @param aTrackDoc a track document (usually GPX doc)
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
+	 */
+	public Track importTrack(int aPersonId, String aName, JXElement aTrackDoc) throws UtopiaException {
+		log.info("Start import (personId=" + aPersonId + ")");
+
+		// Create new Track object
+		Vector trkElms = aTrackDoc.getChildrenByTag("trk");
+		if (trkElms == null || trkElms.size() == 0) {
+			throw new UtopiaException("No trk elements found in GPX", ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		Vector trackEvents = new Vector();
+		long startTime = -1;
+		for (int i = 0; i < trkElms.size(); i++) {
+			JXElement nextTrk = (JXElement) trkElms.elementAt(i);
+			Vector nextTrkSegs = nextTrk.getChildrenByTag("trkseg");
+			if (nextTrkSegs == null || nextTrkSegs.size() == 0) {
+				log.warn("No track segments found");
+				continue;
+			}
+
+			// Parse and handle all track segments in current track
+			for (int j = 0; j < nextTrkSegs.size(); j++) {
+				JXElement nextSeg = (JXElement) nextTrkSegs.elementAt(j);
+				Vector nextTrkPts = nextSeg.getChildrenByTag("trkpt");
+				if (nextTrkPts == null || nextTrkPts.size() == 0) {
+					log.warn("No track points found");
+					continue;
+				}
+
+				// Parse and handle all track points in current track segment
+				for (int k = 0; k < nextTrkPts.size(); k++) {
+					JXElement nextTrkPt = (JXElement) nextTrkPts.elementAt(k);
+
+					// Event is adding a point to track
+					JXElement nextEvent = new JXElement("pt");
+
+					// Lat/lon
+					nextEvent.setAttr("lon", nextTrkPt.getAttr("lon"));
+					nextEvent.setAttr("lat", nextTrkPt.getAttr("lat"));
+
+					// Height (elevation)
+					String ele = nextTrkPt.getChildText("ele");
+					if (ele == null) {
+						ele = "0.0";
+					}
+					nextEvent.setAttr("ele", ele);
+
+					// Handle time (mandatory)
+					String time = nextTrkPt.getChildText("time");
+					if (time == null) {
+						throw new UtopiaException("No time elements found in GPX", ErrorCode.__6004_Invalid_attribute_value);
+					}
+					try {
+						long timeMillis;
+						if (time.length() == 20) {
+							timeMillis = TrackExport.GPX_TIME_FORMAT.parse(time).getTime();
+						} else if (time.length() == 24) {
+							timeMillis = TrackExport.GPX_TIME_FORMAT_MILLIS.parse(time).getTime();
+						} else {
+							timeMillis = Long.parseLong(time); // try for unix time
+						}
+						if (startTime == -1) {
+							startTime = timeMillis;
+						}
+
+						// On start of segment: add resume, using our current time
+						if (k == 0) {
+							JXElement resumeEvent = new JXElement("resume");
+							resumeEvent.setAttr("t", timeMillis);
+							trackEvents.add(resumeEvent);
+						}
+						nextEvent.setAttr("t", timeMillis);
+					} catch (ParseException pe) {
+						throw new UtopiaException("Cannot parse time element in GPX: " + time, ErrorCode.__6004_Invalid_attribute_value);
+					}
+					trackEvents.add(nextEvent);
+				}
+			}
+		}
+
+		// Sanity check
+		if (trackEvents.size() == 0) {
+			throw new UtopiaException("no track events could be distilled from GPX: ", ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		// Create and save the track
+		Track track = Track.create(oase);
+		track.insert(aPersonId, aName, Track.VAL_NORMAL_TRACK, startTime);
+		log.info("Track import: importing " + trackEvents.size() + " events");
+		track.addData(trackEvents);
+
+		// Reset to inactive
+		track.setState(Track.VAL_INACTIVE);
+		track.saveUpdate();
+
+		// track.addData(resumeElement);
+		log.info("Track imported trackId=" + track.getId() + " personId=" + aPersonId);
+		return track;
 	}
 
 	/**

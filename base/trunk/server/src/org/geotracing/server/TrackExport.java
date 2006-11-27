@@ -21,7 +21,9 @@ import java.util.*;
  * Export Track data to XML formats.
  */
 public class TrackExport {
-	public static final SimpleDateFormat GPX_TIME_FORMAT = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm:ss'Z'");
+	public static final SimpleDateFormat GPX_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss'Z'");
+	public static final SimpleDateFormat GPX_TIME_FORMAT_MILLIS = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'"); // allow millis too
+	// public static final SimpleDateFormat GPX_TIME_FORMAT = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm:ss'Z'");
 	public static final String EXPORT_FORMAT_GPX = "gpx";
 	public static final String EXPORT_FORMAT_GTX = "gtx";
 	public static final String DEFAULT_FORMAT = EXPORT_FORMAT_GTX;

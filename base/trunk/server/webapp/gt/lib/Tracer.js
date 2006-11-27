@@ -98,8 +98,11 @@ function Tracer(name, color, iconURL, pt, time) {
 	// get the tracer color (track)
 	this.getColor = function () {
 		if (this.record != null && this.record != -1) {
-			// In some cases the extra field may contain a color
-			this.color  = this.record.getField('color');
+			// In some cases the extra (profile) field may contain a color
+			var userColor =  this.record.getField('color');
+			if (userColor != null) {
+				this.color  = userColor;
+			}
 		}
 
 		return this.color;

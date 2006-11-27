@@ -29,11 +29,11 @@
 	  TRK_ADD_POI_SERVICE = "t-trk-add-poi" - add Point of Interest to track
 	  TRK_DELETE_POI_SERVICE = "t-trk-delete-poi" - delete Point of Interest
 	  TRK_UPDATE_POI_SERVICE = "t-trk-update-poi" - update Point of Interest
-	  TRK_IMPORT_SERVICE = "t-trk-import" - import a track (NOT YET IMPLEMENTED)
+	  TRK_IMPORT_SERVICE = "t-trk-import" - import a track from GPX
 	  TRK_EXPORT_SERVICE = "t-trk-export" - export a track as GPX or GTX (internal GT format)
 	  HEARTBEAT_SERVICE = "t-hb" - send heartbeat (keep-alive)
 
-	 $Id:$
+	 $Id$
   -->
 <syntax id="tracinghandler-protocol" version="1.0">
 
@@ -89,6 +89,20 @@
 	<!-- The track delete response -->
 	<element tag="t-trk-delete-rsp" comment="track delete response">
 		<attribute name="id" comment="the track id of deleted track " type="int"/>
+	</element>
+
+	<!-- The track import request.  -->
+	<element tag="t-trk-import-req" comment="Import a track">
+		<attribute name="name" comment="name of track" type="string" optional="true"/>
+
+		<!-- The track data, usually GPX -->
+		<element tag="data" type="any">
+		</element>
+	</element>
+
+	<!-- The track import response -->
+	<element tag="t-trk-import-rsp" comment="track import response">
+		<attribute name="id" comment="the track id of imported track " type="int"/>
 	</element>
 
 	<!-- The track suspend request.  -->

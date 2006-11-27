@@ -438,15 +438,18 @@ public class TracingHandler extends DefaultHandler {
 	public JXElement importReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 
-		String format = reqElm.getAttr(ATTR_FORMAT, null);
-		String attrs = reqElm.getAttr(ATTR_ATTRS, null);
-		boolean media = reqElm.getBoolAttr(ATTR_MEDIA);
-		boolean pois = reqElm.getBoolAttr(ATTR_POIS);
+		// String format = reqElm.getAttr(ATTR_FORMAT, null);
+		String name = reqElm.getAttr(ATTR_NAME, "unnamed");
+		JXElement data = reqElm.getChildByTag("data");
+		if (data == null || data.getChildCount() != 1) {
+			throw new UtopiaException("Missing track data", ErrorCode.__6002_Required_attribute_missing);
+		}
 
-		// JXElement result = trackLogic.export(trackId, format, attrs, media, pois);
+		Track track = trackLogic.importTrack(getUserId(anUtopiaReq), name, data.getChildAt(0));
 
 		// Fill response
 		JXElement responseElement = createResponse(T_TRK_IMPORT_SERVICE);
+		responseElement.setAttr(ATTR_ID, track.getId());
 		return responseElement;
 	}
 
