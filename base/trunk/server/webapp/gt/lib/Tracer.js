@@ -168,7 +168,7 @@ function Tracer(name, color, iconURL, pt, time) {
 		// Get GTX document by id from server
 		GTW.showStatus('drawing track ' + name + '...');
 
-		SRV.get('get-track', this.onGetTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t', 'mindist', GTW.minTrackPtDist);
+		SRV.get('get-track', this.onGetTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t', 'mindist', GTW.minTrackPtDist, 'maxpoints', GTW.maxTrackPt);
 	}
 
 	// Set Tracer at lon/lat location
@@ -338,7 +338,7 @@ function Tracer(name, color, iconURL, pt, time) {
 
 		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >comments (' + this.record.getField('comments') + ')</a>');
 		if (CMT.isCommentPanelOpen() == true) {
-			CMT.showCommentPanel(this.id, 'user', this.name);
+			// CMT.showCommentPanel(this.id, 'user', this.name);
 		}
 	}
 

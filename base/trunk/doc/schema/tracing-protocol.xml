@@ -91,11 +91,27 @@
 		<attribute name="id" comment="the track id of deleted track " type="int"/>
 	</element>
 
+	<!-- The track export request.  -->
+	<element tag="t-trk-export-req" comment="Export a track">
+		<attribute name="id" comment="the track id of exported track " type="int"/>
+		<attribute name="format" comment="export format" type="string" value="gpx,gtx"optional="true"/>
+		<attribute name="attrs" comment="attributes to include, comma-separated" type="string" optional="true"/>
+		<attribute name="media" comment="include media" type="boolean" optional="true"/>
+		<attribute name="pois" comment="include pois" type="boolean" optional="true"/>
+		<attribute name="mindist" comment="minimum distance between  trackpoints" type="int"/>
+		<attribute name="maxpoints" comment="maximum number of points" type="int"/>
+	</element>
+
+	<!-- The track import response -->
+	<element tag="t-trk-export-rsp" comment="track import response">\
+		<!-- either GTX or GPX document -->
+	</element>
+
 	<!-- The track import request.  -->
 	<element tag="t-trk-import-req" comment="Import a track">
 		<attribute name="name" comment="name of track" type="string" optional="true"/>
 
-		<!-- The track data, usually GPX -->
+		<!-- The track data, content is usually GPX document -->
 		<element tag="data" type="any">
 		</element>
 	</element>

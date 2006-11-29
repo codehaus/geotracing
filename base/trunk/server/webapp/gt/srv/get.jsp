@@ -776,7 +776,8 @@
 				boolean media = getParameter(request, "media", "true").equals("true");
 				boolean pois = getParameter(request, "pois", "true").equals("true");
 				long minPtDist = Long.parseLong(getParameter(request, "mindist", "0"));
-				result = trackLogic.export(id, format, attrs, media, pois, minPtDist);
+				int maxPoint = Integer.parseInt(getParameter(request, "maxpoints", "-1"));
+				result = trackLogic.export(id, format, attrs, media, pois, minPtDist, maxPoint);
 			} else if (command.equals(CMD_DESCRIBE)) {
 				// Return documentation file
 				result = null;
