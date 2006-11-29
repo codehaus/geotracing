@@ -54,6 +54,7 @@ public class TracingHandler extends DefaultHandler {
 	public final static String ATTR_MIME = "mime";
 	public final static String ATTR_FORMAT = "format";
 	public final static String ATTR_MINDIST = "mindist";
+	public final static String ATTR_MAXPOINTS = "maxpoints";
 	public final static String ATTR_MODE = "mode";
 	public final static String ATTR_ID = "id";
 	public final static String ATTR_STATE = "state";
@@ -386,8 +387,9 @@ public class TracingHandler extends DefaultHandler {
 		boolean media = reqElm.getBoolAttr(ATTR_MEDIA);
 		boolean pois = reqElm.getBoolAttr(ATTR_POIS);
 		long minDist = reqElm.getLongAttr(ATTR_MINDIST);
+		int maxPoint = reqElm.getIntAttr(ATTR_MAXPOINTS);
 
-		JXElement result = trackLogic.export(trackId, format, attrs, media, pois, minDist);
+		JXElement result = trackLogic.export(trackId, format, attrs, media, pois, minDist, maxPoint);
 
 		// Fill response
 		JXElement responseElement = createResponse(T_TRK_EXPORT_SERVICE);

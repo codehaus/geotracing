@@ -12,6 +12,7 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.amuse.core.Amuse;
 import org.geotracing.gis.GPSSample;
 
 import java.text.SimpleDateFormat;
@@ -47,16 +48,16 @@ public class TrackExport {
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	JXElement export(Track aTrack, String aFormat, String theAttrs, boolean addMedia, boolean addPOIs, long aMinDist) throws UtopiaException {
+	JXElement export(Track aTrack, String aFormat, String theAttrs, boolean addMedia, boolean addPOIs, long aMinDist, int aMaxPoint) throws UtopiaException {
 		// Defaults if null
 		theAttrs = theAttrs == null ? DEFAULT_ATTRS : theAttrs;
 		aFormat = aFormat == null ? DEFAULT_FORMAT : aFormat;
-		TrackMinDistFilter minDistFilter = new TrackMinDistFilter(aMinDist);
+		TrackPointFilter trackPointFilter = new TrackPointFilter(aMinDist, aMaxPoint, aTrack.getIntValue(Track.FIELD_PTCOUNT));
 
 		if (aFormat.equals(EXPORT_FORMAT_GPX)) {
-			return toGPX(aTrack, theAttrs, addMedia, addPOIs, minDistFilter);
+			return toGPX(aTrack, theAttrs, addMedia, addPOIs, trackPointFilter);
 		} else if (aFormat.equals(EXPORT_FORMAT_GTX)) {
-			return toGTX(aTrack, theAttrs, addMedia, addPOIs, minDistFilter);
+			return toGTX(aTrack, theAttrs, addMedia, addPOIs, trackPointFilter);
 		} else {
 			throw new UtopiaException("Unsupported Track export format: " + aFormat);
 		}
@@ -73,7 +74,7 @@ public class TrackExport {
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	JXElement toGTX(Track aTrack, String theAttrs, boolean addMedia, boolean addPOIs, TrackMinDistFilter aMinDistFilter) throws UtopiaException {
+	JXElement toGTX(Track aTrack, String theAttrs, boolean addMedia, boolean addPOIs, TrackPointFilter aTrackPointFilter) throws UtopiaException {
 		try {
 			int trackId = aTrack.getId();
 			Vector elements = aTrack.getDataElements();
@@ -213,7 +214,6 @@ public class TrackExport {
 			JXElement nextSegment = null;
 			JXElement nextPoint = null;
 			int ptCount = 0;
-
 			// Minimal distance
 			GPSSample nextSample = null;
 			for (int i = 0; i < elements.size(); i++) {
@@ -227,11 +227,11 @@ public class TrackExport {
 						nextSegment = null;
 					}
 					nextSegment = new JXElement("seg");
-					aMinDistFilter.reset();
+					aTrackPointFilter.reset();
 				} else {
 					if (nextSegment == null) {
 						nextSegment = new JXElement("seg");
-						aMinDistFilter.reset();
+						aTrackPointFilter.reset();
 					}
 					nextPoint = new JXElement("pt");
 					JXAttributeTable attrTable = nextElement.getAttrs();
@@ -246,8 +246,9 @@ public class TrackExport {
 					}
 
 					// Possibly filter out samples too close to each other
+					// and excess samples.
 					nextSample = new GPSSample(nextPoint.getDoubleAttr("lat"), nextPoint.getDoubleAttr("lat"));
-					if (aMinDistFilter.filter(nextSample)) {
+					if (aTrackPointFilter.filter(nextSample)) {
 						nextSegment.addChild(nextPoint);
 						ptCount++;
 					}
@@ -260,7 +261,7 @@ public class TrackExport {
 			}
 
 			info.setAttr(Track.FIELD_PTCOUNT, ptCount);
-			log.info(aTrack.getName() + " export ptCount=" + ptCount + " discardCount=" + aMinDistFilter.getDiscardCount());
+			log.info(aTrack.getName() + " export ptCount=" + ptCount + " discardCount=" + aTrackPointFilter.getDiscardCount());
 			doc.addChild(trk);
 			return doc;
 		} catch (Throwable t) {
@@ -280,7 +281,7 @@ public class TrackExport {
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	JXElement toGPX(Track aTrack, String theAttrs, boolean addMedia, boolean addPOIs, TrackMinDistFilter aMinDistFilter) throws UtopiaException {
+	JXElement toGPX(Track aTrack, String theAttrs, boolean addMedia, boolean addPOIs, TrackPointFilter aTrackPointFilter) throws UtopiaException {
 		try {
 			int trackId = aTrack.getId();
 			Vector elements = aTrack.getDataElements();
@@ -307,8 +308,6 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 			time.setText(GPX_TIME_FORMAT.format(new Date(aTrack.getEndDate())));
 			gpx.addChild(time);
 
-			// Create trk
-			JXElement trk = new JXElement("trk");
 
 			// Name element
 			JXElement name = new JXElement("name");
@@ -320,7 +319,77 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 			number.setText(trackId + "");
 			gpx.addChild(number);
 
+			// Add media ? add as waypoints with links
+			if (addMedia) {
+				// Add media related to track
+				Record nextMedium, nextLocations[], nextLoc;
+				String webAppURL = Amuse.server.getPortal().getProperty("webappurl");
+				String mediumURL = webAppURL + "/media.srv?id=";
+				try {
+					Relater relater = oase.getRelater();
+					Record[] media = relater.getRelated(aTrack.getRecord(), "base_medium", TrackLogic.REL_TAG_MEDIUM);
+					TreeMap sortedMediaMap = new TreeMap();
+					String mediumName, mediumDesc;
+					for (int j = 0; j < media.length; j++) {
+						nextMedium = media[j];
+
+						// Create waypoint
+						// See http://www.topografix.com/GPX/1/1/#type_wptType
+						JXElement mediumElm = new JXElement("wpt");
+
+						// First lat/lon/time/ele
+						nextLocations = relater.getRelated(nextMedium, Location.TABLE_NAME, "medium");
+						if (nextLocations.length == 1) {
+							// Has location: add location attrs
+							nextLoc = nextLocations[0];
+						} else {
+							continue;
+						}
+
+						mediumElm.setAttr("lon", nextLoc.getRealField("lon"));
+						mediumElm.setAttr("lat", nextLoc.getRealField("lat"));
+						mediumElm.setChildText("ele", nextLoc.getRealField("ele") + "");
+
+						long ctime = nextMedium.getLongField("creationdate");
+						mediumElm.setChildText("time", GPX_TIME_FORMAT.format(new Date(ctime)));
+
+						mediumName = nextMedium.getStringField("name");
+						if (mediumName != null) {
+							mediumElm.setChildText("name", mediumName);
+						}
+						// Optional description
+						mediumDesc = nextMedium.getStringField("description");
+						if (mediumDesc != null) {
+							mediumElm.setChildText("desc", mediumDesc);
+						}
+
+						// Set type to mime type
+						mediumElm.setChildText("type", nextMedium.getStringField("mime"));
+
+						// Set link to medium
+						int id = nextMedium.getId();
+						mediumElm.setChildText("link", mediumURL + id);
+
+						// Sort media by timestamp
+						sortedMediaMap.put(new Long(ctime), mediumElm);
+					}
+
+					// Get media elements in time-sorted order
+					Collection sortedMedia = sortedMediaMap.values();
+
+					// Add to media element
+					gpx.addChildren(new Vector(sortedMedia));
+				} catch (OaseException oe) {
+					log.warn("Error handling medium for trackId=" + trackId, oe);
+				} catch (Throwable t) {
+					log.error("Serious Error handling medium for trackId=" + trackId, t);
+				}
+			}
+
+
 			// Add points add trkseg, separated when open/close etc tags reached
+			// Create trk
+			JXElement trk = new JXElement("trk");
 			JXElement nextElement = null;
 			String nextTag = null;
 			JXElement nextSegment = null;
@@ -371,27 +440,29 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 		}
 	}
 
-
-	private static class TrackFilter {
-
-	}
-
-	private static class TrackMinDistFilter {
+	private static class TrackPointFilter {
 		private double minDistKm;
 		private GPSSample lastSample;
 		private int discardCount;
+		private int increment;
+		private int totalPoints;
 
-		public TrackMinDistFilter(long aMinDistMeter) {
+		public TrackPointFilter(long aMinDistMeter, int aMaxPoint, int aTrackPointCount) {
 			minDistKm = ((double) aMinDistMeter / 1000d);
+			increment = (aMaxPoint > 0) ? aTrackPointCount/aMaxPoint + 1 : 1;
 		}
 
 		public boolean filter(GPSSample aGPSSample) {
+			totalPoints++;
 			if (lastSample == null) {
 				lastSample = aGPSSample;
 				return true;
 			}
 
-			if (lastSample.distance(aGPSSample) >= minDistKm) {
+			// Filter passes if:
+			// 1. distance greater/equal minimum distance
+			// 2. increment reached
+			if (lastSample.distance(aGPSSample) >= minDistKm && (totalPoints % increment == 0)) {
 				lastSample = aGPSSample;
 				return true;
 			} else {

@@ -333,11 +333,11 @@ public class TrackLogic {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
-	public JXElement export(String aTrackId, String aFormat, String theAttrs, boolean addMedia, boolean addPOIs, long aMinDist) throws UtopiaException {
+	public JXElement export(String aTrackId, String aFormat, String theAttrs, boolean addMedia, boolean addPOIs, long aMinDist, int aMaxPoint) throws UtopiaException {
 		log.trace("Start export(trackId=" + aTrackId + " format=" + aFormat + ")");
 		Track track = getTrackById(aTrackId);
 		TrackExport trackExport = new TrackExport(oase);
-		return trackExport.export(track, aFormat, theAttrs, addMedia, addPOIs, aMinDist);
+		return trackExport.export(track, aFormat, theAttrs, addMedia, addPOIs, aMinDist, aMaxPoint);
 	}
 
 	/**

@@ -32,7 +32,8 @@ var GTW = {
 	polyLineWidth: 3,
 	polyLineOpacity: 0.80,
 // Minimal distance between trackpoints (when reading tracks from server)
-	minTrackPtDist: 15,
+	minTrackPtDist: 12,
+	maxTrackPt: 1000,
 	factory: null,
 
 	boot: function() {
