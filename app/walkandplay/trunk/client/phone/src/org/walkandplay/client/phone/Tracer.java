@@ -132,7 +132,9 @@ public class Tracer implements GPSFetcherListener, NetListener {
         Util.playTone(84, 50, VOLUME);
 
         traceCanvas.onGPSStatus("sample #" + (++sampleCount));
-        if (paused) {
+		traceCanvas.setLocation(aLocation.lon.toString(),  aLocation.lat.toString());
+
+		if (paused) {
             traceCanvas.onNetStatus("paused");
             traceCanvas.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
             return;

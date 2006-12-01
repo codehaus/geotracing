@@ -10,9 +10,9 @@ MIDlet-Permissions: ${midlet.permissions}
 MIDlet-Permissions-Opt: ${midlet.permissions.opt}
 kw-url: http://test.walkandplay.com/wp
 kw-timeout: 20
-kw-user: wp-user
+kw-user: geoapp-user
 kw-password: user
-kw-app: wp
+kw-app: geoapp
 kw-role: user
 audio-rate: 8000
 audio-bits: 8

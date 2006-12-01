@@ -79,9 +79,12 @@ public class WP extends MIDlet implements Runnable {
                 break;
             case TRACE_CANVAS:
                 CURRENT_CANVAS = TRACE_CANVAS;
-                traceCanvas = new TraceCanvas(this);
-                Display.getDisplay(this).setCurrent(traceCanvas);
-                break;
+				if (traceCanvas == null) {
+					traceCanvas = new TraceCanvas(this);
+				}
+				   Display.getDisplay(this).setCurrent(traceCanvas);
+				traceCanvas.start();
+ 				break;
             case FIND_TOURS_CANVAS:
                 CURRENT_CANVAS = FIND_TOURS_CANVAS;
                 Display.getDisplay(this).setCurrent(new FindToursCanvas(this));
