@@ -16,7 +16,10 @@ function pwCallback(element) {
 				var doc = KW.createRequest('license-getlist-req');
 				var xml = doc.documentElement;
 			//	KW.utopia(doc);
-			break;	
+			break;
+			case 'profile-create-req':
+				document.location('congratulations.html');
+			break;
 			case 'license-getlist-rsp':
 				licenses = element.getElementsByTagName('record');
 				var option;
@@ -31,7 +34,6 @@ function pwCallback(element) {
 		}		
 }
 function pwNegResp(elm) {
-alert(elm);
 
 }
 dojo.event.connect(document.getElementById('add'),'onclick',function(evt) {
@@ -68,7 +70,6 @@ function _checkIFrameRsp() {
 			iframeDoc = iframe.document;
 		}
 		if (iframeDoc.getElementsByTagName('medium-insert-rsp').length > 0) {
-			//setTimeout('_checkIFrameRsp()', 2000);
 			var imageId = iframeDoc.getElementsByTagName('medium-insert-rsp')[0].getAttribute('id');
 			document.getElementById('imageId').value = imageId;
 			document.getElementById('previewImage').src = 'wp/media.srv?id='+imageId+'&resize=160x120';
@@ -76,8 +77,6 @@ function _checkIFrameRsp() {
 			document.getElementById('previewImage').style.display = 'block';
 
 		} else {
-			// WT.onRsp(iframeDoc.documentElement);
-			alert(iframeDoc.documentElement.innerHTML);
 				setTimeout('_checkIFrameRsp()', 2000);
 
 		}

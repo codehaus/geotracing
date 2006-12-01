@@ -57,33 +57,47 @@ if(tags) {
 			});
 		}
 }
-dojo.event.connect(document.getElementById('mainbuttonscreate'),'onmouseover',function(evt) {
-	document.getElementById('mainbuttons').src = 'img/cpv_c_over.gif';
-});
-dojo.event.connect(document.getElementById('mainbuttonsplay'),'onmouseover',function(evt) {
-	document.getElementById('mainbuttons').src = 'img/cpv_p_over.gif';
-});
-dojo.event.connect(document.getElementById('mainbuttonsview'),'onmouseover',function(evt) {
-	document.getElementById('mainbuttons').src = 'img/cpv_v_over.gif';
-});
-dojo.event.connect(document.getElementById('mainbuttonscreate'),'onmouseout',function(evt) {
-	document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
-});
-dojo.event.connect(document.getElementById('mainbuttonsplay'),'onmouseout',function(evt) {
-	document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
-});
-dojo.event.connect(document.getElementById('mainbuttonsview'),'onmouseout',function(evt) {
-	document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
-});			
-dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[0],'onclick', function(evt) {
-	WP.mSetMap('streets');
-});
-dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[1],'onclick', function(evt) {
-	WP.mSetMap('satellite');
-});
-dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[2],'onclick', function(evt) {
-	WP.mSetMap('hybrid');
-});
+if(document.getElementById('mainbuttonscreate')) {
+	dojo.event.connect(document.getElementById('mainbuttonscreate'),'onmouseover',function(evt) {
+		document.getElementById('mainbuttons').src = 'img/cpv_c_over.gif';
+	});
+}
+if(document.getElementById('mainbuttonsplay')) {
+	dojo.event.connect(document.getElementById('mainbuttonsplay'),'onmouseover',function(evt) {
+		document.getElementById('mainbuttons').src = 'img/cpv_p_over.gif';
+	});
+}
+if(document.getElementById('mainbuttonsview')) {
+	dojo.event.connect(document.getElementById('mainbuttonsview'),'onmouseover',function(evt) {
+		document.getElementById('mainbuttons').src = 'img/cpv_v_over.gif';
+	});
+}
+if(document.getElementById('mainbuttonscreate')) {
+	dojo.event.connect(document.getElementById('mainbuttonscreate'),'onmouseout',function(evt) {
+		document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
+	});
+}
+if(document.getElementById('mainbuttonsplay')) {
+	dojo.event.connect(document.getElementById('mainbuttonsplay'),'onmouseout',function(evt) {
+		document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
+	});
+}
+if(document.getElementById('mainbuttonsview')) {
+	dojo.event.connect(document.getElementById('mainbuttonsview'),'onmouseout',function(evt) {
+		document.getElementById('mainbuttons').src = mainbuttonsoriginimage;
+	});
+}
+if(document.getElementById('mapbox')) {
+	dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[0],'onclick', function(evt) {
+		WP.mSetMap('streets');
+	});
+	dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[1],'onclick', function(evt) {
+		WP.mSetMap('satellite');
+	});
+	dojo.event.connect(document.getElementById('mapbox').getElementsByTagName('li')[2],'onclick', function(evt) {
+		WP.mSetMap('hybrid');
+	});
+}
 if(document.getElementById('livenavbox')) {
 	dojo.event.connect(document.getElementById('livenavbox').getElementsByTagName('li')[0],'onclick',function(evt) {
 		WP.mLive();
@@ -109,51 +123,62 @@ if(document.getElementById('archivenavbox')) {
 		WP.mShowPOIsInBbox();
 	});
 }
-dojo.event.connect(search_bt,'onclick',function(evt) {
-	toggle('searchbox');
-	hide('mapbox');
-	hide('archivenavbox');
-	hide('livenavbox');
-	hide('archivetoursbox');
-	hide('archivetracksbox');	
-
-});
-
-dojo.event.connect(maps_bt,'onclick',function(evt) {
-	toggle('mapbox');
-	hide('searchbox');
-	hide('archivenavbox');
-	hide('livenavbox');	
-	hide('archivetoursbox');
-	hide('archivetracksbox');
+if(document.getElementById(search_bt)) {
+	dojo.event.connect(search_bt,'onclick',function(evt) {
+		toggle('searchbox');
+		hide('mapbox');
+		hide('archivenavbox');
+		hide('livenavbox');
+		hide('archivetoursbox');
+		hide('archivetracksbox');	
 	
-});
-dojo.event.connect(live_bt,'onclick',function(evt) {
-	toggle('livenavbox');
-	hide('mapbox');
-	hide('searchbox');
-	hide('archivenavbox');	
-	hide('archivetoursbox');
-	hide('archivetracksbox');	
-});
-dojo.event.connect(archive_bt,'onclick',function(evt) {
-	toggle('archivenavbox');	
-	hide('mapbox');
-	hide('livenavbox');
-	hide('searchbox');	
-	hide('archivetoursbox');
-	hide('archivetracksbox');	
-});
-dojo.event.connect(signin_bt,'onclick',function(evt) {
-	toggle('loginbox');												
-	hide('archivenavbox');	
-	hide('mapbox');
-	hide('livenavbox');
-	hide('searchbox');	
-	hide('archivetoursbox');
-	hide('archivetracksbox');
-	
-});
+	});
+}
+if(maps_bt) {
+	dojo.event.connect(maps_bt,'onclick',function(evt) {
+		toggle('mapbox');
+		hide('searchbox');
+		hide('archivenavbox');
+		hide('livenavbox');	
+		hide('archivetoursbox');
+		hide('archivetracksbox');
+		
+	});
+}
+if(live_bt) {
+	dojo.event.connect(live_bt,'onclick',function(evt) {
+		toggle('livenavbox');
+		hide('mapbox');
+		hide('searchbox');
+		hide('archivenavbox');	
+		hide('archivetoursbox');
+		hide('archivetracksbox');	
+	});
+}
+if(archive_bt) {
+	dojo.event.connect(archive_bt,'onclick',function(evt) {
+		toggle('archivenavbox');	
+		hide('mapbox');
+		hide('livenavbox');
+		hide('searchbox');	
+		hide('archivetoursbox');
+		hide('archivetracksbox');	
+	});
+}
+if(signin_bt) {
+	dojo.event.connect(signin_bt,'onclick',function(evt) {
+		toggle('loginbox');												
+		hide('archivenavbox');	
+		hide('mapbox');
+		hide('livenavbox');
+		hide('searchbox');	
+		hide('archivetoursbox');
+		hide('archivetracksbox');
+		
+	});
+	}
+if(help_bt) {	
 dojo.event.connect(help_bt,'onclick',function(evt) {
 											  
 });
+}
