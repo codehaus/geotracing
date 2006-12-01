@@ -17,8 +17,7 @@ public class HomeCanvas extends DefaultCanvas {
     public HomeCanvas(WP aMidlet) {
         super(aMidlet);
         try {
-            setFullScreenMode(true);
-
+ 
             icons[0] = Image.createImage("/trace_icon.png");
             icons[1] = Image.createImage("/find_icon.png");
             icons[2] = Image.createImage("/play_icon.png");
