@@ -31,44 +31,11 @@ var MYAPP = {
    },
 
 	createMap: function() {
-		var WMS_URL_GREY = 'img/greysquare.jpg?';
-		var G_MAP_GREY = createWMSSpec(WMS_URL_GREY, "Blank", "Blank", "bl", "bla", "image/jpeg", "1.1.1");
-		CustomGetTileUrl = function(a, b) {
-			var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
-			var lURL = "map/gmap-sk8-tile.jsp";
-//			lURL += "?x=" + a.x;
-//			lURL += "&y=" + a.y;
-			lURL += "?layer=sk8";
-			lURL += khURL.substring(khURL.indexOf('&t'), khURL.length);
-//			lURL += "&zoom=" + b;
-			return lURL;
-		}
-		var tile = new GTileLayer(new GCopyrightCollection("GT"), 5, 16);
-		tile.getTileUrl = CustomGetTileUrl;
-		tile.isPng = function() {
-			return true;
-		}
-		tile.getOpacity = function() {
-			return 1.0;
-		}
 
-		var satLayers = [G_SATELLITE_MAP.getTileLayers()[0], tile];
-		var mapLayers = [G_NORMAL_MAP.getTileLayers()[0], tile];
-		var blancLayers = [G_MAP_GREY.getTileLayers()[0], tile];
-
-		var satRoutesType = new GMapType(satLayers, G_SATELLITE_MAP.getProjection(), "satroute");
-		var mapRoutesType = new GMapType(mapLayers, G_NORMAL_MAP.getProjection(), "maproute");
-		var blancRoutesType = new GMapType(blancLayers, G_SATELLITE_MAP.getProjection(), "blancroute");
-
-
-		// Add map specs to app (see also menu in index.jsp)
-		GMAP.addMapType('maproutes', mapRoutesType);
-		GMAP.addMapType('satroutes', satRoutesType);
-		GMAP.addMapType('blancroutes', blancRoutesType);
-		GMAP.addMapType('map', G_NORMAL_MAP);
+		GMAP.addMapType('streets', G_NORMAL_MAP);
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);
 		GMAP.addMapType('hybrid', G_HYBRID_MAP);
-		GMAP.addMapType('blanc', G_MAP_GREY);
+
 		// Create the Google Map
 		GMAP.createGMap = function(divId) {		
 			GMAP.mapDiv = DH.getObject(divId);
@@ -87,7 +54,7 @@ var MYAPP = {
 		GMAP.createGMap('map');
 	//	alert('test');
 		//GMAP.map.addControl(new GOverviewMapControl());
-		GMAP.map.setCenter(new GLatLng(52.37261, 4.900435), 9, GMAP.mapTypes['maproutes']);
+		GMAP.map.setCenter(new GLatLng(52.37261, 4.900435), 9, GMAP.mapTypes['streets']);
 		GMAP.map.addControl(new GLargeMapControl(),
            	 new GControlPosition(G_ANCHOR_TOP_LEFT, new GSize(600, 10)));
 
