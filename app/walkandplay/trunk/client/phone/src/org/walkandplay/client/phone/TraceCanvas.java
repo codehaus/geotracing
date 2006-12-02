@@ -43,13 +43,12 @@ public class TraceCanvas extends DefaultCanvas {
 	private final static int TRACK_STAT = 2;
 	private final static int STATUS_STAT = 3;
 	private int screenStat = HOME_STAT;
+	String[] options = {"new track", "resume track", "switch map", "zoom out", "zoom in", "drop media", "status"};
 
 	public TraceCanvas(WP aMidlet) {
 		super(aMidlet);
 		try {
 			midlet = aMidlet;
-			setFullScreenMode(true);
-
 			tileURL = midlet.getAppProperty("kw-url") + "/map/gmap.jsp?";
 			System.out.println("tileUrl:" + tileURL);
 
@@ -70,6 +69,7 @@ public class TraceCanvas extends DefaultCanvas {
 			tracer = new Tracer(midlet, this);
 			tracer.start();
 		}
+		repaint();
 	}
 
 	void stop() {
@@ -129,11 +129,6 @@ public class TraceCanvas extends DefaultCanvas {
 
 	public void onGPSStatus(String s) {
 		gpsStatus = s;
-		if (gpsStatus.equals("connected")) {
-			midlet.setGPSConnectionStat(true);
-		} else {
-			midlet.setGPSConnectionStat(false);
-		}
 		Log.log(s);
 		repaint();
 	}
@@ -141,11 +136,6 @@ public class TraceCanvas extends DefaultCanvas {
 
 	public void onNetStatus(String s) {
 		netStatus = s;
-		if (netStatus.equals("heartbeat ok") || netStatus.equals("login OK")) {
-			midlet.setNetConnectionStat(true);
-		} else {
-			midlet.setNetConnectionStat(false);
-		}
 		log(s);
 		repaint();
 	}
@@ -196,10 +186,10 @@ public class TraceCanvas extends DefaultCanvas {
 
 				if (showMenu && tracer != null) {
 					if (tracer.isPaused()) {
-						String[] options = {"new track", "resume track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+						options[1] = "resume track";
 						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
 					} else {
-						String[] options = {"new track", "suspend track", "stop track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+						options[1] = "suspend track";
 						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
 					}
 				}
@@ -207,8 +197,8 @@ public class TraceCanvas extends DefaultCanvas {
 				break;
 			case ASSIGNMENT_STAT:
 				if (showMenu) {
-					String[] options = {"answer"};
-					ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+					String[] menu = {"answer"};
+					ScreenUtil.drawMenu(g, h, menu, menuTop, menuMiddle, menuBottom, menuSel);
 				}
 				break;
 			case TRACK_STAT:
@@ -221,10 +211,10 @@ public class TraceCanvas extends DefaultCanvas {
 			case STATUS_STAT:
 				if (showMenu) {
 					if (tracer != null && tracer.isPaused()) {
-						String[] options = {"new track", "resume track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+						options[1] = "resume track";
 						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
 					} else {
-						String[] options = {"new track", "suspend track", "stop track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+						options[1] = "suspend track";
 						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
 					}
 				}

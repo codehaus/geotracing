@@ -8,8 +8,8 @@ import java.util.TimerTask;
 
 public class SplashCanvas extends Canvas {
     private WP midlet;
-    int w, h;
-
+    int w=-1, h=-1;
+	private Delayer delayer;
     // image objects
     private Image bg, gtLogo, kwxLogo;
 
@@ -26,7 +26,6 @@ public class SplashCanvas extends Canvas {
             kwxLogo = Image.createImage("/kwx_logo.png");
             screenName = aScreenName;
             midlet.log("new splashscreen!! : " + screenName);
-            repaint();
         } catch (Throwable t) {
             midlet.log("could not load all images : " + t.toString());
         }
@@ -38,17 +37,20 @@ public class SplashCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        w = getWidth();
-        h = getHeight();
-        setFullScreenMode(true);
+		if (w == -1) {
+			w = getWidth();
+			h = getHeight();
+			setFullScreenMode(true);
+		}
 
-        g.setColor(255, 255, 255);
+		g.setColor(255, 255, 255);
         g.fillRect(0, 0, w, h);
         g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(gtLogo, (w - gtLogo.getWidth()) / 2, (h - gtLogo.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
-        new Delayer(4);
-
+        if (delayer == null) {
+			delayer = new Delayer(4);
+		}
     }
 
     // creates a delay for the splashscreen
@@ -56,7 +58,7 @@ public class SplashCanvas extends Canvas {
         Timer timer;
 
         public Delayer(int seconds) {
-            midlet.log("new delayer!!");
+            midlet.log("SplashScreen: new delayer screenName=" + screenName);
             timer = new Timer();
             timer.schedule(new RemindTask(), seconds * 1000);
         }

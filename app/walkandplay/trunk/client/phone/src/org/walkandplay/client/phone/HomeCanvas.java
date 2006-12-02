@@ -17,7 +17,7 @@ public class HomeCanvas extends DefaultCanvas {
     public HomeCanvas(WP aMidlet) {
         super(aMidlet);
         try {
- 
+
             icons[0] = Image.createImage("/trace_icon.png");
             icons[1] = Image.createImage("/find_icon.png");
             icons[2] = Image.createImage("/play_icon.png");
@@ -94,9 +94,10 @@ public class HomeCanvas extends DefaultCanvas {
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             ScreenUtil.selectPrevIcon();
-            // right
+          // right
         } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
             ScreenUtil.selectNextIcon();
+			repaint();
             // up
         } else if (key == -1 || getGameAction(key) == Canvas.UP) {
             /*ScreenUtil.selectUpperIcon();*/
@@ -111,8 +112,7 @@ public class HomeCanvas extends DefaultCanvas {
         } else if (key == -8) {
         } else {
         }
-
-        repaint();
-    }
+		repaint();
+      }
 
 }

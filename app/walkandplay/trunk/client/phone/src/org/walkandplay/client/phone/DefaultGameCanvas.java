@@ -1,5 +1,7 @@
 package org.walkandplay.client.phone;
 
+import org.geotracing.client.GPSFetcher;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Graphics;
@@ -68,12 +70,12 @@ public class DefaultGameCanvas extends GameCanvas {
 
     protected void placeGPSNetBar(Graphics aGraphics) {
         aGraphics.drawImage(gpsNetBar, margin + logo.getWidth() + margin, margin, Graphics.TOP | Graphics.LEFT);
-        if (midlet.GPS_OK()) {
+        if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
             aGraphics.drawImage(greenDot, margin + logo.getWidth() + margin + 4, 10, Graphics.TOP | Graphics.LEFT);
         } else {
             aGraphics.drawImage(redDot, margin + logo.getWidth() + margin + 4, 10, Graphics.TOP | Graphics.LEFT);
         }
-        if (midlet.NET_OK()) {
+        if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
             aGraphics.drawImage(greenDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
         } else {
             aGraphics.drawImage(redDot, margin + logo.getWidth() + margin + 41, 10, Graphics.TOP | Graphics.LEFT);
