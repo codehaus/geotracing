@@ -1,5 +1,7 @@
 package org.walkandplay.client.phone;
 
+import org.geotracing.client.GPSFetcher;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -110,7 +112,7 @@ public class AssignmentCanvas extends DefaultCanvas {
                 g.drawImage(textArea, 5, logo.getHeight() + 10, Graphics.TOP | Graphics.LEFT);
                 String text = "Press menu to see the options";
                 ScreenUtil.drawText(g, text, 10, logo.getHeight() + 15, fh, 100);
-                if (midlet.GPS_OK()) {
+                if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
                     String[] options = {"help", "settings", "change gps"};
                     ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
                 } else {
@@ -140,14 +142,14 @@ public class AssignmentCanvas extends DefaultCanvas {
                     midlet.setScreen(WP.TRACE_CANVAS);
                     break;
                 case 2:
-                    if (midlet.GPS_OK()) {
+                    if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
                         midlet.setScreen(WP.FIND_TOURS_CANVAS);
                     } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
                 case 3:
-                    if (midlet.GPS_OK()) {
+                    if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
                         midlet.setScreen(WP.PLAY_TOURS_CANVAS);
                     } else {
                         gpsMsg = "select a gps first";

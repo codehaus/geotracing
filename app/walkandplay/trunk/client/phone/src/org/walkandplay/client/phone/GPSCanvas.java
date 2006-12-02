@@ -160,7 +160,6 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
             log("[" + connectionURL + "]");
             log(" ");
             screenStat = DEVICE_SELECTED_STAT;
-            midlet.setGPSConnectionStat(true);
             repaint();
         }
     }

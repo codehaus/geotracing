@@ -1,5 +1,8 @@
 package org.walkandplay.client.phone;
 
+import org.geotracing.client.GPSFetcher;
+import org.geotracing.client.Net;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -76,19 +79,29 @@ public class DefaultCanvas extends Canvas {
 	protected void placeGPSNetBar(Graphics aGraphics) {
 		aGraphics.drawImage(gpsNetBar, w - gpsNetBar.getWidth() - margin, margin, Graphics.TOP | Graphics.LEFT);
 
-		if (gpsBlinking) {
-			placeDot(aGraphics, greenDot, true);
-			// gpsBlinking = false;
-		} else if (midlet.GPS_OK()) {
-			placeDot(aGraphics, blueDot, true);
-		} else {
-			placeDot(aGraphics, redDot, true);
+		switch (GPSFetcher.getInstance().getState() ) {
+			case GPSFetcher.DISCONNECTED:
+				placeDot(aGraphics, redDot, true);
+				break;
+			case GPSFetcher.CONNECTED:
+				if (gpsBlinking) {
+					placeDot(aGraphics, greenDot, true);
+				} else {
+					placeDot(aGraphics, blueDot, true);
+				}
+				break;
 		}
 
-		if (midlet.NET_OK()) {
-			placeDot(aGraphics, blueDot, false);
-		} else {
-			placeDot(aGraphics, redDot, false);
+		switch (Net.getInstance().getState() ) {
+			case Net.DISCONNECTED:
+				placeDot(aGraphics, redDot, false);
+				break;
+			case Net.CONNECTED:
+				placeDot(aGraphics, blueDot, false);
+				break;
+			case Net.SENDING:
+				placeDot(aGraphics, greenDot, false);
+				break;
 		}
 	}
 

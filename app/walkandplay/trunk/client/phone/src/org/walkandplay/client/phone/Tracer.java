@@ -204,10 +204,12 @@ public class Tracer implements GPSFetcherListener, NetListener {
             }
             traceCanvas.setStatus("gpsURL=\n" + gpsURL);
             long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
-            gpsFetcher = new GPSFetcher(gpsURL, this);
+			gpsFetcher = GPSFetcher.getInstance();
+			gpsFetcher.setListener(this);
+			gpsFetcher.setURL(gpsURL);
             gpsFetcher.start(GPS_SAMPLE_INTERVAL);
         } catch (Throwable t) {
-            traceCanvas.onGPSStatus("start error");
+            traceCanvas.onGPSStatus("start error t=" + t);
             gpsFetcher = null;
         }
     }
