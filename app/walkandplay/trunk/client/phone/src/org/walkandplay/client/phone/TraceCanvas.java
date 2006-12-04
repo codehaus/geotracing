@@ -5,7 +5,6 @@ import org.geotracing.client.Log;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -43,7 +42,7 @@ public class TraceCanvas extends DefaultCanvas {
 	private final static int TRACK_STAT = 2;
 	private final static int STATUS_STAT = 3;
 	private int screenStat = HOME_STAT;
-	String[] options = {"new track", "resume track", "switch map", "zoom out", "zoom in", "drop media", "status"};
+	String[] tracingOptions = {"new track", "resume track", "stop tracing", "switch map", "zoom out", "zoom in", "drop media", "status"};
 
 	public TraceCanvas(WP aMidlet) {
 		super(aMidlet);
@@ -97,7 +96,7 @@ public class TraceCanvas extends DefaultCanvas {
 				tileImage = null;
 			}
 			tileInfo = newTileInfo;
-			System.out.println("khref=" + tileInfo.getAttr("khref"));
+			// System.out.println("khref=" + tileInfo.getAttr("khref"));
 		} catch (Throwable t) {
 			Log.log("error: TraceCanvas: t=" + t + " m=" + t.getMessage());
 		}
@@ -172,25 +171,24 @@ public class TraceCanvas extends DefaultCanvas {
 				if (tileImage != null) {
 					g.drawImage(tileImage, 0, 24, Graphics.TOP | Graphics.LEFT);
 
-					// x,y offset in tile tileImage
+					// x,y offset of our location in tile tileImage
 					String myX = tileInfo.getAttr("x");
 					String myY = tileInfo.getAttr("y");
 
-					g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY) +24, Graphics.TOP | Graphics.LEFT);
-				} else {
-					if (msg.length() > 0) {
-						ScreenUtil.drawTextArea(g, 100, (w - 2 * margin - middleTextArea.getWidth()) / 2, 4 * margin + logo.getHeight(), topTextArea, middleTextArea, bottomTextArea);
-						ScreenUtil.drawText(g, msg, (w - middleTextArea.getWidth()) / 2, logo.getHeight() + 5 * margin, fh, 100);
-					}
+					g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY) + 24, Graphics.TOP | Graphics.LEFT);
+				} else if (msg.length() > 0) {
+					ScreenUtil.drawTextArea(g, 100, (w - 2 * margin - middleTextArea.getWidth()) / 2, 4 * margin + logo.getHeight(), topTextArea, middleTextArea, bottomTextArea);
+					ScreenUtil.drawText(g, msg, (w - middleTextArea.getWidth()) / 2, logo.getHeight() + 5 * margin, fh, 100);
 				}
+
 
 				if (showMenu && tracer != null) {
 					if (tracer.isPaused()) {
-						options[1] = "resume track";
-						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+						tracingOptions[1] = "resume track";
+						ScreenUtil.drawMenu(g, h, tracingOptions, menuTop, menuMiddle, menuBottom, menuSel);
 					} else {
-						options[1] = "suspend track";
-						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+						tracingOptions[1] = "suspend track";
+						ScreenUtil.drawMenu(g, h, tracingOptions, menuTop, menuMiddle, menuBottom, menuSel);
 					}
 				}
 				ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
@@ -211,11 +209,11 @@ public class TraceCanvas extends DefaultCanvas {
 			case STATUS_STAT:
 				if (showMenu) {
 					if (tracer != null && tracer.isPaused()) {
-						options[1] = "resume track";
-						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+						tracingOptions[1] = "resume track";
+						ScreenUtil.drawMenu(g, h, tracingOptions, menuTop, menuMiddle, menuBottom, menuSel);
 					} else {
-						options[1] = "suspend track";
-						ScreenUtil.drawMenu(g, h, options, menuTop, menuMiddle, menuBottom, menuSel);
+						tracingOptions[1] = "suspend track";
+						ScreenUtil.drawMenu(g, h, tracingOptions, menuTop, menuMiddle, menuBottom, menuSel);
 					}
 				}
 				// if there's a status show it in the status bar
@@ -255,42 +253,20 @@ public class TraceCanvas extends DefaultCanvas {
 			switch (screenStat) {
 				case HOME_STAT:
 					if (showMenu) {
-						if (tracer != null && tracer.isPaused()) {
+						if (tracer != null) {
 							if (ScreenUtil.getSelectedMenuItem() == 1) {
 								screenStat = TRACK_STAT;
 								showMenu = false;
 							} else if (ScreenUtil.getSelectedMenuItem() == 2) {
-								tracer.resume();
-								msg += "Track resumed";
-							} else if (ScreenUtil.getSelectedMenuItem() == 3) {
-								mapType = mapType.equals("sat") ? "map" : "sat";
-								fetchTileInfo();
-								tileImage = null;
-								repaint();
-							} else if (ScreenUtil.getSelectedMenuItem() == 4) {
-								zoom--;
-								fetchTileInfo();
-								repaint();
-							} else if (ScreenUtil.getSelectedMenuItem() == 5) {
-								zoom++;
-								fetchTileInfo();
-								repaint();
-							} else if (ScreenUtil.getSelectedMenuItem() == 6) {
-								midlet.setScreen(WP.MEDIA_CANVAS);
-								showMenu = false;
-							} else if (ScreenUtil.getSelectedMenuItem() == 7) {
-								screenStat = STATUS_STAT;
-								showMenu = false;
-							} else {
-								showMenu = false;
-							}
-						} else {
-							if (ScreenUtil.getSelectedMenuItem() == 1) {
-								screenStat = TRACK_STAT;
-								showMenu = false;
-							} else if (ScreenUtil.getSelectedMenuItem() == 2) {
-								tracer.suspend();
-								msg += "Track suspended";
+								if (tracer.isPaused()) {
+									tracer.resume();
+									tracingOptions[1] = "suspend track";
+									msg += "Track resumed";
+								} else {
+									tracer.suspend();
+									tracingOptions[1] = "resume track";
+									msg += "Track suspended";
+								}
 							} else if (ScreenUtil.getSelectedMenuItem() == 3) {
 								tracer.stop();
 								msg += "Track stopped";
@@ -298,15 +274,12 @@ public class TraceCanvas extends DefaultCanvas {
 								mapType = mapType.equals("sat") ? "map" : "sat";
 								fetchTileInfo();
 								tileImage = null;
-								repaint();
 							} else if (ScreenUtil.getSelectedMenuItem() == 5) {
 								zoom--;
 								fetchTileInfo();
-								repaint();
 							} else if (ScreenUtil.getSelectedMenuItem() == 6) {
 								zoom++;
 								fetchTileInfo();
-								repaint();
 							} else if (ScreenUtil.getSelectedMenuItem() == 7) {
 								midlet.setScreen(WP.MEDIA_CANVAS);
 								showMenu = false;
@@ -317,7 +290,6 @@ public class TraceCanvas extends DefaultCanvas {
 								showMenu = false;
 							}
 						}
-
 					} else {
 						showMenu = true;
 					}
