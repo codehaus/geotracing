@@ -128,7 +128,7 @@ public class Tracer implements GPSFetcherListener, NetListener {
      * From GPSFetcher: GPS NMEA sample received.
      */
     synchronized public void onGPSLocation(GPSLocation aLocation) {
-        System.out.println("GPSlocation:" + aLocation.data);
+        System.out.println("GPSlocation:" + aLocation.data + " paused=" + paused);
         Util.playTone(84, 50, VOLUME);
 
         traceCanvas.onGPSStatus("sample #" + (++sampleCount));

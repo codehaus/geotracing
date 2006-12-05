@@ -109,9 +109,8 @@ public class TraceCanvas extends DefaultCanvas {
 		}
 		lon = aLon;
 		lat = aLat;
+		repaint();
 		fetchTileInfo();
-
-		blinkGPS();
 	}
 
 	public void setGPSInfo(GPSInfo theInfo) {
@@ -256,7 +255,6 @@ public class TraceCanvas extends DefaultCanvas {
 						if (tracer != null) {
 							if (ScreenUtil.getSelectedMenuItem() == 1) {
 								screenStat = TRACK_STAT;
-								showMenu = false;
 							} else if (ScreenUtil.getSelectedMenuItem() == 2) {
 								if (tracer.isPaused()) {
 									tracer.resume();
@@ -282,14 +280,12 @@ public class TraceCanvas extends DefaultCanvas {
 								fetchTileInfo();
 							} else if (ScreenUtil.getSelectedMenuItem() == 7) {
 								midlet.setScreen(WP.MEDIA_CANVAS);
-								showMenu = false;
 							} else if (ScreenUtil.getSelectedMenuItem() == 8) {
 								screenStat = STATUS_STAT;
-								showMenu = false;
-							} else {
-								showMenu = false;
-							}
+							} 
 						}
+						showMenu = false;
+
 					} else {
 						showMenu = true;
 					}

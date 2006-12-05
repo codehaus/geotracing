@@ -2,6 +2,7 @@ package org.walkandplay.client.phone;
 
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
+import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
@@ -26,8 +27,6 @@ public class DefaultCanvas extends Canvas {
 	protected Image menuBt, topTextArea, middleTextArea, bottomTextArea;
 
 	protected int fontType = Font.FACE_MONOSPACE;
-
-	protected boolean gpsBlinking;
 
 	public DefaultCanvas(WP aMidlet) {
 		try {
@@ -62,16 +61,6 @@ public class DefaultCanvas extends Canvas {
 		midlet.log(aMsg);
 	}
 
-	protected void blinkGPS() {
-		gpsBlinking = true;
-		repaint();
-	}
-
-	protected void placeDot(Graphics aGraphics, Image aDotImage, boolean isGPS) {
-		aGraphics.drawImage(aDotImage, w - gpsNetBar.getWidth() - margin + (isGPS ? 4 : 41), 10, Graphics.TOP | Graphics.LEFT);
-
-	}
-
 	protected void placeMainLogo(Graphics aGraphics) {
 		aGraphics.drawImage(logo, margin, margin, Graphics.TOP | Graphics.LEFT);
 	}
@@ -79,30 +68,28 @@ public class DefaultCanvas extends Canvas {
 	protected void placeGPSNetBar(Graphics aGraphics) {
 		aGraphics.drawImage(gpsNetBar, w - gpsNetBar.getWidth() - margin, margin, Graphics.TOP | Graphics.LEFT);
 
-		switch (GPSFetcher.getInstance().getState() ) {
-			case GPSFetcher.DISCONNECTED:
-				placeDot(aGraphics, redDot, true);
-				break;
-			case GPSFetcher.CONNECTED:
-				if (gpsBlinking) {
-					placeDot(aGraphics, greenDot, true);
-				} else {
-					placeDot(aGraphics, blueDot, true);
-				}
-				break;
+		// Init Net/GPS status dots to DISCONNECTED (red)
+		Image gpsDot = redDot, netDot = redDot;
+
+		long now = Util.getTime();
+
+		// TODO make green lights blinking in real-time (need timer)
+
+		// GPS status: connected(idle) or connected(data)
+		if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
+			// Make green if a valid location was sampled in last second
+			//System.out.println("gpsDiff=" + (now - GPSFetcher.getInstance().getLastLocationTime()));
+			gpsDot = now - GPSFetcher.getInstance().getLastLocationTime() < 15000 ? greenDot : blueDot;
 		}
 
-		switch (Net.getInstance().getState() ) {
-			case Net.DISCONNECTED:
-				placeDot(aGraphics, redDot, false);
-				break;
-			case Net.CONNECTED:
-				placeDot(aGraphics, blueDot, false);
-				break;
-			case Net.SENDING:
-				placeDot(aGraphics, greenDot, false);
-				break;
+		// Net status: connected(idle) or sending data
+		if (Net.getInstance().getState() == Net.CONNECTED) {
+			//System.out.println("netDiff=" + (now - Net.getInstance().getLastCommandTime()));
+			netDot = now - Net.getInstance().getLastCommandTime() < 15000 ? greenDot : blueDot;
 		}
+
+		aGraphics.drawImage(gpsDot, w - gpsNetBar.getWidth() - margin + 4, 10, Graphics.TOP | Graphics.LEFT);
+		aGraphics.drawImage(netDot, w - gpsNetBar.getWidth() - margin + 41, 10, Graphics.TOP | Graphics.LEFT);
 	}
 
 	/**
