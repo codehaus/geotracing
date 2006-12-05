@@ -5,15 +5,14 @@ package org.geotracing.gis;
 /**
  * Rectangle of two lon,lat coordinates in resp SW and NE.
  *
- * @version $Id$
  * @author Just van den Broecke
- *
+ * @version $Id$
  */
 public class GeoBox {
 
 	/**
 	 * Box coordinates.
-	 *
+	 * <p/>
 	 * Values:  world GeoBox is e.g. { (-180,-90) (180,90) }.
 	 * Values in fractional degrees. Negative values denote
 	 * W, western hemisphere, positive is E.
@@ -36,12 +35,16 @@ public class GeoBox {
 		lat2 = aLat1 < aLat2 ? aLat2 : aLat1;
 	}
 
-	/** Is point inside the box ?. */
+	/**
+	 * Is point inside the box ?.
+	 */
 	public boolean isInside(GeoPoint p) {
 		return p.lon >= lon1 && p.lon <= lon2 && p.lat >= lat1 && p.lat <= lat2;
 	}
 
-	/** Expand box if point outside. */
+	/**
+	 * Expand box if point outside.
+	 */
 	public boolean expand(GeoPoint p) {
 		// No expand if point inside box
 		if (isInside(p)) {

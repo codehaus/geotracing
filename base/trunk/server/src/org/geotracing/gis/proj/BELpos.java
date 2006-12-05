@@ -76,43 +76,43 @@ public class BELpos {
 		double lambX = X_.doubleValue();
 		double lambY = Y_.doubleValue();
 		short maparray[][] = {
-			{
-				0, 0, 0, 0, 0, 0, -7, -8, -9, 0,
-				0, 0, 0, 0
-			}, {
+				{
+						0, 0, 0, 0, 0, 0, -7, -8, -9, 0,
+						0, 0, 0, 0
+				}, {
 				0, 2, 3, 4, 5, 6, 7, 8, 9, -19,
 				-20, 0, 0, 0
-			}, {
+		}, {
 				10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 				20, 21, 0, 0
-			}, {
+		}, {
 				22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
 				32, 33, 0, 0
-			}, {
+		}, {
 				34, 35, 36, 37, 38, 39, 40, 41, 42, 43,
 				44, 45, -57, 0
-			}, {
+		}, {
 				0, 46, 47, 48, 49, 50, 51, 52, 53, 54,
 				55, 56, 57, 0
-			}, {
+		}, {
 				0, 0, 58, 59, 60, 61, 62, 63, 64, 65,
 				66, 67, 68, 69
-			}, {
+		}, {
 				0, 0, 0, 0, 70, 71, 72, 73, 74, 75,
 				76, 77, 78, 79
-			}, {
+		}, {
 				0, 0, 0, 0, 0, 80, 81, 82, 83, 84,
 				85, 86, 87, 0
-			}, {
+		}, {
 				0, 0, 0, 0, 0, 88, 89, 90, 91, 92,
 				93, 94, 95, 0
-			}, {
+		}, {
 				0, 0, 0, 0, 0, 0, 0, 0, 96, 97,
 				98, 99, 0, 0
-			}, {
+		}, {
 				0, 0, 0, 0, 0, 0, 0, 0, 100, 101,
 				102, 103, 0, 0
-			}
+		}
 		};
 		int indexX = (int) ((lambX - 12675D) / 21334D);
 		int indexY = (int) ((258183D - lambY) / 20000D);
@@ -154,41 +154,41 @@ public class BELpos {
 		double lambX = X_.doubleValue();
 		double lambY = Y_.doubleValue();
 		short maparray[][] = {
-			{
-				0, 0, 0, 0, 1, -2, 3, 0, 0, 0
-			}, {
+				{
+						0, 0, 0, 0, 1, -2, 3, 0, 0, 0
+				}, {
 				0, 4, 5, -6, 7, 8, 9, -10, 0, 0
-			}, {
+		}, {
 				-11, 12, 13, 14, 15, 16, 17, 18, 0, 0
-			}, {
+		}, {
 				-19, 20, 21, 22, 23, 24, 25, 26, 0, 0
-			}, {
+		}, {
 				-27, 28, 29, 30, 31, 32, 33, 34, -35, 0
-			}, {
+		}, {
 				0, -36, 37, 38, 39, 40, 41, 42, 43, 0
-			}, {
+		}, {
 				0, 0, 44, 45, 46, 47, 48, 49, 50, -50
-			}, {
+		}, {
 				0, 0, 0, 51, 52, 53, 54, 55, 56, -56
-			}, {
+		}, {
 				0, 0, 0, 0, 57, 58, 59, 60, 61, 0
-			}, {
+		}, {
 				0, 0, 0, 0, 62, 63, 64, 65, 0, 0
-			}, {
+		}, {
 				0, 0, 0, 0, 0, -66, 67, 68, -69, 0
-			}, {
+		}, {
 				0, 0, 0, 0, 0, 0, -70, 71, -72, 0
-			}
+		}
 		};
 		String maps[] = {
-			"", "Essen", "Meerle", "Maarle", "Blankenberge", "Westkapelle", "Watervliet", "Kapellen", "Turnhout", "Arendonk",
-			"Beverbeek", "0ostduinkerke", "0ostende", "Brugge", "Lokeren", "Antwerpen", "Lier", "Mol", "Maaseik", "Veurne",
-			"Roeselare", "Tielt", "Gent", "Mechelen", "Aarschot ", "Hasselt", "Rekem", "Proven", "Ieper", "Kortrijk",
-			"Geraardsbergen", "Brussel-Bruxelles", "Leuven", "Sint-Truiden", "Tongeren", "Gemmenich", "Ploegsteert", "Tournai", "Ath", "Nivelles",
-			"Wavre", "Waremme", "Li\350ge", "Limbourg", "P\351ruwelz", "Mons", "Charleroi", "Namur", "Huy", "Spa",
-			"Stavelot-Losheimergraben", "Roisin", "Thuin", "Dinant", "Marche-en-Famenne", "Durbuy", "Vielsalm-Manderfeld", "Chimay", "Beauraing", "Saint-Hubert",
-			"La Roche-en-Ardenne", "Limerl\351", "Cul-des-Sarts", "Gedinne", "Paliseul", "Neufchateau", "Sugny", "Bouillon", "Arlon", "Sterpenich",
-			"Villers-devant-Orval", "Virton", "Houwald"
+				"", "Essen", "Meerle", "Maarle", "Blankenberge", "Westkapelle", "Watervliet", "Kapellen", "Turnhout", "Arendonk",
+				"Beverbeek", "0ostduinkerke", "0ostende", "Brugge", "Lokeren", "Antwerpen", "Lier", "Mol", "Maaseik", "Veurne",
+				"Roeselare", "Tielt", "Gent", "Mechelen", "Aarschot ", "Hasselt", "Rekem", "Proven", "Ieper", "Kortrijk",
+				"Geraardsbergen", "Brussel-Bruxelles", "Leuven", "Sint-Truiden", "Tongeren", "Gemmenich", "Ploegsteert", "Tournai", "Ath", "Nivelles",
+				"Wavre", "Waremme", "Li\350ge", "Limbourg", "P\351ruwelz", "Mons", "Charleroi", "Namur", "Huy", "Spa",
+				"Stavelot-Losheimergraben", "Roisin", "Thuin", "Dinant", "Marche-en-Famenne", "Durbuy", "Vielsalm-Manderfeld", "Chimay", "Beauraing", "Saint-Hubert",
+				"La Roche-en-Ardenne", "Limerl\351", "Cul-des-Sarts", "Gedinne", "Paliseul", "Neufchateau", "Sugny", "Bouillon", "Arlon", "Sterpenich",
+				"Villers-devant-Orval", "Virton", "Houwald"
 		};
 		int indexX = (int) ((lambX - 2025D) / 32000D);
 		int indexY = (int) ((258183D - lambY) / 20000D);

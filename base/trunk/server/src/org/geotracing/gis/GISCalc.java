@@ -224,6 +224,23 @@ public class GISCalc {
 		return distance(aPoint.lat, aPoint.lon, aNextPoint.lat, aNextPoint.lon, 'K');
 	}
 
+	/** Calculates meters per degree at GeoPoint. */
+	public static XYDouble metersPerDegree(GeoPoint aPoint) {
+		// Probably not very accurate but ok...
+		final double fraction = 0.1d;
+		XYDouble result = new XYDouble();
+
+		// Calc meters per degree longitude
+		GeoPoint gpNear = new GeoPoint(aPoint.lon + fraction, aPoint.lat);
+		result.x = (1000.0d * aPoint.distance(gpNear)) / fraction;
+
+		// Calc meters per degree latitude
+		gpNear = new GeoPoint(aPoint.lon, aPoint.lat + fraction);
+		result.y = (1000.0d * aPoint.distance(gpNear)) / fraction;
+
+		return result;
+	}
+
 	public static double speed(GeoPoint aPoint, GeoPoint aNextPoint) {
 		double distance = distance(aPoint, aNextPoint);
 		double timeLapse = aNextPoint.timestamp - aPoint.timestamp;

@@ -7,14 +7,14 @@ import java.util.Date;
 /**
  * Point on the world in lon,lat.
  *
- * @author   Just van den Broecke
+ * @author Just van den Broecke
  * @version $Id$
  */
 public class GeoPoint {
 
 	/**
 	 * Longitude ("lengtegraad") coordinate.
-	 *
+	 * <p/>
 	 * Values:  -180..180. Values in fractional degrees. Negative values denote
 	 * W, western hemisphere, positive is E.
 	 */
@@ -22,21 +22,24 @@ public class GeoPoint {
 
 	/**
 	 * Latitude ("breedtegraad") coordinate.
-	 *
+	 * <p/>
 	 * Values: -90..90. Values in fractional degrees. Negative values denote
 	 * S, southern hemisphere, positive values N(orthern).
-	 *
 	 */
 	public double lat;
 
 
-	/** Elevation coordinate in meters. 0 means no value*/
+	/**
+	 * Elevation coordinate in meters. 0 means no value
+	 */
 	public double elevation;
 
-	/** Time in ms after 1970 (UNIX-time). */
+	/**
+	 * Time in ms after 1970 (UNIX-time).
+	 */
 	public long timestamp;
 
-	public GeoPoint()  {
+	public GeoPoint() {
 
 	}
 
@@ -47,7 +50,8 @@ public class GeoPoint {
 	public GeoPoint(double aLon, double aLat) {
 		this(aLon, aLat, 0D);
 	}
-    public GeoPoint(double aLon, double aLat, double anElevation) {
+
+	public GeoPoint(double aLon, double aLat, double anElevation) {
 		this(aLon, aLat, anElevation, System.currentTimeMillis());
 	}
 
@@ -65,6 +69,10 @@ public class GeoPoint {
 
 	public double speed(GeoPoint aPoint) {
 		return GISCalc.speed(this, aPoint);
+	}
+
+	public XYDouble metersPerDegree() {
+		return GISCalc.metersPerDegree(this);
 	}
 
 	public String toString() {

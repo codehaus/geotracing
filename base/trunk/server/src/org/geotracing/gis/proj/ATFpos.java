@@ -7,7 +7,6 @@ package org.geotracing.gis.proj;
 
 ;
 
-
 // Referenced classes of package convert:
 //            LLpos, Convert, WGS84pos
 

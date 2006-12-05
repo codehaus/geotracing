@@ -3,15 +3,16 @@
 package org.geotracing.gis;
 
 
-
 public class GPSSample extends GeoPoint {
 
 	public String rawData = "";
 
-	/** Accuracy of coordinates. Value 1..100. 100 means perfect */
+	/**
+	 * Accuracy of coordinates. Value 1..100. 100 means perfect
+	 */
 	public int accuracy;
 
-	public double speed=-1;
+	public double speed = -1;
 
 	public GPSSample() {
 	}
@@ -37,7 +38,9 @@ public class GPSSample extends GeoPoint {
 		accuracy = anAccuracy;
 	}
 
-	/** Create from sample string (see toString()). */
+	/**
+	 * Create from sample string (see toString()).
+	 */
 	public GPSSample(String aSampleString) {
 		String[] sampleArray = aSampleString.split("{,}");
 		timestamp = Long.parseLong(sampleArray[0]);
@@ -54,7 +57,6 @@ public class GPSSample extends GeoPoint {
 
 
 }
-
 
 /*
 * $Log: GPSSample.java,v $
@@ -112,7 +114,6 @@ public class GPSSample extends GeoPoint {
 *
 *
 */
-
 
 /* Waag OSS license statement.
  *

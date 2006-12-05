@@ -33,20 +33,39 @@ public class GPSFetcher implements Runnable {
 	private GPSFetcherListener gpsListener;
 	private long sampleIntervalMillis;
 	private long statusIntervalMillis = 4000;
+	private long lastTimeLocSent;
+
 	private Thread workerThread;
 	private GPSInfo info = new GPSInfo();
 	public static final MFloat KM_PER_KNOT = MFloat.parse("1.85200", 10);
 	public static final MFloat MINS = new MFloat(60);
 	private GPSSmoother gpsSmoother = new GPSSmoother();
 
-	/**
-	 * Create a new GPSFetcher.
-	 *
-	 * @param aListener listener
-	 */
-	public GPSFetcher(String aURL, GPSFetcherListener aListener) {
-		connectionURL = aURL;
+	/** Singleton. */
+	private static GPSFetcher instance = new GPSFetcher();
+
+	private GPSFetcher() {
+	}
+
+	/** Get time of last valid location notification. */
+	public long getLastLocationTime() {
+		return lastTimeLocSent;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public static GPSFetcher getInstance() {
+		return instance;
+	}
+
+	public void setListener(GPSFetcherListener aListener) {
 		gpsListener = aListener;
+	}
+
+	public void setURL(String aURL) {
+		connectionURL = aURL;
 	}
 
 	public void start() {
@@ -75,7 +94,7 @@ public class GPSFetcher implements Runnable {
 
 	public void run() {
 
-		long lastTimeLocSent = Util.getTime();
+		lastTimeLocSent = Util.getTime();
 		long lastTimeStatusSent = Util.getTime();
 
 		// when we got the service try sending the location data
@@ -110,7 +129,7 @@ public class GPSFetcher implements Runnable {
 							gpsListener.onGPSInfo(info);
 						}
 
-						// Notify location if intereval passed and location available
+						// Notify location if interval passed and location available
 						if (now - lastTimeLocSent > sampleIntervalMillis) {
 							GPSLocation bestLocation = gpsSmoother.getBestLocation();
 							if (bestLocation != null) {

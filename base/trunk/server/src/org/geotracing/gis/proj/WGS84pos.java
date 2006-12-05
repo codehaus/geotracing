@@ -7,7 +7,6 @@ package org.geotracing.gis.proj;
 
 import org.geotracing.gis.proj.*;
 
-
 // Referenced classes of package convert:
 //            LLpos, Convert, ED50pos, PARISpos,
 //            CH1903pos, NLBesselpos, LUREFgeopos, ATFpos,
