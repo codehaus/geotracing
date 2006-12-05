@@ -9,21 +9,26 @@ import java.util.Date;
 /**
  * Decodes stream of NMEA 0183 data into GeoSamples.
  *
- * @version $Id$
  * @author Just van den Broecke
- *
+ * @version $Id$
  */
 public class GPSDecoder {
-	/** NMEA time format, e.g. 224321.657. */
+	/**
+	 * NMEA time format, e.g. 224321.657.
+	 */
 	public static final String NMEA_TIME_FORMAT = "HHmmss.SSS";
-	/** NMEA time format, e.g. 224321.657. */
+	/**
+	 * NMEA time format, e.g. 224321.657.
+	 */
 	public static final SimpleDateFormat TIME_DECODER = new SimpleDateFormat("yyMMdd" + NMEA_TIME_FORMAT);
 
 	private BufferedReader reader;
 	private static String startYYMMDD;
 	private static GPSSample lastSample;
 
-	/** Needed since GPS is 2 hours too early. */
+	/**
+	 * Needed since GPS is 2 hours too early.
+	 */
 	private static final long TIME_CORRECTION_MILLIS = 7200000L;
 	private static final long FULL_DAY_MILLIS = 24L * 60L * 60L * 1000L;
 

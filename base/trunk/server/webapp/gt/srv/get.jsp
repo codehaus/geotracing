@@ -15,10 +15,12 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Vector" %>
-<%@ page import="java.util.Enumeration"%>
-<%@ page import="org.geotracing.server.CommentLogic"%>
-<%@ page import="java.util.HashMap"%>
-<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
+<%@ page import="java.util.Enumeration" %>
+<%@ page import="org.geotracing.server.CommentLogic" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic" %>
+<%@ page import="org.geotracing.gis.GeoPoint" %>
+<%@ page import="org.geotracing.gis.XYDouble" %>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -31,6 +33,7 @@
 
 	public static final String CMD_QUERY_STORE = "q-store";
 	public static final String CMD_QUERY_ACTIVE_TRACKS = "q-active-tracks";
+	public static final String CMD_QUERY_AROUND = "q-around";
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
 	public static final String CMD_QUERY_BY_EXAMPLE = "q-by-example";
 	public static final String CMD_QUERY_COMMENTS_FOR_TARGET = "q-comments-for-target";
@@ -50,13 +53,15 @@
 	public static final String CMD_QUERY_MEDIUM_INFO = "q-medium-info";
 	public static final String CMD_QUERY_FEATURE_INFO = "q-feature-info";
 	public static final String CMD_QUERY_POIS = "q-pois";
-	public static final String CMD_QUERY_TAGS= "q-tags";
-	public static final String CMD_QUERY_TAGGED= "q-tagged";
+	public static final String CMD_QUERY_TAGS = "q-tags";
+	public static final String CMD_QUERY_TAGGED = "q-tagged";
 	public static final String CMD_GET_TRACK = "get-track";
 	public static final String CMD_DESCRIBE = "describe";
 	public static final String PAR_ID = "id";
 	public static final String PAR_CMD = "cmd";
 	public static final String PAR_BBOX = "bbox";
+	public static final String PAR_LOC = "loc";
+	public static final String PAR_RADIUS = "radius";
 	public static final String PAR_USER_NAME = "user";
 	public static final String PAR_TABLE_NAME = "table";
 	public static final String PAR_OWNER_INFO = "ownerinfo";
@@ -164,9 +169,9 @@
 		String personId;
 		Record personRecord, accountRecord;
 		String iconRecordId;
-		HashMap personsForPersonId=new HashMap(3);
-		HashMap accountsForPersonId=new HashMap(3);
-		HashMap iconIdForPersonId=new HashMap(3);
+		HashMap personsForPersonId = new HashMap(3);
+		HashMap accountsForPersonId = new HashMap(3);
+		HashMap iconIdForPersonId = new HashMap(3);
 		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
@@ -232,6 +237,7 @@
 			rsp.addChild(nextRecordElm);
 		}
 	}
+
 	/** Adds account and person attrs to query response records. */
 	public void addUserAttrs(JXElement rsp, String aTableName) throws Exception {
 		Finder finder = oase.getFinder();
@@ -344,6 +350,11 @@
 		return result.length == 0 ? null : result[0];
 	}
 
+	String getLoginNameForPerson(Oase oase, Record aPerson) throws Exception {
+		Record[] result = oase.getRelater().getRelated(aPerson, "utopia_account", null);
+		return result.length == 0 ? null : result[0].getStringField("loginname");
+	}
+
 	/** Convert string like "22,34,56" to int array. */
 	int[] string2IntArray(String anIntList) throws NumberFormatException {
 		String[] ids = anIntList.split(",");
@@ -360,14 +371,14 @@
 		String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
 		try {
 
-	/*		if (command.equals(CMD_QUERY_STORE)) {
-				String tables = getParameter(request, "tables", null);
-				String fields = getParameter(request, "fields", null);
-				String where = getParameter(request, "where", null);
-				String relations = getParameter(request, "rels", null);
-				String postCond = getParameter(request, "postcond", null);
-				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
-			} else      */
+			/*		if (command.equals(CMD_QUERY_STORE)) {
+							String tables = getParameter(request, "tables", null);
+							String fields = getParameter(request, "fields", null);
+							String where = getParameter(request, "where", null);
+							String relations = getParameter(request, "rels", null);
+							String postCond = getParameter(request, "postcond", null);
+							result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+						} else      */
 
 			if (command.equals(CMD_QUERY_BY_EXAMPLE)) {
 				// Query for single table by providing partial example record
@@ -395,6 +406,108 @@
 				}
 
 				result = createResponse(oase.getFinder().queryTable(exampleRecord));
+			} else if (command.equals(CMD_QUERY_AROUND)) {
+				// Look for items around a point with a radius
+				String locString = getParameter(request, PAR_LOC, null);
+				throwOnMissingParm(PAR_LOC, locString);
+				String radiusString = getParameter(request, PAR_RADIUS, null);
+				throwOnMissingParm(PAR_RADIUS, radiusString);
+				String limitParm = getParameter(request, "max", "51");
+
+				// WHERE clause
+				// Optional object type
+				// String type = getParameter(request, "type", null);
+				// See http://www.petefreitag.com/item/466.cfm
+				// LAST N: select * from table where key > (select max(key) - n from table)
+				String tables = "g_location";
+				String fields = null;
+				String where = null;
+				String relations = null;
+				String postCond = "";
+
+				// Calculate BBOX
+				double radius = Double.parseDouble(radiusString);
+				String[] lonLatString = locString.split(",");
+				GeoPoint location = new GeoPoint(lonLatString[0], lonLatString[1]);
+				XYDouble metersPerDeg = location.metersPerDegree();
+
+				GeoPoint locSW = new GeoPoint(location.lon - (radius / metersPerDeg.x), location.lat - (radius / metersPerDeg.y));
+				GeoPoint locNE = new GeoPoint(location.lon + (radius / metersPerDeg.x), location.lat + (radius / metersPerDeg.y));
+
+				String bbox = locSW.lon + "," + locSW.lat + "," + locNE.lon + "," + locNE.lat;
+				where = addBBoxConstraint(bbox, where);
+				log.info("mperdeg=" + metersPerDeg.x + "," + metersPerDeg.y + " bbox=" + bbox);
+				// POSTCONDITION
+				/* String random = getParameter(request, "random", "false");
+				if (random.equals("true")) {
+					postCond = "ORDER BY RAND()";
+				} else {
+					postCond = "ORDER BY base_medium.creationdate DESC";
+				}  */
+
+				// Limit
+				if (limitParm != null) {
+					postCond += " LIMIT " + Integer.parseInt(limitParm);
+				}
+				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
+				Record[] records = QueryHandler.queryStore2(oase, tables, fields, where, relations, postCond);
+				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+				JXElement nextElm;
+				Record nextRecord;
+				GeoPoint nextPoint;
+				double nextDistance;
+				Relater relater = oase.getRelater();
+				Record[] relatedRecs;
+				for (int i = 0; i < records.length; i++) {
+					nextRecord = records[i];
+					nextPoint = new GeoPoint(nextRecord.getRealField("lon"), nextRecord.getRealField("lat"));
+					nextDistance = location.distance(nextPoint) * 1000;
+					if (nextDistance > radius) {
+						continue;
+					}
+					nextDistance = Math.round(nextDistance);
+					relatedRecs = relater.getRelated(nextRecord);
+					if (relatedRecs.length != 1) {
+						continue;
+					}
+
+					String table = relatedRecs[0].getTableName();
+					String id = relatedRecs[0].getIdString();
+					String name = "unknown";
+					String type = "unknown";
+					Record person;
+					if (table.equals("g_track")) {
+						if (relater.getTag(nextRecord, relatedRecs[0]).equals("lastpt")) {
+							// table = "utopia_person";
+							person = relater.getRelated(relatedRecs[0], "utopia_person", null)[0];
+							id = person.getIdString();
+							type = "user";
+							name = getLoginNameForPerson(oase, person);
+						} else {
+							// skip track first point
+							continue;
+						}
+					} else if (table.equals("base_medium")) {
+						type = relatedRecs[0].getStringField("kind");
+						name = relatedRecs[0].getStringField("name");
+					}
+					nextElm = new JXElement("record");
+					nextElm.setChildText("id", id);
+					nextElm.setChildText("name", name);
+					nextElm.setChildText("type", type);
+					nextElm.setChildText("time", nextRecord.getField("time").toString());
+					nextElm.setChildText("lon", nextRecord.getField("lon").toString());
+					nextElm.setChildText("lat", nextRecord.getField("lat").toString());
+					nextElm.setChildText("distance", (int) nextDistance + "");
+					result.addChild(nextElm);
+				}
+				return result;
+
+				// result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+
+				// Add account/person attrs to each record
+				// addUserAttrs(result, "base_medium");
+
 			} else if (command.equals(CMD_QUERY_ACTIVE_TRACKS)) {
 				// Niet mooi maar wel optimized!!
 
@@ -507,9 +620,9 @@
 
 				int[] commenterIds = CommentLogic.getCommenterIds(oase, Integer.parseInt(targetId));
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-				for (int i=0; i < commenterIds.length; i++) {
+				for (int i = 0; i < commenterIds.length; i++) {
 					JXElement elm = new JXElement("record");
-					elm.setChildText("id", commenterIds[i]+"");
+					elm.setChildText("id", commenterIds[i] + "");
 					result.addChild(elm);
 				}
 			} else if (command.equals(CMD_QUERY_COMMENT_COUNT_FOR_TARGET)) {
@@ -644,7 +757,7 @@
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 			} else if (command.equals(CMD_QUERY_TAGS)) {
-	            // Get tag clouds
+				// Get tag clouds
 				// Parameters:
 				// items (item ids), taggers (tagger ids), types (table names), offset, rowcount
 				String parItems = getParameter(request, PAR_ITEMS, null);
@@ -656,7 +769,7 @@
 				int items[] = parItems == null ? null : string2IntArray(parItems);
 				int taggers[] = parTaggers == null ? null : string2IntArray(parTaggers);
 				String types[] = parTypes == null ? null : parTypes.split(",");
-	            int offset = parOffset == null ? -1 : Integer.parseInt(parOffset);
+				int offset = parOffset == null ? -1 : Integer.parseInt(parOffset);
 				int rowcount = parRowcount == null ? -1 : Integer.parseInt(parRowcount);
 
 				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
@@ -680,7 +793,7 @@
 				String id = getParameter(request, PAR_ID, null);
 				throwOnMissingParm(PAR_ID, id);
 				Record[] records = new Record[1];
-				if (command.equals(CMD_QUERY_MEDIUM_INFO))  {
+				if (command.equals(CMD_QUERY_MEDIUM_INFO)) {
 					records[0] = oase.getFinder().read(Integer.parseInt(id), "base_medium");
 				} else {
 					records[0] = oase.getFinder().read(Integer.parseInt(id));
@@ -748,7 +861,7 @@
 				// Construct final result
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
 				result.addChild(userInfo);
-				
+
 				// Add number of comments
 				addCommentCounts(result);
 			} else if (command.equals(CMD_QUERY_USER_IMAGE)) {

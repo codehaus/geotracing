@@ -7,7 +7,6 @@ package org.geotracing.gis.proj;
 
 import org.geotracing.gis.proj.Convert;
 
-
 // Referenced classes of package convert:
 //            LLpos, Convert, UTMpos, MGRSpos,
 //            WGS84pos
@@ -55,26 +54,26 @@ public class ED50pos extends LLpos {
 		double lat = super.lat_.doubleValue();
 		double lon = super.lon_.doubleValue();
 		char znUTM[] = {
-			'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
-			'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'
+				'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+				'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'
 		};
 		char xxUTM[][] = {
-			{
-				'*', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '*'
-			}, {
+				{
+						'*', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '*'
+				}, {
 				'*', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', '*'
-			}, {
+		}, {
 				'*', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', '*'
-			}
+		}
 		};
 		char yyUTM[][] = {
-			{
-				'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q',
-				'R', 'S', 'T', 'U', 'V', 'A', 'B', 'C', 'D', 'E'
-			}, {
+				{
+						'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q',
+						'R', 'S', 'T', 'U', 'V', 'A', 'B', 'C', 'D', 'E'
+				}, {
 				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
 				'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'
-			}
+		}
 		};
 		String outMetric = "*";
 		String outHecto = "*";

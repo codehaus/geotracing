@@ -24,8 +24,13 @@ import java.util.TimerTask;
  */
 public class Net {
 
+	public static final int DISCONNECTED = 1;
+	public static final int CONNECTED = 2;
+	public static final int SENDING = 3;
+
 	/** Instance of KeyWorx client. */
 	private HTTPClient kwClient;
+	private boolean sending;
 	private int VOLUME = 70;
 	private static long HB_INTERVAL = 60000L;
 	private static String trackId;
@@ -48,8 +53,28 @@ public class Net {
 		return instance;
 	}
 
+	public int getState() {
+		if (!isConnected()) {
+			return DISCONNECTED;
+		} else {
+			return isSending() ? SENDING : CONNECTED;
+		}
+	}
+
+	public long getLastCommandTime() {
+		return lastCommandTime;
+	}
+
 	public String getURL() {
 		return url;
+	}
+
+	public boolean isConnected() {
+		return kwClient != null;
+	}
+
+	public boolean isSending() {
+		return sending;
 	}
 
 	public void setListener(NetListener aNetListener) {
@@ -170,6 +195,7 @@ public class Net {
 		try {
 			listener.onNetStatus("sending #" + theCount);
 			JXElement rsp = kwClient.utopia(req);
+			lastCommandTime = Util.getTime();
 			if (rsp != null) {
 				listener.onNetStatus("sent #" + theCount);
 				Util.playTone(96, 75, VOLUME);
@@ -239,10 +265,13 @@ public class Net {
 
 		JXElement rsp = null;
 		try {
+			sending = true;
 			rsp = kwClient.utopia(aReq);
 			lastCommandTime = Util.getTime();
 		} catch (Throwable pe) {
 			kwClient = null;
+		} finally {
+			sending = false;
 		}
 
 		return rsp;
@@ -258,6 +287,7 @@ public class Net {
 				Util.setTime(rsp.getLongAttr("time"));
 			}
 			kwClient.selectApp(app, role);
+			lastCommandTime = Util.getTime();
 			listener.onNetStatus("login OK");
 			listener.onNetInfo("login OK user=" + user + "\n" + "server=" + url + "\n" + "timeoffset=" + (Util.getTimeOffset()/1000) + " sec");
 			startHeartbeat();

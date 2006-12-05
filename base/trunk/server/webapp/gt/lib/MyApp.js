@@ -65,6 +65,9 @@ var MYAPP = {
 		GMAP.map.addControl(new GLargeMapControl());
 		GMAP.map.addControl(new GScaleControl());
 
+//		GMAP.map.enableContinuousZoom();
+//		GMAP.map.enableDoubleClickZoom();
+
 		// Set map parm defaults (may be overridden by page parms in GMAP.showMap())
 		GMAP.setDefaultMapParms(new GLatLng(52.37261, 4.900435), 10, 'satellite');
 

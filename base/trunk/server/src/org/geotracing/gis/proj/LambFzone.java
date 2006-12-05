@@ -7,7 +7,6 @@ package org.geotracing.gis.proj;
 
 import org.geotracing.gis.proj.Convert;
 
-
 // Referenced classes of package convert:
 //            Convert
 

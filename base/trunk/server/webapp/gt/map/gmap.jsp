@@ -114,6 +114,7 @@
 		rsp.setAttr("url", tileURL);
 		rsp.setAttr("x", xy.x);
 		rsp.setAttr("y", xy.y);
+		rsp.setAttr("khref", khRef);
 		 try {
 			 Writer writer = response.getWriter();
 			 writer.write(rsp.toFormattedString());

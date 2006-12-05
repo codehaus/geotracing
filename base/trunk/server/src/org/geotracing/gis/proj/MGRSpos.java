@@ -5,7 +5,6 @@
 
 package org.geotracing.gis.proj;
 
-
 // Referenced classes of package convert:
 //            UTMpos
 
@@ -41,26 +40,26 @@ public class MGRSpos {
 
 	public UTMpos CalcUTM() {
 		char znUTM[] = {
-			'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
-			'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'
+				'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M',
+				'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X'
 		};
 		char xxUTM[][] = {
-			{
-				'*', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '*'
-			}, {
+				{
+						'*', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '*'
+				}, {
 				'*', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', '*'
-			}, {
+		}, {
 				'*', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', '*'
-			}
+		}
 		};
 		char yyUTM[][] = {
-			{
-				'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q',
-				'R', 'S', 'T', 'U', 'V', 'A', 'B', 'C', 'D', 'E'
-			}, {
+				{
+						'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q',
+						'R', 'S', 'T', 'U', 'V', 'A', 'B', 'C', 'D', 'E'
+				}, {
 				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K',
 				'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V'
-			}
+		}
 		};
 		String myStr = mgrs_metric;
 		int myLen = myStr.length();

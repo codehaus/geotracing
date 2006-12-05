@@ -40,7 +40,7 @@ public class XYArea {
 		return ((containsX(anXYArea.nw.x) || containsX(anXYArea.se.x)) &&
 				(containsY(anXYArea.nw.y) || containsY(anXYArea.se.y))) ||
 				((anXYArea.containsX(nw.x) || anXYArea.containsX(se.x)) &&
-				(anXYArea.containsY(nw.y) || anXYArea.containsY(se.y)))
+						(anXYArea.containsY(nw.y) || anXYArea.containsY(se.y)))
 				;
 	}
 

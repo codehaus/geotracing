@@ -8,7 +8,6 @@ package org.geotracing.gis.proj;
 import org.geotracing.gis.proj.Convert;
 import org.geotracing.gis.proj.LLpos;
 
-
 // Referenced classes of package convert:
 //            LLpos, Convert, WGS84pos, LUREFpos
 
