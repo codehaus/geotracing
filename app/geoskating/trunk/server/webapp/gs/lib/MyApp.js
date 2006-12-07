@@ -81,7 +81,9 @@ var MYAPP = {
 		GMAP.map.addControl(new GLargeMapControl());
 		GMAP.map.addControl(new GScaleControl());
 		GMAP.map.setCenter(new GLatLng(52.37261, 4.900435), 8, GMAP.mapTypes['satroutes']);
-
+		GMAP.map.enableContinuousZoom();
+		GMAP.map.enableDoubleClickZoom();
+ 
 		GTAPP.showStatus('Map created');
 	}
 }
