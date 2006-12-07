@@ -66,6 +66,12 @@
 			<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
 				<property name="intervalMillis">25000</property>
 			</daemon>
+
+			<!-- Daemon for various upgrades -->
+			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
+				<property name="pois2textmedia">true</property>
+			</daemon>
+
 		</daemons>
 	</application>
 </portal>

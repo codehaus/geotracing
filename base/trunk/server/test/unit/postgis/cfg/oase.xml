@@ -55,6 +55,7 @@
 				<table file="tables/oase_index.xml"/>
 				<table file="tables/oase_relation.xml"/>
 				<table file="tables/oase_relationdef.xml"/>
+				<table file="tables/oase_foreignkey.xml"/>
 				<table file="tables/base_medium.xml"/>
 			</tables>
 

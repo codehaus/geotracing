@@ -284,7 +284,6 @@ public class TrackLogic {
 
 			// Build up list of objects to be deleted
 			List deleteList = track.getRelatedObjects(Medium.class);
-			deleteList.addAll(track.getRelatedObjects(POI.class));
 			deleteList.add(track.getRelatedObject(Area.class));
 			deleteList.add(track);
 
@@ -333,11 +332,11 @@ public class TrackLogic {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
-	public JXElement export(String aTrackId, String aFormat, String theAttrs, boolean addMedia, boolean addPOIs, long aMinDist, int aMaxPoint) throws UtopiaException {
+	public JXElement export(String aTrackId, String aFormat, String theAttrs, boolean addMedia, long aMinDist, int aMaxPoint) throws UtopiaException {
 		log.trace("Start export(trackId=" + aTrackId + " format=" + aFormat + ")");
 		Track track = getTrackById(aTrackId);
 		TrackExport trackExport = new TrackExport(oase);
-		return trackExport.export(track, aFormat, theAttrs, addMedia, addPOIs, aMinDist, aMaxPoint);
+		return trackExport.export(track, aFormat, theAttrs, addMedia, aMinDist, aMaxPoint);
 	}
 
 	/**

@@ -193,6 +193,7 @@
 		<attribute name="description" comment="short description" type="string" optional="true"/>
 		<attribute name="type" comment="type (audio, video, image)" type="string" optional="true"/>
 		<attribute name="mime" comment="mime type e.g. image/jpeg" type="string" optional="true"/>
+		<attribute name="tags" comment="space-separated tags" type="string" optional="true"/>
 
 		<!-- Note: either a "file" or encoded file data in <data/> should be present -->
 		<!-- TODO: this is messy: split into two types of service requests. -->
@@ -215,7 +216,7 @@
 	<!-- The track delete-medium response -->
 	<element tag="t-trk-delete-medium-rsp"  comment="delete-medium response" />
 
-	<!-- The track add-POI request -->
+	<!-- NOTE: POI support has been replaced by text media with tagging.
 	<element tag="t-trk-add-poi-req"  comment="add Point of Interest to track">
 		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
 				   optional="true"/>
@@ -226,12 +227,10 @@
 		<element name="extra" comment="extra elements (app specific)" type="any" optional="true"/>
 	</element>
 
-	<!-- The track add-POI response -->
 	<element tag="t-trk-add-poi-rsp"  comment="Point of Interest to track added" >
 		<attribute name="id" comment="id of POI record" type="int"/>
 	</element>
 
-	<!-- The track add-POI request NOT YET IMPLEMENTED -->
 	<element tag="t-trk-update-poi-req"  comment="update Point of Interest to track">
 		<attribute name="id" comment="id of POI record" type="int"/>
 		<attribute name="name" comment="name of POI" type="string" optional="true" />
@@ -241,20 +240,18 @@
 		<element name="extra" comment="extra elements (app specific)" type="any" optional="true"/>
 	</element>
 
-	<!-- The track update-POI response -->
 	<element tag="t-trk-update-poi-rsp"  comment="Point of Interest updated" >
 		<attribute name="id" comment="id of POI record" type="int"/>
 	</element>
 
-	<!-- The track delete-poi request  -->
 	<element tag="t-trk-delete-poi-req"  comment="unrelates from related track and deletes location">
 		<attribute name="id" comment="id of poi to be deleted" type="int"/>
 	</element>
 
-	<!-- The track delete-poi response -->
 	<element tag="t-trk-delete-poi-rsp"  comment="delete-poi response" >
 		<attribute name="id" comment="id of poi deleted" type="int"/>
 	</element>
+    -->
 
 	<!-- The heartbeat request  -->
 	<element tag="t-hb-req"  comment="heartbeat from client">

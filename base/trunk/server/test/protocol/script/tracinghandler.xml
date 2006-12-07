@@ -234,59 +234,7 @@
 		</expect>
 	</test>
 
-	<test id="t-trk-add-poi-req">
-		<send id="client1">
-			<utopia-req>
-				<t-trk-write-req>
-					<pt lat="52.3731101950923" lon="4.890632629394531"></pt>
-				</t-trk-write-req>
-			</utopia-req>
-			<utopia-req>
-				<t-trk-add-poi-req name="mypoi" type="view"/>
-			</utopia-req>
-			<utopia-req>
-				<t-trk-add-poi-req name="mypoi2" type="view2" state="3" description="my description" value="13">
-					<extra>
-						<some>extra XML here</some>
-					</extra>
-				</t-trk-add-poi-req>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<t-trk-write-rsp/>
-			</utopia-rsp>
-			<utopia-rsp>
-				<t-trk-add-poi-rsp id="${poiid1}"/>
-			</utopia-rsp>
-			<utopia-rsp>
-				<t-trk-add-poi-rsp id="${poiid2}"/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-	<test id="t-trk-delete-poi-req">
-		<send id="client1">
-			<utopia-req>
-				<t-trk-delete-poi-req id="${poiid1}"/>
-			</utopia-req>
-			<utopia-req>
-				<t-trk-delete-poi-req id="${poiid2}"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<t-trk-delete-poi-rsp id="${poiid1}"/>
-			</utopia-rsp>
-			<utopia-rsp>
-				<t-trk-delete-poi-rsp id="${poiid2}"/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-	<test id="t-trk-upload-medium">
+	<test id="t-trk-upload-image-medium">
 		<send id="client1">
 			<utopia-req>
 				<t-trk-resume-req/>
@@ -339,6 +287,49 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<t-trk-delete-medium-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+
+	</test>
+
+	<test id="t-trk-upload-text-medium">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,123511.000,5213.5053,N,00449.0491,E,1,05,3.3,50.5,M,47.0,M,73.7,0000*71"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-upload-medium-req
+						type="text"
+						mime="text/plain"
+						name="text upload" tags="tag1 tag2">
+					<data encoding="raw">
+						<![CDATA[dit is een text]]>
+					</data>
+				</t-trk-upload-medium-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-upload-medium-rsp id="${mediumid100}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
 			</utopia-rsp>
 		</expect>
 
@@ -449,10 +440,10 @@
 		</expect>
 	</test>
 
-	<test id="t-trk-export-gtx-format-attrs-media-pois-req">
+	<test id="t-trk-export-gtx-format-attrs-media-req">
 		<send id="client1">
 			<utopia-req>
-				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true" pois="true"/>
+				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true" />
 			</utopia-req>
 		</send>
 
@@ -465,10 +456,10 @@
 		</expect>
 	</test>
 
-	<test id="t-trk-export-gtx-format-attrs-media-pois-mindist-req">
+	<test id="t-trk-export-gtx-format-attrs-media-mindist-req">
 		<send id="client1">
 			<utopia-req>
-				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true" pois="true" mindist="100"/>
+				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true" mindist="100"/>
 			</utopia-req>
 		</send>
 
@@ -619,7 +610,7 @@
 			</utopia-rsp>
 			<utopia-rsp>
 				<t-trk-delete-rsp/>
-			</utopia-rsp>
+			</utopia-rsp>     
 			<utopia-rsp>
 				<t-trk-delete-rsp/>
 			</utopia-rsp>

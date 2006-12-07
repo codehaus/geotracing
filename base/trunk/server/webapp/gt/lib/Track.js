@@ -50,12 +50,6 @@ function Track(id, name, tracer) {
 		medium.show();
 	}
 
-	// Add medium to this tracer
-	this.addPOI = function (poi) {
-		this.featureSet.addFeature(poi);
-		poi.show();
-	}
-
 	this.clear = function () {
 		for (var i = 0; i < this.polyLines.length; i++) {
 			GMAP.map.removeOverlay(this.polyLines[i]);
@@ -219,27 +213,6 @@ function Track(id, name, tracer) {
 				medium.userName = this.tracer.name;
 
 				this.featureSet.addFeature(medium);
-			}
-		}
-
-
-		// Get POI locations
-		var poiElements = gtx.documentElement.getElementsByTagName('poi');
-		this.pois = [];
-		if (poiElements) {
-			var nextPOI;
-			for (i = 0; i < poiElements.length; i++) {
-				nextPOI = poiElements[i];
-
-				// Create and draw location-based medium
-				poi = GTW.createPOI(nextPOI.getAttribute('id'),
-						nextPOI.getAttribute('name'),
-						nextPOI.childNodes[0].nodeValue,
-						nextPOI.getAttribute('type'),
-						nextPOI.getAttribute('time'),
-						nextPOI.getAttribute('lon'),
-						nextPOI.getAttribute('lat'));
-				this.featureSet.addFeature(poi);
 			}
 		}
 	}

@@ -198,52 +198,7 @@ public class EventPublisher {
 
 
 	/**
-	 * Publish new POI with location added.
-	 */
-	public static void poiAdd(POI aPOI, Location aLocation, UtopiaRequest anUtopiaRequest) {
-		Log log = Logging.getLog(anUtopiaRequest);
-
-		try {
-			// Get account name for event subject
-			// Expensive but we have to
-			UtopiaSessionContext sc = anUtopiaRequest.getUtopiaSession().getContext();
-			Oase oase = sc.getOase();
-			Person person = (Person) oase.get(Person.class, sc.getUserId());
-			Account account = person.getAccount();
-			String accountName = account.getLoginName();
-			Track track = (Track) aPOI.getRelatedObject(Track.class);
-
-			// Pushlet event
-			Event event = Event.createDataEvent(PUSHLET_SUBJECT);
-			event.setField(FIELD_EVENT, EVENT_POI_ADD);
-			event.setField(FIELD_ID, aPOI.getId());
-			event.setField(FIELD_NAME, aPOI.getStringValue(POI.FIELD_NAME));
-			event.setField(FIELD_TYPE, aPOI.getStringValue(POI.FIELD_TYPE));
-			event.setField(FIELD_STATE, aPOI.getIntValue(POI.FIELD_STATE));
-			event.setField(FIELD_TIME, aPOI.getLongValue(POI.FIELD_TIME));
-			event.setField(FIELD_USER_ID, person.getId());
-			event.setField(FIELD_USER_NAME, accountName);
-
-			event.setField(FIELD_TRACK_ID, track.getId());
-			event.setField(FIELD_TRACK_NAME, track.getName());
-
-			// Only if location supplied
-			GeoPoint point = aLocation.getLocation();
-			event.setField(Location.FIELD_LON, point.lon + "");
-			event.setField(Location.FIELD_LAT, point.lat + "");
-			event.setField(Location.FIELD_ELE, point.elevation + "");
-			// Send pushlet event
-			multicast(event);
-			log.trace("Published: " + event);
-
-		} catch (Throwable t) {
-			log.warn("Cannot publish event " + EVENT_POI_ADD + " for poiId=" + aPOI.getId(), t);
-		}
-	}
-
-
-	/**
-	 * POI has been deleted.
+	 * Medium has been deleted.
 	 */
 	public static void mediumDelete(int aMediumId, int aTrackId, UtopiaRequest anUtopiaRequest) {
 		// TODO implement
@@ -280,56 +235,6 @@ public class EventPublisher {
 
 		} catch (Throwable t) {
 			log.warn("Cannot publish event " + EVENT_POI_DELETE + " for poi=" + aPOIId + " trackId=" + aTrackId, t);
-		}
-	}
-
-	/**
-	 * Publish new POI with location added.
-	 */
-	public static void poiHit(int aPOIid, UtopiaRequest anUtopiaRequest) {
-		Log log = Logging.getLog(anUtopiaRequest);
-		POI poi = null;
-		try {
-			// Get account name for event subject
-			// Expensive but we have to
-			UtopiaSessionContext sc = anUtopiaRequest.getUtopiaSession().getContext();
-			Oase oase = sc.getOase();
-			Person person = (Person) oase.get(Person.class, sc.getUserId());
-			Account account = person.getAccount();
-			poi = (POI) oase.get(POI.class, aPOIid + "");
-
-			Location location = (Location) poi.getRelatedObject(Location.class);
-			Track track = (Track) poi.getRelatedObject(Track.class);
-			Person poiOwnerPerson = (Person) track.getRelatedObject(Person.class);
-			Account poiOwnerAccount = poiOwnerPerson.getAccount();
-
-			// Pushlet event
-			Event event = Event.createDataEvent(PUSHLET_SUBJECT);
-			event.setField(FIELD_EVENT, EVENT_POI_HIT);
-			event.setField(FIELD_ID, poi.getId());
-			event.setField(FIELD_NAME, poi.getStringValue(POI.FIELD_NAME));
-			event.setField(FIELD_TYPE, poi.getStringValue(POI.FIELD_TYPE));
-			event.setField(FIELD_STATE, poi.getIntValue(POI.FIELD_STATE));
-			event.setField(FIELD_TIME, poi.getLongValue(POI.FIELD_TIME));
-			event.setField(FIELD_USER_ID, person.getId());
-			event.setField(FIELD_USER_NAME, account.getLoginName());
-			event.setField(FIELD_OWNER_ID, poiOwnerPerson.getId());
-			event.setField(FIELD_OWNER_NAME, poiOwnerAccount.getLoginName());
-
-			event.setField(FIELD_TRACK_ID, track.getId());
-			event.setField(FIELD_TRACK_NAME, track.getName());
-
-			// Only if location supplied
-			GeoPoint point = location.getLocation();
-			event.setField(Location.FIELD_LON, point.lon + "");
-			event.setField(Location.FIELD_LAT, point.lat + "");
-			event.setField(Location.FIELD_ELE, point.elevation + "");
-			// Send pushlet event
-			multicast(event);
-			log.trace("Published: " + event);
-
-		} catch (Throwable t) {
-			log.warn("Cannot publish event " + EVENT_POI_HIT + " for poiId=" + poi.getId(), t);
 		}
 	}
 

@@ -52,13 +52,6 @@ function Tracer(name, color, iconURL, pt, time) {
 		}
 	}
 
-	// Add a POI
-	this.addPOI = function (poi) {
-		if (this.activeTrack != null) {
-			this.activeTrack.featureSet.addFeature(poi);
-		}
-	}
-
 	// The continuous blinking
 	this.blink = function() {
 		DH.toggleVisibility(this.iconId);
@@ -336,7 +329,7 @@ function Tracer(name, color, iconURL, pt, time) {
 			desc = ' ';
 		}
 
-		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >comments (' + this.record.getField('comments') + ')</a>');
+		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a>');
 		if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, 'user', this.name);
 		}

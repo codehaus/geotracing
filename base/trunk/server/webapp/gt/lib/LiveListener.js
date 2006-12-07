@@ -56,45 +56,6 @@ function LiveListener(aStatusElm) {
 		this.showStatus(tracer, 'adds ' + event.get('kind'));
 	}
 
-	this.onPOIAdd = function(tracer, event) {
-		// User adds Point of Interest
-
-		var poi = GTW.createPOI(event.get('id'),
-				event.get('name'),
-				'live POI from ' + tracer.name,
-				event.get('type'),
-				event.get('time'),
-				event.get('lon'),
-				event.get('lat'));
-
-		tracer.addPOI(poi);
-		poi.show();
-		poi.blink(20);
-		poi.display();
-		this.showStatus(tracer, 'adds POI');
-	}
-
-	this.onPOIDelete = function(tracer, event) {
-	}
-
-	this.onPOIHit = function(tracer, event) {
-		// Only POI supported is BOMB
-		//tracerName = event.get('username');
-		// Get Tracer
-		//var tracer = GTW.getTracer(tracerName);
-		//if (!tracer) {
-		//  return;
-		//}
-
-		// Let tracer redraw active track with less points
-		//if (tracer.activeTrack != null) {
-		//   var trackId = tracer.activeTrack.id;
-		//   tracer.deleteTrack(trackId);
-		//   tracer.drawTrack(trackId);
-		//   alert('BOMBED: victim=' + event.get('username') + ' owner=' + event.get('ownername') + ' id=' + event.get('id'));
-		// }
-	}
-
 	this.onTrackCreate = function(tracer, event) {
 		// User creates new track
 		tracer.newTrack(event.get('id'), event.get('name'));
@@ -124,9 +85,7 @@ function LiveListener(aStatusElm) {
 		// "user-hb" : id, username, time, [trackname]
 		// "user-move": id, username, t, trackid, trackname, lon, lat
 		// "medium-add": id, name, kind, mime, time, userid, username, trackid, trackname, lon, lat, ele
-		// "poi-add": id, name, type, state, time, userid, username, trackid, trackname, lon, lat, ele
-		// "poi-delete": id, userid, username, trackid, trackname
-		// "poi-hit": id, name, type, state, time, userid, username, ownerid, ownername, trackid, trackname, lon, lat, ele
+		// "medium-hit": id, name, type, state, time, userid, username, ownerid, ownername, trackid, trackname, lon, lat, ele
 		//" track-create": id, name, userid, username
 		// "track-delete": id, name, userid, username
 		// "track-suspend": id, name, userid, username
@@ -154,12 +113,8 @@ function LiveListener(aStatusElm) {
 			this.onHeartbeat(tracer, event);
 		} else if (eventType == 'medium-add') {
 			this.onMediumAdd(tracer, event);
-		} else if (eventType == 'poi-add') {
-			this.onPOIAdd(tracer, event);
-		} else if (eventType == 'poi-delete') {
-			this.onPOIDelete(tracer, event);
-		} else if (eventType == 'poi-hit') {
-			this.onPOIHit(tracer, event);
+	//	} else if (eventType == 'poi-hit') {
+	//		this.onPOIHit(tracer, event);
 		} else if (eventType == 'track-create') {
 			this.onTrackCreate(tracer, event);
 		} else if (eventType == 'track-delete') {

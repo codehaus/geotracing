@@ -105,12 +105,6 @@ var GTW = {
 		return medium; // new Medium(id, name, desc, type, mime, time, lon, lat);
 	},
 
-/** Create new POI object. */
-	createPOI: function(id, name, desc, type, time, lon, lat) {
-		// Create POI
-		return new POI(id, name, desc, type, time, lon, lat);
-	},
-
 // Create new Tracer object and put in tracers array
 	createTracer: function(name, lon, lat, time) {
 		// See if tracer already exists
@@ -150,16 +144,6 @@ var GTW = {
 		GTW.featureSet.addMedia(records);
 		GTW.featureSet.show();
 		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
-		GTW.getFeaturePlayer().show()
-		GTW.featureSet.displayFirst();
-	},
-
-// Display POIs
-	displayPOIs: function(records) {
-		GTW.featureSet.dispose();
-		GTW.featureSet.addPOIs(records);
-		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
-		GTW.featureSet.show();
 		GTW.getFeaturePlayer().show()
 		GTW.featureSet.displayFirst();
 	},

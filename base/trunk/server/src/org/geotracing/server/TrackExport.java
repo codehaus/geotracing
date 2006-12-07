@@ -48,16 +48,16 @@ public class TrackExport {
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	JXElement export(Track aTrack, String aFormat, String theAttrs, boolean addMedia, boolean addPOIs, long aMinDist, int aMaxPoint) throws UtopiaException {
+	JXElement export(Track aTrack, String aFormat, String theAttrs, boolean addMedia, long aMinDist, int aMaxPoint) throws UtopiaException {
 		// Defaults if null
 		theAttrs = theAttrs == null ? DEFAULT_ATTRS : theAttrs;
 		aFormat = aFormat == null ? DEFAULT_FORMAT : aFormat;
 		TrackPointFilter trackPointFilter = new TrackPointFilter(aMinDist, aMaxPoint, aTrack.getIntValue(Track.FIELD_PTCOUNT));
 
 		if (aFormat.equals(EXPORT_FORMAT_GPX)) {
-			return toGPX(aTrack, theAttrs, addMedia, addPOIs, trackPointFilter);
+			return toGPX(aTrack, theAttrs, addMedia, trackPointFilter);
 		} else if (aFormat.equals(EXPORT_FORMAT_GTX)) {
-			return toGTX(aTrack, theAttrs, addMedia, addPOIs, trackPointFilter);
+			return toGTX(aTrack, theAttrs, addMedia, trackPointFilter);
 		} else {
 			throw new UtopiaException("Unsupported Track export format: " + aFormat);
 		}
@@ -69,12 +69,11 @@ public class TrackExport {
 	 * @param aTrack a track
 	 * @param theAttrs (point) attributes to include
 	 * @param addMedia include media ?
-	 * @param addPOIs include POIs ?
 	 * @return a GTX document
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	JXElement toGTX(Track aTrack, String theAttrs, boolean addMedia, boolean addPOIs, TrackPointFilter aTrackPointFilter) throws UtopiaException {
+	JXElement toGTX(Track aTrack, String theAttrs, boolean addMedia, TrackPointFilter aTrackPointFilter) throws UtopiaException {
 		try {
 			int trackId = aTrack.getId();
 			Vector elements = aTrack.getDataElements();
@@ -149,62 +148,6 @@ public class TrackExport {
 				doc.addChild(mediaElm);
 			}
 
-			// Add pois?
-			if (addPOIs) {
-				JXElement poisElm = new JXElement("pois");
-				// Add media related to track
-				Record nextPOI = null, nextLocations[] = null, nextLoc = null;
-				try {
-					Relater relater = oase.getRelater();
-					Record[] pois = relater.getRelated(aTrack.getRecord(), POI.TABLE_NAME, null);
-					TreeMap sortedPOIMap = new TreeMap();
-					String poiDesc;
-					for (int j = 0; j < pois.length; j++) {
-						nextPOI = pois[j];
-						JXElement poiElm = new JXElement("poi");
-						poiElm.setAttr("id", nextPOI.getId());
-						poiElm.setAttr("name", nextPOI.getStringField("name"));
-						poiElm.setAttr("type", nextPOI.getStringField("type"));
-						poiElm.setAttr("state", nextPOI.getIntField("state"));
-						poiElm.setAttr("ctime", nextPOI.getLongField("time"));
-
-						// Optional description
-						poiDesc = nextPOI.getStringField("description");
-						if (poiDesc == null) {
-							poiDesc = ".";
-						}
-						poiElm.setText(poiDesc);
-
-						long time = nextPOI.getLongField("time");
-						poiElm.setAttr("time", time);
-
-						nextLocations = relater.getRelated(nextPOI, Location.TABLE_NAME, null);
-						if (nextLocations.length == 1) {
-							// Has location: add location attrs
-							nextLoc = nextLocations[0];
-							poiElm.setAttr("lon", nextLoc.getRealField("lon"));
-							poiElm.setAttr("lat", nextLoc.getRealField("lat"));
-							poiElm.setAttr("time", nextLoc.getLongField("time"));
-						}
-						// Sort POIs by timestamp
-						sortedPOIMap.put(new Long(time), poiElm);
-
-					}
-
-					// Get POI elements in time-sorted order
-					Collection sortedPOIs = sortedPOIMap.values();
-
-					// Add to media element
-					poisElm.addChildren(new Vector(sortedPOIs));
-
-				} catch (OaseException oe) {
-					log.warn("Error handling POI for trackId=" + trackId, oe);
-				} catch (Throwable t) {
-					log.error("Serious Error handling POI for trackId=" + trackId, t);
-				}
-				doc.addChild(poisElm);
-			}
-
 			// Create trk
 			JXElement trk = new JXElement("trk");
 
@@ -276,12 +219,11 @@ public class TrackExport {
 	 * @param aTrack a track
 	 * @param theAttrs (point) attributes to include
 	 * @param addMedia include media ?
-	 * @param addPOIs include POIs ?
 	 * @return a GPX document
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	JXElement toGPX(Track aTrack, String theAttrs, boolean addMedia, boolean addPOIs, TrackPointFilter aTrackPointFilter) throws UtopiaException {
+	JXElement toGPX(Track aTrack, String theAttrs, boolean addMedia, TrackPointFilter aTrackPointFilter) throws UtopiaException {
 		try {
 			int trackId = aTrack.getId();
 			Vector elements = aTrack.getDataElements();

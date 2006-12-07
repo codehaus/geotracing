@@ -42,7 +42,7 @@
 			<jsp:include page="<%= model.getString(ATTR_LEFT_MENU_URL) %>" flush="true"/>
 		</div>
 
-		<div id="content">
+		<div id="pcontent">
 			<jsp:include page="<%= model.getString(ATTR_CONTENT_URL) %>" flush="true"/>
 		</div>
 	</div>

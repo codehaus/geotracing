@@ -4,13 +4,11 @@
 	int id = Integer.parseInt(request.getParameter("id"));
 	Record track = null;
 	Record[] media;
-	Record[] pois;
 	String tags, tagCloud="", myTagCloud="";
 
 	try {
 		track = model.getOase().getFinder().read(id);
 		media = model.getOase().getRelater().getRelated(track, "base_medium", null);
-		pois = model.getOase().getRelater().getRelated(track, "g_poi", null);
 		// Get tag info for this id and general tags
 		int personId = Integer.parseInt(model.getPersonId());
 		TagLogic tagLogic = new TagLogic(model.getOase().getOaseSession());
@@ -24,7 +22,7 @@
 
 %>
 <p>
-	You can adapt the title, description and tags for this Track and or edit any of the media and/or POIs
+	You can adapt the title, description and tags for this Track and or edit any of the media
 	related to this track. <br/>
 		If you are not satisfied with this Track
 			<a href="control.jsp?cmd=track-delete&id=<%= id %>">click here to delete this Track</a>.
@@ -128,33 +126,3 @@ a separate window. A bit primitive but you can make that window smaller and keep
 	   }
 	%>
 </table>
-
-<h2>Track POIs</h2>
-<p>This Track has <%= pois.length %>  POIs. </p>
-<table border="1" cellpadding="6" >
-    <tr>
-		<th>id</th>
-		<th>name</th>
-		<th>type</th>
-		<th>date</th>
-		<th>edit</th>
-	</tr>
-   <%
-	    editActPre = "<a href=\"control.jsp?cmd=nav-poi-edit&id=";
-	    editActPost = "\">[edit]</a>";
-	   for (int i=0; i < pois.length; i++) {
-		 rec = pois[i];
-		 editAction = editActPre + rec.getId() + editActPost;
-   %>
-    <tr>
-      <td><%= rec.getId() %></td>
-      <td><%= rec.getField("name") %></td>
-      <td><%= rec.getField("type") %></td>
-      <td><%= DATE_FORMAT.format(new Date(rec.getLongField("time"))) %></td>
-       <td><%= editAction %></td>
-	 </tr>
-	<%
-	   }
-	%>
-</table>
-

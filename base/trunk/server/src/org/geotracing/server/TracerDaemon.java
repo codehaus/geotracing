@@ -144,8 +144,6 @@ public class TracerDaemon extends Daemon {
 							resumeTrack();
 						} else if (nextTag.equals("suspend")) {
 							suspendTrack();
-						} else if (nextTag.equals("poi")) {
-							addPOI(nextElm);
 						}
 					}
 				}
@@ -184,12 +182,6 @@ public class TracerDaemon extends Daemon {
 
 				kwClient = null;
 			}
-		}
-
-		protected void addPOI(JXElement aPoi) throws KWClientException {
-			JXElement req = new JXElement("t-trk-add-poi-req");
-			req.setAttrs(aPoi.getAttrs());
-			JXElement rsp = kwClient.performUtopiaRequest(req);
 		}
 
 		protected void delTrack() throws KWClientException {

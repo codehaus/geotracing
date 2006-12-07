@@ -46,26 +46,6 @@ function FeatureSet() {
 	}
 
 	// Add a media from (server) Records
-	this.addPOIs = function(records) {
-		for (var i = 0; i < records.length; i++) {
-			this.addPOI(records[i]);
-		}
-	}
-
-	// Add a media from (server) Records
-	this.addPOI = function(record) {
-		var poi = GTW.createPOI(record.getField('id'),
-				record.getField('name'),
-				record.getField('description'),
-				record.getField('type'),
-				record.getField('time'),
-				record.getField('lon'),
-				record.getField('lat'));
-
-		this.addFeature(poi);
-
-	}
-	// Add a media from (server) Records
 	this.addFeature = function(feature) {
 		this.features[this.features.length] = feature;
 	}
