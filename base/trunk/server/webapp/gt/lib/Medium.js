@@ -22,7 +22,14 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Shows icon on map
 	this.getIconDiv = function() {
-		return '<div class="medicon" id="' + this.iconId + '" style="background-color:' + this.getBGColor() + ';" >&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+		if (this.type == 'text') {
+			var src = 'img/poi.gif';
+			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';
+
+			return '<div class="texticon" id="' + this.iconId + '" style="border: 1px solid ' + this.bgColor + ';" >' + img + '</div>';
+		} else {
+			return '<div class="medicon" id="' + this.iconId + '" style="background-color:' + this.getBGColor() + ';" >&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+		}
 	}
 
 	this.getTitle = function() {
@@ -37,6 +44,8 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 			this._displayImage();
 		} else if (this.type == 'audio') {
 			this._displayAudio();
+		} else if (this.type == 'text') {
+			this._displayText();
 		}
 	}
 
@@ -90,6 +99,20 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 		}
 
 		DH.addEvent(this.previewId, 'click', this.onClick, false);
+	}
+
+	this._displayText = function() {
+		var src = this.url + '&resize=320x240';
+		var previewTile = this.getPreviewTile()
+
+		previewTile.innerHTML = 'getting text...';
+		var self = this;
+
+		this.onLoadText = function(text) {
+			self.getPreviewTile().innerHTML = text;
+		}
+
+		DH.getURL(this.url, this.onLoadText);
 	}
 
 	this._displayVideo = function() {

@@ -1,5 +1,7 @@
 <%@ page import="org.keyworx.oase.api.MediaFiler,java.util.Date" %>
 <%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
+<%@ page import="nl.justobjects.jox.dom.JXElement"%>
+<%@ page import="java.util.Vector"%>
 <%@ include file="../model.jsp" %>
 <%
 	int id = Integer.parseInt(request.getParameter("id"));
@@ -8,6 +10,7 @@
 	Record medium;
 	Record location = null;
 	String tags, tagCloud="", myTagCloud="";
+	JXElement meta = null;
 	try {
 		medium = model.getOase().getFinder().read(id);
 		Record[] tracks = model.getOase().getRelater().getRelated(medium, "g_track", null);
@@ -24,13 +27,29 @@
 		tags = tagLogic.getTagsString(personId, id);
 		tagCloud = model.getTagCloud();
 		myTagCloud = model.getMyTagCloud();
+		meta = medium.getXMLField("extra");
+
 	} catch (Throwable t) {
 		model.setResultMsg("Error t=" + t);
 		return;
 	}
 
-	String preview = "<a target=\"mediumview\" href=\"../media.srv?id=" + id + "\">see/hear medium</a>";
-	if (medium.getStringField(MediaFiler.FIELD_KIND).equals("image")) {
+	String metaInfo = "no meta info (yet). For images click on Ok button to update meta info";
+	if (meta != null) {
+		metaInfo = "";
+		Vector metaData = meta.getChildren();
+		JXElement metaDatum = null;
+		for (int i =0; i < metaData.size(); i++) {
+			metaDatum = (JXElement) metaData.get(i);
+			if (metaDatum.hasText()) {
+				metaInfo += metaDatum.getTag() + "=" + metaDatum.getText().trim() + " ";
+			}
+		}
+	}
+
+	String kind = medium.getStringField(MediaFiler.FIELD_KIND);
+	String preview = "<a target=\"mediumview\" href=\"../media.srv?id=" + id + "\">see/hear " + kind + " medium</a>";
+	if (kind.equals("image")) {
 		preview = "<a target=\"mediumview\" href=\"../media.srv?id=" + id + "\"><img src=\"../media.srv?id=" + id + "&resize=180\" border=\"0\" alt=\"" + medium.getField(MediaFiler.FIELD_NAME) + "\"/></a>";
 	}
 
@@ -102,6 +121,10 @@
 		<tr>
 			<td class="strong">description</td>
 			<td><textarea cols="40" rows="8" name="description" id="description"><%= medium.getField(MediaFiler.FIELD_DESCRIPTION) %></textarea></td>
+		</tr>
+		<tr>
+			<td class="strong">meta info</td>
+			<td><%= metaInfo %></td>
 		</tr>
 		<tr>
 			<td>&nbsp;</td>

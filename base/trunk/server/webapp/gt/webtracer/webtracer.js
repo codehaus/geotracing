@@ -80,19 +80,25 @@ var WT = {
 	},
 
 /** Add POI to current active Track. */
-	addPOI: function () {
-		WT.pr('adding POI...');
+	addText: function () {
+		WT.pr('adding Text...');
 
-		var form = document.getElementById('addpoiform');
+		var form = document.getElementById('addtextform');
 		var name = form.name.value;
-		var type = form.type.value;
-		var description = form.description.value;
-		var req = KW.createRequest('t-trk-add-poi-req');
+		var content = form.content.value;
+		var req = KW.createRequest('t-trk-upload-medium-req');
 		req.documentElement.setAttribute('name', name);
-		req.documentElement.setAttribute('type', type);
-		req.documentElement.setAttribute('description', description);
+		req.documentElement.setAttribute('type', 'text');
+		req.documentElement.setAttribute('mime', 'text/plain');
+
+		var dataElm = req.createElement('data');
+		var textNode = req.createTextNode(content);
+		dataElm.appendChild(textNode);
+		dataElm.setAttribute('encoding', 'raw');
+		req.documentElement.appendChild(dataElm);
+
 		KW.utopia(req);
-		WT.pr('add POI sent name=' + name);
+		WT.pr('add Text sent name=' + name);
 		return false;
 	},
 
@@ -179,8 +185,8 @@ var WT = {
 	},
 
 /** Menu callback: add Point of Interest. */
-	onMenuAddPOI: function () {
-		WT.loginPanel.loadContent('add-poi-form.html');
+	onMenuAddText: function () {
+		WT.loginPanel.loadContent('add-text-form.html');
 	},
 
 /** Menu callback: add media file. */

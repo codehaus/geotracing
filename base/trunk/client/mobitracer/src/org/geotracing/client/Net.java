@@ -13,13 +13,13 @@ import java.util.TimerTask;
 
 /**
  * KeyWorx network client for GeoTracing protocol.
- * <p>
+ * <p/>
  * Singleton class that provides an API wrapper to the
  * GeoTracing protocol over HTTP. Uses KWClient and MJOX (XML)
  * from KeyWorx.
  * </p>
  *
- * @author  Just van den Broecke
+ * @author Just van den Broecke
  * @version $Id$
  */
 public class Net {
@@ -28,7 +28,9 @@ public class Net {
 	public static final int CONNECTED = 2;
 	public static final int SENDING = 3;
 
-	/** Instance of KeyWorx client. */
+	/**
+	 * Instance of KeyWorx client.
+	 */
 	private HTTPClient kwClient;
 	private boolean sending;
 	private int VOLUME = 70;
@@ -96,27 +98,7 @@ public class Net {
 			role = aMIDlet.getAppProperty("kw-role");
 			minimal = aMIDlet.getAppProperty("mt-options").indexOf("minimal") != -1;
 		} catch (Throwable t) {
-            listener.onNetError("Cannot read RMS", t);
-		}
-	}
-
-	public void addPOI(String aType, String aName, String aDescription) {
-		try {
-			// Adding POI
-			listener.onNetStatus("POI add...");
-			JXElement poiAddReq = new JXElement("t-trk-add-poi-req");
-			poiAddReq.setAttr("type", aType);
-			poiAddReq.setAttr("name", aName);
-			poiAddReq.setAttr("t", Util.getTime());
-			if (aDescription != null) {
-				poiAddReq.setAttr("description", aDescription);
-			}
-			JXElement rsp = kwClient.utopia(poiAddReq);
-			listener.onNetInfo("new POI type=" + aType + " id=" + rsp.getAttr("id"));
-			listener.onNetStatus("POI add OK");
-
-		} catch (Throwable pe) {
-			listener.onNetStatus("POI add error");
+			listener.onNetError("Cannot read RMS", t);
 		}
 	}
 
@@ -178,7 +160,9 @@ public class Net {
 		}
 	}
 
-	/** Send GPS sample. */
+	/**
+	 * Send GPS sample.
+	 */
 	public void sendSample(String theData, int aRoadRating, long theTime, int theCount) {
 		JXElement req = new JXElement("t-trk-write-req");
 
@@ -227,6 +211,10 @@ public class Net {
 	}
 
 	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
+		return uploadMedium(aName, aType, aMime, aTime, theData, encode, null);
+	}
+
+	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
 
 		// get the current image bytes
 		// byte[] imageBytes = getImgFromRecStore(aKey);
@@ -240,6 +228,11 @@ public class Net {
 			aName = "mt-upload";
 		}
 		uploadReq.setAttr("name", aName);
+
+		// Optional tags
+		if (theTags != null) {
+			uploadReq.setAttr("tags", theTags);
+		}
 
 		// either encode the img in hexasc or send as raw
 		JXElement data = new JXElement("data");
@@ -289,7 +282,7 @@ public class Net {
 			kwClient.selectApp(app, role);
 			lastCommandTime = Util.getTime();
 			listener.onNetStatus("login OK");
-			listener.onNetInfo("login OK user=" + user + "\n" + "server=" + url + "\n" + "timeoffset=" + (Util.getTimeOffset()/1000) + " sec");
+			listener.onNetInfo("login OK user=" + user + "\n" + "server=" + url + "\n" + "timeoffset=" + (Util.getTimeOffset() / 1000) + " sec");
 			startHeartbeat();
 		} catch (Throwable pe) {
 			listener.onNetStatus("cannot login");

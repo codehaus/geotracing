@@ -5,14 +5,14 @@ package org.geotracing.server;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
+import org.keyworx.common.util.IO;
 import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.*;
-import org.keyworx.utopia.core.session.UtopiaRequest;
-import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.session.UtopiaSessionContext;
+import org.keyworx.utopia.core.session.*;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.amuse.core.Protocol;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -21,7 +21,7 @@ import java.sql.Timestamp;
 
 /**
  * Handles all operations related to Tracks.
- *
+ * <p/>
  * Redirects the requests to TrackLogic methods.
  *
  * @author Just van den Broecke
@@ -59,6 +59,7 @@ public class TracingHandler extends DefaultHandler {
 	public final static String ATTR_ID = "id";
 	public final static String ATTR_STATE = "state";
 	public final static String ATTR_T = "t";
+	public final static String ATTR_TAGS = "tags";
 	public final static String ATTR_VALUE = "value";
 	public final static String ATTR_ATTRS = "attrs";
 	public final static String ATTR_MEDIA = "media";
@@ -71,7 +72,8 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		Log log = Logging.getLog(anUtopiaReq);
@@ -136,8 +138,8 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Create location for medium.
-	 *
-	 *
+	 * <p/>
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;t-trk-add-medium-req id="medium-id" /&gt;
@@ -145,7 +147,8 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement addMediumReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -164,76 +167,34 @@ public class TracingHandler extends DefaultHandler {
 
 
 	/**
-	 * Add Point of Interest to Track.
-	 *
-	 *
-	 * Example
-	 * <code>
-	 * &lt;t-trk-add-poi-req name="lake view" type="view" t="1247554522225"  /&gt;
-	 * </code>
-	 *
+	 * Add Point of Interest to Track NO LONGER SUPPORTED.
+	 * <p>
+	 * POIs have been replaced by text media with tags.
+	 * </p>
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement addPOIReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		JXElement reqElm = anUtopiaReq.getRequestCommand();
-
-		// Optional attr time but required for relating to location
-		setTimeIfMissing(reqElm);
-
-		String name = reqElm.getAttr(ATTR_NAME, null);
-		throwOnMissingAttr(ATTR_NAME, name);
-		String type = reqElm.getAttr(ATTR_TYPE, null);
-		throwOnMissingAttr(ATTR_TYPE, type);
-		long time = reqElm.getLongAttr(ATTR_T);
-
-		// Create and insert the POI and relate to person
-		POI poi = null;
-		try {
-			Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
-			poi = POI.create(oase, name, type, time);
-			if (reqElm.hasAttr(ATTR_STATE)) {
-				poi.setIntValue(POI.FIELD_STATE, reqElm.getIntAttr(ATTR_STATE));
-			}
-			if (reqElm.hasAttr(ATTR_DESCRIPTION)) {
-				poi.setStringValue(POI.FIELD_DESCRIPTION, reqElm.getAttr(ATTR_DESCRIPTION));
-			}
-
-			JXElement extra = reqElm.getChildByTag(ATTR_EXTRA);
-			if (extra != null) {
-				poi.setXMLValue(POI.FIELD_EXTRA, extra);
-			}
-			poi.saveInsert();
-			poi.createRelation(getUserId(anUtopiaReq), type);
-		} catch (Throwable t) {
-			throw new UtopiaException("Error in addPOI()", t);
-		}
-
-		// Create Location for poi and relate to other objects
-		Location location = trackLogic.createLocation(getUserId(anUtopiaReq), poi.getId(), time, type);
-
-		JXElement rsp = createResponse(T_TRK_ADD_POI_SERVICE);
-		rsp.setId(poi.getId());
-
-		EventPublisher.poiAdd(poi, location, anUtopiaReq);
-		return rsp;
+		return createNegativeResponse(T_TRK_ADD_POI_SERVICE, Protocol.__4001_Illegal_command, "POIs have been replaced by text media with tags");
 	}
 
 
 	/**
 	 * Create new Track.
-	 *
+	 * <p/>
 	 * Examples
 	 * <code>
 	 * &lt;t-trk-create-req &gt; &lt;
-	 *
+	 * <p/>
 	 * &lt;t-trk-create-rsp id="t-trk-id" &gt; &lt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement createReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -241,7 +202,7 @@ public class TracingHandler extends DefaultHandler {
 		String trackName = reqElm.getAttr(ATTR_NAME, null);
 
 		// Track type: normal (user managed) or daytrack (we keep track per day)
-		String trackTypeStr = reqElm.getAttr(ATTR_TYPE, Track.VAL_NORMAL_TRACK+"");
+		String trackTypeStr = reqElm.getAttr(ATTR_TYPE, Track.VAL_NORMAL_TRACK + "");
 		int trackType = Integer.parseInt(trackTypeStr);
 
 		// Create Track object
@@ -257,8 +218,8 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Delete track.
-	 *
-	 *
+	 * <p/>
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;t-trk-delete-req [id="t-trk-id"] /&gt;
@@ -266,7 +227,8 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -284,8 +246,8 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Delete Medium from Track.
-	 *
-	 *
+	 * <p/>
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;t-trk-delete-medium-req id="12345"  /&gt;
@@ -293,7 +255,8 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement deleteMediumReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -323,8 +286,8 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Delete Point of Interest from Track.
-	 *
-	 *
+	 * <p/>
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;t-trk-delete-poi-req name="lake view" type="view" t="1247554522225"  /&gt;
@@ -332,46 +295,26 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement deletePOIReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		JXElement reqElm = anUtopiaReq.getRequestCommand();
-
-		// Required attr id
-		String id = reqElm.getAttr(ATTR_ID, null);
-		throwOnMissingAttr(ATTR_ID, id);
-
-		// Get neccessary objects
-		Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
-		POI poi = (POI) oase.get(POI.class, id);
-		int intId = poi.getId();
-		Location location = poi.getLocation();
-		Track track = (Track) poi.getRelatedObject(Track.class);
-
-		// Delete both poi and related location
-		location.delete();
-		poi.delete();
-
-		// Create response
-		JXElement rsp = createResponse(T_TRK_DELETE_POI_SERVICE);
-		rsp.setId(intId);
-
-		EventPublisher.poiDelete(intId, track.getId(), anUtopiaReq);
-		return rsp;
+		return createNegativeResponse(T_TRK_ADD_POI_SERVICE, Protocol.__4001_Illegal_command, "POIs have been replaced by text media with tags");
 	}
 
 	/**
 	 * Export track.
-	 *
+	 * <p/>
 	 * required fields: data<br /><br />
-	 *
+	 * <p/>
 	 * request format:<br /><br />
-	 *
+	 * <p/>
 	 * &lt;trk-export-req personid="24" day="50723" startday="50723" endday="50824" />
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement exportReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -385,11 +328,10 @@ public class TracingHandler extends DefaultHandler {
 		String format = reqElm.getAttr(ATTR_FORMAT, null);
 		String attrs = reqElm.getAttr(ATTR_ATTRS, null);
 		boolean media = reqElm.getBoolAttr(ATTR_MEDIA);
-		boolean pois = reqElm.getBoolAttr(ATTR_POIS);
 		long minDist = reqElm.getLongAttr(ATTR_MINDIST);
 		int maxPoint = reqElm.getIntAttr(ATTR_MAXPOINTS);
 
-		JXElement result = trackLogic.export(trackId, format, attrs, media, pois, minDist, maxPoint);
+		JXElement result = trackLogic.export(trackId, format, attrs, media, minDist, maxPoint);
 
 		// Fill response
 		JXElement responseElement = createResponse(T_TRK_EXPORT_SERVICE);
@@ -399,8 +341,8 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Create location for medium.
-	 *
-	 *
+	 * <p/>
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;loc-add-medium-req id="medium-id" /&gt;
@@ -408,7 +350,8 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement heartbeatReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -426,16 +369,17 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Import track.
-	 *
+	 * <p/>
 	 * required fields: data<br /><br />
-	 *
+	 * <p/>
 	 * request format:<br /><br />
-	 *
+	 * <p/>
 	 * &lt;t-trk-import-req personid="24" day="50723" startday="50723" endday="50824" />
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement importReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -457,9 +401,9 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Read track.
-	 *
+	 * <p/>
 	 * required fields: id<br /><br />
-	 *
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;t-trk-read-req id="t-trk-id" /&gt;
@@ -467,7 +411,8 @@ public class TracingHandler extends DefaultHandler {
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement readReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 
@@ -489,23 +434,24 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Create new or open existing Track.
-	 *
+	 * <p/>
 	 * Examples
 	 * <code>
 	 * &lt;t-trk-resume-req /&gt;
-	 *
+	 * <p/>
 	 * &lt;t-trk-resume-rsp /&gt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement resumeReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 
 		// Track type: normal (user managed) or daytrack (we keep track per day)
-		String trackTypeStr = reqElm.getAttr(ATTR_TYPE, Track.VAL_NORMAL_TRACK+"");
+		String trackTypeStr = reqElm.getAttr(ATTR_TYPE, Track.VAL_NORMAL_TRACK + "");
 		int trackType = Integer.parseInt(trackTypeStr);
 
 		// Resume current Track for this user
@@ -521,16 +467,17 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Suspend current Track.
-	 *
+	 * <p/>
 	 * Examples
 	 * <code>
 	 * &lt;t-trk-suspend-req /&gt;
-	 *
+	 * <p/>
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement suspendReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -547,13 +494,14 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Default implementation for unknown service request.
-	 *
+	 * <p/>
 	 * Override this method in extended class for handling additional
 	 * requests.
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A negative UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		String service = anUtopiaReq.getServiceName();
@@ -563,17 +511,18 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Medium upload.
-	 *
+	 * <p/>
 	 * Examples
 	 * <code>
 	 * &lt;t-trk-upload-medium-req &gt; &lt;
-	 *
+	 * <p/>
 	 * &lt;t-trk-upload-medium-rsp id="t-trk-id" &gt; &lt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement uploadMediumReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -588,17 +537,18 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Medium upload.
-	 *
+	 * <p/>
 	 * Examples
 	 * <code>
 	 * &lt;loc-medium-upload-req &gt; &lt;
-	 *
+	 * <p/>
 	 * &lt;t-trk-medium-rsp id="t-trk-id" &gt; &lt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement uploadFileMedium(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -649,6 +599,11 @@ public class TracingHandler extends DefaultHandler {
 			location = trackLogic.createMediumLocation(mediumRecord.getId());
 		}
 
+		// Add optional tags
+		if (reqElm.hasAttr(ATTR_TAGS)) {
+			addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumRecord.getIdString());
+		}
+
 		// Create and return response with open track id.
 		JXElement response = createResponse(T_TRK_UPLOAD_MEDIUM_SERVICE);
 		response.setAttr(ATTR_ID, mediumRecord.getId());
@@ -659,17 +614,18 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Medium upload.
-	 *
+	 * <p/>
 	 * Examples
 	 * <code>
 	 * &lt;loc-medium-upload-req &gt; &lt;
-	 *
+	 * <p/>
 	 * &lt;t-trk-medium-rsp id="t-trk-id" &gt; &lt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement uploadRawMedium(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -704,7 +660,18 @@ public class TracingHandler extends DefaultHandler {
 		try {
 			Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 			MediaFiler mediaFiler = oase.getMediaFiler();
-			mediumRecord = mediaFiler.insert(data.getCDATA(), encoding, fields);
+			byte[] rawData = new byte[0];
+			if (type.equals(MediaFiler.KIND_TEXT)) {
+				if (data.hasText()) {
+					rawData = IO.forHTMLTag(data.getText()).getBytes();
+				} else if (data.hasCDATA()) {
+					rawData = IO.forHTMLTag(new String(data.getCDATA())).getBytes();
+				}
+			} else {
+				rawData = data.getCDATA();
+			}
+			
+			mediumRecord = mediaFiler.insert(rawData, encoding, fields);
 			if (reqElm.hasAttr(ATTR_T)) {
 				mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(reqElm.getLongAttr(ATTR_T)));
 				oase.getModifier().update(mediumRecord);
@@ -726,6 +693,10 @@ public class TracingHandler extends DefaultHandler {
 			location = trackLogic.createMediumLocation(mediumRecord.getId());
 		}
 
+		// Add optional tags
+		if (reqElm.hasAttr(ATTR_TAGS)) {
+			addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumRecord.getIdString());
+		}
 
 		// Create and return response with open track id.
 		JXElement response = createResponse(T_TRK_UPLOAD_MEDIUM_SERVICE);
@@ -737,18 +708,19 @@ public class TracingHandler extends DefaultHandler {
 
 	/**
 	 * Write entry into track.
-	 *
-	 *
+	 * <p/>
+	 * <p/>
 	 * Example
 	 * <code>
 	 * &lt;t-trk-write-req  &gt;
-	 *   &lt;pt nmea="GPRMC,131246.908,A,5211.3596,..." t="1267612282"/&gt;
+	 * &lt;pt nmea="GPRMC,131246.908,A,5211.3596,..." t="1267612282"/&gt;
 	 * &lt;/t-trk-write-req
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
 	 * @return A UtopiaResponse.
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
 	 */
 	public JXElement writeReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -761,6 +733,31 @@ public class TracingHandler extends DefaultHandler {
 		EventPublisher.tracerMove(track, result, anUtopiaReq);
 
 		return createResponse(T_TRK_WRITE_SERVICE);
+	}
+
+	/**
+	 * Add tags to item(s).
+	 */
+	protected void addTags(UtopiaSession anUtopiaSession, String theTags, String theIds) {
+		UtopiaRequest tagRequest = null;
+
+		try {
+			JXElement tagRequestElm = new JXElement("tagging-tag-req");
+			tagRequestElm.setAttr("tags", theTags);
+			tagRequestElm.setAttr("mode", "add");
+			tagRequestElm.setAttr("items",theIds);
+
+
+			// Create Utopia request
+			tagRequest = new UtopiaRequest(anUtopiaSession, tagRequestElm);
+
+			// Perform Utopia request
+			UtopiaApplication utopiaApplication = anUtopiaSession.getContext().getUtopiaApplication();
+			UtopiaResponse tagReqResponse = utopiaApplication.performRequest(tagRequest);
+			Logging.getLog(tagRequest).info("Added tags to ids=" + theIds + " rsp=" + tagReqResponse.getResponseCommand().getTag());
+		} catch (Throwable t) {
+			Logging.getLog(tagRequest).warn("Cannot add tags to ids=" + theIds, t);
+		}
 	}
 
 	/**

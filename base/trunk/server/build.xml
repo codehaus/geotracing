@@ -71,6 +71,7 @@ $Id$
 		<pathelement location="${pushlet.jar}"/>
 		<pathelement location="${postgis-jdbc.jar}"/>
 		<pathelement location="${keyworx.jar}"/>
+		<pathelement location="${kwx-tagging.jar}"/>
 		<pathelement location="${servlet.jar}"/>
 	</path>
 

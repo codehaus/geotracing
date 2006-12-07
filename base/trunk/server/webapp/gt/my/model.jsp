@@ -47,6 +47,7 @@
 				reset();
 			}
 
+			aSession.setMaxInactiveInterval(10*3600);
 			// Use one Oase session
 			if (getOase() == null) {
 				try {

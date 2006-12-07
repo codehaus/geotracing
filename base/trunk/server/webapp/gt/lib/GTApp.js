@@ -22,7 +22,6 @@ DH.include('LiveListener.js');
 DH.include('Medium.js');
 DH.include('Menu.js');
 DH.include('Panel.js');
-DH.include('POI.js');
 DH.include('Record.js');
 DH.include('Selector.js');
 DH.include('Server.js');
@@ -346,13 +345,6 @@ var GTAPP = {
 		GTAPP.showStatus('Displaying ' + records.length + ' media');
 	},
 
-	onQueryPOIs: function (records) {
-		GTAPP.showStatus('Found ' + records.length + ' POIs, displaying...');
-		GTW.displayPOIs(records);
-		GTAPP.showStatus('Displaying ' + records.length + ' POIs');
-	},
-
-
 	clearMap: function () {
 		GTW.clearMap();
 	},
@@ -561,46 +553,6 @@ var GTAPP = {
 		var bbox = bounds.getSouthWest().x + ',' + bounds.getSouthWest().y + ',' + bounds.getNorthEast().x + ',' + bounds.getNorthEast().y;
 		// var bbox = bounds.minX + ',' + bounds.minY + ',' + bounds.maxX + ',' + bounds.maxY;
 		SRV.get('q-locative-media', GTAPP.onQueryMedia, 'random', 'true', 'max', max, 'bbox', bbox);
-	},
-
-	mShowPOIs: function(max) {
-		GTAPP.mode = 'poi';
-		GTAPP.showMode();
-
-		// Get all active tracks
-		GTAPP.clearMap();
-		GTAPP._deleteSelectors();
-
-		GTAPP.blinkStatus('Getting random POIs...');
-		SRV.get('q-pois', GTAPP.onQueryPOIs, 'random', 'true', 'max', max);
-	},
-
-	mShowLastPOIs: function(max) {
-		GTAPP.mode = 'poi';
-		GTAPP.showMode();
-
-		// Get all active tracks
-		GTAPP.clearMap();
-		GTAPP._deleteSelectors();
-
-		GTAPP.blinkStatus('Getting last ' + max + ' POIs...');
-		SRV.get('q-pois', GTAPP.onQueryPOIs, 'max', max);
-	},
-
-
-	mShowPOIsInBbox: function(max) {
-
-		GTAPP.mode = 'poi';
-		GTAPP.showMode();
-
-		// Get all active tracks
-		GTAPP.clearMap();
-		GTAPP._deleteSelectors();
-
-		GTAPP.blinkStatus('Getting POIs in area...');
-		var bounds = GMAP.map.getBounds();
-		var bbox = bounds.getSouthWest().x + ',' + bounds.getSouthWest().y + ',' + bounds.getNorthEast().x + ',' + bounds.getNorthEast().y;
-		SRV.get('q-pois', GTAPP.onQueryPOIs, 'bbox', bbox, 'max', max);
 	},
 
 	mShowHelp: function(url) {

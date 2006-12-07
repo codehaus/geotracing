@@ -52,7 +52,6 @@
 	public static final String CMD_QUERY_USER_BY_NAME = "q-user-by-name";
 	public static final String CMD_QUERY_MEDIUM_INFO = "q-medium-info";
 	public static final String CMD_QUERY_FEATURE_INFO = "q-feature-info";
-	public static final String CMD_QUERY_POIS = "q-pois";
 	public static final String CMD_QUERY_TAGS = "q-tags";
 	public static final String CMD_QUERY_TAGGED = "q-tagged";
 	public static final String CMD_GET_TRACK = "get-track";
@@ -720,41 +719,6 @@
 				}
 
 				addLocationAttrs(result);
-			} else if (command.equals(CMD_QUERY_POIS)) {
-				// See http://www.petefreitag.com/item/466.cfm
-				String tables = "g_poi,g_location";
-				String fields = "g_location.lon,g_location.lat,g_poi.id,g_poi.name,g_poi.description,g_poi.type,g_poi.time";
-				String where = null;
-				String relations = "g_location,g_poi";
-				String postCond;
-
-				// WHERE clause
-				// Optional media type
-				String type = getParameter(request, "type", null);
-				if (type != null) {
-					where = "g_poi.type = '" + type + "'";
-				}
-
-				String bboxParm = getParameter(request, PAR_BBOX, null);
-				if (bboxParm != null) {
-					where = addBBoxConstraint(bboxParm, where);
-				}
-
-				// POSTCONDITION
-				String random = getParameter(request, "random", "false");
-				if (random.equals("true")) {
-					postCond = "ORDER BY RAND()";
-				} else {
-					postCond = "ORDER BY g_poi.id DESC";
-				}
-
-				// Limit
-				String limitParm = getParameter(request, "max", null);
-				if (limitParm != null) {
-					postCond += " LIMIT " + Integer.parseInt(limitParm);
-				}
-				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 
 			} else if (command.equals(CMD_QUERY_TAGS)) {
 				// Get tag clouds
@@ -887,10 +851,9 @@
 				String format = getParameter(request, "format", "gtx");
 				String attrs = getParameter(request, "attrs", null);
 				boolean media = getParameter(request, "media", "true").equals("true");
-				boolean pois = getParameter(request, "pois", "true").equals("true");
 				long minPtDist = Long.parseLong(getParameter(request, "mindist", "0"));
 				int maxPoint = Integer.parseInt(getParameter(request, "maxpoints", "-1"));
-				result = trackLogic.export(id, format, attrs, media, pois, minPtDist, maxPoint);
+				result = trackLogic.export(id, format, attrs, media, minPtDist, maxPoint);
 			} else if (command.equals(CMD_DESCRIBE)) {
 				// Return documentation file
 				result = null;

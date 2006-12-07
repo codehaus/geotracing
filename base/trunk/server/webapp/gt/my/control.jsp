@@ -22,6 +22,7 @@
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="java.io.File" %>
 <%@ page import="nl.justobjects.jox.parser.JXBuilder"%>
+<%@ page import="org.keyworx.oase.store.record.FileFieldImpl"%>
 <%@ include file="model.jsp" %>
 <%!
 
@@ -181,10 +182,6 @@
 			} else if ("nav-track-upload".equals(command)) {
 				model.set(ATTR_LEFT_MENU_URL, "menu/left-tracks.html");
 				model.set(ATTR_CONTENT_URL, "content/track-upload.jsp");
-			} else if ("nav-pois".equals(command)) {
-				model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
-				model.set(ATTR_CONTENT_URL, "content/poi-list.jsp");
-				model.set(ATTR_PREV_CONTENT_URL, model.getObject(ATTR_CONTENT_URL));
 			} else if ("nav-profile".equals(command)) {
 				model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
 				model.set(ATTR_CONTENT_URL, "content/profile-form.jsp");
@@ -215,14 +212,6 @@
 				}
 				model.set(ATTR_CONTENT_URL, "content/medium-edit.jsp?id=" + id);
 				model.setResultMsg("nav-medium-edit ok");
-			} else if ("nav-poi-edit".equals(command)) {
-				String id = getParameter(request, "id", null);
-				if (id == null) {
-					model.setResultMsg("missing id parameter for nav-poi-edit");
-					return;
-				}
-				model.set(ATTR_CONTENT_URL, "content/poi-edit.jsp?id=" + id);
-				model.setResultMsg("nav-poi-edit ok");
 			} else if ("nav-track-edit".equals(command)) {
 				String id = getParameter(request, "id", null);
 				if (id == null) {
@@ -249,7 +238,7 @@
 			} else if ("medium-delete".equals(command)) {
 				String id = getParameter(request, "id", null);
 				if (id == null) {
-					model.setResultMsg("missing id parameter for poi-delete");
+					model.setResultMsg("missing id parameter for medium-delete");
 					return;
 				}
 				JXElement req = Protocol.createRequest(TracingHandler.T_TRK_DELETE_MEDIUM_SERVICE);
@@ -272,6 +261,27 @@
 
 				// Get the files and possible parameters from the MultipartRequest
 				Enumeration fileNames = multipartRequest.getFileNames();
+
+				String content = getParameter(multipartRequest, "content", null);
+				if (content != null) {
+					JXElement req = Protocol.createRequest(TracingHandler.T_TRK_UPLOAD_MEDIUM_SERVICE);
+					req.setAttr(TracingHandler.ATTR_NAME, IO.forHTMLTag(getParameter(multipartRequest, "name", "")));
+					req.setAttr(TracingHandler.ATTR_DESCRIPTION, IO.forHTMLTag(getParameter(multipartRequest, "description", "")));
+					req.setAttr(TracingHandler.ATTR_TYPE, "text");
+					req.setAttr(TracingHandler.ATTR_MIME, "text/plain");
+					JXElement data = new JXElement("data");
+					data.setAttr(TracingHandler.ATTR_ENCODING, "raw");
+					data.setCDATA(IO.forHTMLTag(content).getBytes());
+					req.addChild(data);
+					JXElement rspElm = HttpConnector.executeRequest(session, req);
+					if (Protocol.isNegativeResponse(rspElm)) {
+						model.logWarning("upload raw text Medium failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
+						model.setResultMsg("upload raw text Medium failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
+						model.set(ATTR_CONTENT_URL, "content/error.jsp");
+						return;
+					}
+					model.logInfo("upload-media: OK uploaded raw text content id=" + rspElm.getAttr(TracingHandler.ATTR_ID));
+				}
 
 				// Go through all uploaded files.
 				while (fileNames.hasMoreElements()) {
@@ -296,7 +306,7 @@
 						model.setResultMsg("upload Medium failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
 						continue;
 					}
-					model.logInfo("upload-media: uploaded " + nextFile.getAbsolutePath());
+					model.logInfo("upload-media: uploaded " + nextFile.getAbsolutePath() + " id=" + rspElm.getAttr(TracingHandler.ATTR_ID));
 				}
 
 				model.set(ATTR_CONTENT_URL, "content/ok.html");
@@ -356,6 +366,16 @@
 					model.set(ATTR_CONTENT_URL, "content/error.jsp");
 					return;
 				}
+
+				// Extra update meta if non-existent
+				Record mediumRecord = model.getOase().getFinder().read(Integer.parseInt(id));
+				if (mediumRecord.getField("extra") == null) {
+					File file = ((FileFieldImpl) mediumRecord.getFileField("file")).getStoredFile();
+					MediaFilerImpl.setMetaInfo(file, mediumRecord);
+					model.getOase().getModifier().update(mediumRecord);
+					// model.logInfo("done meta info for image " + name);
+				}
+
 				model.set(ATTR_CONTENT_URL, model.getObject(ATTR_PREV_CONTENT_URL));
 			} else if ("profile-update".equals(command)) {
 				String cancel = getParameter(multipartRequest, "cancel", null);
@@ -508,81 +528,6 @@
 				}
 				model.logInfo("upload-track: uploaded " + file.getAbsolutePath());
 				model.set(ATTR_CONTENT_URL, "content/ok.html");
-			} else if ("poi-update".equals(command)) {
-				// Go back to track edit
-				/* String trackId = getParameter(request, "trackid", null);
-							if (trackId == null) {
-								model.setResultMsg("geen track id");
-								return;
-							}  */
-				String cancel = getParameter(request, "cancel", null);
-				if (cancel != null) {
-					model.set(ATTR_CONTENT_URL, model.getObject(ATTR_PREV_CONTENT_URL));
-					return;
-				}
-				String id = getParameter(request, "id", null);
-				if (id == null) {
-					model.setResultMsg("no poi id");
-					return;
-				}
-				String name = getParameter(request, "name", null);
-				if (name == null) {
-					model.setResultMsg("no name");
-					return;
-				}
-				String type = getParameter(request, "type", null);
-				if (type == null) {
-					model.setResultMsg("no type");
-					return;
-				}
-				String description = getParameter(request, "description", null);
-				if (description == null) {
-					description = "no description";
-				}
-
-				// Escape HTML stuff
-				name = IO.forHTMLTag(name);
-				type = IO.forHTMLTag(type);
-				description = IO.forHTMLTag(description);
-
-				// TODO: make real Utopia request !!!
-				Record rec = model.getOase().getFinder().read(Integer.parseInt(id));
-				rec.setStringField("name", name);
-				rec.setStringField("type", type);
-				rec.setStringField("description", description);
-				model.getOase().getModifier().update(rec);
-
-/*			JXElement req = new JXElement("poi-update-req");
-			JXElement poi = new JXElement("poi");
-			req.setAttr("id", id);
-			poi.setChildText("name", name);
-			poi.setChildText("type", type);
-			poi.setChildText("description", description);
-			req.addChild(poi);
-			JXElement rsp = HttpConnector.executeRequest(session, req);
-			if (Protocol.isNegativeResponse(rsp)) {
-				model.setResultMsg("fout bij update poi " + rsp.toEscapedString());
-				return;
-			}     */
-
-				model.set(ATTR_CONTENT_URL, model.getObject(ATTR_PREV_CONTENT_URL));
-			} else if ("poi-delete".equals(command)) {
-				String id = getParameter(request, "id", null);
-				if (id == null) {
-					model.setResultMsg("missing id parameter for poi-delete");
-					return;
-				}
-				JXElement req = Protocol.createRequest(TracingHandler.T_TRK_DELETE_POI_SERVICE);
-				req.setAttr("id", id);
-				JXElement rspElm = HttpConnector.executeRequest(session, req);
-				if (Protocol.isNegativeResponse(rspElm)) {
-					model.setResultMsg("delete POI failed: " + Protocol.getStatusString(rspElm.getIntAttr("errorId")));
-					model.set(ATTR_CONTENT_URL, "content/error.jsp");
-					return;
-				}
-
-				model.setResultMsg("Delete POI OK id=" + id);
-				model.set(ATTR_CONTENT_URL, model.getObject(ATTR_PREV_CONTENT_URL));
 			} else if ("track-update".equals(command)) {
 				// Go back to track edit
 				/* String trackId = getParameter(request, "trackid", null);

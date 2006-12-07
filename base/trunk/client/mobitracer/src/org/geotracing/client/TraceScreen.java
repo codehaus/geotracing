@@ -26,7 +26,7 @@ public class TraceScreen extends GameCanvas {
 
 	private static final int CMD_SUSPEND_RESUME = 0;
 	private static final int CMD_NEW_TRK = 1;
-	private static final int CMD_ADD_POI = 2;
+	private static final int CMD_ADD_TEXT = 2;
 	private static final int CMD_ADD_PHOTO = 3;
 	private static final int CMD_ADD_AUDIO = 4;
 	private static final int CMD_SOUND_TOGGLE = 5;
@@ -37,9 +37,9 @@ public class TraceScreen extends GameCanvas {
 	private static final int CMD_SHOW_MAP = 10;
 	private static final int CMD_ACCOUNT = 11;
 	private static final int CMD_QUIT = 12;
-	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_POI, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_ACCOUNT, CMD_QUIT};
+	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_TEXT, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_ACCOUNT, CMD_QUIT};
 	private static final int[] MIN_CMDS = {CMD_QUIT};
-	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Add POI", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map", "Account", "Exit"};
+	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Send Text", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map", "Account", "Exit"};
 	private static final String[] MIN_CMD_LABELS = {"Afsluiten"};
 	private int[] CMDS = DEF_CMDS;
 	private String[] CMD_LABELS = DEF_CMD_LABELS;
@@ -307,8 +307,8 @@ public class TraceScreen extends GameCanvas {
 				new CreateTrackHandler().createTrack();
 				break;
 
-			case CMD_ADD_POI:
-				new AddPOIHandler().addPOI();
+			case CMD_ADD_TEXT:
+				new AddTextHandler().addText();
 				break;
 
 			case CMD_ADD_PHOTO:
@@ -476,29 +476,49 @@ public class TraceScreen extends GameCanvas {
 		}
 	}
 
-	private class AddPOIHandler implements CommandListener {
-		private Form form;
-		private TextField typeField;
+	private class AddTextHandler implements CommandListener {
+		private TextField tagsField;
 		private TextField nameField;
-		private TextField descrField;
-		private Command okCmd = new Command("OK", Command.OK, 1);
+		private TextBox textBox;
+		private Command textOkCmd = new Command("OK", Command.OK, 1);
+		private Command submitCmd = new Command("OK", Command.OK, 1);
 		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
 		/*
 		* Create the first TextBox and associate
 		* the exit command and listener.
 		*/
-		public void addPOI() {
+		public void addText() {
 			// Create the TextBox containing the "Hello,World!" message
-			form = new Form("Add New Point of Interest (POI)");
-			typeField = new TextField("Enter Type", "", 16, TextField.ANY);
-			nameField = new TextField("Enter Name", "", 32, TextField.ANY);
-			descrField = new TextField("Enter Description (optional)", "", 512, TextField.ANY);
-			form.append(typeField);
-			form.append(nameField);
-			form.append(descrField);
+			textBox = new TextBox("Enter Text", "", 1024, TextField.ANY);
+
+
 			// Add the Exit Command to the TextBox
-			form.addCommand(okCmd);
+			textBox.addCommand(textOkCmd);
+			textBox.addCommand(cancelCmd);
+
+			// Set the command listener for the textbox to the current midlet
+			textBox.setCommandListener(this);
+
+			// Set the current display of the midlet to the textBox screen
+			Display.getDisplay(midlet).setCurrent(textBox);
+		}
+
+		/*
+		* Create the first TextBox and associate
+		* the exit command and listener.
+		*/
+		public void addMeta() {
+			// Create the TextBox containing the "Hello,World!" message
+			Form form = new Form("Add Info");
+			nameField = new TextField("Enter Title", "", 32, TextField.ANY);
+			tagsField = new TextField("Enter Tags (opt)", "", 32, TextField.ANY);
+
+			form.append(nameField);
+			form.append(tagsField);
+
+			// Add the Exit Command to the TextBox
+			form.addCommand(submitCmd);
 			form.addCommand(cancelCmd);
 
 			// Set the command listener for the textbox to the current midlet
@@ -513,16 +533,25 @@ public class TraceScreen extends GameCanvas {
 		* satisfy the CommandListener interface and handle the Exit action.
 		*/
 		public void commandAction(Command command, Displayable screen) {
-			if (command == okCmd) {
-				String poiName = nameField.getString();
-				String poiType = typeField.getString();
-				if (poiName != null && poiName.length() > 0 && poiType != null && poiType.length() > 0) {
-					tracer.getNet().addPOI(poiType, poiName, descrField.getString());
+			if (command == submitCmd) {
+				String name = nameField.getString();
+				String text = textBox.getString();
+				String tags = tagsField.getString();
+				if (name != null && name.length() > 0 && text != null && text.length() > 0) {
+					tracer.getNet().uploadMedium(name, "text", "text/plain", Util.getTime(), text.getBytes(), false, tags);
 				} else {
-					setStatus("No name or type");
+					setStatus("Type title and tags");
+				}
+			} else if (command == textOkCmd) {
+				if (textBox.getString() == null) {
+					setStatus("No text typed");
+				} else {
+					// text entered, now enter other stuff
+					addMeta();
+					return;
 				}
 			} else {
-				onNetStatus("Add POI cancel");
+				onNetStatus("Add Text cancel");
 			}
 
 

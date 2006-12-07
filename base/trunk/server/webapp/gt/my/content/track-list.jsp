@@ -11,7 +11,7 @@
 		Record[] recs  = model.query(tables, fields, where, relations, postCond);
 %>
 <p>You have <%= recs.length %>  tracks. The most recent are at top. Click on [edit] to edit
-track properties and features (media, POIs). If you want to save a track as a GPX file, right click [GPX] and save the file.
+track properties and track-related media. If you want to save a track as a GPX file, right click [GPX] and save the file.
 </p>
 <table border="1" cellpadding="6" >
     <tr>
