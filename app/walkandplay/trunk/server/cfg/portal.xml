@@ -65,6 +65,10 @@
                 <property name="user" host="pundit">email.upload.user.pundit</property>
                 <property name="password" host="pundit">email.upload.password.pundit</property>
             </daemon>
+			
+			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
+				<property name="pois2textmedia">true</property>
+			</daemon>
 
             <!-- Tracer Bot -->
 			<!--<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
