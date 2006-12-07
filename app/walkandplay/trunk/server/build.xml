@@ -31,11 +31,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
     <property name="deploy.zip" value="${build.dir}/${project.id}-${version}.zip"/>
 
-    <!-- plugins
-    <property name="plugins.dir" value="${home}/plugins"/>
-    <property name="tagging.plugin.dir" value="${plugins.dir}/tagging"/>
-    <property name="metadata.plugin.dir" value="${plugins.dir}/metadata"/> -->
-
 	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
     <property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
     
@@ -66,8 +61,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <delete dir="${build.class.dir}"/>
         <mkdir dir="${build.class.dir}"/>
 
-        <replace file="${home}/src/org/walkandplay/server/engine/GameDataDef.java"
-                 value="walkandplay" token="[PORTALNAME]"/>
         <!-- Compile all java files-->
         <javac
                 destdir="${build.class.dir}"
@@ -80,63 +73,12 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
             <classpath refid="compile.classpath"/>
         </javac>
 
-        <replace file="${home}/src/org/walkandplay/server/engine/GameDataDef.java"
-                 token="walkandplay" value="[PORTALNAME]" excludes="org.walkandplay.server"/>
-
-        <replace file="${home}/src/org/walkandplay/server/engine/GameDataDef.java"
-                 token=".[PORTALNAME]" value=".walkandplay" excludes="org.walkandplay.server"/>
     </target>
 
-    <!-- Compile the java files. -->
-    <target name="compiletest" depends="init">
-        <echo message="Compiling java files..."/>
 
-        <!-- Always do clean build -->
-        <delete dir="${build.class.dir}"/>
-        <mkdir dir="${build.class.dir}"/>
-
-        <replace file="${home}/src/org/walkandplay/server/engine/GameDataDef.java"
-                 value="walkandplaytest" token="[PORTALNAME]"/>
-
-        <!-- Compile all java files-->
-        <javac
-                destdir="${build.class.dir}"
-                debug="${javac.debug}"
-                deprecation="${javac.deprecation}"
-                optimize="${javac.optimize}"
-                includes="**/*.java">
-            <src path="${home.src.dir}"/>
-
-            <classpath refid="compile.classpath"/>
-        </javac>
-
-        <replace file="${home}/src/org/walkandplay/server/engine/GameDataDef.java"
-                 token="walkandplaytest" value="[PORTALNAME]" excludes="org.walkandplay.server"/>
-    </target>
 
     <!-- Build the .jar for the project -->
     <target name="jar" depends="compile">
-        <echo message="Building ${project.jar}..."/>
-        <mkdir dir="${build.lib.dir}"/>
-
-        <!-- Always do clean build -->
-        <delete file="${project.jar}"/>
-
-        <!-- Create the jar file -->
-        <jar jarfile="${project.jar}" basedir="${build.class.dir}">
-            <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
-                <section name="org/walkandplay">
-                    <attribute name="Implementation-Title" value="${project.name}"/>
-                    <attribute name="Implementation-Version" value="${version}-${DSTAMP}-${TSTAMP}"/>
-                    <attribute name="Implementation-Vendor" value="Just Objects"/>
-                </section>
-            </manifest>
-        </jar>
-    </target>
-
-    <!-- Build the .jar for the project -->
-    <target name="jartest" depends="compiletest">
         <echo message="Building ${project.jar}..."/>
         <mkdir dir="${build.lib.dir}"/>
 
@@ -215,7 +157,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <!-- Build the .wars for the project -->
-    <target name="wartest" depends="jartest">
+    <target name="wartest" depends="jar">
         <echo message="Building webapp..."/>
         <echo message="using geoTracing war dir: ${gt.war.dir}"/>
 

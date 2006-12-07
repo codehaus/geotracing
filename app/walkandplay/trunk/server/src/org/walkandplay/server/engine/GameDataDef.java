@@ -12,10 +12,6 @@ package org.walkandplay.server.engine;
  * @version $Id: GameDataDef.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
  */
 public interface GameDataDef {
-    /**
-     * Portal name
-     */
-    public static final String PORTAL_NAME = "[PORTALNAME]";
 
     /**
      * Table names

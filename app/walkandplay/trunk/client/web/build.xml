@@ -101,7 +101,7 @@ $Id$
 	<target name="copy-test">
 		<exec executable="scp">
 			<arg line="-r"/>
-			<arg line="${home}"/>
+			<arg line="${home}/"/>
 			<arg line="${deploy.test.dir}"/>
 		</exec>
 	</target>
