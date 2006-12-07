@@ -7,5 +7,4 @@ GMAP.addKey('test',
 		'^https?://test.geoskating.com/gs/.*' );
 
 
-GMAP.loadGoogleMapScript();
-
+GMAP.loadGoogleMapScript('2.66');

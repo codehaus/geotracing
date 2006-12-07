@@ -1,5 +1,11 @@
 <portal name="geoskating">
 
+	<!-- Standard host-dependent container properties -->
+	<property name="siteurl" host="pundit">http://www.geoskating.com</property>
+	<property name="webappurl" host="pundit">http://www.geoskating.com/gs</property>
+	<property name="siteurl" host="suwa">http://test.geoskating.com</property>
+	<property name="webappurl" host="suwa">http://test.geoskating.com/gs</property>
+
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
 		<context file="oase-context.xml"/>
@@ -47,6 +53,12 @@
 				<property name="user" host="pundit">email.upload.user.pundit</property>
 				<property name="password" host="pundit">email.upload.password.pundit</property>
 			</daemon>
+
+			<!-- Daemon for various upgrades -->
+			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
+				<property name="pois2textmedia">true</property>
+			</daemon>
+
 		</daemons>
 	</application>
 </portal>
