@@ -148,7 +148,7 @@ public class UpgradeDaemon extends Daemon {
 					/* modifier.delete(poi);
 					log.warn("MIGRATING POIS : no content, skipping");
 					continue;  */
-					content = "empty";
+					content = "no content in text medium";
 				}
 
 				fields.clear();
@@ -163,6 +163,9 @@ public class UpgradeDaemon extends Daemon {
 				fields.put(MediaFiler.FIELD_KIND, "text");
 
 				medium = mediaFiler.insert(content.getBytes(), fields);
+				medium.setTimestampField(MediaFiler.FIELD_CREATIONDATE, poi.getTimestampField("creationdate"));
+				modifier.update(medium);
+
 				relater.relate(location, medium, "medium");
 				relater.relate(track, medium, "medium");
 				relater.relate(medium, person);
