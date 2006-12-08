@@ -4,16 +4,17 @@ ANT Build file for WalkAndPlay deployables.
 
 $Id: build.xml 108 2006-10-20 21:45:17Z just $
 -->
-<project name="walkandplay" default="package" basedir=".">
+<project name="WP" default="package" basedir=".">
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
+
+	<property file="${home}/build.properties"/>
+
 	<property name="client.dir" value="${home}/client"/>
 	<property name="client.phone.dir" value="${client.dir}/phone"/>
 	<property name="client.web.dir" value="${client.dir}/web"/>
 	<property name="server.dir" value="${home}/server"/>
 	<property name="build.dir" value="${home}/build"/>
-
-	<property file="${home}/build.properties"/>
 
 	<!-- The .zips for deployment -->
 	<property name="package-all.zip" value="${build.dir}/${project.id}-${version}.zip"/>
@@ -85,6 +86,12 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 			<zipfileset src="${package-back.zip}"/>
 			<zipfileset src="${package-front.zip}"/>
 		</zip>
+	</target>
+
+	<!-- Deploy entire package into local deploy dir. -->
+	<target name="deploy-local">
+		<echo message="Deploying ${package-all.zip} into ${deploy.local.dir}"/>
+		<unzip src="${package-all.zip}" dest="${deploy.local.dir}"/>
 	</target>
 
 </project>
