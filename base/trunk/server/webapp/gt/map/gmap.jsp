@@ -42,7 +42,7 @@
 
 %>
 <%
-	String format = getParameter(request, "format", "image");
+	String format = getParameter(request, "format", "imageplot");
 
 	double lon = Double.parseDouble(getParameter(request, "lon", "0"));
 	double lat = Double.parseDouble(getParameter(request, "lat", "0"));
@@ -82,18 +82,25 @@
 	// Get pixel offsets in tile image
 	GoogleTiles.XY xy = GoogleTiles.getPixelXY(lon, lat, zoom);
 
-	if (format.equals("image")) {
+	if (format.equals("imageplot")) {
 		Net.fetchURL(tileURL, file);
 
 		// File with plotted location
-		File locFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
 
 		int x = xy.x;
 		int y = xy.y;
 		int x0 = x + 3;
 		int y0 = y + 3;
 
-		String[] command = {DRAW_LOC_SCRIPT, "" + x, "" + y, "" + x0, "" + y0, file.getAbsolutePath(), locFile.getAbsolutePath()};
+		String size = getParameter(request, "size", "176x208");
+		String plot = getParameter(request, "true", "true");
+
+		File locFile = null;
+		if (plot.equals("true")) {
+			locFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
+		}
+
+		String[] command = {DRAW_LOC_SCRIPT, "" + x, "" + y, "" + x0, "" + y0, size, file.getAbsolutePath(), locFile.getAbsolutePath()};
 
 		StringBuffer stdout = new StringBuffer(24);
 		StringBuffer stderr = new StringBuffer(24);
@@ -107,6 +114,27 @@
 		Servlets.sendFile(request, response, locFile.getAbsolutePath(), "image/jpeg", false);
 		file.delete();
 		locFile.delete();
+	} else 	if (format.equals("image")) {
+		Net.fetchURL(tileURL, file);
+
+		String size = getParameter(request, "size", "256x256");
+
+		File resultFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
+
+		String[] command = {"convert", "-resize", size +"!", file.getAbsolutePath(), resultFile.getAbsolutePath()};
+
+		StringBuffer stdout = new StringBuffer(24);
+		StringBuffer stderr = new StringBuffer(24);
+		int exitCode = Sys.execute(command, stdout, stderr);
+
+		if (exitCode == 0) {
+			// log.info("drawloc returned " + exitCode);
+		} else {
+			log.warn("convert returned " + exitCode + " stderr=" + stderr.toString());
+		}
+		Servlets.sendFile(request, response, resultFile.getAbsolutePath(), "image/jpeg", false);
+		file.delete();
+		resultFile.delete();
 	} else if (format.equals("xml")) {
 
 		response.setContentType("text/xml;charset=utf-8");
