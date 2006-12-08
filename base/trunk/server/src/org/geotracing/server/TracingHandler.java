@@ -670,7 +670,7 @@ public class TracingHandler extends DefaultHandler {
 			} else {
 				rawData = data.getCDATA();
 			}
-			
+
 			mediumRecord = mediaFiler.insert(rawData, encoding, fields);
 			if (reqElm.hasAttr(ATTR_T)) {
 				mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(reqElm.getLongAttr(ATTR_T)));
@@ -743,7 +743,7 @@ public class TracingHandler extends DefaultHandler {
 
 		try {
 			JXElement tagRequestElm = new JXElement("tagging-tag-req");
-			tagRequestElm.setAttr("tags", theTags);
+			tagRequestElm.setAttr("tags", theTags.trim().toLowerCase());
 			tagRequestElm.setAttr("mode", "add");
 			tagRequestElm.setAttr("items",theIds);
 
