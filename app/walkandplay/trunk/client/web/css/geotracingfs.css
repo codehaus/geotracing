@@ -1,5 +1,6 @@
 /* CSS Document */
 
+
 input {
 
   }
@@ -32,8 +33,9 @@ input.large {
   font-size:12px;
   text-indent:10px;
   background:url(../img/input_bg_large.jpg) no-repeat;
-  }    
-body {
+  }
+
+ body {
 	left:0px;
 	top:0px;
 	font-family:Verdana, Arial, Helvetica, sans-serif;

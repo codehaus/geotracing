@@ -3,6 +3,7 @@ package org.walkandplay.client.phone;
 import org.geotracing.client.GPSInfo;
 import org.geotracing.client.Log;
 import org.geotracing.client.Util;
+import org.geotracing.client.MFloat;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
@@ -15,10 +16,11 @@ public class TraceCanvas extends DefaultCanvas {
 	private String inputText = "";
 
 	private WP midlet;
-	private String tileURL;
+	private String tileBaseURL;
 	private JXElement tileInfo;
 	private Image tileImage;
 	private int zoom = 12;
+	private MFloat tileScale;
 	private String mapType = "map";
 	private String lon = "0", lat = "0";
 	private String msg = "";
@@ -35,6 +37,7 @@ public class TraceCanvas extends DefaultCanvas {
 	private Image msgBar, inputBox, okBt;
 
 	int margin = 3;
+	int tileWidth, tileHeight;
 
 	// screenstates
 	private final static int HOME_STAT = 0;
@@ -48,8 +51,8 @@ public class TraceCanvas extends DefaultCanvas {
 		super(aMidlet);
 		try {
 			midlet = aMidlet;
-			tileURL = midlet.getAppProperty("kw-url") + "/map/gmap.jsp?";
-			System.out.println("tileUrl:" + tileURL);
+			tileBaseURL = midlet.getAppProperty("kw-url") + "/map/gmap.jsp?";
+			System.out.println("tileUrl:" + tileBaseURL);
 
 			// load all images
 			msgBar = Image.createImage("/msg_bar.png");
@@ -88,7 +91,7 @@ public class TraceCanvas extends DefaultCanvas {
 		try {
 
 			// Get information on tile
-			String tileInfoURL = tileURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
+			String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
 			JXElement newTileInfo = Util.getXML(tileInfoURL);
 
 			// Reset tileImage if first tile info or if keyhole ref changed (we moved to new tile).
@@ -153,12 +156,19 @@ public class TraceCanvas extends DefaultCanvas {
 		switch (screenStat) {
 			case HOME_STAT:
 				msg = status;
+				//tileWidth = w;
+				//int scale1000 = (tileWidth * 1000) / w;
+				//tileHeight = (h*scale1000)/1000;
 
 				// Fetch new tileImage if we have tile info and no tileImage
 				if (tileInfo != null && tileImage == null) {
 					try {
-						log("fetching tileImage url=" + tileInfo.getAttr("url"));
-						tileImage = Util.getImage(tileInfo.getAttr("url"));
+						//Image origTileImage = Util.getImage(tileInfo.getAttr("url"));
+						//tileImage = Util.scaleImage(origTileImage, tileWidth, tileHeight);
+						String tileSize = w + "x" + w;
+						String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
+						log("fetching tileImage url=" + tileURL);
+						tileImage = Util.getImage(tileURL);
 					} catch (Throwable t) {
 						msg = "Error fetching tileImage !!";
 						msg += "maybe this zoom-level is not available";
@@ -169,12 +179,19 @@ public class TraceCanvas extends DefaultCanvas {
 
 				if (tileImage != null) {
 					g.drawImage(tileImage, 0, 24, Graphics.TOP | Graphics.LEFT);
-
 					// x,y offset of our location in tile tileImage
 					String myX = tileInfo.getAttr("x");
 					String myY = tileInfo.getAttr("y");
 
-					g.drawImage(redDot, Integer.parseInt(myX), Integer.parseInt(myY) + 24, Graphics.TOP | Graphics.LEFT);
+					// Correct pixel offset with tile scale
+					if (tileScale == null) {
+						tileScale = new MFloat(w).Div(256L);
+					}
+					
+					int x = (int) new MFloat(Integer.parseInt(myX)).Mul(tileScale).toLong();
+					int y = (int) new MFloat(Integer.parseInt(myY)).Mul(tileScale).toLong();
+
+					g.drawImage(redDot, x, y + 24, Graphics.TOP | Graphics.LEFT);
 				} else if (msg.length() > 0) {
 					ScreenUtil.drawTextArea(g, 100, (w - 2 * margin - middleTextArea.getWidth()) / 2, 4 * margin + logo.getHeight(), topTextArea, middleTextArea, bottomTextArea);
 					ScreenUtil.drawText(g, msg, (w - middleTextArea.getWidth()) / 2, logo.getHeight() + 5 * margin, fh, 100);

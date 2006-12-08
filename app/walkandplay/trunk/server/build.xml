@@ -6,16 +6,18 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 -->
 <project name="WP Server" default="build" basedir=".">
 
-    <!-- Initialization of properties (dirs, files) -->
     <!-- Project global properties; overrule by modifying build.properties -->
-    <property file="build.properties"/>
+ 	<property name="home" value="${basedir}"/>
+	<property name="geotracing.external.dir" value="${basedir}/../../../../base/trunk/external"/>
 
-    <property name="geotracing.external.dir" value="${basedir}/../../../../base/trunk/external"/>
-    <property file="${geotracing.external.dir}/build.properties"/>
+	<!-- Initialization of properties (dirs, files) -->
+ 	<property file="${geotracing.external.dir}/build.properties"/>
+ 	<property file="${home}/../build.properties"/>
+    <property file="${home}/build.properties"/>
+
     <property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
 
     <!-- Directory locations -->
-    <property name="home" value="${basedir}"/>
     <property name="server.cfg.dir" value="${home}/cfg"/>
     <property name="server.test.dir" value="${home}/test"/>
 
@@ -240,7 +242,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <target name="deploy-local" depends="build">
-        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+        <copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
     </target>
 
     <target name="deploy-test-local" depends="buildtest">
@@ -255,7 +257,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 -->
     <target name="deploy-local-raw">
-        <copy todir="${deploy.test.dir}/${war.name}" overwrite="true">
+        <copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
             <fileset dir="${home.webapp.dir}"/>
         </copy>
     </target>

@@ -4,19 +4,21 @@ ANT Build file for W&P Web Client.
 
 $Id$
 -->
-<project name="wp-web" default="build" basedir=".">
+<project name="WP Web" default="build" basedir=".">
 
-	<!-- Initialization of properties (dirs, files) -->
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
 
 	<!-- Project global properties; overrule by modifying build.properties -->
     <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
 	<property file="${geotracing.external.dir}/build.properties"/>
-	<property file="build.properties"/>
+
+	<!-- Initialization of properties (dirs, files) -->
+	<property file="${home}/../../build.properties"/>
+	<property file="${home}/build.properties"/>
 
 
-	<!-- Directory locations -->
-	<property name="home" value="${basedir}"/>
 
 	<property name="build.dir" value="${home}/build"/>
 
@@ -109,6 +111,12 @@ $Id$
 	<target name="deploy-local">
 		<copy todir="${deploy.local.dir}" overwrite="true">
 			<fileset dir="${home}"/>
+		</copy>
+	</target>
+
+	<target name="deploy-local-wp-only">
+		<copy todir="${deploy.local.dir}" overwrite="true">
+			<fileset dir="${home}" excludes="js/gt/**/*,js/dojo/**/*"/>
 		</copy>
 	</target>
 
