@@ -49,7 +49,7 @@
 			} else {
 				// 	<tagging-tag-req items="id1,id2,..." tags="tag1 tag2 ..." mode="add|replace"/>
 				req = new JXElement("tagging-tag-req");
-				req.setAttr("tags", newTags);
+				req.setAttr("tags", newTags.trim().toLowerCase());
 				req.setAttr("mode", "replace");
 			}
 			req.setAttr("items", id);

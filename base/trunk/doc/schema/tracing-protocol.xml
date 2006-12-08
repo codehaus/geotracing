@@ -26,9 +26,6 @@
 	  TRK_ADD_MEDIUM_SERVICE = "t-trk-add-medium" - add medium to track
 	  TRK_UPLOAD_MEDIUM_SERVICE = "t-trk-upload-medium" - upload medium (raw or file)
 	  TRK_DELETE_MEDIUM_SERVICE = "t-trk-delete-medium" - delete medium (also deletes location)
-	  TRK_ADD_POI_SERVICE = "t-trk-add-poi" - add Point of Interest to track
-	  TRK_DELETE_POI_SERVICE = "t-trk-delete-poi" - delete Point of Interest
-	  TRK_UPDATE_POI_SERVICE = "t-trk-update-poi" - update Point of Interest
 	  TRK_IMPORT_SERVICE = "t-trk-import" - import a track from GPX
 	  TRK_EXPORT_SERVICE = "t-trk-export" - export a track as GPX or GTX (internal GT format)
 	  HEARTBEAT_SERVICE = "t-hb" - send heartbeat (keep-alive)
@@ -195,11 +192,11 @@
 		<attribute name="mime" comment="mime type e.g. image/jpeg" type="string" optional="true"/>
 		<attribute name="tags" comment="space-separated tags" type="string" optional="true"/>
 
-		<!-- Note: either a "file" or encoded file data in <data/> should be present -->
+		<!-- Note: either a "file" or encoded file data (cdata or any) in <data/> should be present -->
 		<!-- TODO: this is messy: split into two types of service requests. -->
 		<attribute name="file" comment="path or URL to file" type="string" optional="true"/>
-		<element tag="data" comment="encoded file data" optional="true">
-			<attribute name="encoding" comment="encoding format of the data" type="string" values=""/>
+		<element tag="data" comment="encoded file data" optional="true" type="cdata|any">
+			<attribute name="encoding" comment="encoding format of the data" type="string" values="raw|hexasc|base64"/>
 		</element>
 	</element>
 
@@ -215,43 +212,6 @@
 
 	<!-- The track delete-medium response -->
 	<element tag="t-trk-delete-medium-rsp"  comment="delete-medium response" />
-
-	<!-- NOTE: POI support has been replaced by text media with tagging.
-	<element tag="t-trk-add-poi-req"  comment="add Point of Interest to track">
-		<attribute name="t" comment="UTC millis since 1.1.1970, set by server if missing" type="long"
-				   optional="true"/>
-		<attribute name="name" comment="name of POI" type="string" />
-		<attribute name="type" comment="type of POI" type="string" />
-		<attribute name="description" comment="short description" type="string" optional="true"/>
-		<attribute name="state" comment="initial state of POI" type="int" optional="true"/>
-		<element name="extra" comment="extra elements (app specific)" type="any" optional="true"/>
-	</element>
-
-	<element tag="t-trk-add-poi-rsp"  comment="Point of Interest to track added" >
-		<attribute name="id" comment="id of POI record" type="int"/>
-	</element>
-
-	<element tag="t-trk-update-poi-req"  comment="update Point of Interest to track">
-		<attribute name="id" comment="id of POI record" type="int"/>
-		<attribute name="name" comment="name of POI" type="string" optional="true" />
-		<attribute name="type" comment="type of POI" type="string" optional="true" />
-		<attribute name="description" comment="short description" type="string" optional="true"/>
-		<attribute name="state" comment="initial state of POI" type="int" optional="true"/>
-		<element name="extra" comment="extra elements (app specific)" type="any" optional="true"/>
-	</element>
-
-	<element tag="t-trk-update-poi-rsp"  comment="Point of Interest updated" >
-		<attribute name="id" comment="id of POI record" type="int"/>
-	</element>
-
-	<element tag="t-trk-delete-poi-req"  comment="unrelates from related track and deletes location">
-		<attribute name="id" comment="id of poi to be deleted" type="int"/>
-	</element>
-
-	<element tag="t-trk-delete-poi-rsp"  comment="delete-poi response" >
-		<attribute name="id" comment="id of poi deleted" type="int"/>
-	</element>
-    -->
 
 	<!-- The heartbeat request  -->
 	<element tag="t-hb-req"  comment="heartbeat from client">
