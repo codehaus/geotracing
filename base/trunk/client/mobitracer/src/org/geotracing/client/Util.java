@@ -50,7 +50,9 @@ public class Util {
 		}
 	}
 
-	/** Get page content from URL. */
+	/**
+	 * Get page content from URL.
+	 */
 	public static String getPage(String url) throws IOException {
 		DataInputStream dis = null;
 		HttpConnection c = null;
@@ -88,7 +90,9 @@ public class Util {
 
 	}
 
-	/** Get page content from URL as XML element. */
+	/**
+	 * Get page content from URL as XML element.
+	 */
 	public static JXElement getXML(String url) throws IOException {
 		HttpConnection c = (HttpConnection) Connector.open(url);
 		InputStream is = c.openInputStream();
@@ -151,8 +155,9 @@ public class Util {
 
 	/**
 	 * Split string into multiple strings
-	 * @param original	  Original string
-	 * @param separator	 Separator string in original string
+	 *
+	 * @param original  Original string
+	 * @param separator Separator string in original string
 	 * @return Splitted string array
 	 */
 	/*public static String[] split(String original, String separator) {
@@ -183,6 +188,27 @@ public class Util {
 		}
 		return result;
 	} */
+
+	/** Scale source image to specified width/height. */
+	public static Image scaleImage(Image src, int width, int height) {
+		//long start = System.currentTimeMillis();
+		int scanline = src.getWidth();
+		int srcw = src.getWidth();
+		int srch = src.getHeight();
+		int buf[] = new int[srcw * srch];
+		src.getRGB(buf, 0, scanline, 0, 0, srcw, srch);
+		int buf2[] = new int[width * height];
+		for (int y = 0; y < height; y++) {
+			int c1 = y * width;
+			int c2 = (y * srch / height) * scanline;
+			for (int x = 0; x < width; x++) {
+				buf2[c1 + x] = buf[c2 + x * srcw / width];
+			}
+		}
+		//long end = System.currentTimeMillis();
+		//System.out.println("Scaled " + src.getWidth() + "x" + src.getHeight() + " in " + ((end - start) / 1000) + " seconds");
+		return Image.createRGBImage(buf2, width, height, true);
+	}
 
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.

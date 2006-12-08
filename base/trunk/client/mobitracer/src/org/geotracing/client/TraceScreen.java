@@ -49,7 +49,7 @@ public class TraceScreen extends GameCanvas {
 	private boolean showGPSInfo = true;
 	private int roadRating = -1;
 	//private MapScreen mapScreen;
-	private MapScreen mapViewer;
+	private MapCanvas mapViewer;
 	private String options;
 	// screen width, height and font height
 	private int w, h;
@@ -72,7 +72,7 @@ public class TraceScreen extends GameCanvas {
 
 	void start() {
 		hideCommands();
-		mapViewer = new MapScreen();
+		mapViewer = new MapCanvas();
 		tracer.start();
 		options = midlet.getAppProperty("mt-options");
 		if (options.indexOf("minimal") != -1) {
