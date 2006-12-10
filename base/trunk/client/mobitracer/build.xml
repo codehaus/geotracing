@@ -127,6 +127,7 @@
 	<target name="obfuscate" depends="compile">
 
 		<java fork="yes" classname="proguard.ProGuard" classpath="${proguard.jar}">
+			<arg line="-dontusemixedcaseclassnames"/>
 			<arg line="-libraryjars ${boot.classpath}:${jsr82.zip}"/>
 			<arg line="-injars ${classes.dir}"/>
 			<arg line="-outjar ${obf.dir}"/>

@@ -1,6 +1,3 @@
-// Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
-// Distributable under LGPL license. See terms of license at gnu.org.$
-
 package org.geotracing.client;
 
 import nl.justobjects.mjox.JXElement;
@@ -10,7 +7,7 @@ import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
 
 /**
- * Shows moving dot on map.
+ * SHows moving dot on map.
  */
 public class MapCanvas extends GameCanvas implements CommandListener {
 	private Displayable prevScreen;

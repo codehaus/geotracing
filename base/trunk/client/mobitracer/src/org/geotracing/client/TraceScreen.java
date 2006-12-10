@@ -4,9 +4,6 @@
 package org.geotracing.client;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.game.GameCanvas;
 
 /**
@@ -35,11 +32,12 @@ public class TraceScreen extends GameCanvas {
 	private static final int CMD_SELECT_GPS = 8;
 	private static final int CMD_VIEW_LOG = 9;
 	private static final int CMD_SHOW_MAP = 10;
-	private static final int CMD_ACCOUNT = 11;
-	private static final int CMD_QUIT = 12;
-	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_TEXT, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_ACCOUNT, CMD_QUIT};
+	private static final int CMD_RADAR = 11;
+	private static final int CMD_ACCOUNT = 12;
+	private static final int CMD_QUIT = 13;
+	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_TEXT, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_RADAR, CMD_ACCOUNT, CMD_QUIT};
 	private static final int[] MIN_CMDS = {CMD_QUIT};
-	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Send Text", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map", "Account", "Exit"};
+	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Send Text", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map",  "Radar", "Account", "Exit"};
 	private static final String[] MIN_CMD_LABELS = {"Afsluiten"};
 	private int[] CMDS = DEF_CMDS;
 	private String[] CMD_LABELS = DEF_CMD_LABELS;
@@ -48,7 +46,6 @@ public class TraceScreen extends GameCanvas {
 	private boolean keyLock = false;
 	private boolean showGPSInfo = true;
 	private int roadRating = -1;
-	//private MapScreen mapScreen;
 	private MapCanvas mapViewer;
 	private String options;
 	// screen width, height and font height
@@ -336,6 +333,11 @@ public class TraceScreen extends GameCanvas {
 			case CMD_SHOW_MAP:
 				// setStatus("Showing map...");
 				mapViewer.activate(midlet);
+				break;
+
+			case CMD_RADAR:
+				setStatus("Showing Radar");
+				Display.getDisplay(midlet).setCurrent(new RadarScreen(midlet));
 				break;
 
 			case CMD_ACCOUNT:

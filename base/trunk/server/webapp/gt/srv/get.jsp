@@ -412,6 +412,7 @@
 				String radiusString = getParameter(request, PAR_RADIUS, null);
 				throwOnMissingParm(PAR_RADIUS, radiusString);
 				String limitParm = getParameter(request, "max", "51");
+				String classParm = getParameter(request, "class", "medium");
 
 				// WHERE clause
 				// Optional object type
@@ -420,7 +421,7 @@
 				// LAST N: select * from table where key > (select max(key) - n from table)
 				String tables = "g_location";
 				String fields = null;
-				String where = null;
+				String where = "type = " + (classParm.equals("medium") ? " 1" : "2");
 				String relations = null;
 				String postCond = "";
 
@@ -475,13 +476,14 @@
 					String name = "unknown";
 					String type = "unknown";
 					Record person;
+					person = relater.getRelated(relatedRecs[0], "utopia_person", null)[0];
+					String loginName = getLoginNameForPerson(oase, person);
 					if (table.equals("g_track")) {
 						if (relater.getTag(nextRecord, relatedRecs[0]).equals("lastpt")) {
 							// table = "utopia_person";
-							person = relater.getRelated(relatedRecs[0], "utopia_person", null)[0];
 							id = person.getIdString();
 							type = "user";
-							name = getLoginNameForPerson(oase, person);
+							name = loginName;
 						} else {
 							// skip track first point
 							continue;
@@ -493,6 +495,7 @@
 					nextElm = new JXElement("record");
 					nextElm.setChildText("id", id);
 					nextElm.setChildText("name", name);
+					nextElm.setChildText("user", loginName);
 					nextElm.setChildText("type", type);
 					nextElm.setChildText("time", nextRecord.getField("time").toString());
 					nextElm.setChildText("lon", nextRecord.getField("lon").toString());

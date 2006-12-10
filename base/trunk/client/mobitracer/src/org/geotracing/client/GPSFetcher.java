@@ -10,8 +10,8 @@ import java.io.InputStream;
 /**
  * Generic BT GPS data reader.
  *
- * @version $Id$
  * @author Just van den Broecke
+ * @version $Id$
  */
 public class GPSFetcher implements Runnable {
 	private StreamConnection con;
@@ -19,12 +19,16 @@ public class GPSFetcher implements Runnable {
 	private static final int BUF_LEN = 200;
 	private char lineBuffer[] = new char[BUF_LEN];
 
-	/** States. */
+	/**
+	 * States.
+	 */
 	public static final int DISCONNECTED = 1;
 	public static final int CONNECTED = 2;
 	public static final int FAILED = 3;
 
-	/** Default start state. */
+	/**
+	 * Default start state.
+	 */
 	public int state = DISCONNECTED;
 
 	public static final long DEFAULT_SAMPLE_INTERVAL_MILLIS = 4000;
@@ -34,22 +38,33 @@ public class GPSFetcher implements Runnable {
 	private long sampleIntervalMillis;
 	private long statusIntervalMillis = 4000;
 	private long lastTimeLocSent;
-
+	private GPSLocation currentLocation;
 	private Thread workerThread;
 	private GPSInfo info = new GPSInfo();
 	public static final MFloat KM_PER_KNOT = MFloat.parse("1.85200", 10);
 	public static final MFloat MINS = new MFloat(60);
 	private GPSSmoother gpsSmoother = new GPSSmoother();
 
-	/** Singleton. */
+	/**
+	 * Singleton.
+	 */
 	private static GPSFetcher instance = new GPSFetcher();
 
 	private GPSFetcher() {
 	}
 
-	/** Get time of last valid location notification. */
+	/**
+	 * Get time of last valid location notification.
+	 */
 	public long getLastLocationTime() {
 		return lastTimeLocSent;
+	}
+
+	/**
+	 * Get current GPS location.
+	 */
+	public GPSLocation getCurrentLocation() {
+		return currentLocation;
 	}
 
 	public int getState() {
@@ -121,7 +136,6 @@ public class GPSFetcher implements Runnable {
 							gpsSmoother.addLocation(location);
 						}
 
-
 						// Send info to observer if interval passed
 						long now = Util.getTime();
 						if (now - lastTimeStatusSent > statusIntervalMillis) {
@@ -131,10 +145,10 @@ public class GPSFetcher implements Runnable {
 
 						// Notify location if interval passed and location available
 						if (now - lastTimeLocSent > sampleIntervalMillis) {
-							GPSLocation bestLocation = gpsSmoother.getBestLocation();
-							if (bestLocation != null) {
+							currentLocation = gpsSmoother.getBestLocation();
+							if (currentLocation != null) {
 								gpsSmoother.reset();
-								gpsListener.onGPSLocation(bestLocation);
+								gpsListener.onGPSLocation(currentLocation);
 								lastTimeLocSent = now;
 							}
 						}
@@ -204,6 +218,7 @@ public class GPSFetcher implements Runnable {
 
 	/**
 	 * Read NMEA GPS line.
+	 *
 	 * @return The line read or null
 	 */
 	private String readNMEASentence() {
@@ -257,6 +272,7 @@ public class GPSFetcher implements Runnable {
 
 	/**
 	 * Determines whether a location data string is RMC or GGA and of good quality.
+	 *
 	 * @param nmea raw NMEA data string
 	 * @return GPSLocation if location ok and null if not
 	 */

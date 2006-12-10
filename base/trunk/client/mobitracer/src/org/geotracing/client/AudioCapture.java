@@ -4,6 +4,7 @@
 package org.geotracing.client;
 
 import nl.justobjects.mjox.JXElement;
+import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
@@ -12,8 +13,6 @@ import javax.microedition.media.control.RecordControl;
 import javax.microedition.midlet.MIDlet;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-
-import org.keyworx.mclient.Protocol;
 
 /**
  * Record and submit audio.
