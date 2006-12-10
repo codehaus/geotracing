@@ -38,9 +38,9 @@ public class SplashCanvas extends Canvas {
      */
     public void paint(Graphics g) {
 		if (w == -1) {
+			setFullScreenMode(true);
 			w = getWidth();
 			h = getHeight();
-			setFullScreenMode(true);
 		}
 
 		g.setColor(255, 255, 255);
@@ -49,7 +49,7 @@ public class SplashCanvas extends Canvas {
         g.drawImage(gtLogo, (w - gtLogo.getWidth()) / 2, (h - gtLogo.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
         if (delayer == null) {
-			delayer = new Delayer(4);
+			delayer = new Delayer(2);
 		}
     }
 
