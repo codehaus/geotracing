@@ -19,6 +19,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Misc utilities.
@@ -29,6 +32,25 @@ import java.util.Vector;
 public class Util {
 	private static boolean soundOn = true;
 	private static long timeOffset = 0;
+
+	/**
+	 * Create a string from the TimeOfDay portion of a time/date as
+	 * yyyy-mm-dd hh::mm::ss TZ
+	 *
+	 * @param date The date/time as milliseconds since the epoch.
+	 */
+	public static String timeToString(long date) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(new Date(date));
+		int hour = c.get(Calendar.HOUR_OF_DAY);
+		int min = c.get(Calendar.MINUTE);
+		int sec = c.get(Calendar.SECOND);
+		int year = c.get(Calendar.YEAR);
+		int mon = c.get(Calendar.MONTH) + 1;
+		int day = c.get(Calendar.DATE);
+		return (year < 10 ? "0" : "") + year + "-" + (mon < 10 ? "0" : "") + mon+ "-" + (day < 10 ? "0" : "") + day
+		+ " " + (hour < 10 ? "0" : "") + hour + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ?"0" : "") + sec;
+	}
 
 	public static Image getImage(String url) throws IOException {
 		ContentConnection connection = (ContentConnection) Connector.open(url);
