@@ -6,6 +6,7 @@ package org.geotracing.client;
 import nl.justobjects.mjox.JXElement;
 
 import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,7 +16,7 @@ import java.util.Date;
 /**
  * Monitor for geotagged objects around point.
  */
-public class RadarScreen extends Canvas {
+public class RadarScreen extends GameCanvas {
 	private Displayable prevScreen;
 	private String queryBaseURL;
 	private String mediumBaseURL;
@@ -35,8 +36,11 @@ public class RadarScreen extends Canvas {
 	private final int MIN_BUMP_DIST = 20;
 	private Image bumpedImage;
 	private boolean radiusChanged;
+	private int VOLUME = 70;
 
 	public RadarScreen(MIDlet aMidlet) {
+		super(false);
+		setFullScreenMode(true);
 		midlet = aMidlet;
 		queryBaseURL = Net.getInstance().getURL() + "/srv/get.jsp?cmd=q-around";
 		mediumBaseURL = Net.getInstance().getURL() + "/media.srv?id=";
@@ -125,7 +129,7 @@ public class RadarScreen extends Canvas {
 					}
 
 					// set formatted time
-					String time = new Date(Long.parseLong(showObject.getChildText("time"))).toString();
+					String time = Util.timeToString(Long.parseLong(showObject.getChildText("time")));
 					showObject.setChildText("ftime", time);
 					bumpedObject = null;
 				}
@@ -150,7 +154,6 @@ public class RadarScreen extends Canvas {
 	 */
 	public void paint(Graphics g) {
 		if (f == null) {
-			setFullScreenMode(true);
 			w = getWidth();
 			h = getHeight();
 			if (w == 0 || h == 0) {
@@ -185,6 +188,7 @@ public class RadarScreen extends Canvas {
 
 				g.drawString("by: " + showObject.getChildText("user"), 5, ty, Graphics.TOP | Graphics.LEFT);
 				g.drawString(showObject.getChildText("ftime"), 5, ty + 15, Graphics.TOP | Graphics.LEFT);
+				g.drawString("distance: " + showObject.getChildText("distance") + " m", 5, ty + 25, Graphics.TOP | Graphics.LEFT);
 				return;
 			}
 
@@ -261,7 +265,11 @@ public class RadarScreen extends Canvas {
 				bumpedObject = nearestObject;
 				g.setColor(0xFFFFFF);
 				g.setFont(fb);
-				g.drawString("[hit!]", w - 45, 5, Graphics.TOP | Graphics.LEFT);
+				g.drawString("[HIT]", w - 45, 5, Graphics.TOP | Graphics.LEFT);
+				Util.playTone(70, 100, VOLUME);
+				Util.playTone(70, 100, VOLUME);
+				Util.playTone(80, 500, VOLUME);
+
 			}
 		} catch (Throwable t) {
 			g.drawString("error in paint", 10, 10, Graphics.TOP | Graphics.LEFT);
