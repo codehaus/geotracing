@@ -5,9 +5,8 @@ package org.geotracing.client;
 
 
 import javax.microedition.midlet.MIDlet;
-import java.util.TimeZone;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 
 /**

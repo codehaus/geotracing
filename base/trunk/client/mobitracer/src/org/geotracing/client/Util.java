@@ -2,8 +2,8 @@
 // Distributable under LGPL license. See terms of license at gnu.org.$
 package org.geotracing.client;
 
-import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.JXBuilder;
+import nl.justobjects.mjox.JXElement;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.ContentConnection;
@@ -13,6 +13,7 @@ import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Image;
 import javax.microedition.media.Manager;
+import javax.microedition.media.Player;
 import javax.microedition.midlet.MIDlet;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -48,6 +49,12 @@ public class Util {
 			}
 			connection.close();
 		}
+	}
+
+	public static void playAudioStream(String url) throws Exception {
+		Player player = Manager.createPlayer(url);
+		player.prefetch();
+		player.start();
 	}
 
 	/**
@@ -189,7 +196,9 @@ public class Util {
 		return result;
 	} */
 
-	/** Scale source image to specified width/height. */
+	/**
+	 * Scale source image to specified width/height.
+	 */
 	public static Image scaleImage(Image src, int width, int height) {
 		//long start = System.currentTimeMillis();
 		int scanline = src.getWidth();
