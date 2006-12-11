@@ -69,6 +69,10 @@
 				<property name="password" host="prod">email.upload.password.prod</property>
 			</daemon>
 
+			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
+				<property name="pois2textmedia">true</property>
+			</daemon>
+
 		</daemons>
 	</application>
 </portal>
