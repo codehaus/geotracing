@@ -37,7 +37,7 @@ public class TraceScreen extends GameCanvas {
 	private static final int CMD_QUIT = 13;
 	private static final int[] DEF_CMDS = {CMD_SUSPEND_RESUME, CMD_NEW_TRK, CMD_ADD_TEXT, CMD_ADD_PHOTO, CMD_ADD_AUDIO, CMD_SOUND_TOGGLE, CMD_GPS_TOGGLE, CMD_KB_LOCK, CMD_SELECT_GPS, CMD_VIEW_LOG, CMD_SHOW_MAP, CMD_RADAR, CMD_ACCOUNT, CMD_QUIT};
 	private static final int[] MIN_CMDS = {CMD_QUIT};
-	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Send Text", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map",  "Radar", "Account", "Exit"};
+	private static final String[] DEF_CMD_LABELS = {"Resume Track", "New Track", "Send Text", "Send Photo", "Send Audio", "Sound Off", "Hide GPS Info", "Lock KeyBoard", "SelectGPS", "View Log", "Show Map",  "GeoRadar", "Account", "Exit"};
 	private static final String[] MIN_CMD_LABELS = {"Afsluiten"};
 	private int[] CMDS = DEF_CMDS;
 	private String[] CMD_LABELS = DEF_CMD_LABELS;

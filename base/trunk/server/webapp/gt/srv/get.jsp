@@ -60,6 +60,7 @@
 	public static final String PAR_CMD = "cmd";
 	public static final String PAR_BBOX = "bbox";
 	public static final String PAR_LOC = "loc";
+	public static final String PAR_MAX = "max";
 	public static final String PAR_RADIUS = "radius";
 	public static final String PAR_USER_NAME = "user";
 	public static final String PAR_TABLE_NAME = "table";
@@ -411,8 +412,11 @@
 				throwOnMissingParm(PAR_LOC, locString);
 				String radiusString = getParameter(request, PAR_RADIUS, null);
 				throwOnMissingParm(PAR_RADIUS, radiusString);
-				String limitParm = getParameter(request, "max", "51");
-				String classParm = getParameter(request, "class", "medium");
+
+
+				String limitParm = getParameter(request, PAR_MAX, "51");
+				String typesParm = getParameter(request, PAR_TYPES, null);
+				String meParm = getParameter(request, "me", null);
 
 				// WHERE clause
 				// Optional object type
@@ -421,9 +425,34 @@
 				// LAST N: select * from table where key > (select max(key) - n from table)
 				String tables = "g_location";
 				String fields = null;
-				String where = "type = " + (classParm.equals("medium") ? " 1" : "2");
+				String where = null;
+				if (typesParm != null) {
+					String[] types = typesParm.split(",");
+					where  = "";
+					for (int i=0; i < types.length; i++) {
+						if (i == 0) where += " ( ";
+						if (i > 0) {
+							where += " OR ";
+						}
+						if (types[i].equals("medium")) {
+							where = where + "g_location.type = 1";
+						}
+
+						if (types[i].equals("track")) {
+							where = where + "g_location.type = 2";
+						}
+
+						if (types[i].equals("user")) {
+							where = where + "g_location.type = 3";
+						}
+
+						// Brackets
+						if (i==types.length-1) where += " ) ";
+					}
+
+				}
+
 				String relations = null;
-				String postCond = "";
 
 				// Calculate BBOX
 				double radius = Double.parseDouble(radiusString);
@@ -436,19 +465,17 @@
 
 				String bbox = locSW.lon + "," + locSW.lat + "," + locNE.lon + "," + locNE.lat;
 				where = addBBoxConstraint(bbox, where);
-				log.info("mperdeg=" + metersPerDeg.x + "," + metersPerDeg.y + " bbox=" + bbox);
-				// POSTCONDITION
-				/* String random = getParameter(request, "random", "false");
-				if (random.equals("true")) {
-					postCond = "ORDER BY RAND()";
-				} else {
-					postCond = "ORDER BY base_medium.creationdate DESC";
-				}  */
+				// log.info("mperdeg=" + metersPerDeg.x + "," + metersPerDeg.y + " bbox=" + bbox);
 
 				// Limit
-				if (limitParm != null) {
-					postCond += " LIMIT " + Integer.parseInt(limitParm);
+				int limit = Integer.parseInt(limitParm);
+
+				// Hard limit: don't blow up our DB (for now)
+				if (limit > 51) {
+					limit = 51;
 				}
+				String postCond = " LIMIT " + limit;
+
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
 				Record[] records = QueryHandler.queryStore2(oase, tables, fields, where, relations, postCond);
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
@@ -466,6 +493,7 @@
 						continue;
 					}
 					nextDistance = Math.round(nextDistance);
+
 					relatedRecs = relater.getRelated(nextRecord);
 					if (relatedRecs.length != 1) {
 						continue;
@@ -475,19 +503,29 @@
 					String id = relatedRecs[0].getIdString();
 					String name = "unknown";
 					String type = "unknown";
+
+					// Pperson either directly related or via related (e.g. medium)
 					Record person;
-					person = relater.getRelated(relatedRecs[0], "utopia_person", null)[0];
+					if (table.equals("utopia_person")) {
+						person = relatedRecs[0];
+					} else {
+						person = relater.getRelated(relatedRecs[0], "utopia_person", null)[0];
+					}
+
 					String loginName = getLoginNameForPerson(oase, person);
-					if (table.equals("g_track")) {
-						if (relater.getTag(nextRecord, relatedRecs[0]).equals("lastpt")) {
-							// table = "utopia_person";
-							id = person.getIdString();
-							type = "user";
-							name = loginName;
-						} else {
-							// skip track first point
+					if (table.equals("utopia_person")) {
+						// table = "utopia_person";
+						id = person.getIdString();
+						type = "user";
+						name = loginName;
+
+						// Skip my own location if specified
+						if (meParm != null && meParm.equals(name)) {
 							continue;
 						}
+					} else if (table.equals("g_track")) {
+						type = "track";
+						name = relatedRecs[0].getStringField("name");
 					} else if (table.equals("base_medium")) {
 						type = relatedRecs[0].getStringField("kind");
 						name = relatedRecs[0].getStringField("name");
@@ -928,7 +966,7 @@
 			writer.write(result.toFormattedString());
 			writer.flush();
 			writer.close();
-			log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
+			// log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
 		} catch (Throwable th) {
 			log.info("error " + command + " writing response");
 		}
