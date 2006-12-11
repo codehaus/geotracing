@@ -84,6 +84,15 @@ get a list of all tracks
 - parms
 * no parms
 
+"q-around"
+- get objects aorund a location
+- parms
+* loc: (m) longitude,latitude
+* radius; (m) radius around loc in meters
+* types: (o) object types, comma separated, vals: user,medium,track default all types
+* max: (o) maximum number of objects (THESE ARE NOT YET THE NEAREST IF MAX IS RETURNED)
+* me: (o) optional user login name to exclude from search
+
 "q-recent-tracks"
 get a list of recent tracks
 - parms

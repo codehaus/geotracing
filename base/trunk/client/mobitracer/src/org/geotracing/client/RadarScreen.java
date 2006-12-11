@@ -364,7 +364,11 @@ public class RadarScreen extends GameCanvas {
 							visibleObjCount = detects.size();
 						}
 						msg += (visibleObjCount >= max) ? "too many " : visibleObjCount + " ";
-						msg += queryTypes + "s";
+						if (queryTypes.equals("medium")) {
+							msg += "media";
+						} else {
+							msg += queryTypes + "s";
+						}
 					}
 
 					// Show nearest object info

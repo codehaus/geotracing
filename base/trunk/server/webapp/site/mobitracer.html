@@ -34,8 +34,9 @@
 <p>
 The MobiTracer is the mobile phone application. It connects to both a Bluetooth GPS receiver
 and the GeoTracing server. When running, MobiTracer will read GPS location data and
-sends these to the server. In addition, while tracing you can issue various commands
-to manage your tracklog data and make annotations (POIs/media).
+send these to the server. While tracing you can issue various commands
+to manage your tracklog data and make annotations as media (text/photos/audio/video).
+You can also scan the area around you for users and media using the <b><i>GeoRadar</i></b> (since v3).
 Users that are trying out MobiTracer can find more specific notes
 <a href="http://www.geotracing.com/wiki/index.php?title=GeoTracing:Apps:MobiTracer">in this document</a>.
 </p>
@@ -44,21 +45,51 @@ Users that are trying out MobiTracer can find more specific notes
 Go to <a href="http://www.geotracing.com/gt">www.geotracing.com/gt</a> and select "My|Login".
 </p>
 <h2>Screenshots</h2>
+<p>Through the screenshots below some of the main features are shown.
+A more detailed manual is in the making. </p>
+<h3>Trace Screen</h3>
+<p>This shows the main screen.</p>
 <p>
 <img src="img/mobitracer-1.jpg" border="0">
 </p>
 <p>
-This shows the main screen. The left top label show the status of your GPS. The right top label shows the network
+The left top label show the status of your GPS. The right top label shows the network
 status (sending GPS locations or paused).
 The middle shows various GPS or track info. At the bottom is a single
 button to issue various commands (see below).
 </p>
+<h3>GeoRadar</h3>
 <p>
-<img src="img/mobitracer-map1.jpg" border="0">&nbsp;&nbsp; <img src="img/mobitracer-map2.jpg" border="0">
+Detect and view users and media around you with the GeoRadar. The GeoRadar
+	continuously scans the area in a radius around your current location.
+	You get an auditory notification when you
+	hit the nearest object within 25 meter. Currently you can only view the
+	nearest object when you get the &lt;&lt;HIT&gt;&gt; notification. i.e. you have to be at that location.
+	Objects are shown as concentric circles relative to their distance from your location.
+	Each object type has its own color: image (red), video (yellow), audio (blue), text (white), users (pink).
 </p>
+<p>
+<img src="img/georadar-1-small.jpg" border="0">&nbsp;&nbsp; <img src="img/georadar-2-small.jpg" border="0"><br/>
+<i>Shows objects as concentric circles around you. <br/>
+Top of screen shows current radius (meters) and number of objects.<br/>
+Radius can be changed using the joystick.<br/>
+Bottom shows info on nearest object: user/object type/distance/unique object id.
+
+</i>
+</p>
+<p>
+<img src="img/georadar-hit-small.jpg" border="0">&nbsp;&nbsp; <img src="img/georadar-view-small.jpg" border="0"><br/>
+<i>Bumping on an object and viewing an object (press fire on joystick).</i>
+</p>
+
+<h3>Map Screen</h3>
 <p>
 On the MapScreen you can view your location on a Google Map.
 </p>
+<p>
+<img src="img/mobitracer-map1.jpg" border="0">&nbsp;&nbsp; <img src="img/mobitracer-map2.jpg" border="0">
+</p>
+
 <h2>Installation</h2>
 <p>
 MobiTracer is installed Over The Air (OTA), i.e. through a URL from your mobile phone.
@@ -95,6 +126,7 @@ Basically you are managing tracklogs that are kept on the server.
    <li>SelectGPS - find and pair your Bluetooth GPS to the phone</li>
     <li>Keys 1 through 5 -  set the "RoadRating" e.g. asphalt rating (1=worst, 5=best)</li>
    <li>Show Map - view your location on a (Google) map (experimental)</li>
+	<li>GeoRadar - detect and view media and users around you</li>
 	<li>Account - view/change your account settings</li>
  <li>Quit - exit MobiTracer app</li>
  </ul>
