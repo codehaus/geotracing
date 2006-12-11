@@ -52,6 +52,14 @@ public class Util {
 		+ " " + (hour < 10 ? "0" : "") + hour + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ?"0" : "") + sec;
 	}
 
+	static public String format(MFloat aFloat, int maxLen) {
+		String s = aFloat.toString();
+		if (s.length() <= maxLen) {
+			return s;
+		}
+		return s.substring(0, maxLen - 1);
+	}
+
 	public static Image getImage(String url) throws IOException {
 		ContentConnection connection = (ContentConnection) Connector.open(url);
 		InputStream is = connection.openInputStream();
@@ -73,7 +81,7 @@ public class Util {
 		}
 	}
 
-	public static void playAudioStream(String url) throws Exception {
+	public static void playStream(String url) throws Exception {
 		Player player = Manager.createPlayer(url);
 		player.prefetch();
 		player.start();

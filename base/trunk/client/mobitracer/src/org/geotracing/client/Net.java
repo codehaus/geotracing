@@ -63,6 +63,11 @@ public class Net {
 		}
 	}
 
+	public String getUserName() {
+		return user;
+	}
+
+
 	public long getLastCommandTime() {
 		return lastCommandTime;
 	}

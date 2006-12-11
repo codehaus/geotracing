@@ -27,15 +27,8 @@ public class GPSInfo {
 	String vdop = "unknown";
 
 	public String toString() {
-		return "msg=" + msg + "\nlatlon=" + format(lat.toString(), 7) + " " + format(lon.toString(), 7) + "\nspeed=" + speed + " km/h" + " max=" + maxSpeed.toShortString() + " km/h\nalt=" + altitude + " m course="
+		return "msg=" + msg + "\nlatlon=" + Util.format(lat, 7) + " " + Util.format(lon, 7) + "\nspeed=" + speed + " km/h" + " max=" + maxSpeed.toShortString() + " km/h\nalt=" + altitude + " m course="
 				+ course + "\nsats=" + satsInView + "  used=" + satsUsed + "\nhdopFix=" + hdopFix
 				+ "\nhdop=" + hdop + " pdop=" + pdop + " vdop=" + vdop;
-	}
-
-	static public String format(String s, int maxLen) {
-		if (s.length() <= maxLen) {
-			return s;
-		}
-		return s.substring(0, maxLen - 1);
 	}
 }

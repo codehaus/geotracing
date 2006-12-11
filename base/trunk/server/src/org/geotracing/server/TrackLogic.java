@@ -38,6 +38,7 @@ public class TrackLogic {
 	 */
 	public static final String EXIF_DATE_SCRIPT = ServerConfig.getConfigDir() + "/../bin/exifdate.sh";
 	public static final SimpleDateFormat GPX_TIME_FORMAT = TrackExport.GPX_TIME_FORMAT;
+	public static final String RELTAG_USER_LAST_LOCATION = "lastloc";
 
 	private Oase oase;
 	static private Log log;
@@ -759,6 +760,31 @@ public class TrackLogic {
 	}
 
 	/**
+	 * Update last user location.
+	 *
+	 * @param aPerson   a person
+	 * @param aGeoPoint location
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
+	 */
+	public void updateUserLocation(Person aPerson, GeoPoint aGeoPoint) throws UtopiaException {
+		Location lastUserLocation = (Location) aPerson.getRelatedObject(Location.class, RELTAG_USER_LAST_LOCATION);
+		if (lastUserLocation == null) {
+			lastUserLocation = Location.create(oase);
+			lastUserLocation.setStringValue(Location.FIELD_NAME, aPerson.getAccount().getLoginName());
+			lastUserLocation.setStringValue(Location.FIELD_DESCRIPTION, "Last location for " + aPerson.getFirstName() + " " + aPerson.getLastName());
+			lastUserLocation.setLocation(aGeoPoint);
+			lastUserLocation.setIntValue(Location.FIELD_TYPE, Location.VAL_TYPE_USER_LOC);
+			lastUserLocation.saveInsert();
+			aPerson.createRelation(lastUserLocation, RELTAG_USER_LAST_LOCATION);
+			log.info("New last user location created for " + aPerson.getAccount().getLoginName());
+		} else {
+			lastUserLocation.setLocation(aGeoPoint);
+			lastUserLocation.saveUpdate();
+		}
+	}
+
+	/**
 	 * Suspend active track.
 	 *
 	 * @param aPersonId a person id
@@ -815,6 +841,12 @@ public class TrackLogic {
 		// Add elements to Track (will handle transaction/exceptions etc)
 		Vector result = track.addData(theElements);
 
+		// Update the last location of the user
+		Location lastTrackLocation = (Location) track.getRelatedObject(Location.class, Track.REL_TAG_LAST_PT);
+		if (lastTrackLocation != null) {
+			updateUserLocation((Person) track.getRelatedObject(Person.class), lastTrackLocation.getLocation());
+		}
+
 		log.trace("End write OK track=" + track + " count=" + result.size());
 		return result;
 	}
@@ -831,102 +863,3 @@ public class TrackLogic {
 	}
 
 }
-
-/*
-* $Log: TrackLogic.java,v $
-* Revision 1.19  2006-04-27 09:51:06  just
-* trackfiltering improved
-*
-* Revision 1.18  2006-04-05 17:23:08  just
-* daytrack stuff
-*
-* Revision 1.17  2006-04-05 13:10:41  just
-* implemented daytracks
-*
-* Revision 1.16  2005/11/05 12:03:04  just
-* *** empty log message ***
-*
-* Revision 1.15  2005/10/23 18:21:42  just
-* *** empty log message ***
-*
-* Revision 1.14  2005/10/20 15:37:20  just
-* *** empty log message ***
-*
-* Revision 1.13  2005/10/20 12:32:56  just
-* *** empty log message ***
-*
-* Revision 1.12  2005/10/20 09:12:04  just
-* *** empty log message ***
-*
-* Revision 1.11  2005/10/19 09:39:22  just
-* *** empty log message ***
-*
-* Revision 1.10  2005/10/18 15:23:51  just
-* *** empty log message ***
-*
-* Revision 1.9  2005/10/18 12:54:44  just
-* *** empty log message ***
-*
-* Revision 1.8  2005/10/13 12:55:23  just
-* *** empty log message ***
-*
-* Revision 1.7  2005/10/09 14:34:16  just
-* *** empty log message ***
-*
-* Revision 1.6  2005/10/07 15:23:09  just
-* *** empty log message ***
-*
-* Revision 1.5  2005/10/06 13:51:08  just
-* *** empty log message ***
-*
-* Revision 1.4  2005/09/29 22:21:18  just
-* *** empty log message ***
-*
-* Revision 1.3  2005/09/29 11:53:33  just
-* *** empty log message ***
-*
-* Revision 1.2  2005/09/28 18:39:58  just
-* *** empty log message ***
-*
-* Revision 1.1  2005/09/28 18:33:01  just
-* *** empty log message ***
-*
-* Revision 1.15  2005/09/28 15:43:25  just
-* *** empty log message ***
-*
-* Revision 1.14  2005/09/28 14:09:18  just
-* *** empty log message ***
-*
-* Revision 1.13  2005/09/27 15:15:53  just
-* *** empty log message ***
-*
-* Revision 1.12  2005/09/27 14:24:00  just
-* *** empty log message ***
-*
-* Revision 1.11  2005/09/27 13:20:47  just
-* *** empty log message ***
-*
-* Revision 1.10  2005/09/27 09:49:51  just
-* *** empty log message ***
-*
-* Revision 1.9  2005/09/26 22:18:15  just
-* *** empty log message ***
-*
-* Revision 1.8  2005/09/26 21:23:11  just
-* *** empty log message ***
-*
-* Revision 1.7  2005/09/26 18:46:53  just
-* *** empty log message ***
-*
-* Revision 1.6  2005/09/25 14:14:07  just
-* *** empty log message ***
-*
-* Revision 1.5  2005/09/22 16:11:05  just
-* *** empty log message ***
-*
-* Revision 1.4  2005/09/21 14:39:04  just
-* *** empty log message ***
-*
-*
-*/
-

@@ -49,8 +49,9 @@ public class Location extends BaseImpl {
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_EXTRA = "extra";
 
-	public static final int VAL_TYPE_POI = 1;
+	public static final int VAL_TYPE_MEDIUM = 1;
 	public static final int VAL_TYPE_TRACK_PT = 2;
+	public static final int VAL_TYPE_USER_LOC = 3;
 
 	/** Default constructor. */
 	public Location() {
