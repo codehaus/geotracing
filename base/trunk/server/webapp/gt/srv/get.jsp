@@ -37,6 +37,7 @@
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
 	public static final String CMD_QUERY_BY_EXAMPLE = "q-by-example";
 	public static final String CMD_QUERY_COMMENTS_FOR_TARGET = "q-comments-for-target";
+	public static final String CMD_QUERY_COMMENTS_FOR_TARGET_PERSON = "q-comments-for-target-person";
 	public static final String CMD_QUERY_COMMENTERS_FOR_TARGET = "q-commenters-for-target";
 	public static final String CMD_QUERY_COMMENT_COUNT_FOR_TARGET = "q-comment-count-for-target";
 	public static final String CMD_QUERY_ROW_COUNT = "q-row-count";
@@ -56,9 +57,11 @@
 	public static final String CMD_QUERY_TAGGED = "q-tagged";
 	public static final String CMD_GET_TRACK = "get-track";
 	public static final String CMD_DESCRIBE = "describe";
+
 	public static final String PAR_ID = "id";
 	public static final String PAR_CMD = "cmd";
 	public static final String PAR_BBOX = "bbox";
+	public static final String PAR_EXCLUDE_OWNER = "excludeowner";
 	public static final String PAR_LOC = "loc";
 	public static final String PAR_MAX = "max";
 	public static final String PAR_RADIUS = "radius";
@@ -66,9 +69,11 @@
 	public static final String PAR_TABLE_NAME = "table";
 	public static final String PAR_OWNER_INFO = "ownerinfo";
 	public static final String PAR_TARGET = CommentLogic.FIELD_TARGET;
+	public static final String PAR_TARGET_PERSON= CommentLogic.FIELD_TARGET_PERSON;
 	public static final String PAR_ITEMS = "items";
 	public static final String PAR_OFFSET = "offset";
 	public static final String PAR_ROW_COUNT = "rowcount";
+	public static final String PAR_STATE = "state";
 	public static final String PAR_TAGGERS = "taggers";
 	public static final String PAR_TAGS = "tags";
 	public static final String PAR_TYPES = "types";
@@ -643,14 +648,35 @@
 				String targetId = getParameter(request, PAR_TARGET, null);
 				throwOnMissingParm(PAR_TARGET, targetId);
 
-				// Create example Record
-				//Record exampleRecord = oase.getFinder().createExampleRecord(CommentLogic.TABLE_COMMENT);
-				//exampleRecord.setField(CommentLogic.FIELD_TARGET, targetId);
-				//result = createResponse(oase.getFinder().queryTable(exampleRecord));
 				result = createResponse(oase.getFinder().freeQuery("select * from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + targetId + " ORDER BY id", CommentLogic.TABLE_COMMENT));
 
 				String ownerInfo = getParameter(request, PAR_OWNER_INFO, "false");
 				if (ownerInfo.equals("true")) {
+					addOwnerFields(result);
+				}
+
+			} else if (command.equals(CMD_QUERY_COMMENTS_FOR_TARGET_PERSON)) {
+				String targetPerson = getParameter(request, PAR_TARGET_PERSON, null);
+				throwOnMissingParm(PAR_TARGET_PERSON, targetPerson);
+
+				// Optional parms: state and exclude own comments (made by target person itself) and to include owner info
+				String state = getParameter(request, PAR_STATE, null);
+				String excludeOwner = getParameter(request, PAR_EXCLUDE_OWNER, "false");
+				String addOwnerInfo = getParameter(request, PAR_OWNER_INFO, "false");
+
+				String query = "select * from " + CommentLogic.TABLE_COMMENT + " WHERE targetperson = " + targetPerson;
+				if (state != null) {
+					query += " AND state =" + state;
+				}
+
+				if (excludeOwner.equals("true")) {
+					query += " AND ( owner is null OR owner != " + targetPerson + ")";
+				}
+
+				// log.info("excludeowner=" + excludeOwner + " q=" + query);
+				result = createResponse(oase.getFinder().freeQuery(query + " ORDER BY id", CommentLogic.TABLE_COMMENT));
+
+				if (addOwnerInfo.equals("true")) {
 					addOwnerFields(result);
 				}
 

@@ -31,6 +31,10 @@ public class CommentHandler extends DefaultHandler {
 	public final static String CMT_UPDATE_STATE_SERVICE = "cmt-update-state";
 	public final static String CMT_DELETE_SERVICE = "cmt-delete";
 	public final static String ATTR_ID = "id";
+	public final static String ATTR_IDS = "ids";
+	public final static String ATTR_STATE = CommentLogic.FIELD_STATE;
+	public final static String ATTR_TARGET = CommentLogic.FIELD_TARGET;
+	public final static String ATTR_TARGET_PERSON = CommentLogic.FIELD_TARGET_PERSON;
 
 	/**
 	 * Processes the Client Request.
@@ -182,21 +186,18 @@ public class CommentHandler extends DefaultHandler {
 	 */
 	protected JXElement updateStateReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
-		throwOnNonNumAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
 		throwOnNonNumAttr(CommentLogic.FIELD_STATE, reqElm.getAttr(CommentLogic.FIELD_STATE));
 
-		// Only comment owner or target person can update comment state.
-		if (!isOwnerOrTargetPerson(anUtopiaReq.getUtopiaSession().getContext().getOase(), getPersonId(anUtopiaReq), reqElm.getIntAttr(ATTR_ID)))
-		{
-			throw new UtopiaException("You must be owner or target person of comment to update state", ErrorCode.__6007_insufficient_rights_error);
-		}
+		int state = reqElm.getIntAttr(ATTR_STATE);
+		int id = reqElm.getIntAttr(ATTR_ID);
+		int targetId = reqElm.getIntAttr(ATTR_TARGET);
+		int targetPersonId = getPersonId(anUtopiaReq);
 
-
-		createLogic(anUtopiaReq).updateState(reqElm.getIntAttr(ATTR_ID), reqElm.getIntAttr(CommentLogic.FIELD_STATE));
+		String ids = createLogic(anUtopiaReq).updateState(targetPersonId, state, id, targetId);
 
 		// Create and return response
 		JXElement response = createResponse(CMT_UPDATE_STATE_SERVICE);
-		response.setAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
+		response.setAttr(ATTR_IDS, ids);
 
 		return response;
 	}
@@ -290,6 +291,20 @@ public class CommentHandler extends DefaultHandler {
 		}
 
 		return record.getIntField(CommentLogic.FIELD_OWNER) == aPersonId || record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
+	}
+
+	/**
+	 * Is person target person of comment ?
+	 */
+	protected boolean isTargetPerson(Oase anOase, int aPersonId, int aCommentId) throws UtopiaException {
+		Record record;
+		try {
+			record = anOase.getFinder().read(aCommentId, CommentLogic.TABLE_COMMENT);
+		} catch (OaseException oe) {
+			throw new UtopiaException("Cannot read comment with id=" + aCommentId, ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		return record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
 	}
 
 	/**

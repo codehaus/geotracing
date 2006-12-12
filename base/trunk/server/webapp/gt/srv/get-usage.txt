@@ -119,6 +119,13 @@ get comments for given target record
 * "target" : (m) id of target record
 * "ownerinfo" : (o) if "true" include ownername (=loginname) and ownericon (user thumb id) in result
 
+q-comments-for-target-person
+get comments for given target person id
+* "targetperson" : (m) id of target person
+* "state" : (o) state of comments (1 unread, 2 is read)
+* "excludeowner" : (o) exclude comments made by target person (i.e. owner of comment)
+* "ownerinfo" : (o) if "true" include ownername (=loginname) and ownericon (user thumb id) in result
+
 "q-commenters-for-target"
 get commenter ids (person ids) that have commented on target record
 - parms

@@ -16,8 +16,11 @@
 		</expect>
 	</test>
 
-	<test id="t-trk-create-req">
+	<test id="t-trks-create-req">
 		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
 			<utopia-req>
 				<t-trk-create-req/>
 			</utopia-req>
@@ -26,6 +29,9 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<t-trk-create-rsp id="${trkid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid2}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -115,20 +121,79 @@
 	</test>
 
 
-	<test id="cmt-update-state-req">
+	<test id="cmt-update-state-for-id-req">
 		<send id="client1">
 			<utopia-req>
 				<cmt-update-state-req id="${cmtid1}" state="2"/>
+			</utopia-req>
+			<utopia-req>
+				<cmt-update-state-req id="${cmtid1}" state="1"/>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<cmt-update-state-rsp id="${cmtid1}"/>
+				<cmt-update-state-rsp ids="${cmtid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid1}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
+
+	<test id="cmt-update-state-for-target-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid2}</target>
+					<content>comment1 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid2}</target>
+					<content>comment2 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+			<utopia-req>
+				<cmt-update-state-req target="${trkid2}" state="2"/>
+			</utopia-req>
+			<utopia-req>
+				<cmt-update-state-req target="${trkid2}" state="1"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid20}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid21}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid20},${cmtid21}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid20},${cmtid21}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="cmt-update-state-for-all-my-comments-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-update-state-req state="2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid1},${cmtid20},${cmtid21}" />
+			</utopia-rsp>
+		</expect>
+	</test>
 
 	<test id="cmt-read-by-target-new-state-req">
 		<send id="client1">
@@ -268,16 +333,22 @@
 		</expect>
 	</test>
 
-	<test id="t-trk-delete-active-req">
+	<test id="t-trk-delete-all-req">
 		<send id="client1">
 			<utopia-req>
-				<t-trk-delete-req/>
+				<t-trk-delete-req id="${trkid1}"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-delete-req id="${trkid2}"/>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
 				<t-trk-delete-rsp id="${trkid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid2}"/>
 			</utopia-rsp>
 		</expect>
 	</test>

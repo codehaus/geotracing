@@ -218,25 +218,57 @@ public class CommentLogic {
 	}
 
 	/**
-	 * Updates a comment state.
+	 * Updates state for zero or more comments.
 	 *
-	 * This may be used to mark a comment as read or reset to unread.
+	 * This may be used to mark comments as read or reset to unread.
+	 * The specific comments to update can be selected by specifying
+	 * parameters for target person (usually), one specific comment (commentId) or
+	 * all comments on specific target (targetId).
 	 *
-	 * @param aCommentId a comment id
+	 * @param aTargetPersonId a target person id or -1
+	 * @param aState a new state value
+	 * @param aCommentId a comment id or -1
+	 * @param aTargetId a target id or -1
+	 * @return empty string or comma separted list of updated comment ids
 	 * @throws UtopiaException Standard exception
 	 */
-	public void updateState(int aCommentId, int aNewState) throws UtopiaException {
+	public String updateState(int aTargetPersonId, int aState, int aCommentId, int aTargetId) throws UtopiaException {
 		try {
-			Record record = oase.getFinder().read(aCommentId, TABLE_COMMENT);
-			if (record == null) {
-				throw new UtopiaException("Cannot read record for update id=" + aCommentId, ErrorCode.__6006_database_irregularity_error);
+			// Find the records to update
+			String query = "select * from " + TABLE_COMMENT + " WHERE state != " + aState;
+
+			// Optional: target person
+			if (aTargetPersonId > 0) {
+				query += " AND targetperson =" + aTargetPersonId;
 			}
 
-			// Set to new state
-			record.setIntField(FIELD_STATE, aNewState);
+			// Optional: specific comment id (if target person specified may exist but not found)
+			if (aCommentId > 0) {
+					query += " AND id =" + aCommentId;
+			}
 
-			// Finally try to update
-			oase.getModifier().update(record);
+			// Optional: specific target id (if target person specified may exist but not found)
+			if (aTargetId > 0) {
+				query += " AND target =" + aTargetId;
+			}
+
+			// Do query
+			Record[] records = oase.getFinder().freeQuery(query + " ORDER BY id", CommentLogic.TABLE_COMMENT);
+
+			// Update each record to new state
+			String ids="";
+			for (int i=0; i < records.length; i++) {
+				// Set to new state
+				records[i].setIntField(FIELD_STATE, aState);
+
+				// Finally try to update
+				oase.getModifier().update(records[i]);
+
+				ids += (i != 0) ? "," + records[i].getIdString() :  records[i].getIdString();
+			}
+
+			// Return comma separated list of ids
+			return ids;
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot read or update comment record", oe, ErrorCode.__6006_database_irregularity_error);
 		} catch (Throwable t) {

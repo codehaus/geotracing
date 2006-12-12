@@ -378,7 +378,6 @@ public class RadarScreen extends GameCanvas {
 						int distance = Integer.parseInt(nearestObject.getChildText("distance"));
 						int id = Integer.parseInt(nearestObject.getChildText("id"));
 						String hint = nearestObject.getChildText("user") + "/" + nearestObject.getChildText("type") + "/" + distance + "m/#" + id;
-						g.drawString(hint, w / 2, h - 3, Graphics.BOTTOM | Graphics.HCENTER);
 
 						// Did we bump on the nearest object ?
 						if (distance < MIN_HIT_DIST) {
@@ -388,7 +387,9 @@ public class RadarScreen extends GameCanvas {
 								Util.playTone(90, 250, AUDIO_VOLUME);
 							}
 							hitObject = nearestObject;
+							hint = "<<" + hint + ">>";
 						}
+						g.drawString(hint, w / 2, h - 3, Graphics.BOTTOM | Graphics.HCENTER);
 					}
 					break;
 

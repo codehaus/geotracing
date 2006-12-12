@@ -110,13 +110,14 @@
 
 	<!-- The comment update state request -->
 	<element tag="cmt-update-state-req"  comment="update comment state">
-		<attribute name="id" comment="id of POI record" type="int"/>
-		<attribute name="state" comment="updated state of comment" type="int" />
+		<attribute name="id" comment="the new state" type="int" range="1..2"/>
+		<attribute name="id" comment="a comment id " type="int" optional="true"/>
+		<attribute name="target" comment="a target id " type="int" optional="true"/>
 	</element>
 
 	<!-- The comment update-state response -->
 	<element tag="cmt-update-state-rsp"  comment="comment state updated" >
-		<attribute name="id" comment="id of comment record" type="int"/>
+		<attribute name="ids" comment="comma-separated ids of updated records" type="int"/>
 	</element>
 
 
