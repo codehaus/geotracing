@@ -110,7 +110,7 @@
 
 	<!-- The comment update state request -->
 	<element tag="cmt-update-state-req"  comment="update comment state">
-		<attribute name="id" comment="the new state" type="int" range="1..2"/>
+		<attribute name="state" comment="the new state" type="int" range="1..2"/>
 		<attribute name="id" comment="a comment id " type="int" optional="true"/>
 		<attribute name="target" comment="a target id " type="int" optional="true"/>
 	</element>
