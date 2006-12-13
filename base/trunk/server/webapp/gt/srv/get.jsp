@@ -992,7 +992,9 @@
 			writer.write(result.toFormattedString());
 			writer.flush();
 			writer.close();
-			// log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
+			if (command.indexOf("info") == -1) {
+				log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
+			}
 		} catch (Throwable th) {
 			log.info("error " + command + " writing response");
 		}

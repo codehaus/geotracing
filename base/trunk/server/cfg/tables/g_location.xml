@@ -43,7 +43,6 @@
 		<field name="time" type="TIMESTAMP" />
 
 		<field name="type" type="INTEGER" default="1" required="false" />
-
 		<field name="state" type="INTEGER" default="1" required="false" />
 		<field name="creationdate" type="TIMESTAMP"/>
 		<field name="modificationdate" type="TIMESTAMP"/>

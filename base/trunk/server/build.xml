@@ -47,7 +47,7 @@ $Id$
 <!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
 	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
 	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
-	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
+	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
 	<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
 	<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
 	<property name="scp" value="${home.bin.dir}/scp.sh"/>
@@ -195,7 +195,7 @@ $Id$
 				<include name="postgis.jar"/>
 			</fileset>
 			<fileset dir="${kwx-tagging.dir}/lib">
-				<include name="kwx-tagging.jar"/>
+				<include name="tagging.jar"/>
 			</fileset>
 			<fileset dir="${kwx-metadata.dir}/lib">
 				<include name="metadata.jar"/>
