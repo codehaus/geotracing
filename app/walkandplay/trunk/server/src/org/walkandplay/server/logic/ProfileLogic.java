@@ -289,7 +289,7 @@ public class ProfileLogic {
             TagLogic tagLogic = new TagLogic(oase.getOaseSession());
             int[] taggers = {person.getId()};
             int[] items = {person.getId()};
-            Record[] tags = tagLogic.getTags(taggers, items, -1, -1);
+            Record[] tags = tagLogic.getTags(null, taggers, items, -1, -1);
             if(tags!=null && tags.length>0){
                 JXElement tagsElememt = new JXElement("tags");
                 String s = "";
