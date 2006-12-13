@@ -33,7 +33,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
     <property name="deploy.zip" value="${build.dir}/${project.id}-${version}.zip"/>
 
-	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/kwx-tagging.jar"/>
+	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
     <property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
     
     <!-- The .jar -->
