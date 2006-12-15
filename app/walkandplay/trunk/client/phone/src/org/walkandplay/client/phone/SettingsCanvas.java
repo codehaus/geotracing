@@ -13,17 +13,19 @@ public class SettingsCanvas extends DefaultCanvas {
 
     // image objects
     private Image smallLogo;
-    boolean showMenu;
 
     private int screenStat = 0;
     private final static int SOUND_STAT = 0;
     private final static int ACCOUNT_STAT = 1;
 
+
+
     public SettingsCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             smallLogo = Image.createImage("/settings_icon_small.png");
-            ScreenUtil.resetMenu();
+            //ScreenUtil.resetMenu();
+
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
@@ -58,13 +60,17 @@ public class SettingsCanvas extends DefaultCanvas {
                 break;
         }
 
-        if(showMenu){
+        if(menu.isVisible()){
             if(Util.hasSound()){
                 String[] menuItems = {"sound off", "new account"};
-                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+                menu.setItems(menuItems);
+                //ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+                menu.draw(g);
             }else{
                 String[] menuItems = {"sound on", "new account"};
-                ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+                menu.setItems(menuItems);
+                //ScreenUtil.drawMenu(g, h, menuItems, menuTop, menuMiddle, menuBottom, menuSel);
+                menu.draw(g);
             }
         }
         ScreenUtil.drawLeftSoftKey(g, h, menuBt, margin);
@@ -76,10 +82,23 @@ public class SettingsCanvas extends DefaultCanvas {
      * @param key The Key that was hit.
      */
     public void keyPressed(int key) {
+        super.keyPressed(key);
+        
+        int item = menu.getSelectedItem();
+        switch(item){
+            case 1:
+                Util.toggleSound();
+                screenStat = SOUND_STAT;
+                break;
+            case 2:
+                screenStat = ACCOUNT_STAT;
+                break;
+        }
+
         // left soft key & fire
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
-            if(showMenu){
-                item = ScreenUtil.getSelectedMenuItem();
+            if(menu.isVisible()){
+                int item = menu.getSelectedItem();
                 switch(item){
                     case 1:
                         Util.toggleSound();
@@ -89,30 +108,16 @@ public class SettingsCanvas extends DefaultCanvas {
                         screenStat = ACCOUNT_STAT;
                         break;
                 }
-                showMenu = false;
+                menu.hide();
             }else{
-                showMenu = true;
-                ScreenUtil.resetMenu();
+                menu.show();
+                menu.reset();
             }
             // right softkey
         } else if (key == -7) {
             midlet.setScreen(WP.HOME_CANVAS);            
             // left
-        } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
-            // right
-        } else if (key == -4 || getGameAction(key) == Canvas.RIGHT) {
-            // up
-        } else if (key == -1 || getGameAction(key) == Canvas.UP) {
-            ScreenUtil.selectNextMenuItem();
-            // down
-        } else if (key == -2 || getGameAction(key) == Canvas.DOWN) {
-            ScreenUtil.selectPrevMenuItem();
-        } else if (getGameAction(key) == Canvas.KEY_STAR || key == Canvas.KEY_STAR) {
-        } else if (getGameAction(key) == Canvas.KEY_POUND || key == Canvas.KEY_POUND) {
-        } else if (key == -8) {
-        } else {
         }
-
         repaint();
     }
 

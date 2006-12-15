@@ -27,8 +27,11 @@ public class DefaultCanvas extends Canvas {
 	protected Image menuBt, topTextArea, middleTextArea, bottomTextArea;
 
 	protected int fontType = Font.FACE_MONOSPACE;
+    protected Menu menu;
 
-	public DefaultCanvas(WP aMidlet) {
+    protected CanvasElement activeElement;
+
+    public DefaultCanvas(WP aMidlet) {
 		try {
 			midlet = aMidlet;
 
@@ -56,7 +59,11 @@ public class DefaultCanvas extends Canvas {
 		}
 	}
 
-	// passes log msg to the main log method
+    protected void setActiveElement(CanvasElement aCanvasElement){
+        activeElement = aCanvasElement;
+    }
+
+    // passes log msg to the main log method
 	protected void log(String aMsg) {
 		midlet.log(aMsg);
 	}
@@ -104,7 +111,9 @@ public class DefaultCanvas extends Canvas {
 			h = getHeight();
 			f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
 			fh = f.getHeight();
-		}
+            menu = new Menu(menuTop, menuMiddle, menuBottom, menuSel, h);
+            setActiveElement(menu);
+        }
 
 		g.setFont(f);
 
@@ -118,9 +127,15 @@ public class DefaultCanvas extends Canvas {
 		ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
 
 		g.setColor(0, 0, 0);
-	}
 
-	// creates a delay for the splashscreen
+        activeElement.draw(g);
+    }
+
+    public void keyPressed(int key) {
+        activeElement.keyPressed(key, getGameAction(key));
+    }
+
+    // creates a delay for the splashscreen
 	protected class Forwarder {
 		Timer timer;
 		int screenName;
