@@ -1,0 +1,13 @@
+MIDlet-1: ${midlet.name}, ${midlet.icon}, ${midlet.class}
+MIDlet-Info-URL: ${midlet.info.url}
+MIDlet-Name: ${midlet.name}
+MIDlet-Vendor: ${midlet.vendor}
+MIDlet-Version: ${midlet.version}
+MIDlet-Icon: ${midlet.icon}
+MicroEdition-Configuration: ${midlet.cldc}
+MicroEdition-Profile: ${midlet.midp}
+MIDlet-Permissions: ${midlet.permissions}
+MIDlet-Permissions-Opt: ${midlet.permissions.opt}
+MPP-Show-Keypad: true
+MPP-Width: 176
+MPP-Height: 208

@@ -8,3 +8,7 @@ http://www.javabluetooth.org
 
 bluetooth jsr-82 lots of code
 http://wireless.klings.org
+
+using comm-ports
+http://discussion.forum.nokia.com/forum/showthread.php?p=245193
+
