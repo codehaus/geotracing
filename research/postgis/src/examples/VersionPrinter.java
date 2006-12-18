@@ -38,114 +38,114 @@ import java.sql.Statement;
  */
 public class VersionPrinter {
 
-    public static String[] GISVERSIONS = {
-        "postgis_version",
-        "postgis_proj_version",
-        "postgis_scripts_installed",
-        "postgis_lib_version",
-        "postgis_scripts_released",
-        "postgis_uses_stats",
-        "postgis_geos_version",
-        "postgis_scripts_build_date",
-        "postgis_lib_build_date",
-        "postgis_full_version"};
+	public static String[] GISVERSIONS = {
+			"postgis_version",
+			"postgis_proj_version",
+			"postgis_scripts_installed",
+			"postgis_lib_version",
+			"postgis_scripts_released",
+			"postgis_uses_stats",
+			"postgis_geos_version",
+			"postgis_scripts_build_date",
+			"postgis_lib_build_date",
+			"postgis_full_version"};
 
-    public static void main(String[] args) {
-        Statement stat = null;
-        Driver d;
+	public static void main(String[] args) {
+		Statement stat = null;
+		Driver d;
 
-    	// Print PostGIS version
-        printHeading("PostGIS jdbc client code");
-        printVersionString("getFullVersion", Version.getFullVersion());
+		// Print PostGIS version
+		printHeading("PostGIS jdbc client code");
+		printVersionString("getFullVersion", Version.getFullVersion());
 
-    	// Print PGJDBC Versions
-        printHeading("PGJDBC Driver");
-        printVersionString("getVersion", Driver.getVersion());
-        try {
-            d = new Driver();
-        } catch (Exception e) {
-            System.err.println("Cannot create Driver instance: " + e.getMessage());
-            System.exit(1);
-            return;
-        }
-        printVersionString("getMajorVersion", d.getMajorVersion());
-        printVersionString("getMinorVersion", d.getMinorVersion());
+		// Print PGJDBC Versions
+		printHeading("PGJDBC Driver");
+		printVersionString("getVersion", Driver.getVersion());
+		try {
+			d = new Driver();
+		} catch (Exception e) {
+			System.err.println("Cannot create Driver instance: " + e.getMessage());
+			System.exit(1);
+			return;
+		}
+		printVersionString("getMajorVersion", d.getMajorVersion());
+		printVersionString("getMinorVersion", d.getMinorVersion());
 
-    	// Print PostgreSQL server versions
+		// Print PostgreSQL server versions
 		String dburl = "jdbc:postgresql://localhost:5432/gistest";
- 		// String dburl = "jdbc:postgresql_lwgis://localhost:5432/gistest";
-		 String driverClass = "org.postgresql.Driver";
-		 // String driverClass = "org.postgis.DriverWrapperLW";
-		 String dbuser = "oaseuser";
-		 String dbpass = "oase";
+		// String dburl = "jdbc:postgresql_lwgis://localhost:5432/gistest";
+		String driverClass = "org.postgresql.Driver";
+		// String driverClass = "org.postgis.DriverWrapperLW";
+		String dbuser = "oaseuser";
+		String dbpass = "oase";
 
 		// if (args.length == 3) {
-            Connection conn = null;
-            try {
-                conn = DriverManager.getConnection(dburl, dbuser, dbpass);
-                stat = conn.createStatement();
-            } catch (SQLException e) {
-                System.err.println("Connection to database failed, aborting.");
-                System.err.println(e.getMessage());
-                System.exit(1);
-            }
-      //  } else if (args.length != 0) {
-       //     System.err.println("Usage: java examples/VersionPrinter dburl user pass");
-        //    System.exit(1);
-            // Signal the compiler that code flow ends here.
-          //  return;
-      //  }
+		Connection conn = null;
+		try {
+			conn = DriverManager.getConnection(dburl, dbuser, dbpass);
+			stat = conn.createStatement();
+		} catch (SQLException e) {
+			System.err.println("Connection to database failed, aborting.");
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+		//  } else if (args.length != 0) {
+		//     System.err.println("Usage: java examples/VersionPrinter dburl user pass");
+		//    System.exit(1);
+		// Signal the compiler that code flow ends here.
+		//  return;
+		//  }
 
-        if (stat == null) {
-            System.out.println("No online version available.");
-        }
+		if (stat == null) {
+			System.out.println("No online version available.");
+		}
 
-        printHeading("PostgreSQL Server");
-        printVersionString("version", stat);
+		printHeading("PostgreSQL Server");
+		printVersionString("version", stat);
 
-    	// Print PostGIS versions
-        printHeading("PostGIS Server");
-        for (int i = 0; i < GISVERSIONS.length; i++) {
-            printVersionString(GISVERSIONS[i], stat);
-        }
+		// Print PostGIS versions
+		printHeading("PostGIS Server");
+		for (int i = 0; i < GISVERSIONS.length; i++) {
+			printVersionString(GISVERSIONS[i], stat);
+		}
 
-    }
+	}
 
-    public static boolean makeemptyline = false;
+	public static boolean makeemptyline = false;
 
-    private static void printHeading(String heading) {
-        if (makeemptyline) {
-            System.out.println();
-        }
-        System.out.println("** " + heading + " **");
-        makeemptyline = true;
-    }
+	private static void printHeading(String heading) {
+		if (makeemptyline) {
+			System.out.println();
+		}
+		System.out.println("** " + heading + " **");
+		makeemptyline = true;
+	}
 
-    public static void printVersionString(String function, int value) {
-        printVersionString(function, Integer.toString(value));
-    }
+	public static void printVersionString(String function, int value) {
+		printVersionString(function, Integer.toString(value));
+	}
 
-    public static void printVersionString(String function, String value) {
-        System.out.println("\t" + function + ": " + value);
-    }
+	public static void printVersionString(String function, String value) {
+		System.out.println("\t" + function + ": " + value);
+	}
 
-    public static void printVersionString(String function, Statement stat) {
-        printVersionString(function, getVersionString(function, stat));
-    }
+	public static void printVersionString(String function, Statement stat) {
+		printVersionString(function, getVersionString(function, stat));
+	}
 
-    public static String getVersionString(String function, Statement stat) {
-        try {
-            ResultSet rs = stat.executeQuery("SELECT " + function + "()");
-            if (rs.next()==false) {
-                return "-- no result --";
-            }
-            String version = rs.getString(1);
-            if (version==null) {
-                return "-- null result --";
-            }
-            return version.trim();
-        } catch (SQLException e) {
-            return "-- unavailable -- ";
-        }
-    }
+	public static String getVersionString(String function, Statement stat) {
+		try {
+			ResultSet rs = stat.executeQuery("SELECT " + function + "()");
+			if (rs.next() == false) {
+				return "-- no result --";
+			}
+			String version = rs.getString(1);
+			if (version == null) {
+				return "-- null result --";
+			}
+			return version.trim();
+		} catch (SQLException e) {
+			return "-- unavailable -- ";
+		}
+	}
 }

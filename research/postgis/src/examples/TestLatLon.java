@@ -27,7 +27,7 @@ public class TestLatLon {
 		String addLineGeom = "; SELECT AddGeometryColumn('gistest', 'latlon_test','line',4326,'LINESTRING',2)";
 		String dropGeom = "SELECT DropGeometryColumn('gistest', 'latlon_test','point')";
 
-		String createSQL = createTableSQL + addPointGeom  + addLineGeom;
+		String createSQL = createTableSQL + addPointGeom + addLineGeom;
 		String insertSQL = "INSERT INTO latlon_test values (10, GeomFromText('POINT (4.92 52.35)', 4326), ";
 		insertSQL += " GeomFromText('LINESTRING(4.92 52.35,4.93 52.35,4.92 52.36,4.96 52.70)', 4326) )";
 
@@ -65,7 +65,7 @@ public class TestLatLon {
 			ResultSetMetaData metaData = r.getMetaData();
 			int columnCount = metaData.getColumnCount();
 			while (r.next()) {
-				for (int i = 1; i < columnCount+1; i++) {
+				for (int i = 1; i < columnCount + 1; i++) {
 					Object obj = r.getObject(i);
 					if (obj instanceof org.postgis.PGgeometryLW) {
 						p(((PGgeometryLW) obj).getGeometry().getClass().toString() + " ");
@@ -87,6 +87,7 @@ public class TestLatLon {
 	public static void pl(String s) {
 		System.out.println(s);
 	}
+
 	public static void p(String s) {
 		System.out.print(s);
 	}
