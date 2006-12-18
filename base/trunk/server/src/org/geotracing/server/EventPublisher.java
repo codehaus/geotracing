@@ -95,6 +95,12 @@ public class EventPublisher {
 				// Include sending to owner of item that is commented
 				int personId = (i == -1) ? targetPersonId : commenterIds[i];
 
+				// Skip if owner and target person are the same
+				// since owner will be in commenterIds[i] later on.
+				if (i == -1 && ownerId == personId) {
+					continue;
+				}
+
 				// Create and send Pushlet event
 
 				// Subject is /person/id, i.e. only to specific person (if online)

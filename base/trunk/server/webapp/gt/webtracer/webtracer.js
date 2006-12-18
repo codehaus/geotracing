@@ -199,7 +199,7 @@ var WT = {
 		WT.pr('suspending track...');
 		WT.menu.replaceItem('suspendresume', 'Resume', 'WT.onMenuResumeTrack');
 		var req = KW.createRequest('t-trk-suspend-req');
-		KW.utopia(req);
+		KW.utopia(req, WT.onSuspendRsp);
 	},
 
 /** Menu callback: resume Track. */
@@ -207,7 +207,7 @@ var WT = {
 		WT.pr('resuming track...');
 		WT.menu.replaceItem('suspendresume', 'Suspend', 'WT.onMenuSuspendTrack');
 		var req = KW.createRequest('t-trk-resume-req');
-		KW.utopia(req);
+		KW.utopia(req, WT.onResumeRsp);
 	},
 
 /** Menu callback: hyperlink with url arg. */
@@ -215,7 +215,18 @@ var WT = {
 		window.open(url);
 	},
 
-/** KWClient positive response handler. */
+/** KWClient positive response handlers. */
+
+	onSuspendRsp: function(elm) {
+		WT.suspended = true;
+		WT.pr('track suspended OK');
+	},
+
+	onResumeRsp: function(elm) {
+		WT.suspended = false;
+		WT.pr('track resumed OK');
+	},
+
 	onRsp: function(elm) {
 		if (!elm) {
 			WT.pr('empty response');
@@ -230,12 +241,6 @@ var WT = {
 		} else if (elm.tagName == 'logout-rsp') {
 			WT.pr('logout OK');
 			window.clearInterval(WT.hbTimer);
-		} else if (elm.tagName == 't-trk-suspend-rsp') {
-			WT.suspended = true;
-			WT.pr('track suspended OK');
-		} else if (elm.tagName == 't-trk-resume-rsp') {
-			WT.suspended = false;
-			WT.pr('track resumed OK');
 		} else if (elm.tagName == 't-hb-rsp') {
 			WT.pr('heartbeat OK');
 		} else {
