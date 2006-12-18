@@ -218,7 +218,7 @@ var WP = {
 		show('archivetracksbox');
 		var cont = archivetracksbox.getElementsByTagName('div')[0];
 		cont.innerHTML = '<b>select track</b><br/><br/>';
-		var stringt ='';
+		var string ='';
 		for (var i = 0; i < records.length; i++) {
 			trackId = records[i].getField('id');
 			trackName = records[i].getField('name');
