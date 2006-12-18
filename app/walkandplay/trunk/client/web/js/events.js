@@ -21,7 +21,9 @@ var signin_bt = document.getElementById('signin_bt');
 var help_bt = document.getElementById('help_bt');
 var archivetoursbox = document.getElementById('archivetoursbox');
 var archivetracksbox = document.getElementById('archivetracksbox');
-
+var submit_signin = document.getElementById('submit_signin');
+var loginbox = document.getElementById('loginbox');
+var search_bt = document.getElementById('search_bt');
 /*
 FUNCTIONS
 */
@@ -123,7 +125,7 @@ if(document.getElementById('archivenavbox')) {
 		WP.mShowPOIsInBbox();
 	});
 }
-if(document.getElementById(search_bt)) {
+if(search_bt) {
 	dojo.event.connect(search_bt,'onclick',function(evt) {
 		toggle('searchbox');
 		hide('mapbox');
@@ -182,3 +184,48 @@ dojo.event.connect(help_bt,'onclick',function(evt) {
 											  
 });
 }
+
+if(submit_signin) {
+	dojo.event.connect(submit_signin,'onclick',function(evt) {
+		User.role = 'user';													
+		User.signin();													
+	});
+}
+
+function WPCallback(element) {
+		switch(element.nodeName)
+		{
+	//LOGIN 		
+			case 'login-rsp':
+				KW.selectApp('geoapp',User.role);
+			break;	
+			case 'select-app-rsp':
+			if(User.role == 'guest') {
+				var doc = KW.createRequest('license-getlist-req');
+				var xml = doc.documentElement;
+			} else if(User.role == 'user') {
+				loginbox.style.display = 'none';	
+			}
+			//	KW.utopia(doc);
+			break;
+			case 'profile-create-rsp':
+				window.location = "congratulations.html";
+			break;
+			case 'license-getlist-rsp':
+				licenses = element.getElementsByTagName('record');
+				var option;
+				var sel = document.getElementById('licenses');
+				for(var i = 0; i <licenses.length; i++) {
+					option = document.createElement('option');
+					option.innerHTML = licenses[i].getElementsByTagName('type')[0].firstChild.nodeValue;
+					sel.appendChild(option);
+					
+				}			
+			break;	
+		}		
+}
+function WPNegResp(elm) {
+
+}
+
+KW.init(WPCallback, WPNegResp, 60,'/wp');

@@ -4,38 +4,7 @@ function TrimString(sInString) {
   sInString = sInString.replace( /^\s+/g, "" );// strip leading
   return sInString.replace( /\s+$/g, "" );// strip trailing
 }
-function pwCallback(element) {
-		switch(element.nodeName)
-		{
-	//LOGIN 		
-			case 'login-rsp':
-				KW.selectApp('geoapp','user');
 
-			break;	
-			case 'select-app-rsp':
-				var doc = KW.createRequest('license-getlist-req');
-				var xml = doc.documentElement;
-			//	KW.utopia(doc);
-			break;
-			case 'profile-create-req':
-				document.location('congratulations.html');
-			break;
-			case 'license-getlist-rsp':
-				licenses = element.getElementsByTagName('record');
-				var option;
-				var sel = document.getElementById('licenses');
-				for(var i = 0; i <licenses.length; i++) {
-					option = document.createElement('option');
-					option.innerHTML = licenses[i].getElementsByTagName('type')[0].firstChild.nodeValue;
-					sel.appendChild(option);
-					
-				}			
-			break;	
-		}		
-}
-function pwNegResp(elm) {
-
-}
 dojo.event.connect(document.getElementById('add'),'onclick',function(evt) {
 		addMedium();																 
 																	 });
@@ -85,7 +54,7 @@ function _checkIFrameRsp() {
 
 dojo.event.connect(window,'onload',function(evt) {
 	//KW.url = '../../wp/proto.srv';
-	KW.init(pwCallback, pwNegResp, 60,'/wp');
+	KW.init(WPCallback, WPNegResp, 60,'/wp');
 	KW.login('geoapp-user','user');
 });
 
@@ -221,6 +190,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 		txt = doc.createTextNode(keywords[i]);
 		tag.appendChild(txt);
 	}
+	User.role = 'guest';
 	KW.utopia(doc);
 	
 });
