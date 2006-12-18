@@ -237,10 +237,10 @@ $Id$
 				<include name="ajax-pushlet-client.js"/>
 			</fileset>
 
-			<!-- KWX AJAX client -->
+			<!-- KWX AJAX client
 			<fileset dir="${keyworx.dir}/client/ajax/kwclient/src">
 				<include name="KWClient.js"/>
-			</fileset>
+			</fileset> -->
 		</copy>
 
 		<!-- Replace users/passwords with local values as not to have them in repository -->

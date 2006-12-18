@@ -244,7 +244,7 @@ public class CommentLogic {
 
 			// Optional: specific comment id (if target person specified may exist but not found)
 			if (aCommentId > 0) {
-					query += " AND id =" + aCommentId;
+				query += " AND id =" + aCommentId;
 			}
 
 			// Optional: specific target id (if target person specified may exist but not found)

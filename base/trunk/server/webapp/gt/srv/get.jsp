@@ -13,14 +13,15 @@
 <%@ page import="javax.servlet.ServletRequest" %>
 <%@ page import="java.io.Writer" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.Date" %>
-<%@ page import="java.util.Vector" %>
-<%@ page import="java.util.Enumeration" %>
 <%@ page import="org.geotracing.server.CommentLogic" %>
-<%@ page import="java.util.HashMap" %>
 <%@ page import="org.keyworx.plugin.tagging.logic.TagLogic" %>
 <%@ page import="org.geotracing.gis.GeoPoint" %>
 <%@ page import="org.geotracing.gis.XYDouble" %>
+<%@ page import="nl.justobjects.jox.util.JXVisitor"%>
+<%@ page import="nl.justobjects.jox.util.JXWalker"%>
+<%@ page import="java.io.IOException"%>
+<%@ page import="nl.justobjects.jox.dom.JXAttributeTable"%>
+<%@ page import="java.util.*"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -69,9 +70,11 @@
 	public static final String PAR_TABLE_NAME = "table";
 	public static final String PAR_OWNER_INFO = "ownerinfo";
 	public static final String PAR_TARGET = CommentLogic.FIELD_TARGET;
+	public static final String PAR_TARGET_INFO = "targetinfo";
 	public static final String PAR_TARGET_PERSON= CommentLogic.FIELD_TARGET_PERSON;
 	public static final String PAR_ITEMS = "items";
 	public static final String PAR_OFFSET = "offset";
+	public static final String PAR_OUTPUT = "output";
 	public static final String PAR_ROW_COUNT = "rowcount";
 	public static final String PAR_STATE = "state";
 	public static final String PAR_TAGGERS = "taggers";
@@ -79,6 +82,9 @@
 	public static final String PAR_TYPES = "types";
 	public static final String PAR_TYPE = "type";
 	public static final String TAG_ERROR = "error";
+
+	public final static String OUTPUT_JSON = "json";
+	public final static String OUTPUT_XML = "xml";
 
 	public static Oase oase;
 	public static Log log = Logging.getLog("get.jsp");
@@ -368,6 +374,124 @@
 			values[i] = Integer.parseInt(ids[i]);
 		}
 		return values;
+	}
+
+	class JSONEncoder implements JXVisitor {
+		private Writer writer;
+
+		public JSONEncoder() {
+		}
+
+		public void encode(JXElement anElement, Writer aStringBuffer) throws IOException {
+			writer = aStringBuffer;
+			output("<pre>{");
+			new JXWalker(this).traverse(anElement);
+			output("</pre>}");
+		}
+
+		public void visitElementPre(JXElement element)   {
+			if (hasSimilarSiblings(element)) {
+				if (isFirstChild(element)) {
+					outputString(element.getTag());
+					output(": ");
+
+					output("\n[");
+				}
+			} else {
+				outputString(element.getTag());
+				output(": ");
+			}
+			if (element.hasChildren() || hasAttrs(element)) {
+				output("{");
+			}
+			visitAttrs(element);
+		}
+
+		public void visitElementPost(JXElement element)  {
+			if (hasSimilarSiblings(element)) {
+				if (isLastChild(element)) {
+					output("]\n");
+				} else {
+					output(",\n");
+				}
+			} else {
+				if (!element.hasChildren() && !hasAttrs(element) && isLastChild(element)) {
+					output("}\n");
+				}
+				if (!isLastChild(element) || hasAttrs(element)) {
+					output(",\n");
+				}
+			}
+		}
+
+		public void visitCDATA(byte[] theCDATA) {
+			//output("<![CDATA[");
+			outputString(new String(theCDATA));
+			// output("]]>");
+		}
+
+		public void visitText(String text)  {
+			outputString(text);
+		}
+
+
+		private boolean hasAttrs(JXElement element)   {
+			return element.getAttrs() != null &&  element.getAttrs().size() > 0;
+		}
+
+
+		private boolean hasSiblings(JXElement element)   {
+			return element.getParent() != null &&  element.getParent().getChildCount() > 1;
+		}
+
+		private boolean isFirstChild(JXElement element)   {
+				return hasSiblings(element) && element.getParent().getChildren().get(0) == element;
+		}
+
+		private boolean isLastChild(JXElement element)   {
+				return hasSiblings(element) && element.getParent().getChildren().get(element.getParent().getChildCount()-1) == element;
+		}
+
+		private boolean hasSimilarSiblings(JXElement element)   {
+				return hasSiblings(element) && element.getParent().getChildrenByTag(element.getTag()).size() > 1;
+		}
+
+		private void visitAttrs(JXElement element)   {
+			JXAttributeTable attrs = element.getAttrs();
+			Iterator iter = attrs.keys();
+			String n,v;
+			while (iter.hasNext()) {
+				n = (String) iter.next();
+				v = attrs.get(n);
+				outputString(n);
+				output(": ");
+				outputString(v);
+				if (iter.hasNext()) output(", ");
+			}
+		}
+		private void output(String s) {
+			try {
+				writer.write(s);
+			} catch (IOException ioe) {
+				System.out.println("error: " + ioe);
+			}
+		}
+
+		private void outputString(String s) {
+			try {
+				writer.write("\"" + s + "\"");
+			} catch (IOException ioe) {
+				System.out.println("error: " + ioe);
+			}
+		}
+
+		private void output(char s) {
+			try {
+				writer.write(s);
+			} catch (IOException ioe) {
+
+			}
+		}
 	}
 
 	/** Performs command and returns XML result. */
@@ -663,6 +787,7 @@
 				String state = getParameter(request, PAR_STATE, null);
 				String excludeOwner = getParameter(request, PAR_EXCLUDE_OWNER, "false");
 				String addOwnerInfo = getParameter(request, PAR_OWNER_INFO, "false");
+				String addTargetInfo = getParameter(request, PAR_TARGET_INFO, "false");
 
 				String query = "select * from " + CommentLogic.TABLE_COMMENT + " WHERE targetperson = " + targetPerson;
 				if (state != null) {
@@ -674,12 +799,11 @@
 				}
 
 				// log.info("excludeowner=" + excludeOwner + " q=" + query);
-				result = createResponse(oase.getFinder().freeQuery(query + " ORDER BY id", CommentLogic.TABLE_COMMENT));
+				result = createResponse(oase.getFinder().freeQuery(query + " ORDER BY target,creationdate DESC"));
 
 				if (addOwnerInfo.equals("true")) {
 					addOwnerFields(result);
 				}
-
 			} else if (command.equals(CMD_QUERY_COMMENTERS_FOR_TARGET)) {
 				String targetId = getParameter(request, PAR_TARGET, null);
 				throwOnMissingParm(PAR_TARGET, targetId);
@@ -765,7 +889,7 @@
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
 				String personId = ((JXElement) result.getChildren().get(0)).getChildText("id");
 
-				// Now query tracks related to person id
+				// Now query media related to person id
 				tables = "utopia_person,base_medium";
 				fields = "base_medium.id,base_medium.kind,base_medium.mime,base_medium.name,base_medium.description,base_medium.creationdate";
 				where = "utopia_person.id = " + personId;
@@ -804,7 +928,7 @@
 				int rowcount = parRowcount == null ? -1 : Integer.parseInt(parRowcount);
 
 				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
-				result = createResponse(tagLogic.getTags(taggers, items, offset, rowcount));
+				result = createResponse(tagLogic.getTags(types, taggers, items, offset, rowcount));
 
 			} else if (command.equals(CMD_QUERY_TAGGED)) {
 				String parType = getParameter(request, PAR_TYPE, null);
@@ -948,7 +1072,6 @@
 <%
 	// Main handling below
 
-	response.setContentType("text/xml;charset=utf-8");
 
 	// Start performance timing
 	long t1 = Sys.now();
@@ -985,18 +1108,71 @@
 	if (result != null) {
 		// Get command parameter
 		String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
+		// Get command parameter
+		String output = getParameter(request, PAR_OUTPUT, OUTPUT_XML);
+		result.setAttr("cnt", result.getChildCount());
 
-		try {
-			result.setAttr("cnt", result.getChildCount());
-			Writer writer = response.getWriter();
-			writer.write(result.toFormattedString());
-			writer.flush();
-			writer.close();
-			if (command.indexOf("info") == -1) {
-				log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
+		if (output.equals(OUTPUT_XML)) {
+			response.setContentType("text/xml;charset=utf-8");
+			try {
+				Writer writer = response.getWriter();
+				writer.write(result.toFormattedString());
+				writer.flush();
+				writer.close();
+				} catch (Throwable th) {
+				log.info("error " + command + " writing response");
 			}
-		} catch (Throwable th) {
-			log.info("error " + command + " writing response");
+/*		} else if (output.equals(OUTPUT_JSON)) {
+			response.setContentType("text/plain;charset=utf-8");
+			try {
+				Writer writer = response.getWriter();
+				JSONWriter jsonWriter = new JSONWriter(writer);
+				jsonWriter.object();
+				jsonWriter.key(result.getTag());
+
+				jsonWriter.object();
+				jsonWriter.key("count");
+				jsonWriter.value(result.getChildCount());
+				jsonWriter.key("records");
+				jsonWriter.array();
+				Vector records = result.getChildren();
+				JXElement rec;
+				for (int i=0; i < records.size(); i ++) {
+					jsonWriter.object();
+					rec = (JXElement) records.get(i);
+					Vector fields = rec.getChildren();
+					JXElement field;
+					for (int j=0; j < fields.size(); j++) {
+						field = (JXElement) fields.get(j);
+						jsonWriter.key(field.getTag());
+						jsonWriter.value(field.getText());
+					}
+					jsonWriter.endObject();
+				}
+				jsonWriter.endArray();
+				jsonWriter.endObject();
+
+				jsonWriter.endObject();
+				//writer.write(result.toFormattedString());
+				writer.flush();
+				writer.close();
+			} catch (Throwable th) {
+				log.info("error " + command + " writing response th=" + th);
+			}  */
+		} else if (output.equals(OUTPUT_JSON)) {
+			// response.setContentType("text/plain;charset=utf-8");
+			try {
+				Writer writer = response.getWriter();
+				new JSONEncoder().encode(result, writer);
+				writer.flush();
+				writer.close();
+			} catch (Throwable th) {
+				log.info("error " + command + " writing response th=" + th);
+			}
 		}
-	}
+		if (command.indexOf("info") == -1) {
+			log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
+		}
+
+		}
 %>
