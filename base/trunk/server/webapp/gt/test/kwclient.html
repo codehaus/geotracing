@@ -7,6 +7,30 @@
 </head>
 
 <body>
+<form id="addmediumform" name="addmediumform" enctype="multipart/form-data"  target="rspFrame" method="post" action="../media.srv" >
+<table>
+	<tr>
+		<td>name *</td><td><input name="name" id="name" type="text" /></td>
+	</tr>
+	<tr>
+		<td>description</td><td><input name="description" id="description" type="text"  /></td>
+	</tr>
+	<tr>
+		<td>file</td><td>
+		<input name="file" id="file" type="file"  />
+		<input name="agentkey" id="agentkey" type="hidden" value="null"  />
+		<input name="xmlrsp" id="xmlrsp" type="hidden" value="true"  />
+	</td>
+	</tr>
+	   <tr>
+	<td colspan="2">
+		<a href="#" onclick="return KWCT.uploadMedium();">[Add Medium]</a>
+	</td>
+	</tr>
+	</table>
+</form>
+<iframe id="rspFrame" name="rspFrame" style="width: 0px; height: 0px; border: 0px;"></iframe>
+
 <div id="result">OK</div>
 
 </body>
