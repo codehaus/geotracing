@@ -63,6 +63,17 @@ var KWCT = {
 		KWCT.pr('onDelCommentRsp: '+ elm.tagName);
 	},
 
+	uploadMedium: function () {
+		KWCT.pr('uploading medium...');
+		KW.MEDIA.uploadMedium(KWCT.onMediumUploadRsp, DH.getObject('addmediumform'));
+		return false;
+	},
+
+	onMediumUploadRsp: function(elm) {
+		KWCT.pr('medium upload: ' + elm.tagName);
+		var rsp = elm.getElementsByTagname('medium-insert-rsp'); 
+	},
+
 /** KWClient positive response handlers. */
 
 	onSuspendRsp: function(elm) {

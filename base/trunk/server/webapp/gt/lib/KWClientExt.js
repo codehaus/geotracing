@@ -82,6 +82,120 @@ KW.CMT = {
 	}
 }
 
+KW.MEDIA = {
+
+	/* Example form:
+	<form id="addmediumform" name="addmediumform" enctype="multipart/form-data"  method="post" action="/gt/media.srv" >
+		<input name="file" id="file" type="file"  />
+		<input name="name" id="description" value="null" />
+		<input name="description" id="name" value="null" />
+		<input name="agentkey" id="agentkey" type="hidden" value="null"  />
+		<input name="xmlrsp" id="xmlrsp" type="hidden" value="true"  />
+		<div id="add">upload</div>
+	</form>
+<iframe id="rspFrame" name="rspFrame" style="width: 0px; height: 0px; border: 0px;"></iframe>
+
+	*/
+
+	/** Form requires: inputs "file" (type file) and "name" and "description" */
+	uploadMedium: function(callback, form) {
+		// Add extra input elements required by server
+/*		form.xmlrsp = document.createElement('input');
+		form.xmlrsp.type = 'hidden';
+		form.xmlrsp.value = 'true';
+		form.agentkey = document.createElement('input');
+		form.agentkey.name = 'agentkey';
+		form.agentkey.type = 'hidden';       */
+		form.agentkey.value = KW.agentKey;
+
+		if (!form.name.value) {
+			form.name.value = 'unnamed';
+		}
+		// KW.MEDIA._createIFrame();
+		KW.MEDIA._checkIFrameRsp(callback);
+		form.submit();
+		return false;
+	},
+
+	_checkIFrameRsp: function(callback) {
+		var iframe = DH.getObject('rspFrame');
+		if (!iframe) {
+			alert('cannot get rspFrame');
+			return;
+		}
+
+		var iframeDoc = null;
+
+		if (iframe.contentDocument) {
+			// For NS6
+			iframeDoc = iframe.contentDocument;
+		} else if (iframe.contentWindow) {
+			// For IE5.5 and IE6
+			iframeDoc = iframe.contentWindow.document;
+		} else if (iframe.document) {
+			// For IE5
+			iframeDoc = iframe.document;
+		}
+
+
+		if (iframeDoc && iframeDoc.documentElement) {
+			callback(iframeDoc.documentElement);
+		} else {
+			// alert('upload waiting...');
+			var f = function() {
+				KW.MEDIA._checkIFrameRsp(callback);
+			}
+			setTimeout(f, 500);
+		}
+	},
+
+	// http://developer.apple.com/internet/webcontent/iframe.html
+	_createIFrame: function() {
+		var iframe = DH.getObject('rspFrame');
+		if (iframe == null) {
+			// create the IFrame and assign a reference to the
+			// object to our global variable WT.iframe.
+			// this will only happen the first time
+			// callToServer() is called
+			try {
+				var tempIFrame = document.createElement('iframe');
+				tempIFrame.setAttribute('id', 'rspFrame');
+				tempIFrame.setAttribute('name', 'rspFrame');
+				tempIFrame.style.border = '0px';
+				tempIFrame.style.width = '0px';
+				tempIFrame.style.height = '0px';
+				document.body.appendChild(tempIFrame);
+				// KW.MEDIA.uploadIFrame = tempIFrame;
+
+				if (document.frames) {
+					// this is for IE5 Mac, because it will only
+					// allow access to the document object
+					// of the IFrame if we access it through
+					// the document.frames array
+					iframe = document.frames['rspFrame'];
+				} else {
+					iframe = DH.getObject('rspFrame');
+				}
+				// alert('iframe=' + iframe);
+			} catch(exception) {
+				// This is for IE5 PC, which does not allow dynamic creation
+				// and manipulation of an iframe object. Instead, we'll fake
+				// it up by creating our own objects.
+				iframeHTML = '\<iframe id="rspFrame" name="rspFrame" style="';
+				iframeHTML += 'border:0px;';
+				iframeHTML += 'width:0px;';
+				iframeHTML += 'height:0px;';
+				iframeHTML += '"><\/iframe>';
+				document.body.innerHTML += iframeHTML;
+			}
+		}
+
+		if (iframe == null) {
+			alert('Cannot create rspFrame');
+		}
+	}
+
+}
 /** Tagging handler functions. */
 KW.TAG = {
 
