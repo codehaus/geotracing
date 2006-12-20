@@ -237,9 +237,10 @@ a:link, a:active {
 	left: 276px;
 	bottom: 150px;
 	z-index:4;
-}#formblock {
+}
+#formblock,#tourinfo {
 	width: 700px;
 	position: absolute;
 	left: 52px;
-	top: 212px;
+	top: 210px;
 }
