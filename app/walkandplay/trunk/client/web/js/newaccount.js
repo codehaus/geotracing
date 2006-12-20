@@ -88,7 +88,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	xml.appendChild(person);
 
 	xml.appendChild(confirmationurl);
-	txt = doc.createTextNode('http://test.walkandplay.com/register');
+	txt = doc.createTextNode('http://test.walkandplay.com/register.jsp');
 	confirmationurl.appendChild(txt);
 	
 	person.appendChild(nickname);
