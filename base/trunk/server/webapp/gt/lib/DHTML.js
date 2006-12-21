@@ -586,6 +586,19 @@ var DH = {
 	},
 /******* END XML DOM Functions. *************/
 
+	/**
+	 * Escape the given string chacters that correspond to the five predefined XML entities
+	 * @param s the string to escape
+	 */
+	escape : function(s){
+		return s.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&apos;");
+	},
+
+
 /******* XMLHTTPrequest (XHR) functions.  **********/
 
 // Get XML doc from server

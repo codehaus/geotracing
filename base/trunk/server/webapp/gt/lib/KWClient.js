@@ -6,12 +6,13 @@
  *
  * PURPOSE
  * This library can be used to conduct a KeyWorx protocol
- * session.
+ * session. Look for KWClientExt.js for application-specific extension
+ * (utopia) protocol support.
  *
  * USAGE
  * This library works asynchronously. The main thing to do is to supply your
  * JavaScript callback functions for positive and negative responses when
- * calling KW.init().
+ * calling KW.init(). KW.utopia() allows an optional per-invokation callback.
  *
  * Steps:
  * KW.init(MY.rspCallback, My.nrspCallback, 60, '/basic');
@@ -20,6 +21,12 @@
  * KW.utopia(your utopia request);
  *  .
  * KW.logout();
+ *
+ * Notes
+ * - whenever a session timeout occurs re-login and re-issueing of the request is attempted
+ * - all negative responses will always be directed to the supplied neg rsp handler
+ * even if a specific callback is provided with KW.utopia().
+ * - all responses return the documentElement of the received rsp XML doc.
  *
  * Author: Just van den Broecke
  * $Id$
@@ -33,6 +40,9 @@ var KW = {
 	onNegRsp: null,
 	webRoot: null,
 	IS_SAFARI : (navigator.userAgent && navigator.vendor && (navigator.userAgent.toLowerCase().indexOf("applewebkit") != -1 || navigator.vendor.indexOf("Apple") != -1)),
+	loginReq: null,
+	selectAppReq: null,
+	recovering: false,
 
 // Initialization: must be called before anything
 	init: function(rspCallback, nrspCallback, theTimeoutMins, theWebRoot) {
@@ -82,8 +92,11 @@ var KW = {
 				// (new DOMParser()).parseFromString(xmlhttp.responseText, "text/xml").documentElement;
 				if (KW.isPositive(element)) {
 					callback(element);
+				} else if (element.getAttribute('errorId') == '4007' && KW.isLoggedIn()) {
+					// Session timeout: try to re-establish session and re-issue request
+					KW._recoverSession(callback, doc);
 				} else {
-					KW.onNegRsp(element.getAttribute('errorId'), element.getAttribute('error'), element.getAttribute('details'));
+					KW._negativeRsp(element);
 				}
 			}
 		};
@@ -112,6 +125,7 @@ var KW = {
 		xml.setAttribute('name', user);
 		xml.setAttribute('password', password);
 		xml.setAttribute('protocolVersion', KW.protocolVersion);
+		KW.loginReq = doc;
 		KW.post(KW._loginRsp, doc);
 	},
 
@@ -129,6 +143,7 @@ var KW = {
 		var xml = doc.documentElement;
 		xml.setAttribute('appname', app);
 		xml.setAttribute('rolename', role);
+		KW.selectAppReq = doc;
 		KW.post(KW._selectAppRsp, doc);
 	},
 
@@ -158,7 +173,13 @@ var KW = {
 		if (aCallback) {
 			cb = function(utopiaRsp) {
 				// Strip off <utopia-rsp> parent element
-				aCallback(utopiaRsp.childNodes[0]);
+				var appRsp = utopiaRsp.childNodes[0];
+				if (KW.isPositive(appRsp)) {
+					aCallback(appRsp);
+				} else {
+					// Handle all negative responses centrally
+					KW._negativeRsp(appRsp);
+				}
 			}
 		}
 
@@ -212,7 +233,13 @@ var KW = {
 // Callback for utopia response
 	_utopiaRsp: function(element) {
 		// Strip off <utopia-rsp> parent element
-		KW.onRsp(element.childNodes[0]);
+		var appRsp = element.childNodes[0];
+		if (KW.isPositive(appRsp)) {
+			KW.onRsp(appRsp);
+		} else {
+			// Handle all negative responses centrally
+			KW._negativeRsp(appRsp);
+		}
 	},
 
 
@@ -220,6 +247,24 @@ var KW = {
 	_logoutRsp: function(element) {
 		KW.agentKey = null;
 		KW.onRsp(element);
+	},
+
+	_negativeRsp: function(element) {
+		KW.onNegRsp(element.getAttribute('errorId'), element.getAttribute('error'), element.getAttribute('details'));
+	},
+
+	/** Session recovery: after re-establish re-issue request. */
+	_recoverSession: function(callback, reqDoc) {
+		KW.agentKey = null;
+		var onLoginRsp = function(rsp) {
+			KW.agentKey = rsp.getAttribute('agentkey');
+			var onSelectAppRsp = function(rsp) {
+				// Re-issue original request
+				KW.post(callback, reqDoc);
+			}
+			KW.post(onSelectAppRsp, KW.selectAppReq);
+		}
+		KW.post(onLoginRsp, KW.loginReq);
 	}
 }
 

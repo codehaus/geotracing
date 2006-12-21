@@ -1,36 +1,42 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-	<script type="text/javascript" src="../lib/DHTML.js" ></script>
-	<script type="text/javascript" src="kwclient-test.js" ></script>
+	<script type="text/javascript" src="../lib/DHTML.js"></script>
+	<script type="text/javascript" src="../lib/KWClient.js"></script>
+	<script type="text/javascript" src="../lib/KWClientExt.js"></script>
+	<script type="text/javascript" src="kwclient-test.js"></script>
 
 </head>
 
 <body>
-<form id="addmediumform" name="addmediumform" enctype="multipart/form-data"  target="rspFrame" method="post" action="../media.srv" >
-<table>
-	<tr>
-		<td>name *</td><td><input name="name" id="name" type="text" /></td>
-	</tr>
-	<tr>
-		<td>description</td><td><input name="description" id="description" type="text"  /></td>
-	</tr>
-	<tr>
-		<td>file</td><td>
-		<input name="file" id="file" type="file"  />
-		<input name="agentkey" id="agentkey" type="hidden" value="null"  />
-		<input name="xmlrsp" id="xmlrsp" type="hidden" value="true"  />
-	</td>
-	</tr>
-	   <tr>
-	<td colspan="2">
-		<a href="#" onclick="return KWCT.uploadMedium();">[Add Medium]</a>
-	</td>
-	</tr>
+
+<form id="addmediumform" name="addmediumform" enctype="multipart/form-data"  method="post" action="../media.srv">
+	<table>
+		<tr>
+			<td>name *</td><td><input name="name" id="name" type="text"/></td>
+		</tr>
+		<tr>
+			<td>description</td><td><input name="description" id="description" type="text"/></td>
+		</tr>
+		<tr>
+			<td>file</td><td>
+			<input name="file" id="file" type="file"/>
+		</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<a href="#" onclick="return KWCT.uploadMedium();">[Add Medium]</a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<div id="uploadedMedium"></div>
+				<div id="uploadedMediumActions"></div>
+			</td>
+		</tr>
 	</table>
 </form>
-<iframe id="rspFrame" name="rspFrame" style="width: 0px; height: 0px; border: 0px;"></iframe>
-
 <div id="result">OK</div>
 
 </body>
