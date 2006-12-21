@@ -7,18 +7,24 @@
  * $Id$
  */
 
-DH.include('KWClient.js');
-DH.include('KWClientExt.js');
 
 
 var KWCT = {
 	cmtId: null,
 	cmtTargetId: '68',
 
+	/** Send heartbeat. */
+	doTests: function() {
+		KWCT.pr('start tests..');
+
+		KWCT.pr('add comment..');
+		KW.CMT.add(KWCT.onAddCommentRsp, KWCT.cmtTargetId, 'my comment text');
+	},
+
 	go: function() {
 		KWCT.pr('start');
 		// KeyWorx client
-		KW.init(KWCT.onRsp, KWCT.onNegRsp);
+		KW.init(KWCT.onRsp, KWCT.onNegRsp, 1);
 		KW.login('geoapp-user', 'user');
 		KWCT.pr('login sent');
 	},
@@ -28,19 +34,18 @@ var KWCT = {
 		elm.innerHTML = elm.innerHTML + '<br/>' + s;
 	},
 
+ /** Send heartbeat. */
+	sendHeartbeat: function() {
+		KWCT.pr('sending heartbeat..');
+		var req = KW.createRequest('t-hb-req');
+		KW.utopia(req);
+	},
 
 /** Add POI to current active Track. */
 	addTag: function () {
 		KWCT.pr('adding Text...');
 	},
 
-/** Send heartbeat. */
-	doTests: function() {
-		KWCT.pr('start tests..');
-
-		KWCT.pr('add comment..');
-		KW.CMT.add(KWCT.onAddCommentRsp, KWCT.cmtTargetId, 'my comment text');
-	},
 
 	onAddCommentRsp: function(elm) {
 		KWCT.cmtId = elm.getAttribute('id');
@@ -63,15 +68,45 @@ var KWCT = {
 		KWCT.pr('onDelCommentRsp: '+ elm.tagName);
 	},
 
+	deleteMedium: function (id) {
+		KWCT.pr('deleting medium...id=' + id);
+		KW.MEDIA.del(KWCT.onDeleteMediumRsp, id);
+	},
+
+	onDeleteMediumRsp: function(elm) {
+		KWCT.pr('deleted medium OK');
+		DH.getObject('uploadedMedium').innerHTML = 'medium deleted';
+		DH.getObject('uploadedMediumActions').innerHTML = ' ';
+	},
+
+	updateMedium: function (id) {
+		KWCT.pr('updateMedium...id=' + id);
+		KW.MEDIA.update(KWCT.onUpdateMediumRsp, id, 'new name', 'new description');
+	},
+
+	onUpdateMediumRsp: function(elm) {
+		KWCT.pr('onUpdateMediumRsp  OK');
+		// DH.getObject('uploadedMedium').innerHTML = 'medium updated';
+	},
+
 	uploadMedium: function () {
 		KWCT.pr('uploading medium...');
-		KW.MEDIA.uploadMedium(KWCT.onMediumUploadRsp, DH.getObject('addmediumform'));
+		KW.MEDIA.upload(KWCT.onUploadMediumRsp, DH.getObject('addmediumform'));
 		return false;
 	},
 
-	onMediumUploadRsp: function(elm) {
-		KWCT.pr('medium upload: ' + elm.tagName);
-		var rsp = elm.getElementsByTagname('medium-insert-rsp'); 
+	onUploadMediumRsp: function(elm) {
+		// var rsp = elm.getElementsByTagname('medium-insert-rsp');
+		KWCT.pr('medium upload: ' + elm.tagName + ' id=' + elm.getAttribute('id'));
+	//	if (elm.tagname == 'medium-insert-rsp') {
+		var mediumDiv = DH.getObject('uploadedMedium');
+		var id = elm.getAttribute('id');
+		mediumDiv.innerHTML = '<img src="../media.srv?id=' + id + '&resize=100" border="0" />';
+		var mediumActDiv = DH.getObject('uploadedMediumActions');
+		mediumActDiv.innerHTML = '[<a href="#" onclick="KWCT.deleteMedium(' + id + '); return false;">delete</a>] ' +
+							  '[<a href="#" onclick="KWCT.updateMedium(' + id + '); return false;">update</a>]';
+
+	//	}
 	},
 
 /** KWClient positive response handlers. */
@@ -111,77 +146,7 @@ var KWCT = {
 /** KWClient negative response handler. */
 	onNegRsp: function(errorId, error, details) {
 		KWCT.pr('negative resp:' + error + ' details=' + details);
-	},
-
-	_checkIFrameRsp: function() {
-		var iframe = DH.getObject('uploadFrame');
-		if (!iframe) {
-			KWCT.pr('cannot get uploadFrame');
-			return;
-		}
-
-		var iframeDoc = null;
-
-		if (iframe.contentDocument) {
-			// For NS6
-			iframeDoc = iframe.contentDocument;
-		} else if (iframe.contentWindow) {
-			// For IE5.5 and IE6
-			iframeDoc = iframe.contentWindow.document;
-		} else if (iframe.document) {
-			// For IE5
-			iframeDoc = iframe.document;
-		}
-		if (iframeDoc == null) {
-			KWCT.pr('iframeDoc == null, recheck..');
-			setTimeout('KWCT._checkIFrameRsp()', 2000);
-		} else {
-			KWCT.pr('iframeDoc found !!!');
-			// KWCT.onRsp(iframeDoc.documentElement);
-			KWCT.pr('iframeDoc.innerHTML=' + iframeDoc.documentElement.innerHTML);
-		}
-	},
-
-// http://developer.apple.com/internet/webcontent/iframe.html
-	_createIFrame: function() {
-		if (!document.createElement) {
-			return true
-		}
-
-		if (KWCT.iframe == null && document.createElement) {
-			// create the IFrame and assign a reference to the
-			// object to our global variable KWCT.iframe.
-			// this will only happen the first time
-			// callToServer() is called
-			try {
-				var tempIFrame = document.createElement('iframe');
-				tempIFrame.setAttribute('id', 'rspFrame');
-				tempIFrame.style.border = '0px';
-				tempIFrame.style.width = '0px';
-				tempIFrame.style.height = '0px';
-				KWCT.iframe = document.body.appendChild(tempIFrame);
-
-				if (document.frames) {
-					// this is for IE5 Mac, because it will only
-					// allow access to the document object
-					// of the IFrame if we access it through
-					// the document.frames array
-					KWCT.iframe = document.frames['rspFrame'];
-				}
-			} catch(exception) {
-				// This is for IE5 PC, which does not allow dynamic creation
-				// and manipulation of an iframe object. Instead, we'll fake
-				// it up by creating our own objects.
-				iframeHTML = '\<iframe id="rspFrame" style="';
-				iframeHTML += 'border:0px;';
-				iframeHTML += 'width:0px;';
-				iframeHTML += 'height:0px;';
-				iframeHTML += '"><\/iframe>';
-				document.body.innerHTML += iframeHTML;
-			}
-		}
 	}
-
 }
 DH.onReady = KWCT.go;
 

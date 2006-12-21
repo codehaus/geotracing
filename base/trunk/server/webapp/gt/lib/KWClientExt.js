@@ -10,8 +10,13 @@
  * USAGE
  * Use KWClient to login and then call functions of this library.
  *
+ * Each function has an optional "callback" parameter:
+ * - used only for positive (utopia) responses
+ * - if callback is null then the positive callback function specified in KW.init() is used
+ * - negative responses will still use KW.onNegRsp specified in KW.init()
+ *
  * Example:
- * KW.init(MY.rspCallback, My.nrspCallback, 60, '/basic');
+ * KW.init(MY.rspCallback, My.nrspCallback);
  * KW.login('auser', 'apasswd');
  * KW.selectApp('basicapp', 'user');
  *
@@ -23,16 +28,22 @@
  * $Id$
  */
 
-/** Comment handler functions. */
+/**
+ * Comment handler functions.
+ * The commenting protocol is described in
+ * http://svn.codehaus.org/geotracing/base/trunk/doc/schema/comment-protocol.xml
+ */
 KW.CMT = {
 
 	/**
 	 * Add comment.
 	 * @param callback - user callback function or null
+	 * @param targetId - id of item to be commented
+	 * @param text - comment text
 	 */
-	add: function(callback, itemId, text) {
+	add: function(callback, targetId, text) {
 		var req = KW.createRequest('cmt-insert-req');
-		KW.UTIL.addTextElement(req, 'target', itemId);
+		KW.UTIL.addTextElement(req, 'target', targetId);
 		KW.UTIL.addTextElement(req, 'content', text);
 		KW.utopia(req, callback);
 	},
@@ -73,58 +84,108 @@ KW.CMT = {
 	/**
 	 * Delete comment.
 	 * @param callback - user callback function or null
-	 * @param id - id of comment
+	 * @param commentId - id of comment
 	 */
-	del: function(callback, id) {
+	del: function(callback, commentId) {
 		var req = KW.createRequest('cmt-delete-req');
-		KW.UTIL.setAttr(req, 'id', id);
+		KW.UTIL.setAttr(req, 'id', commentId);
 		KW.utopia(req, callback);
 	}
 }
 
+/** Medium handler functions. */
 KW.MEDIA = {
 
-	/* Example form:
-	<form id="addmediumform" name="addmediumform" enctype="multipart/form-data"  method="post" action="/gt/media.srv" >
-		<input name="file" id="file" type="file"  />
-		<input name="name" id="description" value="null" />
-		<input name="description" id="name" value="null" />
-		<input name="agentkey" id="agentkey" type="hidden" value="null"  />
-		<input name="xmlrsp" id="xmlrsp" type="hidden" value="true"  />
-		<div id="add">upload</div>
-	</form>
-<iframe id="rspFrame" name="rspFrame" style="width: 0px; height: 0px; border: 0px;"></iframe>
-
-	*/
-
-	/** Form requires: inputs "file" (type file) and "name" and "description" */
-	uploadMedium: function(callback, form) {
+	/**
+     * Upload medium using a form.
+     *
+	 * Form requires: inputs "file" (type file) and "name" and "description", callback is
+	 * usually medium-insert-rsp with id or if fails medium-insert-nrsp.
+     *
+	 * Example form:
+	 * <form id="addmediumform" name="addmediumform" enctype="multipart/form-data"  method="post" action="/gt/media.srv" >
+	 *	<input name="file" id="file" type="file"  />
+	 *	<input name="name" id="description" value="null" />
+	 *	<input name="description" id="name" value="null" />
+	 * 	<a href="#" onclick="return uploadMedium();">[Upload]</a>
+	 * </form>
+	 * and in uploadMedium():
+	 *   KW.MEDIA.upload(KWCT.onUploadMediumRsp, DH.getObject('addmediumform'));
+	 */
+	upload: function(callback, form) {
 		// Add extra input elements required by server
-/*		form.xmlrsp = document.createElement('input');
-		form.xmlrsp.type = 'hidden';
-		form.xmlrsp.value = 'true';
-		form.agentkey = document.createElement('input');
-		form.agentkey.name = 'agentkey';
-		form.agentkey.type = 'hidden';       */
-		form.agentkey.value = KW.agentKey;
+		var xmlrsp = document.createElement('input');
+		xmlrsp.name = 'xmlrsp';
+		xmlrsp.type = 'hidden';
+		xmlrsp.value = 'true';
+		form.appendChild(xmlrsp);
 
+		var agentkey = document.createElement('input');
+		agentkey.name = 'agentkey';
+		agentkey.type = 'hidden';
+		agentkey.value = KW.agentKey;
+		form.appendChild(agentkey);
+
+		// Set target to hidden IFrame
+		form.target = 'kwrspframe';
+
+		// Optional name (required by server).
 		if (!form.name.value) {
 			form.name.value = 'unnamed';
 		}
-		// KW.MEDIA._createIFrame();
-		KW.MEDIA._checkIFrameRsp(callback);
+
+		// Create or clear responseframe
+		KW.MEDIA._createRspIFrame();
+
+		// Send form to server by POST
 		form.submit();
+
+		// Start checking responseframe
+		KW.MEDIA._checkRspIFrame(callback);
 		return false;
 	},
 
-	_checkIFrameRsp: function(callback) {
-		var iframe = DH.getObject('rspFrame');
+	/**
+	 * Delete medium by id.
+	 * @param callback - user callback function or null
+	 * @param id the medium id
+	 */
+	del: function(callback, id) {
+		var req = KW.createRequest('medium-delete-req');
+		KW.UTIL.setAttr(req, 'id', id);
+		KW.utopia(req, callback);
+	},
+
+	/**
+	 * Update medium.
+	 *
+	 * @param callback - user callback function or null
+	 * @param id the medium id
+	 * @param name the medium name or null (opt)
+	 * @param desc the medium description or null (opt)
+	 */
+	update: function(callback, id, name, desc) {
+		var req = KW.createRequest('medium-update-req');
+		KW.UTIL.setAttr(req, 'id', id);
+		var elm = req.createElement('medium');
+		KW.UTIL.addOptTextElement(elm, 'name', name);
+		KW.UTIL.addOptTextElement(elm, 'description', desc);
+		req.documentElement.appendChild(elm);
+
+		KW.utopia(req, callback);
+	},
+
+	_checkRspIFrame: function(callback) {
+		var iframe = window.frames['kwrspframe'];
 		if (!iframe) {
-			alert('cannot get rspFrame');
-			return;
+			iframe = DH.getObject('kwrspframe');
+			if (!iframe) {
+				alert('cannot get rspFrame');
+				return;
+			}
 		}
 
-		var iframeDoc = null;
+		var iframeDoc;
 
 		if (iframe.contentDocument) {
 			// For NS6
@@ -138,70 +199,61 @@ KW.MEDIA = {
 		}
 
 
-		if (iframeDoc && iframeDoc.documentElement) {
+		if (iframeDoc && iframeDoc.documentElement && iframeDoc.documentElement.tagName.indexOf('rsp') != -1) {
+			// Got document with response: send element in callback.
 			callback(iframeDoc.documentElement);
 		} else {
-			// alert('upload waiting...');
+			// No iframe response document (yet) keep checking iframe content
 			var f = function() {
-				KW.MEDIA._checkIFrameRsp(callback);
+				KW.MEDIA._checkRspIFrame(callback);
 			}
-			setTimeout(f, 500);
+
+			// Problem with IE: response is loaded in iframe but as an HTML document
+			if (iframeDoc && iframeDoc.documentElement && iframeDoc.documentElement.innerHTML.indexOf('rsp') != -1) {
+				// KWCT.pr('_checkRspIFrame ih=' + DH.escape(iframeDoc.documentElement.innerHTML));
+				/* var doc = (new DOMParser()).parseFromString(iframeDoc.documentElement.lastChild.innerHTML, "text/xml");
+				var rspElm = doc.getElementsByTagName('medium-insert-rsp')[0];
+				callback(rspElm);  */
+			}
+			setTimeout(f, 50);
 		}
 	},
 
-	// http://developer.apple.com/internet/webcontent/iframe.html
-	_createIFrame: function() {
-		var iframe = DH.getObject('rspFrame');
-		if (iframe == null) {
-			// create the IFrame and assign a reference to the
-			// object to our global variable WT.iframe.
-			// this will only happen the first time
-			// callToServer() is called
-			try {
-				var tempIFrame = document.createElement('iframe');
-				tempIFrame.setAttribute('id', 'rspFrame');
-				tempIFrame.setAttribute('name', 'rspFrame');
-				tempIFrame.style.border = '0px';
-				tempIFrame.style.width = '0px';
-				tempIFrame.style.height = '0px';
-				document.body.appendChild(tempIFrame);
-				// KW.MEDIA.uploadIFrame = tempIFrame;
-
-				if (document.frames) {
-					// this is for IE5 Mac, because it will only
-					// allow access to the document object
-					// of the IFrame if we access it through
-					// the document.frames array
-					iframe = document.frames['rspFrame'];
-				} else {
-					iframe = DH.getObject('rspFrame');
-				}
-				// alert('iframe=' + iframe);
-			} catch(exception) {
-				// This is for IE5 PC, which does not allow dynamic creation
-				// and manipulation of an iframe object. Instead, we'll fake
-				// it up by creating our own objects.
-				iframeHTML = '\<iframe id="rspFrame" name="rspFrame" style="';
-				iframeHTML += 'border:0px;';
-				iframeHTML += 'width:0px;';
-				iframeHTML += 'height:0px;';
-				iframeHTML += '"><\/iframe>';
-				document.body.innerHTML += iframeHTML;
-			}
+	/** See also: http://www.howtocreate.co.uk/jslibs/htmlhigh/importxml.html */
+	_createRspIFrame: function() {
+		var iframe = window.frames['kwrspframe'];
+		if (iframe) {
+			// Already present: make empty and return;
+			iframe.src = 'about:blank';
+			return true;
 		}
 
-		if (iframe == null) {
-			alert('Cannot create rspFrame');
-		}
+		//load the XML in an iframe
+		var iframeDiv = document.createElement('DIV');
+		iframeDiv.style.visibility = 'hidden';
+		iframeDiv.style.position = 'absolute';
+		iframeDiv.style.top = '0px';
+		iframeDiv.style.left = '0px';
+		iframeDiv.style.width = '0px';
+		iframeDiv.style.height = '0px';
+
+		iframeDiv.innerHTML = '<iframe id="kwrspframe"  name="kwrspframe" style="display:none; width: 0px; height: 0px; border: 0px;"><\/iframe>';
+		document.body.appendChild(iframeDiv);
+		return true;
 	}
-
 }
+
 /** Tagging handler functions. */
 KW.TAG = {
 
-	/** Add tags for specified items. */
+	/**
+	 * Add tags for specified items.
+	 * @param callback - user callback function or null
+	 * @param itemIds - id's of items to be tagged
+	 * @param tags - tags to be added to items
+	 */
 	add: function(callback, itemIds, tags) {
-	    // <tagging-tag-req items="${item1id},${item2id},${item3id}" tags="tag1 tag2 'tag 3' 'tag 4' tag5 tag6" mode="add"/>
+	    // <tagging-tag-req items="123,345,567" tags="tag1 tag2 'tag 3' 'tag 4' tag5 tag6" mode="add"/>
 		var req = KW.createRequest('tagging-tag-req ');
 		KW.UTIL.setAttr(req, 'items', itemIds);
 		KW.UTIL.setAttr(req, 'tags', tags);
@@ -209,7 +261,12 @@ KW.TAG = {
 		KW.utopia(req, callback);
 	},
 
-	/** Replace all tags for specified items. */
+	/**
+	 * Replace all tags for specified items.
+	 * @param callback - user callback function or null
+	 * @param itemIds - id's of items to be replace tags
+	 * @param tags - tags to be replaced in items
+	 */
 	replace: function(callback, itemIds, tags) {
 	    // <tagging-tag-req items="${item1id},${item2id},${item3id}" tags="tag1 tag2 'tag 3' 'tag 4' tag5 tag6" mode="replace"/>
 		var req = KW.createRequest('tagging-tag-req ');
@@ -219,7 +276,12 @@ KW.TAG = {
 		KW.utopia(req, callback);
 	},
 
-	/** Remove tags for specified items. */
+	/**
+	 * Remove tags for specified items.
+	 * @param callback - user callback function or null
+	 * @param itemIds - id's of items to be replace tags
+	 * @param tags - tags to be replaced in items
+	 */
 	del: function(callback, itemIds, tags) {
 		// <tagging-untag-req items="${item1id},${item2id}" tags="tag1 'tag 3'"/>
 		var req = KW.createRequest('tagging-untag-req ');
@@ -232,12 +294,25 @@ KW.TAG = {
 /** Track recording functions. */
 KW.TRACK = {
 
+	/**
+	 * Create new track and make it active.
+	 * @param callback - user callback function or null
+	 * @param name - name of track (opt)
+	 */
 	create: function(callback, name) {
 		var req = KW.createRequest('t-trk-create-req');
 		KW.UTIL.setOptAttr(req, 'name', name);
 		KW.utopia(req, callback);
 	},
 
+	/**
+	 * Write point to track.
+	 * @param callback - user callback function or null
+	 * @param lon - longitude
+	 * @param lat - latitude
+	 * @param time - time in millis since 1.1.70 (opt)
+	 * @param ele - elevation in meters (opt)
+	 */
 	write: function(callback, lon, lat, time, ele) {
 		var req = KW.createRequest('t-trk-write-req');
 
@@ -251,18 +326,33 @@ KW.TRACK = {
 		KW.utopia(req, callback);
 	},
 
+	/**
+	 * Suspend writing to track.
+	 * @param callback - user callback function or null
+	 * @param id - the track id (opt) if not specified active track is suspended
+	 */
 	suspend: function(callback, id) {
 		var req = KW.createRequest('t-trk-suspend-req');
-		KW.UTIL.settAttr(req, 'id', id);
+		KW.UTIL.settOptAttr(req, 'id', id);
 		KW.utopia(req, callback);
 	},
 
+	/**
+	 * Resume writing to track.
+	 * @param callback - user callback function or null
+	 * @param id - the track id (opt) if not specified active track is resumed
+	 */
 	resume: function(callback, id) {
 		var req = KW.createRequest('t-trk-resume-req');
-		KW.UTIL.settAttr(req, 'id', id);
+		KW.UTIL.settOptAttr(req, 'id', id);
 		KW.utopia(req, callback);
 	},
 
+	/**
+	 * Delete a track.
+	 * @param callback - user callback function or null
+	 * @param id - the track id (user must be owner)
+	 */
 	del: function(callback, id) {
 		var req = KW.createRequest('t-trk-delete-req');
 		KW.UTIL.settAttr(req, 'id', id);
@@ -273,9 +363,27 @@ KW.TRACK = {
 /** Utility functions, mainly for manipulating XML DOM. */
 KW.UTIL = {
 
-/** Create XML element with text content and add to parent */
+	/**
+	 * Escape the given string chacters that correspond to the five predefined XML entities
+	 * @param s the string to escape
+	 */
+	escape : function(s){
+		return s.replace(/&/g, "&amp;")
+			.replace(/</g, "&lt;")
+			.replace(/>/g, "&gt;")
+			.replace(/"/g, "&quot;")
+			.replace(/'/g, "&apos;");
+	},
+
+	/** Create XML element with text content and add to parent */
 	addTextElement: function(parent, name, text) {
 		var doc = parent.ownerDocument;
+
+		// Must have text
+		if (!text || text == null) {
+			alert('error: no text passed for element ' + name);
+			return;
+		}
 
 		// We may pass a document: in that case we have the ownerDocument
 		// already. Then parent is the main (document) Element.
@@ -290,14 +398,14 @@ KW.UTIL = {
 		parent.appendChild(elm);
 	},
 
-/** Add text element if text value present. */
+	/** Add text element if text value present. */
 	addOptTextElement: function(parent, name, text) {
 		if (text && text != null) {
-			KW.UTIL.addTextElement(node, name, text);
+			KW.UTIL.addTextElement(parent, name, text);
 		}
 	},
 
-/** Set attribute in XML element. */
+	/** Set attribute in XML element. */
 	setAttr: function(node, name, value) {
 		// We may pass a document: in that case the node is the documentElement.
 		if (node.nodeName == '#document') {
@@ -311,7 +419,7 @@ KW.UTIL = {
 		node.setAttribute(name, value);
 	},
 
-/** Set attribute in XML element if value present. */
+	/** Set attribute in XML element if value present. */
 	setOptAttr: function(node, name, value) {
 		if (value && value != null) {
 			KW.UTIL.setAttr(node, name, value);
