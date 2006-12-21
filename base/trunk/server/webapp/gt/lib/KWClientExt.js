@@ -95,6 +95,7 @@ KW.CMT = {
 
 /** Medium handler functions. */
 KW.MEDIA = {
+	iframeCnt: 0,
 
 	/**
      * Upload medium using a form.
@@ -127,7 +128,9 @@ KW.MEDIA = {
 		form.appendChild(agentkey);
 
 		// Set target to hidden IFrame
-		form.target = 'kwrspframe';
+		// Create separate IFrame per upload.
+		var iframeId = 'kwrspframe' + KW.MEDIA.iframeCnt;
+		form.target = iframeId;
 
 		// Optional name (required by server).
 		if (!form.name.value) {
@@ -135,13 +138,15 @@ KW.MEDIA = {
 		}
 
 		// Create or clear responseframe
-		KW.MEDIA._createRspIFrame();
+
+		KW.MEDIA._createRspIFrame(iframeId);
 
 		// Send form to server by POST
 		form.submit();
 
 		// Start checking responseframe
-		KW.MEDIA._checkRspIFrame(callback);
+		KW.MEDIA._checkRspIFrame(callback, iframeId);
+		KW.MEDIA.iframeCnt++;
 		return false;
 	},
 
@@ -175,12 +180,13 @@ KW.MEDIA = {
 		KW.utopia(req, callback);
 	},
 
-	_checkRspIFrame: function(callback) {
-		var iframe = window.frames['kwrspframe'];
+
+	_checkRspIFrame: function(callback, iframeId) {
+		var iframe = window.frames[iframeId];
 		if (!iframe) {
-			iframe = DH.getObject('kwrspframe');
+			iframe = DH.getObject(iframeId);
 			if (!iframe) {
-				alert('cannot get rspFrame');
+				alert('cannot get rspFrame: ' + iframeId);
 				return;
 			}
 		}
@@ -205,7 +211,7 @@ KW.MEDIA = {
 		} else {
 			// No iframe response document (yet) keep checking iframe content
 			var f = function() {
-				KW.MEDIA._checkRspIFrame(callback);
+				KW.MEDIA._checkRspIFrame(callback, iframeId);
 			}
 
 			// Problem with IE: response is loaded in iframe but as an HTML document
@@ -219,16 +225,12 @@ KW.MEDIA = {
 		}
 	},
 
-	/** See also: http://www.howtocreate.co.uk/jslibs/htmlhigh/importxml.html */
-	_createRspIFrame: function() {
-		var iframe = window.frames['kwrspframe'];
-		if (iframe) {
-			// Already present: make empty and return;
-			iframe.src = 'about:blank';
-			return true;
-		}
-
-		//load the XML in an iframe
+	/** See also:
+	 *  http://www.howtocreate.co.uk/tutorials/jsexamples/importingXML.html
+	 *  http://sean.treadway.info/articles/2006/05/29/iframe-remoting-made-easy
+	 */
+	_createRspIFrame: function(iframeId) {
+		// Create iframe (not sure why the DIV is required...)
 		var iframeDiv = document.createElement('DIV');
 		iframeDiv.style.visibility = 'hidden';
 		iframeDiv.style.position = 'absolute';
@@ -237,7 +239,7 @@ KW.MEDIA = {
 		iframeDiv.style.width = '0px';
 		iframeDiv.style.height = '0px';
 
-		iframeDiv.innerHTML = '<iframe id="kwrspframe"  name="kwrspframe" style="display:none; width: 0px; height: 0px; border: 0px;"><\/iframe>';
+		iframeDiv.innerHTML = '<iframe id="' + iframeId + '"  name="' + iframeId + '" style="width: 0px; height: 0px; border: 0px;"><\/iframe>';
 		document.body.appendChild(iframeDiv);
 		return true;
 	}
