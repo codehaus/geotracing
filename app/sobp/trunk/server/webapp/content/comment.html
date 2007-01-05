@@ -1,0 +1,39 @@
+<div id="commentpanel">
+	<form id="commentform" name="commentform" method="get" action="#" onsubmit="return CMT.addComment();">
+		<table border="0" cellspacing="4" cellpadding="4">
+			<tr>
+				<td colspan="2"><h3>Voeg Commentaar Toe</h3></td>
+
+			</tr>
+			<tr>
+				<td colspan="2"><p>Type je tekst hier in. NB je email wordt nooit zichtbaar gemaakt.</p></td>
+
+			</tr>
+			<tr>
+				<td colspan="2"><textarea cols="40" rows="8" name="content" id="content"></textarea></td>
+
+			</tr>
+			<tr>
+				<td>je naam (opt)</td><td><input name="name" id="name" type="text"/></td>
+			</tr>
+			<tr>
+				<td>je website (opt)</td><td><input name="url" id="url" type="text"/></td>
+			</tr>
+			<tr>
+				<td>je email (opt)</td><td><input name="email" id="email" type="text"/></td>
+			</tr>
+			<tr>
+				<td></td><td><input name="targetid" id="targetid" type="hidden" value="-13"/></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td><td><input type="submit" name="submit" value="Verstuur!"/></td>
+			</tr>
+		</table>
+	</form>
+	<span class="cmtlink"><a id="addcommentlink" href="#" onclick="CMT.showAddCommentForm()">Voeg commentaar toe &gt;&gt;</a></span>
+	<h3>Commentaren</h3>
+	<div id="commentlist">
+		commentaren ophalen...
+	</div>
+</div>
+
