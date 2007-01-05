@@ -1,7 +1,6 @@
 <%@ page import="
 				com.oreilly.servlet.MultipartRequest,
                  nl.justobjects.jox.dom.JXElement,
-                 org.geotracing.server.POI,
                  org.geotracing.server.TrackLogic,
                  org.keyworx.amuse.client.web.HttpConnector,
                  org.keyworx.amuse.core.Amuse,
@@ -332,14 +331,6 @@
                 String retval = trackLogic.delete(id);
 
                 model.setResultMsg("Delete track id=" + id + " retval=" + retval);
-            } else if ("poi-delete".equals(command)) {
-                String id = getParameter(request, "id", null);
-                if (id == null) {
-                    model.setResultMsg("missing id parameter for poi-delete");
-                    return;
-                }
-                POI.delete(oase, id);
-                model.setResultMsg("Delete poi id=" + id);
             } else {
 
                 model.setResultMsg("unknown cmd: " + command);

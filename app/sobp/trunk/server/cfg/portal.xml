@@ -1,5 +1,11 @@
 <portal name="sobp">
 
+	<!-- Standard host-dependent container properties -->
+	<property name="siteurl" host="test">http://www.senseofbrainport.nl/sobp</property>
+	<property name="webappurl" host="test">http://www.senseofthecity.nl/sobp</property>
+	<property name="siteurl" host="suwa">http://test.geotracing.com/sobp</property>
+	<property name="webappurl" host="suwa">http://test.geotracing.com/sobp</property>
+
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
 		<context file="oase-context.xml"/>

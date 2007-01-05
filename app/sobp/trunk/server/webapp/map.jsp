@@ -70,9 +70,10 @@
 		#featuretitle {
 			text-align: center;
 		}
-		#cmtlink, #cmtlink a, #cmtlink a:visited {
+
+		.cmtlink a, .cmtlink a:visited {
 		  font-size: 10px;
-		  color: #33ff33;
+		  color: #0000ff;
 		  text-decoration: none;
 		}
 
