@@ -1,14 +1,15 @@
-<%@ page import="org.keyworx.amuse.core.Amuse"%>
-<%@ page import="org.keyworx.utopia.core.util.Oase"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="org.keyworx.oase.api.Record"%>
 <%@ page import="org.geotracing.server.QueryHandler"%>
 <%@ page import="org.keyworx.amuse.client.web.HttpConnector"%>
-<%@ page import="org.keyworx.common.util.Sys"%>
-<%@ page import="org.keyworx.common.log.Logging"%>
+<%@ page import="org.keyworx.amuse.core.Amuse"%>
 <%@ page import="org.keyworx.common.log.Log"%>
+<%@ page import="org.keyworx.common.log.Logging"%>
+<%@ page import="org.keyworx.common.util.Sys"%>
+<%@ page import="org.keyworx.oase.api.Record"%>
 <%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
-<%@ page import="org.keyworx.utopia.core.data.UtopiaException"%>
+<%@ page import="org.keyworx.utopia.core.util.Oase"%>
+<%@ page import="javax.servlet.ServletContext"%>
+<%@ page import="javax.servlet.http.HttpSession"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("E' 'dd' 'MMM', 'yyyy");
@@ -67,6 +68,7 @@
 		public Object getObject(String aName) {
 			return session.getAttribute(aName);
 		}
+
 
 
 		public String getPersonId() {

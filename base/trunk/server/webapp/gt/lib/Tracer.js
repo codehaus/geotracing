@@ -329,7 +329,7 @@ function Tracer(name, color, iconURL, pt, time) {
 			desc = ' ';
 		}
 
-		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a>');
+		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a></span>');
 		if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, 'user', this.name);
 		}

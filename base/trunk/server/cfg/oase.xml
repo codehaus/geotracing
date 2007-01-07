@@ -76,8 +76,8 @@
 				<property name="poolSize">5</property>
 			</source>
 
- <!--
-				<source id="db" class="org.geotracing.server.oase.PostGISDBSource">
+
+<!--				<source id="db" class="org.geotracing.server.oase.PostGISDBSource">
 					<property name="driver">org.postgis.DriverWrapperLW</property>
 					<property name="protocol">jdbc:postgresql_lwgis</property>
 					<property name="host">localhost</property>

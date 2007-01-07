@@ -33,6 +33,7 @@
 
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true" />
+
 		<field name="name" type="STRING" size="64" required="false" />
 		<field name="description" type="TEXT" required="false" />
 
@@ -47,5 +48,11 @@
 		<field name="creationdate" type="TIMESTAMP"/>
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="extra" type="XML" required="false"/>
+
+<!--
+<field name="owner" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>
+		<field name="parent" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>
+		<field name="parenttable" type="INTEGER" required="true" foreignkey="nocascade" default="-1"/>
+		<field name="visibility" type="INTEGER" default="0" required="false" /> -->
 	</data>
 </table>
