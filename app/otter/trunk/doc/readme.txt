@@ -10,7 +10,7 @@ http://www.geotracing.com/otter
 Er verschijnt een pop-up login scherm waarin een vast user/paswoord moet worden ingevoerd:
 
 user: addy
-password: young
+password: (known to all involved)
 
 MOBITRACER
 Deze kan via OTA op de telefoon gedownload te worden met de volgende URL:
@@ -21,7 +21,7 @@ http://www.geotracing.com/mobitracer.html
 http://www.geotracing.com/wiki/index.php/GeoTracing:Apps:MobiTracer
 
 Er is nu 1 user (addy). Dus wordt URL:
-http://www.geotracing.com/otter/ota/mt.jsp?u=addy&p=young
+http://www.geotracing.com/otter/ota/mt.jsp?u=addy&p=(zie hierboven)
 
 BELANGRIJK
 - MobiTracer stuurt niet automatisch GPS info naar server. Er dient altijd eerst een Track
