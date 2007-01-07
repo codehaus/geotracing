@@ -141,7 +141,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	}
 
 	this._displayInfo = function() {
-		DH.setHTML('featureinfo', this.getDate() + ' <a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'' + this.type + '\',\'' + this.name + '\')" >comments (' + this.record.getField('comments') + ')</a>');
+		DH.setHTML('featureinfo', this.getDate() + ' <span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'' + this.type + '\',\'' + this.name + '\')" >comments (' + this.record.getField('comments') + ')</a></span>');
 		if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, this.type, this.name);
 		}

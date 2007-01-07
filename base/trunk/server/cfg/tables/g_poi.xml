@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!-- Point of Interest, generic item coupled to a g_location -->
+<!-- Point of Interest, generic item coupled to a g_location
+  NOTE: not in use anymore but kept for upgrades -->
 <table>
 
     <views>
