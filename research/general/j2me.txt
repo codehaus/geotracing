@@ -42,3 +42,14 @@ http://forum.nokia.com/Technical_Library/FNTL/Detailed_description_MIDP_system_p
 
 - voice midlet
 http://www.seeingwithsound.com/midlet.htm
+
+- micro window toolkit - gui framework
+http://j2me-mwt.sourceforge.net/
+
+googlecal sync using JSR75 PIM package
+http://svn.sourceforge.net/viewvc/gcalsync/src/com/gcalsync/
+
+JSR75 Fileconnection API
+http://developers.sun.com/techtopics/mobility/apis/articles/fileconnection/
+
+

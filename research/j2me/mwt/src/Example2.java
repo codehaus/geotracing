@@ -51,7 +51,7 @@ class Canvas2 extends Canvas implements Runnable, EventListener {
 }
 
 
-public class Example2 extends MIDlet {
+public class  Example2 extends MIDlet {
 	static MIDlet instance;
 	protected void startApp() throws MIDletStateChangeException {
 		instance = this;
