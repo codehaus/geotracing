@@ -1,11 +1,10 @@
 <portal name="otter">
 
-	<!-- Portal definition -->
-	<admin>
-		<loginname>ot</loginname>
-		<password>ot</password>
-	</admin>
-
+	<!-- Standard host-dependent container properties -->
+	<property name="siteurl" host="pundit">http://www.geotracing.com/otter</property>
+	<property name="webappurl" host="pundit">http://www.geotracing.com/otter</property>
+	<property name="siteurl" host="suwa">http://test.geotracing.com/otter</property>
+	<property name="webappurl" host="suwa">http://test.geotracing.com/otter</property>
 
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
