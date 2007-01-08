@@ -9,7 +9,7 @@ package org.walkandplay.server.engine;
  * Constants for MobGame database.
  *
  * @author Just van den Broecke
- * @version $Id: GameDataDef.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  */
 public interface GameDataDef {
 
@@ -101,84 +101,3 @@ public interface GameDataDef {
     public static final String REL_TAG_THUMB = "thumb";
 
 }
-
-/*
- * $Log: GameDataDef.java,v $
- * Revision 1.1.1.1  2006/04/03 09:21:35  rlenz
- * Import of Mobgame
- *
- * Revision 1.25  2005/01/28 13:56:21  just
- * thumb stuff zone intro
- *
- * Revision 1.24  2004/12/15 13:01:33  just
- * *** empty log message ***
- *
- * Revision 1.23  2004/12/15 11:31:22  just
- * *** empty log message ***
- *
- * Revision 1.22  2004/12/14 10:13:30  just
- * *** empty log message ***
- *
- * Revision 1.21  2004/12/09 09:09:56  just
- * *** empty log message ***
- *
- * Revision 1.20  2004/12/07 16:26:17  just
- * *** empty log message ***
- *
- * Revision 1.19  2004/12/06 16:24:46  just
- * added answer-get service
- *
- * Revision 1.18  2004/12/02 12:01:02  just
- * *** empty log message ***
- *
- * Revision 1.17  2004/11/30 10:55:05  just
- * *** empty log message ***
- *
- * Revision 1.16  2004/11/29 15:15:41  just
- * *** empty log message ***
- *
- * Revision 1.15  2004/11/22 21:23:08  just
- * *** empty log message ***
- *
- * Revision 1.14  2004/11/22 13:04:30  just
- * boobytrap placing implemented
- *
- * Revision 1.13  2004/11/16 14:07:07  just
- * *** empty log message ***
- *
- * Revision 1.12  2004/11/16 10:39:55  just
- * *** empty log message ***
- *
- * Revision 1.11  2004/11/15 15:28:54  just
- * *** empty log message ***
- *
- * Revision 1.10  2004/11/15 14:37:18  just
- * *** empty log message ***
- *
- * Revision 1.9  2004/11/10 14:15:15  just
- * *** empty log message ***
- *
- * Revision 1.8  2004/11/10 13:07:44  just
- * *** empty log message ***
- *
- * Revision 1.7  2004/11/02 15:54:58  just
- * *** empty log message ***
- *
- * Revision 1.6  2004/11/02 13:39:34  just
- * *** empty log message ***
- *
- * Revision 1.5  2004/11/01 16:39:17  just
- * *** empty log message ***
- *
- * Revision 1.4  2004/10/21 13:32:30  just
- * location indb
- *
- * Revision 1.3  2004/10/14 21:40:37  just
- * *** empty log message ***
- *
- * Revision 1.2  2004/10/14 15:50:55  just
- * *** empty log message ***
- *
- *
- */
-

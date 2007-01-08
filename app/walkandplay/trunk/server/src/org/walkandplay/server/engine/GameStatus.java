@@ -21,7 +21,7 @@ import java.util.Vector;
  * Manages actual status of all objects in game.
  *
  * @author Just van den Broecke
- * @version $Id: GameStatus.java,v 1.1.1.1 2006/04/03 09:21:36 rlenz Exp $
+ * @version $Id$
  */
 public class GameStatus implements GameDataDef, GameProtocol {
     /**

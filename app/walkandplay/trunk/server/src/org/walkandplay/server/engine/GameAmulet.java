@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * generic Game amulet.
  *
- * @version $Id: GameAmulet.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  * @author Just van den Broecke
  */
 public class GameAmulet extends DefaultAmulet implements GameProtocol, IndicationListener {
@@ -47,7 +47,7 @@ public class GameAmulet extends DefaultAmulet implements GameProtocol, Indicatio
 			logMessage(gameMessage);
 
 			// Let the gameEngine handle all incoming messages.
-			// Handle message, optinal response is returned
+			// Handle message, optional response is returned
 			responseMessage = gameEngine.doMessage(gameMessage);
 
 			// If message returned send back to agent
@@ -58,6 +58,7 @@ public class GameAmulet extends DefaultAmulet implements GameProtocol, Indicatio
 
 			// If any indications received from GameEngine while
 			// processing, send them _after_ response is sent.
+			// MvH how is this synchronized? TODO: check
 			for (int i = 0; i < indications.size(); i++) {
 				sendIndication((GameMessage) indications.get(i));
 			}
@@ -105,7 +106,7 @@ public class GameAmulet extends DefaultAmulet implements GameProtocol, Indicatio
 		try {
             super.init(theContext);
             String space = theContext.getSpaceId();
-            gameEngine = gameEngine.getInstance(space);
+            gameEngine = GameEngine.getInstance(space);
             gameEngine.init();
             gameEngine.addIndicationListener(this);
             log = gameEngine.getLog();

@@ -11,7 +11,7 @@ import org.keyworx.amuse.core.Protocol;
  * Constants for the MobGame protocol.
  *
  * @author Just van den Broecke
- * @version $Id: GameProtocol.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  */
 public interface GameProtocol {
     /**

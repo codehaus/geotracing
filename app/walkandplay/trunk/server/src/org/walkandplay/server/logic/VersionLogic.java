@@ -3,7 +3,7 @@
  *	cd:	Fri May 07 15:55:07 CEST 2004
  *	author:	ronald
  *
- *	$Id: RSSLogic.java,v 1.1.1.1 2005/08/26 13:00:15 rlenz Exp $
+ *	$Id$
  *************************************************************/
 
 package org.walkandplay.server.logic;

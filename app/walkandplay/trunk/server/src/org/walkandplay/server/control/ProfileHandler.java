@@ -2,7 +2,7 @@
 *	cd:	Thu May 06 16:33:32 CEST 2004
 *	author:	Ronald Lenz
 *
-*	$Id: RssHandler.java,v 1.1 2005/08/18 08:43:52 rlenz Exp $
+*	$Id$
 *************************************************************/
 
 package org.walkandplay.server.control;
@@ -18,7 +18,6 @@ import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.walkandplay.server.logic.ProfileLogic;
 
@@ -30,7 +29,7 @@ import java.util.Vector;
  * Redirects the requests to the right logic method
  *
  * @author Ronald Lenz
- * @version $Id: RssHandler.java,v 1.1 2005/08/18 08:43:52 rlenz Exp $
+ * @version $Id$
  */
 public class ProfileHandler extends DefaultHandler {
 
@@ -83,10 +82,10 @@ public class ProfileHandler extends DefaultHandler {
             log.info(new String(response.toBytes(false)));
             return new UtopiaResponse(response);
         } catch (UtopiaException ue) {
-            log.error("Negative response for service=" + service + "; exception:" + ue.getMessage());
+            log.error("Negative response for service: " + service, ue);
             return new UtopiaResponse(createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage()));
         } catch (Throwable t) {
-            log.error("Unexpected error in service : " + service, t);
+            log.error("Unexpected error in service: " + service, t);
             return new UtopiaResponse(createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request"));
         }
     }

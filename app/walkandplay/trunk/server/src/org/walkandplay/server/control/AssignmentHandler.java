@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * RssHandler.
+ * AssignmentHandler.
  * <p/>
  * Redirects the requests to the right logic method
  *
  * @author Ronald Lenz
- * @version $Id: RssHandler.java,v 1.1 2005/08/18 08:43:52 rlenz Exp $
+ * @version $Id$
  */
 public class AssignmentHandler extends DefaultHandler {
 
@@ -39,8 +39,7 @@ public class AssignmentHandler extends DefaultHandler {
      *
      * @param anUtopiaRequest A UtopiaRequest
      * @return A UtopiaResponse.
-     * @throws org.keyworx.utopia.core.data.UtopiaException
-     *          Standard Utopia exception
+     * @throws org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         Log log = Logging.getLog(anUtopiaRequest);
@@ -69,7 +68,7 @@ public class AssignmentHandler extends DefaultHandler {
             log.info(new String(response.toBytes(false)));
             return new UtopiaResponse(response);
         } catch (UtopiaException ue) {
-            log.error("Negative response for service=" + service + "; exception:" + ue.getMessage());
+            log.error("Negative response for service: " + service, ue);
             return new UtopiaResponse(createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage()));
         } catch (Throwable t) {
             log.error("Unexpected error in service : " + service, t);

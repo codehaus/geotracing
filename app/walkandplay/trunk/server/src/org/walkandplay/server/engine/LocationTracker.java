@@ -19,7 +19,7 @@ import java.util.Set;
  * Tracks actual location matters (zones, confrontations).
  *
  * @author Just van den Broecke
- * @version $Id: LocationTracker.java,v 1.1.1.1 2006/04/03 09:21:36 rlenz Exp $
+ * @version $Id$
  */
 public class LocationTracker {
     private HashMap zoneAreas = new HashMap(6);

@@ -18,7 +18,7 @@ import java.util.Date;
  * Log stuff to rotating dayfiles.
  *
  * @author Just van den Broecke
- * @version $Id: DayLogger.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  */
 public class DayLogger implements GameProtocol {
     private Log log;
