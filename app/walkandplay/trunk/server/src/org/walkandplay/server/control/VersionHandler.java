@@ -2,7 +2,7 @@
 *	cd:	Thu May 06 16:33:32 CEST 2004
 *	author:	Ronald Lenz
 *
-*	$Id: RssHandler.java,v 1.1 2005/08/18 08:43:52 rlenz Exp $
+*	$Id$
 *************************************************************/
 
 package org.walkandplay.server.control;
@@ -19,12 +19,12 @@ import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.logic.VersionLogic;
 
 /**
- * RssHandler.
+ * VersionHandler.
  * <p/>
  * Redirects the requests to the right logic method
  *
  * @author Ronald Lenz
- * @version $Id: RssHandler.java,v 1.1 2005/08/18 08:43:52 rlenz Exp $
+ * @version $Id$
  */
 public class VersionHandler extends DefaultHandler {
 
@@ -56,16 +56,15 @@ public class VersionHandler extends DefaultHandler {
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
 			}
 		} catch (UtopiaException ue) {
-			log.warn("Negative response for service=" + service);
+			log.warn("Negative response for service " + service, ue);
 			response = createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage());
 		} catch (Throwable t) {
 			log.error("Unexpected error in service : " + service, t);
 			response = createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request");
 		} finally {
-			// Always return a response
 			log.info("Handled service=" + service + " response=" + response.getTag());
-			return new UtopiaResponse(response);
 		}
+		return new UtopiaResponse(response);
 	}
 
 	public JXElement getVersion(UtopiaRequest anUtopiaRequest) throws UtopiaException {
@@ -109,6 +108,6 @@ public class VersionHandler extends DefaultHandler {
 }
 
 /*
-* $Log:
+* $Log$
 *
 */
