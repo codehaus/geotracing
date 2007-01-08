@@ -21,7 +21,7 @@ package org.walkandplay.server.engine;
  * not apllicable
  *
  * @author Just van den Broecke
- * @version $Id: GameException.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  */
 public class GameException extends Exception {
 

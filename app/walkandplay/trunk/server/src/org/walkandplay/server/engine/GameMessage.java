@@ -13,7 +13,7 @@ import java.util.Date;
  * Message exchanged with GameEngine.
  *
  * @author Just van den Broecke
- * @version $Id: GameMessage.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  */
 public class GameMessage implements GameProtocol {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");

@@ -1,6 +1,6 @@
-/****************************************************************
+/********************************************************************
  * Copyright 2004 - Waag Society - www.waag.org - See license below *
- ****************************************************************/
+ ********************************************************************/
 
 package org.walkandplay.server.engine;
 
@@ -20,12 +20,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 
-
 /**
  * Main engine for MobGame.
  *
  * @author Just van den Broecke
- * @version $Id: GameEngine.java,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ * @version $Id$
  */
 public class GameEngine implements GameProtocol, AlarmListener {
     /**
@@ -1658,20 +1657,25 @@ public class GameEngine implements GameProtocol, AlarmListener {
                     log.warn("Unsupported message tag=" + inMessageTag);
                     throw new GameException("Unsupported message tag=" + inMessageTag);
                 }
-            } catch (Throwable
-                    t) {
+            } catch (Throwable t) {
                 log.warn("Error while processing message ex=" + t + " msg=" + messageInElement);
 
                 // Only Send negative response with request messages except join/leave
                 if (inMessageTag.equals(MSG_JOIN_REQ) || inMessageTag.equals(MSG_LEAVE_REQ)) {
-                    throw new GameException("Error processing " + inMessageTag, t);
+                    if (t instanceof GameException)
+                        throw (GameException)t;
+                    else
+                        throw new GameException("Error processing " + inMessageTag, t);
                 } else if (inMessageTag.endsWith(POSTFIX_REQ)) {
-                    // Cretae and send negative response to player for request
+                    // Create and send negative response to player for request
                     JXElement nrspElement = new JXElement(inMessageTag.replaceAll(POSTFIX_REQ, POSTFIX_NRSP));
                     nrspElement.setAttr(ATTR_ERROR, t.toString());
                     responseMessage = GameMessage.createResponse(aMsgIn, nrspElement);
                 } else {
-                    throw new GameException("Error in GameEngine msg=" + inMessageTag, t);
+                    if (t instanceof GameException)
+                        throw (GameException)t;
+                    else
+                        throw new GameException("Error in GameEngine msg=" + inMessageTag, t);
                 }
 
             }
@@ -1878,7 +1882,7 @@ public class GameEngine implements GameProtocol, AlarmListener {
 
     protected void throwOnMissingAttr(JXElement aMessage, String anAttrName) throws GameException {
 		if (!aMessage.hasAttr(anAttrName)) {
-			throw new GameException("attr missing name=" + anAttrName);
+			throw new GameException("Required attribute missing: " + anAttrName);
 		}
 	}
 

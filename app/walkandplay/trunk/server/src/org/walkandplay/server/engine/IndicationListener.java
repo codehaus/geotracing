@@ -8,7 +8,7 @@ package org.walkandplay.server.engine;
  * Callback for indications from GameEngine.
  *
  * @author Just van den Broecke
- * @version $Id: IndicationListener.java,v 1.1.1.1 2006/04/03 09:21:36 rlenz Exp $
+ * @version $Id$
  */
 public interface IndicationListener {
     void onIndication(GameMessage aMsg);
