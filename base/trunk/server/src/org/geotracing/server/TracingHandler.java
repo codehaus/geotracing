@@ -38,10 +38,7 @@ public class TracingHandler extends DefaultHandler {
 	public final static String T_TRK_EXPORT_SERVICE = "t-trk-export";
 	public final static String T_TRK_DELETE_SERVICE = "t-trk-delete";
 	public final static String T_TRK_ADD_MEDIUM_SERVICE = "t-trk-add-medium";
-	public final static String T_TRK_ADD_POI_SERVICE = "t-trk-add-poi";
 	public final static String T_TRK_DELETE_MEDIUM_SERVICE = "t-trk-delete-medium";
-	public final static String T_TRK_DELETE_POI_SERVICE = "t-trk-delete-poi";
-	public final static String T_TRK_UPDATE_POI_SERVICE = "t-trk-update-poi";
 	public final static String T_TRK_UPLOAD_MEDIUM_SERVICE = "t-trk-upload-medium";
 
 	public final static String TAG_DATA = "data";
@@ -64,6 +61,7 @@ public class TracingHandler extends DefaultHandler {
 	public final static String ATTR_ATTRS = "attrs";
 	public final static String ATTR_MEDIA = "media";
 	public final static String ATTR_POIS = "pois";
+	public final static String VAL_SPOT = "spot";
 
 	protected TrackLogic trackLogic;
 
@@ -108,15 +106,8 @@ public class TracingHandler extends DefaultHandler {
 				response = addMediumReq(anUtopiaReq);
 			} else if (service.equals(T_TRK_UPLOAD_MEDIUM_SERVICE)) {
 				response = uploadMediumReq(anUtopiaReq);
-			} else if (service.equals(T_TRK_ADD_POI_SERVICE)) {
-				response = addPOIReq(anUtopiaReq);
 			} else if (service.equals(T_TRK_DELETE_MEDIUM_SERVICE)) {
 				response = deleteMediumReq(anUtopiaReq);
-			} else if (service.equals(T_TRK_DELETE_POI_SERVICE)) {
-				response = deletePOIReq(anUtopiaReq);
-			} else if (service.equals(T_TRK_UPDATE_POI_SERVICE)) {
-				// not yet
-				response = unknownReq(anUtopiaReq);
 			} else {
 				// To be overridden in subclass
 				response = unknownReq(anUtopiaReq);
@@ -137,7 +128,7 @@ public class TracingHandler extends DefaultHandler {
 
 
 	/**
-	 * Create location for medium.
+	 * Add medium.
 	 * <p/>
 	 * <p/>
 	 * Example
@@ -164,22 +155,6 @@ public class TracingHandler extends DefaultHandler {
 		EventPublisher.mediumAdd(mediumId, location, anUtopiaReq);
 		return rsp;
 	}
-
-
-	/**
-	 * Add Point of Interest to Track NO LONGER SUPPORTED.
-	 * <p>
-	 * POIs have been replaced by text media with tags.
-	 * </p>
-	 * @param anUtopiaReq A UtopiaRequest
-	 * @return A UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
-	 */
-	public JXElement addPOIReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return createNegativeResponse(T_TRK_ADD_POI_SERVICE, Protocol.__4001_Illegal_command, "POIs have been replaced by text media with tags");
-	}
-
 
 	/**
 	 * Create new Track.
@@ -269,37 +244,28 @@ public class TracingHandler extends DefaultHandler {
 		Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 		Medium medium = (Medium) oase.get(Medium.class, id);
 		int intId = medium.getId();
-		Location location = (Location) medium.getRelatedObject(Location.class);
-		Track track = (Track) medium.getRelatedObject(Track.class);
 
-		// Delete both poi and related location
-		location.delete();
+
+		Location location = (Location) medium.getRelatedObject(Location.class);
+		if (location != null) {
+			location.delete();
+		}
+
+		int trackId = -1;
+		Track track = (Track) medium.getRelatedObject(Track.class);
+		if (track != null) {
+			trackId = track.getId();
+		}
+
+		// Delete medium
 		medium.delete();
 
 		// Create response
 		JXElement rsp = createResponse(T_TRK_DELETE_MEDIUM_SERVICE);
 		rsp.setId(intId);
 
-		EventPublisher.mediumDelete(intId, track.getId(), anUtopiaReq);
+		EventPublisher.mediumDelete(intId, trackId, anUtopiaReq);
 		return rsp;
-	}
-
-	/**
-	 * Delete Point of Interest from Track.
-	 * <p/>
-	 * <p/>
-	 * Example
-	 * <code>
-	 * &lt;t-trk-delete-poi-req name="lake view" type="view" t="1247554522225"  /&gt;
-	 * </code>
-	 *
-	 * @param anUtopiaReq A UtopiaRequest
-	 * @return A UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
-	 */
-	public JXElement deletePOIReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return createNegativeResponse(T_TRK_ADD_POI_SERVICE, Protocol.__4001_Illegal_command, "POIs have been replaced by text media with tags");
 	}
 
 	/**
@@ -528,7 +494,7 @@ public class TracingHandler extends DefaultHandler {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		if (reqElm.hasAttr(ATTR_FILE)) {
 			return uploadFileMedium(anUtopiaReq);
-		} else if (reqElm.getChildByTag(TAG_DATA) != null) {
+		} else if (reqElm.getChildByTag(TAG_DATA) != null || reqElm.getAttr(ATTR_TYPE).equals(VAL_SPOT)) {
 			return uploadRawMedium(anUtopiaReq);
 		} else {
 			throw new UtopiaException("Invalid upload request use file or raw data", ErrorCode.__6004_Invalid_attribute_value);
@@ -630,16 +596,27 @@ public class TracingHandler extends DefaultHandler {
 	public JXElement uploadRawMedium(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		String type = reqElm.getAttr(ATTR_TYPE, null);
-		String mime = reqElm.getAttr(ATTR_MIME, null);
+
 		throwOnMissingAttr(ATTR_TYPE, type);
+
+		// Hack: for spots
+		if (type.equals(VAL_SPOT)) {
+			reqElm.setAttr(ATTR_MIME, "spot/location");
+			JXElement data = new JXElement(TAG_DATA);
+			data.setAttr(ATTR_ENCODING, MediaFiler.ENC_RAW);
+			data.setText("spot");
+			reqElm.addChild(data);
+		}
+
+		String mime = reqElm.getAttr(ATTR_MIME, null);
 		throwOnMissingAttr(ATTR_MIME, mime);
 
 		// Fill in fields
 		HashMap fields = new HashMap(2);
 		String name = reqElm.getAttr(ATTR_NAME, "noname");
-		String description = reqElm.getAttr(ATTR_DESCRIPTION, "raw upload by " + getUserName(anUtopiaReq));
+		String description = reqElm.getAttr(ATTR_DESCRIPTION, type + " from " + getUserName(anUtopiaReq));
 
-		// Adds medium and relates it to team
+		// Fill in standard medium fields
 		fields.put(ATTR_NAME, name);
 		fields.put(ATTR_DESCRIPTION, description);
 		fields.put(MediaFiler.FIELD_MIME, mime);
@@ -647,10 +624,12 @@ public class TracingHandler extends DefaultHandler {
 
 		// <data> element contains CDATA file bytes and
 		// how these are encoded in "encoding" attr.
+		// Data must be present except for "spot" medium type
 		JXElement data = reqElm.getChildByTag(TAG_DATA);
 		if (data == null) {
 			throw new UtopiaException("No data in raw medium upload");
 		}
+
 		String encoding = data.getAttr(ATTR_ENCODING, null);
 		throwOnMissingAttr(ATTR_ENCODING, encoding);
 
@@ -661,7 +640,7 @@ public class TracingHandler extends DefaultHandler {
 			Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 			MediaFiler mediaFiler = oase.getMediaFiler();
 			byte[] rawData = new byte[0];
-			if (type.equals(MediaFiler.KIND_TEXT)) {
+			if (type.equals(MediaFiler.KIND_TEXT) || type.equals(VAL_SPOT)) {
 				if (data.hasText()) {
 					rawData = IO.forHTMLTag(data.getText()).getBytes();
 				} else if (data.hasCDATA()) {

@@ -137,7 +137,7 @@ public class Track extends BaseImpl {
 	public static final int VAL_DAY_TRACK = 2;
 
 	/** About train speed. */
-	public static final double MAX_SPEED = 250.0D;
+	public static final double MAX_SPEED = 300.0D;
 
 	private Log log = Logging.getLog("Track");
 

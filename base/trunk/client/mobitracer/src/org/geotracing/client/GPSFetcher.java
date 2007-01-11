@@ -18,6 +18,7 @@ public class GPSFetcher implements Runnable {
 	private InputStream is;
 	private static final int BUF_LEN = 200;
 	private char lineBuffer[] = new char[BUF_LEN];
+	private Object semaphore = new Object();
 
 	/**
 	 * States.
@@ -64,7 +65,10 @@ public class GPSFetcher implements Runnable {
 	 * Get current GPS location.
 	 */
 	public GPSLocation getCurrentLocation() {
-		return currentLocation;
+		// R/W lock
+		synchronized(semaphore) {
+			return currentLocation;
+		}
 	}
 
 	public int getState() {
@@ -111,6 +115,7 @@ public class GPSFetcher implements Runnable {
 
 		lastTimeLocSent = Util.getTime();
 		long lastTimeStatusSent = Util.getTime();
+		GPSLocation bestLocation = null;
 
 		// when we got the service try sending the location data
 		while (workerThread != null && Thread.currentThread() == workerThread) {
@@ -143,12 +148,13 @@ public class GPSFetcher implements Runnable {
 							gpsListener.onGPSInfo(info);
 						}
 
-						// Notify location if interval passed and location available
+						// Notify listener if interval passed and location available
 						if (now - lastTimeLocSent > sampleIntervalMillis) {
-							currentLocation = gpsSmoother.getBestLocation();
-							if (currentLocation != null) {
+							bestLocation = gpsSmoother.getBestLocation();
+							setCurrentLocation(bestLocation);
+							if (bestLocation != null) {
 								gpsSmoother.reset();
-								gpsListener.onGPSLocation(currentLocation);
+								gpsListener.onGPSLocation(bestLocation);
 								lastTimeLocSent = now;
 							}
 						}
@@ -386,4 +392,15 @@ public class GPSFetcher implements Runnable {
 		return aHemisphere.equals("E") ? result : result.Neg();
 
 	}
+
+	/**
+	 * Set current GPS location.
+	 */
+	public void setCurrentLocation(GPSLocation aLoc) {
+		// R/W lock
+		synchronized(semaphore) {
+			currentLocation = aLoc;
+		}
+	}
+
 }

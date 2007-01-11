@@ -8,55 +8,8 @@
  * $Id$
  */
 
-// Abstract Record type implemented  with Obj or XML.
-function Record(anObj) {
-
-	// Get any text/numeric field by name
-	this.getField = function(name) {
-		return null;
-	}
-
-
-	// Debug: render HTML to show record content.
-	this.toHTML = function() {
-		return null;
-	}
-
-}
-
-// Obj-based Record impl
-function ObjRecord(anObj) {
-	Record.apply(this);
-	this.rec = anObj;
-
-	// Get any text/numeric field by name
-	this.getField = function(name) {
-		return this.rec[name];
-	}
-
-
-	// Debug: render HTML to show record content.
-	this.toHTML = function() {
-		var html = '<pre>';
-		var fieldCount = fields.length;
-		var nextField;
-		for (j  in this.recs) {
-			nextField = fields[j];
-			html += j + '=' + this.rec[j];
-
-			html += '\n';
-		}
-
-		html += '\n</pre>';
-		return html;
-	}
-
-}
-
-// XML-based Record impl
-function XMLRecord(xmlElement) {
-	Record.apply(this);
-
+//
+function Record(xmlElement) {
 	this.xml = xmlElement;
 	this.id = -1;
 	if (this.xml.attributes && this.xml.attributes[0]) {
@@ -109,5 +62,4 @@ function XMLRecord(xmlElement) {
 	}
 
 }
-
 

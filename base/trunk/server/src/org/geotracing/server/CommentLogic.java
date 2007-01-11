@@ -11,8 +11,6 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 
 import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
   * Handles all logic related to commenting.
@@ -106,12 +104,30 @@ public class CommentLogic {
 	 * @return the number of comments
 	 * @throws UtopiaException Standard exception
 	 */
-	public static int getCommentCount(Oase oase, int aTargetId) throws UtopiaException {
+	public static int getCommentCountForTarget(Oase oase, int aTargetId) throws UtopiaException {
 		try {
 			Record[] records = oase.getFinder().freeQuery("select count(target) AS comments from " + TABLE_COMMENT + " where " + FIELD_TARGET + " = " + aTargetId);
 			return records.length == 0 ? 0 : Integer.parseInt(records[0].getField("comments").toString());
 		} catch (Throwable t) {
 			throw new UtopiaException("Cannot count comment records for target=" + aTargetId, t, ErrorCode.__6006_database_irregularity_error);
+		}
+	}
+
+
+	/**
+	 * Util: get number of comments for given owner record.
+	 *
+	 * @param oase oase session (for using this in multiple contexts)
+	 * @param anOwnerId id of owner record
+	 * @return the number of comments
+	 * @throws UtopiaException Standard exception
+	 */
+	public static int getCommentCountForOwner(Oase oase, int anOwnerId) throws UtopiaException {
+		try {
+			Record[] records = oase.getFinder().freeQuery("select count(owner) AS comments from " + TABLE_COMMENT + " where " + FIELD_OWNER + " = " + anOwnerId);
+			return records.length == 0 ? 0 : Integer.parseInt(records[0].getField("comments").toString());
+		} catch (Throwable t) {
+			throw new UtopiaException("Cannot count comment records for owner=" + anOwnerId, t, ErrorCode.__6006_database_irregularity_error);
 		}
 	}
 
@@ -135,7 +151,7 @@ public class CommentLogic {
 			throw new UtopiaException("Cannot get commenters records for target=" + aTargetId, t, ErrorCode.__6006_database_irregularity_error);
 		}
 	}
-	
+
 	/**
 	 * Inserts a comment.
 	 *
@@ -162,7 +178,7 @@ public class CommentLogic {
 			aRecord.setIntField(FIELD_TARGET_TABLE, targetTableId);
 
 			// Check if max comment count exceeded
-			if ((getCommentCount(oase, targetId) >=
+			if ((getCommentCountForTarget(oase, targetId) >=
 				Integer.parseInt(properties.getProperty(PROP_MAX_COMMENTS_PER_TARGET, "128")))) {
 				throw new UtopiaException("Maximum comment count exceeded");
 			}

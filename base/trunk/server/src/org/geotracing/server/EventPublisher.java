@@ -57,10 +57,6 @@ public class EventPublisher {
 	public static final String EVENT_USER_MOVE = "user-move";
 	public static final String EVENT_COMMENT_ADD = "comment-add";
 	public static final String EVENT_MEDIUM_ADD = "medium-add";
-	public static final String EVENT_POI_ADD = "poi-add";
-	public static final String EVENT_POI_DELETE = "poi-delete";
-	public static final String EVENT_POI_HIT = "poi-hit";
-	public static final String EVENT_POI_UPDATE = "poi-update";
 	public static final String EVENT_TRACK_CREATE = "track-create";
 	public static final String EVENT_TRACK_DELETE = "track-delete";
 	public static final String EVENT_TRACK_SUSPEND = "track-suspend";
@@ -172,7 +168,6 @@ public class EventPublisher {
 			Person person = medium.getPerson(null);
 			Account account = person.getAccount();
 			String accountName = account.getLoginName();
-			Track track = (Track) medium.getRelatedObject(Track.class);
 
 			// Pushlet event
 			Event event = Event.createDataEvent(PUSHLET_SUBJECT);
@@ -185,14 +180,19 @@ public class EventPublisher {
 			event.setField(FIELD_USER_ID, person.getId());
 			event.setField(FIELD_USER_NAME, accountName);
 
-			event.setField(FIELD_TRACK_ID, track.getId());
-			event.setField(FIELD_TRACK_NAME, track.getName());
+			// Send track info if medium is related to track
+			Track track = (Track) medium.getRelatedObject(Track.class);
+			if (track != null) {
+				event.setField(FIELD_TRACK_ID, track.getId());
+				event.setField(FIELD_TRACK_NAME, track.getName());
+			}
 
 			// Only if location supplied
 			GeoPoint point = aLocation.getLocation();
 			event.setField(Location.FIELD_LON, point.lon + "");
 			event.setField(Location.FIELD_LAT, point.lat + "");
 			event.setField(Location.FIELD_ELE, point.elevation + "");
+
 			// Send pushlet event
 			multicast(event);
 			log.trace("Published: " + event);
@@ -211,40 +211,6 @@ public class EventPublisher {
 	}
 
 	/**
-	 * POI has been deleted.
-	 */
-	public static void poiDelete(int aPOIId, int aTrackId, UtopiaRequest anUtopiaRequest) {
-		Log log = Logging.getLog(anUtopiaRequest);
-
-		try {
-			// Get account name for event subject
-			// Expensive but we have to
-			UtopiaSessionContext sc = anUtopiaRequest.getUtopiaSession().getContext();
-			Oase oase = sc.getOase();
-			Person person = (Person) oase.get(Person.class, sc.getUserId());
-			Account account = person.getAccount();
-			String accountName = account.getLoginName();
-
-			// Pushlet event
-			Event event = Event.createDataEvent(PUSHLET_SUBJECT);
-			event.setField(FIELD_EVENT, EVENT_POI_DELETE);
-			event.setField(FIELD_ID, aPOIId);
-			Track track = (Track) oase.get(Track.class, aTrackId + "");
-			event.setField(FIELD_TRACK_ID, track.getId());
-			event.setField(FIELD_TRACK_NAME, track.getName());
-
-			event.setField(FIELD_USER_ID, person.getId());
-			event.setField(FIELD_USER_NAME, accountName);
-
-			multicast(event);
-			log.trace("Published: " + event);
-
-		} catch (Throwable t) {
-			log.warn("Cannot publish event " + EVENT_POI_DELETE + " for poi=" + aPOIId + " trackId=" + aTrackId, t);
-		}
-	}
-
-	/**
 	 * Publish new Track added.
 	 */
 	public static void trackCreate(int aTrackId, UtopiaRequest anUtopiaRequest) {
@@ -256,7 +222,6 @@ public class EventPublisher {
 	 */
 	public static void trackDelete(int aTrackId, UtopiaRequest anUtopiaRequest) {
 		trackEvent(EVENT_TRACK_DELETE, aTrackId, anUtopiaRequest);
-
 	}
 
 	/**
