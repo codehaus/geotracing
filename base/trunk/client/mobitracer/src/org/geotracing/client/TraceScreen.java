@@ -406,8 +406,6 @@ public class TraceScreen extends GameCanvas {
 			}
 			g.setColor(aColor);
 			g.drawLine(x1, y1, x2, y2);
-
-
 		}
 	}
 

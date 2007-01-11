@@ -115,7 +115,7 @@ public class TracerDaemon extends Daemon {
 		public void run() {
 
 			try {
-				// Let KW initialize
+				// Let all initialize
 				Thread.sleep(Rand.randomLong(10000L, 20000L));
 
 				log.info("Start Tracer loop for user=" + traceSpec.getAttr("user"));
@@ -136,9 +136,18 @@ public class TracerDaemon extends Daemon {
 						if (nextTag.equals(Track.TAG_PT)) {
 							writeTrack(nextElm);
 
-							// Only sleep after writng points
-							Thread.sleep(Rand.randomLong(intervalMillis / 2, intervalMillis));
+							// Only sleep after writing points
+							sleep();
 						} else if (nextTag.equals("medium")) {
+							// Submit point first if medium has a location
+							if (nextElm.hasAttr("lon")  && nextElm.hasAttr("lat")) {
+								JXElement pt = new JXElement(Track.TAG_PT);
+								pt.setAttr("lon", nextElm.getAttr("lon"));
+								pt.setAttr("lat", nextElm.getAttr("lat"));
+								writeTrack(pt);
+								// Only sleep after writing points
+								sleep();
+							}
 							uploadMedium(nextElm);
 						} else if (nextTag.equals("resume")) {
 							resumeTrack();
@@ -159,6 +168,11 @@ public class TracerDaemon extends Daemon {
 				bailout();
 			}
 
+		}
+
+		/** Sleep random time with average the configured time. */
+		protected void sleep() throws InterruptedException {
+			Thread.sleep(Rand.randomLong(intervalMillis / 2, intervalMillis + (intervalMillis / 2)));
 		}
 
 		protected void bailout() {
@@ -231,7 +245,7 @@ public class TracerDaemon extends Daemon {
 				req.setAttr("mime", "video/3gpp");
 			}
 
-			// To save the file (Oase willmove the file...).
+			// To save the file (Oase will move the file...).
 			IO.cp(filePath, uploadFilePath);
 
 			// Set request data

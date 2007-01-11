@@ -144,8 +144,8 @@ public class TrackLogic {
 
 			// OK a track found
 
-			// Find nearest point int time within track
-			GeoPoint geoPoint = getPointByDate(aPersonId, aDate);
+			// Find nearest point in time within track
+			GeoPoint geoPoint = getPointByDate(track, aDate);
 			if (geoPoint == null) {
 				log.warn("Cannot find GeoPoint for person=" + aPersonId + " record=" + aRecordId + " tag=" + aTag);
 				throw new UtopiaException("Cannot find GeoPoint for record=" + aRecordId + " tag=" + aTag);
@@ -153,7 +153,7 @@ public class TrackLogic {
 
 			// OK point found
 
-			// Relate Medium to Track
+			// Relate record to Track
 			track.createRelation(aRecordId, aTag);
 
 			// Create and relate location record
@@ -164,7 +164,7 @@ public class TrackLogic {
 			location.saveInsert();
 			location.createRelation(aRecordId, aTag);
 			transaction.commit();
-			log.info("Related Location " + location.getId() + " and Track " + track.getId() + " to Record " + aRecordId + " tag=" + aTag);
+			log.trace("Related Location " + location.getId() + " and Track " + track.getId() + " to Record " + aRecordId + " tag=" + aTag);
 
 			return location;
 		} catch (UtopiaException ue) {
@@ -174,7 +174,6 @@ public class TrackLogic {
 			oase.cancelTransaction(transaction);
 			throw new UtopiaException("Error in createLocation() time=" + new Date(aDate) + " record id=" + aRecordId + " tag=" + aTag, t);
 		}
-
 	}
 
 	/**
@@ -188,18 +187,12 @@ public class TrackLogic {
 		log.trace("Start TrackLogic.createLocation");
 		long timestamp = -1L;
 		try {
-			log.info("Creating Location for Medium id=" + aMediumId);
+			log.trace("Creating Location for Medium id=" + aMediumId);
 
 			// Find medium
 			Medium medium = (Medium) oase.get(Medium.class, aMediumId + "");
 			if (medium == null) {
 				throw new UtopiaException("Cannot find medium id=" + aMediumId);
-			}
-
-			// Find Person related to Medium
-			Person person = medium.getPerson(null);
-			if (person == null) {
-				throw new UtopiaException("Cannot find Person for medium id=" + aMediumId);
 			}
 
 			Record mediumRecord = medium.getRecord();
@@ -217,13 +210,21 @@ public class TrackLogic {
 					// e.g. 20040520-120454
 					String dateString = stdout.toString();
 					if (dateString != null && dateString.trim().length() > 0) {
-						Date date = EXIF_TIME_FORMAT.parse(dateString);
-						log.trace("Got date from EXIF date=" + dateString + " java Date=" + date);
+						Date date = null;
+						try {
+							date = EXIF_TIME_FORMAT.parse(dateString);
+							log.trace("Got date from EXIF date=" + dateString + " java Date=" + date);
+						} catch (ParseException pe) {
+						   log.warn("Could not parse EXIF date: [" + dateString + "] for medium id=" + aMediumId);
+							// timestamp will be medium creation date
+						}
 
-						// Update Medium creationdate
-						timestamp = date.getTime();
-						mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timestamp));
-						medium.saveUpdate();
+						// Update Medium creationdate if valid date found
+						if (date != null) {
+							timestamp = date.getTime();
+							mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timestamp));
+							medium.saveUpdate();
+						}
 					} else {
 						log.trace("exifdate returned " + exitCode + " but no date");
 					}
@@ -237,6 +238,11 @@ public class TrackLogic {
 				timestamp = mediumRecord.getTimestampField(MediaFiler.FIELD_CREATIONDATE).getTime();
 			}
 
+			// Find Person related to Medium
+			Person person = medium.getPerson(null);
+			if (person == null) {
+				throw new UtopiaException("Cannot find Person for medium id=" + aMediumId);
+			}
 			return createLocation(person.getId(), aMediumId, timestamp, REL_TAG_MEDIUM);
 
 		} catch (UtopiaException ue) {

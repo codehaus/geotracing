@@ -144,8 +144,8 @@ public class QueryHandler extends DefaultHandler {
 	 */
 	static public JXElement queryStoreReq(Oase oase, String tables, String fields, String where, String relations, String postCond) throws UtopiaException {
 		JXElement rsp = Protocol.createResponse(QUERY_STORE_SERVICE);
-		rsp.setAttr(ATTR_TABLES, tables);
-		rsp.setAttr(ATTR_FIELDS, fields);
+		// rsp.setAttr(ATTR_TABLES, tables);
+		// rsp.setAttr(ATTR_FIELDS, fields);
 		try {
 
 			// Do query with Record[] result

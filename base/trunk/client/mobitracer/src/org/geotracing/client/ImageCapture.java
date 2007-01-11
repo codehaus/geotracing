@@ -34,6 +34,7 @@ public class ImageCapture extends Form implements CommandListener {
 	private MIDlet midlet;
 	private Displayable prevScreen;
 	private StringItem status = new StringItem("", "Photo Capture");
+	private GPSLocation location;
 
 	public ImageCapture(MIDlet aMIDlet) {
 		super("Take a picture");
@@ -101,6 +102,8 @@ public class ImageCapture extends Form implements CommandListener {
  // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
 			status.setText("WAIT, taking photo...");
 
+			location = GPSFetcher.getInstance().getCurrentLocation();
+			photoTime = Util.getTime();
 
 			try {
 				photoData = video.getSnapshot(
@@ -112,7 +115,6 @@ public class ImageCapture extends Form implements CommandListener {
 			}
 
 			photoMime = "image/jpeg";
-			photoTime = Util.getTime();
 
 			player.stop();
 			player.close();

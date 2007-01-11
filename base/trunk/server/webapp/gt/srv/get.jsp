@@ -1,6 +1,4 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement,
-				 org.geotracing.server.QueryHandler,
-				 org.geotracing.server.TrackLogic,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
 				 org.keyworx.common.log.Log,
@@ -13,7 +11,6 @@
 <%@ page import="javax.servlet.ServletRequest" %>
 <%@ page import="java.io.Writer" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="org.geotracing.server.CommentLogic" %>
 <%@ page import="org.keyworx.plugin.tagging.logic.TagLogic" %>
 <%@ page import="org.geotracing.gis.GeoPoint" %>
 <%@ page import="org.geotracing.gis.XYDouble" %>
@@ -22,6 +19,9 @@
 <%@ page import="java.io.IOException"%>
 <%@ page import="nl.justobjects.jox.dom.JXAttributeTable"%>
 <%@ page import="java.util.*"%>
+<%@ page import="nl.justobjects.jox.parser.JXBuilder"%>
+<%@ page import="org.geotracing.server.*"%>
+<%@ page import="org.keyworx.oase.api.OaseException"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -326,7 +326,7 @@
 	}
 
 	/** Adds account and person attrs to query response records. */
-	public void addCommentCounts(JXElement rsp) throws Exception {
+	public void addTargetCommentCounts(JXElement rsp) throws Exception {
 		Vector records = rsp.getChildren();
 		JXElement nextRecordElm;
 		String targetId;
@@ -341,8 +341,8 @@
 				targetId = nextRecordElm.getAttr("id");
 			}
 
-			// Add the location attrs
-			nextRecordElm.setChildText("comments", CommentLogic.getCommentCount(oase, Integer.parseInt(targetId)) + "");
+			// Add the comment count
+			nextRecordElm.setChildText("comments", CommentLogic.getCommentCountForTarget(oase, Integer.parseInt(targetId)) + "");
 		}
 	}
 
@@ -376,99 +376,97 @@
 		return values;
 	}
 
-	class JSONEncoder implements JXVisitor {
+
+	class JSONQueryEncoder  {
 		private Writer writer;
+		private boolean debug = false;
 
-		public JSONEncoder() {
+		public JSONQueryEncoder() {
 		}
 
-		public void encode(JXElement anElement, Writer aStringBuffer) throws IOException {
-			writer = aStringBuffer;
-			output("<pre>{");
-			new JXWalker(this).traverse(anElement);
-			output("</pre>}");
-		}
+		public void encode(JXElement aQueryResult, Writer aWriter) throws Exception {
+			writer = aWriter;
+			outputD("<pre>");
+			output("{");
+			output("query_rsp");
 
-		public void visitElementPre(JXElement element)   {
-			if (hasSimilarSiblings(element)) {
-				if (isFirstChild(element)) {
-					outputString(element.getTag());
-					output(": ");
 
-					output("\n[");
-				}
-			} else {
-				outputString(element.getTag());
-				output(": ");
-			}
-			if (element.hasChildren() || hasAttrs(element)) {
-				output("{");
-			}
-			visitAttrs(element);
-		}
-
-		public void visitElementPost(JXElement element)  {
-			if (hasSimilarSiblings(element)) {
-				if (isLastChild(element)) {
-					output("]\n");
-				} else {
-					output(",\n");
-				}
-			} else {
-				if (!element.hasChildren() && !hasAttrs(element) && isLastChild(element)) {
-					output("}\n");
-				}
-				if (!isLastChild(element) || hasAttrs(element)) {
+			output(": { cnt: ");
+			outputString(aQueryResult.getAttr("cnt"));
+			output(", records: [");
+			Vector records = aQueryResult.getChildren();
+			int cnt = records.size();
+			for (int i=0; i < cnt; i++) {
+				outputRecord((JXElement) records.get(i));
+				if (i < cnt -1) {
 					output(",\n");
 				}
 			}
+			output("]");
+			output("}");
+			output("}");
+			outputD("</pre>");
 		}
 
-		public void visitCDATA(byte[] theCDATA) {
-			//output("<![CDATA[");
-			outputString(new String(theCDATA));
-			// output("]]>");
-		}
-
-		public void visitText(String text)  {
-			outputString(text);
-		}
-
-
-		private boolean hasAttrs(JXElement element)   {
-			return element.getAttrs() != null &&  element.getAttrs().size() > 0;
-		}
-
-
-		private boolean hasSiblings(JXElement element)   {
-			return element.getParent() != null &&  element.getParent().getChildCount() > 1;
-		}
-
-		private boolean isFirstChild(JXElement element)   {
-				return hasSiblings(element) && element.getParent().getChildren().get(0) == element;
-		}
-
-		private boolean isLastChild(JXElement element)   {
-				return hasSiblings(element) && element.getParent().getChildren().get(element.getParent().getChildCount()-1) == element;
-		}
-
-		private boolean hasSimilarSiblings(JXElement element)   {
-				return hasSiblings(element) && element.getParent().getChildrenByTag(element.getTag()).size() > 1;
-		}
-
-		private void visitAttrs(JXElement element)   {
-			JXAttributeTable attrs = element.getAttrs();
-			Iterator iter = attrs.keys();
-			String n,v;
-			while (iter.hasNext()) {
-				n = (String) iter.next();
-				v = attrs.get(n);
-				outputString(n);
-				output(": ");
-				outputString(v);
-				if (iter.hasNext()) output(", ");
+		private void outputRecord(JXElement aRec) throws Exception {
+			Vector fields = aRec.getChildren();
+			if (fields.size() == 0) {
+				return;
 			}
+
+			StringBuffer sb=new StringBuffer();
+			sb.append("{");
+
+			JXElement field;
+			String encodedField= null;
+			for (int i=0; i < fields.size(); i++) {
+				field = (JXElement) fields.get(i);
+				if (field.getTag().equals("extra")) {
+					if (field.hasChildren()) {
+						fields.addAll(field.getChildAt(0).getChildren());
+					} else if (field.hasText() && field.getText().trim().length() != 0) {
+						fields.addAll(new JXBuilder().build(field.getText()).getChildren());
+					}
+					continue;
+				}
+
+				encodedField = encodeField(field);
+				if (encodedField != null) {
+					sb.append(encodedField);
+					sb.append(",\n");
+				}
+
+				// outputD("\n");
+			}
+
+			// Crude but simplest way to deal with last "," (all kinds of exceptions,
+			// empty fields etc.
+			sb.replace(sb.length()-2, sb.length()-1, " ");
+			sb.append("}");
+			output(sb.toString());
+			outputD("\n");
 		}
+
+		private String encodeField(JXElement field) throws Exception {
+			if (!field.hasText()) {
+				return null;
+			}
+
+			String text = field.getText().trim();
+			if (text.length() == 0) {
+				return null;
+			}
+			String name = field.getTag().replaceAll("-", "");
+			return name + ": '" + text + "'";
+		}
+
+		private void outputD(String s) {
+			if (!debug) {
+				return;
+			}
+			output(s);
+		}
+
 		private void output(String s) {
 			try {
 				writer.write(s);
@@ -479,17 +477,9 @@
 
 		private void outputString(String s) {
 			try {
-				writer.write("\"" + s + "\"");
+				writer.write("'" + s + "'");
 			} catch (IOException ioe) {
 				System.out.println("error: " + ioe);
-			}
-		}
-
-		private void output(char s) {
-			try {
-				writer.write(s);
-			} catch (IOException ioe) {
-
 			}
 		}
 	}
@@ -524,7 +514,7 @@
 				String name, value;
 				while (fields.hasMoreElements()) {
 					name = (String) fields.nextElement();
-					if (name.equals("table") || name.equals("cmd") || name.equals("t")) {
+					if (name.equals("table") || name.equals("cmd") || name.equals("t") || name.equals("output")) {
 						// Skip
 						continue;
 					}
@@ -818,7 +808,7 @@
 			} else if (command.equals(CMD_QUERY_COMMENT_COUNT_FOR_TARGET)) {
 				String targetId = getParameter(request, PAR_TARGET, null);
 				throwOnMissingParm(PAR_TARGET, targetId);
-				String count = CommentLogic.getCommentCount(oase, Integer.parseInt(targetId)) + "";
+				String count = CommentLogic.getCommentCountForTarget(oase, Integer.parseInt(targetId)) + "";
 
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
 				JXElement countElm = new JXElement("count");
@@ -894,7 +884,7 @@
 				fields = "base_medium.id,base_medium.kind,base_medium.mime,base_medium.name,base_medium.description,base_medium.creationdate";
 				where = "utopia_person.id = " + personId;
 				relations = "base_medium,utopia_person";
-				postCond = "ORDER BY base_medium.id DESC";
+				postCond = "ORDER BY base_medium.creationdate DESC";
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 				// Now add login name to each record element in response
@@ -971,7 +961,7 @@
 				addUserAttrs(result, records[0].getTableName());
 
 				// Add number of comments
-				addCommentCounts(result);
+				addTargetCommentCounts(result);
 			} else if (command.equals(CMD_QUERY_USER_BY_NAME)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
@@ -1002,6 +992,9 @@
 				userInfo.setChildText("id", person.getIdString());
 				userInfo.setChildText("loginname", loginName);
 
+				// Member since
+				userInfo.setChildText("creationdate", person.getLongField("creationdate") + "");
+
 				// Optional profile info
 				if (!person.isNull("extra")) {
 					userInfo.addChild(person.getXMLField("extra"));
@@ -1017,8 +1010,53 @@
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
 				result.addChild(userInfo);
 
-				// Add number of comments
-				addCommentCounts(result);
+				// Add number of comments on person
+				addTargetCommentCounts(result);
+
+				// Add number of comments made by person
+				int cmtMadeCnt = CommentLogic.getCommentCountForOwner(oase, person.getId());
+				userInfo.setChildText("commentsmade", cmtMadeCnt+"");
+
+				// Add media count
+				// TODO: add Relater.getRelatedCount()
+				int mediaCnt = oase.getRelater().getRelated(person, "base_medium", null).length;
+				userInfo.setChildText("media", mediaCnt+"");
+
+				// Add location
+				// TODO: add g_location related to persons
+				TrackLogic trackLogic = new TrackLogic(oase);
+				Track activeTrack = trackLogic.getActiveTrack(person.getId());
+				if (activeTrack != null) {
+					Location loc = (Location) activeTrack.getRelatedObject(Location.class, "lastpt");
+					if (loc != null) {
+						GeoPoint pt = loc.getLocation();
+						userInfo.setChildText("lon", pt.lon + "");
+						userInfo.setChildText("lat", pt.lat + "");
+						userInfo.setChildText("lonlattime", pt.timestamp + "");
+					}
+				}
+
+				// Add tags made on this person
+				String tags = new TagLogic(oase.getOaseSession()).getTagsString(person.getId(), person.getId());
+/*					Record[] tagRelations = new TagLogic(oase.getOaseSession()).getTags(null, new int[] {person.getId()}, null, -1, -1);
+
+					StringBuffer res = new StringBuffer();
+					for (int i = 0; i < tagRelations.length; i++) {
+						String tag = tagRelations[i].getStringField(TagLogic.NAME_COLUMN);
+						if (i != 0) {
+							res.append(' ');
+						}
+						if (tag.indexOf(' ') > 0) {
+							res.append("'").append(tag).append("'");
+						}
+						else {
+							res.append(tag);
+						}
+					}
+
+					String tags = res.toString();
+ */
+				userInfo.setChildText("tags", tags);
 			} else if (command.equals(CMD_QUERY_USER_IMAGE)) {
 				String loginName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
@@ -1163,7 +1201,9 @@
 			// response.setContentType("text/plain;charset=utf-8");
 			try {
 				Writer writer = response.getWriter();
-				new JSONEncoder().encode(result, writer);
+				new JSONQueryEncoder().encode(result, writer);
+				Vector records = result.getChildren();
+
 				writer.flush();
 				writer.close();
 			} catch (Throwable th) {

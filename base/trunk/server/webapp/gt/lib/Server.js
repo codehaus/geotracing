@@ -25,6 +25,7 @@ var SRV = {
 	url: 'srv/get.jsp?',
 	putURL: null,
 	initialized: false,
+	QUERY_OUTPUT_FMT: 'xml',
 
 	addChildTextNode: function(doc, parent, tag, text) {
 		if (!text || text == null) {
@@ -116,13 +117,19 @@ var SRV = {
 		if (cmd.indexOf("q-") != -1) {
 			// Query-type request: intercept and convert result to records
 			// before doing callback
+			url += '&output=' + SRV.QUERY_OUTPUT_FMT;
+
+			// Set function for XHR based on target return format (json or xml)
+			var getFun = SRV.QUERY_OUTPUT_FMT == 'json' ? DH.getURL : DH.getXML;
+
 			if (callback != null) {
 				qr = new SRV._queryRspHandler(callback);
-				DH.getXML(url, qr.onQueryRsp);
+				getFun(url, qr.onQueryRsp);
 			} else {
-				return SRV._rsp2Records(DH.getXML(url));
+				return SRV._rsp2Records(getFun(url));
 			}
 		} else {
+			// Other requests (non-queries), these always use XML (for now)
 			if (callback != null) {
 				DH.getXML(url, callback);
 			} else {
@@ -145,7 +152,8 @@ var SRV = {
 		}
 	},
 
-// Do generic query to KW server
+/*
+// general query (disabled also on server so don't even try)
 	query: function(callback, tables, fields, where, rels, orderby, directions) {
 		var qs = 'cmd=q-store';
 		qs = SRV._xpand(qs, 'tables', tables);
@@ -161,6 +169,7 @@ var SRV = {
 			return SRV._rsp2Records(DH.getXML(SRV.url + qs));
 		}
 	},
+*/
 
 // Internal util object to allow interception of callback
 	_queryRspHandler: function(cb) {
@@ -168,14 +177,23 @@ var SRV = {
 		// This is needed since JS only allows local scope vars for
 		// callbacks. See also http://w3future.com/html/stories/callbacks.xml
 		var userCallback = cb;
-		this.onQueryRsp = function(xml) {
-			// Call original user
-			userCallback(SRV._rsp2Records(xml));
+		this.onQueryRsp = function(rsp) {
+			// Call original user with response formatted as Record array
+			userCallback(SRV._rsp2Records(rsp));
 		}
 	},
 
-// Internal util to convert XML response to Record array
-	_rsp2Records: function(xml) {
+	_rsp2Records: function(rsp) {
+		// Call response formatter for target output format
+		if (SRV.QUERY_OUTPUT_FMT == 'xml') {
+			return SRV._rsp2XMLRecords(rsp);
+		} else if (SRV.QUERY_OUTPUT_FMT == 'json') {
+			return SRV._rsp2ObjRecords(rsp);
+		}
+	},
+
+// Internal util to convert XML response to XMLRecord array
+	_rsp2XMLRecords: function(xml) {
 		var records = [];
 		if (!xml) {
 			return records;
@@ -189,10 +207,30 @@ var SRV = {
 		// Convert xml doc to array of Record objects
 		var recordElements = xml.documentElement.getElementsByTagName('record');
 		for (i = 0; i < recordElements.length; i++) {
-			records.push(new Record(recordElements[i]));
+			records.push(new XMLRecord(recordElements[i]));
 		}
 
-		// Call original user
+		return records;
+
+	},
+
+// Internal util to convert JSON text response to object Record array
+	_rsp2ObjRecords: function(text) {
+		var records = [];
+		if (!text) {
+			return records;
+		}
+
+		// Parse the JSON response text by simple eval()
+		var jsonObj = eval('(' + text + ')');
+
+		// Obtain the array of object records
+		var objs = jsonObj.query_rsp.records;
+		
+		for (i = 0; i < objs.length; i++) {
+			records.push(new ObjRecord(objs[i]));
+		}
+
 		return records;
 
 	},

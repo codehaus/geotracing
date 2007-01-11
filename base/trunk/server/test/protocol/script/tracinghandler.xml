@@ -335,6 +335,45 @@
 
 	</test>
 
+	<test id="t-trk-upload-spot-medium">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,123511.000,5213.5053,N,00449.0491,E,1,05,3.3,50.5,M,47.0,M,73.7,0000*71"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-upload-medium-req
+						type="spot"
+						name="spot upload" tags="tag1 tag2">
+				</t-trk-upload-medium-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-upload-medium-rsp id="${mediumid1000}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+
+	</test>
+
 	<test id="t-trk-upload-medium-no-loc">
 		<send id="client1">
 			<utopia-req>
