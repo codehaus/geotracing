@@ -662,11 +662,6 @@
 				}
 				return result;
 
-				// result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
-
-				// Add account/person attrs to each record
-				// addUserAttrs(result, "base_medium");
-
 			} else if (command.equals(CMD_QUERY_ACTIVE_TRACKS)) {
 				// Niet mooi maar wel optimized!!
 
@@ -1214,5 +1209,5 @@
 			log.info("[" + oase.getOaseSession().getContextId() + "] cmd=" + command + " rsp=" + result.getTag() + " childcount=" + result.getChildCount() + " dt=" + (Sys.now() - t1) + " ms");
 		}
 
-		}
+	}
 %>

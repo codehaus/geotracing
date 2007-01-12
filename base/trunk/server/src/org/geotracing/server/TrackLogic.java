@@ -704,6 +704,12 @@ public class TrackLogic {
 			throw new UtopiaException("no track events could be distilled from GPX: ", ErrorCode.__6004_Invalid_attribute_value);
 		}
 
+		// Add Waypoints as media
+		Vector wptElms = aTrackDoc.getChildrenByTag("wpt");
+		if (wptElms != null && wptElms.size() > 0) {
+			// TODO import waypoints		
+		}
+
 		// Create and save the track
 		Track track = Track.create(oase);
 		track.insert(aPersonId, aName, Track.VAL_NORMAL_TRACK, startTime);
