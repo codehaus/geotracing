@@ -39,6 +39,7 @@
 				<property name="allow-anonymous">true</property>
 				<property name="max-commments-per-target">256</property>
 				<property name="max-content-chars">1024</property>
+				<property name="thread-alert">false</property>
 			</handler>
 
 			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
@@ -49,7 +50,7 @@
 		<daemons>
 			<!-- Tracer Bot -->
 			<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
-				<property name="intervalMillis">20000</property>
+				<property name="intervalMillis">40000</property>
 			</daemon>
 
 			<daemon id="emailupload" class="org.geotracing.server.LocEmailUploadDaemon">

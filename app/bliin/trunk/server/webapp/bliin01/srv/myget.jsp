@@ -1,11 +1,12 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement" %>
 <%@ page import="org.geotracing.server.QueryHandler"%>
+<%@ page import="org.keyworx.common.util.Sys"%>
+<%@ page import="java.io.Writer"%>
 <%!
-	static JXElement allLocMedia = null;
-	static Object semaphore = new Object();
-	static boolean allLocMediaAvail;
+	static boolean doWorldCache = false;
 
-	
+
+
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 	// Distributable under LGPL license. See terms of license at gnu.org.
 
@@ -50,8 +51,8 @@
 				if (random.equals("true")) {
 					postCond = "ORDER BY RAND()";
 				} else {
-//                              postCond = "ORDER BY base_medium.creationdate";
-					postCond = "";
+                    postCond = "ORDER BY base_medium.creationdate";
+//					postCond = "";
 				}
 
 				// Limit
@@ -61,11 +62,27 @@
 				}
 
 				// If whole world is asked check if cached result can be sent.
-				if (bboxParm == null && type == null && random.equals("false") && limitParm == null) {
-
+				if (bboxParm == null && type == null && random.equals("false") && limitParm == null && doWorldCache) {
+/*					String resultStr = getCachedWorldResult();
+					if (resultStr != null) {
+						log.info("[bliin]: WORLD QUERY FROM CACHE");
+						sendCachedWorldResult(resultStr, response);
+						return null;
+					}
+					startCachedWorldResult();
+					log.info("[bliin]: CACHING WORLD QUERY...");   */
 				}
-				// log.info("[bliin]: q-locative-media: bbox=" + bboxParm + " post=" + postCond);
+
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+
+				if (bboxParm == null && type == null && random.equals("false") && limitParm == null && doWorldCache) {
+/*					String resultStr = result.toFormattedString();
+					setCachedWorldResult(resultStr);
+					sendCachedWorldResult(resultStr, response);
+					log.info("[bliin]: CACHED WORLD QUERY...");
+					return null;  */
+				}
+
 				// Add account/person attrs to each record
 				// addUserAttrs(rsp);
 			}
