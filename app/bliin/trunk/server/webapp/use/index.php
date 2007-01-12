@@ -3,12 +3,7 @@
 	switch($_SERVER["HTTP_HOST"])
 	{
 		case "usemedia": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRR9K9grcqoQe1tHkLoYPt38-q6EehRkJh5NYPiv32J2_6Cs7EtFN96o0w"; $type="local"; break;
-		case "usemedia.com": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRQ_y3i7FSrCglSSyfP-FW5M8WzNDRQl7G3hXJjilL4PPAWXz6YqCFXZxg"; $type="online"; break;
-		case "10.0.0.10": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRSFk-7AvQV6RhBkzTYsQpll8kn_DxTp40opXPwBqQjhF4QD6U-eNfa3IQ"; $type="local"; break;
-		case "10.0.0.24": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRQyfKW4SMvPG3bUv0tUJELmSNWZ4RRc0I_6P7I4dUDoFS7RW7lfsZRX6A"; $type="local"; break;
-		case "10.0.0.65": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRSgIAC2n51Qq8ysXLqCa0ImPTKEaRRwCE0r_ELd8XJ1O9YJrFXpI3m1vg"; $type="local"; break;
-		case "test.bliin.com": $key= "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRaFM1CcN2gMQttgnVHymouQH3a0BTnNKtg9rGNehhUa9fW1zc21QIajw"; $type="online"; break;
-		case "bliin.com": case "www.bliin.com": $key= "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRSFYVerP0SQAckZ4lP_icglXWi2BhSgH_3wnCI0rd9qUGwD7e6DSIMphw"; $type="online"; break;
+		case "bliin.com": case "www.bliin.com": case "test.bliin.com": $key= "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRSFYVerP0SQAckZ4lP_icglXWi2BhSgH_3wnCI0rd9qUGwD7e6DSIMphw"; $type="online"; break;
 		case "test.geotracing.com": $key= "ABQIAAAAD3bxjYK2kuWoA5XU4dh89xRwJAeN3G50o_YQw1rKznRUFZZPJBQfSrLrU-Dm48ebDMIZwnAIMGhljQ"; break;
 	}
 	//needed for google polylines in MSIE
@@ -45,6 +40,7 @@
 <script type="text/javascript" src="script/iiPane.js"></script>
 <script type="text/javascript" src="script/slider.js"></script>
 <script type="text/javascript" src="script/qtcheck.js"></script>
+<script type="text/javascript" src="script/humandate.js"></script>
 
 <script type="text/javascript" src="script/iiUser.js"></script>
 <script type="text/javascript" src="script/iiMedia.js"></script>
@@ -60,6 +56,7 @@
 <script type="text/javascript" src="/bliin01/lib/Record.js"></script>
 <script type="text/javascript" src="/bliin01/lib/ajax-pushlet-client.js"></script>
 <script type="text/javascript" src="/bliin01/lib/KWClient.js"></script>
+<script type="text/javascript" src="/bliin01/lib/KWClientExt.js"></script>
 
 <!-- init -->
 
@@ -75,7 +72,8 @@ function init()
 	else
 	{
 		<?=$debug?>
-
+		iiLoadingAnim(true);
+		
 		/* init the google map */
 
 		gmap = new GMap2(document.getElementById("map"));
@@ -117,31 +115,36 @@ function init()
 		//requests
 		ii_KW_inited = false; //will be inited at login window
 		//live events (pushlet)
-		ii_live = false; //will be inited after first media query
+		ii_live = false; //will be inited after media and user init
 		PL._showStatus = function() { }; //no pushlet statusbar updates
 	
-		/* build & enable gui */
-
-		//make default panes
+		//build gui
 		iiStartup();
-		//start media queries
-		ii_media_blockupdate = false;
-		iiGetMedia(true);
+
+		//init user management, when done, media management will be inited
+		ii_users = false;
+		iiGetUsers();
+		
 		//enable gui (activate imagemap, do login if set to auto)
 		iiAutoLogin();
 
-		/* route gamp events */
+		/* route gmap events */
 		
 		ii_map_click = GEvent.addListener(gmap,"click",iiMapClick);
 		ii_map_moveend = GEvent.addListener(gmap,'moveend',iiMapMoveend);
 		ii_map_zoomend = GEvent.addListener(gmap,'zoomend',iiMapZoomend);
+		
+		window.onresize = iiWindowResize;
 	}
 }
 
-function iiUnload()
+function iiUnload() //-> for beta development
 {
-	//block rollover errors on refresh (for beta development)
-	document.getElementById('bliin_me_ctrl').innerHTML = '';
+	//clear memory
+	iiCleanup();
+	
+	//block rollover errors on refresh 
+	document.getElementById('bliin_me_ctrl').innerHTML = '';	
 }
 //]]>
 </script>
@@ -154,8 +157,7 @@ function iiUnload()
 	<script type="text/javascript">
 		ii_browser_cssfilter = (typeof(document.body.style.filter)=='string')? true:false;
 		ii_browser_pngsupport = (ii_browser_cssfilter && navigator.userAgent.indexOf('MSIE 7')==-1)? false:true;
-		
-		ii_use_PNGfilter = (typeof(document.body.style.filter)=='string')? true:false;
+		ii_browser_safari = (navigator.userAgent.indexOf("Safari")!=-1)? true:false;
 		ii_platform_windows = (navigator.userAgent.indexOf('Windows')!=-1)? true:false;
 	</script>
 
@@ -186,7 +188,7 @@ function iiUnload()
 		<!-- activity color -->
 		<div id="me_activity"><div style="left:45px; top:30px; width:90px; height:120px; background-color:#ffffff;"><div style="width:90px; height:120px;"></div></div><div style="left:30px; top:50px; width:120px; height:80px; background-color:#ffffff;"><div style="width:120px; height:80px;"></div></div></div>
 		<!-- loading anim -->
-		<img id="me_loading" src="media/bliin_me_anim.gif"/>
+		<img id="me_loading" src="media/bliin_me_anim.gif" style="visibility:hidden;">
 		<!-- status color -->
 		<div id="me_status"><div style="background-color:rgb(20,220,20); width:10px; height:10px;"></div></div>
 		<!-- graphics -->
@@ -195,6 +197,7 @@ function iiUnload()
 	
 	<div id="bliin_user">
 		<!-- bliin/user display -->
+		<script type="text/javascript">document.write(iiGuiCreate('bliin_user'))</script>
 	</div>
 
 	

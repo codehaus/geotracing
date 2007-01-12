@@ -1,0 +1,486 @@
+<trace user="mr.Wood">
+	<!--	<gtx version="1.0" cnt="4">
+		<info id="1267754" name="shooting_csacle" startdate="1150714123468" enddate="1150743612843" state="2" type="1"
+			  ptcount="1023">
+			<description/>
+		</info>
+		<media>
+ <medium file="media/1267787.jpg" name="csacle_water" kind="image" mime="image/jpeg" ctime="1150714621946"
+                                        time="1150714621946" lon="28.9740917" lat="41.0318517">raw upload by stef kolman</medium>
+                        <medium file="media/1267802.jpg" name="csacle_water" kind="image" mime="image/jpeg" ctime="1150714771137"
+                                        time="1150714771137" lon="28.974025" lat="41.03178">raw upload by stef kolman</medium>
+                        <medium file="media/1267820.jpg" name="caress" kind="image" mime="image/jpeg" ctime="1150714865155" time="1150714865155"
+                                        lon="28.9739767" lat="41.0318183">raw upload by stef kolman</medium>
+                        <medium file="media/1267845.jpg" name="heart" kind="image" mime="image/jpeg" ctime="1150715248866" time="1150715248866"
+                                        lon="28.9740833" lat="41.031985">raw upload by stef kolman</medium>
+                        <medium file="media/1267860.jpg" name="csacle_heart" kind="image" mime="image/jpeg" ctime="1150715356997"
+                                        time="1150715356997" lon="28.9739083" lat="41.0318633">raw upload by stef kolman</medium>
+                        <medium file="media/1267991.jpg" name="pigeon" kind="image" mime="image/jpeg" ctime="1150717083064" time="1150717083064"
+                                        lon="28.97163" lat="41.017185">raw upload by stef kolman</medium>
+                        <medium file="media/1268006.jpg" name="pigeon_yeah" kind="image" mime="image/jpeg" ctime="1150717229377"
+                                        time="1150717229377" lon="28.9715683" lat="41.0172633">raw upload by stef kolman</medium>
+                        <medium file="media/1268026.jpg" name="csacle" kind="image" mime="image/jpeg" ctime="1150717512831" time="1150717512831"
+                                        lon="28.9714167" lat="41.0172333">raw upload by stef kolman</medium>
+                        <medium file="media/1268451.jpg" name="scaclar_coffee" kind="image" mime="image/jpeg" ctime="1150723506517"
+                                        time="1150723506517" lon="29.0584683" lat="41.0745333">raw upload by stef kolman</medium>
+                        <medium file="media/1268977.jpg" name="aminah_hood" kind="image" mime="image/jpeg" ctime="1150730907782"
+                                        time="1150730907782" lon="29.0462833" lat="41.0896767">raw upload by stef kolman</medium>
+                        <medium file="media/1269420.jpg" name="" kind="image" mime="image/jpeg" ctime="1150737188344" time="1150737188344"
+                                        lon="29.04181" lat="41.0426817">raw upload by stef kolman</medium>
+                        <medium file="media/1269475.jpg" name="csaclar_aminah_wrap" kind="image" mime="image/jpeg" ctime="1150737902236"
+                                        time="1150737902236" lon="29.0422617" lat="41.0438317">raw upload by stef kolman</medium>
+                        <medium file="media/1269885.jpg" name="bastanbul" kind="image" mime="image/jpeg" ctime="1150743721730" time="1150743721730"
+                                        lon="28.9737867" lat="41.0311033">raw upload by stef kolman</medium>
+		</media>
+		<pois/>   -->
+      <pt lon="-118.37094783782959" lat="33.962084611537485"/>
+      <pt lon="-118.37069034576416" lat="33.961550695277495"/>
+      <pt lon="-118.36605548858643" lat="33.9616218843058"/>
+      <pt lon="-118.3661413192749" lat="33.96247614799835"/>
+      <pt lon="-118.36566925048828" lat="33.961550695277495"/>
+      <pt lon="-118.36172103881836" lat="33.9617286677365"/>
+      <pt lon="-118.3617639541626" lat="33.96261852444639"/>
+      <pt lon="-118.36137771606445" lat="33.9617286677365"/>
+      <pt lon="-118.35803031921387" lat="33.9617286677365"/>
+      <pt lon="-118.35798740386963" lat="33.96247614799835"/>
+      <pt lon="-118.35777282714844" lat="33.961764262183635"/>
+      <pt lon="-118.3540391921997" lat="33.961799856615855"/>
+      <pt lon="-118.35395336151123" lat="33.9625117421327"/>
+      <pt lon="-118.35382461547852" lat="33.96183545103319"/>
+      <pt lon="-118.35026264190674" lat="33.961799856615855"/>
+      <pt lon="-118.35034847259521" lat="33.9625829303567"/>
+      <pt lon="-118.35000514984131" lat="33.96194223419581"/>
+      <pt lon="-118.34700107574463" lat="33.961799856615855"/>
+      <pt lon="-118.34700107574463" lat="33.96247614799835"/>
+      <pt lon="-118.34700107574463" lat="33.965430410464776"/>
+      <pt lon="-118.34768772125244" lat="33.96521685276321"/>
+      <pt lon="-118.34755897521973" lat="33.9645761764413"/>
+      <pt lon="-118.34850311279297" lat="33.964611769696894"/>
+      <pt lon="-118.34871768951416" lat="33.96831338695452"/>
+
+      	<medium file="media/MrWood1.jpg" name="Mr_Wood_Card_1" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.34979057312012" lat="33.98158805448162">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.34721565246582" lat="33.96838457032294"/>
+      <pt lon="-118.34734439849854" lat="33.9688472607653"/>
+      <pt lon="-118.34755897521973" lat="33.96834897864617"/>
+      <pt lon="-118.34824562072754" lat="33.968277795247985"/>
+      <pt lon="-118.34884643554688" lat="33.96870489474345"/>
+      <pt lon="-118.3470869064331" lat="33.969701451891545"/>
+      <pt lon="-118.34841728210449" lat="33.97133862756847"/>
+
+      	<medium file="media/MrWood2.jpg" name="Mr_Wood_Card_2" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.3498764038086" lat="33.98165922673721">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.34712982177734" lat="33.97208602337665"/>
+      <pt lon="-118.34635734558105" lat="33.972441923833586"/>
+      <pt lon="-118.34627151489258" lat="33.97553819495448"/>
+      <pt lon="-118.34631443023682" lat="33.97916816233466"/>
+      <pt lon="-118.34738731384277" lat="33.97916816233466"/>
+      <pt lon="-118.34734439849854" lat="33.98173039893323"/>
+      <pt lon="-118.34773063659668" lat="33.98262004635521"/>
+      <pt lon="-118.34687232971191" lat="33.98265563205841"/>
+
+      	<medium file="media/MrWood3.jpg" name="Mr_Wood_Card_3" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.34901809692383" lat="33.98343851375969">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.34700107574463" lat="33.98304707381038"/>
+      <pt lon="-118.34721565246582" lat="33.98262004635521"/>
+      <pt lon="-118.34781646728516" lat="33.98283356035097"/>
+      <pt lon="-118.34893226623535" lat="33.98525334815199"/>
+      <pt lon="-118.34652900695801" lat="33.98525334815199"/>
+      <pt lon="-118.34665775299072" lat="33.98617854292865"/>
+      <pt lon="-118.34700107574463" lat="33.986214127142"/>
+
+      	<medium file="media/MrWood4.jpg" name="Mr_Wood_Card_4" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.38824272155762" lat="34.029544636249376">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.34644317626953" lat="33.986427632109255"/>
+      <pt lon="-118.3461856842041" lat="33.98799331881343"/>
+      <pt lon="-118.3461856842041" lat="33.98938106245952"/>
+      <pt lon="-118.34670066833496" lat="33.98952339385981"/>
+      <pt lon="-118.3461856842041" lat="33.98973689051327"/>
+      <pt lon="-118.3458423614502" lat="33.990733201137125"/>
+
+      	<medium file="media/MrWood5.jpg" name="Mr_Wood_Card_5" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.3670425415039" lat="34.03274552068691">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.34678649902344" lat="33.992227645170125"/>
+      <pt lon="-118.34682941436768" lat="33.99272578734029"/>
+      <pt lon="-118.34721565246582" lat="33.99212090003943"/>
+      <pt lon="-118.3478593826294" lat="33.992014154774616"/>
+      <pt lon="-118.34828853607178" lat="33.9926190428354"/>
+      <pt lon="-118.35086345672607" lat="33.99443368118056"/>
+      <pt lon="-118.35082054138184" lat="33.99503855201645"/>
+      <pt lon="-118.35292339324951" lat="33.99639060066647"/>
+      <pt lon="-118.35506916046143" lat="33.994753907453635"/>
+      <pt lon="-118.35588455200195" lat="33.99400671093899"/>
+      <pt lon="-118.35730075836182" lat="33.99510971300814"/>
+      <pt lon="-118.3580732345581" lat="33.995074132519754"/>
+      <pt lon="-118.35837364196777" lat="33.99429135800511"/>
+
+      	<medium file="media/MrWood6.jpg" name="Mr_Wood_Card_6" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.37038993835449" lat="34.03103839734782">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.35755825042725" lat="33.992974857330196"/>
+      <pt lon="-118.35875988006592" lat="33.99276136881213"/>
+      <pt lon="-118.35897445678711" lat="33.994789488076144"/>
+      <pt lon="-118.35803031921387" lat="33.99699545757004"/>
+      <pt lon="-118.36000442504883" lat="33.99671081956364"/>
+      <pt lon="-118.36343765258789" lat="33.99802726234877"/>
+      <pt lon="-118.36408138275146" lat="33.99806284160039"/>
+      <pt lon="-118.36541175842285" lat="33.99824073763489"/>
+      <pt lon="-118.365797996521" lat="33.996924298157836"/>
+
+      	<medium file="media/MrWood7.jpg" name="Mr_Wood_Card_7" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.37064743041992" lat="34.02431626531415">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.36472511291504" lat="33.99535877600971"/>
+      <pt lon="-118.36339473724365" lat="33.99510971300814"/>
+      <pt lon="-118.36493968963623" lat="33.99560783828112"/>
+      <pt lon="-118.3655834197998" lat="33.99660408006535"/>
+      <pt lon="-118.3655834197998" lat="33.99770704841373"/>
+      <pt lon="-118.36584091186523" lat="33.99838305419428"/>
+      <pt lon="-118.3672571182251" lat="33.998525370515246"/>
+      <pt lon="-118.36970329284668" lat="33.99799168308225"/>
+
+      	<medium file="media/MrWood8.jpg" name="Mr_Wood_Card_8" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.37021827697754" lat="34.02773074813275">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.36897373199463" lat="33.99518087394024"/>
+      <pt lon="-118.36730003356934" lat="33.99528761522661"/>
+      <pt lon="-118.36893081665039" lat="33.99493181041714"/>
+      <pt lon="-118.36875915527344" lat="33.992974857330196"/>
+      <pt lon="-118.36996078491211" lat="33.993152764018845"/>
+      <pt lon="-118.3705186843872" lat="33.992974857330196"/>
+      <pt lon="-118.37004661560059" lat="33.99265462435192"/>
+      <pt lon="-118.37137699127197" lat="33.988918483762156"/>
+      <pt lon="-118.37189197540283" lat="33.98902523291582"/>
+
+      	<medium file="media/MrWood9.jpg" name="Mr_Wood_Card_9" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.37081909179688" lat="34.0221110054794">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.37141990661621" lat="33.98863381869685"/>
+      <pt lon="-118.37154865264893" lat="33.986676720559814"/>
+      <pt lon="-118.37060451507568" lat="33.98404346286277"/>
+      <pt lon="-118.37043285369873" lat="33.98262004635521"/>
+      <pt lon="-118.37021827697754" lat="33.9821930167547"/>
+      <pt lon="-118.36802959442139" lat="33.98212184494604"/>
+
+       		<medium file="media/MrWood10.jpg" name="Mr_Wood_Card_10" kind="image" mime="image/jpeg" ctime="1150714621946"
+			time="1150714621946" lon="-118.36682796478271" lat="34.02036809829769">Stories of Mr. Wood -Los Angeles-</medium>
+
+      <pt lon="-118.36652755737305" lat="33.98119660601064"/>
+      <pt lon="-118.36227893829346" lat="33.981267778594"/>
+      <pt lon="-118.3623218536377" lat="33.981552468331486"/>
+      <pt lon="-118.36193561553955" lat="33.98130336486332"/>
+      <pt lon="-118.36069107055664" lat="33.98141012358193"/>
+      <pt lon="-118.35996150970459" lat="33.98130336486332"/>
+      <pt lon="-118.3582878112793" lat="33.980911915081315"/>
+      <pt lon="-118.35858821868896" lat="33.98137453735727"/>
+      <pt lon="-118.35798740386963" lat="33.98098308790304"/>
+      <pt lon="-118.35644245147705" lat="33.981552468331486"/>
+      <pt lon="-118.35438251495361" lat="33.98158805448162"/>
+      <pt lon="-118.35086345672607" lat="33.98165922673721"/>
+
+
+      <pt lon="-118.34867477416992" lat="33.98173039893323"/>
+      <pt lon="-118.34558486938477" lat="33.98165922673721"/>
+      <pt lon="-118.34627151489258" lat="33.984221388250155"/>
+      <pt lon="-118.34670066833496" lat="33.99034179478517"/>
+      <pt lon="-118.3473014831543" lat="33.99126693416618"/>
+      <pt lon="-118.3476448059082" lat="33.99290369455045"/>
+      <pt lon="-118.34558486938477" lat="33.9938288060384"/>
+
+
+
+      <pt lon="-118.34524154663086" lat="33.99397112998869"/>
+      <pt lon="-118.34476947784424" lat="33.99429135800511"/>
+      <pt lon="-118.34661483764648" lat="33.99745799229644"/>
+      <pt lon="-118.3493185043335" lat="33.99877442350326"/>
+      <pt lon="-118.34923267364502" lat="34.00233224360724"/>
+      <pt lon="-118.3467435836792" lat="34.002118778603375"/>
+      <pt lon="-118.35034847259521" lat="34.00236782105573"/>
+      <pt lon="-118.35266590118408" lat="34.00147838037288"/>
+      <pt lon="-118.35146427154541" lat="34.00076682112067"/>
+      <pt lon="-118.35300922393799" lat="34.001300491118656"/>
+      <pt lon="-118.34979057312012" lat="34.00243897590801"/>
+      <pt lon="-118.34897518157959" lat="34.002545708074635"/>
+      <pt lon="-118.34790229797363" lat="34.00361302236429"/>
+      <pt lon="-118.34725856781006" lat="34.00482262901192"/>
+      <pt lon="-118.34155082702637" lat="34.0047514761566"/>
+      <pt lon="-118.34060668945312" lat="34.00592549064668"/>
+      <pt lon="-118.34155082702637" lat="34.00738409210216"/>
+      <pt lon="-118.34356784820557" lat="34.007633119115205"/>
+      <pt lon="-118.34485530853271" lat="34.007063913440916"/>
+      <pt lon="-118.34266662597656" lat="34.00692161142623"/>
+      <pt lon="-118.34206581115723" lat="34.00606779433055"/>
+      <pt lon="-118.34249496459961" lat="34.005534154286565"/>
+      <pt lon="-118.34631443023682" lat="34.005640882563625"/>
+      <pt lon="-118.34228038787842" lat="34.00574761070655"/>
+      <pt lon="-118.34232330322266" lat="34.00663700668146"/>
+      <pt lon="-118.34365367889404" lat="34.00688603588528"/>
+      <pt lon="-118.34773063659668" lat="34.00717063979547"/>
+      <pt lon="-118.34841728210449" lat="34.00866479467536"/>
+      <pt lon="-118.34743022918701" lat="34.00873594425199"/>
+      <pt lon="-118.34996223449707" lat="34.008415770687726"/>
+      <pt lon="-118.35000514984131" lat="34.009198415046924"/>
+      <pt lon="-118.34721565246582" lat="34.00944743673939"/>
+      <pt lon="-118.34678649902344" lat="34.010692534247426"/>
+      <pt lon="-118.34743022918701" lat="34.010941551558155"/>
+      <pt lon="-118.34996223449707" lat="34.0117953196506"/>
+      <pt lon="-118.35159301757812" lat="34.01190204005851"/>
+      <pt lon="-118.35124969482422" lat="34.01336053885652"/>
+      <pt lon="-118.35120677947998" lat="34.014463289606894"/>
+      <pt lon="-118.35240840911865" lat="34.01499687353749"/>
+      <pt lon="-118.35554122924805" lat="34.01496130137976"/>
+      <pt lon="-118.35554122924805" lat="34.01378741181385"/>
+      <pt lon="-118.35554122924805" lat="34.012898090730744"/>
+      <pt lon="-118.35751533508301" lat="34.013467257297066"/>
+      <pt lon="-118.35854530334473" lat="34.01336053885652"/>
+      <pt lon="-118.35991859436035" lat="34.01392970232269"/>
+      <pt lon="-118.3612060546875" lat="34.0124356400861"/>
+      <pt lon="-118.35996150970459" lat="34.01250678650307"/>
+      <pt lon="-118.35815906524658" lat="34.012079907106994"/>
+      <pt lon="-118.35914611816406" lat="34.01222220047749"/>
+      <pt lon="-118.36021900177002" lat="34.01161745200593"/>
+      <pt lon="-118.3603048324585" lat="34.010799256041444"/>
+      <pt lon="-118.36112022399902" lat="34.0105502383134"/>
+      <pt lon="-118.36150646209717" lat="34.00934071324632"/>
+      <pt lon="-118.36202144622803" lat="34.009625308929756"/>
+      <pt lon="-118.36249351501465" lat="34.0093762877589"/>
+      <pt lon="-118.36223602294922" lat="34.00756196861457"/>
+      <pt lon="-118.3615493774414" lat="34.007775419937644"/>
+      <pt lon="-118.36163520812988" lat="34.00855807019865"/>
+      <pt lon="-118.35948944091797" lat="34.00884266850514"/>
+      <pt lon="-118.3577299118042" lat="34.009269564176414"/>
+      <pt lon="-118.35751533508301" lat="34.00717063979547"/>
+      <pt lon="-118.35914611816406" lat="34.00179858009168"/>
+      <pt lon="-118.35815906524658" lat="33.99809842083708"/>
+      <pt lon="-118.35996150970459" lat="33.999059054595435"/>
+      <pt lon="-118.36073398590088" lat="33.99927252728871"/>
+      <pt lon="-118.36069107055664" lat="34.000090834309866"/>
+      <pt lon="-118.36172103881836" lat="34.00016199106959"/>
+      <pt lon="-118.36206436157227" lat="34.000624508554914"/>
+      <pt lon="-118.36236476898193" lat="34.00026872609744"/>
+      <pt lon="-118.36313724517822" lat="34.001158179447046"/>
+      <pt lon="-118.3632230758667" lat="33.99991294214976"/>
+      <pt lon="-118.36455345153809" lat="33.9997350496171"/>
+      <pt lon="-118.3646821975708" lat="34.0012649132231"/>
+      <pt lon="-118.36429595947266" lat="34.00197646830276"/>
+      <pt lon="-118.36455345153809" lat="34.00258128543371"/>
+      <pt lon="-118.36545467376709" lat="34.00322167534874"/>
+      <pt lon="-118.36592674255371" lat="34.00154953597027"/>
+      <pt lon="-118.36652755737305" lat="34.00176300240475"/>
+      <pt lon="-118.36631298065186" lat="34.00080239922484"/>
+      <pt lon="-118.36652755737305" lat="34.00019756942711"/>
+      <pt lon="-118.36652755737305" lat="34.00112260149188"/>
+      <pt lon="-118.36708545684814" lat="34.00194089069035"/>
+      <pt lon="-118.36914539337158" lat="34.00080239922484"/>
+      <pt lon="-118.36867332458496" lat="33.99994852061158"/>
+      <pt lon="-118.3698320388794" lat="34.00030430441023"/>
+      <pt lon="-118.37069034576416" lat="34.00201204590028"/>
+      <pt lon="-118.37008953094482" lat="34.00293705820482"/>
+      <pt lon="-118.3710765838623" lat="34.0027947492752"/>
+      <pt lon="-118.3712911605835" lat="34.00339956057935"/>
+      <pt lon="-118.37223529815674" lat="34.00396879081369"/>
+      <pt lon="-118.37249279022217" lat="34.00549857816441"/>
+      <pt lon="-118.37099075317383" lat="34.005463002027355"/>
+      <pt lon="-118.37240695953369" lat="34.005854338715324"/>
+      <pt lon="-118.37223529815674" lat="34.00699276246339"/>
+      <pt lon="-118.37236404418945" lat="34.0081311709505"/>
+      <pt lon="-118.37292194366455" lat="34.00902054196231"/>
+      <pt lon="-118.37296485900879" lat="34.01126171559884"/>
+      <pt lon="-118.37322235107422" lat="34.012471213302035"/>
+      <pt lon="-118.37232112884521" lat="34.01257793286044"/>
+      <pt lon="-118.37081909179688" lat="34.01200876033231"/>
+      <pt lon="-118.3707332611084" lat="34.01257793286044"/>
+      <pt lon="-118.36918830871582" lat="34.01353840284958"/>
+      <pt lon="-118.36738586425781" lat="34.01279137157478"/>
+      <pt lon="-118.36721420288086" lat="34.01140401034054"/>
+      <pt lon="-118.36678504943848" lat="34.011546304843755"/>
+      <pt lon="-118.36674213409424" lat="34.014463289606894"/>
+
+
+      <pt lon="-118.36657047271729" lat="34.013716266470006"/>
+      <pt lon="-118.36631298065186" lat="34.01225777378286"/>
+      <pt lon="-118.36575508117676" lat="34.01307595569261"/>
+      <pt lon="-118.36446762084961" lat="34.01353840284958"/>
+      <pt lon="-118.36343765258789" lat="34.01392970232269"/>
+      <pt lon="-118.36369514465332" lat="34.012649079158166"/>
+      <pt lon="-118.36227893829346" lat="34.01325382028183"/>
+      <pt lon="-118.36150646209717" lat="34.01489015701965"/>
+      <pt lon="-118.36142063140869" lat="34.01570831356155"/>
+      <pt lon="-118.36099147796631" lat="34.01570831356155"/>
+      <pt lon="-118.36017608642578" lat="34.01720231820559"/>
+      <pt lon="-118.36013317108154" lat="34.018056023339994"/>
+      <pt lon="-118.3586311340332" lat="34.01834058981025"/>
+      <pt lon="-118.35206508636475" lat="34.01834058981025"/>
+      <pt lon="-118.3522367477417" lat="34.01894529039202"/>
+      <pt lon="-118.35296630859375" lat="34.01944327587188"/>
+      <pt lon="-118.3525800704956" lat="34.02008353862451"/>
+      <pt lon="-118.35159301757812" lat="34.01969226751623"/>
+      <pt lon="-118.35047721862793" lat="34.01883857883765"/>
+      <pt lon="-118.34944725036621" lat="34.01969226751623"/>
+      <pt lon="-118.35193634033203" lat="34.021470758020484"/>
+      <pt lon="-118.34923267364502" lat="34.021435188575595"/>
+      <pt lon="-118.34597110748291" lat="34.02150632745047"/>
+      <pt lon="-118.34601402282715" lat="34.02413842390328"/>
+      <pt lon="-118.34717273712158" lat="34.02424512879451"/>
+      <pt lon="-118.3470869064331" lat="34.02467194701783"/>
+      <pt lon="-118.34721565246582" lat="34.027481780070865"/>
+      <pt lon="-118.3476448059082" lat="34.027624047624265"/>
+      <pt lon="-118.34700107574463" lat="34.02805084885327"/>
+      <pt lon="-118.34781646728516" lat="34.02847764793555"/>
+      <pt lon="-118.34678649902344" lat="34.029971427818126"/>
+      <pt lon="-118.34811687469482" lat="34.03075387345181"/>
+      <pt lon="-118.3493185043335" lat="34.03132292028969"/>
+      <pt lon="-118.34850311279297" lat="34.032461002515745"/>
+      <pt lon="-118.35240840911865" lat="34.032461002515745"/>
+      <pt lon="-118.35554122924805" lat="34.03256769694176"/>
+      <pt lon="-118.3595323562622" lat="34.03242543767727"/>
+      <pt lon="-118.36021900177002" lat="34.030896135519086"/>
+      <pt lon="-118.35914611816406" lat="34.03057604553229"/>
+      <pt lon="-118.3600902557373" lat="34.02833538181333"/>
+      <pt lon="-118.36133480072021" lat="34.02502762723083"/>
+      <pt lon="-118.36034774780273" lat="34.02509876309453"/>
+      <pt lon="-118.3608627319336" lat="34.02203986711136"/>
+      <pt lon="-118.3608627319336" lat="34.021470758020484"/>
+      <pt lon="-118.36592674255371" lat="34.02150632745047"/>
+      <pt lon="-118.36601257324219" lat="34.019870118243574"/>
+      <pt lon="-118.36622714996338" lat="34.0213640496411"/>
+      <pt lon="-118.3692741394043" lat="34.021470758020484"/>
+      <pt lon="-118.36918830871582" lat="34.02019024861374"/>
+      <pt lon="-118.36717128753662" lat="34.01994125843019"/>
+      <pt lon="-118.36717128753662" lat="34.02093721478205"/>
+      <pt lon="-118.36918830871582" lat="34.02097278443564"/>
+      <pt lon="-118.3710765838623" lat="34.021684174376745"/>
+      <pt lon="-118.37244987487793" lat="34.02164860502129"/>
+      <pt lon="-118.37214946746826" lat="34.024209560512354"/>
+      <pt lon="-118.37094783782959" lat="34.024067287234615"/>
+      <pt lon="-118.3721923828125" lat="34.0244585381745"/>
+      <pt lon="-118.37202072143555" lat="34.028228682065105"/>
+      <pt lon="-118.37086200714111" lat="34.02805084885327"/>
+      <pt lon="-118.37094783782959" lat="34.02733951227897"/>
+      <pt lon="-118.37043285369873" lat="34.02737507924932"/>
+      <pt lon="-118.37094783782959" lat="34.027659614475326"/>
+      <pt lon="-118.37094783782959" lat="34.029722466330576"/>
+      <pt lon="-118.37060451507568" lat="34.03061161114602"/>
+      <pt lon="-118.37000370025635" lat="34.0323898728239"/>
+      <pt lon="-118.36730003356934" lat="34.0323898728239"/>
+      <pt lon="-118.37176322937012" lat="34.03242543767727"/>
+      <pt lon="-118.37317943572998" lat="34.033030037903906"/>
+      <pt lon="-118.37433815002441" lat="34.032496567339344"/>
+
+
+      <pt lon="-118.37463855743408" lat="34.03278108539123"/>
+      <pt lon="-118.37811470031738" lat="34.03502163170625"/>
+      <pt lon="-118.38824272155762" lat="34.02933123965998"/>
+
+	<!-- LA ENDS HERE -->
+
+<!-- BOMBAY STARTS HERE -->
+	<pt lon="72.82827258110046" lat="18.92977197741943"/>
+
+			 <medium file="media/MrWood_d1bb1.jpg" name="Mr. Wood DAY 1 LOOKS img 1" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82827258110046" lat="18.92977197741943">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb2.jpg" name="Mr. Wood DAY 1 LOOKS img 2" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82827258110046" lat="18.92977197741943">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb3.jpg" name="Mr. Wood DAY 1 LOOKS img 3" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82827258110046" lat="18.92977197741943">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82825112342834" lat="18.930005394769633"/>
+
+			 <medium file="media/MrWood_d1bb4.jpg" name="Mr. Wood DAY 1 LOOKS img 4" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82825112342834" lat="18.930005394769633">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+			<medium file="media/MrWood_d1bb5.jpg" name="Mr. Wood DAY 1 LOOKS img 5" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82825112342834" lat="18.930005394769633">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82814383506775" lat="18.931243516130742"/>
+
+		  <medium file="media/MrWood_d1bb11.jpg" name="Mr. Wood DAY 1 LOOKS img 11" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82814383506775" lat="18.931243516130742">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb12.jpg" name="Mr. Wood DAY 1 LOOKS img 12" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82814383506775" lat="18.931243516130742">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb13.jpg" name="Mr. Wood DAY 1 LOOKS img 13" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82814383506775" lat="18.931243516130742">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82815456390381" lat="18.93095935794117"/>
+
+		  <medium file="media/MrWood_d1bb10.jpg" name="Mr. Wood DAY 1 LOOKS img 10" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82815456390381" lat="18.93095935794117">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82827258110046" lat="18.93060415952449"/>
+
+		   <medium file="media/MrWood_d1bb8.jpg" name="Mr. Wood DAY 1 LOOKS img 8" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82827258110046" lat="18.93060415952449">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb9.jpg" name="Mr. Wood DAY 1 LOOKS img 9" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82827258110046" lat="18.93060415952449">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82830476760864" lat="18.93032000024737"/>
+
+		   <medium file="media/MrWood_d1bb6.jpg" name="Mr. Wood DAY 1 LOOKS img 6" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82830476760864" lat="18.93032000024737">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb7.jpg" name="Mr. Wood DAY 1 LOOKS img 7" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82830476760864" lat="18.93032000024737">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82765567302704" lat="18.932461331468264"/>
+
+		   <medium file="media/MrWood_d1bb18.jpg" name="Mr. Wood DAY 1 LOOKS img 18" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82765567302704" lat="18.932461331468264">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb19.jpg" name="Mr. Wood DAY 1 LOOKS img 19" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82765567302704" lat="18.932461331468264">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82807409763336" lat="18.932232991768768"/>
+
+			 <medium file="media/MrWood_d1bb16.jpg" name="Mr. Wood DAY 1 LOOKS img 16" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82807409763336" lat="18.932232991768768">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb17.jpg" name="Mr. Wood DAY 1 LOOKS img 17" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82765567302704" lat="18.932461331468264">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82815456390381" lat="18.931674826744818"/>
+
+		   <medium file="media/MrWood_d1bb14.jpg" name="Mr. Wood DAY 1 LOOKS img 14" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82815456390381" lat="18.931674826744818">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb15.jpg" name="Mr. Wood DAY 1 LOOKS img 15" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82815456390381" lat="18.931674826744818">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82772541046143" lat="18.93257803830526"/>
+
+		   <medium file="media/MrWood_d1bb20.jpg" name="Mr. Wood DAY 1 LOOKS img 20" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82772541046143" lat="18.93257803830526">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb21.jpg" name="Mr. Wood DAY 1 LOOKS img 21" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82772541046143" lat="18.93257803830526">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82769858837128" lat="18.93267952244505"/>
+
+		   <medium file="media/MrWood_d1bb20.jpg" name="Mr. Wood DAY 1 LOOKS img 20" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82772541046143" lat="18.93257803830526">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+		  <medium file="media/MrWood_d1bb21.jpg" name="Mr. Wood DAY 1 LOOKS img 21" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82772541046143" lat="18.93257803830526">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.8275054693222" lat="18.932664299828005"/>
+
+			<medium file="media/MrWood_d1bb25.jpg" name="Mr. Wood DAY 1 LOOKS img 25" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.8275054693222" lat="18.932664299828005">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+
+	<pt lon="72.82759666442871" lat="18.932755635509437"/>
+
+		   <medium file="media/MrWood_d1bb26.jpg" name="Mr. Wood DAY 1 LOOKS img 26" kind="image" mime="image/jpeg" ctime="1150714621946"
+		  time="1150714621946" lon="72.82759666442871" lat="18.932755635509437">ANY RESEMBLANCE TO EXISTING PERSONS IS PURELY COINCIDENTAL Stories of Mr. Wood -Bombay-</medium>
+	<pt lon="72.827596" lat="18.9327556"/>
+
+</trace>
+
