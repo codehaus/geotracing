@@ -28,9 +28,15 @@
 
 		<query>
 			<field name="id" />
+			<field name="owner" />
+			<field name="target" />
+			<field name="targettable" />
+			<field name="targetperson" />
 			<field name="author" />
-            <field name="state" />
-            <field name="content" />
+			<field name="email" />
+			<field name="url" />
+			<field name="content" />
+			<field name="extra" />
    		</query>
  	</views>
 

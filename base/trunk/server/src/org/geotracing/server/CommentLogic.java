@@ -8,6 +8,7 @@ import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.util.Oase;
 
 import java.util.Properties;
@@ -38,6 +39,7 @@ public class CommentLogic {
 	public static final String PROP_ALLOW_ANONYMOUS = "allow-anonymous";
 	public static final String PROP_MAX_COMMENTS_PER_TARGET = "max-commments-per-target";
 	public static final String PROP_MAX_CONTENT_CHARS = "max-content-chars";
+	public static final String PROP_THREAD_ALERT = "thread-alert";
 
 	private Oase oase;
 
@@ -211,6 +213,47 @@ public class CommentLogic {
 
 			// Finally try to insert
 			oase.getModifier().insert(aRecord);
+
+			// Comment insert OK, send optional thread alerts
+			// These are comments to each person that has commented on this item
+			if (properties.getProperty(PROP_THREAD_ALERT, "false").equals("true")) {
+				int[] commenterIds = getCommenterIds(oase, targetId);
+				Record alertComment;
+				for (int i=0; i < commenterIds.length; i++) {
+					// Skip optional user who made comment
+					if (!aRecord.isNull(CommentLogic.FIELD_OWNER)) {
+						if (aRecord.getIntField(FIELD_OWNER) == commenterIds[i]) {
+							continue;
+						}
+					}
+
+
+					alertComment = createRecord();
+					if (!aRecord.isNull(CommentLogic.FIELD_OWNER)) {
+						alertComment.setIntField(FIELD_OWNER, aRecord.getIntField(FIELD_OWNER));
+					}
+					alertComment.setIntField(FIELD_TARGET_PERSON, commenterIds[i]);
+					alertComment.setIntField(FIELD_TARGET, aRecord.getId());
+					alertComment.setIntField(FIELD_TARGET_TABLE, aRecord.getTableDef().getId());
+					alertComment.setIntField(FIELD_STATE, STATE_UNREAD);
+
+					String from = "anonymous";
+					if (!aRecord.isNull(CommentLogic.FIELD_OWNER)) {
+						int ownerId = aRecord.getIntField(CommentLogic.FIELD_OWNER);
+						Person ownerPerson = (Person) oase.get(Person.class,  ownerId + "");
+						from = ownerPerson.getAccount().getLoginName();
+					}
+
+					alertComment.setStringField(FIELD_CONTENT, "**  " + from + " added comment ** ");
+
+					// Finally try to insert
+					oase.getModifier().insert(alertComment);
+
+					EventPublisher.commentAdd(alertComment, oase);
+
+				}
+
+			}
 			return aRecord;
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot insert comment record", oe, ErrorCode.__6006_database_irregularity_error);
