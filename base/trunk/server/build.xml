@@ -52,6 +52,7 @@ $Id$
 	<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
 	<property name="scp" value="${home.bin.dir}/scp.sh"/>
 	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
+	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
 
 	<!-- All sources to be compiled -->
 	<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
@@ -73,6 +74,7 @@ $Id$
 		<pathelement location="${keyworx.jar}"/>
 		<pathelement location="${kwx-tagging.jar}"/>
 		<pathelement location="${servlet.jar}"/>
+		<pathelement location="${ehcache.jar}"/>
 	</path>
 
 	<!-- Initialize: create dirs and set timestamp.. -->
@@ -105,6 +107,10 @@ $Id$
 		</ant>
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${kwx-metadata}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${ehcache}"/>
 		</ant>
 	</target>
 
@@ -199,6 +205,9 @@ $Id$
 			</fileset>
 			<fileset dir="${kwx-metadata.dir}/lib">
 				<include name="metadata.jar"/>
+			</fileset>
+			<fileset dir="${ehcache.dir}">
+				<include name="ehcache-1.2.4.jar"/>
 			</fileset>
 		</copy>
 

@@ -1,27 +1,27 @@
-<%@ page import="nl.justobjects.jox.dom.JXElement,
+<%@ page import="nl.justobjects.jox.parser.JXBuilder,
+				 org.geotracing.gis.GeoPoint,
+				 org.geotracing.gis.XYDouble,
+				 org.geotracing.server.*,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
 				 org.keyworx.common.log.Log,
 				 org.keyworx.common.log.Logging,
-				 org.keyworx.common.util.Sys,
-				 org.keyworx.oase.api.Finder,
-				 org.keyworx.oase.api.Record,
-				 org.keyworx.oase.api.Relater" %>
+				 org.keyworx.common.util.Sys" %>
+<%@ page import="org.keyworx.oase.api.Finder" %>
+<%@ page import="org.keyworx.oase.api.Record" %>
+<%@ page import="org.keyworx.oase.api.Relater" %>
+<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic" %>
 <%@ page import="org.keyworx.utopia.core.util.Oase" %>
 <%@ page import="javax.servlet.ServletRequest" %>
-<%@ page import="java.io.Writer" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic" %>
-<%@ page import="org.geotracing.gis.GeoPoint" %>
-<%@ page import="org.geotracing.gis.XYDouble" %>
-<%@ page import="nl.justobjects.jox.util.JXVisitor"%>
-<%@ page import="nl.justobjects.jox.util.JXWalker"%>
+<%@ page import="javax.servlet.http.HttpServletRequest" %>
+<%@ page import="javax.servlet.http.HttpServletResponse"%>
 <%@ page import="java.io.IOException"%>
-<%@ page import="nl.justobjects.jox.dom.JXAttributeTable"%>
-<%@ page import="java.util.*"%>
-<%@ page import="nl.justobjects.jox.parser.JXBuilder"%>
-<%@ page import="org.geotracing.server.*"%>
-<%@ page import="org.keyworx.oase.api.OaseException"%>
+<%@ page import="java.io.Writer"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Enumeration"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Vector"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -488,6 +488,7 @@
 	public JXElement doCommand(HttpServletRequest request, HttpServletResponse response) {
 		JXElement result;
 		String command = getParameter(request, PAR_CMD, CMD_DESCRIBE);
+		long t1,t2;
 		try {
 
 			/*		if (command.equals(CMD_QUERY_STORE)) {
@@ -664,15 +665,16 @@
 
 			} else if (command.equals(CMD_QUERY_ACTIVE_TRACKS)) {
 				// Niet mooi maar wel optimized!!
-
 				// First get all active tracks
+				t1 = Sys.now();
 				String tables = "g_track,g_location";
 				String fields = "g_track.id,g_track.name,g_location.lon,g_location.lat,g_location.time";
 				String where = "g_track.state=1";
 				String relations = "g_track,g_location,lastpt";
 				String postCond = null;
 				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
-
+				t2=Sys.now();
+				log.info(CMD_QUERY_ACTIVE_TRACKS + " qtime=" + (t2-t1));
 				// Add account/person attrs to each record
 				addUserAttrs(result, "g_track");
 
@@ -894,7 +896,10 @@
 					nextRecord.setChildText("loginname", userName);
 				}
 
+				t1 = Sys.now();
 				addLocationAttrs(result);
+				t2 = Sys.now();
+				log.info(CMD_QUERY_MEDIA_BY_USER + " qtime=" + (t2-t1));
 
 			} else if (command.equals(CMD_QUERY_TAGS)) {
 				// Get tag clouds
