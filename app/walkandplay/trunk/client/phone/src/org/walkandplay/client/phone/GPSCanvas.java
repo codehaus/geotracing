@@ -168,7 +168,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
         try {
             if (preferences == null) {
                 preferences = new Preferences(RMS_STORE_NAME);
-            }
+			}
             return preferences;
         } catch (RecordStoreException e) {
             return null;
