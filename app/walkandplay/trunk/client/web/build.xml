@@ -18,8 +18,6 @@ $Id$
 	<property file="${home}/../../build.properties"/>
 	<property file="${home}/build.properties"/>
 
-
-
 	<property name="build.dir" value="${home}/build"/>
 
 	<!-- The .jar -->
