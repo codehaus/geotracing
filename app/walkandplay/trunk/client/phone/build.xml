@@ -52,7 +52,7 @@
 
 
 	<!-- Various paths -->
-	<property name="preverify.classpath" value="${midp2.dir}/classes:${jsr82.zip}"/>
+	<property name="preverify.classpath" value="${midp2.dir}/classes${path.separator}${jsr82.zip}"/>
 	<property name="boot.classpath" value="${midp2.dir}/classes"/>
 
 	<path id="compile.sourcepath">
@@ -105,9 +105,7 @@
 			<property name="package" value="${mppsdk}"/>
 		</ant>
 
-		<exec executable="chmod">
-			<arg line="+x ${preverify}"/>
-		</exec>
+		<chmod file="${preverify}" perm="ugo+x"/>
 
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${proguard}"/>
@@ -141,7 +139,7 @@
 	<target name="obfuscate" depends="compile">
 
 		<java fork="yes" classname="proguard.ProGuard" classpath="${proguard.jar}">
-			<arg line="-libraryjars ${boot.classpath}:${jsr82.zip}"/>
+			<arg line="-libraryjars ${boot.classpath}${path.separator}${jsr82.zip}"/>
 			<arg line="-injars ${classes.dir}"/>
 			<arg line="-outjar ${obf.dir}"/>
 			<arg line="-keep 'public class * extends
@@ -212,9 +210,8 @@
 
 	<target name="install" depends="build">
 
-		<exec executable="chmod">
-			<arg line="+x ${btsend}"/>
-		</exec>
+		<chmod file="${btsend}" perm="ugo+x"/>
+
 		<exec executable="${btsend}">
 			<arg line="${project.jar}"/>
 		</exec>
