@@ -98,7 +98,7 @@ public class SettingsCanvas extends DefaultCanvas {
         // left soft key & fire
         if (key == -6 || key == -5 || getGameAction(key) == Canvas.FIRE) {
             if(menu.isVisible()){
-                int item = menu.getSelectedItem();
+                 item = menu.getSelectedItem();
                 switch(item){
                     case 1:
                         Util.toggleSound();

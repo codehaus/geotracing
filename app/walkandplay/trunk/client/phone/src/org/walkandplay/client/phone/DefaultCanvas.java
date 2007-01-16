@@ -111,7 +111,7 @@ public class DefaultCanvas extends Canvas {
 			h = getHeight();
 			f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
 			fh = f.getHeight();
-            menu = new Menu(menuTop, menuMiddle, menuBottom, menuSel, h);
+            menu = new Menu(this, menuTop, menuMiddle, menuBottom, menuSel, h);
             setActiveElement(menu);
         }
 
