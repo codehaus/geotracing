@@ -15,9 +15,9 @@
         JXElement rsp = processRequest(session, req);
         log.info(new String(rsp.toBytes(false)));
         if(rsp.getTag().indexOf("-rsp")!=-1){
-            response.sendRedirect("../profile.jsp");
+            response.sendRedirect("../index.html?msg=signupconfirm-ok");
         }else{
-            response.sendRedirect("../index.jsp?msg=sign up confirmation failed");
+            response.sendRedirect("../index.html?msg=signupconfirm-nok");
         }
     }else{
         log.info("Login failed in register.jsp");
