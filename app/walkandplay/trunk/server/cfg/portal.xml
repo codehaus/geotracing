@@ -45,14 +45,14 @@
             <handler id="license" class="org.keyworx.plugin.metadata.control.LicenseHandler"/>
         </handlers>
 
-        <amulets>
+        <!--<amulets>
             <amulet id="wp-amulet" class="org.walkandplay.server.engine.GameAmulet"/>
         </amulets>
 
         <spaces>
             <space id="wp-space" access="public"/>
         </spaces>
-
+-->
         <daemons>
             <daemon id="emailupload" class="org.geotracing.server.LocEmailUploadDaemon">
                 <property name="intervalMillis">25000</property>
