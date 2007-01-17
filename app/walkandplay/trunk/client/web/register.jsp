@@ -10,10 +10,15 @@
     String code = request.getParameter("code");
     if(login(session, "geoapp-user", "user", Role.USER_ROLE_VALUE)){
         log.info("Login ok in register.jsp");
-        JXElement req = new JXElement("profile-activate");
+        JXElement req = new JXElement("profile-activate-req");
         req.setAttr("code", code);
         JXElement rsp = processRequest(session, req);
         log.info(new String(rsp.toBytes(false)));
+        if(rsp.getTag().indexOf("-rsp")!=-1){
+            response.sendRedirect("../profile.jsp");
+        }else{
+            response.sendRedirect("../index.jsp?msg=sign up confirmation failed");
+        }
     }else{
         log.info("Login failed in register.jsp");
     }
@@ -44,3 +49,10 @@
         return true;
     }
 %>
+
+<html>
+<head>
+    <title>Sign Up Confirmation</title>
+</head>
+<body>Confirming Sign Up...</body>
+</html>
