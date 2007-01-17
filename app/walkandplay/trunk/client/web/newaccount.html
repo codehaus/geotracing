@@ -2,43 +2,120 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-<title>GeoTracing - walk and play</title>
+<title>GeoTracing</title>
+<script type="text/javascript" src="js/KWClient.js"></script>
 <script type="text/javascript" src="js/dojo/dojo.js"></script>
 <script type="text/javascript" src="js/gt/ajax-pushlet-client.js"></script>
-<script type="text/javascript" src="js/gt/DHTML.js"></script>
-<script type="text/javascript" src="js/gt/GMap.js"></script>
+<script type="text/javascript" src="js/DHTML.js"></script>
+<script type="text/javascript" src="js/GMap.js"></script>
 <script type="text/javascript" src="js/GMapKeys.js"></script>
+<script type="text/javascript" src="js/MyApp.js"></script>
 <script type="text/javascript" src="js/WPapp.js"></script>
 <script type="text/javascript" src="js/User.js"></script>
-<script type="text/javascript" src="js/gt/KWClient.js"></script>
+<script type="text/javascript" src="js/sIFR2.0.2/sifr.js"></script>
 <link rel="stylesheet" href="css/geotracingfs.css" />
+<link rel="stylesheet" href="css/sIFR-screen.css" />
 </head>
-<body>
-<!-- LOGOBOX -->
+<body onunload="GUnload()">
+<div id="mapholder">
+  <div id="map"></div>
+  <div class="bbottom"></div>
+  <div class="btop"></div>
+  <div class="bright"></div>
+  <div class="bleft"></div>
+</div>
 <div id="logobox"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock"><br />
-    <a href="index.html"><img src="img/gt_logo.gif" alt="logo" width="221" border="0"/></a> <img src="img/cpv_v_over.gif" width="265" border="0" usemap="#Map" />
+    <a href="index.html"><img src="img/gt_logo.gif" alt="logo" width="221" border="0"/></a> <img src="img/cpv_v_over.gif" width="265" border="0" usemap="#Map" id="mainbuttons"/>
     <map name="Map">
-      <area shape="rect" coords="2,-1,79,43" href="#" />
-      <area shape="rect" coords="90,-1,149,42" href="#" />
-      <area shape="rect" coords="199,0,258,43" href="#" />
+      <area shape="rect" coords="2,-1,79,43" href="#" id="mainbuttonscreate"/>
+      <area shape="rect" coords="90,-1,149,42" href="#" id="mainbuttonsplay"/>
+      <area shape="rect" coords="199,0,258,43" href="#" id="mainbuttonsview"/>
     </map>
     <ul style="text-align:right;">
-      <li> <a href="#"><img src="img/mypageBT.gif" width="58" border="0"/></a> </li>
-      <li> <a href="#"><img src="img/aboutBT.gif" width="58" border="0" style="position:relative;left:7px;"/></a> </li>
-      <li> <a href="#"><img src="img/signinBT.gif" width="58" border="0"/></a> </li>
-      <li> <a href="#"><img src="img/help_bt.gif" width="18" border="0" style="margin-right:20px;"/></a> </li>
+      <li><span><a href="myaccount.html">my page</a></span></li>
+      <li><span><a href="about.html">about</a></span></li>
+      <li id="signin_bt"><span><a href="#">sign in</a></span></li>
+      <li id="help_bt"><span>help</span></li>
     </ul>
     <br />
     <br />
   </div>
-  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<!-- /LOGOBOX -->
-<!-- CONTENT -->
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
+</div>
+<div id="loginbox" style="position:absolute; width:220px; left:365px; top:54px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <form name="signinform" id="signinform">
+      username
+      <input type="text" id="username"/>
+      password
+      <input type="text" id="password"/>
+		<div>
+			<span id="forgotpw">forgot password</span>
+			<span id="submit_signin"> submit</span>
+		</div>	
+    </form>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="mapbox" style="position:absolute; width:200px; left:141px; top:281px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="padding:0px;">
+      <li>street map</li>
+      <li>satellite map</li>
+      <li>street + satellite</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div> 
+<div id="archivenavbox" style="position:absolute; width:162px; left:93px; top:279px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="padding:0px;">
+      <li>archived tours</li>
+      <li>archived traces</li>
+      <li>points of interest</li>
+    </ul>
+	<ul style="padding:0px; display:none;">
+      <li>my tours</li>
+      <li>my traces</li>
+      <li>my media</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="archivetoursbox" style="position:absolute; width:162px; left:264px; top:279px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="livenavbox" style="position:absolute; width:162px; left:250px; top:281px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="padding:0px;">
+      <li>live tours</li>
+      <li>live traces</li>
+      <li>live users</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="archivetracksbox" style="position:absolute; width:162px; left:444px; top:279px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="livenavbox" style="position:absolute; width:162px; left:250px; top:281px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="padding:0px;">
+      <li>live tours</li>
+      <li>live traces</li>
+      <li>live users</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="archivebox" style="position:absolute; width:162px; left:261px; top:283px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="list-style:none;">
+      <li>archive content</li>
+    </ul>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 <div id="formblock" style="text-align:left;z-index:15;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock" style="background-color:#E9E9E9;">
     <!--SIGNUP FORM-->
-    <img src="img/profile_red.gif" style="padding-left:40px;padding-top:10px;"/><img src="img/mypage.gif" />
     <ul id="tabs" style="list-style:none;">
       <li style="display:inline; font-weight:bold;" id="tab1">step 1</li>
       <li style="display:inline;" id="tab2">step 2 </li>
@@ -166,22 +243,15 @@
 	</form>
 	<img id="previewImage" style="display:none"/>
   </div>
-  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<!-- / CONTENT -->
-<!-- MAP-->
-<div id="map"></div>
-<!-- /MAP -->
-<!--BORDERS-->
-<div id="mapholder">
-  <div class="btop"></div>
-  <div class="bbottom"></div>
-  <div class="bright"></div>
-  <div class="bleft"></div>
-</div>
-<!--/BORDERS-->
-<!-- EVENTSHANDLERS -->
-<script type="text/javascript" src="js/events.js"></script>
-<script type="text/javascript" src="js/newaccount.js"></script>
-<!-- /EVENTHANDLERS  -->
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+	<script type="text/javascript" src="js/newaccount.js"></script>
+	<script type="text/javascript">
+		SRV.url = 'wp/srv/get.jsp?';
+		if(typeof sIFR == "function"){
+		    sIFR.replaceElement("#logobox span", named({sFlashSrc: "js/sIFR2.0.2/skia.swf",sBgColor:"#eeeeee"}));
+    		sIFR();
+		};		
+	</script>
+	<script type="text/javascript" src="js/events.js"></script>
 </body>
 </html>

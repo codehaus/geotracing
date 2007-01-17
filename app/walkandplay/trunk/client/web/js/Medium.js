@@ -1,7 +1,7 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-// $Id: Medium.js 49 2006-09-20 20:26:26Z just $
+// $Id: Medium.js 214 2006-12-07 15:40:51Z just $
 
 DH.include('Feature.js');
 
@@ -12,7 +12,6 @@ DH.include('Feature.js');
  */
 function Medium(id, name, desc, type, mime, time, lon, lat) {
 	Feature.apply(this, new Array(id, name, desc, type, time, lon, lat))
-
 	this.mime = mime;
 	this.url = 'wp/media.srv?id=' + this.id;
 
@@ -22,7 +21,13 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Shows icon on map
 	this.getIconDiv = function() {
-		return '<div class="medicon" id="' + this.iconId + '"><img src="img/photoicon.png" /></div>';
+		if (this.type == 'text') {
+			var src = 'img/poi.gif';
+			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';
+			return '<div class="texticon" id="' + this.iconId + '" style="border: 1px solid ' + this.bgColor + ';" >' + img + '</div>';
+		} else {
+			return '<div class="medicon" id="' + this.iconId + '" style="background-color:' + this.getBGColor() + ';" >&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+		}
 	}
 
 	this.getTitle = function() {
@@ -37,6 +42,8 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 			this._displayImage();
 		} else if (this.type == 'audio') {
 			this._displayAudio();
+		} else if (this.type == 'text') {
+			this._displayText();
 		}
 	}
 
@@ -80,16 +87,29 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 	this._displayImage = function() {
 		var src = this.url + '&resize=320x240';
 		var previewTile = this.getPreviewTile()
-
 		previewTile.innerHTML = '<img class="mediumpreview" id="' + this.previewId + '" title="click to see larger image" src="' + src + '" border="0"  />';
 
 		var medium = this;
 		this.onClick = function(e) {
 			DH.cancelEvent(e);
-			//medium.displayImageFull();
+			medium.displayImageFull();
 		}
 
 		DH.addEvent(this.previewId, 'click', this.onClick, false);
+	}
+
+	this._displayText = function() {
+		var src = this.url + '&resize=320x240';
+		var previewTile = this.getPreviewTile()
+
+		previewTile.innerHTML = 'getting text...';
+		var self = this;
+
+		this.onLoadText = function(text) {
+			self.getPreviewTile().innerHTML = text;
+		}
+
+		DH.getURL(this.url, this.onLoadText);
 	}
 
 	this._displayVideo = function() {
@@ -119,7 +139,6 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 		DH.addEvent(this.previewId, 'click', this.onClick, false);
 	}
-
 }
 
 

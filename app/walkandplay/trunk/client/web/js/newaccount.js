@@ -53,8 +53,8 @@ function _checkIFrameRsp() {
 
 
 dojo.event.connect(window,'onload',function(evt) {
-	//KW.url = '../../wp/proto.srv';
-	KW.init(WPCallback, WPNegResp, 60,'/wp');
+	KW.url = '../../../wp/proto.srv';
+	KW.init(WPCallback, WPNegResp, 60,KW.url);
 	KW.login('geoapp-user','user');
 });
 

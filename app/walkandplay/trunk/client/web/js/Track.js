@@ -4,7 +4,7 @@
 /*
 * Track.
 *
-* $Id: Track.js 49 2006-09-20 20:26:26Z just $
+* $Id: Track.js 244 2007-01-07 21:23:59Z just $
 */
 
 
@@ -48,12 +48,6 @@ function Track(id, name, tracer) {
 	this.addMedium = function (medium) {
 		this.featureSet.addFeature(medium);
 		medium.show();
-	}
-
-	// Add medium to this tracer
-	this.addPOI = function (poi) {
-		this.featureSet.addFeature(poi);
-		poi.show();
 	}
 
 	this.clear = function () {
@@ -221,32 +215,15 @@ function Track(id, name, tracer) {
 				this.featureSet.addFeature(medium);
 			}
 		}
-
-
-		// Get POI locations
-		var poiElements = gtx.documentElement.getElementsByTagName('poi');
-		this.pois = [];
-		if (poiElements) {
-			var nextPOI;
-			for (i = 0; i < poiElements.length; i++) {
-				nextPOI = poiElements[i];
-
-				// Create and draw location-based medium
-				poi = GTW.createPOI(nextPOI.getAttribute('id'),
-						nextPOI.getAttribute('name'),
-						nextPOI.childNodes[0].nodeValue,
-						nextPOI.getAttribute('type'),
-						nextPOI.getAttribute('time'),
-						nextPOI.getAttribute('lon'),
-						nextPOI.getAttribute('lat'));
-				this.featureSet.addFeature(poi);
-			}
-		}
 	}
 
 	// Show general track info
 	this.showInfo = function() {
-		DH.setHTML('trackview', 'start: ' + GTW.formatDateAndTime(this.startDate) + '<br/>end: ' + GTW.formatDateAndTime(this.endDate) + '<br/>distance: ' + this.distance.toFixed(2) + ' km');
+		DH.setHTML('trackview', 'start: ' + GTW.formatDateAndTime(this.startDate) + '<br/>end: ' + GTW.formatDateAndTime(this.endDate) + '<br/>distance: ' + this.distance.toFixed(2) + ' km' 
+				+ '<br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'track\',\'' + this.name + '\')" >[comments]</a></span>');
+		if (CMT.isCommentPanelOpen() == true) {
+			CMT.showCommentPanel(this.id, 'track', this.name);
+		}
 	}
 	
 	// Show general track info
