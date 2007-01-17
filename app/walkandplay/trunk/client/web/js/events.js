@@ -168,17 +168,18 @@ if(archive_bt) {
 	});
 }
 if(signin_bt) {
-	dojo.event.connect(signin_bt,'onclick',function(evt) {
+	signin_bt.getElementsByTagName('a')[0].href = "javascript:toggleSignin()";
+	}
+	
+function toggleSignin() {
 		toggle('loginbox');												
 		hide('archivenavbox');	
 		hide('mapbox');
 		hide('livenavbox');
 		hide('searchbox');	
 		hide('archivetoursbox');
-		hide('archivetracksbox');
-		
-	});
-	}
+		hide('archivetracksbox');	
+}
 if(help_bt) {	
 dojo.event.connect(help_bt,'onclick',function(evt) {
 											  

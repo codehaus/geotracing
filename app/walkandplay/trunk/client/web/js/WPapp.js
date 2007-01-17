@@ -19,7 +19,6 @@ DH.include('GTWorld.js');
 DH.include('LiveListener.js');
 DH.include('Factory.js');
 DH.include('Comment.js');
-DH.include('../Medium.js');
 DH.include('Panel.js');
 DH.include('Record.js');
 DH.include('Selector.js');
@@ -29,8 +28,9 @@ DH.include('Track.js');
 DH.include('TrackAutoPlayer.js');
 DH.include('TrackPlayer.js');
 DH.include('Widget.js');
-DH.include('../MyApp.js');
+DH.include('MyApp.js');
 DH.include('TLabel.js');
+DH.include('Medium.js');
 
 
 // Pushlet Data Event Callback from Server
@@ -66,7 +66,7 @@ var WP = {
 		GTW.init();
 		// Live Pushlet event setup
 		WP.createLiveListener();
-		PL.joinListen('/gt')
+		PL.joinListen('/wp')
 		WP.doPageCommand();
 		WP.initialized = true;
 		// Optional start of user app

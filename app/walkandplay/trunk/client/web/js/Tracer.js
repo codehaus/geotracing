@@ -1,12 +1,17 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
+var TRACER = {
+	current: null
+}
+
 /**
  * Represents GeoTracing user.
-* $Id: Tracer.js 49 2006-09-20 20:26:26Z just $
+* $Id: Tracer.js 244 2007-01-07 21:23:59Z just $
 */
 function Tracer(name, color, iconURL, pt, time) {
 	this.record = null;
+	this.id = -1;
 	this.name = name;
 	this.color = color;
 	this.point = pt;
@@ -23,7 +28,8 @@ function Tracer(name, color, iconURL, pt, time) {
 	this.lastPoint = null;
 	this.blinkInterval = 250;
 	this.thumbId = null;
-	
+	this.thumbURL = 'img/default-user-thumb-4x3.jpg';
+
 	this.init = function() {
 		if (this.point) {
 			this.setLocation(this.point);
@@ -43,13 +49,6 @@ function Tracer(name, color, iconURL, pt, time) {
 	this.addMedium = function (medium) {
 		if (this.activeTrack != null) {
 			this.activeTrack.featureSet.addFeature(medium);
-		}
-	}
-
-	// Add a POI
-	this.addPOI = function (poi) {
-		if (this.activeTrack != null) {
-			this.activeTrack.featureSet.addFeature(poi);
 		}
 	}
 
@@ -74,7 +73,7 @@ function Tracer(name, color, iconURL, pt, time) {
 	/** Create Map icon. */
 	this.createTLabel = function () {
 		this.iconId = 'icon' + this.name;
-		var html = '<span class="tracer"><img id="' + this.iconId + '" src="' + this.iconURL + '" border="0" />&nbsp;<span class="tracername" >' + this.name + '</span></span>';
+		var html = '<a href="#"><span class="tracer"><img id="' + this.iconId + '" src="' + this.iconURL + '" border="0" />&nbsp;<span class="tracername" >' + this.name + '</span></span></a>';
 
 		// Setup TLabel object
 		tl = new TLabel();
@@ -91,40 +90,15 @@ function Tracer(name, color, iconURL, pt, time) {
 
 	// get the tracer color (track)
 	this.getColor = function () {
-		var record = this.getRecord();
-		if (record != null) {
-			// In some cases the extra field may contain a color
-			var color = record.getField('color');
-			if (color != null) {
-				this.color = color;
+		if (this.record != null && this.record != -1) {
+			// In some cases the extra (profile) field may contain a color
+			var userColor =  this.record.getField('color');
+			if (userColor != null) {
+				this.color  = userColor;
 			}
 		}
 
 		return this.color;
-	}
-
-	// get the user DB record
-	this.getRecord = function () {
-		if (this.record == null) {
-			// lazy: may not have been set on creation
-			var result = SRV.get("q-user-by-name", null, "user", this.name);
-			if (result != null && result.length > 0) {
-				this.record = result[0];
-			}
-		}
-		return this.record;
-	}
-
-	// Get id of user thumbnail image
-	this.getThumbId = function() {
-		if (this.thumbId == null) {
-			// lazy: may not have been set on creation
-			var result = SRV.get("q-user-image", null, "user", this.name);
-			if (result != null && result.length > 0) {
-				this.thumbId = result[0].getField("id");
-			}
-		}
-		return this.thumbId;
 	}
 
 	// Delete a Track for id and name
@@ -187,7 +161,7 @@ function Tracer(name, color, iconURL, pt, time) {
 		// Get GTX document by id from server
 		GTW.showStatus('drawing track ' + name + '...');
 
-		SRV.get('get-track', this.onGetTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t', 'mindist', GTW.minTrackPtDist);
+		SRV.get('get-track', this.onGetTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t', 'mindist', GTW.minTrackPtDist, 'maxpoints', GTW.maxTrackPt);
 	}
 
 	// Set Tracer at lon/lat location
@@ -241,6 +215,7 @@ function Tracer(name, color, iconURL, pt, time) {
 		if (time) {
 			pt.time = new Number(time);
 		}
+
 		// Move TLabel
 		this.setLocation(pt);
 
@@ -280,7 +255,9 @@ function Tracer(name, color, iconURL, pt, time) {
 
 	this.popupInfoWindow = function() {
 	  var html = '<h3>' + this.name + '</h3>';
-      html += 'Last seen on ' + GTW.formatDateAndTime(this.point.time) + '<br/>at ' + this.point.lng() + ', ' + this.point.lat();
+
+	  html += 'Was here on ' + GTW.formatDateAndTime(this.point.time) + '<br/>at ' + this.point.lng() + ', ' + this.point.lat();
+
 
 	  GMAP.map.openInfoWindowHtml(this.point, html);
 	}
@@ -306,9 +283,21 @@ function Tracer(name, color, iconURL, pt, time) {
 		DH.setHTML('trackview', GTW.formatDateAndTime(this.point.time) + ' <br/>' + speed);
 	}
 
-	 // Show static info
+	// Show static info
 	this.showInfo = function() {
-		DH.setHTML('tracerinfo', this.name);
+		DH.setHTML('tracerid', this.name);
+		if (!DH.getObject("tracerimg").src) {
+			DH.getObject("tracerimg").src = this.thumbURL;
+		}
+		DH.setHTML('tracerdesc', '&nbsp;');
+		TRACER.current = this;
+		if (this.record != null && this.record != -1) {
+			this._showInfo();
+			return;
+		}
+
+		// No record: fetch and display later
+		this._queryInfo();
 	}
 
 	// Is Tracer visible ?
@@ -328,6 +317,47 @@ function Tracer(name, color, iconURL, pt, time) {
 		}
 	}
 
+	/** Internal display function. */
+	this._showInfo = function() {
+		if (TRACER.current != this && this.record != null && this.record != -1) {
+			return;
+		}
+
+		DH.getObject("tracerimg").src = this.thumbURL;
+		var desc = this.record.getField('desc');
+		if (desc == null) {
+			desc = ' ';
+		}
+
+		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a></span>');
+		if (CMT.isCommentPanelOpen() == true) {
+			// CMT.showCommentPanel(this.id, 'user', this.name);
+		}
+	}
+
+	this._queryInfo = function() {
+		if (this.record == -1) {
+			return;
+		}
+
+		// Define callback for async response
+		var self = this;
+		this.onGetRecord = function(result) {
+			self.record = -1;
+			if (result != null && result.length > 0) {
+				self.record = result[0];
+				self.id = self.record.getField("id");
+				self.thumbId = self.record.getField("thumbid");
+				if (self.thumbId != null) {
+					self.thumbURL = 'media.srv?id=' + self.thumbId + "&resize=80x60!";
+				}
+			}
+			self._showInfo();
+		}
+		//alert('getting thumbid for ' + this.name);
+		this.record = -1;
+		SRV.get("q-user-info", this.onGetRecord, "user", this.name);
+	}
 
 }
 

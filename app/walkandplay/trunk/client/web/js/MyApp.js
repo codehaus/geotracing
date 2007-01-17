@@ -13,7 +13,7 @@
 
 // This file contains specific functions for SotC Eindhoven
 var MYAPP = {
-	DOC_TITLE: '<img src="img/gs-logo.jpg" border="0"  alt="gs-logo" align="middle" />',
+	DOC_TITLE: '',
 	WINDOW_TITLE: 'GeoTracing - WalkAndPlay',
 
 	init: function() {
