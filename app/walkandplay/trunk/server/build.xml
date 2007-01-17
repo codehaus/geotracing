@@ -11,7 +11,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 	<property name="geotracing.external.dir" value="${basedir}/../../../../base/trunk/external"/>
 
 	<!-- Initialization of properties (dirs, files) -->
- 	<property file="${geotracing.external.dir}/build.properties"/>
+ 	<!--<property file="${geotracing.external.dir}/build.properties"/>-->
+ 	<property file="${basedir}/../../../../base/trunk/external/build.properties"/>
  	<property file="${home}/../build.properties"/>
     <property file="${home}/build.properties"/>
 

@@ -5,10 +5,7 @@ import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.utopia.core.data.Person;
-import org.keyworx.utopia.core.data.Medium;
+import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.logic.ContentLogic;
 import org.keyworx.utopia.core.logic.RelateLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -25,7 +22,7 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * TourHandler.
+ * RssHandler.
  * <p/>
  * Redirects the requests to the right logic method
  *
@@ -42,14 +39,15 @@ public class TourHandler extends DefaultHandler {
     public final static String TOUR_DELETE_SERVICE = "tour-delete";
 
     private Log log = Logging.getLog("TourHandler");
-    private ContentHandlerConfig config;
+    private ContentHandlerConfig config;    
 
     /**
      * Processes the Client Request.
      *
      * @param anUtopiaRequest A UtopiaRequest
      * @return A UtopiaResponse.
-     * @throws org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+     * @throws org.keyworx.utopia.core.data.UtopiaException
+     *          Standard Utopia exception
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         Log log = Logging.getLog(anUtopiaRequest);
@@ -82,7 +80,7 @@ public class TourHandler extends DefaultHandler {
             log.info(new String(response.toBytes(false)));
             return new UtopiaResponse(response);
         } catch (UtopiaException ue) {
-            log.error("Negative response for service: " + service, ue);
+            log.error("Negative response for service=" + service + "; exception:" + ue.getMessage());
             return new UtopiaResponse(createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage()));
         } catch (Throwable t) {
             log.error("Unexpected error in service : " + service, t);

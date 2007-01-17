@@ -42,7 +42,7 @@ public class ProfileLogic {
 	private Log log = Logging.getLog("ProfileLogic");
 	private String mailServer;
 	private String mailSender;
-	private String host;
+	//private String host;
     private ContentHandlerConfig config;
 
     public ProfileLogic(Oase o, ContentHandlerConfig aConfig) {
@@ -50,9 +50,9 @@ public class ProfileLogic {
         config = aConfig;
         mailServer = ServerConfig.getProperty("keyworx.mail.server");
         mailSender = ServerConfig.getProperty("keyworx.mail.sender");
-        host = ServerConfig.getProperty("host.name");
+        //host = ServerConfig.getProperty("host.name");
         log.info("Using mailsever: " + mailServer);
-        log.info("Using host: " + host);
+        //log.info("Using host: " + host);
     }
 
 	/**
@@ -170,7 +170,8 @@ public class ProfileLogic {
             }
             String body = "Thanks for registering!\n";
 			body += "To confirm your account please click on the link below!\n";
-			body += host + aConfirmationUrl;
+			//body += host + aConfirmationUrl;
+			body += aConfirmationUrl;
             try{
                 MailClient.sendMail(mailServer, mailSender, anEmail, "WalkAndPlay account confirmation", body, null, null, null);
             }catch(Throwable t){
@@ -228,7 +229,7 @@ public class ProfileLogic {
             if((anEmail !=null && anEmail.length()>0) || (aPassword!=null && aPassword.length()>0)){
                 // check if email address already exists
                 Record[] people = oase.getFinder().queryTable(Person.TABLE_NAME, Person.EMAIL_FIELD + "='" + anEmail + "'", null, null);
-                if (people != null && people.length > 0 && Integer.parseInt(aPersonId)!=people[0].getId()) throw new UtopiaException("This email address is already registered.", ErrorCode.__6207_Value_already_in_use);
+                    if (people != null && people.length > 0 && Integer.parseInt(aPersonId)!=people[0].getId()) throw new UtopiaException("This email address is already registered.", ErrorCode.__6207_Value_already_in_use);
                 person.getAccount().update(anEmail, aPassword, null, creatProfileCode(anEmail), null);
             }
 
@@ -378,8 +379,10 @@ public class ProfileLogic {
                 
             String body = "You requested an password reset at WalkAndPlay.\n";
 			body += "To confirm please click on the link below!\n";
-			body += host + aConfirmationUrl;
-            
+			body += aConfirmationUrl;
+            // client sends host info
+            //body += host + aConfirmationUrl;
+
             MailClient.sendMail(mailServer, mailSender, anEmail, "WalkAndPlay account reset request", body, null, null, null);
 
         } catch (UtopiaException ue) {
