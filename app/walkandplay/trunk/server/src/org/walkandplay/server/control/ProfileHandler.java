@@ -8,9 +8,11 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
+
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
+import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.Account;
 import org.keyworx.utopia.core.data.ErrorCode;
@@ -18,10 +20,9 @@ import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.walkandplay.server.logic.ProfileLogic;
 
-import java.util.Vector;
+import java.util.List;
 
 /**
  * RssHandler.
@@ -115,12 +116,12 @@ public class ProfileHandler extends DefaultHandler {
             String city = person.getChildText(Person.CITY_FIELD);
             String country = person.getChildText(Person.COUNTRY_FIELD);
 
-            Vector tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
+            List tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             String[] tags = null;
             if (tagElms != null) {
                 tags = new String[tagElms.size()];
                 for(int i=0;i<tagElms.size();i++){
-                    tags[i] = ((JXElement)tagElms.elementAt(i)).getText();
+                    tags[i] = ((JXElement)tagElms.get(i)).getText();
                 }                
             }
 
@@ -236,12 +237,12 @@ public class ProfileHandler extends DefaultHandler {
             String city = person.getChildText(Person.CITY_FIELD);
             String country = person.getChildText(Person.COUNTRY_FIELD);
 
-            Vector tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
+            List tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             String[] tags = null;
             if (tagElms != null) {
                 tags = new String[tagElms.size()];
                 for(int i=0;i<tagElms.size();i++){
-                    tags[i] = ((JXElement)tagElms.elementAt(i)).getText();
+                    tags[i] = ((JXElement)tagElms.get(i)).getText();
                 }
             }
 
