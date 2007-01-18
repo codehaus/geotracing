@@ -29,6 +29,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="home.src.dir" value="${home}/src"/>
     <property name="home.data.dir" value="${home}/data"/>
     <property name="home.webapp.dir" value="${home}/../client/web"/>
+    <property name="home.webapp.back.dir" value="${home}/webapp/${war.name}"/>
+
     <property name="build.war.dir" value="${build.dir}/war"/>
     <property name="version.dir" value="${home}/version"/>
     <property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
@@ -151,6 +153,10 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
           <fileset dir="${home.data.dir}"/>
         </copy>
 
+        <copy todir="${build.war.dir}" overwrite="true">
+			<fileset dir="${home.webapp.back.dir}"/>
+		</copy>
+
         <!-- Make war -->
         <jar jarfile="${project.war}">
             <fileset dir="${build.war.dir}">
@@ -247,6 +253,10 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <target name="deploy-test-local" depends="buildtest">
+        <copy file="${test.project.war}" todir="${deploy.local.dir}" overwrite="true"/>
+    </target>
+
+    <target name="deploy-test.waag.org" depends="build">
         <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
 
