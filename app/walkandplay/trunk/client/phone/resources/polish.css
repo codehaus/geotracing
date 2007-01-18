@@ -169,8 +169,27 @@ focused {
 	font-style: bold;
 	font-size: small;
 	layout: center;
-	icon-image: url( icon%INDEX%.png );
 	icon-image-align: top;
+}
+
+.mainTraceCommand extends .mainCommand {
+	icon-image: url( trace_icon.png );
+}
+
+.mainGPSCommand extends .mainCommand {
+	icon-image: url( gps_icon.png );
+}
+
+.mainSettingsCommand extends .mainCommand {
+	icon-image: url( settings_icon.png );
+}
+
+.mainHelpCommand extends .mainCommand {
+	icon-image: url( help_icon.png );
+}
+
+.mainQuitCommand extends .mainCommand {
+	icon-image: url( quit_icon.png );
 }
 
 alert extends .mainScreen {

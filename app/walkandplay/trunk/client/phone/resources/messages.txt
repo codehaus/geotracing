@@ -24,9 +24,9 @@ cmd.StartGame=Start Game
 cmd.Quit=Exit
 cmd.ShowLog=Show Log
 
-menu.StartGame=Start Game
-menu.LoadGame=Load Game
-menu.Highscore=Highscore
+menu.Trace=Trace
+menu.GPS=GPS
+menu.Settings=Settings
 menu.Quit=Exit
 
 messages.welcome=Welcome to the game, {0}!

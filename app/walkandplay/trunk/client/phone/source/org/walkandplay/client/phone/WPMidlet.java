@@ -66,14 +66,16 @@ public class WPMidlet extends MIDlet implements CommandListener {
 		//#endif
 		//#style mainScreen
 		this.menuScreen = new List(title, List.IMPLICIT);
-		//#style mainCommand
-		this.menuScreen.append( Locale.get( "menu.StartGame"), null);
-		//#style mainCommand
-		this.menuScreen.append(Locale.get( "menu.LoadGame"), null);
-		//#style mainCommand
-		this.menuScreen.append(Locale.get( "menu.Highscore"), null);
+
+		//#style mainTraceCommand
+		this.menuScreen.append(Locale.get( "menu.Trace"), null);
+		//#style mainGPSCommand
+		this.menuScreen.append(Locale.get( "menu.GPS"), null);
+		//#style mainSettingsCommand
+		this.menuScreen.append(Locale.get( "menu.Settings"), null);
 		//#style mainCommand
 		this.menuScreen.append(Locale.get( "menu.Quit"), null);
+
 		this.menuScreen.setCommandListener(this);
 		this.menuScreen.addCommand( this.startGameCmd ); 
 		this.menuScreen.addCommand( this.quitCmd );
