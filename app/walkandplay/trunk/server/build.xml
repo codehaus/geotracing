@@ -257,7 +257,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     </target>
 
     <target name="deploy-test.waag.org" depends="build">
-        <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+        <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
 
     <target name="deploy-all-local" depends="deploy-local, deploy-test-local" />
