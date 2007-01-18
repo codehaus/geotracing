@@ -1,5 +1,15 @@
 <portal name="[PORTALNAME]">
 
+    <!-- Standard host-dependent container properties -->
+    <property name="siteurl" host="ronaldinho.local">http://local.walkandplay.com</property>
+    <property name="webappurl" host="ronaldinho.local">http://local.walkandplay.com/wp</property>
+    <property name="siteurl" host="suwa">http://local.walkandplay.com</property>
+    <property name="webappurl" host="suwa">http://local.walkandplay.com/wp</property>
+    <property name="siteurl" host="test">http://test.walkandplay.com</property>
+    <property name="webappurl" host="test">http://test.walkandplay.com/wp</property>
+    <property name="siteurl" host="prod">http://www.walkandplay.com</property>
+    <property name="webappurl" host="prod">http://www.walkandplay.com/wp</property>
+
     <config>
         <!-- Oase context file. Context id becomes portal name -->
         <context file="oase-context.xml"/>
