@@ -1,23 +1,23 @@
 package org.walkandplay.server.control;
 
-import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.session.UtopiaRequest;
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.Medium;
-import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.utopia.core.logic.ContentLogic;
-import org.keyworx.utopia.core.logic.RelateLogic;
+import nl.justobjects.jox.dom.JXElement;
+
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
+import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.Medium;
+import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.logic.ContentLogic;
+import org.keyworx.utopia.core.logic.RelateLogic;
+import org.keyworx.utopia.core.session.UtopiaRequest;
+import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
-import nl.justobjects.jox.dom.JXElement;
 
-import java.util.Vector;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * AssignmentHandler.
@@ -94,10 +94,10 @@ public class AssignmentHandler extends DefaultHandler {
             RelateLogic relateLogic = new RelateLogic(oase, null);
             relateLogic.relate(Integer.parseInt(tourId), assignmentId, null);
 
-            Vector media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
+            List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
             if(media!=null){
                 for(int i=0;i<media.size();i++){
-                    JXElement medium = (JXElement)media.elementAt(i);
+                    JXElement medium = (JXElement)media.get(i);
                     relateLogic.relate(assignmentId, Integer.parseInt(medium.getAttr(Constants.ID_FIELD)), null);
                 }
             }
@@ -184,11 +184,11 @@ public class AssignmentHandler extends DefaultHandler {
 
             RelateLogic relateLogic = new RelateLogic(oase, null);
 
-            Vector media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
+            List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
             if(media!=null){
                 relateLogic.unrelate(assignmentId, Medium.TABLE_NAME, null);
                 for(int i=0;i<media.size();i++){
-                    JXElement medium = (JXElement)media.elementAt(i);
+                    JXElement medium = (JXElement)media.get(i);
                     relateLogic.relate(assignmentId, Integer.parseInt(medium.getAttr(Constants.ID_FIELD)), null);
                 }
             }

@@ -1,25 +1,28 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
+
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
+import org.keyworx.oase.api.Record;
+import org.keyworx.plugin.tagging.logic.TagLogic;
+import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.data.*;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.Medium;
+import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.logic.ContentLogic;
 import org.keyworx.utopia.core.logic.RelateLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.util.Translator;
-import org.keyworx.utopia.core.config.ContentHandlerConfig;
-import org.keyworx.oase.api.Record;
-import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.walkandplay.server.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * RssHandler.
@@ -96,11 +99,11 @@ public class TourHandler extends DefaultHandler {
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
 
             // get and add unknown invited people
-            Vector personElms1 = requestElement.getChildrenByTag(Person.TABLE_NAME);
+            List personElms1 = requestElement.getChildrenByTag(Person.TABLE_NAME);
             if(personElms1!=null){
                 JXElement invited = new JXElement("invitees");
                 for(int i=0;i<personElms1.size();i++){
-                    JXElement personElm1 = (JXElement)personElms1.elementAt(i);
+                    JXElement personElm1 = (JXElement)personElms1.get(i);
                     String email = personElm1.getChildText(Person.EMAIL_FIELD);
                     if(email!=null && email.length()>0){
                         JXElement p = new JXElement(Person.TABLE_NAME);
@@ -117,11 +120,11 @@ public class TourHandler extends DefaultHandler {
             int tourId = contentLogic.insertContent(contentElement);
 
             // add gameplay
-            Vector gameplayElms = contentElement.getChildrenByTag(Constants.GAMEPLAY_TABLE);
+            List gameplayElms = contentElement.getChildrenByTag(Constants.GAMEPLAY_TABLE);
             if(gameplayElms!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 for(int i=0;i<gameplayElms.size();i++){
-                    JXElement gameplayElm = (JXElement)gameplayElms.elementAt(i);
+                    JXElement gameplayElm = (JXElement)gameplayElms.get(i);
                     String gameplayId = gameplayElm.getAttr(Constants.ID_FIELD);
                     if(gameplayId!=null && gameplayId.length()>0 && Java.isInt(gameplayId)){
                         relateLogic.relate(tourId, Integer.parseInt(gameplayId), null);
@@ -130,25 +133,25 @@ public class TourHandler extends DefaultHandler {
             }
 
             // add tags
-            Vector tagsElms = contentElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
+            List tagsElms = contentElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             if(tagsElms!=null){
                 TagLogic tagLogic = new TagLogic(oase.getOaseSession());
                 int taggerId = Integer.parseInt(anUtopiaRequest.getUtopiaSession().getContext().getUserId());
                 int[] items= {tourId};
                 String[] tags= new String[tagsElms.size()];
                 for(int i=0;i<tagsElms.size();i++){
-                    JXElement tagElm = (JXElement)tagsElms.elementAt(i);
+                    JXElement tagElm = (JXElement)tagsElms.get(i);
                     tags[i] = tagElm.getText();
                 }
                 tagLogic.tag(taggerId, items, tags, org.keyworx.plugin.tagging.util.Constants.MODE_ADD);
             }
 
             // relate known invited people
-            Vector personElms2 = contentElement.getChildrenByTag(Person.TABLE_NAME);
+            List personElms2 = contentElement.getChildrenByTag(Person.TABLE_NAME);
             if(personElms2!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 for(int i=0;i<personElms2.size();i++){
-                    JXElement personElm2 = (JXElement)personElms2.elementAt(i);
+                    JXElement personElm2 = (JXElement)personElms2.get(i);
                     String personId = personElm2.getAttr(Person.ID_FIELD);
                     if(personId!=null && personId.length()>0 && Java.isInt(personId)){
                         relateLogic.relate(tourId, Integer.parseInt(personId), Constants.INVITATION_SEND);
@@ -298,11 +301,11 @@ public class TourHandler extends DefaultHandler {
             int tourId = Integer.parseInt(id);
 
             // get and add unknown invited people
-            Vector personElms1 = requestElement.getChildrenByTag(Person.TABLE_NAME);
+            List personElms1 = requestElement.getChildrenByTag(Person.TABLE_NAME);
             if(personElms1!=null){
                 JXElement invited = new JXElement("invitees");
                 for(int i=0;i<personElms1.size();i++){
-                    JXElement personElm1 = (JXElement)personElms1.elementAt(i);
+                    JXElement personElm1 = (JXElement)personElms1.get(i);
                     String email = personElm1.getChildText(Person.EMAIL_FIELD);
                     if(email!=null && email.length()>0){
                         JXElement p = new JXElement(Person.TABLE_NAME);
@@ -320,13 +323,13 @@ public class TourHandler extends DefaultHandler {
             contentLogic.updateContent(tourId, requestElement);
 
             // add gameplay
-            Vector gameplayElms = contentElement.getChildrenByTag(Constants.GAMEPLAY_TABLE);
+            List gameplayElms = contentElement.getChildrenByTag(Constants.GAMEPLAY_TABLE);
             if(gameplayElms!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 // first unrelate the current gameplay
                 relateLogic.unrelate(tourId, Constants.GAMEPLAY_TABLE, null);
                 for(int i=0;i<gameplayElms.size();i++){
-                    JXElement gameplayElm = (JXElement)gameplayElms.elementAt(i);
+                    JXElement gameplayElm = (JXElement)gameplayElms.get(i);
                     String gameplayId = gameplayElm.getAttr(Constants.ID_FIELD);
                     if(gameplayId!=null && gameplayId.length()>0 && Java.isInt(gameplayId)){
                         relateLogic.relate(tourId, Integer.parseInt(gameplayId), null);
@@ -335,27 +338,27 @@ public class TourHandler extends DefaultHandler {
             }
 
             // add tags
-            Vector tagsElms = contentElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
+            List tagsElms = contentElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             if(tagsElms!=null){
                 TagLogic tagLogic = new TagLogic(oase.getOaseSession());
                 int taggerId = Integer.parseInt(anUtopiaRequest.getUtopiaSession().getContext().getUserId());
                 int[] items= {tourId};
                 String[] tags= new String[tagsElms.size()];
                 for(int i=0;i<tagsElms.size();i++){
-                    JXElement tagElm = (JXElement)tagsElms.elementAt(i);
+                    JXElement tagElm = (JXElement)tagsElms.get(i);
                     tags[i] = tagElm.getText();
                 }
                 tagLogic.tag(taggerId, items, tags, org.keyworx.plugin.tagging.util.Constants.MODE_REPLACE);
             }
 
             // relate known invited people
-            Vector personElms2 = contentElement.getChildrenByTag(Person.TABLE_NAME);
+            List personElms2 = contentElement.getChildrenByTag(Person.TABLE_NAME);
             if(personElms2!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 // first unrelate the current invitees
                 relateLogic.unrelate(tourId, Person.TABLE_NAME, Constants.INVITATION_SEND);
                 for(int i=0;i<personElms2.size();i++){
-                    JXElement personElm2 = (JXElement)personElms2.elementAt(i);
+                    JXElement personElm2 = (JXElement)personElms2.get(i);
                     String personId = personElm2.getAttr(Person.ID_FIELD);
                     if(personId!=null && personId.length()>0 && Java.isInt(personId)){
                         relateLogic.relate(tourId, Integer.parseInt(personId), Constants.INVITATION_SEND);
@@ -364,13 +367,13 @@ public class TourHandler extends DefaultHandler {
             }
 
             // add poi's
-            Vector poiElms = contentElement.getChildrenByTag(Constants.POI_TABLE);
+            List poiElms = contentElement.getChildrenByTag(Constants.POI_TABLE);
             if(poiElms!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 // first unrelate the current poi's
                 relateLogic.unrelate(tourId, Constants.POI_TABLE, null);
                 for(int i=0;i<poiElms.size();i++){
-                    JXElement poiElm = (JXElement)poiElms.elementAt(i);
+                    JXElement poiElm = (JXElement)poiElms.get(i);
                     String poiId = poiElm.getAttr(Constants.POI_TABLE);
                     if(poiId!=null && poiId.length()>0 && Java.isInt(poiId)){
                         relateLogic.relate(tourId, Integer.parseInt(poiId), null);
@@ -379,13 +382,13 @@ public class TourHandler extends DefaultHandler {
             }
 
             // add media
-            Vector mediumElms = contentElement.getChildrenByTag(Medium.TABLE_NAME);
+            List mediumElms = contentElement.getChildrenByTag(Medium.TABLE_NAME);
             if(mediumElms!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 // first unrelate the current media
                 relateLogic.unrelate(tourId, Medium.TABLE_NAME, null);
                 for(int i=0;i<mediumElms.size();i++){
-                    JXElement mediumElm = (JXElement)mediumElms.elementAt(i);
+                    JXElement mediumElm = (JXElement)mediumElms.get(i);
                     String mediumId = mediumElm.getAttr(Medium.ID_FIELD);
                     String type = mediumElm.getAttr(Constants.TYPE_FIELD);
                     if(mediumId!=null && mediumId.length()>0 && Java.isInt(mediumId)){
@@ -403,13 +406,13 @@ public class TourHandler extends DefaultHandler {
             }
 
             // add assignments
-            Vector assignmentElms = contentElement.getChildrenByTag(Constants.ASSIGNMENT_TABLE);
+            List assignmentElms = contentElement.getChildrenByTag(Constants.ASSIGNMENT_TABLE);
             if(assignmentElms!=null){
                 RelateLogic relateLogic = new RelateLogic(oase, null);
                 // first unrelate the current assignments
                 relateLogic.unrelate(tourId, Constants.ASSIGNMENT_TABLE, null);
                 for(int i=0;i<assignmentElms.size();i++){
-                    JXElement assignmentElm = (JXElement)assignmentElms.elementAt(i);
+                    JXElement assignmentElm = (JXElement)assignmentElms.get(i);
                     String assignmentId = assignmentElm.getAttr(Constants.ASSIGNMENT_TABLE);
                     if(assignmentId!=null && assignmentId.length()>0 && Java.isInt(assignmentId)){
                         relateLogic.relate(tourId, Integer.parseInt(assignmentId), null);
