@@ -73,7 +73,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
 		this.menuScreen.append(Locale.get( "menu.GPS"), null);
 		//#style mainSettingsCommand
 		this.menuScreen.append(Locale.get( "menu.Settings"), null);
-		//#style mainCommand
+		//#style mainQuitCommand
 		this.menuScreen.append(Locale.get( "menu.Quit"), null);
 
 		this.menuScreen.setCommandListener(this);
