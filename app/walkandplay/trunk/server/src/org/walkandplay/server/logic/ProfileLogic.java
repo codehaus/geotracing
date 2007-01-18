@@ -141,7 +141,7 @@ public class ProfileLogic {
             String[] rolesIdList = {"" + roles[0].getId()};
 
             // create the confirmation code and set it
-            String code = creatProfileCode(anEmail);
+            String code = createProfileCode(anEmail);
             log.info("confirmationcode:" + code);
             accountLogic.insertAccount(aPortalId, "" + person.getId(), rolesIdList, anEmail, aPassword, code, Account.INACTIVE_STATE_VALUE, null);
 
@@ -233,7 +233,7 @@ public class ProfileLogic {
                 // check if email address already exists
                 Record[] people = oase.getFinder().queryTable(Person.TABLE_NAME, Person.EMAIL_FIELD + "='" + anEmail + "'", null, null);
                     if (people != null && people.length > 0 && Integer.parseInt(aPersonId)!=people[0].getId()) throw new UtopiaException("This email address is already registered.", ErrorCode.__6207_Value_already_in_use);
-                person.getAccount().update(anEmail, aPassword, null, creatProfileCode(anEmail), null);
+                person.getAccount().update(anEmail, aPassword, null, createProfileCode(anEmail), null);
             }
 
             // set the default license
@@ -372,7 +372,7 @@ public class ProfileLogic {
 				throw new UtopiaException("No account found for " + anEmail, ErrorCode.__6004_Invalid_attribute_value);
 			}
 
-			String code = creatProfileCode(anEmail);
+			String code = createProfileCode(anEmail);
 
             if(aConfirmationUrl.indexOf("?")!=-1){
                 aConfirmationUrl += "&code=" + code;
@@ -395,7 +395,7 @@ public class ProfileLogic {
 		}
 	}
 
-    private String creatProfileCode(String anEmail) throws UtopiaException{
+    private String createProfileCode(String anEmail) throws UtopiaException{
         try{
         return MD5.createStringDigest(anEmail + anEmail + anEmail);
         } catch (Throwable t) {
