@@ -43,30 +43,6 @@
   </div>
   <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
 </div>
-<div id="buttonbar" style="text-align:left;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-  <div class="contentblock">
-    <ul>
-      <li> <img src="img/archive_bt.gif" alt="archive button" width="45" style=" margin-left:30px;" id="archive_bt"/> </li>
-      <li> <img src="img/map_bt.gif" alt="mapButton" width="45" border="0" id="maps_bt"/> </li>
-      <li> <img src="img/search_bt.gif" alt="search" width="45" id="search_bt"/> </li>
-      <li> <img src="img/score_bt.gif" alt="live" id="live_bt" width="45"/></li>
-      <li>
-        <div id="searchbox" style="position:absolute; width:226px; left:142px; top:72px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-          <div class="contentblock"> <span>search</span><br/>
-            <br/>
-            <form>
-              <input name="text" type="text" style="background:url(img/input_bg.jpg) no-repeat;" size="18"/>
-              <a href="#">
-              <div class="style2" id="submitSearch" style="text-align:right; text-decoration:underline;margin-right:80px;">submit</div>
-              <br />
-              </a>
-            </form>
-            <img src="img/searchTarget.gif" alt="searchTaget" style="position:absolute; left:172px; width: 33px; top: 30px;"/> </div>
-          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-      </li>
-    </ul>
-  </div>
-<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 <div id="loginbox" style="position:absolute; width:220px; left:365px; top:54px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock">
     <form name="signinform" id="signinform">
@@ -130,19 +106,152 @@
     </ul>
   </div>
 <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-
-<div id="formblock" style="text-align:left;z-index:15;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-  <div class="contentblock" style="background-color:#E9E9E9; height:200px;">
-  		congratulations 
+<div id="archivebox" style="position:absolute; width:162px; left:261px; top:283px; display:none;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <ul style="list-style:none;">
+      <li>archive content</li>
+    </ul>
   </div>
-  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-		<script type="text/javascript">
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+<div id="formblock" style="text-align:left;z-index:15;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock" style="background-color:#E9E9E9;">
+    <!--SIGNUP FORM-->
+    <ul id="tabs" style="list-style:none;">
+      <li style="display:inline; font-weight:bold;" id="tab1">step 1</li>
+      <li style="display:inline;" id="tab2">step 2 </li>
+      <li style="display:inline;" id="tab3">step 3 </li>
+    </ul>
+    <form enctype="application/x-www-form-urlencoded" name="signupform" id="signupform">
+	<input type="hidden" id="imageId" name="photoid" value="" />
+      <div id="tab_1" style="position:relative;display:block;">
+        <ul style="list-style:none;">
+          <li>name (as it appears on screen):</li>
+          <li>
+            <input type="text" class="medium" size="38" name="nickname"/>
+          </li>
+          <li> password:</li>
+          <li>
+            <input type="password" class="medium" size="38" name="password"/>
+          </li>
+          <li> e-mail address (sign-up):</li>
+          <li>
+            <input type="text" class="small" size="20" name="email"/>
+            <select name="emailpublic">
+              <option value="true">public</option>
+              <option onblur="false">private</option>
+            </select>
+          </li>
+          <li> mobile phone number:</li>
+          <li>
+            <input type="text" class="medium" size="38" name="phone"/>
+          </li>
+        </ul>
+        <iframe id="uploadFrame" style="display:none;" name="uploadFrame"> </iframe>
+        &nbsp; </div>
+      <div id="tab_2" style="display:none;">
+        <ul style="list-style:none;">
+          <li> first name:</li>
+          <li>
+            <input type="text" size="100" class="large" name="firstname"/>
+          </li>
+          <li> last name:</li>
+          <li>
+            <input type="text" size="100" class="large" name="lastname"/>
+          </li>
+          <li> street:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="address"/>
+          </li>
+          <li> housenumber:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="streetnr"/>
+          </li>
+          <li> postal code:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="zip"/>
+          </li>
+          <li> city:</li>
+          <li>
+            <input type="text"  size="100" class="large" name="place"/>
+          </li>
+          <li> country:</li>
+          <li>
+            <input type="text" size="100" class="large" name="country"/>
+          </li>
+          <li> keywords:</li>
+          <li>
+            <textarea name="keywords" cols="75" rows="3"></textarea>
+          </li>
+          <li>
+            <p>
+              <label>
+              <input type="radio" name="privacy" value="public" checked/>
+              make profile public</label>
+              <br />
+              <label>
+              <input type="radio" name="privacy" value="private" />
+              keep profile private</label>
+              <br />
+            </p>
+          </li>
+        </ul>
+        &nbsp; </div>
+      <div id="tab_3" style="display:none;">
+        <ul style="list-style:none;">
+          <li> 1. Mogen derden gebruik maken van uw werk voor commerci&euml;le doeleinden? (meer informatie more information)</li>
+          <li>
+            <label>
+            <input type="radio" name="cc1" value="yes" checked/>
+            Ja</label>
+            <br />
+            <label>
+            <input type="radio" name="cc1" value="no" />
+            Nee</label>
+          </li>
+          <li> <br />
+            <br />
+            2. Mogen derden uw werk bewerken? (meer informatie more information)</li>
+          <li>
+            <label>
+            <input type="radio" name="cc2" value="yes" checked/>
+            Ja</label>
+            <br />
+            <label>
+            <input type="radio" name="cc2" value="though" />
+            Ja, zolang derden ook gelijk delen (meer informatie more information)</label>
+            <br />
+            <label>
+            <input type="radio" name="cc2" value="no" />
+            Nee</label>
+          </li>
+          <li>
+            <div><br />
+              <br />
+              <button type="submit">submit</button>
+            </div>
+          </li>
+        </ul>
+        &nbsp;</div>
+    </form>
+	<form id="addmediumform" name="addmediumform" enctype="multipart/form-data" target="uploadFrame" method="post" action="wp/media.srv" >
+		<input name="file" id="file" type="file"  />
+		<input name="description" id="name" type="hidden" value="null" />
+		<input name="name" id="description" type="hidden" value="null" />
+		<input name="agentkey" id="agentkey" type="hidden" value="null" />
+		<input name="xmlrsp" id="xmlrsp" type="hidden" value="true" />
+		<div id="add">voeg afbeelding toe</div>
+	</form>
+	<img id="previewImage" style="display:none"/>
+  </div>
+<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+	<script type="text/javascript" src="js/newaccount.js"></script>
+	<script type="text/javascript">
 		SRV.url = 'wp/srv/get.jsp?';
 		if(typeof sIFR == "function"){
 		    sIFR.replaceElement("#logobox span", named({sFlashSrc: "js/sIFR2.0.2/skia.swf",sBgColor:"#eeeeee"}));
     		sIFR();
-		};		
-		</script>
-		<script type="text/javascript" src="js/events.js"></script>
+		};
+	</script>
+	<script type="text/javascript" src="js/events.js"></script>
 </body>
 </html>

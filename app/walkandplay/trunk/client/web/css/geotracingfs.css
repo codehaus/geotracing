@@ -129,7 +129,7 @@ a:link, a:active, a:visited {
 	font-family:Verdana, Arial, Helvetica, sans-serif;
 	font-size:14px;
 	line-height:20px;
-	left: 662px;
+	right: 20px;
 }
 .bbottom {
 	width:100%; 
@@ -245,6 +245,9 @@ a:link, a:active {
 	z-index:4;
 }
 
+#navbox ,#archivetoursbox ,#livetoursbox ,#archivetracksbox ,#archivenavbox  {
+	z-index:5;
+}
 #navbox li,#archivetoursbox li,#livetoursbox li,#archivetracksbox li,#archivenavbox li {
 	cursor:pointer;
 }
