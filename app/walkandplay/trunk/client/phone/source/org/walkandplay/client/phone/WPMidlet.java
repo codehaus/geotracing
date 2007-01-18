@@ -62,7 +62,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
 		//#ifdef title:defined
 			//#= String title = "${ title }";
 		//#else
-			String title = "J2ME Polish";
+			String title = "WnP";
 		//#endif
 		//#style mainScreen
 		this.menuScreen = new List(title, List.IMPLICIT);

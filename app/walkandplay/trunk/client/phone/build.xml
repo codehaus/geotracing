@@ -119,14 +119,14 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				license="LGPL"
-				name="WlakAndPlay"
+				license="GPL"
+				name="WalkAndPlay"
 				version="1.0.0"
 				description="Mobile client for WnP project"
 				vendorName="GeoWorX"
 				infoUrl="http://www.j2mepolish.org"
 				icon="dot.png"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar"
+				jarName="${polish.vendor}/${polish.name}/${polish.locale}/wnp.jar"
 				jarUrl="${deploy-url}${polish.jarName}"
 				copyright="Copyright 2005 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?"
@@ -140,7 +140,7 @@
 			</deviceRequirements>
 			<deviceRequirements unless="test">
 <!--				<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />  -->
-				<requirement name="Identifier" value="Nokia/Series60Midp2, Generic/midp2, Nokia/N73" /> 
+				<requirement name="Identifier" value="Nokia/Series60Midp2, Nokia/N73" />
 				<!-- on could use other devices for real builds, e.g. :
 				<or>
 					<and>
@@ -161,7 +161,7 @@
 				workDir="${dir.work}"
 			>
 				<!-- midlets definition -->
-				<midlet class="org.walkandplay.client.phone.WPMidlet" name="Example" />
+				<midlet class="org.walkandplay.client.phone.WPMidlet" name="WnP" />
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
@@ -193,7 +193,8 @@
 					-->
 					<!-- add the localization element for created localized
 					     versions of your application: -->
-					<localization locales="de_DE, en_US" unless="test" />
+<!--					<localization locales="de_DE, en_US" unless="test" />  -->
+					<localization locales="en_US" unless="test" />
 					<localization locales="en_US" if="test" />
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
