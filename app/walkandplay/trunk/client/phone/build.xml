@@ -125,9 +125,9 @@
 				description="Mobile client for WnP project"
 				vendorName="GeoWorX"
 				infoUrl="http://www.j2mepolish.org"
-				icon="dot.png"
-				jarName="${polish.vendor}/${polish.name}/${polish.locale}/wnp.jar"
-				jarUrl="${deploy-url}${polish.jarName}"
+				icon="app.png"
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-wnp.jar"
+				jarUrl="${polish.jarName}"
 				copyright="Copyright 2005 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?"
 			/>
