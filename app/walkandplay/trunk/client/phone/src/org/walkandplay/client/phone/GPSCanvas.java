@@ -39,7 +39,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public GPSCanvas(WP aMidlet) {
+    public GPSCanvas(WPMidlet aMidlet) {
         super(aMidlet);
         try {
             setFullScreenMode(true);
@@ -224,7 +224,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
                 text = "Your GPS device is stored";                
                 drawText(g, text);
                 ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
-                new Forwarder(WP.HOME_CANVAS, 2);
+                new Forwarder(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS, 2);
                 break;
         }
     }
@@ -264,7 +264,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
         } else if (key == -7) {
             switch (screenStat) {
                 case HOME_STAT:
-                    midlet.setScreen(WP.HOME_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS);
                     break;
                 case DEVICES_STAT:
                     screenStat = HOME_STAT;

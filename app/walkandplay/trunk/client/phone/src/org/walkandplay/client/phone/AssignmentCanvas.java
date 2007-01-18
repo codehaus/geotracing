@@ -30,7 +30,7 @@ public class AssignmentCanvas extends DefaultCanvas {
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public AssignmentCanvas(WP aMidlet) {
+    public AssignmentCanvas(WPMidlet aMidlet) {
         super(aMidlet);
         try {
             w = getWidth();
@@ -139,30 +139,30 @@ public class AssignmentCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(WP.TRACE_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.TRACE_CANVAS);
                     break;
                 case 2:
                     if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
-                        midlet.setScreen(WP.FIND_TOURS_CANVAS);
+                        midlet.setScreen(org.walkandplay.client.phone.WPMidlet.FIND_TOURS_CANVAS);
                     } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
                 case 3:
                     if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
-                        midlet.setScreen(WP.PLAY_TOURS_CANVAS);
+                        midlet.setScreen(org.walkandplay.client.phone.WPMidlet.PLAY_TOURS_CANVAS);
                     } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
                 case 4:
-                    midlet.setScreen(WP.GPS_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.GPS_CANVAS);
                     break;
                 case 5:
-                    midlet.setScreen(WP.SETTINGS_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.SETTINGS_CANVAS);
                     break;
                 case 6:
-                    midlet.setScreen(WP.HELP_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HELP_CANVAS);
                     break;
             }
             // right softkey

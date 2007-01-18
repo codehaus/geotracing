@@ -7,7 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SplashCanvas extends Canvas {
-    private WP midlet;
+    private WPMidlet midlet;
     int w=-1, h=-1;
 	private Delayer delayer;
     // image objects
@@ -17,7 +17,7 @@ public class SplashCanvas extends Canvas {
     private int screenName;
 
 
-    public SplashCanvas(WP aMidlet, int aScreenName) {
+    public SplashCanvas(WPMidlet aMidlet, int aScreenName) {
         try {
             midlet = aMidlet;            
             // load all images
@@ -25,7 +25,7 @@ public class SplashCanvas extends Canvas {
             gtLogo = Image.createImage("/gt_logo.png");
             kwxLogo = Image.createImage("/kwx_logo.png");
             screenName = aScreenName;
-            midlet.log("new splashscreen!! : " + screenName);
+            midlet.log("new splashscreen!! : " + screenName);            
         } catch (Throwable t) {
             midlet.log("could not load all images : " + t.toString());
         }
@@ -37,13 +37,12 @@ public class SplashCanvas extends Canvas {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-		if (w == -1) {
+        if (w == -1) {
 			setFullScreenMode(true);
 			w = getWidth();
 			h = getHeight();
 		}
-
-		g.setColor(255, 255, 255);
+        g.setColor(255, 255, 255);
         g.fillRect(0, 0, w, h);
         g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(gtLogo, (w - gtLogo.getWidth()) / 2, (h - gtLogo.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
@@ -66,6 +65,7 @@ public class SplashCanvas extends Canvas {
         class RemindTask extends TimerTask {
             public void run() {
                 if (screenName != -1) {
+                    midlet.log("going to next screen!");
                     midlet.setScreen(screenName);
                     repaint();
                 } else {
