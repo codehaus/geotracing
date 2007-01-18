@@ -216,7 +216,6 @@ public class ProfileLogic {
 		try {
 			// first check required params
             if (aPersonId == null || aPersonId.length() == 0 || !Java.isInt(aPersonId)) throw new UtopiaException("No personId found.");
-            if (aLicense == null || aLicense.length() == 0) throw new UtopiaException("No license id found.");
 
             // set privacy params
             JXElement extra = new JXElement("extra");
@@ -237,9 +236,11 @@ public class ProfileLogic {
             }
 
             // set the default license
-            LicenseLogic licenseLogic = new LicenseLogic(oase);
-            Record license = licenseLogic.getLicense(-1, aLicense, null);
-            licenseLogic.attachLicenseToPerson("" + person.getId(), "" + license.getId());
+            if (aLicense != null && aLicense.length() != 0) {
+	            LicenseLogic licenseLogic = new LicenseLogic(oase);
+	            Record license = licenseLogic.getLicense(-1, aLicense, null);
+	            licenseLogic.attachLicenseToPerson("" + person.getId(), "" + license.getId());
+            }
 
             // attach a photo
             if(aPhotoId!=null && aPhotoId.length() > 0 && Java.isInt(aPhotoId)){
