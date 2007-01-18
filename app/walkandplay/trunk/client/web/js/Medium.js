@@ -22,12 +22,22 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 	// Shows icon on map
 	this.getIconDiv = function() {
 		if (this.type == 'text') {
-			var src = 'img/poi.gif';
+			var src = 'img/texticon.gif';
 			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';
-			return '<div class="texticon" id="' + this.iconId + '" style="border: 1px solid ' + this.bgColor + ';" >' + img + '</div>';
+		} else if(this.type == 'video') {
+			var src = 'img/videoicon.gif';
+			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';
+		} else if(this.type == 'image') {
+			var src = 'img/imageicon.gif';
+			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';		
+		}else if(this.type == 'audio') {
+			var src = 'img/audioicon.gif';
+			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';		
 		} else {
-			return '<div class="medicon" id="' + this.iconId + '" style="background-color:' + this.getBGColor() + ';" >&nbsp;&nbsp;&nbsp;&nbsp;</div>';
+			var src = 'img/icon.gif';
+			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';		
 		}
+		return '<div class="texticon" id="' + this.iconId + '" style="border: 0px;">' + img + '</div>';
 	}
 
 	this.getTitle = function() {
@@ -55,10 +65,8 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 	}
 
 	this._displayAudio = function() {
-		var previewTile = this.getPreviewTile()
-
-		previewTile.innerHTML = '<img class="mediumpreview" id="' + this.previewId + '" title="click to play" src="img/audioicon.jpg" border="0"  />';
-
+		var previewTile = this.getPreviewTile();
+		previewTile.innerHTML = '<img class="mediumpreview" id="' + this.previewId + '" title="click to play" src="img/audiopreview.gif" border="0"  />';
 		var medium = this;
 		this.onClick = function(e) {
 			DH.cancelEvent(e);
@@ -86,7 +94,7 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 	this._displayImage = function() {
 		var src = this.url + '&resize=320x240';
-		var previewTile = this.getPreviewTile()
+		var previewTile = this.getPreviewTile();
 		previewTile.innerHTML = '<img class="mediumpreview" id="' + this.previewId + '" title="click to see larger image" src="' + src + '" border="0"  />';
 
 		var medium = this;
@@ -115,7 +123,7 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 	this._displayVideo = function() {
 		var previewTile = this.getPreviewTile()
 
-		previewTile.innerHTML = '<img class="mediumpreview" id="' + this.previewId + '" title="click to play" src="img/videoicon.gif" border="0"  />';
+		previewTile.innerHTML = '<img class="mediumpreview" id="' + this.previewId + '" title="click to play" src="img/videopreview.gif" border="0"  />';
 
 		var medium = this;
 		this.onClick = function(e) {
@@ -127,8 +135,8 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 			// } else {
 			var url = medium.url;
 			content = (navigator.userAgent.toLowerCase().indexOf('mac') != -1) ?
-					  '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="176" height="154" codebase="http://www.apple.com/qtactivex/qtplugin.cab" align="center"><param name="src" value="' + medium.url + '"><param name="AUTOPLAY" value="true"><param name="type" value="video/quicktime"><param name="CONTROLLER" value="true"><embed src="' + medium.url + '" width="176" height="154" autoplay="true" controller="true" loop="true" type="video/quicktime" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>' :
-					  '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" align="center"><param name="movie" value="' + medium.url + '&format=swf"><param name="quality" value="high"><param name="bgcolor" value="#ffffff"><param name="loop" value="true"><embed src="' + medium.url + '&format=swf" quality="high" bgcolor="#ffffff" swliveconnect="true" loop="true" type="application/x-shockwave-flash"pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?p1_prod_version=shockwaveflash"></embed></object>';
+					  '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" width="176" height="154" codebase="http://www.apple.com/qtactivex/qtplugin.cab" align="center"><param name="src" value="' + medium.url + '"><param name="AUTOPLAY" value="true"><param name="type" value="video/quicktime"><param name="CONTROLLER" value="true"><embed src="' + medium.url + '" width="176" height="154" autoplay="true" controller="true" loop="false" type="video/quicktime" pluginspage="http://www.apple.com/quicktime/download/"></embed></object>' :
+					  '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" align="center"><param name="movie" value="' + medium.url + '&format=swf"><param name="quality" value="high"><param name="bgcolor" value="#ffffff"><param name="loop" value="true"><embed src="' + medium.url + '&format=swf" quality="high" bgcolor="#ffffff" swliveconnect="true" loop="false" type="application/x-shockwave-flash"pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?p1_prod_version=shockwaveflash"></embed></object>';
 			// }
 
 			//var d = DH.getObject(medium.divId);
