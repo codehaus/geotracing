@@ -123,8 +123,8 @@ public class ProfileLogic {
 
             // first create the person
             // first and last name are not mandatory
-            if(aFirstName == null || aFirstName.length() == 0) aFirstName = "John";
-            if(aLastName == null || aLastName.length() == 0) aLastName = "Doe";
+            //if(aFirstName == null || aFirstName.length() == 0) aFirstName = "John";
+            //if(aLastName == null || aLastName.length() == 0) aLastName = "Doe";
 
             // set privacy params
             JXElement extra = new JXElement("extra");
