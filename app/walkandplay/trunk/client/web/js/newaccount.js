@@ -38,6 +38,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	txt = doc.createTextNode('false');
 	emailpublic.appendChild(txt);
 	
+	
 	person.appendChild(password);
 	txt = doc.createTextNode(document.signupform.password.value);
 	password.appendChild(txt);	
@@ -53,6 +54,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	profilepublic.appendChild(txt);
 	
 	User.role = 'guest';
+	//alert(dojo.html.innerXML(doc));
 	KW.utopia(doc);
 	
 });
