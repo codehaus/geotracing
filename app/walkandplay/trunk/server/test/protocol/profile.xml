@@ -20,48 +20,6 @@
         </expect>
     </test>
     
-    <test id="license-get-req">
-        <send id="client1">
-            <utopia-req>
-                <license-get-req uri="http://creativecommons.org/licenses/by/2.5/" />
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <license-get-rsp id="${licenseid}"/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
-    <test id="license-getlist-req">
-        <send id="client1">
-            <utopia-req>
-                <license-getlist-req />
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <license-getlist-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
-   <test id="person-delete-req">
-        <send id="client1">
-            <utopia-req>
-                <person-delete-req id="214"/>
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <person-delete-rsp />
-            </utopia-rsp>
-        </expect>
-    </test>
-
     <!-- minimal signup-->
     <test id="profile-create-req">
         <send id="client1">
