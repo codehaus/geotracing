@@ -13,7 +13,7 @@ public class PlayToursCanvas extends DefaultCanvas {
     private Image smallLogo, upBt, upDownBt, downBt;
     boolean showMenu;
 
-    public PlayToursCanvas(WP aMidlet) {
+    public PlayToursCanvas(WPMidlet aMidlet) {
         super(aMidlet);
         try {
             smallLogo = Image.createImage("/play_icon_small.png");
@@ -83,7 +83,7 @@ public class PlayToursCanvas extends DefaultCanvas {
             }
             // right softkey
         } else if (key == -7) {
-            midlet.setScreen(WP.HOME_CANVAS);            
+            midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             // right

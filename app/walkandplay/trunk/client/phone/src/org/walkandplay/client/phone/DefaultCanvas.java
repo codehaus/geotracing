@@ -19,7 +19,7 @@ public class DefaultCanvas extends Canvas {
 
 	protected int margin = 3;
 
-	protected WP midlet;
+	protected WPMidlet midlet;
 
 	// image objects
 	protected Image logo, bg, backBt, gpsNetBar, redDot, blueDot, greenDot;
@@ -27,11 +27,7 @@ public class DefaultCanvas extends Canvas {
 	protected Image menuBt, topTextArea, middleTextArea, bottomTextArea;
 
 	protected int fontType = Font.FACE_MONOSPACE;
-    protected Menu menu;
-
-    protected CanvasElement activeElement;
-
-    public DefaultCanvas(WP aMidlet) {
+    public DefaultCanvas(WPMidlet aMidlet) {
 		try {
 			midlet = aMidlet;
 
@@ -58,10 +54,6 @@ public class DefaultCanvas extends Canvas {
 			log("could not load all images : " + t.toString());
 		}
 	}
-
-    protected void setActiveElement(CanvasElement aCanvasElement){
-        activeElement = aCanvasElement;
-    }
 
     // passes log msg to the main log method
 	protected void log(String aMsg) {
@@ -111,8 +103,6 @@ public class DefaultCanvas extends Canvas {
 			h = getHeight();
 			f = Font.getFont(fontType, Font.STYLE_PLAIN, Font.SIZE_SMALL);
 			fh = f.getHeight();
-            menu = new Menu(this, menuTop, menuMiddle, menuBottom, menuSel, h);
-            setActiveElement(menu);
         }
 
 		g.setFont(f);
@@ -127,12 +117,6 @@ public class DefaultCanvas extends Canvas {
 		ScreenUtil.drawRightSoftKey(g, h, w, backBt, margin);
 
 		g.setColor(0, 0, 0);
-
-        activeElement.draw(g);
-    }
-
-    public void keyPressed(int key) {
-        activeElement.keyPressed(key, getGameAction(key));
     }
 
     // creates a delay for the splashscreen

@@ -14,7 +14,7 @@ public class FindToursCanvas extends DefaultCanvas {
     private Image smallLogo, upBt, upDownBt, downBt;
     boolean showMenu;
 
-    public FindToursCanvas(WP aMidlet) {
+    public FindToursCanvas(WPMidlet aMidlet) {
         super(aMidlet);
         try {
             smallLogo = Image.createImage("/find_icon_small.png");
@@ -83,7 +83,7 @@ public class FindToursCanvas extends DefaultCanvas {
             }
             // right softkey
         } else if (key == -7) {
-            midlet.setScreen(WP.HOME_CANVAS);            
+            midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             // right

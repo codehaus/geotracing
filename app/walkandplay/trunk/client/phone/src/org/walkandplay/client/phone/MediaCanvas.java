@@ -87,7 +87,7 @@ public class MediaCanvas extends DefaultCanvas {
 	private String myTags = "";
 	private String[] tagCloud = {"tag1", "tag2", "tag3", "tag4"};
 
-	public MediaCanvas(WP aMidlet) {
+	public MediaCanvas(WPMidlet aMidlet) {
 		super(aMidlet);
 		try {
 			setFullScreenMode(true);
@@ -451,7 +451,7 @@ public class MediaCanvas extends DefaultCanvas {
 					break;
 				default:
 					screenStat = TEXT_STAT;
-					midlet.setScreen(WP.TRACE_CANVAS);
+					midlet.setScreen(org.walkandplay.client.phone.WPMidlet.TRACE_CANVAS);
 			}
 
 			// left

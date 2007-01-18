@@ -3,7 +3,6 @@ package org.walkandplay.client.phone;
 import org.geotracing.client.Log;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -14,21 +13,18 @@ public class HomeCanvas extends DefaultCanvas {
     // icon buttons
     private Image[] icons = new Image[6];
 
-    public HomeCanvas(WP aMidlet) {
+    public HomeCanvas(WPMidlet aMidlet) {
         super(aMidlet);
         try {
-
             icons[0] = Image.createImage("/trace_icon.png");
             icons[1] = Image.createImage("/find_icon.png");
             icons[2] = Image.createImage("/play_icon.png");
             icons[3] = Image.createImage("/gps_icon.png");
             icons[4] = Image.createImage("/settings_icon.png");
             icons[5] = Image.createImage("/help_icon.png");
-
+            
             iconOverlay = Image.createImage("/icon_overlay.png");
-
             ScreenUtil.resetIcons();
-
         } catch (Throwable t) {
             log("could not load all images : " + t.toString());
         }
@@ -41,7 +37,7 @@ public class HomeCanvas extends DefaultCanvas {
      */
     public void paint(Graphics g) {
         super.paint(g);
-        ScreenUtil.drawIcons(g, w, 5, 30, icons, iconOverlay);
+        ScreenUtil.drawIcons(g, w, 5, 30, icons, iconOverlay);        
     }
 
     /**
@@ -59,7 +55,7 @@ public class HomeCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(WP.TRACE_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.TRACE_CANVAS);
                     break;
                 case 2:
                     /*if(midlet.GPS_OK()){
@@ -67,7 +63,7 @@ public class HomeCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(WP.FIND_TOURS_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.FIND_TOURS_CANVAS);
                     break;
                 case 3:
                     /*if(midlet.GPS_OK()){
@@ -75,16 +71,16 @@ public class HomeCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(WP.PLAY_TOURS_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.PLAY_TOURS_CANVAS);
                     break;
                 case 4:
-                    midlet.setScreen(WP.GPS_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.GPS_CANVAS);
                     break;
                 case 5:
-                    midlet.setScreen(WP.SETTINGS_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.SETTINGS_CANVAS);
                     break;
                 case 6:
-                    midlet.setScreen(WP.HELP_CANVAS);
+                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HELP_CANVAS);
                     break;
             }
             // right softkey

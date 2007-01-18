@@ -15,7 +15,7 @@ public class TraceCanvas extends DefaultCanvas {
 
 	private String inputText = "";
 
-	private WP midlet;
+	private WPMidlet midlet;
 	private String tileBaseURL;
 	private JXElement tileInfo;
 	private Image tileImage;
@@ -47,7 +47,7 @@ public class TraceCanvas extends DefaultCanvas {
 	private int screenStat = HOME_STAT;
 	String[] tracingOptions = {"new track", "resume track", "stop tracing", "switch map", "zoom out", "zoom in", "drop media", "status"};
 
-	public TraceCanvas(WP aMidlet) {
+	public TraceCanvas(WPMidlet aMidlet) {
 		super(aMidlet);
 		try {
 			midlet = aMidlet;
@@ -296,7 +296,7 @@ public class TraceCanvas extends DefaultCanvas {
 								zoom++;
 								fetchTileInfo();
 							} else if (ScreenUtil.getSelectedMenuItem() == 7) {
-								midlet.setScreen(WP.MEDIA_CANVAS);
+								midlet.setScreen(org.walkandplay.client.phone.WPMidlet.MEDIA_CANVAS);
 							} else if (ScreenUtil.getSelectedMenuItem() == 8) {
 								screenStat = STATUS_STAT;
 							} 
@@ -327,7 +327,7 @@ public class TraceCanvas extends DefaultCanvas {
 						showMenu = false;
 						screenStat = HOME_STAT;
 					} else {
-						midlet.setScreen(WP.HOME_CANVAS);
+						midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS);
 					}
 					break;
 				case STATUS_STAT:

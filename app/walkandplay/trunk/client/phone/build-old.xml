@@ -200,7 +200,7 @@
 
 	</target>
 
-	<target name="run">
+	<target name="run" depends="jar">
 		<java classname="${emulator.class}" fork="true">
 			<classpath refid="emulator.classpath"/>
 			<!-- <arg value="-clearRecordStores"/> -->
