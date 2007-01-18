@@ -1,6 +1,7 @@
 <testsuite>
     <testset file="profile.xml" />
-    <testset file="tour.xml"/>
+    <testset file="licese.xml" />
+    <!-- testset file="tour.xml"/-->
     <!--<testset file="content.xml" />-->
     <!--<testset file="assignment.xml" />-->
     <!--<testset file="answer.xml" />
