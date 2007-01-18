@@ -226,7 +226,7 @@ public class ProfileHandler extends DefaultHandler {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             JXElement person = requestElement.getChildByTag(Person.XML_TAG);
-            String personId = requestElement.getAttr("personid");
+            String personId = requestElement.getAttr(Person.ID_FIELD);
             String nickName = person.getChildText("nickname");
             String firstName = person.getChildText(Person.FIRSTNAME_FIELD);
             String lastName = person.getChildText(Person.LASTNAME_FIELD);
