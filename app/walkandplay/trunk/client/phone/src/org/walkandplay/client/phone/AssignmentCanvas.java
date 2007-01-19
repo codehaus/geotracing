@@ -30,7 +30,7 @@ public class AssignmentCanvas extends DefaultCanvas {
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public AssignmentCanvas(WPMidlet aMidlet) {
+    public AssignmentCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             w = getWidth();
@@ -139,30 +139,30 @@ public class AssignmentCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.TRACE_CANVAS);
+                    midlet.setScreen(midlet.TRACE_CANVAS);
                     break;
                 case 2:
                     if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
-                        midlet.setScreen(org.walkandplay.client.phone.WPMidlet.FIND_TOURS_CANVAS);
+                        midlet.setScreen(midlet.FIND_TOURS_CANVAS);
                     } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
                 case 3:
                     if (GPSFetcher.getInstance().getState() == GPSFetcher.CONNECTED) {
-                        midlet.setScreen(org.walkandplay.client.phone.WPMidlet.PLAY_TOURS_CANVAS);
+                        midlet.setScreen(midlet.PLAY_TOURS_CANVAS);
                     } else {
                         gpsMsg = "select a gps first";
                     }
                     break;
                 case 4:
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.GPS_CANVAS);
+                    midlet.setScreen(midlet.GPS_CANVAS);
                     break;
                 case 5:
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.SETTINGS_CANVAS);
+                    midlet.setScreen(midlet.SETTINGS_CANVAS);
                     break;
                 case 6:
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HELP_CANVAS);
+                    midlet.setScreen(midlet.HELP_CANVAS);
                     break;
             }
             // right softkey

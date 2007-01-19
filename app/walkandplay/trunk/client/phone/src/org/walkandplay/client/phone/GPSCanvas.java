@@ -39,7 +39,7 @@ public class GPSCanvas extends DefaultCanvas implements DiscoveryListener {
 
     private int fontType = Font.FACE_MONOSPACE;
 
-    public GPSCanvas(WPMidlet aMidlet) {
+    public GPSCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             setFullScreenMode(true);

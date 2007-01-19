@@ -13,7 +13,7 @@ public class PlayToursCanvas extends DefaultCanvas {
     private Image smallLogo, upBt, upDownBt, downBt;
     boolean showMenu;
 
-    public PlayToursCanvas(WPMidlet aMidlet) {
+    public PlayToursCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             smallLogo = Image.createImage("/play_icon_small.png");

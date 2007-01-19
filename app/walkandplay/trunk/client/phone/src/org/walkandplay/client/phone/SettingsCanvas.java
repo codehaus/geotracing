@@ -19,7 +19,7 @@ public class SettingsCanvas extends DefaultCanvas {
     private final static int SOUND_STAT = 0;
     private final static int ACCOUNT_STAT = 1;
 
-    public SettingsCanvas(WPMidlet aMidlet) {
+    public SettingsCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             smallLogo = Image.createImage("/settings_icon_small.png");
@@ -96,7 +96,7 @@ public class SettingsCanvas extends DefaultCanvas {
             }
             // right softkey
         } else if (key == -7) {
-            midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS);
+            midlet.setScreen(midlet.HOME_CANVAS);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             // right

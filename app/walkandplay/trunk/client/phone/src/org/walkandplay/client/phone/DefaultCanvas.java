@@ -19,7 +19,7 @@ public class DefaultCanvas extends Canvas {
 
 	protected int margin = 3;
 
-	protected WPMidlet midlet;
+	protected WP midlet;
 
 	// image objects
 	protected Image logo, bg, backBt, gpsNetBar, redDot, blueDot, greenDot;
@@ -27,7 +27,7 @@ public class DefaultCanvas extends Canvas {
 	protected Image menuBt, topTextArea, middleTextArea, bottomTextArea;
 
 	protected int fontType = Font.FACE_MONOSPACE;
-    public DefaultCanvas(WPMidlet aMidlet) {
+    public DefaultCanvas(WP aMidlet) {
 		try {
 			midlet = aMidlet;
 

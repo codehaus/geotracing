@@ -7,7 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class SplashCanvas extends Canvas {
-    private WPMidlet midlet;
+    private WP midlet;
     int w=-1, h=-1;
 	private Delayer delayer;
     // image objects
@@ -17,7 +17,7 @@ public class SplashCanvas extends Canvas {
     private int screenName;
 
 
-    public SplashCanvas(WPMidlet aMidlet, int aScreenName) {
+    public SplashCanvas(WP aMidlet, int aScreenName) {
         try {
             midlet = aMidlet;            
             // load all images
