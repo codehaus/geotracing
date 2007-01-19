@@ -32,7 +32,7 @@
 
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
-	<property name="device" value="Generic/midp1"/>
+	<property name="device" value="Generic/midp1"/>	
 
 	<!-- The siemens.home, nokia.home and motorola.home-          -->
 	<!-- properties can be necessary when their emulators         -->
@@ -170,8 +170,8 @@
 					//#= private static final String UPDATE_URL = "${ update-url }";
 					You can change the title of the sample application with the "title"-var.
 					-->
-					<variable name="update-url" value="http://www.enough.de/update" />
-					<variable name="title" value="J2ME Polish" />
+					<variable name="update-url" value="http://test.walkandplay.com/update" />
+					<variable name="title" value="WalkAndPlay" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
@@ -237,7 +237,7 @@
 				enableMemoryMonitor="true"
 				enableNetworkMonitor="true"
 				if="debug"
-				>
+                >
 				<!--
 				<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
 				-->
@@ -268,8 +268,8 @@
 	<target
 		name="emulator"
 		depends="test,j2mepolish"
-		description="invokes the emulator"
-	>
+		description="invokes the emulator"            
+    >
 	</target>
 
 	<target name="clean"
@@ -284,19 +284,12 @@
 		depends="clean, j2mepolish"
 	/>
 
-	<target name="enableBarbie" >
-		<property name="resource.dir" value="resources2" />
-		<property name="dir.work" value="build/barbie" />
+	<target name="enableN73" >
+		<property name="resource.dir" value="resources/Nokia/N73" />
+		<property name="dir.work" value="build/N73" />
 	</target>
 
-    <target name="barbie" description="launches the application with the barbie design" depends="enableBarbie, test, j2mepolish" />
-
-	<target name="enableFrog" >
-		<property name="resource.dir" value="resources3" />
-		<property name="dir.work" value="build/frog" />
-	</target>
-
-    <target name="frog" description="launches the application with the frog design" depends="enableFrog, test, j2mepolish" />
+    <target name="N73" description="launches the application with the N73 design" depends="enableN73, test, j2mepolish" />
 
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
 
