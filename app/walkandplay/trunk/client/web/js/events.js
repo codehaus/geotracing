@@ -1,6 +1,5 @@
 dojo.event.connect('body','onunload','GUnload');
 
-
 /*
 ELEMENTS
 */
@@ -50,15 +49,6 @@ function show(elm) {
 EVENTS
 */
 
-if(tags) {	
-	for(var i = 0; i < tags.length; i++) {
-			dojo.event.connect(tags[i],'onclick',function(evt) {
-				tag_block.style.left = dojo.style.totalOffsetLeft(evt.target) +'px';
-				tagblock_title.innerHTML = "tours tagged " +evt.target.firstChild.nodeValue +":"; 
-				tag_block.style.display = 'block';
-			});
-		}
-}
 if(document.getElementById('mainbuttonscreate')) {
 	dojo.event.connect(document.getElementById('mainbuttonscreate'),'onmouseover',function(evt) {
 		document.getElementById('mainbuttons').src = 'img/cpv_c_over.gif';
@@ -230,3 +220,11 @@ function WPNegResp(elm) {
 }
 
 KW.init(WPCallback, WPNegResp, 60,'/wp');
+
+dojo.event.connect(window,'onload',function(evt) {
+	username = getCookie('name');
+	if(username) {	
+		var password  = getCookie('password');
+		KW.login(username,password);
+	}
+});

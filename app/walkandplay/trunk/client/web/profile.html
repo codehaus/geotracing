@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 <title>GeoTracing</title>
-<script type="text/javascript" src="js/gt/KWClient.js"></script>
+<script type="text/javascript" src="js/gt/myKWClient.js"></script>
 <script type="text/javascript" src="js/dojo/dojo.js"></script>
 <script type="text/javascript" src="js/gt/ajax-pushlet-client.js"></script>
 <script type="text/javascript" src="js/gt/DHTML.js"></script>
@@ -113,8 +113,28 @@
     </ul>
   </div>
 <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
-<div id="formblock" style="text-align:left;z-index:15;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+
+
+<div id="infoblock" style="position:absolute; top:200px; left:52px; width:800px;">
+<b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+<div class="contentblock">
+
+
+<div id="profileblock" style="display:block;">
+<b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+  <div id="GOTOeditview">edit</div>
+  profile overzicht, tours comments etc.
+  
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
+</div>
+
+
+
+<div id="formblock" style="text-align:left;z-index:15; display:none; position:static;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
   <div class="contentblock" style="background-color:#E9E9E9;">
+  <div id="GOTOoverview">general info</div>
     <!--SIGNUP FORM-->
     <form enctype="application/x-www-form-urlencoded" name="signupform" id="signupform">
 	<input type="hidden" id="imageId" name="photoid" value="" />
@@ -122,10 +142,6 @@
           <li>name (as it appears on screen):</li>
           <li>
             <input type="text" class="medium" size="38" name="nickname"/>
-          </li>
-          <li> password:</li>
-          <li>
-            <input type="password" class="medium" size="38" name="password"/>
           </li>
           <li> e-mail address (sign-up):</li>
           <li>
@@ -170,8 +186,8 @@
           <li>
             <input type="text" size="38" class="medium" name="country"/>
           </li>
-          <li> keywords:</li>
-          <li>
+          <li style="position:absolute; left: 382px; top: 125px;"> keywords:</li>
+          <li style="position:absolute; left: 383px; top: 154px;">
             <textarea name="keywords" cols="30" rows="10"></textarea>
           </li>
           <li>
@@ -200,6 +216,9 @@
 		<img id="previewImage" style="display:none"/>
 	</div>
   </div>
+    <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
+</div>
+</div>
 <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 	<script type="text/javascript" src="js/profile.js"></script>
 	<script type="text/javascript">
