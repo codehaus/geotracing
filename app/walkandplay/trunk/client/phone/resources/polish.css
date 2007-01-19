@@ -19,11 +19,19 @@
   * can be changed here. 
   */
 colors {
+    /**
 	bgColor:  rgb(132,143,96);
 	brightBgColor:  rgb(238,241,229);
 	translucentBgColor:  argb(130, 238,241,229);
 	brightFontColor: rgb(238,241,229);
 	fontColor: rgb( 30, 85, 86 );
+    */
+
+    bgColor: rgb( 153, 179, 204 );
+    brightBgColor: argb( 130, 231, 243, 255 );
+    translucentBgColor: argb( 130, 238, 241, 229 );
+    brightFontColor: rgb( 40, 40, 40 );
+    fontColor: rgb( 77, 84, 90 );
 }
 
 /**
@@ -41,18 +49,27 @@ colors {
   * the background shines through.
   */
 menu {
-	margin-left: 2;
-	padding: 2;
-	background {
-		type: round-rect;
-		color: brightBgColor;
-		border-width: 2;
-		border-color: bgColor;
-	}
-	focused-style: .menuFocused;
-	font-color: brightFontColor;
-	font-style: bold;
-	menubar-color: bgColor;
+    margin-left: 2;
+    padding: 2;
+    background {
+    type: round-rect;
+    color: brightBgColor;
+    border-width: 1;
+    border-color: bgColor;
+}
+
+focused-style: .menuFocused
+
+;
+font-color: brightFontColor
+
+;
+font-style: bold
+
+;
+menubar-color: bgColor
+
+;
 }
 
 /**
@@ -62,15 +79,18 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	margin-top: 2;
-	padding: 2;
-	padding-left: 5;
-	font {
-		color: fontColor;
-		size: medium;
-		style: bold;
-	}
-	layout: left;
+    margin-top: 2;
+    padding: 2;
+    padding-left: 5;
+    font {
+    color: fontColor;
+    size: small;
+    style: bold;
+}
+
+layout: left
+
+;
 }
 
 /**
@@ -79,16 +99,16 @@ menuItem {
   * been defined in the menu style. 
   */
 .menuFocused extends .menuItem {
-	background-color: bgColor;
-	font-color: brightFontColor;
-	layout: left | horizontal-expand;
+    background-color: bgColor;
+    font-color: brightFontColor;
+    layout: left | horizontal-expand;
 }
 
 /**
   * The title style is a predefined style which is used
   * for all screen-titles.
   */
-title {
+/*title {
 	padding: 2;
 	margin-top: 0;
 	margin-bottom: 5;
@@ -101,7 +121,7 @@ title {
 	background-color: bgColor;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
-}
+}*/
 
 /**
   * The focused style is a predefined style which
@@ -110,20 +130,24 @@ title {
   * focused item.
   */
 focused {
-	padding: 5;
-	background {
-		type: round-rect;
-		arc: 8;
-		color: brightBgColor;
-		border-color: fontColor;
-		border-width: 2;
-	}
-	font {
-		style: bold;
-		color: fontColor;
-		size: small;
-	}
-	layout: expand | center;	
+    padding: 5;
+    background {
+    type: round-rect;
+    arc: 8;
+    color: brightBgColor;
+    border-color: fontColor;
+    border-width: 2;
+}
+
+font {
+    style: bold;
+    color: fontColor;
+    size: small;
+}
+
+layout: expand | center
+
+;
 }
 
 /** 
@@ -137,18 +161,33 @@ focused {
   * layout.
   */
 .mainScreen {
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
-	background {
-		color: brightBgColor;
-	}
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	columns: 2;
-	columns-width: equal;
-	/*
-	show-text-in-title: true;
-	*/
+    padding: 5;
+    padding-left: 15;
+    padding-right: 15;
+    background {
+    color: brightBgColor;
+}
+
+layout: horizontal-expand | horizontal-center | vertical-center
+
+;
+columns:
+
+2
+;
+columns-width: equal
+
+;
+background-image:
+
+url
+(
+bg.png
+)
+;
+/*
+    show-text-in-title: true;
+    */
 }
 
 /**
@@ -162,51 +201,73 @@ focused {
   * "icon0.png", the second "icon1.png" and so on. 
   */
 .mainCommand {
-	margin: 2; /* for the missing border of the focused style */
-	padding: 5;
-	background: none;
-	font-color: fontColor;
-	font-style: bold;
-	font-size: small;
-	layout: center;
-	icon-image-align: top;
+    margin: 2; /* for the missing border of the focused style */
+    padding: 5;
+    background: none;
+    font-color: fontColor;
+    font-style: bold;
+    font-size: small;
+    layout: center;
+    icon-image-align: top;
 }
 
 .mainTraceCommand extends .mainCommand {
-	icon-image: url( trace_icon.png );
+    icon-image: url( trace_icon.png );
 }
 
 .mainGPSCommand extends .mainCommand {
-	icon-image: url( gps_icon.png );
+    icon-image: url( gps_icon.png );
 }
 
 .mainSettingsCommand extends .mainCommand {
-	icon-image: url( settings_icon.png );
+    icon-image: url( settings_icon.png );
 }
 
 .mainHelpCommand extends .mainCommand {
-	icon-image: url( help_icon.png );
+    icon-image: url( help_icon.png );
+}
+
+.mainFindCommand extends .mainCommand {
+    icon-image: url( find_icon.png );
+}
+
+.mainPlayCommand extends .mainCommand {
+    icon-image: url( play_icon.png );
 }
 
 .mainQuitCommand extends .mainCommand {
-	icon-image: url( quit_icon.png );
+    icon-image: url( quit_icon.png );
 }
 
 alert extends .mainScreen {
 }
 
 alertcontent {
-	font-color: fontColor;
-	font-size: small;
-	font-style: bold;
+    font-color: fontColor;
+    font-size: small;
+    font-style: bold;
 }
 
 .loadGameAlert {
-	margin: 20;
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
-	show-dismiss-command: false;
+    margin: 20;
+    padding: 5;
+    padding-left: 15;
+    padding-right: 15;
+    layout: horizontal-expand | horizontal-center | vertical-center;
+    background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
+    show-dismiss-command: false;
 }
+
+.logo {
+    margin-top: 2;
+    margin-left: 2;
+    layout: left | top;
+}
+
+.form {
+    background-image: url( bg.png );
+    border: none;
+    font-color: black;
+    font-size: small;
+}
+

@@ -18,7 +18,8 @@ var:MyExampleVariable=Hello World
 # If you like you can start them with "var:" as well, but it is not needed.
 # Again MIDlet-attributes defined override the one defined in the <info>-
 # and <jad>-sections of your build.xml
-MIDlet-Description=A localized sample project
+
+MIDlet-Description= Walk & Play
 
 cmd.StartGame=Start Game
 cmd.Quit=Exit
@@ -27,7 +28,17 @@ cmd.ShowLog=Show Log
 menu.Trace=Trace
 menu.GPS=GPS
 menu.Settings=Settings
+menu.Find=Find
+menu.Play=Play
+menu.Help=Help
 menu.Quit=Exit
+
+help.Topic1=topic 1
+help.Topic1Text=explanation on topic 1
+help.Topic2=topic 2
+help.Topic2Text=explanation on topic 2
+help.Topic3=topic 3
+help.Topic3Text=explanation on topic 3
 
 messages.welcome=Welcome to the game, {0}!
 
