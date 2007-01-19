@@ -13,7 +13,7 @@ public class HomeCanvas extends DefaultCanvas {
     // icon buttons
     private Image[] icons = new Image[6];
 
-    public HomeCanvas(WPMidlet aMidlet) {
+    public HomeCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             icons[0] = Image.createImage("/trace_icon.png");
@@ -55,7 +55,7 @@ public class HomeCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.TRACE_CANVAS);
+                    midlet.setScreen(midlet.TRACE_CANVAS);
                     break;
                 case 2:
                     /*if(midlet.GPS_OK()){
@@ -63,7 +63,7 @@ public class HomeCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.FIND_TOURS_CANVAS);
+                    midlet.setScreen(midlet.FIND_TOURS_CANVAS);
                     break;
                 case 3:
                     /*if(midlet.GPS_OK()){
@@ -71,16 +71,16 @@ public class HomeCanvas extends DefaultCanvas {
                     }else{
                         gpsMsg = "select a gps first";
                     }*/
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.PLAY_TOURS_CANVAS);
+                    midlet.setScreen(midlet.PLAY_TOURS_CANVAS);
                     break;
                 case 4:
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.GPS_CANVAS);
+                    midlet.setScreen(midlet.GPS_CANVAS);
                     break;
                 case 5:
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.SETTINGS_CANVAS);
+                    midlet.setScreen(midlet.SETTINGS_CANVAS);
                     break;
                 case 6:
-                    midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HELP_CANVAS);
+                    midlet.setScreen(midlet.HELP_CANVAS);
                     break;
             }
             // right softkey

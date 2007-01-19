@@ -15,7 +15,7 @@ public class HelpCanvas extends DefaultCanvas {
 
     int item;
 
-    public HelpCanvas(WPMidlet aMidlet) {
+    public HelpCanvas(WP aMidlet) {
         super(aMidlet);
         try {
             smallLogo = Image.createImage("/help_icon_small.png");
@@ -83,7 +83,7 @@ public class HelpCanvas extends DefaultCanvas {
             }
             // right softkey
         } else if (key == -7) {
-            midlet.setScreen(org.walkandplay.client.phone.WPMidlet.HOME_CANVAS);
+            midlet.setScreen(midlet.HOME_CANVAS);
             // left
         } else if (key == -3 || getGameAction(key) == Canvas.LEFT) {
             // right

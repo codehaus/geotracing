@@ -87,7 +87,7 @@ public class MediaCanvas extends DefaultCanvas {
 	private String myTags = "";
 	private String[] tagCloud = {"tag1", "tag2", "tag3", "tag4"};
 
-	public MediaCanvas(WPMidlet aMidlet) {
+	public MediaCanvas(WP aMidlet) {
 		super(aMidlet);
 		try {
 			setFullScreenMode(true);
