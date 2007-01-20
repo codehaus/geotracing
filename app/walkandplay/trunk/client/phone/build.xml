@@ -19,7 +19,24 @@
 <project
 	name="WP Phone J2MEPolish"
 	default="j2mepolish">
-	<!-- import user specific properties -->
+
+    <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+
+	<!-- sets paths to all external package dirs. -->
+	<property file="${geotracing.external.dir}/build.properties"/>
+
+	<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
+	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
+	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
+	<property name="mobitracer.src" value="${geotracing.base.dir}/client/mobitracer/src"/>
+
+    <property file="build.properties"/>
+    <property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
+	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
+	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
+
+    <!-- import user specific properties -->
 	<property file="${user.name}.properties" />
 
 	<!-- The wtk.home property should point to the directory      -->
@@ -65,7 +82,12 @@
 		<property name="blackberry.home" location="C:\Program Files\Research In Motion/BlackBerry JDE 4.0.2" />
 	-->
 
-	<!-- Definition of the J2ME Polish task:                      -->
+    <path id="compile.classpath">
+		<pathelement location="${jsr82.zip}"/>
+		<pathelement location="${mmapi.jar}"/>
+	</path>
+
+    <!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish"
 		classname="de.enough.polish.ant.PolishTask"
 		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
@@ -101,7 +123,7 @@
 		<property name="deploy-url" value="http://test.walkandplay.com/wp/ota/" />
 		<property name="resource.dir" value="resources" />
         <property name="source.dir" value="${basedir}/source" />
-	</target>
+    </target>
 
 	<!-- In this target the J2ME Polish task is used.             -->
 	<!-- It has 3 sections:                                       -->
@@ -153,14 +175,18 @@
 		    <!-- build settings -->
 			<!--
 			 -->
-			<build
-				sourceDir="${source.dir}"
-				symbols="ExampleSymbol, AnotherExample"
+            
+            <build
+				sourceDir="${source.dir}:${kwclient.src}:${mjox.src}:${mobitracer.src}"
+                symbols="ExampleSymbol, AnotherExample"
 				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
 			>
-				<!-- midlets definition -->
+                <compiler>
+                    <classpath refid="compile.classpath"/>
+                </compiler>
+                <!-- midlets definition -->
 				<midlet class="org.walkandplay.client.phone.WPMidlet" name="WnP" />
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->

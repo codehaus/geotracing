@@ -32,13 +32,13 @@ public class HelpScreen extends Form implements CommandListener {
         super("");
         midlet = aMIDlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();
-        
+
         try {
             Image logo;
             //#ifdef polish.images.directLoad
-                logo = Image.createImage("/gt_logo.png");
+            logo = Image.createImage("/gt_logo.png");
             //#else
-                logo = scheduleImage("/gt_logo.png");
+            logo = scheduleImage("/gt_logo.png");
             //#endif
 
             //#style logo
@@ -66,15 +66,15 @@ public class HelpScreen extends Form implements CommandListener {
        * satisfy the CommandListener interface and handle the Cancel action.
        */
     public void commandAction(Command cmd, Displayable screen) {
-        if(cmd == backCmd){
+        if (cmd == backCmd) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if(cmd == help1Cmd){
+        } else if (cmd == help1Cmd) {
             label.setText(Locale.get("help.Topic1"));
-            text.setText(Locale.get("help.Topic1Text"));            
-        }else if(cmd == help2Cmd){
+            text.setText(Locale.get("help.Topic1Text"));
+        } else if (cmd == help2Cmd) {
             label.setText(Locale.get("help.Topic2"));
             text.setText(Locale.get("help.Topic2Text"));
-        }else if(cmd == help3Cmd){
+        } else if (cmd == help3Cmd) {
             label.setText(Locale.get("help.Topic3"));
             text.setText(Locale.get("help.Topic3Text"));
         }
