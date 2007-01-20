@@ -79,7 +79,6 @@ public class TraceCanvas extends DefaultCanvas {
 		tracer = null;
 	}
 
-
 	Tracer getTracer() {
 		return tracer;
 	}
