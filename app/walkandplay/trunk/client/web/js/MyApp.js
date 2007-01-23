@@ -56,7 +56,7 @@ var MYAPP = {
 		//GMAP.map.addControl(new GOverviewMapControl());
 		GMAP.map.setCenter(new GLatLng(52.37261, 4.900435), 9, GMAP.mapTypes['streets']);
 		GMAP.map.addControl(new GLargeMapControl(),
-           	 new GControlPosition(G_ANCHOR_TOP_LEFT, new GSize(600, 10)));
+           	 new GControlPosition(G_ANCHOR_TOP_LEFT, new GSize(60, 300)));
 
 	}
 }
