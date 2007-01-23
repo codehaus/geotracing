@@ -23,14 +23,14 @@ DH.include('Panel.js');
 DH.include('Record.js');
 DH.include('Selector.js');
 DH.include('Server.js');
-DH.include('Tracer.js');
+DH.include('../WPTracer.js');
 DH.include('Track.js');
 DH.include('TrackAutoPlayer.js');
 DH.include('TrackPlayer.js');
 DH.include('Widget.js');
-DH.include('MyApp.js');
+DH.include('../MyApp.js');
 DH.include('TLabel.js');
-DH.include('Medium.js');
+DH.include('../myMedium.js');
 
 
 // Pushlet Data Event Callback from Server
@@ -66,7 +66,7 @@ var WP = {
 		GTW.init();
 		// Live Pushlet event setup
 		WP.createLiveListener();
-		PL.joinListen('/wp')
+		//PL.joinListen('/wp')
 		WP.doPageCommand();
 		WP.initialized = true;
 		// Optional start of user app
@@ -320,7 +320,6 @@ var WP = {
 			return;
 		}
 		GTW.displayTrackPlayer();
-
 		tracer.zoomTo();
 		tracer.readTrack(trackId, trackName, true);
 		tracer.show();
@@ -382,7 +381,6 @@ var WP = {
 
 		WP.blinkStatus('Getting active users...');
 		SRV.get('q-active-tracks', WP.onQueryActiveUsers);
-
 	},
 
 	mLastTracks: function(max) {
@@ -509,3 +507,37 @@ var WP = {
 
 // Starts it all
 DH.onReady = WP.init;
+
+/* get, set, and delete cookies */
+function getCookie( name ) {
+	var start = document.cookie.indexOf( name + "=" );
+	var len = start + name.length + 1;
+	if ( ( !start ) && ( name != document.cookie.substring( 0, name.length ) ) ) {
+		return null;
+	}
+	if ( start == -1 ) return null;
+	var end = document.cookie.indexOf( ";", len );
+	if ( end == -1 ) end = document.cookie.length;
+	return unescape( document.cookie.substring( len, end ) );
+}
+	
+function setCookie( name, value, expires, path, domain, secure ) {
+	var today = new Date();
+	today.setTime( today.getTime() );
+	if ( expires ) {
+		expires = expires * 1000 * 60 * 60 * 24;
+	}
+	var expires_date = new Date( today.getTime() + (expires) );
+	document.cookie = name+"="+escape( value ) +
+		( ( expires ) ? ";expires="+expires_date.toGMTString() : "" ) + //expires.toGMTString()
+		( ( path ) ? ";path=" + path : "" ) +
+		( ( domain ) ? ";domain=" + domain : "" ) +
+		( ( secure ) ? ";secure" : "" );
+}
+	
+function deleteCookie( name, path, domain ) {
+	if ( getCookie( name ) ) document.cookie = name + "=" +
+			( ( path ) ? ";path=" + path : "") +
+			( ( domain ) ? ";domain=" + domain : "" ) +
+			";expires=Thu, 01-Jan-1970 00:00:01 GMT";
+}
