@@ -221,11 +221,14 @@ var KW = {
 // Callback for login response
 	_loginRsp: function(element) {
 		KW.agentKey = element.getAttribute('agentkey');
-		var c = getCookie('name');
-		if(c.length < 1) {
-			setCookie( 'name', document.getElementById('username').value);
-			setCookie( 'password', document.getElementById('password').value);
-		}
+		var c;
+		try {
+			c = getCookie('name');
+		} catch(e) { c = null;}
+			if(c == null) {
+				setCookie( 'name', document.getElementById('username').value);
+				setCookie( 'password', document.getElementById('password').value);
+			}
 		KW.userId = element.getElementsByTagName('personid')[0].childNodes[0].nodeValue;
 		//alert(KW.userId);
 		KW.onRsp(element);

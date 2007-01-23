@@ -46,6 +46,7 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Displays medium
 	this._displayPreview = function() {
+	//	if(document.getElementById('infobox').style.display == 'none') { document.getElementById('infobox').style.display = 'block'}
 		if (this.type == 'video') {
 			this._displayVideo();
 		} else if (this.type == 'image') {

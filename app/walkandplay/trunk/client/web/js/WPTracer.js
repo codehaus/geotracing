@@ -286,9 +286,11 @@ function Tracer(name, color, iconURL, pt, time) {
 	// Show static info
 	this.showInfo = function() {
 		DH.setHTML('tracerid', this.name);
-		if (!DH.getObject("tracerimg")) {
-			DH.getObject("tracerimg").src = this.thumbURL;
-		}
+		try {
+			if (!DH.getObject("tracerimg")) {
+				DH.getObject("tracerimg").src = this.thumbURL;
+			}
+		} catch(e) {}
 		DH.setHTML('tracerdesc', '&nbsp;');
 		TRACER.current = this;
 		if (this.record != null && this.record != -1) {
@@ -322,17 +324,19 @@ function Tracer(name, color, iconURL, pt, time) {
 		if (TRACER.current != this && this.record != null && this.record != -1) {
 			return;
 		}
-
-		DH.getObject("tracerimg").src = this.thumbURL;
+		try {
+			DH.getObject("tracerimg").src = this.thumbURL;
+		} catch(e) {}
 		var desc = this.record.getField('desc');
 		if (desc == null) {
 			desc = ' ';
 		}
-
-		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a></span>');
-		if (CMT.isCommentPanelOpen() == true) {
+		//USER COMMENTS
+		
+	//	DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a></span>');
+		//if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, 'user', this.name);
-		}
+	//	}
 	}
 
 	this._queryInfo = function() {
@@ -352,7 +356,9 @@ function Tracer(name, color, iconURL, pt, time) {
 					self.thumbURL = 'media.srv?id=' + self.thumbId + "&resize=80x60!";
 				}
 			}
+			try {
 			self._showInfo();
+			} catch (e){}
 		}
 		//alert('getting thumbid for ' + this.name);
 		this.record = -1;
