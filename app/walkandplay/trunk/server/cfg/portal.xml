@@ -81,9 +81,9 @@
 			</daemon>
 
             <!-- Tracer Bot -->
-			<!--<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
+			<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
 				<property name="intervalMillis">25000</property>
-			</daemon>-->
+			</daemon>
         </daemons>
     </application>
 </portal>
