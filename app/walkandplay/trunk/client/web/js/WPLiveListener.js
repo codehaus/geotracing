@@ -99,6 +99,7 @@ function LiveListener(aStatusElm) {
 		if (!tracer) {
 			// create new Tracer object, most events have lon/lat
 			tracer = GTW.createTracer(tracerName, event.get('lon'), event.get('lat'), event.get('time'));
+			tracer.nickname = event.get('nickname');
 		}
 
 	//	if (GTAPP.mode != 'live') {
