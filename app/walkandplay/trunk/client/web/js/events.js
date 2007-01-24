@@ -108,7 +108,7 @@ if(document.getElementById('archivenavbox')) {
 	});	
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[1],'onclick',function(evt) {
 		show('archivetoursbox');																												 
-		WP.mArchive();
+		WP.mArchive(10);
 		
 	});
 	dojo.event.connect(document.getElementById('archivenavbox').getElementsByTagName('li')[2],'onclick',function(evt) {
