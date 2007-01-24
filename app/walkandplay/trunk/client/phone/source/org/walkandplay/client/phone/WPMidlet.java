@@ -33,8 +33,6 @@ import de.enough.polish.util.Locale;
 
 //#ifdef polish.debugEnabled
 import de.enough.polish.util.Debug;
-
-import java.io.IOException;
 //#endif
 
 /**
@@ -62,9 +60,32 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //#debug
         System.out.println("starting MenuMidlet");
 
-        //#style mainScreen
-        menuScreen = new List(null, List.IMPLICIT);
+        //#ifdef title:defined
+			//#= String title = "${ title }";
+		//#else
+			String title = "Walk & Play";
+		//#endif
 
+        /*Image logo = null;
+        try {
+
+            //#ifdef polish.images.directLoad
+            logo = Image.createImage("/gt_logo.png");
+            //#else
+            logo = scheduleImage("/gt_logo.png");
+            //#endif
+
+            //#style logo
+            ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
+            Form f = new Form("");
+            f.append(logoItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+
+        //#style mainScreen
+        menuScreen = new List(title, List.IMPLICIT);
         //#style mainTraceCommand
         menuScreen.append(Locale.get("menu.Trace"), null);
         //#style mainFindCommand
@@ -124,11 +145,13 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     private void goToScreen(int aScreenNr) {
+
         switch (aScreenNr) {
             case 0:
                 // Trace
-                TraceScreen traceScreen = new TraceScreen(this);
-                Display.getDisplay(this).setCurrent(traceScreen);
+                TraceDisplay traceDisplay = new TraceDisplay(this);
+                Display.getDisplay(this).setCurrent(traceDisplay);
+        		traceDisplay.start();
                 break;
             case 1:
                 // Find
@@ -138,13 +161,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 3:
                 // GPS
+                Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
             case 4:
                 // Settings
                 break;
             case 5:
                 // Help
-                Display.getDisplay(this).setCurrent(new HelpScreen(this));
+                Display.getDisplay(this).setCurrent(new HelpDisplay(this));
                 break;
             case 6:
                 // Quit

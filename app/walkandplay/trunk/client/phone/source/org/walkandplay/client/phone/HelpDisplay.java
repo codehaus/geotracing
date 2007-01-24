@@ -15,7 +15,7 @@ import java.io.IOException;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 //public class HomeScreen extends Form implements CommandListener {
-public class HelpScreen extends Form implements CommandListener {
+public class HelpDisplay extends Form implements CommandListener {
     MIDlet midlet;
     private Displayable prevScreen;
     List menuScreen;
@@ -27,8 +27,8 @@ public class HelpScreen extends Form implements CommandListener {
     StringItem label = new StringItem("", "Help");
     StringItem text = new StringItem("", "Welcome to the help section");
 
-    public HelpScreen(MIDlet aMIDlet) {
-        //#style form
+    public HelpDisplay(MIDlet aMIDlet) {
+        //#style defaultscreen
         super("");
         midlet = aMIDlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();

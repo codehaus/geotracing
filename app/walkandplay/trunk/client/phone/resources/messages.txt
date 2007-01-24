@@ -40,5 +40,14 @@ help.Topic2Text=explanation on topic 2
 help.Topic3=topic 3
 help.Topic3Text=explanation on topic 3
 
+trace.New=new
+trace.Suspend=suspend
+trace.Resume=resume
+trace.AddPhoto=add photo
+trace.AddText=add text
+trace.AddAudio=add audio
+trace.ShowMap=show map
+trace.Radar=radar
+
 messages.welcome=Welcome to the game, {0}!
 

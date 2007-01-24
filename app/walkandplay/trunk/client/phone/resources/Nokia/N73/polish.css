@@ -11,11 +11,7 @@ menu {
 	background {
 		type: image;
 		color: transparent;
-		image: url( bg.png );
-	}
+		image: url( bg-stripe.png );
+        repeat:repeat;
+    }
 }
-
-form{
-    background-image: url( bg.png );
-}
-

@@ -32,6 +32,13 @@
 	<property name="mobitracer.src" value="${geotracing.base.dir}/client/mobitracer/src"/>
 
     <property file="build.properties"/>
+    <property name="connbridge.jar" value="${mppsdk.dir}/bluetooth/connbridge/lib/connbridge.jar"/>
+    <property name="emulator.jar" value="${mppsdk.dir}/player.jar"/>
+	<property name="emulator.class" value="com.mpp.player.PowerPlayerApp"/>
+	<property name="midpemu.jar" value="${mppsdk.dir}/midp.jar"/>
+	<property name="btpemu.jar" value="${mppsdk.dir}/bluetooth/bt.jar"/>
+	<property name="cldcemu.jar" value="${mppsdk.dir}/cldc.jar"/>
+	<property name="adapter.jar" value="${mppsdk.dir}/adapter.jar"/>
     <property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
 	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
@@ -83,9 +90,21 @@
 	-->
 
     <path id="compile.classpath">
+		<!--
 		<pathelement location="${jsr82.zip}"/>
-		<pathelement location="${mmapi.jar}"/>
+		<pathelement location="${mmapi.jar}"/>-->
 	</path>
+
+    <path id="emulator.classpath">
+        <pathelement location="${connbridge.jar}"/>
+        <pathelement location="${avetana.jar}"/>
+        <pathelement location="${emulator.jar}"/>
+        <pathelement location="${adapter.jar}"/>
+        <pathelement location="${cldcemu.jar}"/>
+        <pathelement location="${midpemu.jar}"/>
+        <pathelement location="${emulator.jar}"/>
+    </path>
+
 
     <!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish"
@@ -162,7 +181,8 @@
 			</deviceRequirements>
 			<deviceRequirements unless="test">
 <!--				<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />  -->
-				<requirement name="Identifier" value="Nokia/Series60Midp2, Nokia/N73" />
+				<!--<requirement name="Identifier" value="Nokia/Series60Midp2, Nokia/N73" />-->
+				<requirement name="Identifier" value="Nokia/N73" />
 				<!-- on could use other devices for real builds, e.g. :
 				<or>
 					<and>
@@ -235,9 +255,29 @@
 					<filter pattern="de.enough.polish.example.*" level="debug" />
 					<filter pattern="de.enough.polish.ui.*" level="warn" />
 				</debug>
-				<!-- user defined JAD attributes can also be used: -->
+                <!-- user defined JAD attributes can also be used: -->
 				<jad>
-					<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
+                    <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
+					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
+					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />
+					<attribute name="kw-timeout" value="20" />
+					<attribute name="kw-user" value="geoapp-user" />
+					<attribute name="kw-password" value="user" />
+					<attribute name="kw-app" value="geoapp" />
+					<attribute name="kw-role" value="user" />
+					<attribute name="audio-rate" value="8000" />
+					<attribute name="audio-bits" value="8" />
+					<attribute name="gps-sample-interval" value="15000" />
+					<attribute name="gps-min-sats" value="4" />
+					<attribute name="gps-min-hdop" value="2" />
+					<attribute name="device-screen-width" value="240" />
+					<attribute name="device-screen-height" value="320" />
+					<attribute name="MPP-Show-Keypad" value="true" />
+                    <attribute name="MPP-Width" value="240" />
+					<attribute name="MPP-Height" value="320" />
+					<attribute name="mt-options" value="full" />
+                    
+                    <attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
 				</jad>
 				<!--
 				   This is an example for signing MIDlets with J2ME Polish.
@@ -264,7 +304,7 @@
 				enableNetworkMonitor="true"
 				if="debug"
                 >
-				<!--
+                <!--
 				<parameter name="-Xjam" value="transient=http://localhost:8080/${polish.jadName}" />
 				-->
 			</emulator>
@@ -291,7 +331,15 @@
 		</j2mepolish>
 	</target>
 
-	<target
+    <target name="run" depends="j2mepolish">
+		<java classname="${emulator.class}" fork="true">
+			<classpath refid="emulator.classpath"/>
+			<!-- <arg value="-clearRecordStores"/> -->
+			<arg value="dist/Nokia-N73-en_US-wnp.jar"/>
+		</java>
+	</target>
+
+    <target
 		name="emulator"
 		depends="test,j2mepolish"
 		description="invokes the emulator"            
