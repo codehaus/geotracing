@@ -1,13 +1,13 @@
-/** 
+/**
   * The polish.css files contains all
   * design information about a project.
   * It can be adjusted for specific devices
-  * or device groups by putting it in the 
+  * or device groups by putting it in the
   * appropriate sub-folder.
   * If you want to adjust a design for all
   * Nokia devices, define it in "resources/Nokia/polish.css"
   * and so on. Only new and different settings
-  * need to be specified in such polish.css files. 
+  * need to be specified in such polish.css files.
   */
 
 /**
@@ -16,7 +16,7 @@
   * This makes changes easy, since the color
   * just needs to be changed in one position.
   * Even default colors (like blue, green, lime, etc)
-  * can be changed here. 
+  * can be changed here.
   */
 colors {
     /**
@@ -43,7 +43,7 @@ colors {
   * (like Options, Select, or Cancel).
   * With the focused-style attribute
   * another style than the default "focused"
-  * style is used for the menu. 
+  * style is used for the menu.
   * The menubar-color can be set to any
   * color. When "transparent" is used,
   * the background shines through.
@@ -52,51 +52,41 @@ menu {
     margin-left: 2;
     padding: 2;
     background {
-    type: round-rect;
-    color: brightBgColor;
-    border-width: 1;
-    border-color: bgColor;
-}
+        type: round-rect;
+        color: brightBgColor;
+        border-width: 1;
+        border-color: bgColor;
+    }
 
-focused-style: .menuFocused
-
-;
-font-color: brightFontColor
-
-;
-font-style: bold
-
-;
-menubar-color: bgColor
-
-;
+    focused-style: .menuFocused;
+    font-color: brightFontColor;
+    font-style: bold;
+    menubar-color: bgColor;
 }
 
 /**
   * The menuItem style is a predefined style
   * for the actual commands in a fullscreen-menu.
   * When the menuItem style is not defined,
-  * the menu style will be used instead. 
+  * the menu style will be used instead.
   */
 menuItem {
     margin-top: 2;
     padding: 2;
-    padding-left: 5;
+    padding-left: 2;
     font {
-    color: fontColor;
-    size: small;
-    style: bold;
-}
+        color: fontColor;
+        size: small;
+        style: bold;
+    }
 
-layout: left
-
-;
+    layout: left;
 }
 
 /**
   * This is a custom style for selected
   * menu items. It is used, because it has
-  * been defined in the menu style. 
+  * been defined in the menu style.
   */
 .menuFocused extends .menuItem {
     background-color: bgColor;
@@ -108,7 +98,7 @@ layout: left
   * The title style is a predefined style which is used
   * for all screen-titles.
   */
-/*title {
+title {
 	padding: 2;
 	margin-top: 0;
 	margin-bottom: 5;
@@ -121,7 +111,10 @@ layout: left
 	background-color: bgColor;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
-}*/
+    background {		
+		image: url( gt_logo.png );
+    }
+}
 
 /**
   * The focused style is a predefined style which
@@ -130,62 +123,66 @@ layout: left
   * focused item.
   */
 focused {
-    padding: 5;
+    padding: 2;
     background {
-    type: round-rect;
-    arc: 8;
-    color: brightBgColor;
-    border-color: fontColor;
-    border-width: 2;
+        type: round-rect;
+        arc: 8;
+        color: brightBgColor;
+        border-color: fontColor;
+        border-width: 2;
+    }
+
+    font {
+        style: bold;
+        color: fontColor;
+        size: small;
+    }
+
+    layout: expand | center;
 }
 
-font {
-    style: bold;
-    color: fontColor;
-    size: small;
-}
-
-layout: expand | center
-
-;
-}
-
-/** 
+/**
   * The .mainScreen style is a static style, which
   * is set in the MIDlet source-code with the //#style directive.
   * If the source-code would not have defined this
   * style, we could use the dynamic style "list" to design all
-  * list-screens. 
+  * list-screens.
   * An interesting attribute is the "columns" attribute which
   * is used to use a table with two columns instead of the default
   * layout.
   */
 .mainScreen {
-    padding: 5;
-    padding-left: 15;
-    padding-right: 15;
+    padding: 2;
+    padding-left: 2;
+    padding-right: 2;
     background {
-    color: brightBgColor;
+        color: brightBgColor;
+    }
+    layout: horizontal-expand | horizontal-center | vertical-center;
+    columns:3;
+    columns-width: equal;
+    background-image:url(bg-stripe.png);
+    background-repeat:repeat;
+    /*
+    show-text-in-title: true;
+    */
 }
 
-layout: horizontal-expand | horizontal-center | vertical-center
-
-;
-columns:
-
-2
-;
-columns-width: equal
-
-;
-background-image:
-
-url
-(
-bg.png
-)
-;
-/*
+.defaultScreen {
+    padding: 2;
+    padding-left: 2;
+    padding-right: 2;
+    /*background {
+        *//*color: brightBgColor;*//*
+        type: smooth-color;
+        color: blue;
+        gradient-color: white;
+    }*/
+    layout: horizontal-expand | horizontal-center | vertical-center;
+    columns:1;
+    background-image:url(bg-stripe.png);
+    background-repeat:repeat;
+    /*
     show-text-in-title: true;
     */
 }
@@ -195,14 +192,14 @@ bg.png
   * is set in the MIDlet source-code with the //#style directive.
   * If the source-code would not have defined this
   * style, we could use the dynamic style "listitem" to design all
-  * items on the list-screens. 
+  * items on the list-screens.
   * An interesting attribute is the "icon-image" URL, which uses
   * the %INDEX% keyword. The first list-item will use the image
-  * "icon0.png", the second "icon1.png" and so on. 
+  * "icon0.png", the second "icon1.png" and so on.
   */
 .mainCommand {
     margin: 2; /* for the missing border of the focused style */
-    padding: 5;
+    padding: 2;
     background: none;
     font-color: fontColor;
     font-style: bold;
@@ -265,9 +262,24 @@ alertcontent {
 }
 
 .form {
-    background-image: url( bg.png );
+    background-image: url( bg-stripe.png );
     border: none;
     font-color: black;
     font-size: small;
+}
+
+.formbox {
+    margin:2;
+    padding:2;
+    border{
+        width:2;
+        color:black;
+        type:round-rect;
+        arc:6;        
+    }
+    background-color:white;
+    font-color: black;
+    font-size: small;
+    layout: center | top;
 }
 
