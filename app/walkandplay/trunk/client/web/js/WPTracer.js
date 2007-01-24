@@ -13,6 +13,7 @@ function Tracer(name, color, iconURL, pt, time) {
 	this.record = null;
 	this.id = -1;
 	this.name = name;
+	this.nickname = '';
 	this.color = color;
 	this.point = pt;
 	if (this.point && time) {
