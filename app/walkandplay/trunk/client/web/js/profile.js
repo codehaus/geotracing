@@ -1,4 +1,6 @@
 // JavaScript Document
+	User.role = 'user';
+
 var licenses;
 function TrimString(sInString) {
   sInString = sInString.replace( /^\s+/g, "" );// strip leading
@@ -9,7 +11,6 @@ function writeToForm(elm) {
 	document.signupform.lastname.value = elm.getElementsByTagName('lastname')[0].firstChild.nodeValue;
 	document.signupform.nickname.value = elm.getElementsByTagName('extra')[0].getAttribute('nickname');
 	document.signupform.email.value = elm.getElementsByTagName('email')[0].firstChild.nodeValue;
-
 }
 var cookieName = getCookie('name');
 dojo.event.connect(document.getElementById('GOTOeditview'),'onclick',function(evt) {
@@ -67,10 +68,20 @@ function _checkIFrameRsp() {
 			document.getElementById('previewImage').src = 'wp/media.srv?id='+imageId+'&resize=160x120';
 			document.getElementById('addmediumform').style.display = 'none';
 			document.getElementById('previewImage').style.display = 'block';
+			var txt;
+	var doc = KW.createRequest('profile-update-req');
+	var xml = doc.documentElement;
+	xml.setAttribute('id',KW.userId);
+	var person = doc.createElement('person');
+	var photoid = doc.createElement('photoid');
+	xml.appendChild(photoid);		
+	txt = doc.createTextNode(document.signupform.photoid.value);
+	photoid.appendChild(txt);
+	KW.utopia(doc);
+			
 
 		} else {
 			setTimeout('_checkIFrameRsp()', 2000);
-
 		}
 	}	
 
@@ -206,7 +217,5 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 		txt = doc.createTextNode(keywords[i]);
 		tag.appendChild(txt);
 	}
-	User.role = 'guest';
 	KW.utopia(doc);
-	
 });

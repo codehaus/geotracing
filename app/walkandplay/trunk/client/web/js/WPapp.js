@@ -16,7 +16,7 @@ DH.include('Date.js');
 DH.include('FeatureSet.js');
 DH.include('FeaturePlayer.js');
 DH.include('GTWorld.js');
-DH.include('LiveListener.js');
+DH.include('../WPLiveListener.js');
 DH.include('Factory.js');
 DH.include('Comment.js');
 DH.include('Panel.js');
@@ -379,7 +379,6 @@ var WP = {
 		WP.clearMap();
 		WP._deleteSelectors();
 
-		WP.blinkStatus('Getting active users...');
 		SRV.get('q-active-tracks', WP.onQueryActiveUsers);
 	},
 

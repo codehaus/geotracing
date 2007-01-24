@@ -209,7 +209,6 @@ function Tracer(name, color, iconURL, pt, time) {
 
 	// Move Tracer to lon/lat location
 	this.move = function(lon, lat, time) {
-
 		// replace point
 		pt = new GLatLng(lat, lon);
 		if (time) {
