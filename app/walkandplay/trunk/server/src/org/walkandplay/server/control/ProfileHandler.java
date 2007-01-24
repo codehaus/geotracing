@@ -14,12 +14,11 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.data.Account;
-import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.Person;
-import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.control.QueryHandler;
+import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.logic.PersonLogic;
 import org.walkandplay.server.logic.ProfileLogic;
 
 import java.util.List;
@@ -125,7 +124,7 @@ public class ProfileHandler extends DefaultHandler {
                 }                
             }
 
-            String photoId = requestElement.getChildText("mediumid");
+            String photoId = requestElement.getChildText("photoid");
             String license = requestElement.getChildText("license");
             boolean profilePublic = Java.StringToBoolean(person.getChildText("profilepublic"));
             boolean emailPublic = Java.StringToBoolean(person.getChildText("emailpublic"));
@@ -225,33 +224,79 @@ public class ProfileHandler extends DefaultHandler {
     public JXElement updateProfile(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            JXElement person = requestElement.getChildByTag(Person.XML_TAG);
             String personId = requestElement.getAttr(Person.ID_FIELD);
-            String nickName = person.getChildText("nickname");
-            String firstName = person.getChildText(Person.FIRSTNAME_FIELD);
-            String lastName = person.getChildText(Person.LASTNAME_FIELD);
-            String street = person.getChildText(Person.STREET_FIELD);
-            String streetNr = person.getChildText(Person.STREETNR_FIELD);
-            String zipCode = person.getChildText(Person.ZIPCODE_FIELD);
-            String mobileNr = person.getChildText(Person.MOBILENR_FIELD);
-            String city = person.getChildText(Person.CITY_FIELD);
-            String country = person.getChildText(Person.COUNTRY_FIELD);
+            PersonLogic personLogic = new PersonLogic(anUtopiaRequest.getUtopiaSession().getContext().getOase());
+            JXElement personElement = personLogic.getPerson(null, personId, false, null, false, null, false, null, null, false, null, null);
+            if(personElement == null) throw new UtopiaException("person with id " + personId + " does not exist!");
 
+            JXElement person = requestElement.getChildByTag(Person.XML_TAG);
+            String nickName = null;
+            String firstName = null;
+            String lastName = null;
+            String street = null;
+            String streetNr = null;
+            String zipCode = null;
+            String mobileNr = null;
+            String city = null;
+            String country = null;
+            String email = null;
+            String password = null;
+            if(person!=null){
+                nickName = person.getChildText("nickname");
+                firstName = person.getChildText(Person.FIRSTNAME_FIELD);
+                lastName = person.getChildText(Person.LASTNAME_FIELD);
+                street = person.getChildText(Person.STREET_FIELD);
+                streetNr = person.getChildText(Person.STREETNR_FIELD);
+                zipCode = person.getChildText(Person.ZIPCODE_FIELD);
+                mobileNr = person.getChildText(Person.MOBILENR_FIELD);
+                city = person.getChildText(Person.CITY_FIELD);
+                country = person.getChildText(Person.COUNTRY_FIELD);
+                email = person.getChildText(Person.EMAIL_FIELD);
+                password = person.getChildText(Account.PASSWORD_FIELD);
+            }
             List tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             String[] tags = null;
-            if (tagElms != null) {
+            if (tagElms != null && tagElms.size()>0) {
                 tags = new String[tagElms.size()];
                 for(int i=0;i<tagElms.size();i++){
                     tags[i] = ((JXElement)tagElms.get(i)).getText();
                 }
             }
 
-            String photoId = requestElement.getChildText("mediumid");
+            // check fields
+
+            /*String tables = "utopia_person,utopia_account,g_track";
+            String fields = "utopia_account.loginname,utopia_person.id AS personid,utopia_person.extra,g_track.id,g_track.name";
+            String where = "utopia_account.loginname = '" + userName + "'";
+            String relations = "utopia_account,utopia_person;g_track,utopia_person";
+            String postCond = "ORDER BY g_track.id";
+            JXElement result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);*/
+
+            boolean profilePublic = false;
+            JXElement extra = personElement.getChildByTag("extra");
+            if(extra!=null && extra.getAttr("profilepublic").equals("true")){
+                profilePublic = true;
+            }
+            if(person!=null){
+                String pp = person.getChildText("profilepublic");
+                if(pp!=null && pp.length()>0){
+                    profilePublic = Java.StringToBoolean(pp);
+                }
+            }
+
+            boolean emailPublic = false;
+            if(extra!=null && extra.getAttr("profilepublic").equals("true")){
+                emailPublic = true;
+            }
+            if(person!=null){
+                String ep = person.getChildText("emailpublic");
+                if(ep!=null && ep.length()>0){
+                    emailPublic = Java.StringToBoolean(ep);
+                }
+            }
+
+            String photoId = requestElement.getChildText("photoid");
             String license = requestElement.getChildText("license");
-            boolean profilePublic = Java.StringToBoolean(person.getChildText("profilepublic"));
-            boolean emailPublic = Java.StringToBoolean(person.getChildText("emailpublic"));
-            String email = person.getChildText(Person.EMAIL_FIELD);
-            String password = person.getChildText(Account.PASSWORD_FIELD);
 
             logic.updateProfile(personId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
