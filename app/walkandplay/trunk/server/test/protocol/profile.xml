@@ -92,6 +92,23 @@
         </expect>
     </test>
 
+    <test id="profile-update-req">
+            <send id="client1">
+                <utopia-req>
+                    <profile-update-req id="${personid}">
+                        <photoid></photoid>                        
+                    </profile-update-req>
+                </utopia-req>
+            </send>
+
+            <expect id="client1">
+                <utopia-rsp>
+                    <profile-update-rsp/>
+                </utopia-rsp>
+            </expect>
+        </test>
+
+
     <test id="profile-activate-req">
         <send id="client1">
             <utopia-req>
