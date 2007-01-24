@@ -12,8 +12,10 @@ function writeToForm(elm) {
 	document.signupform.nickname.value = elm.getElementsByTagName('extra')[0].getAttribute('nickname');
 	document.signupform.email.value = elm.getElementsByTagName('email')[0].firstChild.nodeValue;
 	try {
-	var photoid = elm.getElementsByTagName('medium')[0].getAttribute('id');
-	document.getElementById('previewImage').src = 'wp/media.srv?id='+photoid+'&resize=160x120';
+		var imageId = elm.getElementsByTagName('medium')[0].getAttribute('id');
+		document.getElementById('imageId').value = imageId;
+		document.getElementById('previewImage').src = 'wp/media.srv?id='+imageId+'&resize=160x120';
+		document.getElementById('previewImage').style.display = 'block';
 	} catch(e) {}
 
 }
@@ -71,7 +73,6 @@ function _checkIFrameRsp() {
 			var imageId = iframeDoc.getElementsByTagName('medium-insert-rsp')[0].getAttribute('id');
 			document.getElementById('imageId').value = imageId;
 			document.getElementById('previewImage').src = 'wp/media.srv?id='+imageId+'&resize=160x120';
-			document.getElementById('addmediumform').style.display = 'none';
 			document.getElementById('previewImage').style.display = 'block';
 			var txt;
 			var doc = KW.createRequest('profile-update-req');
