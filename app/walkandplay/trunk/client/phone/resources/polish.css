@@ -111,9 +111,8 @@ title {
 	background-color: bgColor;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
-    background {		
-		image: url( gt_logo.png );
-    }
+    /*background-image: url(gt_logo.png);*/
+    icon-image: url(gt_logo.png); 
 }
 
 /**
@@ -158,14 +157,13 @@ focused {
     background {
         color: brightBgColor;
     }
-    layout: horizontal-expand | horizontal-center | vertical-center;
+    /*layout: horizontal-expand | horizontal-center | vertical-center;*/
+    layout: horizontal-expand | top | horizontal-center;
     columns:3;
     columns-width: equal;
     background-image:url(bg-stripe.png);
     background-repeat:repeat;
-    /*
-    show-text-in-title: true;
-    */
+    /*show-text-in-title: true;*/
 }
 
 .defaultScreen {
@@ -178,13 +176,16 @@ focused {
         color: blue;
         gradient-color: white;
     }*/
-    layout: horizontal-expand | horizontal-center | vertical-center;
+
+    layout: horizontal-expand | top | left;
     columns:1;
-    background-image:url(bg-stripe.png);
-    background-repeat:repeat;
-    /*
-    show-text-in-title: true;
-    */
+    background{
+        border-width:2;
+        image:url(bg-stripe.png);
+        repeat:repeat;
+    }
+
+    /*show-text-in-title: true;*/
 }
 
 /**
@@ -236,6 +237,42 @@ focused {
     icon-image: url( quit_icon.png );
 }
 
+.mainLogCommand extends .mainCommand {
+    icon-image: url( log_icon.png );
+}
+
+.traceNewCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceResumeCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceSuspendCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceAddPhotoCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceAddTextCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceAddAudioCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceShowMapCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceRadarCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
 alert extends .mainScreen {
 }
 
@@ -256,30 +293,56 @@ alertcontent {
 }
 
 .logo {
-    margin-top: 2;
-    margin-left: 2;
     layout: left | top;
 }
 
-.form {
-    background-image: url( bg-stripe.png );
-    border: none;
-    font-color: black;
-    font-size: small;
-}
 
 .formbox {
     margin:2;
     padding:2;
     border{
         width:2;
-        color:black;
+        color:fontColor;
         type:round-rect;
+        /*type:shadow;*/
+        /*offset: 2;*/
         arc:6;        
     }
-    background-color:white;
-    font-color: black;
+    background-color:brightBgColor;
+    font-color: fontColor;
     font-size: small;
-    layout: center | top;
+    layout: horizontal-expand | horizontal-center | top;
 }
+
+.titlebox {
+    margin:2;
+    padding:2;
+    background-color:bgColor;
+    font-color: brightFontColor;
+    font-size: small;
+    font-style: bold;
+    layout: horizontal-expand | horizontal-center | top;
+}
+
+.textbox extends .formbox {
+    textfield-direct-input: true;
+}
+
+.button {
+    margin: 2;
+    padding: 2;
+    font-color: fontColor;
+    font-size: small;
+    layout: center;
+    border{
+        width:2;
+        color:fontColor;
+        type:round-rect;
+        arc:6;
+    }
+    background-color:brightBgColor;
+    font-color: fontColor;
+}
+
+
 

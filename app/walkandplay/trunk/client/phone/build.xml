@@ -259,10 +259,12 @@
 				<jad>
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
-					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />
+					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />					
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="geoapp-user" />
-					<attribute name="kw-password" value="user" />
+					<attribute name="kw-user" value="jan@waag.org" />
+					<!--<attribute name="kw-user" value="geoapp-user" />-->
+					<attribute name="kw-password" value="johan" />
+					<!--<attribute name="kw-password" value="user" />-->
 					<attribute name="kw-app" value="geoapp" />
 					<attribute name="kw-role" value="user" />
 					<attribute name="audio-rate" value="8000" />
