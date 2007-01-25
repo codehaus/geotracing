@@ -45,8 +45,6 @@
 		<field name="name" type="STRING" size="64" required="true"/>
         <field name="description" type="TEXT" required="true" />
         <field name="invitation" type="TEXT" required="false" />
-        <field name="intro" type="TEXT" required="false" />
-        <field name="outro" type="TEXT" required="false" />
 		<field name="startdate" type="TIMESTAMP"/>
 		<field name="enddate" type="TIMESTAMP"/>
         <field name="creationdate" type="TIMESTAMP"/>

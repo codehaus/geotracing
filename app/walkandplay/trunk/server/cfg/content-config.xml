@@ -31,17 +31,20 @@
     <type name="tour" table="tour">
 		<field name="name" listed="true" searchable="true"/>
 		<field name="description" listed="true" searchable="true"/>
-		<field name="invitation" listed="true" searchable="true"/>
-		<field name="intro" listed="true" searchable="true"/>
-		<field name="outro" listed="true" searchable="true"/>
-		<field name="startdate" listed="true" searchable="true"/>
-		<field name="enddate" listed="true" searchable="true"/>
 	</type>
+
+<!--	<type name="tourschedule" table="tourschedule">
+		 <field name="name" listed="true" searchable="true"/>
+		 <field name="description" listed="true" searchable="true"/>
+		 <field name="invitation" listed="true" searchable="true"/>
+		 <field name="startdate" listed="true" searchable="true"/>
+		 <field name="enddate" listed="true" searchable="true"/>
+	 </type>
 
     <type name="gameplay" table="gameplay">
 		<field name="name" listed="true" searchable="true"/>
 		<field name="description" listed="true" searchable="true"/>
-	</type>
+	</type>      -->
 
     <type name="tag" table="cc_tag">
 		<field name="name" listed="true" searchable="true"/>
@@ -91,9 +94,9 @@
 		<field name="description" listed="true" searchable="true"/>
 	</type>
 
-    <type name="url" table="utopia_url">
+<!--    <type name="url" table="utopia_url">
 		<field name="name" listed="true" searchable="true"/>
 		<field name="description" listed="true" searchable="true"/>
-	</type>
+	</type>  -->
 
 </contenthandler-config>
