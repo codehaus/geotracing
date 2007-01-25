@@ -35,15 +35,12 @@ public class TraceDisplay extends DefaultDisplay  {
     private Command SHOW_MAP_CMD = new Command(Locale.get("trace.ShowMap"), Command.ITEM, 2);
     private Command RADAR_CMD = new Command(Locale.get("trace.Radar"), Command.ITEM, 2);
 
-    Command BACK_CMD = new Command("Back", Command.BACK, 1);
-
-
     public TraceDisplay(WPMidlet aMidlet) {
         super(aMidlet, "Trace");
 
 		tracerEngine = new TracerEngine(aMidlet, this);
 		traceDisplay = this;
-        
+
         addCommand(NEW_TRK_CMD);
         addCommand(SUSPEND_TRK_CMD);
         addCommand(RESUME_TRK_CMD);
@@ -51,7 +48,8 @@ public class TraceDisplay extends DefaultDisplay  {
         addCommand(ADD_PHOTO_CMD);
         addCommand(ADD_AUDIO_CMD);
         addCommand(SHOW_MAP_CMD);
-        addCommand(RADAR_CMD);        
+        addCommand(RADAR_CMD);
+
     }
 
 	void start() {		
@@ -93,7 +91,7 @@ public class TraceDisplay extends DefaultDisplay  {
     }
 
     public void cls() {
-		deleteAll();
+        deleteAll();
 	}
 
     public void log(String message) {
