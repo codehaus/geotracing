@@ -50,23 +50,17 @@ import de.enough.polish.util.Debug;
 public class WPMidlet extends MIDlet implements CommandListener {
 
     List menuScreen;
-    //#ifdef polish.debugEnabled
-    Command showLogCmd = new Command(Locale.get("cmd.ShowLog"), Command.ITEM, 9);
-    //#endif
-    public Display display;
+    TraceDisplay traceDisplay;
 
     public WPMidlet() {
         super();
-        //#debug
-        System.out.println("starting MenuMidlet");
-
         //#ifdef title:defined
 			//#= String title = "${ title }";
 		//#else
 			String title = "Walk & Play";
 		//#endif
 
-        /*Image logo = null;
+        Image logo = null;
         try {
 
             //#ifdef polish.images.directLoad
@@ -77,12 +71,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
             //#style logo
             ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-            Form f = new Form("");
-            f.append(logoItem);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 
+        traceDisplay = new TraceDisplay(this);
 
         //#style mainScreen
         menuScreen = new List(title, List.IMPLICIT);
@@ -100,26 +93,16 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Help"), null);
         //#style mainQuitCommand
         menuScreen.append(Locale.get("menu.Quit"), null);
-
+        /*//#ifdef polish.debugEnabled*/
+        //#style mainLogCommand
+        menuScreen.append(Locale.get("menu.Log"), null);
+        /*//#endif*/
         menuScreen.setCommandListener(this);
-        //#ifdef polish.debugEnabled
-        menuScreen.addCommand(showLogCmd);
-        //#endif
 
-        // You can also use further localization features like the following:
-        //System.out.println("Today is " + Locale.formatDate( System.currentTimeMillis() ));
-
-        //#debug
-        System.out.println("initialisation done.");
     }
 
     protected void startApp() throws MIDletStateChangeException {
-        //#debug
-        System.out.println("setting display.");
-        display = Display.getDisplay(this);
-        display.setCurrent(menuScreen);
-        //#debug
-        System.out.println("sample application is up and running.");
+        Display.getDisplay(this).setCurrent(menuScreen);
     }
 
     protected void pauseApp() {
@@ -131,13 +114,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     public void commandAction(Command cmd, Displayable screen) {
-        if (screen == this.menuScreen) {
-            //#ifdef polish.debugEnabled
-            if (cmd == showLogCmd) {
-                Debug.showLog(display);
-                return;
-            }
-            //#endif
+        if (screen == menuScreen) {
             if (cmd == List.SELECT_COMMAND) {
                 goToScreen(menuScreen.getSelectedIndex());
             }
@@ -149,22 +126,24 @@ public class WPMidlet extends MIDlet implements CommandListener {
         switch (aScreenNr) {
             case 0:
                 // Trace
-                TraceDisplay traceDisplay = new TraceDisplay(this);
                 Display.getDisplay(this).setCurrent(traceDisplay);
         		traceDisplay.start();
                 break;
             case 1:
                 // Find
+                Display.getDisplay(this).setCurrent(new FindDisplay(this));
                 break;
             case 2:
                 // Play
                 break;
             case 3:
                 // GPS
+                if(traceDisplay!=null) traceDisplay.stop();
                 Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
             case 4:
                 // Settings
+                Display.getDisplay(this).setCurrent(new SettingsDisplay(this));
                 break;
             case 5:
                 // Help
@@ -172,13 +151,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 6:
                 // Quit
-                quit();
+                notifyDestroyed();
                 break;
+            /*//#ifdef polish.debugEnabled*/
+            case 7:
+                // Log
+                Log.view(this);
+                break;
+            /*//#endif*/
         }
-    }
-
-    private void quit() {
-        notifyDestroyed();
     }
 
 }

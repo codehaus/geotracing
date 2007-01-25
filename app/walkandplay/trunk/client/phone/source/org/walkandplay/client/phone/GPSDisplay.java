@@ -14,14 +14,11 @@ import org.geotracing.client.Preferences;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-//public class HomeScreen extends Form implements CommandListener {
-public class GPSDisplay extends Form implements CommandListener, DiscoveryListener {
-	private Command search, ok, back;
+public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
+	private Command SEARCH_CMD, OK_CMD;
 	private ChoiceGroup deviceCG = new ChoiceGroup("Select a device and press Ok in menu", ChoiceGroup.EXCLUSIVE);
 	private Hashtable devices = new Hashtable(2);
 	static private Preferences preferences;
-	private MIDlet midlet;
-	private Displayable prevScreen;
 	private LocalDevice device;
 	private DiscoveryAgent agent;
 	private RemoteDevice remoteDevice;
@@ -37,18 +34,12 @@ public class GPSDisplay extends Form implements CommandListener, DiscoveryListen
     private StringItem info;
 
     public GPSDisplay(MIDlet theMIDlet) {
-        //#style defaultscreen
-        super("GPS Device Selector");
-        midlet = theMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
-        search = new Command("Search", Command.SCREEN, 1);
-		ok = new Command("OK", Command.OK, 1);
-        back = new Command("Back", Command.BACK, 1);
+        super(theMIDlet, "GPS Device Selector");
+        SEARCH_CMD = new Command("Search", Command.SCREEN, 1);
+		OK_CMD = new Command("OK", Command.OK, 1);
 
-		addCommand(search);
-		addCommand(back);
-		setCommandListener(this);
-        //#style formbox
+		addCommand(SEARCH_CMD);
+            //#style formbox
         info = new StringItem("","Pairing your GPS to the program.\nYour Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu.");
         append(info);
         /*append("Pairing your GPS to the program.");
@@ -58,11 +49,11 @@ public class GPSDisplay extends Form implements CommandListener, DiscoveryListen
 
 	public void commandAction(Command c, Displayable d) {
 
-		if (c == search) {
-			removeCommand(search);
-			addCommand(ok);
+		if (c == SEARCH_CMD) {
+			removeCommand(SEARCH_CMD);
+			addCommand(OK_CMD);
 			searchDevices();
-		} else if (c == ok) {
+		} else if (c == OK_CMD) {
 			if (remoteDevice == null) {
 				deviceName = deviceCG.getString(deviceCG.getSelectedIndex());
 				cls();

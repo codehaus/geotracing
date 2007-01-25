@@ -14,51 +14,26 @@ import java.io.IOException;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-//public class HomeScreen extends Form implements CommandListener {
-public class HelpDisplay extends Form implements CommandListener {
-    MIDlet midlet;
-    private Displayable prevScreen;
+public class HelpDisplay extends DefaultDisplay {
     List menuScreen;
     Command help1Cmd = new Command(Locale.get("help.Topic1"), Command.ITEM, 2);
     Command help2Cmd = new Command(Locale.get("help.Topic2"), Command.ITEM, 2);
     Command help3Cmd = new Command(Locale.get("help.Topic3"), Command.ITEM, 2);
-    Command backCmd = new Command("Back", Command.BACK, 1);
 
     StringItem label = new StringItem("", "Help");
     StringItem text = new StringItem("", "Welcome to the help section");
 
     public HelpDisplay(MIDlet aMIDlet) {
-        //#style defaultscreen
-        super("");
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
+        super(aMIDlet, "");
 
-        try {
-            Image logo;
-            //#ifdef polish.images.directLoad
-            logo = Image.createImage("/gt_logo.png");
-            //#else
-            logo = scheduleImage("/gt_logo.png");
-            //#endif
-
-            //#style logo
-            ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-            append(logoItem);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        //#style titlebox
         append(label);
+        //#style formbox
         append(text);
 
         addCommand(help1Cmd);
         addCommand(help2Cmd);
         addCommand(help3Cmd);
-
-        addCommand(backCmd);
-        setCommandListener(this);
-
-        Display.getDisplay(midlet).setCurrent(this);
     }
 
     /*
@@ -66,7 +41,7 @@ public class HelpDisplay extends Form implements CommandListener {
        * satisfy the CommandListener interface and handle the Cancel action.
        */
     public void commandAction(Command cmd, Displayable screen) {
-        if (cmd == backCmd) {
+        if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == help1Cmd) {
             label.setText(Locale.get("help.Topic1"));
