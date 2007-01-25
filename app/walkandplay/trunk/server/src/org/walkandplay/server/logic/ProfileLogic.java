@@ -217,11 +217,14 @@ public class ProfileLogic {
 			// first check required params
             if (aPersonId == null || aPersonId.length() == 0 || !Java.isInt(aPersonId)) throw new UtopiaException("No personId found.");
 
-            // set privacy params
-            JXElement extra = new JXElement("extra");
-            extra.setAttr("nickname", aNickName);
-            extra.setAttr("emailpublic", emailPublic);
-            extra.setAttr("profilepublic", profilePublic);
+            JXElement extra = null;
+            if(aNickName!=null && aNickName.length()>0){
+                // set privacy params
+                extra = new JXElement("extra");
+                extra.setAttr("nickname", aNickName);
+                extra.setAttr("emailpublic", emailPublic);
+                extra.setAttr("profilepublic", profilePublic);
+            }
 
             Person person = (Person) oase.get(Core.PERSON, aPersonId);
             if(person == null) throw new UtopiaException("No person found with id " + aPersonId, ErrorCode.__6004_Invalid_attribute_value);
@@ -248,16 +251,17 @@ public class ProfileLogic {
                 if(photo!=null && photo.getTableName().equals(Medium.TABLE_NAME)){
                     // first remove the previous photo if one was attached
                     Record[] media = oase.getRelater().getRelated(person.getRecord(), Medium.TABLE_NAME, "profile");
-                    if(media!=null){
-                        for(int i=0;i<media.length;i++){
+                    for(int i=0;i<media.length;i++){
+                        if(media[i]!=null){
                             oase.getMediaFiler().delete(media[i]);
                         }
                     }
+
                     // now relate the new photo
                     oase.getRelater().relate(person.getRecord(), photo, "profile");
                 }
             }
-
+            
             // add the tags to the person
             if(theTags!=null){
                 TagLogic taglogic = new TagLogic(oase.getOaseSession());
