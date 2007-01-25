@@ -60,7 +60,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
 			String title = "Walk & Play";
 		//#endif
 
-        Image logo = null;
+        Image logo;
         try {
 
             //#ifdef polish.images.directLoad
