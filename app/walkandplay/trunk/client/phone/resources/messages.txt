@@ -19,11 +19,7 @@ var:MyExampleVariable=Hello World
 # Again MIDlet-attributes defined override the one defined in the <info>-
 # and <jad>-sections of your build.xml
 
-MIDlet-Description= Walk & Play
-
-cmd.StartGame=Start Game
-cmd.Quit=Exit
-cmd.ShowLog=Show Log
+MIDlet-Description=Walk & Play
 
 menu.Trace=Trace
 menu.GPS=GPS
@@ -32,6 +28,7 @@ menu.Find=Find
 menu.Play=Play
 menu.Help=Help
 menu.Quit=Exit
+menu.Log=Log
 
 help.Topic1=topic 1
 help.Topic1Text=explanation on topic 1
@@ -40,14 +37,19 @@ help.Topic2Text=explanation on topic 2
 help.Topic3=topic 3
 help.Topic3Text=explanation on topic 3
 
-trace.New=new
-trace.Suspend=suspend
-trace.Resume=resume
-trace.AddPhoto=add photo
-trace.AddText=add text
-trace.AddAudio=add audio
-trace.ShowMap=show map
-trace.Radar=radar
+trace.New=New
+trace.Suspend=Suspend
+trace.Resume=Resume
+trace.AddPhoto=Add photo
+trace.AddText=Add text
+trace.AddAudio=Add audio
+trace.ShowMap=Map
+trace.Radar=Radar
 
-messages.welcome=Welcome to the game, {0}!
+find.Search=Search
+
+settings.SoundOn=Sound ON
+settings.SoundOff=Sound OFF
+settings.Account=Account
+
 
