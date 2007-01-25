@@ -10,8 +10,14 @@ function writeToForm(elm) {
 	document.signupform.firstname.value = elm.getElementsByTagName('firstname')[0].firstChild.nodeValue;
 	document.signupform.lastname.value = elm.getElementsByTagName('lastname')[0].firstChild.nodeValue;
 	document.signupform.nickname.value = elm.getElementsByTagName('extra')[0].getAttribute('nickname');
-	document.signupform.email.value = elm.getElementsByTagName('email')[0].firstChild.nodeValue;
-	try {
+	document.signupform.streetnr.value = elm.getElementsByTagName('streetnr')[0].firstChild.nodeValue;
+	document.signupform.address.value = elm.getElementsByTagName('street')[0].firstChild.nodeValue;
+	document.signupform.zip.value = elm.getElementsByTagName('zipcode')[0].firstChild.nodeValue;
+	document.signupform.place.value = elm.getElementsByTagName('city')[0].firstChild.nodeValue;
+	document.signupform.country.value = elm.getElementsByTagName('country')[0].firstChild.nodeValue;
+	document.signupform.phone.value = elm.getElementsByTagName('mobilenr')[0].firstChild.nodeValue;
+
+try {
 		var imageId = elm.getElementsByTagName('medium')[0].getAttribute('id');
 		document.getElementById('imageId').value = imageId;
 		document.getElementById('previewImage').src = 'wp/media.srv?id='+imageId+'&resize=160x120';
@@ -95,6 +101,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	var txt;
 	var doc = KW.createRequest('profile-update-req');
 	var xml = doc.documentElement;
+	xml.setAttribute('id',KW.userId);
 	var person = doc.createElement('person');
 	var nickname = doc.createElement('nickname');
 	var email = doc.createElement('email');
@@ -111,8 +118,6 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	var street = doc.createElement('street');	
 	var streetnr = doc.createElement('streetnr');	
 	var mobilenr = doc.createElement('mobilenr');	
-	var password = doc.createElement('password');
-	var license = doc.createElement('license');
 	var tag; 
 	var confirmationurl = doc.createElement('confirmationurl');
 
@@ -142,10 +147,6 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	txt = doc.createTextNode(document.signupform.emailpublic.value);
 	emailpublic.appendChild(txt);
 	
-	person.appendChild(password);
-	txt = doc.createTextNode(document.signupform.password.value);
-	password.appendChild(txt);	
-	
 		person.appendChild(country);
 	txt = doc.createTextNode(document.signupform.country.value);
 	country.appendChild(txt);
@@ -172,35 +173,7 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	
 	
 	var cc;
-	var val1 = 0;
-	for( i = 0; i < document.signupform.cc1.length; i++ ) {
-		if( document.signupform.cc1[i].checked == true ){
-			val1 = document.signupform.cc1[i].value;
-		}
-	}
-	var val2 = 0;
-	for(var i = 0; i < document.signupform.cc2.length; i++ ) {
-		if( document.signupform.cc2[i].checked == true ){
-			val2 = document.signupform.cc2[i].value;
-		}
-	}	
-	if(val1 == 'yes' && val2 == 'yes') {
-		cc = 'by';
-	} else if(val1 == 'yes' && val2 == 'though') {
-		cc = 'by-sa';
-	} else if(val1 == 'no' && val2 == 'yes') {
-		cc = 'by-nc';
-	} else if(val1 == 'no' && val2 == 'though') {
-		cc = 'by-sa-nc';
-	} else if(val1 == 'yes' && val2 == 'no') {
-		cc = 'by-nd';	
-	} else if(val1 == 'no' && val2 == 'no') {
-		cc = 'by-nc-nd';
-	}
-	
-	xml.appendChild(license);		
-	txt = doc.createTextNode(cc);
-	license.appendChild(txt);
+
 	xml.appendChild(photoid);		
 	txt = doc.createTextNode(document.signupform.photoid.value);
 	photoid.appendChild(txt);
@@ -223,3 +196,24 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	}
 	KW.utopia(doc);
 });
+
+SRV.get('q-tracks-by-user', getProfileData, 'user', getCookie('name'));
+var records;
+var numTraces;
+var mytraces = document.getElementById('mytraces');
+function getProfileData(records) {
+	numTraces = records.length;
+	for(var i = 0; i < numTraces; i++) {
+			var r = document.createElement('div');
+			var n = document.createTextNode(records[i].getField('name'));
+			var id = records[i].getField('id');			
+			r.setAttribute('id',id);
+			r.appendChild(n);
+			mytraces.appendChild(r);
+			dojo.event.connect(document.getElementById(id),'onclick',function(evt) {
+								window.location ='index.html?cmd=get-track&id='+evt.target.getAttribute('id');	
+																			  });
+								
+
+	}
+}

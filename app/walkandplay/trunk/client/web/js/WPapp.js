@@ -11,7 +11,7 @@
  * $Id: WP.js,v 1.25 2006-07-22 22:51:35 just Exp $
  */
 
-
+DH.include('Factory.js');
 DH.include('Date.js');
 DH.include('FeatureSet.js');
 DH.include('FeaturePlayer.js');
@@ -305,8 +305,8 @@ var WP = {
 		var trackId = (trackXML.getElementsByTagName('info')[0].getAttribute('id'));
 		var tracerName = (trackXML.getElementsByTagName('info')[0].getAttribute('name'));
 		var trackName = (trackXML.getElementsByTagName('info')[0].getAttribute('name'));
-		WP.clearMap();
-		GTW.displayTrackPlayer();
+	//	WP.clearMap();
+	//	GTW.displayTrackPlayer();
 		var tracer = GTW.createTracer(tracerName);
 		tracer.readTrack(trackId, trackName, true);
 		tracer.show();
