@@ -6,57 +6,41 @@ import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import java.io.IOException;
 
+import org.geotracing.client.Util;
+
 /**
  * MobiTracer main GUI.
  *
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-//public class HomeScreen extends Form implements CommandListener {
-public class SettingsDisplay extends Form implements CommandListener {
-    MIDlet midlet;
-    private Displayable prevScreen;
-    List menuScreen;
-    Command cmd1 = new Command(Locale.get("help.Topic1"), Command.ITEM, 2);
-    Command cmd2 = new Command(Locale.get("help.Topic2"), Command.ITEM, 2);
-    Command cmd3 = new Command(Locale.get("help.Topic3"), Command.ITEM, 2);
-    Command backCmd = new Command("Back", Command.BACK, 1);
 
-    StringItem label = new StringItem("", "Help");
-    StringItem text = new StringItem("", "Welcome to the help section");
+/*public class SettingsDisplay extends Form implements CommandListener {*/
+public class SettingsDisplay extends DefaultDisplay{
+    List menuScreen;
+    Command SOUND_CMD;
+    Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
+
+    StringItem label = new StringItem("", "Settings");
+    StringItem text = new StringItem("", "Choose settings from the menu to change");
 
     public SettingsDisplay(MIDlet aMIDlet) {
-        //#style defaultscreen
-        super("");
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
+        super(aMIDlet, "");
 
-        try {
-            Image logo;
-            //#ifdef polish.images.directLoad
-            logo = Image.createImage("/gt_logo.png");
-            //#else
-            logo = scheduleImage("/gt_logo.png");
-            //#endif
-
-            //#style logo
-            ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-            append(logoItem);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(Util.hasSound()){
+            SOUND_CMD =  new Command(Locale.get("settings.SoundOff"), Command.ITEM, 2);
+        }else{
+            SOUND_CMD =  new Command(Locale.get("settings.SoundOn"), Command.ITEM, 2);
         }
 
+        //#style titlebox
         append(label);
+        //#style formbox
         append(text);
 
-        addCommand(cmd1);
-        addCommand(cmd2);
-        addCommand(cmd3);
+        addCommand(SOUND_CMD);
+        addCommand(ACCOUNT_CMD);
 
-        addCommand(backCmd);
-        setCommandListener(this);
-
-        Display.getDisplay(midlet).setCurrent(this);
     }
 
     /*
@@ -64,17 +48,12 @@ public class SettingsDisplay extends Form implements CommandListener {
        * satisfy the CommandListener interface and handle the Cancel action.
        */
     public void commandAction(Command cmd, Displayable screen) {
-        if (cmd == backCmd) {
+        if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        } else if (cmd == cmd1) {
-            label.setText(Locale.get("help.Topic1"));
-            text.setText(Locale.get("help.Topic1Text"));
-        } else if (cmd == cmd2) {
-            label.setText(Locale.get("help.Topic2"));
-            text.setText(Locale.get("help.Topic2Text"));
-        } else if (cmd == cmd3) {
-            label.setText(Locale.get("help.Topic3"));
-            text.setText(Locale.get("help.Topic3Text"));
+        } else if (cmd == SOUND_CMD) {
+            Util.toggleSound();
+        } else if (cmd == ACCOUNT_CMD) {
+            Display.getDisplay(midlet).setCurrent(new AccountDisplay(midlet));
         }
     }
 

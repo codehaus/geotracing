@@ -9,12 +9,12 @@ import javax.microedition.midlet.MIDlet;
 import org.geotracing.client.MFloat;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
-import org.geotracing.client.Log;
 
 /**
  * SHows moving dot on map.
  */
 public class MapDisplay extends GameCanvas implements CommandListener {
+/*public class MapDisplay extends Form implements CommandListener {*/
 	private Displayable prevScreen;
 	private String tileBaseURL;
 	private JXElement tileInfo;
