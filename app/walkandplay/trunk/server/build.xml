@@ -207,6 +207,11 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <!-- just to be on the safe side -->
         <copy file="${keyworx.jar}" todir="${build.war.dir}/WEB-INF/lib" overwrite="true"/>
 
+		<!-- copy data for tracerdaemon -->
+		 <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+		   <fileset dir="${home.data.dir}"/>
+		 </copy>
+
         <!-- Make war -->
         <jar jarfile="${test.project.war}">
             <fileset dir="${build.war.dir}">
@@ -270,6 +275,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <target name="deploy-local-raw">
         <copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
             <fileset dir="${home.webapp.dir}"/>
+			<fileset dir="${home.webapp.back.dir}"/>
         </copy>
     </target>
 
@@ -286,7 +292,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         -->
         <copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
             <fileset dir="${home.webapp.dir}"/>
-        </copy>
+			<fileset dir="${home.webapp.back.dir}"/>
+         </copy>
     </target>
 
     <!--<target name="replace metadata plugin">

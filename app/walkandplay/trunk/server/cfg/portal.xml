@@ -47,9 +47,10 @@
             <handler id="tour" class="org.walkandplay.server.control.TourHandler">
                 <property name="config">content-config.xml</property>
             </handler>
-            <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
+
+			<!-- <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
             <handler id="content" class="org.keyworx.utopia.core.control.ContentHandler"/>
-            <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>
+            <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>  -->
             <!-- plugin handlers -->
             <handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
             <handler id="license" class="org.keyworx.plugin.metadata.control.LicenseHandler"/>
@@ -77,7 +78,7 @@
             </daemon>
 			
 			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
-				<property name="pois2textmedia">true</property>
+				<property name="pois2textmedia">false</property>
 			</daemon>
 
             <!-- Tracer Bot -->
