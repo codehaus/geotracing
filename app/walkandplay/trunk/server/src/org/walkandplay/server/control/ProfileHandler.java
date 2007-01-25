@@ -297,7 +297,7 @@ public class ProfileHandler extends DefaultHandler {
 
             String photoId = requestElement.getChildText("photoid");
             String license = requestElement.getChildText("license");
-
+            
             logic.updateProfile(personId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
                     tags, profilePublic, license, email, emailPublic, password);
