@@ -225,7 +225,7 @@ var KW = {
 		try {
 			c = getCookie('name');
 		} catch(e) { c = null;}
-			if(c == null) {
+			if(c == null || c.length < 3) {
 				setCookie( 'name', document.getElementById('username').value);
 				setCookie( 'password', document.getElementById('password').value);
 			}
