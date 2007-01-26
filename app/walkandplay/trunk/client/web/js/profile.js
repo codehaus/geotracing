@@ -236,8 +236,10 @@ function getProfileData(record) {
 	nickname = record[0].getField('nickname');
 	email = record[0].getField('email');
 	photoid = record[0].getField('photoid');
+	tags = record[0].getField('tags');
 	document.getElementById('summNickname').innerHTML = nickname;
 	document.getElementById('summEmail').innerHTML = email;
+	document.getElementById('summTags').innerHTML = tags;
 	document.getElementById('summPhotoid').src = 'wp/media.srv?id='+photoid+'&resize=160x120';
 
 }

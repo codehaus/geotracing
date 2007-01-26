@@ -222,14 +222,15 @@ var KW = {
 	_loginRsp: function(element) {
 		KW.agentKey = element.getAttribute('agentkey');
 		var c;
+		KW.userId = element.getElementsByTagName('personid')[0].childNodes[0].nodeValue;
+		setCookie( 'personId',KW.userId);
 		try {
 			c = getCookie('name');
 		} catch(e) { c = null;}
 			if(c == null || c.length < 3) {
 				setCookie( 'name', document.getElementById('username').value);
 				setCookie( 'password', document.getElementById('password').value);
-			}
-		KW.userId = element.getElementsByTagName('personid')[0].childNodes[0].nodeValue;
+		}
 		//alert(KW.userId);
 		KW.onRsp(element);
 	},
