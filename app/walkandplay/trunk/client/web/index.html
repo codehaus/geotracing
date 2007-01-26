@@ -3,14 +3,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 <title>GeoTracing</title>
-<script type="text/javascript" src="js/myKWClient.js"></script>
-<script type="text/javascript" src="js/dojo/dojo.js"></script>
-<script type="text/javascript" src="js/gt/ajax-pushlet-client.js"></script>
 <script type="text/javascript" src="js/gt/DHTML.js"></script>
 <script type="text/javascript" src="js/gt/GMap.js"></script>
 <script type="text/javascript" src="js/gt/GMapKeys.js"></script>
 <script type="text/javascript" src="js/MyApp.js"></script>
 <script type="text/javascript" src="js/WPapp.js"></script>
+<script type="text/javascript" src="js/myKWClient.js"></script>
+<script type="text/javascript" src="js/dojo/dojo.js"></script>
+<script type="text/javascript" src="js/gt/ajax-pushlet-client.js"></script>
 <script type="text/javascript" src="js/User.js"></script>
 <script type="text/javascript" src="js/sIFR2.0.2/sifr.js"></script>
 <script type="text/javascript" src="js/pageCommands.js"></script>
@@ -212,7 +212,16 @@
 		    sIFR.replaceElement("#logobox span", named({sFlashSrc: "js/sIFR2.0.2/skia.swf",sBgColor:"#eeeeee"}));
     		sIFR();
 		};
-		
+		dojo.event.connect(window,'onload', function(evt) {									 
+		qs();
+		if(qsParm['cmd'] == null) {
+				PL.joinListen('/');
+		} else {
+			if(qsParm['cmd'] == 'get-track') {
+				SRV.get('get-track', WP.onTrackSelect, 'id', qsParm['id']);
+			}
+		}
+	});
 		</script>
 </body>
 </html>

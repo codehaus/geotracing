@@ -13,6 +13,7 @@
 <script type="text/javascript" src="js/WPapp.js"></script>
 <script type="text/javascript" src="js/User.js"></script>
 <script type="text/javascript" src="js/sIFR2.0.2/sifr.js"></script>
+<script type="text/javascript" src="js/pageCommands.js"></script>
 <link rel="stylesheet" href="css/geotracingfs.css" />
 <link rel="stylesheet" href="css/sIFR-screen.css" />
 </head>
@@ -108,30 +109,30 @@
   </div>
   <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 <!-- EINDE NAVBLOCKS -->
-<div id="infoblock" style="position:absolute; top:200px; left:52px; width:800px;">
-	<b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-	<div class="contentblock">
-	<!-- PROFILE OVERZICHT BLOCK-->  
-  		<div id="profileblock" style="display:block;"> 
-
-      			<div id="GOTOeditview">edit</div>
-				<div id="generalInfo" style="display:block;"> 
-					<b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-					<div class="contentblock">
-						<!-- CONTENT -->
-							<div id="mytraces"></div>
-
-
-							<div id="profilesummary"></div>
-						<!-- /CONTENT -->
-					</div>
-					<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
-				</div>
-				
-		</div>
-		<!-- EINDE OVERZICHT BLOCK-->  
-		<!--ACCOUNT EDITING -->		
-	<div id="formblock" style="text-align:left;z-index:15; display:none; position:static;">
+<div id="infoblock" style="position:absolute; top:200px; left:52px; width:800px;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+  <div class="contentblock">
+    <!-- PROFILE OVERZICHT BLOCK-->
+    <div id="profileblock" style="display:block;">
+      <div id="GOTOeditview">edit</div>
+      <div id="generalInfo" style="display:block;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+        <div class="contentblock">
+          <!-- CONTENT -->
+		   <div id="profilesummary">
+		   	<div id="summNickname">aaa</div>
+			<div id="summNumTraces"></div>
+			<div id="summEmail"></div>
+			<div id="summTags"></div>
+			<img id="summPhotoid" />
+		   </div>
+		   <br/>
+          <div id="mytraces"></div>
+          <!-- /CONTENT -->
+        </div>
+        <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+    </div>
+    <!-- EINDE OVERZICHT BLOCK-->
+    <!--ACCOUNT EDITING -->
+    <div id="formblock" style="text-align:left;z-index:15; display:none; position:static;">
       <div id="GOTOoverview">general info</div>
       <!--SIGNUP FORM-->
       <form enctype="application/x-www-form-urlencoded" name="signupform" id="signupform">
@@ -188,75 +189,48 @@
               </li>
             </ul>
           </div>
-          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
-	    </div><!-- END BLOCK1 -->
-		 <!-- BLOCK2-->
-
-
-
-
-
-
-		 <div style="width:300px;float:left; position:relative;left:20px;top:200px;">
-        	<b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
-        		<div class="contentblock">
-        			<ul style="display:inline;">
-          				<li>keywords:</li>
-          				<li><textarea name="keywords" cols="30" rows="5"></textarea></li>
-          				<li>
-							<p>
-								<label>
-									<input type="radio" name="privacy" value="public" checked="checked"/>make profile public
-								</label>
-								<br />
-								<label>
-									<input type="radio" name="privacy" value="private" />keep profile private
-								</label>
-								<br />
-							</p>
-          				</li>
-        			</ul>
-        			<button type="submit">submit</button>
-      			</div>
-	  		<b class="rbottom" style="clear:both;"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> 
-		</div>
-	
-
-
-
-
-
-
-
-
-
-
-	<!-- END BLOCK2-->
-    </form>
-		<div style="position:absolute;top:42px;left:297px;">
-			<img src="" id="previewImage" style=" width:100px; height:100px;"/>
-			<form id="addmediumform" name="addmediumform" enctype="multipart/form-data" target="uploadFrame" method="post" action="wp/media.srv">
-				<input name="file" id="file" type="file"/>
-				<input name="description" id="name" type="hidden" value="null" />
-				<input name="name" id="description" type="hidden" value="null" />
-				<input name="agentkey" id="agentkey" type="hidden" value="null" />
-				<input name="xmlrsp" id="xmlrsp" type="hidden" value="true" />
-		  	</form>	
-		</div>
-		
-	  </div>
-		
-		
-		<div style="clear:both">&nbsp;</div>
-	
-		
-		<!-- END EDITING BLOCK-->
-	</div>
-	<b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b>
-</div>
- 
- 
- 
+          <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+        <!-- END BLOCK1 -->
+        <!-- BLOCK2-->
+        <div style="width:300px;float:left; position:relative;left:20px;top:200px;"> <b class="rtop"><b class="r1"></b><b class="r2"></b><b class="r3"></b><b class="r4"></b></b>
+          <div class="contentblock">
+            <ul style="display:inline;">
+              <li>keywords:</li>
+              <li>
+                <textarea name="keywords" cols="30" rows="5"></textarea>
+              </li>
+              <li>
+                <p>
+                  <label>
+                  <input type="radio" name="privacy" value="public" checked="checked"/>
+                  make profile public </label>
+                  <br />
+                  <label>
+                  <input type="radio" name="privacy" value="private" />
+                  keep profile private </label>
+                  <br />
+                </p>
+              </li>
+            </ul>
+            <button type="submit">submit</button>
+          </div>
+          <b class="rbottom" style="clear:both;"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
+        <!-- END BLOCK2-->
+      </form>
+      <div style="position:absolute;top:42px;left:297px;"> <img src="" id="previewImage" style=" width:100px; height:100px;"/>
+        <form id="addmediumform" name="addmediumform" enctype="multipart/form-data" target="uploadFrame" method="post" action="wp/media.srv">
+          <input name="file" id="file" type="file"/>
+          <input name="description" id="name" type="hidden" value="null" />
+          <input name="name" id="description" type="hidden" value="null" />
+          <input name="agentkey" id="agentkey" type="hidden" value="null" />
+          <input name="xmlrsp" id="xmlrsp" type="hidden" value="true" />
+        </form>
+      </div>
+    </div>
+    <div style="clear:both">&nbsp;</div>
+    <!-- END EDITING BLOCK-->
+  </div>
+  <b class="rbottom"><b class="r4"></b><b class="r3"></b><b class="r2"></b><b class="r1"></b></b> </div>
 <script type="text/javascript">
 		SRV.url = 'wp/srv/get.jsp?';
 		if(typeof sIFR == "function"){

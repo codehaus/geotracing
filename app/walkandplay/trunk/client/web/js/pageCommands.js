@@ -1,14 +1,5 @@
 var qsParm = new Array();
-dojo.event.connect(window,'onload', function(evt) {									 
-		qs();
-		if(qsParm['cmd'].length == 0) {
-				PL.joinListen('/');
-		} else {
-			if(qsParm['cmd'] == 'get-track') {
-				SRV.get('get-track', WP.onTrackSelect, 'id', qsParm['id']);
-			}
-		}
-	});
+
 function qs() {
 	var query = window.location.search.substring(1);
 	var parms = query.split('&');
