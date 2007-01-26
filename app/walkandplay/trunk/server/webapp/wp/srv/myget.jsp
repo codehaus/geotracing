@@ -1,6 +1,7 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement"%>
 <%@ page import="org.geotracing.server.QueryHandler"%>
 <%@ page import="org.keyworx.oase.api.Record"%>
+<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
@@ -63,7 +64,7 @@
 
 						// Add optional thumb (icon) id
 						Record[] thumbRecords = oase.getRelater().getRelated(person, "base_medium", "profile");
-						if (thumbRecords.length > 0) {
+						if (thumbRecords.length > 0 && thumbRecords[0] != null) {
 							userInfo.setChildText("photoid", thumbRecords[0].getIdString());
 						}
 
