@@ -265,6 +265,8 @@
 					<!--<attribute name="kw-user" value="geoapp-user" />-->
 					<attribute name="kw-password" value="johan" />
 					<!--<attribute name="kw-password" value="user" />-->
+					<attribute name="kw-amulet" value="wnpamulet" />
+					<attribute name="kw-port" value="6000" />
 					<attribute name="kw-app" value="geoapp" />
 					<attribute name="kw-role" value="user" />
 					<attribute name="audio-rate" value="8000" />

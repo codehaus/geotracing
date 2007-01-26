@@ -25,12 +25,17 @@ public class DefaultDisplay extends Form implements CommandListener {
 	protected Command BACK_CMD = new Command("Back", Command.BACK, 1);
 	protected MIDlet midlet;
 	protected Displayable prevScreen;
+    protected int logoNum;
 
-	public DefaultDisplay(MIDlet aMIDlet, String aDisplayTitle) {
+    public DefaultDisplay(MIDlet aMIDlet, String aDisplayTitle) {
         //#style defaultscreen
         super(aDisplayTitle);
 		midlet = aMIDlet;
 		prevScreen = Display.getDisplay(midlet).getCurrent();
+        System.out.println("prevscreen: " + prevScreen);
+        if(prevScreen!=null){
+            System.out.println(prevScreen.getTitle());
+        }
 
         try{
             Image logo;
@@ -42,7 +47,7 @@ public class DefaultDisplay extends Form implements CommandListener {
 
             //#style logo
             ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-            append(logoItem);
+            logoNum = append(logoItem);
         }catch(Throwable t){
             Log.log("Exception getting logo:" + t.toString());    
         }

@@ -48,6 +48,8 @@ trace.Radar=Radar
 
 find.Search=Search
 
+play.Play=Play
+
 settings.SoundOn=Sound ON
 settings.SoundOff=Sound OFF
 settings.Account=Account
