@@ -20,7 +20,6 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	private Hashtable devices = new Hashtable(2);
 	static private Preferences preferences;
 	private LocalDevice device;
-	private DiscoveryAgent agent;
 	private RemoteDevice remoteDevice;
 	private String connectionURL;
 	private ServiceRecord serviceRecord;
@@ -29,9 +28,8 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	public static final String RMS_GPS_NAME = "name";
 	public static final String RMS_GPS_URL = "url";
 
-    private String[] msgs = new String[3];
-
-    private StringItem info;
+    private int msgNum;
+    private int choiceNum;
 
     public GPSDisplay(MIDlet theMIDlet) {
         super(theMIDlet, "GPS Device Selector");
@@ -39,12 +37,7 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 		OK_CMD = new Command("OK", Command.OK, 1);
 
 		addCommand(SEARCH_CMD);
-            //#style formbox
-        info = new StringItem("","Pairing your GPS to the program.\nYour Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu.");
-        append(info);
-        /*append("Pairing your GPS to the program.");
-		append("Your Bluetooth GPS should be switched on.");
-		append("Press Search in menu to start and wait for choice-menu");*/
+        log("Pairing your GPS to the program.\nYour Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu.");        
     }
 
 	public void commandAction(Command c, Displayable d) {
@@ -102,11 +95,11 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	 */
 	private void searchServices() {
 		try {
-			log("Start service search" + remoteDevice.getFriendlyName(false));
+			log("Start service search " + remoteDevice.getFriendlyName(false));
 			// Use the serial UUID for connection
 			UUID[] serviceUUIDs = new UUID[1];
 			serviceUUIDs[0] = new UUID(0x1101);
-			agent = device.getDiscoveryAgent();
+			DiscoveryAgent agent = device.getDiscoveryAgent();
 			agent.searchServices(null, serviceUUIDs, remoteDevice, this);
 
 		} catch (Throwable ex) {
@@ -138,10 +131,9 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 
 	public synchronized void inquiryCompleted(int complete) {
 		//log("Device search complete");
-		cls();
-        /*log("Select a device and press Ok in menu");*/
+		cls();        
         //#style formbox
-        append(deviceCG);
+        choiceNum = append(deviceCG);
 	}
 
 	public synchronized void servicesDiscovered(int transId, ServiceRecord[] records) {
@@ -180,13 +172,19 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	 * Clear the whole form content.
 	 */
 	public void cls() {
-		deleteAll();
+        /*System.out.println("# items: " + size());
+        System.out.println("logo: " + logoNum);
+        System.out.println("msg: " + msgNum);
+        System.out.println("choice: " + choiceNum);*/
+        /*delete(msgNum);
+        delete(choiceNum);*/
+        deleteAll();
 	}
 
 	public void log(String message) {
         cls();
         //#style formbox
-        append(new StringItem("", message + "\n"));
+        msgNum = append(new StringItem("", message + "\n"));
 		System.out.println(message);
 	}
 

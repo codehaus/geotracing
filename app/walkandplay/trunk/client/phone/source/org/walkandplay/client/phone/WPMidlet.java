@@ -75,8 +75,6 @@ public class WPMidlet extends MIDlet implements CommandListener {
             e.printStackTrace();
         }
 
-        traceDisplay = new TraceDisplay(this);
-
         //#style mainScreen
         menuScreen = new List(title, List.IMPLICIT);
         //#style mainTraceCommand
@@ -126,6 +124,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         switch (aScreenNr) {
             case 0:
                 // Trace
+                traceDisplay = new TraceDisplay(this);
                 Display.getDisplay(this).setCurrent(traceDisplay);
         		traceDisplay.start();
                 break;
@@ -135,6 +134,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 2:
                 // Play
+                Display.getDisplay(this).setCurrent(new PlayDisplay(this));
                 break;
             case 3:
                 // GPS

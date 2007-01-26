@@ -344,5 +344,37 @@ alertcontent {
     font-color: fontColor;
 }
 
+.gpsstat {
+    margin: 2;
+    padding: 2;
+    font-color: fontColor;
+    font-size: small;
+    layout: center;
+    border{
+        width:2;
+        color:fontColor;
+        type:round-rect;
+        arc:6;
+    }
+    background-color:brightBgColor;
+    font-color: fontColor;
+}
+
+.netstat {
+    margin: 2;
+    padding: 2;
+    font-color: fontColor;
+    font-size: small;
+    layout: center;
+    border{
+        width:2;
+        color:fontColor;
+        type:round-rect;
+        arc:6;
+    }
+    background-color:brightBgColor;
+    font-color: fontColor;
+}
+
 
 
