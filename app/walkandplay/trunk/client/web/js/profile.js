@@ -113,7 +113,6 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	var zipcode = doc.createElement('zipcode');	
 	var city = doc.createElement('city');
 	var country = doc.createElement('country');
-	var photoid = doc.createElement('photoid');
 	var keywords = doc.createElement('keywords');	
 	var street = doc.createElement('street');	
 	var streetnr = doc.createElement('streetnr');	
@@ -174,9 +173,6 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	
 	var cc;
 
-	xml.appendChild(photoid);		
-	txt = doc.createTextNode(document.signupform.photoid.value);
-	photoid.appendChild(txt);
 	xml.appendChild(profilepublic);
 	if(document.signupform.privacy[0].checked == true) {
 		txt = doc.createTextNode('true');
@@ -196,13 +192,33 @@ dojo.event.connect(document.getElementById('signupform'),'onsubmit',function(evt
 	}
 	KW.utopia(doc);
 });
-
-SRV.get('q-tracks-by-user', getProfileData, 'user', getCookie('name'));
+var profileId;
 var records;
 var numTraces;
+var nickname,email,photoid;
+
 var mytraces = document.getElementById('mytraces');
-function getProfileData(records) {
+dojo.event.connect(window,'onload', function(evt) {									 
+		qs();
+		if(qsParm['personid'] == null) {
+			if(getCookie('personId') > 0) {
+				profileId = getCookie('personId');	
+			} else {
+				profileId = 0;	
+			}
+		} else {
+			profileId = qsParm['personid'];
+		}
+		if(profileId != 0 ) {
+			SRV.get('q-tracks-by-user', getTrackData, 'user', getCookie('name'));
+			SRV.get('q-user-info', getProfileData, 'id', profileId);
+		}
+	});
+
+
+function getTrackData(records) {
 	numTraces = records.length;
+	document.getElementById('summNumTraces').innerHTML = numTraces;
 	for(var i = 0; i < numTraces; i++) {
 			var r = document.createElement('div');
 			var n = document.createTextNode(records[i].getField('name'));
@@ -211,9 +227,17 @@ function getProfileData(records) {
 			r.appendChild(n);
 			mytraces.appendChild(r);
 			dojo.event.connect(document.getElementById(id),'onclick',function(evt) {
-								window.location ='index.html?cmd=get-track&id='+evt.target.getAttribute('id');	
-																			  });
-								
+				window.location ='index.html?cmd=get-track&id='+evt.target.getAttribute('id');	
+			 });
+		}
+}
 
-	}
+function getProfileData(record) {
+	nickname = record[0].getField('nickname');
+	email = record[0].getField('email');
+	photoid = record[0].getField('photoid');
+	document.getElementById('summNickname').innerHTML = nickname;
+	document.getElementById('summEmail').innerHTML = email;
+	document.getElementById('summPhotoid').src = 'wp/media.srv?id='+photoid+'&resize=160x120';
+
 }
