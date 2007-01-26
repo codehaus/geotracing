@@ -301,7 +301,7 @@ public class Util {
 	static public void showAlert(MIDlet aMidlet, String title, String mesg) {
 		Alert a = new Alert(title, mesg, null, AlertType.ALARM);
 		a.setTimeout(Alert.FOREVER);
-		Display.getDisplay(aMidlet).setCurrent(a, Display.getDisplay(aMidlet).getCurrent());
+		//Display.getDisplay(aMidlet).setCurrent(a, Display.getDisplay(aMidlet).getCurrent());
 	}
 
 	static public boolean hasSound() {
