@@ -35,6 +35,9 @@ public class TraceDisplay extends DefaultDisplay  {
     private Command SHOW_MAP_CMD = new Command(Locale.get("trace.ShowMap"), Command.ITEM, 2);
     private Command RADAR_CMD = new Command(Locale.get("trace.Radar"), Command.ITEM, 2);
 
+    Command BACK_CMD = new Command("Back", Command.BACK, 1);
+
+
     public TraceDisplay(WPMidlet aMidlet) {
         super(aMidlet, "Trace");
 
@@ -49,10 +52,9 @@ public class TraceDisplay extends DefaultDisplay  {
         addCommand(ADD_AUDIO_CMD);
         addCommand(SHOW_MAP_CMD);
         addCommand(RADAR_CMD);
-
     }
 
-	void start() {		
+	void start() {
 		mapViewer = new MapDisplay();
 		tracerEngine.start();
 	}
@@ -91,7 +93,7 @@ public class TraceDisplay extends DefaultDisplay  {
     }
 
     public void cls() {
-        deleteAll();
+		deleteAll();
 	}
 
     public void log(String message) {
@@ -243,7 +245,7 @@ public class TraceDisplay extends DefaultDisplay  {
 		*/
 		public void addText() {
 			// Create the TextBox containing the "Hello,World!" message
-            //#style defaultscreen, textbox
+            //#style textbox
             textBox = new TextBox("Enter Text", "", 1024, TextField.ANY);
 
 
