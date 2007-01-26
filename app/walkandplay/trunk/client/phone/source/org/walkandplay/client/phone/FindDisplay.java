@@ -12,12 +12,8 @@ import javax.microedition.midlet.MIDlet;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 public class FindDisplay extends DefaultDisplay {
-    MIDlet midlet;
-    List menuScreen;
     Command SEARCH_CMD = new Command(Locale.get("find.Search"), Command.ITEM, 2);
-
     StringItem text = new StringItem("", "Press find from the menu to get tours close to you");
-    private Image logo;
 
     public FindDisplay(MIDlet aMIDlet) {
         super(aMIDlet, "");
