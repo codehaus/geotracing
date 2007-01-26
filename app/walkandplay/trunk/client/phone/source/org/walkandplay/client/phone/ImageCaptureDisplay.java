@@ -29,7 +29,8 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 	private byte[] photoData;
 	private String photoMime;
 	private long photoTime;
-	private StringItem status = new StringItem("", "Photo Capture");
+    //#style formbox
+    private StringItem status = new StringItem("", "Photo Capture");
 	private GPSLocation location;
 
 	public ImageCaptureDisplay(MIDlet aMIDlet) {
@@ -64,13 +65,14 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 
 			// Add the video playback window (item)
 			video = (VideoControl) player.getControl("VideoControl");
-			Item item = (Item) video.initDisplayMode(
+            //#style formbox
+            Item item = (Item) video.initDisplayMode(
 					GUIControl.USE_GUI_PRIMITIVE, null);
 			item.setLayout(Item.LAYOUT_CENTER |
 					Item.LAYOUT_NEWLINE_AFTER);
 			append(item);
 			// Add a caption
-			status.setText("Press Fire to take photo");
+            status.setText("Press Fire to take photo");
 			status.setLayout(Item.LAYOUT_CENTER);
 			append(status);
 
