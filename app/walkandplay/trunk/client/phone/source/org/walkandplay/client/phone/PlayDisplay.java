@@ -28,7 +28,7 @@ public class PlayDisplay extends DefaultDisplay implements XMLChannelListener, R
     Command PLAY_CMD = new Command(Locale.get("play.Play"), Command.ITEM, 2);
 
     StringItem text = new StringItem("", "Press 'Play' to start your tour");
-    
+        
     public PlayDisplay(MIDlet aMIDlet) {
         super(aMIDlet, "");
 
