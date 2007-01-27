@@ -2,7 +2,8 @@ package org.walkandplay.client.phone;
 
 import org.geotracing.client.Util;
 import org.geotracing.client.Net;
-import org.geotracing.client.AudioCapture;
+import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.TextField;
 import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;

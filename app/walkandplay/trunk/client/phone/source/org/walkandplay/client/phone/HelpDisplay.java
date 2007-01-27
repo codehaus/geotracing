@@ -1,11 +1,10 @@
 package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
-import de.enough.polish.ui.TabbedForm;
+import de.enough.polish.ui.StringItem;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
-import java.io.IOException;
 
 
 /**

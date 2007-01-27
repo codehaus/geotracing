@@ -4,6 +4,7 @@ import de.enough.polish.util.Locale;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
+import de.enough.polish.ui.StringItem;
 
 /**
  * MobiTracer main GUI.

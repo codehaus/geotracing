@@ -3,7 +3,7 @@ package org.walkandplay.client.phone;
 import org.geotracing.client.Preferences;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
-import org.geotracing.client.AccountScreen;
+import de.enough.polish.ui.StringItem;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
