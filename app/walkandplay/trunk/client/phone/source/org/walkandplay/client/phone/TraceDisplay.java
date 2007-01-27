@@ -5,6 +5,7 @@ import org.geotracing.client.*;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
+import de.enough.polish.ui.StringItem;
 
 import de.enough.polish.util.Locale;
 

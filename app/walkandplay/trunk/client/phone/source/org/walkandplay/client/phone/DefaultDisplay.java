@@ -1,12 +1,10 @@
 package org.walkandplay.client.phone;
 
-import org.geotracing.client.Preferences;
-import org.geotracing.client.Net;
-import org.geotracing.client.Util;
+import de.enough.polish.ui.Form;
+import de.enough.polish.ui.ImageItem;
 
-import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
-import javax.microedition.rms.RecordStoreException;
+import javax.microedition.lcdui.*;
 
 /**
  * Allows changing account preferences.
@@ -26,11 +24,13 @@ public class DefaultDisplay extends Form implements CommandListener {
 	protected MIDlet midlet;
 	protected Displayable prevScreen;
     protected int logoNum;
+    private Image logo;
 
     public DefaultDisplay(MIDlet aMIDlet, String aDisplayTitle) {
         //#style defaultscreen
         super(aDisplayTitle);
-		midlet = aMIDlet;
+        animate();
+        midlet = aMIDlet;
 		prevScreen = Display.getDisplay(midlet).getCurrent();
         System.out.println("prevscreen: " + prevScreen);
         if(prevScreen!=null){
@@ -38,7 +38,7 @@ public class DefaultDisplay extends Form implements CommandListener {
         }
 
         try{
-            Image logo;
+
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/gt_logo.png");
             //#else
@@ -57,7 +57,11 @@ public class DefaultDisplay extends Form implements CommandListener {
 		Display.getDisplay(midlet).setCurrent(this);
 	}
 
-	public void commandAction(Command command, Displayable screen) {
+    /*public void paint(Graphics g) {
+        g.drawImage(logo, 0, 0, Graphics.TOP | Graphics.LEFT);
+    }*/
+
+    public void commandAction(Command command, Displayable screen) {
 
 	}
 }

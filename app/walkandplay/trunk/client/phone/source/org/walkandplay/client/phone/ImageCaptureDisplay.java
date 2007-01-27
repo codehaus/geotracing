@@ -3,6 +3,9 @@ package org.walkandplay.client.phone;
 import org.geotracing.client.*;
 import org.keyworx.mclient.Protocol;
 
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
+
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Player;
 import javax.microedition.media.Manager;
@@ -60,16 +63,13 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 
 	private void showCamera() {
 		try {
-            player = Manager.createPlayer("CAPTURE_CMD://video");
+            player = Manager.createPlayer("capture://video");
 			player.realize();
 
 			// Add the video playback window (item)
 			video = (VideoControl) player.getControl("VideoControl");
-            //#style formbox
-            Item item = (Item) video.initDisplayMode(
-					GUIControl.USE_GUI_PRIMITIVE, null);
-			item.setLayout(Item.LAYOUT_CENTER |
-					Item.LAYOUT_NEWLINE_AFTER);
+            Item item = (Item) video.initDisplayMode(GUIControl.USE_GUI_PRIMITIVE, null);
+			item.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER);
 			append(item);
 			// Add a caption
             status.setText("Press Fire to take photo");
@@ -101,8 +101,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 			photoTime = Util.getTime();
 
 			try {
-				photoData = video.getSnapshot(
-						"encoding=jpeg&width=320&height=240");
+				photoData = video.getSnapshot("encoding=jpeg&width=320&height=240");
 			} catch(Throwable t) {
 				// Some phones don't support specific encodings
 				// This should fix at least SonyEricsson K800i...
@@ -114,9 +113,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 			player.stop();
 			player.close();
 
-			photoPreview =
-					createPreview(
-							Image.createImage(photoData, 0, photoData.length));
+			photoPreview = createPreview(Image.createImage(photoData, 0, photoData.length));
 			status.setText("OK done...");
 
 		} catch (Throwable e) {

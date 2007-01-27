@@ -5,6 +5,8 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStoreException;
 import javax.bluetooth.*;
 import java.util.Hashtable;
+import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.ChoiceGroup;
 
 import org.geotracing.client.Preferences;
 

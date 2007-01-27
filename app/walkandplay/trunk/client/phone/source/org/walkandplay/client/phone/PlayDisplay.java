@@ -4,6 +4,7 @@ import de.enough.polish.util.Locale;
 
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.lcdui.*;
+import de.enough.polish.ui.StringItem;
 
 import nl.justobjects.mjox.XMLChannel;
 import nl.justobjects.mjox.SocketXMLChannel;

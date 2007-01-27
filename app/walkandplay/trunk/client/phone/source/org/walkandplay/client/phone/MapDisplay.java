@@ -14,7 +14,6 @@ import org.geotracing.client.Util;
  * SHows moving dot on map.
  */
 public class MapDisplay extends GameCanvas implements CommandListener {
-/*public class MapDisplay extends Form implements CommandListener {*/
 	private Displayable prevScreen;
 	private String tileBaseURL;
 	private JXElement tileInfo;

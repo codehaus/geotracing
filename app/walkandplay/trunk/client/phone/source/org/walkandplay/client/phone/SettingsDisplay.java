@@ -4,7 +4,8 @@ import de.enough.polish.util.Locale;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
-import java.io.IOException;
+import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.TextField;
 
 import org.geotracing.client.Util;
 
