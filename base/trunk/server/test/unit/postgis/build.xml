@@ -7,11 +7,13 @@ $Id$
 <project name="postgistest" default="test" basedir=".">
 
 	<!-- Initialization of properties (dirs, files) -->
-
 	<!-- Project global properties; overrule by modifying build.properties -->
-	<property name="keyworx.dir" value="${basedir}/../../../.."/>
-	<property file="${keyworx.dir}/build.properties"/>
-	<property file="${basedir}/build.properties"/>
+    <property name="geotracing.base.dir" value="${basedir}/../../../.."/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+	<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+	<property name="geotracing.jar" value="${geotracing.base.dir}/server/build/lib/geotracing.jar"/>
+	<property name="postgis.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
 
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
@@ -27,8 +29,9 @@ $Id$
 	<!-- Classpath for JUnit tests. -->
 	<path id="junit.classpath">
 		<pathelement location="${java.class.path}"/>
-		<pathelement path="${junit.jar}"/>
 		<pathelement path="${keyworx.jar}"/>
+		<pathelement path="${geotracing.jar}"/>
+		<pathelement path="${postgis.jar}"/>
 	</path>
 
 	<!-- Fileset for junit.all -->
@@ -100,6 +103,7 @@ $Id$
 	<target name="qtest"
 		description="Runs the JUnit test quickly">
 
+		<echo message="${geotracing.jar}" />
 		<java classname="org.geotracing.test.postgis.AllTests"
 			fork="true"
 			failonerror="true"

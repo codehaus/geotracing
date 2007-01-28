@@ -14,6 +14,7 @@ public class BasicsTest extends PGTestCase {
 	public static final String SRID_POINT_1 = "SRID=4326;POINT(4.92 52.35)";
 	public static final String SRID_POINT_2 = "SRID=4326;POINT(-4.92 -52.35)";
 	public static final String SRID_POINT_3 = "SRID=4326;POINT(-4.92 52.35)";
+	public static final String SRID_POINT_4 = "SRID=4326;POINT(-4.98 52.37)";
 
 	public BasicsTest() {
 		super("BasicsTest");
@@ -62,13 +63,13 @@ public class BasicsTest extends PGTestCase {
 			assertEquals("result not equal to " + SRID_POINT_3 + " but " + result, result, SRID_POINT_3);
 
 			// METHOD 4: use OGC String format
-			record.setObjectField("point", "GeomFromText('POINT (4.92 52.35)', 4326)");
-//			record.setObjectField("point", "SRID=4326;POINT(-4.92 52.35)");
+			record.setField("point", "GeomFromText('POINT (4.92 52.35)', 4326)");
+//			record.setField("point", SRID_POINT_4);
 			getModifier().update(record);
 			record = getFinder().read(id);
 			geom = (PGgeometryLW) record.getObjectField("point");
 			result = geom.toString();
-			assertEquals("result not equal to " + SRID_POINT_2 + " but " + result, result, SRID_POINT_3);
+			assertEquals("result not equal to " + SRID_POINT_4 + " but " + result, result, SRID_POINT_4);
 
 		} catch (Throwable t) {
 			failTest("testCreatePoint: ", t);
