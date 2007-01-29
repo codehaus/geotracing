@@ -162,10 +162,18 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		</copy>
 	</target>
 
-	<target name="copy-live">
+	<target name="copy-war-test.waag.org">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
 			<arg line="bliin@test.waag.org:team/just"/>
 		</exec>
 	</target>
+
+	<target name="copy-war-tiger">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="tiger@tiger:versions"/>
+		</exec>
+	</target>
+
 </project>
