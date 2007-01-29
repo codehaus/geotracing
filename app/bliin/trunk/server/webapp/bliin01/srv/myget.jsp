@@ -73,7 +73,7 @@
 					log.info("[bliin]: CACHING WORLD QUERY...");   */
 				}
 
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 				if (bboxParm == null && type == null && random.equals("false") && limitParm == null && doWorldCache) {
 /*					String resultStr = result.toFormattedString();

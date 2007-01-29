@@ -3,6 +3,8 @@
 	<!-- Standard host-dependent container properties -->
 	<property name="siteurl" host="prod">http://bliin.com</property>
 	<property name="webappurl" host="prod">http://bliin.com/bliin01</property>
+	<property name="siteurl" host="tiger">http://bliin.com</property>
+	<property name="webappurl" host="tiger">http://bliin.com/bliin01</property>
 	<property name="siteurl" host="test">http://test.bliin.com</property>
 	<property name="webappurl" host="test">http://test.bliin.com/bliin01</property>
 	<property name="siteurl" host="suwa">http://test.geotracing.com</property>
