@@ -130,7 +130,7 @@
 	}
 
 	/** Adds g_location attrs to query response records. */
-	public void addLocationAttrs(JXElement rsp) throws Exception {
+	public void addLocationAttrs(JXElement rsp, String aTableName) throws Exception {
 		Vector records = rsp.getChildren();
 		Finder finder = oase.getFinder();
 		Relater relater = oase.getRelater();
@@ -152,15 +152,29 @@
 				recordId = nextRecordElm.getAttr("id");
 			}
 
-			// Must have the real record
-			record = finder.read(Integer.parseInt(recordId));
 
-			// Get related person
-			locationRecords = relater.getRelated(record, "g_location", null);
+			// Get related location
+			if (aTableName != null && aTableName.equals("base_medium")) {
+				String tables = "base_medium,g_location";
+				String fields = "g_location.lon,g_location.lat";
+				String where = "base_medium.id = " + recordId;
+				String relations = "base_medium,g_location";
+				locationRecords = QueryHandler.queryStore(oase, tables, fields, where, relations, null);
+			} else {
+				// Must have the real record to determine tablename
+				record = finder.read(Integer.parseInt(recordId));
+
+				if (record == null) {
+					log.warn("Cannot read record for id=" + recordId);
+					continue;
+				}
+				locationRecords = relater.getRelated(record, "g_location", null);
+			}
 
 			if (locationRecords.length == 0) {
 				continue;
 			}
+
 			// Add the location attrs
 			nextRecordElm.setChildText("lon", locationRecords[0].getField("lon").toString());
 			nextRecordElm.setChildText("lat", locationRecords[0].getField("lat").toString());
@@ -201,7 +215,7 @@
 				personRecord = oase.getFinder().read(Integer.parseInt(personId), "utopia_person");
 				if (personRecord == null) {
 					// Rare case: person non-existent
-					log.warn(CMD_QUERY_COMMENTS_FOR_TARGET + ": no person record for id=" + personId);
+					log.warn("addOwnerFields: no person record for id=" + personId);
 					rsp.addChild(nextRecordElm);
 					continue;
 				} else {
@@ -597,7 +611,7 @@
 				String postCond = " LIMIT " + limit;
 
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				Record[] records = QueryHandler.queryStore2(oase, tables, fields, where, relations, postCond);
+				Record[] records = QueryHandler.queryStore(oase, tables, fields, where, relations, postCond);
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
 				JXElement nextElm;
 				Record nextRecord;
@@ -672,20 +686,13 @@
 				String where = "g_track.state=1";
 				String relations = "g_track,g_location,lastpt";
 				String postCond = null;
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 				t2=Sys.now();
 				log.info(CMD_QUERY_ACTIVE_TRACKS + " qtime=" + (t2-t1));
+
 				// Add account/person attrs to each record
 				addUserAttrs(result, "g_track");
 
-				// Originele query (duurde heeeeel lang)
-
-				/*			String tables = "utopia_person,utopia_account,g_track,g_location";
-								String fields = "g_track.id,g_track.name,utopia_person.extra,utopia_account.loginname,g_location.lon,g_location.lat";
-								String where = "g_track.state=1";
-								String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_account,utopia_person";
-								String postCond = "ORDER BY utopia_account.loginname";
-								result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);   */
 			} else if (command.equals(CMD_QUERY_ALL_TRACKS)) {
 				String tables = "utopia_person,utopia_account,g_track,g_location";
 				String fields = "g_track.id,g_track.name,g_track.state,utopia_account.loginname,g_location.lon,g_location.lat,g_location.time";
@@ -704,14 +711,14 @@
 				String where = "utopia_account.loginname = '" + userName + "'";
 				String relations = "utopia_account,utopia_person;g_track,utopia_person";
 				String postCond = "ORDER BY g_track.id";
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 			} else if (command.equals(CMD_QUERY_ALL_USERS)) {
 				String tables = "utopia_person,utopia_account,utopia_role";
 				String fields = "utopia_person.id,utopia_account.id AS accountid, utopia_account.loginname";
 				String where = "utopia_role.name = 'user' AND utopia_account.state = 1";
 				String relations = "utopia_account,utopia_person;utopia_account,utopia_role";
 				String postCond = "ORDER BY utopia_account.loginname";
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 			} else if (command.equals(CMD_QUERY_RECENT_TRACKS)) {
 				// Optional number
 				String max = getParameter(request, "max", "5");
@@ -744,7 +751,7 @@
 				where = "g_track.id = " + trackId;
 				relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_account,utopia_person";
 				postCond = null;
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 			} else if (command.equals(CMD_QUERY_ROW_COUNT)) {
 				String tableName = getParameter(request, PAR_TABLE_NAME, null);
@@ -846,7 +853,7 @@
 					postCond += " LIMIT " + Integer.parseInt(limitParm);
 				}
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 				// Add account/person attrs to each record
 				// addUserAttrs(result, "base_medium");
@@ -858,7 +865,7 @@
 				result = createResponse(finder.freeQuery("select * from base_medium order by creationdate desc limit " + max));
 
 				// Add lon/lat attrs to each record
-				addLocationAttrs(result);
+				addLocationAttrs(result, "base_medium");
 
 				// Add account/person attrs to each record
 				addUserAttrs(result, "base_medium");
@@ -873,7 +880,7 @@
 				String where = "utopia_account.loginname = '" + userName + "'";
 				String relations = "utopia_account,utopia_person";
 				String postCond = null;
-				result = QueryHandler.queryStoreReq2(oase, tables, fields, where, relations, postCond);
+				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 				String personId = ((JXElement) result.getChildren().get(0)).getChildText("id");
 
 				// Now query media related to person id
@@ -897,7 +904,7 @@
 				}
 
 				t1 = Sys.now();
-				addLocationAttrs(result);
+				addLocationAttrs(result, "base_medium");
 				t2 = Sys.now();
 				log.info(CMD_QUERY_MEDIA_BY_USER + " qtime=" + (t2-t1));
 

@@ -59,7 +59,7 @@
 
 				<interceptor id="notifier" class="org.keyworx.oase.store.interceptor.NotifierInterceptor"/>
 
-			<!--		<interceptor id="cache" class="org.geotracing.server.oase.EHCacheInterceptor"/>   -->
+				<interceptor id="cache" class="org.geotracing.server.oase.EHCacheInterceptor"/>
 
 				<interceptor id="source" class="org.keyworx.oase.store.interceptor.SourceInterceptor"/>
 
@@ -88,7 +88,7 @@
 					<property name="password">oase</property>
 					<property name="poolSize">5</property>
 					<property name="template">postgis</property>
-				</source>
+			</source>
 -->
 			<source id="file" class="org.keyworx.oase.store.source.FileSource"/>
 
