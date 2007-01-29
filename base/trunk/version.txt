@@ -1,5 +1,8 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
+1.2.5 - 29.jan.2007
+- keyworx 1.0.7rc4 (relation model optimization)
+
 1.2.0 - 6 dec.2006
 - migrated POIs to text media
 
