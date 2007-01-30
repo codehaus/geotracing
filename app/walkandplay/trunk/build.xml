@@ -28,14 +28,14 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 		<!-- Build clients. -->
 		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>
 
+		<!-- Build clients. -->
+		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
 	</target>
 
 	<!-- Build all -->
 	<target name="build-back">
 		<echo message="Building back-end of ${project.name}..."/>
 
-		<!-- Build clients. -->
-		<ant antfile="${client.phone.dir}/build.xml" target="j2mepolish" inheritall="false"/>
 
 		<!-- Builds server and all server depends on. -->
 		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
@@ -43,18 +43,8 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 	</target>
 
 	<!-- Build all -->
-	<target name="build" depends="build-back,build-front">
+	<target name="build" depends="build-front,build-back">
 		<echo message="Building all of ${project.name}..."/>
-
-		<!-- Builds server and all server depends on. -->
-		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
-
-		<!-- Build clients. -->
-		<ant antfile="${client.phone.dir}/build.xml" target="j2mepolish" inheritall="false"/>
-
-		<!-- Build clients. -->
-		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>
-
 	</target>
 
 	<!-- Package into archive files -->
@@ -78,7 +68,7 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 	</target>
 
 	<!-- Package into archive files -->
-	<target name="package" depends="package-back,package-front">
+	<target name="package" depends="package-front,package-back">
 		<echo message="Packaging distribution into ${package-all.zip}"/>
 		<mkdir dir="${build.dir}"/>
 		<delete file="${package-all.zip}"/>
@@ -91,7 +81,7 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 	<!-- Deploy entire package into local deploy dir. -->
 	<target name="deploy-local">
 		<echo message="Deploying ${package-all.zip} into ${deploy.local.dir}"/>
-		<unzip src="${package-all.zip}" dest="${deploy.local.dir}"/>
+		<unzip src="${package-all.zip}" dest="${deploy.local.dir}" overwrite="true"/>
 	</target>
 
 </project>
