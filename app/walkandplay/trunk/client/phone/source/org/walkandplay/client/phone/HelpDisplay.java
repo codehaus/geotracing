@@ -23,7 +23,7 @@ public class HelpDisplay extends DefaultDisplay {
     StringItem text = new StringItem("", "Welcome to the help section");
 
     public HelpDisplay(MIDlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Help");
 
         //#style titlebox
         append(label);

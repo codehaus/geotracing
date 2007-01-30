@@ -26,7 +26,7 @@ public class SettingsDisplay extends DefaultDisplay{
     StringItem text = new StringItem("", "Choose settings from the menu to change");
 
     public SettingsDisplay(MIDlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Settings");
 
         if(Util.hasSound()){
             SOUND_CMD =  new Command(Locale.get("settings.SoundOff"), Command.ITEM, 2);
