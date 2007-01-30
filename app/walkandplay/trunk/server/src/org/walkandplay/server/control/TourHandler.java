@@ -1,10 +1,9 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
-
+import org.geotracing.server.Location;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.common.util.Java;
 import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
@@ -17,7 +16,6 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
-import org.geotracing.server.Location;
 
 import java.util.List;
 
