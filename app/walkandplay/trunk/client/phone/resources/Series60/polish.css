@@ -9,14 +9,14 @@ title {
 }
 
 menu {
-	menubar-color: transparent;
+	/*menubar-color: transparent;*/
 }
 
 .mainScreen {
-	background {
+	/*background {
 		type: image;
 		color: transparent;
 		image: url( bg.png );
-	}
+	}*/
 }
 

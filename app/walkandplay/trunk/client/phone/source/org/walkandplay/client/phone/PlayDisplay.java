@@ -38,20 +38,20 @@ public class PlayDisplay extends DefaultDisplay implements XMLChannelListener, R
         addCommand(PLAY_CMD);
 
         try{
-        Preferences prefs = new Preferences(Net.RMS_STORE_NAME);
+            Preferences prefs = new Preferences(Net.RMS_STORE_NAME);
 
-        String user = prefs.get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
-        String password = prefs.get(Net.PROP_PASSWORD, midlet.getAppProperty(Net.PROP_PASSWORD));
-        url = prefs.get(Net.PROP_URL, midlet.getAppProperty(Net.PROP_URL));
-        port = midlet.getAppProperty("kw-port");
-        String app = midlet.getAppProperty("kw-app");
-        String amulet = midlet.getAppProperty("kw-amulet");
-		String role = midlet.getAppProperty("kw-role");
+            String user = prefs.get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
+            String password = prefs.get(Net.PROP_PASSWORD, midlet.getAppProperty(Net.PROP_PASSWORD));
+            url = prefs.get(Net.PROP_URL, midlet.getAppProperty(Net.PROP_URL));
+            port = midlet.getAppProperty("kw-port");
+            String app = midlet.getAppProperty("kw-app");
+            String amulet = midlet.getAppProperty("kw-amulet");
+            String role = midlet.getAppProperty("kw-role");
 
-        loginReq = "<login-req protocolversion=\"4.0\" name=\"" + user + "\" password=\"" + password + "\" />";
-        loginReq += "<select-app-req appname=\"" + app + "\"" + role + "=\"user\" />";
-        enterSpaceReq += "<enter-space-req spacename=\"" + space + "\" />";
-        enterSpaceReq += "<join-amulet-req id=\"" + amulet + "\" ></join-amulet-req>";
+            loginReq = "<login-req protocolversion=\"4.0\" name=\"" + user + "\" password=\"" + password + "\" />";
+            loginReq += "<select-app-req appname=\"" + app + "\"" + role + "=\"user\" />";
+            enterSpaceReq += "<enter-space-req spacename=\"" + space + "\" />";
+            enterSpaceReq += "<join-amulet-req id=\"" + amulet + "\" ></join-amulet-req>";
 
         }catch(Throwable t){
 
