@@ -31,7 +31,7 @@ public class PlayDisplay extends DefaultDisplay implements XMLChannelListener, R
     StringItem text = new StringItem("", "Press 'Play' to start your tour");
         
     public PlayDisplay(MIDlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Play");
 
         //#style formbox
         append(text);

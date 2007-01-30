@@ -17,7 +17,7 @@ public class FindDisplay extends DefaultDisplay {
     StringItem text = new StringItem("", "Press find from the menu to get tours close to you");
 
     public FindDisplay(MIDlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Find a game");
 
         //#style formbox
         append(text);

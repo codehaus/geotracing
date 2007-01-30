@@ -30,7 +30,7 @@ public class AccountDisplay extends DefaultDisplay {
 	private static Preferences preferences;
 
 	public AccountDisplay(MIDlet aMIDlet) {
-        super(aMIDlet, "AccountScreen");
+        super(aMIDlet, "Account");
 
 		addCommand(OK_CMD);
 

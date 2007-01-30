@@ -16,9 +16,7 @@
 <!-- http://www.j2mepolish.org                                -->
 <!--                                                          -->
 <!-- Have fun!                                                -->
-<project
-	name="WP Phone J2MEPolish"
-	default="j2mepolish">
+<project name="WP Phone J2MEPolish" default="build">
 
     <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
@@ -151,7 +149,7 @@
 	<!--       for which the application is optimized.            -->
 	<!--    3. The build-section controls the actual build        -->
 	<!--       process.                                           -->
-	<target name="j2mepolish"
+	<target name="build"
 			depends="init"
 			description="This is the controller for the J2ME build process."
 			>
@@ -335,7 +333,7 @@
 		</j2mepolish>
 	</target>
 
-    <target name="run" depends="j2mepolish">
+    <target name="run" depends="clean,build">
 		<java classname="${emulator.class}" fork="true">
 			<classpath refid="emulator.classpath"/>
 			<!-- <arg value="-clearRecordStores"/> -->
@@ -345,7 +343,7 @@
 
     <target
 		name="emulator"
-		depends="test,j2mepolish"
+		depends="test,build"
 		description="invokes the emulator"            
     >
 	</target>
@@ -356,19 +354,13 @@
 		<delete dir="dist" includes="**/*" />
 	</target>
 
-	<target
-		name="cleanbuild"
-		description="allows a clean build. You should call [ant cleanbuild] whenever you made changes to devices.xml, vendors.xml or groups.xml"
-		depends="clean, j2mepolish"
-	/>
-
 	<target name="enableN73" >
 		<property name="resource.dir" value="resources/Nokia/N73" />
 		<property name="dir.work" value="build/N73" />
 	</target>
 
-    <target name="N73" description="launches the application with the N73 design" depends="enableN73, test, j2mepolish" />
+    <target name="N73" description="launches the application with the N73 design" depends="enableN73, test, build" />
 
-    <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
+    <target name="debug" description="debugs the project" depends="enableDebug, test, build" />
 
 </project>
