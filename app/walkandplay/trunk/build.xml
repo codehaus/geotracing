@@ -4,7 +4,7 @@ ANT Build file for WalkAndPlay deployables.
 
 $Id: build.xml 108 2006-10-20 21:45:17Z just $
 -->
-<project name="WP" default="package" basedir=".">
+<project name="WP" default="build" basedir=".">
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
 
@@ -35,7 +35,7 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 		<echo message="Building back-end of ${project.name}..."/>
 
 		<!-- Build clients. -->
-		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
+		<ant antfile="${client.phone.dir}/build.xml" target="j2mepolish" inheritall="false"/>
 
 		<!-- Builds server and all server depends on. -->
 		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
@@ -50,7 +50,7 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
 
 		<!-- Build clients. -->
-		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
+		<ant antfile="${client.phone.dir}/build.xml" target="j2mepolish" inheritall="false"/>
 
 		<!-- Build clients. -->
 		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>

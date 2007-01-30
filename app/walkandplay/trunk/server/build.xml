@@ -17,6 +17,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property file="${home}/build.properties"/>
 
     <property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+	<property name="geotracing.jar" value="${gt.war.dir}/WEB-INF/lib/geotracing.jar"/>
 
     <!-- Directory locations -->
     <property name="server.cfg.dir" value="${home}/cfg"/>
@@ -50,7 +51,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <pathelement location="${keyworx.jar}"/>
         <pathelement location="${tagging.jar}"/>
         <pathelement location="${metadata.jar}"/>
-    </path>
+		<pathelement location="${geotracing.jar}"/>
+     </path>
 
     <!-- Initialize: create dirs and set timestamp.. -->
     <target name="init">
@@ -156,6 +158,15 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <copy todir="${build.war.dir}" overwrite="true">
 			<fileset dir="${home.webapp.back.dir}"/>
 		</copy>
+
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.back.dir}/version" files="index.html"/>
+			<filelist dir="${gt.war.dir}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
 
         <!-- Make war -->
         <jar jarfile="${project.war}">
