@@ -55,9 +55,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public WPMidlet() {
         super();
         //#ifdef title:defined
-			//#= String title = "${ title }";
+			//#= String title = "";
 		//#else
-			String title = "Walk & Play";
+			String title = "";
 		//#endif
 
         Image logo;

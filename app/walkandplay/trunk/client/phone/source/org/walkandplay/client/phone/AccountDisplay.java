@@ -3,7 +3,7 @@ package org.walkandplay.client.phone;
 import org.geotracing.client.Preferences;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
-import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.TextField;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
@@ -41,7 +41,7 @@ public class AccountDisplay extends DefaultDisplay {
 		String url = getPreferences().get(Net.PROP_URL, midlet.getAppProperty(Net.PROP_URL));
 
 		// Create input fields for user/password/url
-        //#style textbox
+        //#style formbox
         userField = new TextField("User", user, 16, TextField.ANY);
         //#style textbox
         passwordField = new TextField("Password", password, 16, TextField.ANY);

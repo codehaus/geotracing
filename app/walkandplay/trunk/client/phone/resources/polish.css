@@ -20,18 +20,24 @@
   */
 colors {
     /**
-	bgColor:  rgb(132,143,96);
-	brightBgColor:  rgb(238,241,229);
-	translucentBgColor:  argb(130, 238,241,229);
-	brightFontColor: rgb(238,241,229);
-	fontColor: rgb( 30, 85, 86 );
+	WHITE:  rgb(132,143,96);
+	LIGHTBLUE:  rgb(238,241,229);
+	LIGHTBLUE:  argb(130, 238,241,229);
+	BLACK: rgb(238,241,229);
+	GREY: rgb( 30, 85, 86 );
     */
 
-    bgColor: rgb( 153, 179, 204 );
-    brightBgColor: argb( 130, 231, 243, 255 );
-    translucentBgColor: argb( 130, 238, 241, 229 );
-    brightFontColor: rgb( 40, 40, 40 );
-    fontColor: rgb( 77, 84, 90 );
+    /*WHITE: rgb( 153, 179, 204 );
+    LIGHTBLUE: argb( 130, 231, 243, 255 );
+    LIGHTBLUE: argb( 130, 238, 241, 229 );
+    BLACK: rgb( 40, 40, 40 );
+    GREY: rgb( 77, 84, 90 );*/
+
+    WHITE: rgb(255,255,255);
+    LIGHTBLUE: argb(130,235,246,255);
+    LIGHTBLUE: argb(130,235,246,255);
+    BLACK: rgb(0,0,0);
+    GREY: rgb(60,60,60);
 }
 
 /**
@@ -53,15 +59,15 @@ menu {
     padding: 2;
     background {
         type: round-rect;
-        color: brightBgColor;
+        color: LIGHTBLUE;
         border-width: 1;
-        border-color: bgColor;
+        border-color: BLACK;
     }
-
+    font-size: small;
     focused-style: .menuFocused;
-    font-color: brightFontColor;
+    font-color: BLACK;
     font-style: bold;
-    menubar-color: bgColor;
+    menubar-color: WHITE;
 }
 
 /**
@@ -75,11 +81,11 @@ menuItem {
     padding: 2;
     padding-left: 2;
     font {
-        color: fontColor;
+        color: GREY;
         size: small;
         style: bold;
     }
-
+    font-size: small;
     layout: left;
 }
 
@@ -89,8 +95,8 @@ menuItem {
   * been defined in the menu style.
   */
 .menuFocused extends .menuItem {
-    background-color: bgColor;
-    font-color: brightFontColor;
+    background-color: WHITE;
+    font-color: BLACK;
     layout: left | horizontal-expand;
 }
 
@@ -104,13 +110,13 @@ title {
 	margin-bottom: 5;
 	margin-left: 0;
 	margin-right: 0;
-	font-face: proportional;
-	font-size: large;
+	font-face: system;
+	font-size: medium;
 	font-style: bold;
-	font-color: brightFontColor;
-	background-color: bgColor;
+	font-color: BLACK;
+	background-color: WHITE;
 	border: none;
-	layout: horizontal-center | horizontal-expand;
+	layout: left | horizontal-expand;
     /*background-image: url(gt_logo.png);*/
     icon-image: url(gt_logo.png); 
 }
@@ -126,14 +132,14 @@ focused {
     background {
         type: round-rect;
         arc: 8;
-        color: brightBgColor;
-        border-color: fontColor;
+        color: WHITE;
+        border-color: BLACK;
         border-width: 2;
     }
 
     font {
         style: bold;
-        color: fontColor;
+        color: GREY;
         size: small;
     }
 
@@ -155,14 +161,15 @@ focused {
     padding-left: 2;
     padding-right: 2;
     background {
-        color: brightBgColor;
+        color: WHITE;
     }
     /*layout: horizontal-expand | horizontal-center | vertical-center;*/
     layout: horizontal-expand | top | horizontal-center;
     columns:3;
     columns-width: equal;
-    background-image:url(bg-stripe.png);
-    background-repeat:repeat;
+    /*background-image:url(bg-stripe.png);*/
+    /*background-repeat:repeat;*/
+    font-size: small;
     /*show-text-in-title: true;*/
 }
 
@@ -171,7 +178,7 @@ focused {
     padding-left: 2;
     padding-right: 2;
     /*background {
-        *//*color: brightBgColor;*//*
+        *//*color: LIGHTBLUE;*//*
         type: smooth-color;
         color: blue;
         gradient-color: white;
@@ -181,9 +188,10 @@ focused {
     columns:1;
     background{
         border-width:2;
-        image:url(bg-stripe.png);
-        repeat:repeat;
+        /*image:url(bg-stripe.png);
+        repeat:repeat;*/
     }
+    font-size: small;
 
     /*show-text-in-title: true;*/
 }
@@ -202,7 +210,7 @@ focused {
     margin: 2; /* for the missing border of the focused style */
     padding: 2;
     background: none;
-    font-color: fontColor;
+    font-color: GREY;
     font-style: bold;
     font-size: small;
     layout: center;
@@ -273,25 +281,6 @@ focused {
     icon-image: url( gps_icon_small.png );
 }
 
-alert extends .mainScreen {
-}
-
-alertcontent {
-    font-color: fontColor;
-    font-size: small;
-    font-style: bold;
-}
-
-.loadGameAlert {
-    margin: 20;
-    padding: 5;
-    padding-left: 15;
-    padding-right: 15;
-    layout: horizontal-expand | horizontal-center | vertical-center;
-    background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
-    show-dismiss-command: false;
-}
-
 .logo {
     layout: left | top;
 }
@@ -302,23 +291,24 @@ alertcontent {
     padding:2;
     border{
         width:2;
-        color:fontColor;
+        color:GREY;
         type:round-rect;
         /*type:shadow;*/
         /*offset: 2;*/
         arc:6;        
     }
-    background-color:brightBgColor;
-    font-color: fontColor;
+    background-color:LIGHTBLUE;
+    font-color: GREY;
     font-size: small;
     layout: horizontal-expand | horizontal-center | top;
+    textfield-direct-input: true;
 }
 
 .titlebox {
     margin:2;
     padding:2;
-    background-color:bgColor;
-    font-color: brightFontColor;
+    background-color:WHITE;
+    font-color: BLACK;
     font-size: small;
     font-style: bold;
     layout: horizontal-expand | horizontal-center | top;
@@ -331,49 +321,48 @@ alertcontent {
 .button {
     margin: 2;
     padding: 2;
-    font-color: fontColor;
+    font-color: GREY;
     font-size: small;
     layout: center;
     border{
         width:2;
-        color:fontColor;
+        color:GREY;
         type:round-rect;
         arc:6;
     }
-    background-color:brightBgColor;
-    font-color: fontColor;
+    background-color:LIGHTBLUE;
+    font-color: GREY;
 }
 
 .gpsstat {
     margin: 2;
     padding: 2;
-    font-color: fontColor;
+    font-color: GREY;
     font-size: small;
-    layout: center;
+    layout: horizontal-expand | horizontal-center | top;
     border{
         width:2;
-        color:fontColor;
+        color:GREY;
         type:round-rect;
         arc:6;
     }
-    background-color:brightBgColor;
-    font-color: fontColor;
+    background-color:LIGHTBLUE;
 }
 
 .netstat {
     margin: 2;
     padding: 2;
-    font-color: fontColor;
+    font-color: GREY;
     font-size: small;
-    layout: center;
+    layout: horizontal-expand | horizontal-center | top;
     border{
         width:2;
-        color:fontColor;
+        color:GREY;
         type:round-rect;
         arc:6;
     }
-    background-color:brightBgColor;
-    font-color: fontColor;
+    background-color:LIGHTBLUE;
+    font-color: GREY;
 }
 
 
