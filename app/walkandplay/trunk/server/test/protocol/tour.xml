@@ -20,13 +20,17 @@
 		</expect>
 	</test>
 
-	<test id="tour-create-req">
+    <test id="tour-create-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-create-req>
 					<tour>
+                        <!-- geoapp user id -->
+                        <owner>79</owner>
 						<name>MyFirstTour</name>
 						<description>Echt een hele mooie tour</description>
+						<intro>prachtige introductie</intro>
+						<outro>prachtige outro</outro>
 					</tour>
 				</tour-create-req>
 			</utopia-req>
@@ -34,13 +38,86 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-create-rsp id="${tourid1}"/>
+				<tour-create-rsp id="${tourid}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tour-update-req">
+		<send id="client1">
+			<utopia-req>
+				<tour-update-req id="${tourid}">
+					<tour>
+                        <name>MySecondTour</name>
+						<description>Echt een echt hele mooie tour</description>
+						<intro>nog prachtigere introductie</intro>
+						<outro>nog prachtigere outro</outro>
+					</tour>
+                    <medium id="22901" type="intro" />
+                    <medium id="22788" type="outro" />
+                    <tag>tag1</tag>
+                    <tag>tag2</tag>
+                    <tag>tag3</tag>
+                </tour-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-update-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tour-additem-req">
+		<send id="client1">
+			<utopia-req>
+				<tour-additem-req id="${tourid}">
+					<medium id="22614" />
+                    <location>
+                        <lon>4.92204666137695</lon>
+                        <lat>52.3764702870686</lat>
+                        <ele>1</ele>
+                    </location>
+                </tour-additem-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-additem-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tour-additem-req">
+		<send id="client1">
+			<utopia-req>
+				<tour-additem-req id="${tourid}">
+					<assignment>
+                        <name>opdracht</name>
+                        <description>een prachtige opdracht</description>
+                        <answer>fiets</answer>
+                        <medium id="22389" />
+                    </assignment>
+                    <location>
+                        <lon>4.92204666137695</lon>
+                        <lat>52.3764702870686</lat>
+                        <ele>1</ele>
+                    </location>
+                </tour-additem-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-additem-rsp />
 			</utopia-rsp>
 		</expect>
 	</test>
 
 
-	<test id="tour-delete-req">
+    <test id="tour-delete-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-delete-req id="${tourid1}"/>

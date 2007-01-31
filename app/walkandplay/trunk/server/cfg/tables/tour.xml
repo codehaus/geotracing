@@ -8,18 +8,24 @@
 		<insert>
 			<field name="name"/>
 			<field name="description"/>
+            <field name="intro"/>
+            <field name="outro"/>
       </insert>
 
 		<list>
 			<field name="id"/>
 			<field name="name"/>
 			<field name="description"/>
+            <field name="intro"/>
+            <field name="outro"/>
         </list>
 
 		<query>
 			<field name="id"/>
 			<field name="name"/>
 			<field name="description"/>
+            <field name="intro"/>
+            <field name="outro"/>
        </query>
 	</views>
 
@@ -31,6 +37,8 @@
 
 		<field name="name" type="STRING" size="64" required="true"/>
         <field name="description" type="TEXT" required="true" />
+        <field name="intro" type="TEXT" />
+        <field name="outro" type="TEXT" />
 
 		<field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>

@@ -4,6 +4,7 @@ public interface Constants {
     // tablenames
     public final static String VERSION_TABLE = "version";
     public final static String TOUR_TABLE = "tour";
+    public final static String TOUR_SCHEDULE_TABLE = "tourschedule";
     public final static String GAMEPLAY_TABLE = "gameplay";
     public final static String ASSIGNMENT_TABLE = "assignment";
     public final static String GAME_TABLE = "game";
@@ -19,9 +20,12 @@ public interface Constants {
     public final static String STATE_FIELD = "state";
     public final static String TYPE_FIELD = "type";
     public final static String LOCATION_FIELD = "location";
-	public final static String TAGS_FIELD = "tags";
+	public final static String TAG_FIELD = "tag";
+	public final static String SCHEDULE_ID_FIELD = "scheduleid";
+	public final static String STARTDATE_FIELD = "startdate";
+	public final static String ENDDATE_FIELD = "enddate";
 
-    public final static String INVITATION = "invitation";
+    public final static String INVITATION_FIELD = "invitation";
     public final static String INVITATION_SEND = "invitation-send";
     public final static String INVITATION_PENDING = "invitation-pending";
     public final static String INVITATION_CONFIRMED = "invitation-confirmed";
