@@ -19,14 +19,14 @@ public class HelpDisplay extends DefaultDisplay {
     Command help2Cmd = new Command(Locale.get("help.Topic2"), Command.ITEM, 2);
     Command help3Cmd = new Command(Locale.get("help.Topic3"), Command.ITEM, 2);
 
-    StringItem label = new StringItem("", "Help");
+    //StringItem label = new StringItem("", "Help");
     StringItem text = new StringItem("", "Welcome to the help section");
 
     public HelpDisplay(MIDlet aMIDlet) {
         super(aMIDlet, "Help");
 
-        //#style titlebox
-        append(label);
+        /*//#style titlebox
+        append(label);*/
         //#style formbox
         append(text);
 
@@ -43,13 +43,13 @@ public class HelpDisplay extends DefaultDisplay {
         if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == help1Cmd) {
-            label.setText(Locale.get("help.Topic1"));
+            //label.setText(Locale.get("help.Topic1"));
             text.setText(Locale.get("help.Topic1Text"));
         } else if (cmd == help2Cmd) {
-            label.setText(Locale.get("help.Topic2"));
+            //label.setText(Locale.get("help.Topic2"));
             text.setText(Locale.get("help.Topic2Text"));
         } else if (cmd == help3Cmd) {
-            label.setText(Locale.get("help.Topic3"));
+            //label.setText(Locale.get("help.Topic3"));
             text.setText(Locale.get("help.Topic3Text"));
         }
     }

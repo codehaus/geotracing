@@ -55,7 +55,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public WPMidlet() {
         super();
         //#ifdef title:defined
-			//#= String title = "";
+			//#= String title = "{title}";
 		//#else
 			String title = "Walk & Play";
 		//#endif
@@ -76,7 +76,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         }
 
         //#style mainScreen
-        menuScreen = new List(title, List.IMPLICIT);
+        menuScreen = new List("Walk & Play", List.IMPLICIT);
         //#style mainTraceCommand
         menuScreen.append(Locale.get("menu.Trace"), null);
         //#style mainFindCommand
@@ -156,7 +156,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
             /*//#ifdef polish.debugEnabled*/
             case 7:
                 // Log
-                Log.view(this);
+                Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                //Log.view(this);
                 break;
             /*//#endif*/
         }

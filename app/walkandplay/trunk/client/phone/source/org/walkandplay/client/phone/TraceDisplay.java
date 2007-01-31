@@ -4,8 +4,14 @@ package org.walkandplay.client.phone;
 import org.geotracing.client.*;
 
 import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
+
+import de.enough.polish.ui.*;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.ImageItem;
 
 import de.enough.polish.util.Locale;
 
@@ -57,6 +63,19 @@ public class TraceDisplay extends DefaultDisplay   {
             addCommand(RESUME_TRK_CMD);
         }else{
             addCommand(SUSPEND_TRK_CMD);
+        }
+        try{
+            //#ifdef polish.images.directLoad
+            Image l = Image.createImage("/gt_logo.png");
+            //#else
+            l = scheduleImage("/gt_logo.png");
+            //#endif
+
+            //#style logo
+            ImageItem li = new ImageItem("", l, ImageItem.LAYOUT_DEFAULT, "logo");
+            logoNum = append(li);
+        }catch(Throwable t){
+            
         }
 
         //#style gpsstat
@@ -188,20 +207,6 @@ public class TraceDisplay extends DefaultDisplay   {
 		public void addText() {
             //#style defaultscreen
             Form form = new Form("Add Text");
-            try{
-                Image logo;
-                //#ifdef polish.images.directLoad
-                logo = Image.createImage("/gt_logo.png");
-                //#else
-                logo = scheduleImage("/gt_logo.png");
-                //#endif
-    
-                //#style logo
-                ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-                form.append(logoItem);
-            }catch(Throwable t){
-                Log.log("Exception getting logo:" + t.toString());
-            }
             // Create the TextBox containing the "Hello,World!" message
             //#style textbox
             textField = new TextField("Enter Text", "", 1024, TextField.ANY);
@@ -223,20 +228,6 @@ public class TraceDisplay extends DefaultDisplay   {
 			// Create the TextBox containing the "Hello,World!" message
             //#style defaultscreen
             Form form = new Form("Add Info");
-            try{
-                Image logo;
-                //#ifdef polish.images.directLoad
-                logo = Image.createImage("/gt_logo.png");
-                //#else
-                logo = scheduleImage("/gt_logo.png");
-                //#endif
-
-                //#style logo
-                ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-                form.append(logoItem);
-            }catch(Throwable t){
-                Log.log("Exception getting logo:" + t.toString());
-            }
             //#style textbox
             nameField = new TextField("Enter Title", "", 32, TextField.ANY);
             //#style textbox

@@ -4,7 +4,12 @@ import de.enough.polish.ui.Form;
 import de.enough.polish.ui.ImageItem;
 
 import javax.microedition.midlet.MIDlet;
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Display;
+
 
 /**
  * Allows changing account preferences.
@@ -29,14 +34,8 @@ public class DefaultDisplay extends Form implements CommandListener {
     public DefaultDisplay(MIDlet aMIDlet, String aDisplayTitle) {
         //#style defaultscreen
         super(aDisplayTitle);
-        animate();
         midlet = aMIDlet;
 		prevScreen = Display.getDisplay(midlet).getCurrent();
-        System.out.println("prevscreen: " + prevScreen);
-        if(prevScreen!=null){
-            System.out.println(prevScreen.getTitle());
-        }
-
         try{
 
             //#ifdef polish.images.directLoad
@@ -47,7 +46,7 @@ public class DefaultDisplay extends Form implements CommandListener {
 
             //#style logo
             ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-            logoNum = append(logoItem);
+            //logoNum = append(logoItem);
         }catch(Throwable t){
             Log.log("Exception getting logo:" + t.toString());    
         }

@@ -2,10 +2,15 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
 
-import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+
 import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.TextField;
+
+import de.enough.polish.ui.DigitalClockItem;
+import de.enough.polish.ui.List;
 
 import org.geotracing.client.Util;
 
@@ -22,7 +27,7 @@ public class SettingsDisplay extends DefaultDisplay{
     Command SOUND_CMD;
     Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
 
-    StringItem label = new StringItem("", "Settings");
+    //StringItem label = new StringItem("", "Settings");
     StringItem text = new StringItem("", "Choose settings from the menu to change");
 
     public SettingsDisplay(MIDlet aMIDlet) {
@@ -34,11 +39,13 @@ public class SettingsDisplay extends DefaultDisplay{
             SOUND_CMD =  new Command(Locale.get("settings.SoundOn"), Command.ITEM, 2);
         }
 
-        //#style titlebox
-        append(label);
+        /*//#style titlebox
+        append(label);*/
         //#style formbox
         append(text);
 
+        DigitalClockItem clock = new DigitalClockItem("");
+        append(clock);
         addCommand(SOUND_CMD);
         addCommand(ACCOUNT_CMD);
 

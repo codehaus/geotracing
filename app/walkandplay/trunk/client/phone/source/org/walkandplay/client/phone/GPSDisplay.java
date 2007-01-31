@@ -121,7 +121,8 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 			if (devices.containsKey(name)) {
 				name += "-2";
 			}
-			deviceCG.append(name, null);
+            //#style formbox
+            deviceCG.append(name, null);
 			devices.put(name, aRemoteDevice);
 
 			/*log("wait, searching further...");*/
