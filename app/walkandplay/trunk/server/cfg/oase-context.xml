@@ -20,6 +20,9 @@
 
 		<!-- walkandplay tables -->
 		<table file="tables/tour.xml"/>
+		<table file="tables/tourschedule.xml"/>
+		<table file="tables/assignment.xml"/>
+		<table file="tables/team.xml"/>
 
         <!-- plugin tables -->
         <table file="tables/cc_agent.xml"/>

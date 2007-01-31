@@ -12,9 +12,6 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 			<field name="name"/>
 			<field name="description"/>
 			<field name="type"/>
-			<field name="location"/>
-			<field name="info"/>
-			<field name="content"/>
 			<field name="answer"/>
 		</insert>
 
@@ -30,9 +27,6 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 			<field name="name"/>
 			<field name="description"/>
 			<field name="type"/>
-			<field name="location"/>
-			<field name="info"/>
-			<field name="content"/>
 			<field name="answer"/>
 			<field name="extra"/>
 		</query>
@@ -51,15 +45,6 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 
 		<!-- Type: values are "bewijs" or "poorter" -->
 		<field name="type" type="STRING" size="32" required="false"/>
-
-		<!-- Location: where it resides -->
-		<field name="location" type="XML" required="true"/>
-
-		<!-- Info: includes points and number of required media -->
-		<field name="info" type="XML" required="false"/>
-
-		<!-- Content: includes question, answer, formats etc -->
-		<field name="content" type="XML" required="true"/>
 
 		<!-- Answer string e.g. "malle jan" -->
 		<field name="answer" type="STRING" size="64" required="false"/>

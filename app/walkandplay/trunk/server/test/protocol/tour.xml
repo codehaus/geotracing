@@ -25,8 +25,7 @@
 			<utopia-req>
 				<tour-create-req>
 					<tour>
-                        <!-- geoapp user id -->
-                        <owner>79</owner>
+                        <owner>31282</owner>
 						<name>MyFirstTour</name>
 						<description>Echt een hele mooie tour</description>
 						<intro>prachtige introductie</intro>
@@ -72,20 +71,20 @@
     <test id="tour-additem-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-additem-req id="${tourid}">
+				<tour-add-item-req id="${tourid}">
 					<medium id="22614" />
                     <location>
                         <lon>4.92204666137695</lon>
                         <lat>52.3764702870686</lat>
-                        <ele>1</ele>
+                        <ele>52.3764702870686</ele>
                     </location>
-                </tour-additem-req>
+                </tour-add-item-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-additem-rsp />
+				<tour-additem-rsp id="${itemid}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -93,7 +92,7 @@
     <test id="tour-additem-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-additem-req id="${tourid}">
+				<tour-add-item-req id="${tourid}">
 					<assignment>
                         <name>opdracht</name>
                         <description>een prachtige opdracht</description>
@@ -103,9 +102,9 @@
                     <location>
                         <lon>4.92204666137695</lon>
                         <lat>52.3764702870686</lat>
-                        <ele>1</ele>
+                        <ele>52.3764702870686</ele>
                     </location>
-                </tour-additem-req>
+                </tour-add-item-req>
 			</utopia-req>
 		</send>
 
@@ -120,38 +119,16 @@
     <test id="tour-delete-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-delete-req id="${tourid1}"/>
+				<tour-delete-req id="${tourid}"/>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-delete-rsp id="${tourid1}"/>
+				<tour-delete-rsp id="${tourid}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
-
-
-	<!--	<test id="tour-update-req">
-			<send id="client1">
-				<utopia-req>
-					<tour-update-req id="${tourid1}">
-						<tour>
-							<name>MySecondTour</name>
-							<description>Echt een heeeeeele mooie tour</description>
-						</tour>
-					</tour-update-req>
-				</utopia-req>
-			</send>
-
-			<expect id="client1">
-				<utopia-rsp>
-					<tour-update-rsp/>
-				</utopia-rsp>
-			</expect>
-
-		</test>      -->
-
 	
 </testset>
 

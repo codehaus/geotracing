@@ -157,15 +157,15 @@ public class TourHandler extends DefaultHandler implements Constants {
         if (item == null) throw new UtopiaException("No item found to add.", ErrorCode.__7003_missing_XML_element);
         
         // get the location element
-        JXElement locationElm = requestElement.getChildByTag(Location.TABLE_NAME);
+        JXElement locationElm = requestElement.getChildByTag(LOCATION_FIELD);
         if (locationElm == null)
             throw new UtopiaException("No location found for item to add.", ErrorCode.__7003_missing_XML_element);
 
-        Location location = new Location();
-        String lon = locationElm.getAttr(Location.FIELD_LON);
-        String lat = locationElm.getAttr(Location.FIELD_LAT);
-        String ele = locationElm.getAttr(Location.FIELD_ELE);
-        //String time = locationElm.getAttr(Location.FIELD_TIME);
+        Location location = Location.create(oase);
+        String lon = locationElm.getChildText(Location.FIELD_LON);
+        String lat = locationElm.getChildText(Location.FIELD_LAT);
+        String ele = locationElm.getChildText(Location.FIELD_ELE);
+        //String time = locationElm.getChildText(Location.FIELD_TIME);
         long time = System.currentTimeMillis();
         throwOnMissingAttr("lon", lon);
         throwOnMissingAttr("lat", lat);
@@ -186,7 +186,11 @@ public class TourHandler extends DefaultHandler implements Constants {
         } else if (item.getTag().equals(ASSIGNMENT_TABLE)) {
             List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
             // remove media for contentlogic to work
-            item.removeChildren();
+            log.info(new String(item.toBytes(false)));
+            while(item.getChildByTag(Medium.XML_TAG)!=null){
+                item.removeChildByTag(Medium.XML_TAG);
+            }
+            log.info(new String(item.toBytes(false)));
 
             id = "" + contentLogic.insertContent(item);
             if (media != null) {
