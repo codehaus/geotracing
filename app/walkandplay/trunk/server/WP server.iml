@@ -18,6 +18,9 @@
     <content url="file://$MODULE_DIR$/../../../../base/trunk/external/kwx-tagging-1.0.1">
       <sourceFolder url="file://$MODULE_DIR$/../../../../base/trunk/external/kwx-tagging-1.0.1/src" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../../../../base/trunk/server/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../base/trunk/server/src" isTestSource="false" />
+    </content>
     <orderEntry type="jdk" jdkName="1.4" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
