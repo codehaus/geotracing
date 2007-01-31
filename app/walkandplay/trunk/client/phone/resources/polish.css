@@ -37,6 +37,7 @@ colors {
     LIGHTBLUE: argb(130,235,246,255);
     LIGHTBLUE: argb(130,235,246,255);
     BLACK: rgb(0,0,0);
+    RED: rgb(255,0,0);
     GREY: rgb(60,60,60);
 }
 
@@ -132,7 +133,7 @@ focused {
     background {
         type: round-rect;
         arc: 8;
-        color: WHITE;
+        color: LIGHTBLUE;
         border-color: BLACK;
         border-width: 1;
     }
@@ -291,7 +292,7 @@ focused {
     padding:2;
     border{
         width:1;
-        color:GREY;
+        color:BLACK;
         type:round-rect;
         /*type:shadow;*/
         /*offset: 2;*/
@@ -315,6 +316,7 @@ focused {
 }
 
 .textbox extends .formbox {
+    /*label-font-size:small;*/
     textfield-direct-input: true;
 }
 

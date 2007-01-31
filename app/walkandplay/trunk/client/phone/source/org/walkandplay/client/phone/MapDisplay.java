@@ -97,7 +97,7 @@ public class MapDisplay extends GameCanvas implements CommandListener {
 		}
 
 		try {
-			g.setColor(4, 4, 4);
+			g.setColor(255, 255, 255);
 			g.fillRect(0, 0, w, h);
 
 			if (tileInfo != null && tileImage == null) {
