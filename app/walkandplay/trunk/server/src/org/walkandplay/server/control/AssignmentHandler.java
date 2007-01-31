@@ -1,7 +1,6 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
-
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
@@ -39,7 +38,8 @@ public class AssignmentHandler extends DefaultHandler {
      *
      * @param anUtopiaRequest A UtopiaRequest
      * @return A UtopiaResponse.
-     * @throws org.keyworx.utopia.core.data.UtopiaException Standard Utopia exception
+     * @throws org.keyworx.utopia.core.data.UtopiaException
+     *          Standard Utopia exception
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         Log log = Logging.getLog(anUtopiaRequest);
@@ -84,7 +84,7 @@ public class AssignmentHandler extends DefaultHandler {
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
 
             String tourId = requestElement.getAttr("tourid");
-            if(tourId == null || tourId.length()  == 0 || !Java.isInt(tourId)){
+            if (tourId == null || tourId.length() == 0 || !Java.isInt(tourId)) {
                 throw new UtopiaException("No tourid found", ErrorCode.__6002_Required_attribute_missing);
             }
 
@@ -95,9 +95,9 @@ public class AssignmentHandler extends DefaultHandler {
             relateLogic.relate(Integer.parseInt(tourId), assignmentId, null);
 
             List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
-            if(media!=null){
-                for(int i=0;i<media.size();i++){
-                    JXElement medium = (JXElement)media.get(i);
+            if (media != null) {
+                for (int i = 0; i < media.size(); i++) {
+                    JXElement medium = (JXElement) media.get(i);
                     relateLogic.relate(assignmentId, Integer.parseInt(medium.getAttr(Constants.ID_FIELD)), null);
                 }
             }
@@ -119,7 +119,7 @@ public class AssignmentHandler extends DefaultHandler {
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             ContentLogic contentLogic = new ContentLogic(oase, null);
             String id = requestElement.getAttr(Constants.ID_FIELD);
-            if(id == null || id.length() == 0 || !Java.isInt(id)) {
+            if (id == null || id.length() == 0 || !Java.isInt(id)) {
                 throw new UtopiaException("No valid assignmentid found", ErrorCode.__6002_Required_attribute_missing);
             }
 
@@ -133,14 +133,14 @@ public class AssignmentHandler extends DefaultHandler {
             List fields = new ArrayList(2);
             fields.add(Medium.ID_FIELD);
             fields.add(Medium.NAME_FIELD);
-            JXElement[] media = relateLogic.getRelated(assignmentId,Medium.TABLE_NAME,null, fields);
-            if(media!=null){
-                for(int i=0;i<media.length;i++){
+            JXElement[] media = relateLogic.getRelated(assignmentId, Medium.TABLE_NAME, null, fields);
+            if (media != null) {
+                for (int i = 0; i < media.length; i++) {
                     JXElement medium = media[i];
                     response.addChild(medium);
                 }
             }
-            
+
             return response;
         } catch (UtopiaException ue) {
             throw ue;
@@ -154,7 +154,7 @@ public class AssignmentHandler extends DefaultHandler {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             String id = requestElement.getAttr(Constants.ID_FIELD);
-            if(id == null || id.length() == 0 || !Java.isInt(id)) {
+            if (id == null || id.length() == 0 || !Java.isInt(id)) {
                 throw new UtopiaException("No valid assignmentid found", ErrorCode.__6002_Required_attribute_missing);
             }
 
@@ -174,7 +174,7 @@ public class AssignmentHandler extends DefaultHandler {
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
 
             String id = requestElement.getAttr(Constants.ID_FIELD);
-            if(id == null || id.length() == 0 || !Java.isInt(id)) {
+            if (id == null || id.length() == 0 || !Java.isInt(id)) {
                 throw new UtopiaException("No valid assignmentid found", ErrorCode.__6002_Required_attribute_missing);
             }
             int assignmentId = Integer.parseInt(id);
@@ -185,10 +185,10 @@ public class AssignmentHandler extends DefaultHandler {
             RelateLogic relateLogic = new RelateLogic(oase, null);
 
             List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
-            if(media!=null){
+            if (media != null) {
                 relateLogic.unrelate(assignmentId, Medium.TABLE_NAME, null);
-                for(int i=0;i<media.size();i++){
-                    JXElement medium = (JXElement)media.get(i);
+                for (int i = 0; i < media.size(); i++) {
+                    JXElement medium = (JXElement) media.get(i);
                     relateLogic.relate(assignmentId, Integer.parseInt(medium.getAttr(Constants.ID_FIELD)), null);
                 }
             }
@@ -198,7 +198,7 @@ public class AssignmentHandler extends DefaultHandler {
             throw ue;
         } catch (Throwable t) {
             throw new UtopiaException(t);
-		}
-	}
+        }
+    }
 
 }

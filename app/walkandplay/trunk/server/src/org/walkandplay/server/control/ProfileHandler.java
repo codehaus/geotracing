@@ -8,17 +8,18 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
-
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.control.QueryHandler;
-import org.keyworx.utopia.core.data.*;
+import org.keyworx.utopia.core.data.Account;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.logic.PersonLogic;
 import org.walkandplay.server.logic.ProfileLogic;
 
 import java.util.List;
@@ -57,8 +58,8 @@ public class ProfileHandler extends DefaultHandler {
         log.info("Handling request for service=" + service);
         log.info(new String(anUtopiaRequest.getRequestCommand().toBytes(false)));
 
-        if(logic == null) logic = new ProfileLogic(anUtopiaRequest.getUtopiaSession().getContext().getOase(), config);
-        
+        if (logic == null) logic = new ProfileLogic(anUtopiaRequest.getUtopiaSession().getContext().getOase(), config);
+
         JXElement response;
         try {
             if (service.equals(PROFILE_CREATE_SERVICE)) {
@@ -119,9 +120,9 @@ public class ProfileHandler extends DefaultHandler {
             String[] tags = null;
             if (tagElms != null) {
                 tags = new String[tagElms.size()];
-                for(int i=0;i<tagElms.size();i++){
-                    tags[i] = ((JXElement)tagElms.get(i)).getText();
-                }                
+                for (int i = 0; i < tagElms.size(); i++) {
+                    tags[i] = ((JXElement) tagElms.get(i)).getText();
+                }
             }
 
             String photoId = requestElement.getChildText("photoid");
@@ -168,7 +169,7 @@ public class ProfileHandler extends DefaultHandler {
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
-    }   
+    }
 
     /**
      * Activates the profile upon confirmation (by email).
@@ -227,7 +228,7 @@ public class ProfileHandler extends DefaultHandler {
             String personId = requestElement.getAttr(Person.ID_FIELD);
             PersonLogic personLogic = new PersonLogic(anUtopiaRequest.getUtopiaSession().getContext().getOase());
             JXElement personElement = personLogic.getPerson(null, personId, false, null, false, null, false, null, null, false, null, null);
-            if(personElement == null) throw new UtopiaException("person with id " + personId + " does not exist!");
+            if (personElement == null) throw new UtopiaException("person with id " + personId + " does not exist!");
 
             JXElement person = requestElement.getChildByTag(Person.XML_TAG);
             String nickName = null;
@@ -241,7 +242,7 @@ public class ProfileHandler extends DefaultHandler {
             String country = null;
             String email = null;
             String password = null;
-            if(person!=null){
+            if (person != null) {
                 nickName = person.getChildText("nickname");
                 firstName = person.getChildText(Person.FIRSTNAME_FIELD);
                 lastName = person.getChildText(Person.LASTNAME_FIELD);
@@ -256,10 +257,10 @@ public class ProfileHandler extends DefaultHandler {
             }
             List tagElms = requestElement.getChildrenByTag(org.keyworx.plugin.tagging.util.Constants.TAG_ELEMENT);
             String[] tags = null;
-            if (tagElms != null && tagElms.size()>0) {
+            if (tagElms != null && tagElms.size() > 0) {
                 tags = new String[tagElms.size()];
-                for(int i=0;i<tagElms.size();i++){
-                    tags[i] = ((JXElement)tagElms.get(i)).getText();
+                for (int i = 0; i < tagElms.size(); i++) {
+                    tags[i] = ((JXElement) tagElms.get(i)).getText();
                 }
             }
 
@@ -274,30 +275,30 @@ public class ProfileHandler extends DefaultHandler {
 
             boolean profilePublic = false;
             JXElement extra = personElement.getChildByTag("extra");
-            if(extra!=null && extra.getAttr("profilepublic").equals("true")){
+            if (extra != null && extra.getAttr("profilepublic").equals("true")) {
                 profilePublic = true;
             }
-            if(person!=null){
+            if (person != null) {
                 String pp = person.getChildText("profilepublic");
-                if(pp!=null && pp.length()>0){
+                if (pp != null && pp.length() > 0) {
                     profilePublic = Java.StringToBoolean(pp);
                 }
             }
 
             boolean emailPublic = false;
-            if(extra!=null && extra.getAttr("profilepublic").equals("true")){
+            if (extra != null && extra.getAttr("profilepublic").equals("true")) {
                 emailPublic = true;
             }
-            if(person!=null){
+            if (person != null) {
                 String ep = person.getChildText("emailpublic");
-                if(ep!=null && ep.length()>0){
+                if (ep != null && ep.length() > 0) {
                     emailPublic = Java.StringToBoolean(ep);
                 }
             }
 
             String photoId = requestElement.getChildText("photoid");
             String license = requestElement.getChildText("license");
-            
+
             logic.updateProfile(personId, nickName, firstName, lastName,
                     street, streetNr, zipCode, city, country, mobileNr, photoId,
                     tags, profilePublic, license, email, emailPublic, password);
@@ -327,24 +328,25 @@ public class ProfileHandler extends DefaultHandler {
     }
 
     /**
-	 * Overridden to have a hook to do the initialisation.
-	 * @param aKey
-	 * @param aValue
-	 * @see org.keyworx.utopia.core.control.Handler#setProperty(java.lang.String, java.lang.String)
-	 */
-	public void setProperty(String aKey, String aValue) {
-		if (aKey.equals("config")) {
-			try {
-				config = ContentHandlerConfig.getConfiguration(aValue);
-			}
-			catch (Exception e) {
-				log.error("Exception while processing content handler configuration.", e);
-				throw new RuntimeException("Exception while processing content handler configuration.", e);
-			}
+     * Overridden to have a hook to do the initialisation.
+     *
+     * @param aKey
+     * @param aValue
+     * @see org.keyworx.utopia.core.control.Handler#setProperty(java.lang.String,java.lang.String)
+     */
+    public void setProperty(String aKey, String aValue) {
+        if (aKey.equals("config")) {
+            try {
+                config = ContentHandlerConfig.getConfiguration(aValue);
+            }
+            catch (Exception e) {
+                log.error("Exception while processing content handler configuration.", e);
+                throw new RuntimeException("Exception while processing content handler configuration.", e);
+            }
 
-		}
-		super.setProperty(aKey, aValue);
-	}
+        }
+        super.setProperty(aKey, aValue);
+    }
 
 }
 

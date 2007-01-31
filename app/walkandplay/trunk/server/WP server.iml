@@ -9,6 +9,9 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
     </content>
+    <content url="file://$MODULE_DIR$/../../../../base/trunk/external/keyworx-1.0.7rc4/server/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../base/trunk/external/keyworx-1.0.7rc4/server/src" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../../../../base/trunk/external/kwx-metadata-1.0.0">
       <sourceFolder url="file://$MODULE_DIR$/../../../../base/trunk/external/kwx-metadata-1.0.0/src" isTestSource="false" />
     </content>
@@ -48,6 +51,15 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../../base/trunk/external/kwx-metadata-1.0.0/lib/metadata.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../../../base/trunk/server/build/lib/geotracing.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
