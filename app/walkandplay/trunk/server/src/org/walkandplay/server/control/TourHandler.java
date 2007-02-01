@@ -103,11 +103,14 @@ public class TourHandler extends DefaultHandler implements Constants {
             int tourId = contentLogic.insertContent(contentElement);
 
             // automagically create a tour schedule for later
-            int tourScheduleId = contentLogic.insertContent(new JXElement(TOUR_SCHEDULE_TABLE));
+            JXElement tourScheduleElm = new JXElement(TOUR_SCHEDULE_TABLE);
+            tourScheduleElm.addTextChild(OWNER_FIELD, personId + "");
+            int tourScheduleId = contentLogic.insertContent(tourScheduleElm);
             relateLogic.relate(tourId, tourScheduleId, null);
 
             JXElement response = createResponse(TOUR_CREATE_SERVICE);
             response.setAttr(ID_FIELD, tourId);
+            response.setAttr("tourscheduleid", tourScheduleId);
 
             return response;
         } catch (UtopiaException ue) {
@@ -125,8 +128,10 @@ public class TourHandler extends DefaultHandler implements Constants {
             throwOnNonNumAttr(ID_FIELD, requestElement.getAttr(ID_FIELD));
             int tourId = requestElement.getIntAttr(ID_FIELD);
 
-            Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
-            ContentLogic contentLogic = new ContentLogic(oase, null);
+            JXElement[] tourScheduleElms = relateLogic.getRelated(tourId, TOUR_SCHEDULE_TABLE, null, null);
+            for(int i=0;i<tourScheduleElms.length;i++){
+                contentLogic.deleteContent(tourScheduleElms[i].getIntAttr(ID_FIELD));
+            }
             contentLogic.deleteContent(tourId);
 
             JXElement response = createResponse(TOUR_DELETE_SERVICE);

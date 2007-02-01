@@ -12,6 +12,7 @@ import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.logic.ContentLogic;
 import org.keyworx.utopia.core.logic.RelateLogic;
+import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
@@ -29,13 +30,15 @@ import java.util.List;
  */
 public class TourScheduleHandler extends DefaultHandler implements Constants {
 
-    public final static String TOUR_SEND_INVITATION_SERVICE = "tour-send-invitation";
-    public final static String TOUR_SCHEDULE_SERVICE = "tour-schedule";
-    public final static String TOUR_CREATE_TEAM_SERVICE = "tour-create-team";
-    public final static String TOUR_UPDATE_TEAM_SERVICE = "tour-update-teams";
+    public final static String TOUR_SEND_INVITATION_SERVICE = "tourschedule-send-invitation";
+    public final static String TOUR_CONFIRM_INVITATION_SERVICE = "tourschedule-confirm-invitation";
+    public final static String TOUR_SCHEDULE_SERVICE = "tourschedule-schedule";
+    public final static String TOUR_CREATE_TEAM_SERVICE = "tourschedule-create-team";
+    public final static String TOUR_UPDATE_TEAM_SERVICE = "tourschedule-update-team";
 
     private Log log = Logging.getLog("TourScheduleHandler");
     private ContentHandlerConfig config;
+    private Oase oase;
     private RelateLogic relateLogic;
     private ContentLogic contentLogic;
     /**
@@ -54,7 +57,7 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         log.info("Handling request for service=" + service);
         log.info(new String(anUtopiaRequest.getRequestCommand().toBytes(false)));
 
-        Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
+        oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
         relateLogic = new RelateLogic(oase, config);
         contentLogic = new ContentLogic(oase, config);
 
@@ -62,12 +65,14 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         try {
             if (service.equals(TOUR_SEND_INVITATION_SERVICE)) {
                 response = sendInvitation(anUtopiaRequest);
+            } else if (service.equals(TOUR_CONFIRM_INVITATION_SERVICE)) {
+                response = confirmInvitation(anUtopiaRequest);
             } else if (service.equals(TOUR_SCHEDULE_SERVICE)) {
                 response = schedule(anUtopiaRequest);
             } else if (service.equals(TOUR_CREATE_TEAM_SERVICE)) {
-                response = createTeams(anUtopiaRequest);
+                response = createTeam(anUtopiaRequest);
             } else if (service.equals(TOUR_UPDATE_TEAM_SERVICE)) {
-                response = updateTeams(anUtopiaRequest);
+                response = updateTeam(anUtopiaRequest);
             } else {
                 log.warn("Unknown service " + service);
                 response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -97,8 +102,15 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             // Id is required
-            throwOnNonNumAttr("schedule id", requestElement.getAttr(SCHEDULE_ID_FIELD));
-            int tourScheduleId = requestElement.getIntAttr(SCHEDULE_ID_FIELD);
+            throwOnNonNumAttr("schedule id", requestElement.getAttr(ID_FIELD));
+            int tourScheduleId = requestElement.getIntAttr(ID_FIELD);
+
+            JXElement[] tourElms = relateLogic.getRelated(tourScheduleId, TOUR_TABLE, null, null);
+            if(tourElms.length == 0) throw new UtopiaException("No related tour found", ErrorCode.__6006_database_irregularity_error);
+
+            JXElement tourElm = contentLogic.getContent(tourElms[0].getIntAttr(ID_FIELD));
+            String tourName = tourElm.getChildText(NAME_FIELD);
+            String tourDesc = tourElm.getChildText(DESCRIPTION_FIELD);
 
             JXElement tourScheduleElm = requestElement.getChildByTag(TOUR_SCHEDULE_TABLE);
             throwOnMissingElement("tourschedule", tourScheduleElm);
@@ -106,7 +118,10 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
             String invitation = tourScheduleElm.getChildText(INVITATION_FIELD);
             throwOnMissingAttribute("invitation", invitation);
 
-            List peopleElms = requestElement.getChildrenByTag(Person.XML_TAG);
+            String confirmationUrl = requestElement.getChildText("confirmationurl");
+            throwOnMissingAttr("confirmationurl", confirmationUrl);
+
+            List peopleElms = tourScheduleElm.getChildByTag("players").getChildrenByTag(Person.XML_TAG);
             if (peopleElms.size() == 0)
                 throw new UtopiaException("No people found to send the invitation to", ErrorCode.__7003_missing_XML_element);
 
@@ -116,29 +131,76 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
             for (int i = 0; i < peopleElms.size(); i++) {
                 // support both known and unknown participants
                 JXElement personElm = (JXElement) peopleElms.get(i);
-                String email = "";
-                if (personElm.hasAttr(ID_FIELD)) {
-                    // known user
-                    JXElement p = contentLogic.getContent(Integer.parseInt(personElm.getAttr(ID_FIELD)));
-                    if (p != null) {
-                        email = p.getChildText(Person.EMAIL_FIELD);
+                String email = personElm.getAttr(Person.EMAIL_FIELD);
+                if(email!=null && email.length()>0){
+
+                    String mailServer = ServerConfig.getProperty("keyworx.mail.server");
+                    String mailSender = ServerConfig.getProperty("keyworx.mail.sender");
+
+                    PersonLogic personLogic = new PersonLogic(oase);
+                    JXElement p = personLogic.getPerson(null, email);
+                    // check if this person is registered
+                    String body = "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
+                    confirmationUrl += "?id=" + tourScheduleId + "&email=" + email;
+                    if(p==null){
+                        body += "Welcome to to WalkAndPlay! Sign up first at http://www.walkandplay.com. " +
+                                "After that click on the below to confirm the invitation for this tour.\n\n";
                     }
-                } else if (personElm.hasAttr(Person.EMAIL_FIELD)) {
-                    // unknown user
-                    email = personElm.getAttr(Person.EMAIL_FIELD);
-                }
+                    body += invitation + "\n\nName: " + tourName + "\nDescription:" + tourDesc + "\n\nClick the link below to confirm your invitation.\n\n" + confirmationUrl;
+                    body += "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++";
 
-                String mailServer = ServerConfig.getProperty("keyworx.mail.server");
-                String mailSender = ServerConfig.getProperty("keyworx.mail.sender");
-                try {
-                    MailClient.sendMail(mailServer, mailSender, email, "WalkAndPlay invitation", invitation, null, null, null);
-                } catch (Throwable t) {
-                    log.error("************** Mail error!!!! Invitation mail not sent!: " + t.toString());
+                    try {
+                        MailClient.sendMail(mailServer, mailSender, email, "WalkAndPlay invitation", body, null, null, null);
+                    } catch (Throwable t) {
+                        log.error("************** Mail error!!!! Invitation mail not sent!: " + t.toString());
+                    }
                 }
-
             }
 
             return createResponse(TOUR_SEND_INVITATION_SERVICE);
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
+    }
+
+    /**
+     * Confirm the invitation - triggered by the user that clicked on the confirmation link in the
+     * invitation email sent.
+     * 
+     * @param anUtopiaRequest
+     * @return
+     * @throws UtopiaException
+     */
+    public JXElement confirmInvitation(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+        try {
+            JXElement requestElement = anUtopiaRequest.getRequestCommand();
+            // Id is required
+            throwOnNonNumAttr("schedule id", requestElement.getAttr(ID_FIELD));
+            int id = requestElement.getIntAttr(ID_FIELD);
+
+            // Email is required
+            String email = requestElement.getAttr(Person.EMAIL_FIELD);
+            throwOnMissingAttr("email", email);
+
+            PersonLogic personLogic = new PersonLogic(oase);
+            JXElement personElm = personLogic.getPerson(null, email);
+            if(personElm == null) throw new UtopiaException("Cannot confirm invitation of a person that is not " +
+                    "registered yet", ErrorCode.__6006_database_irregularity_error);
+
+            JXElement tourScheduleElm = contentLogic.getContent(id);
+            if(tourScheduleElm == null) throw new UtopiaException("No tour schedule found with id[" + id + "]", ErrorCode.__6006_database_irregularity_error);
+
+            JXElement playersElm = tourScheduleElm.getChildByTag(PLAYERS_FIELD);
+            if(playersElm!=null){
+                JXElement playerElm = playersElm.getChildByAttr(Person.EMAIL_FIELD, email);
+                if(playerElm!=null){
+                    log.info("Confirming invitation for email[" + email + "]");
+                    playerElm.setAttr("state", INVITATION_CONFIRMED);
+                }
+            }
+            contentLogic.updateContent(tourScheduleElm.getIntAttr(ID_FIELD), tourScheduleElm);
+
+            return createResponse(TOUR_CONFIRM_INVITATION_SERVICE);
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
@@ -155,8 +217,8 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             // Id is required
-            throwOnNonNumAttr("schedule id", requestElement.getAttr(SCHEDULE_ID_FIELD));
-            int tourScheduleId = requestElement.getIntAttr(SCHEDULE_ID_FIELD);
+            throwOnNonNumAttr("schedule id", requestElement.getAttr(ID_FIELD));
+            int tourScheduleId = requestElement.getIntAttr(ID_FIELD);
 
             JXElement tourScheduleElm = requestElement.getChildByTag(TOUR_SCHEDULE_TABLE);
             throwOnMissingElement("tourschedule", tourScheduleElm);
@@ -177,12 +239,19 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         }
     }
 
-    public JXElement createTeams(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+    /**
+     * Creates teams for a tour. Only registered users can be in a team.
+     * 
+     * @param anUtopiaRequest
+     * @return
+     * @throws UtopiaException
+     */
+    public JXElement createTeam(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             // Id is required
-            throwOnNonNumAttr("schedule id", requestElement.getAttr(SCHEDULE_ID_FIELD));
-            int tourScheduleId = requestElement.getIntAttr(SCHEDULE_ID_FIELD);
+            throwOnNonNumAttr("schedule id", requestElement.getAttr(ID_FIELD));
+            int tourScheduleId = requestElement.getIntAttr(ID_FIELD);
 
             String ids = "";
             List teamElms = requestElement.getChildrenByTag(TEAM_TABLE);
@@ -217,7 +286,14 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         }
     }
 
-    public JXElement updateTeams(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+    /**
+     * Updates the teams.
+     * 
+     * @param anUtopiaRequest
+     * @return
+     * @throws UtopiaException
+     */
+    public JXElement updateTeam(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
 

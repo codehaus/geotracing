@@ -9,6 +9,7 @@
 			<field name="invitation"/>
             <field name="startdate"/>
 			<field name="enddate"/>
+            <field name="players" />
         </insert>
 
 		<list>
@@ -16,6 +17,7 @@
 			<field name="invitation"/>
 			<field name="startdate"/>
             <field name="enddate"/>
+            <field name="players" />
         </list>
 
 		<query>
@@ -23,6 +25,7 @@
 			<field name="invitation"/>
             <field name="startdate"/>
 			<field name="enddate"/>
+            <field name="players" />
         </query>
 	</views>
 
@@ -35,6 +38,7 @@
 		<field name="enddate" type="TIMESTAMP"/>
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
+        <field name="players" type="XML" />
         <field name="extra" type="XML" />
 	</data>
 	<!--}data -->

@@ -24,6 +24,7 @@ public interface Constants {
 	public final static String SCHEDULE_ID_FIELD = "scheduleid";
 	public final static String STARTDATE_FIELD = "startdate";
 	public final static String ENDDATE_FIELD = "enddate";
+	public final static String PLAYERS_FIELD = "players";
 
     public final static String INVITATION_FIELD = "invitation";
     public final static String INVITATION_SEND = "invitation-send";

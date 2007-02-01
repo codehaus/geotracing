@@ -1,4 +1,4 @@
-<testset id="tour" clients="1">
+<testset id="tourschedule" clients="1">
 
 	<test id="login-selapp">
 
@@ -20,136 +20,16 @@
 		</expect>
 	</test>
 
-	<test id="tour-create-full-req">
+    <test id="tour-create-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-create-req>
 					<tour>
+                        <owner>31282</owner>
 						<name>MyFirstTour</name>
 						<description>Echt een hele mooie tour</description>
-						<invitation>Komt allen</invitation>
-						<startdate>5000111222</startdate>
-						<enddate>5000111223</enddate>
-						<extra>
-							<invitees>
-								<person email="fred@waag.org"/>
-								<person email="karel@waag.org"/>
-							</invitees>
-						</extra>
-					</tour>
-					<intro>
-						<description>introintrointro</description>
-						<medium id="11"/>
-						<medium id="23"/>
-					</intro>
-					<outro>
-						<description>outrooutrooutro</description>
-						<medium id="11"/>
-						<medium id="23"/>
-					</outro>
-					<tag>ttttt</tag>
-					<tag>yyyyy</tag>
-					<tag>jjjjj</tag>
-					<person id="14"/>
-					<person id="18"/>
-					<gameplay id="20"/>
-					<gameplay id="22"/>
-				</tour-create-req>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-create-rsp id="${tourid1}"/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-	<test id="tour-get-req">
-		<send id="client1">
-			<utopia-req>
-				<tour-get-req id="${tourid1}"/>
-			</utopia-req>
-		</send>
-
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-get-rsp>
-					<tour id="${tourid1}">
-						<id>${tourid1}</id>
-						<owner>unknown</owner>
-						<name>MyFirstTour</name>
-						<description>Echt een hele mooie tour</description>
-						<invitation>Komt allen</invitation>
-						<intro/>
-						<outro/>
-						<startdate>5000111222</startdate>
-						<enddate>5000111223</enddate>
-						<creationdate>1169551751073</creationdate>
-						<modificationdate>1169551751073</modificationdate>
-						<extra>
-							<invitees/>
-						</extra>
-					</tour>
-				</tour-get-rsp>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-	<test id="tour-update-req">
-		<send id="client1">
-			<utopia-req>
-				<tour-update-req id="${tourid1}">
-					<tour>
-						<name>MySecondTour</name>
-						<description>Echt een heeeeeele mooie tour</description>
-						<invitation>Komt allen</invitation>
-						<startdate>5000111222</startdate>
-						<enddate>5000111223</enddate>
-					</tour>
-				</tour-update-req>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-update-rsp/>
-			</utopia-rsp>
-		</expect>
-
-	</test>
-
-	<test id="tour-delete-req">
-		<send id="client1">
-			<utopia-req>
-				<tour-delete-req id="${tourid1}"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-delete-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-	<!--<field name="name" type="STRING" size="64" required="true"/>
-		<field name="description" type="TEXT" required="true" />
-		<field name="invitation" type="TEXT" required="false" />
-		<field name="startdate" type="TIMESTAMP"/>
-		<field name="enddate" type="TIMESTAMP"/>
-	<test id="tour-crud-req">
-
-		<send id="client1">
-			<utopia-req>
-				<tour-create-req>
-					<tour>
-						<name>MyThirdTour</name>
-						<description>Echt een hele mooie tour</description>
-						<invitation>Komt allen</invitation>
-						<startdate>5000111222</startdate>
-						<enddate>5000111223</enddate>
+						<intro>prachtige introductie</intro>
+						<outro>prachtige outro</outro>
 					</tour>
 				</tour-create-req>
 			</utopia-req>
@@ -157,68 +37,115 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-create-rsp id="${tourid2}"/>
-			</utopia-rsp>
-		</expect>
-
-		<send id="client1">
-			<utopia-req>
-				<tour-getlist-req/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-getlist-rsp>
-					<tour>
-						<name>MySecondTour</name>
-						<description>Echt een heeeeeele mooie tour</description>
-						<invitation>Komt allen</invitation>
-						<startdate>5000111222</startdate>
-						<enddate>5000111223</enddate>
-					</tour>
-					<tour>
-						<name>MyThirdTour</name>
-						<description>Echt een hele mooie tour</description>
-						<invitation>Komt allen</invitation>
-						<startdate>5000111222</startdate>
-						<enddate>5000111223</enddate>
-					</tour>
-				</tour-getlist-rsp>
-			</utopia-rsp>
-		</expect>
-
-
-
-
-		<send id="client1">
-			<utopia-req>
-				<tour-delete-req id="${tourid2}"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-delete-rsp/>
-			</utopia-rsp>
-		</expect>
-
-	</test>
-
-	<test id="tour-delete-req">
-		<send id="client1">
-			<utopia-req>
-				<tour-delete-req id="${tourid}"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<tour-delete-rsp/>
+				<tour-create-rsp id="${tourid}" tourscheduleid="${tourscheduleid}" />
 			</utopia-rsp>
 		</expect>
 	</test>
-		-->
+
+    <test id="tourschedule-send-invitation-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-send-invitation-req id="${tourscheduleid}">
+					<tourschedule>
+						<invitation>You are invited to the beer tour. Click the link to confirm.</invitation>
+                        <players>
+                            <person nickname="ronny" email="ronald@waag.org" />
+                        </players>
+                    </tourschedule>
+                    <confirmationurl>http://local.walkandplay.com/wp/confirmation.jsp</confirmationurl>
+                </tourschedule-send-invitation-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-send-invitation-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-confirm-invitation-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-confirm-invitation-req id="${tourscheduleid}" email="ronald@waag.org" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-confirm-invitation-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-schedule-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-schedule-req id="${tourscheduleid}">
+					<tourschedule>
+						<startdate>3243453453453</startdate>
+						<enddate>345345345345</enddate>
+                    </tourschedule>
+                </tourschedule-schedule-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-schedule-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-create-team-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-create-team-req id="${tourscheduleid}">
+					<team>
+						<name>red team</name>
+						<person id="31282" />
+						<person id="103556" />
+                    </team>
+                    <team>
+						<name>blue team</name>
+						<person id="332376" />
+						<person id="491193" />
+                    </team>
+                </tourschedule-create-team-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-create-team-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-update-team-req">
+            <send id="client1">
+                <utopia-req>
+                    <tourschedule-update-team-req id="${tourscheduleid}">
+                        <team>
+                            <name>red team</name>
+                            <person id="31282" />
+                            <person id="103556" />
+                        </team>
+                        <team>
+                            <name>blue team</name>
+                            <person id="332376" />
+                            <person id="491193" />
+                        </team>
+                    </tourschedule-update-team-req>
+                </utopia-req>
+            </send>
+
+            <expect id="client1">
+                <utopia-rsp>
+                    <tour-update-team-rsp />
+                </utopia-rsp>
+            </expect>
+        </test>
 
 
 </testset>
