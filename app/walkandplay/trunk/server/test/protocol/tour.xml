@@ -84,7 +84,7 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-additem-rsp id="${itemid}"/>
+				<tour-add-item-rsp />
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -110,7 +110,7 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-additem-rsp />
+				<tour-add-item-rsp />
 			</utopia-rsp>
 		</expect>
 	</test>

@@ -5,24 +5,49 @@
                  org.keyworx.common.log.Logging"
 %>
 <%@ page import="org.keyworx.utopia.core.util.LoginManager" %>
+<%@ page import="org.keyworx.utopia.core.data.Person" %>
 <%
     Log log = Logging.getLog("confirmation.jsp");
     String code = request.getParameter("code");
-    if(login(session, "geoapp-guest", "guest", Role.GUEST_ROLE_VALUE)){
+    String id = request.getParameter("id");
+    String email = request.getParameter("email");
+    if (login(session, "geoapp-guest", "guest", Role.GUEST_ROLE_VALUE)) {
         log.info("Login ok in register.jsp");
-        JXElement req = new JXElement("profile-activate-req");
-        req.setAttr("code", code);
-        JXElement rsp = processRequest(session, req);
-        log.info(new String(rsp.toBytes(false)));
-        if(rsp.getTag().indexOf("-rsp")!=-1){
-            response.sendRedirect("../index.html?msg=signupconfirm-ok");
-        }else{
-            response.sendRedirect("../index.html?msg=signupconfirm-nok");
+        if (code != null && code.length() > 0) {
+            JXElement req = new JXElement("profile-activate-req");
+            req.setAttr("code", code);
+            JXElement rsp = processRequest(session, req);
+            log.info(new String(rsp.toBytes(false)));
+            if (rsp.getTag().indexOf("-rsp") != -1) {
+                response.sendRedirect("../index.html?msg=signupconfirm-ok");
+            } else {
+                response.sendRedirect("../index.html?msg=signupconfirm-nok");
+            }
+        } else if (id != null && id.length() > 0 && email != null && email.length() > 0) {
+            JXElement personGetReq = new JXElement("person-get-req");
+            personGetReq.setAttr(Person.EMAIL_FIELD, email);
+            JXElement personGetRsp = processRequest(session, personGetReq);
+            log.info("Searching person with email[" + email + "]- result:" + new String(personGetRsp.toBytes(false)));
+            if(personGetRsp.getChildByTag(Person.XML_TAG)!=null){        
+                JXElement req = new JXElement("tourschedule-confirm-invitation-req");
+                req.setAttr("id", id);
+                req.setAttr("email", email);
+                JXElement rsp = processRequest(session, req);
+                log.info(new String(rsp.toBytes(false)));
+                if (rsp.getTag().indexOf("-rsp") != -1) {
+                    response.sendRedirect("../index.html?msg=invitationconfirm-ok");
+                } else {
+                    response.sendRedirect("../index.html?msg=invitationconfirm-nok");
+                }
+            }else{
+                response.sendRedirect("../index.html?msg=signup");
+            }
         }
-    }else{
+
+    } else {
         log.info("Login failed in confirmation.jsp");
     }
-    
+
 %>
 <%!
     private static JXElement processRequest(HttpSession aSession, JXElement aReqElement) {
