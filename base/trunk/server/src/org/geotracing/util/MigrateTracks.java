@@ -1,4 +1,4 @@
-package org.geotracing.server;
+package org.geotracing.util;
 
 import org.keyworx.client.KWClient;
 import org.keyworx.amuse.core.Protocol;

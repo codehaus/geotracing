@@ -2,29 +2,14 @@
  * Copyright (C)2002 - Waag Society - See license below *
  ********************************************************/
 
-package org.geotracing.server;
+package org.geotracing.daemon;
 
-import org.keyworx.amuse.core.AmuseException;
 import org.keyworx.amuse.core.Daemon;
-import org.keyworx.amuse.core.DaemonContext;
-import org.keyworx.amuse.core.Protocol;
-import org.keyworx.client.KWClient;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.server.ServerConfig;
 import org.keyworx.oase.api.*;
 import org.keyworx.plugin.tagging.logic.TagLogic;
 
-import nl.justobjects.jox.dom.JXElement;
-
-import com.messners.mail.MailStatusEvent;
-import com.messners.mail.POP3;
-import com.messners.mail.POP3MailMessage;
-import com.messners.mail.POP3MessageInfo;
-import com.messners.mail.SMTP;
-
-import java.io.File;
-import java.net.InetAddress;
 import java.util.HashMap;
 
 /**

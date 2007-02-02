@@ -1,7 +1,7 @@
 // Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
-package org.geotracing.server;
+package org.geotracing.daemon;
 
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
@@ -12,7 +12,6 @@ import org.keyworx.common.util.IO;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.DataOutputStream;
 import java.io.File;

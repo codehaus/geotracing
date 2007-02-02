@@ -18,8 +18,9 @@ public class AllTests extends SuiteRunner {
 	/** Create the test suite. */
 	protected Test createSuite() {
 		// Create the test suite using Class objects
-		TestSuite suite = new TestSuite("Service API Tests");
+		TestSuite suite = new TestSuite("PostGIS Tests");
 		suite.addTestSuite(BasicsTest.class);
+		suite.addTestSuite(SpatialQueryTest.class);
 		return suite;
 	}
 

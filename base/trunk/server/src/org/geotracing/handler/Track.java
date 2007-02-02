@@ -1,7 +1,7 @@
 // Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
-package org.geotracing.server;
+package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
@@ -10,6 +10,8 @@ import org.geotracing.gis.GPSDecoder;
 import org.geotracing.gis.GPSSample;
 import org.geotracing.gis.GeoPoint;
 import org.geotracing.gis.GeoBox;
+import org.geotracing.handler.Area;
+import org.geotracing.handler.Location;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.IO;

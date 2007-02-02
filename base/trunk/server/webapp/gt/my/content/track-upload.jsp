@@ -1,4 +1,5 @@
 <%@ page import="org.geotracing.server.Track"%>
+<%@ page import="org.geotracing.handler.Track"%>
 <%@ include file="../model.jsp" %>
 
 <p>Upload a GPX file using the form below. Note that your GPX-file must contain timestamps otherwise the file is discarded<br/>

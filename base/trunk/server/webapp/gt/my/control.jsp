@@ -23,6 +23,7 @@
 <%@ page import="java.io.File" %>
 <%@ page import="nl.justobjects.jox.parser.JXBuilder"%>
 <%@ page import="org.keyworx.oase.store.record.FileFieldImpl"%>
+<%@ page import="org.geotracing.handler.TracingHandler"%>
 <%@ include file="model.jsp" %>
 <%!
 

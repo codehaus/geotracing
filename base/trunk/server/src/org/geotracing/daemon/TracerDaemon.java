@@ -1,14 +1,11 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
-package org.geotracing.server;
+package org.geotracing.daemon;
 
-import com.messners.mail.*;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
-import org.keyworx.amuse.core.AmuseException;
+import org.geotracing.handler.Track;
 import org.keyworx.amuse.core.Daemon;
-import org.keyworx.amuse.core.DaemonContext;
-import org.keyworx.amuse.core.Protocol;
 import org.keyworx.client.KWClient;
 import org.keyworx.client.KWClientException;
 import org.keyworx.common.log.Log;

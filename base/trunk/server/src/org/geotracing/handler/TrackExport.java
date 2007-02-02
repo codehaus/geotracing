@@ -1,7 +1,7 @@
 // Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
-package org.geotracing.server;
+package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXAttributeTable;
 import nl.justobjects.jox.dom.JXElement;
@@ -14,6 +14,8 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.amuse.core.Amuse;
 import org.geotracing.gis.GPSSample;
+import org.geotracing.handler.Location;
+import org.geotracing.handler.Track;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

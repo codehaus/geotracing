@@ -1,6 +1,6 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
-package org.geotracing.server;
+package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.pushlet.core.Dispatcher;
@@ -8,6 +8,7 @@ import nl.justobjects.pushlet.core.Event;
 import org.geotracing.gis.proj.WGS84toRD;
 import org.geotracing.gis.proj.XY;
 import org.geotracing.gis.GeoPoint;
+import org.geotracing.handler.CommentLogic;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.data.Account;
