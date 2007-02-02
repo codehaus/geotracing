@@ -52,4 +52,8 @@ http://svn.sourceforge.net/viewvc/gcalsync/src/com/gcalsync/
 JSR75 Fileconnection API
 http://developers.sun.com/techtopics/mobility/apis/articles/fileconnection/
 
+midlet signing
+http://www.spindriftpages.net/pebble/dave/2006/06/18/1150641917692.html
+
+
 

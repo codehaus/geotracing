@@ -125,6 +125,37 @@ GEOCOLUMN && Expand(GeomFromText(ÕPOINT(1000 1000)Õ,-1),100)
 AND
 Distance(GeomFromText(ÕPOINT(1000 1000)Õ,-1),GEOCOLUMN) < 100;
 
+PostGresql online book
+http://www.faqs.org/docs/ppbook/book1.htm
+
+
+PostGIS/PostgresQL Linux
+apt-get -s install postgresql-8.1-postgis
+see http://lists.alioth.debian.org/pipermail/pkg-grass-general/2006-December/002460.html
+and
+http://lists.alioth.debian.org/pipermail/pkg-grass-general/2006-December/002462.html
+
+phppgadmin
+http://phppgadmin.sourceforge.net/
+apt-get -s install phppgadmin
+
+ISSUES
+tag count query doesn't work
+SELECT tag.*, COUNT(tagrel.id) AS usecount FROM cc_tag tag INNER JOIN cc_tagrelation tagrel ON tag.id = tagrel.tag WHERE tagrel.tagger IN (31282) AND tagrel.item IN (31282) GROUP BY tagrel.tag ORDER BY usecount DESC, tag.name
+Caused by: org.postgresql.util.PSQLException: ERROR: column "tag.id" must appear in the GROUP BY clause or be used in an aggregate function
+
+this works:
+SELECT tag.*, COUNT(tagrel.id) AS usecount FROM cc_tag tag INNER JOIN cc_tagrelation tagrel ON tag.id = tagrel.tag WHERE tagrel.tagger IN (31282) AND tagrel.item IN (31282) GROUP BY tagrel.tag,tag.id,tag.owner,tag.name,tag.creationdate ORDER BY usecount DESC, tag.name;
+
+or
+SELECT tag.id, tag.name, tag.owner, COUNT(tagrel.id) AS usecount FROM cc_tag tag INNER JOIN cc_tagrelation tagrel ON tag.id = tagrel.tag WHERE tagrel.tagger IN (31282) AND tagrel.item IN (31282) GROUP BY tag.name,tag.id,tag.owner  ORDER BY usecount DESC, tag.name;
+i.e. the SELECT and GROUP BY fields must match
+see also
+http://drupal.org/node/56850
+http://drupal.org/node/20255
+
+
+
 
 
 
