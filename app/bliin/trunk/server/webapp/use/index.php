@@ -4,7 +4,7 @@
 	{
 		case "usemedia": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRR9K9grcqoQe1tHkLoYPt38-q6EehRkJh5NYPiv32J2_6Cs7EtFN96o0w"; $type="local"; break;
 		case "bliin.com": case "www.bliin.com": case "test.bliin.com": $key= "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRSFYVerP0SQAckZ4lP_icglXWi2BhSgH_3wnCI0rd9qUGwD7e6DSIMphw"; $type="online"; break;
-		case "test.geotracing.com": $key= "ABQIAAAAD3bxjYK2kuWoA5XU4dh89xRwJAeN3G50o_YQw1rKznRUFZZPJBQfSrLrU-Dm48ebDMIZwnAIMGhljQ"; break;
+		case "local.bliin.com": $key= "ABQIAAAAD3bxjYK2kuWoA5XU4dh89xTYfeoXMe6zczV0GoFpYIhrtdK0uBR0hTiG02sjHqO9gqSpnNMp50FJ6Q"; break;
 	}
 	//needed for google polylines in MSIE
 	if (eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))

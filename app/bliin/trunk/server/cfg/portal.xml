@@ -1,14 +1,12 @@
 <portal name="bliin01">
 
 	<!-- Standard host-dependent container properties -->
-	<property name="siteurl" host="prod">http://bliin.com</property>
-	<property name="webappurl" host="prod">http://bliin.com/bliin01</property>
 	<property name="siteurl" host="tiger">http://bliin.com</property>
 	<property name="webappurl" host="tiger">http://bliin.com/bliin01</property>
 	<property name="siteurl" host="test">http://test.bliin.com</property>
 	<property name="webappurl" host="test">http://test.bliin.com/bliin01</property>
-	<property name="siteurl" host="suwa">http://test.geotracing.com</property>
-	<property name="webappurl" host="suwa">http://test.geotracing.com/bliin01</property>
+	<property name="siteurl" host="suwa">http://local.bliin.com</property>
+	<property name="webappurl" host="suwa">http://local.bliin.com/bliin01</property>
 
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
@@ -35,9 +33,9 @@
 				<property name="max-file-size">1000000</property>
 			</handler>
 
-			<handler id="t" class="org.geotracing.server.TracingHandler"/>
-			<handler id="query" class="org.geotracing.server.QueryHandler"/>
-			<handler id="cmt" class="org.geotracing.server.CommentHandler">
+			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
+			<handler id="query" class="org.geotracing.handler.QueryHandler"/>
+			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
 				<property name="allow-anonymous">true</property>
 				<property name="max-commments-per-target">256</property>
 				<property name="max-content-chars">1024</property>
@@ -51,11 +49,11 @@
 
 		<daemons>
 			<!-- Tracer Bot -->
-			<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
+			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
 				<property name="intervalMillis">40000</property>
 			</daemon>
 
-			<daemon id="emailupload" class="org.geotracing.server.LocEmailUploadDaemon">
+			<daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
 				<property name="intervalMillis">20000</property>
 
 				<!-- Note these values are context-dependent and specified externally. -->
@@ -72,9 +70,9 @@
 				<property name="password" host="prod">email.upload.password.prod</property>
 			</daemon>
 
-			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
+<!--			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
 				<property name="pois2textmedia">true</property>
-			</daemon>
+			</daemon>   -->
 
 		</daemons>
 	</application>

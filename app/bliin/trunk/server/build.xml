@@ -146,7 +146,7 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		<delete dir="${build.dir}"/>
 	</target>
 
-	<target name="deploy-local">
+	<target name="deploy-local-back">
 		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
 	</target>
 
@@ -156,9 +156,16 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		</copy>
 	</target>
 
-	<target name="deploy-local-use">
+	<target name="deploy-local-front">
 		<copy todir="${deploy.local.dir}/use" overwrite="true">
 			<fileset dir="${home}/webapp/use"/>
+		</copy>
+		<copy todir="${deploy.local.dir}" overwrite="true">
+			<fileset dir="${home}/webapp">
+				<include name="index.html"/>
+				<include name="favicon.ico"/>
+				<include name="robots.txt"/>
+			</fileset>
 		</copy>
 	</target>
 
