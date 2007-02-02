@@ -1,15 +1,14 @@
-<%@ page import="java.net.InetAddress,
-				 java.awt.geom.Rectangle2D,
+<%@ page import="nl.justobjects.jox.dom.JXElement,
 				 org.geotracing.gis.GoogleTiles,
-				 org.keyworx.oase.util.Net,
-				 java.io.File,
-				 org.keyworx.oase.util.Servlets,
-				 org.keyworx.common.util.Sys,
-				 org.keyworx.server.ServerConfig,
 				 org.keyworx.common.log.Log,
-				 org.keyworx.common.log.Logging" %>
-<%@ page import="org.keyworx.common.util.Rand"%>
-<%@ page import="nl.justobjects.jox.dom.JXElement"%>
+				 org.keyworx.common.log.Logging,
+				 org.keyworx.common.util.Rand,
+				 org.keyworx.common.util.Sys,
+				 org.keyworx.oase.util.Net,
+				 org.keyworx.oase.util.Servlets,
+				 org.keyworx.server.ServerConfig,
+				 javax.servlet.ServletRequest" %>
+<%@ page import="java.io.File"%>
 <%@ page import="java.io.Writer"%>
 <%!
 	public static final String DRAW_LOC_SCRIPT = ServerConfig.getConfigDir() + "/../bin/drawloc.sh";

@@ -1,6 +1,5 @@
-<%@ page import="java.net.InetAddress"%>
-<%@ page import="org.keyworx.amuse.core.Server"%>
 <%@ page import="org.keyworx.amuse.core.Amuse"%>
+<%@ page import="java.net.InetAddress"%>
 <%
 	InetAddress localHost = InetAddress.getLocalHost();
 	// System.out.println("ADDR=" + localHost.getHostAddress() + " NAME=" + localHost.getHostName());

@@ -1,6 +1,7 @@
-<%@ page import="java.net.InetAddress,
-				 org.keyworx.common.util.Sys,
-				 java.util.Properties"%>
+<%@ page import="org.keyworx.common.util.Sys,
+				 javax.servlet.ServletContext,
+				 java.net.InetAddress"%>
+<%@ page import="java.util.Properties"%>
 <%!
 	private static String GMAP_KEY = null;
 

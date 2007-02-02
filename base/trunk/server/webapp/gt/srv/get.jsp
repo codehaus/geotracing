@@ -1,18 +1,22 @@
 <%@ page import="nl.justobjects.jox.parser.JXBuilder,
 				 org.geotracing.gis.GeoPoint,
 				 org.geotracing.gis.XYDouble,
+				 org.geotracing.handler.*,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
 				 org.keyworx.common.log.Log,
-				 org.keyworx.common.log.Logging,
-				 org.keyworx.common.util.Sys" %>
+				 org.keyworx.common.log.Logging" %>
+<%@ page import="org.keyworx.common.util.Sys" %>
 <%@ page import="org.keyworx.oase.api.Finder" %>
 <%@ page import="org.keyworx.oase.api.Record" %>
 <%@ page import="org.keyworx.oase.api.Relater" %>
-<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic" %>
-<%@ page import="org.keyworx.utopia.core.util.Oase" %>
-<%@ page import="javax.servlet.ServletRequest" %>
-<%@ page import="javax.servlet.http.HttpServletRequest" %>
+<%@ page import="org.keyworx.oase.config.ComponentDef" %>
+<%@ page import="org.keyworx.oase.config.OaseConfig" %>
+<%@ page import="org.keyworx.oase.config.StoreContextConfig" %>
+<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
+<%@ page import="org.keyworx.utopia.core.util.Oase"%>
+<%@ page import="javax.servlet.ServletRequest"%>
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
 <%@ page import="javax.servlet.http.HttpServletResponse"%>
 <%@ page import="java.io.IOException"%>
 <%@ page import="java.io.Writer"%>
@@ -21,10 +25,6 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Vector"%>
-<%@ page import="org.keyworx.oase.config.OaseConfig"%>
-<%@ page import="org.keyworx.oase.config.ComponentDef"%>
-<%@ page import="org.keyworx.oase.config.StoreContextConfig"%>
-<%@ page import="org.geotracing.handler.*"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
