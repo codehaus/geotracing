@@ -1,4 +1,3 @@
-<%@ page import="org.geotracing.server.Track"%>
 <%@ page import="org.geotracing.handler.Track"%>
 <%@ include file="../model.jsp" %>
 

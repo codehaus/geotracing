@@ -1,7 +1,3 @@
-<%@ page import="org.keyworx.oase.api.Record,
-				 org.keyworx.oase.api.MediaFiler,
-				 java.util.Date,
-				 java.text.SimpleDateFormat"%>
 <%
 	String title = request.getParameter("title");
 	String mimeType = request.getParameter("mime");

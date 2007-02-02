@@ -1,6 +1,5 @@
-<%@ page import="org.keyworx.oase.api.MediaFiler,java.util.Date" %>
-<%@ page import="org.keyworx.plugin.tagging.logic.TagLogic"%>
-<%@ page import="nl.justobjects.jox.dom.JXElement"%>
+<%@ page import="nl.justobjects.jox.dom.JXElement,org.keyworx.oase.api.MediaFiler" %>
+<%@ page import="java.util.Date"%>
 <%@ page import="java.util.Vector"%>
 <%@ include file="../model.jsp" %>
 <%

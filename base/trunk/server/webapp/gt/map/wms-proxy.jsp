@@ -1,18 +1,15 @@
-<%@ page import="org.keyworx.common.net.NetUtil,
-				 java.net.URL,
-				 java.net.URLConnection,
-				 org.keyworx.common.util.IO,
-				 org.keyworx.common.util.ByteBuffer,
-				 java.io.*,
-				 org.keyworx.common.util.Sys,
-				 org.geotracing.gis.proj.XY,
+<%@ page import="org.geotracing.gis.GeoPoint,
 				 org.geotracing.gis.proj.WGS84toRD,
-				 org.keyworx.oase.util.Servlets,
-				 java.net.InetAddress,
+				 org.geotracing.gis.proj.XY,
 				 org.keyworx.common.log.Log,
 				 org.keyworx.common.log.Logging,
-				 org.geotracing.gis.GeoBox,
-				 org.geotracing.gis.GeoPoint" %>
+				 org.keyworx.common.net.NetUtil,
+				 org.keyworx.common.util.IO,
+				 org.keyworx.common.util.Sys,
+				 org.keyworx.oase.util.Servlets,
+				 java.io.*,
+				 java.net.URL,
+				 java.net.URLConnection" %>
 <%!
 
 	static Log log = Logging.getLog("geodan-wms.jsp");

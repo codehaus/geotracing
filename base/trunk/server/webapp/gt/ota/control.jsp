@@ -1,15 +1,13 @@
 <%@ page import="
-				org.keyworx.common.net.Servlets,
-				org.keyworx.oase.util.Log,
-				org.keyworx.oase.api.Record,
 				com.oreilly.servlet.MultipartRequest,
-				java.io.File,
-				java.util.HashMap,
-				org.keyworx.oase.service.MediaFilerImpl,
+				org.geotracing.handler.TrackLogic,
 				org.keyworx.amuse.core.Amuse,
+				org.keyworx.oase.util.Log,
 				org.keyworx.utopia.core.util.Oase,
-				org.geotracing.server.TrackLogic" %>
-<%@ page import="org.geotracing.handler.TrackLogic"%>
+				javax.servlet.ServletRequest,
+				javax.servlet.http.HttpServletRequest,
+				javax.servlet.http.HttpServletResponse,
+				javax.servlet.http.HttpSession" %>
 <%!
  Oase oase = null;
 String getParameter(ServletRequest req, String name, String defaultValue) {
@@ -55,9 +53,9 @@ private static class Result {
 
 
 Result handleCommand(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
-    String command = null;
+	String command = null;
 	Result result = null;
- 	try {
+	 try {
 
 		 String nextPage = getParameter(request, "nextpage", null);
 		 if (nextPage == null) {
@@ -75,7 +73,7 @@ Result handleCommand(HttpServletRequest request, HttpServletResponse response, H
 		if ("media-upload".equals(command)) {
 /*			Record[] records = DB.uploadLocationMedia(request, DBDefs.VAL_JUST, 0L);
 			result.setMessage("Upload ok record count=" + records.length); */
-     	} else if ("media-import".equals(command)) {
+		 } else if ("media-import".equals(command)) {
 /*			 String location = getParameter(request, "location", null);
 			 if (location == null) {
 				 result.setMessage("missing location parameter for media-import");
@@ -110,7 +108,7 @@ Result handleCommand(HttpServletRequest request, HttpServletResponse response, H
 			String retval = trackLogic.delete(id);
 
 			result.setMessage("Delete track id=" + id + " retval=" + retval);
- 		} else {
+		 } else {
 
 			result.setMessage("command unknown or not yet implemented");
 

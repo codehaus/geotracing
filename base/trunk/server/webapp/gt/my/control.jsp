@@ -1,11 +1,16 @@
 <%@ page import="
 				com.oreilly.servlet.MultipartRequest,
 				 nl.justobjects.jox.dom.JXElement,
-				 org.geotracing.server.TracingHandler,
+				 nl.justobjects.jox.parser.JXBuilder,
+				 org.geotracing.handler.TracingHandler,
 				 org.keyworx.amuse.core.Protocol,
 				 org.keyworx.common.net.Servlets,
-				 org.keyworx.common.util.IO,
-				 org.keyworx.utopia.core.data.Account" %>
+				 org.keyworx.common.util.IO" %>
+<%@ page import="org.keyworx.common.util.MD5" %>
+<%@ page import="org.keyworx.oase.api.MediaFiler" %>
+<%@ page import="org.keyworx.oase.service.MediaFilerImpl" %>
+<%@ page import="org.keyworx.oase.store.record.FileFieldImpl" %>
+<%@ page import="org.keyworx.utopia.core.data.Account" %>
 <%@ page import="org.keyworx.utopia.core.data.Application" %>
 <%@ page import="org.keyworx.utopia.core.data.Portal" %>
 <%@ page import="org.keyworx.utopia.core.data.Role" %>
@@ -14,16 +19,9 @@
 <%@ page import="javax.servlet.ServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
-<%@ page import="javax.servlet.http.HttpSession" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="org.keyworx.common.util.MD5" %>
-<%@ page import="org.keyworx.oase.api.MediaFiler" %>
-<%@ page import="org.keyworx.oase.service.MediaFilerImpl" %>
-<%@ page import="java.util.Enumeration" %>
 <%@ page import="java.io.File" %>
-<%@ page import="nl.justobjects.jox.parser.JXBuilder"%>
-<%@ page import="org.keyworx.oase.store.record.FileFieldImpl"%>
-<%@ page import="org.geotracing.handler.TracingHandler"%>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Enumeration"%>
 <%@ include file="model.jsp" %>
 <%!
 

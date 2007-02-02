@@ -1,7 +1,8 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement,
 				 nl.justobjects.jox.parser.JXBuilder,
 				 org.geotracing.handler.CommentHandler,
-				 org.geotracing.server.CommentLogic,
+				 org.geotracing.handler.CommentLogic,
+				 org.geotracing.handler.EventPublisher,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
 				 org.keyworx.common.log.Log,
@@ -9,10 +10,8 @@
 				 org.keyworx.common.util.Sys,
 				 org.keyworx.oase.api.Record,
 				 org.keyworx.utopia.core.util.Oase,
-				 javax.servlet.http.HttpServletRequest,
-				 javax.servlet.http.HttpServletResponse,java.io.PrintWriter"%>
-<%@ page import="org.geotracing.handler.EventPublisher"%>
-<%@ page import="org.geotracing.handler.CommentLogic"%>
+				 javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse"%>
+<%@ page import="java.io.PrintWriter"%>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
@@ -79,7 +78,7 @@
 				if (ip != null) {
 					anAppRequest.setChildText("ip", ip);
 				}
-				
+
 				// Set fields directly from request
 				// May throw IllegalArgumentException if non-existing fields added
 				record.setFields(anAppRequest);

@@ -1,7 +1,7 @@
 <%@ page import="org.geotracing.gis.GoogleTiles"%>
-<%@ page import="java.io.File"%>
 <%@ page import="org.keyworx.common.log.Log"%>
 <%@ page import="org.keyworx.common.log.Logging"%>
+<%@ page import="java.io.File"%>
 <%!
 	static Log log = Logging.getLog("gmap-tile.jsp");
 %>
