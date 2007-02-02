@@ -39,8 +39,8 @@
                 <property name="max-file-size">1000000</property>
             </handler>
 
-            <handler id="t" class="org.geotracing.server.TracingHandler"/>
-            <handler id="query" class="org.geotracing.server.QueryHandler"/>
+            <handler id="t" class="org.geotracing.handler.TracingHandler"/>
+            <handler id="query" class="org.geotracing.handler.QueryHandler"/>
             <handler id="profile" class="org.walkandplay.server.control.ProfileHandler">
                 <property name="config">content-config.xml</property>
             </handler>
@@ -68,7 +68,7 @@
         </spaces>
 -->
         <daemons>
-            <daemon id="emailupload" class="org.geotracing.server.LocEmailUploadDaemon">
+            <daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
                 <property name="intervalMillis">25000</property>
 
                 <!-- Note these values are context-dependent and specified externally. -->
@@ -79,13 +79,14 @@
                 <property name="user" host="pundit">email.upload.user.pundit</property>
                 <property name="password" host="pundit">email.upload.password.pundit</property>
             </daemon>
-			
-			<daemon id="upgradedaemon" class="org.geotracing.server.UpgradeDaemon">
+
+			<!--
+			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
 				<property name="pois2textmedia">false</property>
-			</daemon>
+			</daemon> -->
 
             <!-- Tracer Bot -->
-			<daemon id="tracerdaemon" class="org.geotracing.server.TracerDaemon">
+			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
 				<property name="intervalMillis">25000</property>
 			</daemon>
         </daemons>

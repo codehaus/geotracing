@@ -1,7 +1,8 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.server.Location;
+import org.geotracing.handler.Location;
+import org.geotracing.handler.Location;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
