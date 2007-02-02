@@ -1,3 +1,6 @@
+skeeler routes in GPS
+http://www.gpstracks.nl/skeelerroutes-nederland.php?id=826
+
 maps:
 http://planner.holland.com/fietsroutes
 via http://www.holland.com/nl/
