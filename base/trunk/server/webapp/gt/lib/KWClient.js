@@ -170,7 +170,7 @@ var KW = {
 		var cb = KW._utopiaRsp;
 
 		// If client supplied callback overrule the default callback
-		if (aCallback) {
+		if (aCallback && aCallback != null) {
 			cb = function(utopiaRsp) {
 				// Strip off <utopia-rsp> parent element
 				var appRsp = utopiaRsp.childNodes[0];

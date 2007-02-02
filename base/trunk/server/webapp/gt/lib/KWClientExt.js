@@ -220,6 +220,11 @@ KW.MEDIA = {
 				/* var doc = (new DOMParser()).parseFromString(iframeDoc.documentElement.lastChild.innerHTML, "text/xml");
 				var rspElm = doc.getElementsByTagName('medium-insert-rsp')[0];
 				callback(rspElm);  */
+                var id = iframeDoc.body.getElementsByTagName('B')[0].innerHTML;
+				var rsp = KW.createRequest('medium-insert-rsp');
+				rsp.documentElement.setAttribute('id', id);
+				callback(rsp.documentElement);
+				return;
 			}
 			setTimeout(f, 50);
 		}
@@ -251,7 +256,7 @@ KW.TAG = {
 	/**
 	 * Add tags for specified items.
 	 * @param callback - user callback function or null
-	 * @param itemIds - id's of items to be tagged
+	 * @param itemIds - id's (comma separated) of items to be tagged
 	 * @param tags - tags to be added to items
 	 */
 	add: function(callback, itemIds, tags) {
@@ -358,6 +363,28 @@ KW.TRACK = {
 	del: function(callback, id) {
 		var req = KW.createRequest('t-trk-delete-req');
 		KW.UTIL.settAttr(req, 'id', id);
+		KW.utopia(req, callback);
+	}
+}
+
+/** User profile management functions. */
+KW.USER = {
+
+	/**
+	 * Update user profile.
+	 * @param callback - user callback function or null
+	 * @param profileObj - profile object, containing fields to be updated
+	 */
+	update: function(callback, profileObj) {
+		var req = KW.createRequest('profile-update-req');
+		addOptTextElement('firstname', profileObj.firstName);
+		addOptTextElement('lastname', profileObj.lastName);
+		addOptTextElement('email', profileObj.email);
+		addOptTextElement('password', profileObj.password);
+		addOptTextElement('mobilenr', profileObj.mobilenr);
+		addOptTextElement('description', profileObj.description);
+		addOptTextElement('visibility', profileObj.visibility);
+		addOptTextElement('iconid', profileObj.iconid);
 		KW.utopia(req, callback);
 	}
 }
