@@ -1,7 +1,7 @@
 <%@ page import="org.keyworx.oase.api.Record"%>
 <%@ page import="org.keyworx.utopia.core.util.Oase"%>
 <%@ page import="org.keyworx.amuse.core.Amuse"%>
-<%@ page import="org.geotracing.server.QueryHandler"%>
+<%@ page import="org.geotracing.handler.QueryHandler"%>
 <%!
 	public static Oase oase;
 

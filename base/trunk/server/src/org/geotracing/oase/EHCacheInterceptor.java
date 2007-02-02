@@ -2,7 +2,7 @@
  * Copyright (C)2002 - Waag Society - See license below *
  ********************************************************/
 
-package org.geotracing.server.oase;
+package org.geotracing.oase;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;

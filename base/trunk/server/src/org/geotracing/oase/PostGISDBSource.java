@@ -2,23 +2,15 @@
  * Copyright (C)2002 - Waag Society - See license below *
  ********************************************************/
 
-package org.geotracing.server.oase;
+package org.geotracing.oase;
 
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.TableDef;
 import org.keyworx.oase.api.FieldDef;
-import org.keyworx.oase.api.Record;
 import org.keyworx.oase.store.source.PostgreSQLDBSource;
-import org.keyworx.oase.store.record.RecordImpl;
-import org.keyworx.oase.config.TableDefImpl;
-import org.keyworx.oase.config.TypeDef;
-import org.keyworx.oase.config.StoreContextConfig;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 /**
  * Specific JDBC extensions for PostGIS.
@@ -41,6 +33,7 @@ import java.sql.PreparedStatement;
  */
 
 public class PostGISDBSource extends PostgreSQLDBSource {
+	 public static final String INDEX_GIST = "INDEX_GIST";
 
 	/**
 	 * Extended DBSources may provide their specific DB post-creation constraints.
@@ -66,7 +59,15 @@ public class PostGISDBSource extends PostgreSQLDBSource {
 				if (spec != null && spec.length() > 0) {
 					// Add spatial column using OGC OpenGIS syntax
 					specParms = spec.split(",");
-					result.add("SELECT AddGeometryColumn('" + dbName + "', '" + tableName + "', '" + fieldName +"', 4326, '" + specParms[0] + "', " + specParms[1] + ")");
+					result.add("SELECT AddGeometryColumn('" + dbName + "', '" + tableName + "', '" + fieldName +"', 4326, '" + specParms[0] + "', " + specParms[1] + "); ");
+					if (specParms.length > 2) {
+						// See http://postgis.refractions.net/docs/ch04.html#id2838748
+						// CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] GIST_GEOMETRY_OPS );
+						String indexType = specParms[2];
+						if (indexType.equals(INDEX_GIST)) {
+							result.add("CREATE INDEX idx_" + fieldName + " ON " + tableName + " USING GIST ( " + fieldName + " GIST_GEOMETRY_OPS ); ");
+						}
+					}
 				}
 			}
 		}

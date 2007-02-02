@@ -9,6 +9,7 @@
 				org.keyworx.amuse.core.Amuse,
 				org.keyworx.utopia.core.util.Oase,
 				org.geotracing.server.TrackLogic" %>
+<%@ page import="org.geotracing.handler.TrackLogic"%>
 <%!
  Oase oase = null;
 String getParameter(ServletRequest req, String name, String defaultValue) {

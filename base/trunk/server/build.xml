@@ -328,7 +328,7 @@ $Id$
 	   <!-- Migration task (not used).
 	<target name="migrate" description="Migration of old geoskating/sailing">
 
-		<java classname="org.geotracing.server.MigrateTracks"
+		<java classname="org.geotracing.util.MigrateTracks"
 			fork="true"
 			failonerror="true"
 			maxmemory="128m"

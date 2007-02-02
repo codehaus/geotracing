@@ -1,4 +1,5 @@
 <%@ page import="org.geotracing.server.Track,java.util.Date" %>
+<%@ page import="org.geotracing.handler.Track"%>
 <%@ include file="../model.jsp" %>
 <%
 	int id = Integer.parseInt(request.getParameter("id"));

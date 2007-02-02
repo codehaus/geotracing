@@ -1,6 +1,6 @@
 // Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
-package org.geotracing.server;
+package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -12,6 +12,8 @@ import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.session.*;
 import org.keyworx.utopia.core.util.Oase;
+import org.geotracing.handler.EventPublisher;
+import org.geotracing.handler.Location;
 
 import java.io.File;
 import java.sql.Timestamp;

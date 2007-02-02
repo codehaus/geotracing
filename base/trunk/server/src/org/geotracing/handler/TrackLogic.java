@@ -1,10 +1,14 @@
 // Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
-package org.geotracing.server;
+package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.gis.GeoPoint;
+import org.geotracing.handler.Area;
+import org.geotracing.handler.Location;
+import org.geotracing.handler.Track;
+import org.geotracing.handler.TrackExport;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
@@ -16,7 +20,6 @@ import org.keyworx.utopia.core.util.Oase;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;

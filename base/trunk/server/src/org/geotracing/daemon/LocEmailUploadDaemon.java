@@ -1,7 +1,7 @@
 // Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.
 
-package org.geotracing.server;
+package org.geotracing.daemon;
 
 import com.messners.mail.POP3MailMessage;
 import nl.justobjects.jox.dom.JXElement;
@@ -11,6 +11,7 @@ import org.keyworx.amuse.daemon.EmailUploadDaemon;
 import org.keyworx.client.KWClient;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.util.Oase;
+import org.geotracing.handler.TracingHandler;
 
 
 /**

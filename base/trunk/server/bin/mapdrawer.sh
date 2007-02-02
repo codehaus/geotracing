@@ -31,7 +31,7 @@ setDirs() {
 draw() {
   CP=${TOP}/lib/geotracing.jar:${TOP}/lib/keyworx.jar:${TOP2}/lib/geotracing.jar:${TOP2}/lib/keyworx.jar
 
- java -cp ${CP} org.geotracing.server.MapDrawer ${CFG_FILE}
+ java -cp ${CP} org.geotracing.daemon.MapDrawer ${CFG_FILE}
 }
 
 draw_pja() {

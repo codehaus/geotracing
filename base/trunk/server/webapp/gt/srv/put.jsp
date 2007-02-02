@@ -1,6 +1,6 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement,
 				 nl.justobjects.jox.parser.JXBuilder,
-				 org.geotracing.server.CommentHandler,
+				 org.geotracing.handler.CommentHandler,
 				 org.geotracing.server.CommentLogic,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
@@ -11,7 +11,8 @@
 				 org.keyworx.utopia.core.util.Oase,
 				 javax.servlet.http.HttpServletRequest,
 				 javax.servlet.http.HttpServletResponse,java.io.PrintWriter"%>
-<%@ page import="org.geotracing.server.EventPublisher"%>
+<%@ page import="org.geotracing.handler.EventPublisher"%>
+<%@ page import="org.geotracing.handler.CommentLogic"%>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>

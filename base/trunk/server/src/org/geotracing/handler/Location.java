@@ -1,7 +1,7 @@
 // Copyright (c) 2005+ Just Objects B.V. <just@justobjects.nl>
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
-package org.geotracing.server;
+package org.geotracing.handler;
 
 import org.geotracing.gis.GeoPoint;
 import org.keyworx.utopia.core.data.BaseImpl;

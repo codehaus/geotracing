@@ -1,7 +1,6 @@
 <%@ page import="nl.justobjects.jox.parser.JXBuilder,
 				 org.geotracing.gis.GeoPoint,
 				 org.geotracing.gis.XYDouble,
-				 org.geotracing.server.*,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
 				 org.keyworx.common.log.Log,
@@ -22,6 +21,10 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="org.keyworx.oase.config.OaseConfig"%>
+<%@ page import="org.keyworx.oase.config.ComponentDef"%>
+<%@ page import="org.keyworx.oase.config.StoreContextConfig"%>
+<%@ page import="org.geotracing.handler.*"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -85,6 +88,7 @@
 
 	public final static String OUTPUT_JSON = "json";
 	public final static String OUTPUT_XML = "xml";
+	public static String DB_RANDOM_FUN = "RAND()";
 
 	public static Oase oase;
 	public static Log log = Logging.getLog("get.jsp");
@@ -740,7 +744,7 @@
 				String fields = "g_track.id";
 				String where = null;
 				String relations = null;
-				String postCond = "ORDER BY RAND() LIMIT 1";
+				String postCond = "ORDER BY " + DB_RANDOM_FUN + " LIMIT 1";
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
 				// log.info("result=" + result);
 				String trackId = result.getChildAt(0).getAttr("id");
@@ -842,7 +846,7 @@
 				// POSTCONDITION
 				String random = getParameter(request, "random", "false");
 				if (random.equals("true")) {
-					postCond = "ORDER BY RAND()";
+					postCond = "ORDER BY " + DB_RANDOM_FUN;
 				} else {
 					postCond = "ORDER BY base_medium.creationdate DESC";
 				}
@@ -1129,8 +1133,15 @@
 			oase = (Oase) application.getAttribute("oase");
 			if (oase == null) {
 				// First time: create and save in app context
-				oase = Oase.createOaseSession(Amuse.server.getPortal().getId());
+				String oaseContextId = Amuse.server.getPortal().getId();
+				oase = Oase.createOaseSession(oaseContextId);
 				application.setAttribute("oase", oase);
+				ComponentDef[] cDefs = OaseConfig.getOaseContextConfig(oaseContextId).getStoreContextConfig().getSourceDefs();
+				for (int i=0; i < cDefs.length; i++) {
+					if (cDefs[i].getId().equals(StoreContextConfig.SOURCE_DB) && cDefs[i].hasProperty("randomfun")) {
+						DB_RANDOM_FUN = cDefs[i].getProperty("randomfun");
+					}
+				}
 			}
 		}
 	} catch (Throwable th) {
