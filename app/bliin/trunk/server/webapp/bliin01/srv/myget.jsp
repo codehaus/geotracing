@@ -1,7 +1,7 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement" %>
-<%@ page import="org.geotracing.server.QueryHandler"%>
-<%@ page import="org.keyworx.common.util.Sys"%>
-<%@ page import="java.io.Writer"%>
+<%@ page import="org.geotracing.handler.QueryHandler"%>
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
+<%@ page import="javax.servlet.http.HttpServletResponse"%>
 <%!
 	static boolean doWorldCache = false;
 
