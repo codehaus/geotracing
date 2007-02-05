@@ -6,6 +6,10 @@
 	<property name="siteurl" host="suwa">http://test.geotracing.com</property>
 	<property name="webappurl" host="suwa">http://test.geotracing.com/gt</property>
 
+	<!-- for testing only. -->
+	<property name="siteurl" host="samoa">http://samoa.sense.com</property>
+	<property name="webappurl" host="samoa">http://samoa.sense.com/gt</property>
+
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
 		<context file="oase-context.xml"/>
@@ -31,12 +35,16 @@
 			</handler>
 
 			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
-			<handler id="query" class="org.geotracing.handler.QueryHandler"/>
+		<!--	<handler id="query" class="org.geotracing.handler.QueryHandler"/>  -->
 			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
 				<property name="allow-anonymous">true</property>
 				<property name="max-content-chars">1024</property>
 				<property name="max-commments-per-target">256</property>
 				<property name="thread-alert">false</property>
+			</handler>
+
+			<handler id="profile" class="org.geotracing.handler.ProfileHandler">
+				<property name="logic">org.geotracing.handler.ProfileLogic</property>
 			</handler>
 
 			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->

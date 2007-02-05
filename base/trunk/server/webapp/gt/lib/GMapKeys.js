@@ -10,5 +10,10 @@ GMAP.addKey('tiger',
                 'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xQ6rlRSbYP05XnjBcHi5kRfoHeW-xTaA7f2-7Tm2As5iChwy20KK8-nbw',
                 '^https?://tiger.bliin.com/gt/.*' );
 
+GMAP.addKey('samoa',
+                'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xT1KtoWbeMbrx_g7jRPGAn87V0A9xStaNyH5qQZL4NcXSCP7qhrgmMGHw',
+                '^https?://samoa.sense.com/gt/.*' );
+
+
 GMAP.loadGoogleMapScript('2.66');
 

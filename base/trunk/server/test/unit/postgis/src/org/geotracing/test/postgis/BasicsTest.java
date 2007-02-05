@@ -3,6 +3,7 @@ package org.geotracing.test.postgis;
 import org.keyworx.oase.api.*;
 import org.postgis.Point;
 import org.postgis.PGgeometryLW;
+import org.postgis.Geometry;
 import junit.framework.Assert;
 
 /**
@@ -51,6 +52,7 @@ public class BasicsTest extends PGTestCase {
 			getModifier().update(record);
 			record = getFinder().read(id);
 			geom = (PGgeometryLW) record.getObjectField("point");
+			Point geometry = (Point) geom.getGeometry();
 			result = geom.toString();
 			assertEquals("result not equal to " + SRID_POINT_2 + " but " + result, result, SRID_POINT_2);
 
