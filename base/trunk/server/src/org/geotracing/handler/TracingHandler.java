@@ -147,7 +147,7 @@ public class TracingHandler extends DefaultHandler {
 
 		// Mandatory medium id attr
 		int mediumId = reqElm.getIntAttr(ATTR_ID);
-		throwNegNumAttr(ATTR_ID, mediumId);
+		HandlerUtil.throwOnNegNumAttr(ATTR_ID, mediumId);
 
 		Location location = trackLogic.createMediumLocation(mediumId);
 		JXElement rsp = createResponse(T_TRK_ADD_MEDIUM_SERVICE);
@@ -182,7 +182,7 @@ public class TracingHandler extends DefaultHandler {
 		int trackType = Integer.parseInt(trackTypeStr);
 
 		// Create Track object
-		Track track = trackLogic.create(getUserId(anUtopiaReq), trackName, trackType, setTimeIfMissing(reqElm));
+		Track track = trackLogic.create(HandlerUtil.getUserId(anUtopiaReq), trackName, trackType, setTimeIfMissing(reqElm));
 
 		// Create and return response with open track id.
 		JXElement response = createResponse(T_TRK_CREATE_SERVICE);
@@ -209,7 +209,7 @@ public class TracingHandler extends DefaultHandler {
 	public JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 
-		String trackId = trackLogic.delete(getUserId(anUtopiaReq), reqElm.getAttr(ATTR_ID, null));
+		String trackId = trackLogic.delete(HandlerUtil.getUserId(anUtopiaReq), reqElm.getAttr(ATTR_ID, null));
 		JXElement response = createResponse(T_TRK_DELETE_SERVICE);
 		response.setAttr(ATTR_ID, trackId);
 
@@ -239,7 +239,7 @@ public class TracingHandler extends DefaultHandler {
 
 		// Required attr id
 		String id = reqElm.getAttr(ATTR_ID, null);
-		throwOnMissingAttr(ATTR_ID, id);
+		HandlerUtil.throwOnMissingAttr(ATTR_ID, id);
 
 		// Get neccessary objects
 		Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
@@ -289,7 +289,7 @@ public class TracingHandler extends DefaultHandler {
 		// Mandatory track id
 		String trackId = reqElm.getAttr(ATTR_ID, null);
 		if (trackId != null) {
-			throwOnNonNumAttr(ATTR_ID, trackId);
+			HandlerUtil.throwOnNonNumAttr(ATTR_ID, trackId);
 		}
 
 		String format = reqElm.getAttr(ATTR_FORMAT, null);
@@ -327,7 +327,7 @@ public class TracingHandler extends DefaultHandler {
 		setTimeIfMissing(reqElm);
 
 		// Forward heartbeat
-		Track track = trackLogic.getActiveTrack(getUserId(anUtopiaReq));
+		Track track = trackLogic.getActiveTrack(HandlerUtil.getUserId(anUtopiaReq));
 		EventPublisher.heartbeat(track, reqElm.getLongAttr(ATTR_T), anUtopiaReq);
 
 		return createResponse(T_HEARTBEAT_SERVICE);
@@ -358,7 +358,7 @@ public class TracingHandler extends DefaultHandler {
 			throw new UtopiaException("Missing track data", ErrorCode.__6002_Required_attribute_missing);
 		}
 
-		Track track = trackLogic.importTrack(getUserId(anUtopiaReq), name, data.getChildAt(0));
+		Track track = trackLogic.importTrack(HandlerUtil.getUserId(anUtopiaReq), name, data.getChildAt(0));
 
 		// Fill response
 		JXElement responseElement = createResponse(T_TRK_IMPORT_SERVICE);
@@ -388,7 +388,7 @@ public class TracingHandler extends DefaultHandler {
 		// Mandatory track id attr
 		String trackId = reqElm.getAttr(ATTR_ID, null);
 		if (trackId != null) {
-			throwOnNonNumAttr(ATTR_ID, trackId);
+			HandlerUtil.throwOnNonNumAttr(ATTR_ID, trackId);
 		}
 
 		Vector data = trackLogic.read(trackId);
@@ -422,7 +422,7 @@ public class TracingHandler extends DefaultHandler {
 		int trackType = Integer.parseInt(trackTypeStr);
 
 		// Resume current Track for this user
-		Track track = trackLogic.resume(getUserId(anUtopiaReq), trackType, setTimeIfMissing(reqElm));
+		Track track = trackLogic.resume(HandlerUtil.getUserId(anUtopiaReq), trackType, setTimeIfMissing(reqElm));
 
 		// Create and return response with open track id.
 		JXElement response = createResponse(T_TRK_RESUME_SERVICE);
@@ -450,7 +450,7 @@ public class TracingHandler extends DefaultHandler {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 
 		// Find today's Track record for this user
-		Track track = trackLogic.suspend(getUserId(anUtopiaReq), setTimeIfMissing(reqElm));
+		Track track = trackLogic.suspend(HandlerUtil.getUserId(anUtopiaReq), setTimeIfMissing(reqElm));
 		// Create and return response with open track id.
 		JXElement response = createResponse(T_TRK_SUSPEND_SERVICE);
 		response.setAttr(ATTR_ID, track.getId());
@@ -523,12 +523,12 @@ public class TracingHandler extends DefaultHandler {
 		String mime = reqElm.getAttr(ATTR_MIME, null);
 		// file attr is filename
 		String filePath = reqElm.getAttr(ATTR_FILE, null);
-		throwOnMissingAttr(ATTR_FILE, filePath);
+		HandlerUtil.throwOnMissingAttr(ATTR_FILE, filePath);
 
 		// Fill in fields
 		HashMap fields = new HashMap(2);
 		String name = reqElm.getAttr(ATTR_NAME, "noname");
-		String description = reqElm.getAttr(ATTR_DESCRIPTION, "upload by " + getUserName(anUtopiaReq));
+		String description = reqElm.getAttr(ATTR_DESCRIPTION, "upload by " + HandlerUtil.getUserName(anUtopiaReq));
 
 		fields.put(ATTR_NAME, name);
 		fields.put(ATTR_DESCRIPTION, description);
@@ -550,7 +550,7 @@ public class TracingHandler extends DefaultHandler {
 				mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(reqElm.getLongAttr(ATTR_T)));
 				oase.getModifier().update(mediumRecord);
 			}
-			personRecord = oase.getFinder().read(getUserId(anUtopiaReq));
+			personRecord = oase.getFinder().read(HandlerUtil.getUserId(anUtopiaReq));
 			oase.getRelater().relate(mediumRecord, personRecord);
 		} catch (Throwable t) {
 			throw new UtopiaException("Error in uploadFileMedium() for file=" + filePath, t);
@@ -598,7 +598,7 @@ public class TracingHandler extends DefaultHandler {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		String type = reqElm.getAttr(ATTR_TYPE, null);
 
-		throwOnMissingAttr(ATTR_TYPE, type);
+		HandlerUtil.throwOnMissingAttr(ATTR_TYPE, type);
 
 		// Hack: for spots
 		if (type.equals(VAL_SPOT)) {
@@ -610,12 +610,12 @@ public class TracingHandler extends DefaultHandler {
 		}
 
 		String mime = reqElm.getAttr(ATTR_MIME, null);
-		throwOnMissingAttr(ATTR_MIME, mime);
+		HandlerUtil.throwOnMissingAttr(ATTR_MIME, mime);
 
 		// Fill in fields
 		HashMap fields = new HashMap(2);
 		String name = reqElm.getAttr(ATTR_NAME, "noname");
-		String description = reqElm.getAttr(ATTR_DESCRIPTION, type + " from " + getUserName(anUtopiaReq));
+		String description = reqElm.getAttr(ATTR_DESCRIPTION, type + " from " + HandlerUtil.getUserName(anUtopiaReq));
 
 		// Fill in standard medium fields
 		fields.put(ATTR_NAME, name);
@@ -632,7 +632,7 @@ public class TracingHandler extends DefaultHandler {
 		}
 
 		String encoding = data.getAttr(ATTR_ENCODING, null);
-		throwOnMissingAttr(ATTR_ENCODING, encoding);
+		HandlerUtil.throwOnMissingAttr(ATTR_ENCODING, encoding);
 
 		// Create medium record
 		Record mediumRecord = null;
@@ -657,7 +657,7 @@ public class TracingHandler extends DefaultHandler {
 				oase.getModifier().update(mediumRecord);
 			}
 
-			personRecord = oase.getFinder().read(getUserId(anUtopiaReq));
+			personRecord = oase.getFinder().read(HandlerUtil.getUserId(anUtopiaReq));
 			oase.getRelater().relate(mediumRecord, personRecord);
 		} catch (Throwable t) {
 			throw new UtopiaException("Error in uploadMedium() for raw data encoding=" + encoding, t);
@@ -705,8 +705,8 @@ public class TracingHandler extends DefaultHandler {
 	public JXElement writeReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 
-		Vector result = trackLogic.write(reqElm.getChildren(), getUserId(anUtopiaReq));
-		Track track = trackLogic.getActiveTrack(getUserId(anUtopiaReq));
+		Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+		Track track = trackLogic.getActiveTrack(HandlerUtil.getUserId(anUtopiaReq));
 
 		// Publish any points
 		// TODO this should be done through KW subscription
@@ -749,52 +749,8 @@ public class TracingHandler extends DefaultHandler {
 		// Expensive but we have to
 		UtopiaSessionContext sc = anUtopiaReq.getUtopiaSession().getContext();
 		Oase oase = sc.getOase();
-		Person person = (Person) oase.get(Person.class, sc.getUserId());
+		Person person = (Person) oase.get(Person.class, HandlerUtil.getUserId(anUtopiaReq) + "");
 		return person.getAccount();
-	}
-
-	/**
-	 * Get user (Person) id from request.
-	 */
-	protected int getUserId(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-	}
-
-	/**
-	 * Get user (Person) name from request.
-	 */
-	protected String getUserName(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return anUtopiaReq.getUtopiaSession().getContext().getUserName();
-	}
-
-	/**
-	 * Throw exception when attribute empty or not present.
-	 */
-	protected void throwOnMissingAttr(String aName, String aValue) throws UtopiaException {
-		if (aValue == null || aValue.length() == 0) {
-			throw new UtopiaException("Missing name=" + aName + " value=" + aValue, ErrorCode.__6002_Required_attribute_missing);
-		}
-	}
-
-	/**
-	 * Throw exception when numeric attribute empty or not present.
-	 */
-	protected void throwOnNonNumAttr(String aName, String aValue) throws UtopiaException {
-		throwOnMissingAttr(aName, aValue);
-		try {
-			Long.parseLong(aValue);
-		} catch (Throwable t) {
-			throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
-		}
-	}
-
-	/**
-	 * Throw exception when numeric attribute empty or not present.
-	 */
-	protected void throwNegNumAttr(String aName, long aValue) throws UtopiaException {
-		if (aValue == -1) {
-			throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
-		}
 	}
 
 	protected long setTimeIfMissing(JXElement anElement) {

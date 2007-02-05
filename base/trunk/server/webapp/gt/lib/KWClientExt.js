@@ -371,6 +371,15 @@ KW.TRACK = {
 KW.USER = {
 
 	/**
+	 * Get user profile.
+	 * @param callback - user callback function or null
+	 */
+	get: function(callback) {
+		var req = KW.createRequest('profile-get-req');
+		KW.utopia(req, callback);
+	},
+
+	/**
 	 * Update user profile.
 	 * @param callback - user callback function or null
 	 * @param profileObj - profile object, containing fields to be updated
@@ -381,10 +390,10 @@ KW.USER = {
 		addOptTextElement('lastname', profileObj.lastName);
 		addOptTextElement('email', profileObj.email);
 		addOptTextElement('password', profileObj.password);
-		addOptTextElement('mobilenr', profileObj.mobilenr);
-		addOptTextElement('description', profileObj.description);
-		addOptTextElement('visibility', profileObj.visibility);
-		addOptTextElement('iconid', profileObj.iconid);
+		addOptTextElement('mobilenr', profileObj.mobileNumber);
+		//addOptTextElement('desc', profileObj.description);
+		//addOptTextElement('visibility', profileObj.visibility);
+		//addOptTextElement('iconid', profileObj.iconId);
 		KW.utopia(req, callback);
 	}
 }

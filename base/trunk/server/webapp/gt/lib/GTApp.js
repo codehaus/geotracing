@@ -170,7 +170,7 @@ var GTAPP = {
 	/** Load file that contains app-specific menu. */
 	createMenu: function(aMenuContent) {
 		if (!aMenuContent) {
-			DH.getURL('mainmenu.html', this.createMenu);
+			DH.getURL('mainmenu.html', GTAPP.createMenu);
 			return;
 		}
 
