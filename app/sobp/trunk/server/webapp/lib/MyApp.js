@@ -84,13 +84,13 @@ var MYAPP = {
 	createMap: function() {
 		GTAPP.showStatus('Kaart laden ...');
 
-		var WMS_URL_EINDHOVEN_SAT = 'http://www.senseofthecity.nl/sotce/map/eindhoven-sat.jsp?';
-		var G_MAP_EINDHOVEN_SAT = createWMSSpec(WMS_URL_EINDHOVEN_SAT, "Luchtfoto", "Fot", "bl", "bla", "image/jpeg", "1.1.1");
+		// var WMS_URL_EINDHOVEN_SAT = 'http://www.senseofthecity.nl/sotce/map/eindhoven-sat.jsp?';
+		//var G_MAP_EINDHOVEN_SAT = createWMSSpec(WMS_URL_EINDHOVEN_SAT, "Luchtfoto", "Fot", "bl", "bla", "image/jpeg", "1.1.1");
 
 		// Add map specs to app (see also menu in map.jsp)
 		GMAP.addMapType('map', G_NORMAL_MAP);
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);
-		GMAP.addMapType('luchtfoto', G_MAP_EINDHOVEN_SAT);
+		// GMAP.addMapType('luchtfoto', G_MAP_EINDHOVEN_SAT);
 
 		// Create the Google Map
 		GMAP.createGMap('map');

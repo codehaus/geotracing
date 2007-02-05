@@ -1,27 +1,21 @@
 <%@ page import="
 				com.oreilly.servlet.MultipartRequest,
-                 nl.justobjects.jox.dom.JXElement,
-                 org.geotracing.server.TrackLogic,
-                 org.keyworx.amuse.client.web.HttpConnector,
-                 org.keyworx.amuse.core.Amuse,
+                 org.geotracing.handler.TrackLogic,
                  org.keyworx.amuse.core.Protocol,
                  org.keyworx.oase.util.Log,
                  org.keyworx.utopia.core.data.Application,
                  org.keyworx.utopia.core.data.Person,
                  org.keyworx.utopia.core.data.Portal,
+                 org.keyworx.utopia.core.data.Role,
                  org.keyworx.utopia.core.logic.PersonLogic,
-                 org.keyworx.utopia.core.util.Core" %>
-<%@ page import="org.keyworx.utopia.core.util.Oase" %>
-<%@ page import="javax.servlet.ServletRequest" %>
-<%@ page import="javax.servlet.http.HttpServletRequest" %>
+                 org.keyworx.utopia.core.util.Core,
+                 javax.servlet.ServletRequest,
+                 javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 <%@ page import="javax.servlet.http.HttpSession" %>
-<%@ page import="java.util.ArrayList" %>
-<%@ page import="org.geotracing.server.QueryHandler" %>
-<%@ page import="org.keyworx.utopia.core.data.Role" %>
-<%@ page import="org.keyworx.oase.api.Record" %>
-<%@ page import="java.text.StringCharacterIterator" %>
 <%@ page import="java.text.CharacterIterator" %>
+<%@ page import="java.text.StringCharacterIterator" %>
+<%@ page import="java.util.ArrayList" %>
 
 <%@ include file="model.jsp" %>
 

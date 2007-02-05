@@ -119,10 +119,10 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	</target>
 
 
-	<target name="copy-live">
+	<target name="copy-war-samoa">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
-			<arg line="keyworx@test.waag.org:sense"/>
+			<arg line="samoa@samoa:versions"/>
 		</exec>
 	</target>
 
