@@ -1,5 +1,6 @@
 <%@ page import="org.keyworx.oase.api.Relater"%>
 <%@ page import="org.keyworx.oase.api.Finder"%>
+<%@ page import="nl.justobjects.jox.dom.JXElement"%>
 <%@ include file="model.jsp" %>
 <%@ include file="static-layout-header.html" %>
 <!-- $Id:$ -->

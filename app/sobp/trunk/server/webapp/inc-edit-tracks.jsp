@@ -1,4 +1,4 @@
-<%@ page import="java.util.Date,org.geotracing.server.Track,org.keyworx.oase.api.Record"%>
+<%@ page import="java.util.Date,org.geotracing.handler.Track,org.keyworx.oase.api.Record"%>
 <%@ include file="model.jsp" %>
 <%
 	String msg="";

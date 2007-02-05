@@ -1,11 +1,12 @@
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="org.keyworx.amuse.core.Amuse"%>
-<%@ page import="org.keyworx.utopia.core.util.Oase"%>
-<%@ page import="nl.justobjects.jox.dom.JXElement"%>
+<%@ page import="org.geotracing.handler.QueryHandler"%>
 <%@ page import="org.keyworx.amuse.client.web.HttpConnector"%>
-<%@ page import="org.keyworx.oase.api.Record"%>
-<%@ page import="org.geotracing.server.QueryHandler"%>
+<%@ page import="org.keyworx.amuse.core.Amuse"%>
 <%@ page import="org.keyworx.oase.api.OaseException"%>
+<%@ page import="org.keyworx.oase.api.Record"%>
+<%@ page import="org.keyworx.utopia.core.util.Oase"%>
+<%@ page import="javax.servlet.ServletContext"%>
+<%@ page import="javax.servlet.http.HttpSession"%>
+<%@ page import="java.text.SimpleDateFormat"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("E' 'dd' 'MMM', 'yyyy");

@@ -138,7 +138,7 @@
 				<table border="0" cellpadding="0" cellspacing="0">
 					<tr>
 						<td align="center" width="220">
-							<span id="tracerinfo" class="deelnemertitel">deelnemer naam</span>
+							<span id="tracerid" class="deelnemertitel">deelnemer naam</span>
 						</td>
 						<td rowspan="2" height="100" width="100">
 							<img id="tracerimg" height="100" width="100" src="img/default-user-thumb.jpg" align="right" alt="foto deelnemer" hspace="0" vspace="0"/>
