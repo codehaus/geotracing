@@ -381,6 +381,9 @@ KW.USER = {
 
 	/**
 	 * Update user profile.
+	 * Pass a JS object where each field is optional.
+	 * See profileObj.* in code for fieldnames.
+	 *
 	 * @param callback - user callback function or null
 	 * @param profileObj - profile object, containing fields to be updated
 	 */
@@ -391,9 +394,10 @@ KW.USER = {
 		addOptTextElement('email', profileObj.email);
 		addOptTextElement('password', profileObj.password);
 		addOptTextElement('mobilenr', profileObj.mobileNumber);
+		addOptTextElement('photoid', profileObj.photoid);
+		addOptTextElement('tags', profileObj.tags);
 		//addOptTextElement('desc', profileObj.description);
 		//addOptTextElement('visibility', profileObj.visibility);
-		//addOptTextElement('iconid', profileObj.iconId);
 		KW.utopia(req, callback);
 	}
 }

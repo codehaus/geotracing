@@ -70,9 +70,18 @@ public class ProfileLogic {
 				}
 			}
 
-			// Get tags
+			// Add tags related to user if present
+			TagLogic tagLogic = new TagLogic(oase.getOaseSession());
+			String tags = tagLogic.getTagsString(aPersonId, aPersonId);
+            if (tags != null && tags.length() > 0) {
+				profile.setChildText(FIELD_TAGS, tags);
+			}
 
-			// Get user icon
+			// Add user icon/photo if present
+			Record[] photos = oase.getRelater().getRelated(person, TABLE_MEDIUM, REL_TAG_PHOTO);
+			if (photos.length > 0) {
+				profile.setChildText(FIELD_PHOTOID, photos[0].getIdString());				
+			}
 
 			return profile;
 
@@ -95,13 +104,9 @@ public class ProfileLogic {
 			log.info("Updating profile for id=" + personId);
 
 			// First get current person/account info
-			Record person, account, thumb = null;
+			Record person, account= null;
 			person = oase.getFinder().read(personId);
 			account = oase.getRelater().getRelated(person, TABLE_ACCOUNT, null)[0];
-			Record[] thumbs = oase.getRelater().getRelated(person, TABLE_MEDIUM, REL_TAG_PHOTO);
-			if (thumbs.length > 0) {
-				thumb = thumbs[0];
-			}
 
 			// Account updates
 			String value = null;
@@ -149,14 +154,35 @@ public class ProfileLogic {
 				oase.getModifier().update(account);
 			}
 
-			// Update tags
 
-			// Update user icon
+			// Update user photo ?
+			value = aProfileElm.getChildText(FIELD_PHOTOID);
+			if (value != null && value.length() > 0) {
+				// Must exist
+				int newPhotoId = Integer.parseInt(value);
+				Record newPhoto = oase.getFinder().read(newPhotoId, TABLE_MEDIUM);
+
+				// Get possibly existing user photo
+				Record[] oldPhotos = oase.getRelater().getRelated(person, TABLE_MEDIUM, REL_TAG_PHOTO);
+				if (oldPhotos.length > 0 && oldPhotos[0].getId() != newPhotoId) {
+					// Delete old photo if exists and not the same as new
+					oase.getModifier().delete(oldPhotos[0].getId(), TABLE_MEDIUM);
+				}
+
+				// Relate new photo to person
+				oase.getRelater().relate(person, newPhoto, REL_TAG_PHOTO);
+			}
+
+			// Update tags
 			value = aProfileElm.getChildText(FIELD_TAGS);
 			if (value != null && value.length() > 0) {
+
+				// Split value string into tag array according to regexp
+				String[] tags = TagLogic.parseTagString(value);
+
+				// Assign (may replace) all tags to this person
 				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
 				int[] items = {personId};
-				String[] tags = value.split(" ");
 				tagLogic.tag(personId, items, tags, TagLogic.MODE_REPLACE);
 			}
 
