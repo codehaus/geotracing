@@ -18,7 +18,7 @@ import org.keyworx.utopia.core.util.Oase;
  * <p/>
   *
  * @author Just van den Broecke
- * @version $Id:$
+ * @version $Id$
  */
 public class ProfileHandler extends DefaultHandler {
 
@@ -49,7 +49,7 @@ public class ProfileHandler extends DefaultHandler {
 			if (service.equals(PROFILE_GET_SERVICE)) {
                 response = getProfile(anUtopiaRequest);
 			} else if (service.equals(PROFILE_UPDATE_SERVICE)) {
-					response = updateProfile(anUtopiaRequest);
+				response = updateProfile(anUtopiaRequest);
             } else {
                 log.warn("Unknown service " + service);
                 response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);

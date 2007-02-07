@@ -57,6 +57,7 @@
 						<lastname>newlastname</lastname>
 						<email>geo@app.com</email>
 						<mobilenr>0612345678</mobilenr>
+						<tags>geo app user</tags>
 					</profile>
 				</profile-update-req>
 			</utopia-req>
