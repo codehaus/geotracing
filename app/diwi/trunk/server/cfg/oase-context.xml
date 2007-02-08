@@ -11,18 +11,6 @@
 		<table file="tables/utopia_person.xml"/>
 		<table file="tables/utopia_right.xml"/>
 		<table file="tables/utopia_role.xml"/>
-
-		<table file="tables/utopia_item.xml"/>
-
-		<table file="tables/g_track.xml"/>
-		<table file="tables/g_poi.xml"/>
-		<table file="tables/g_location.xml"/>
-		<table file="tables/g_area.xml"/>
-		<table file="tables/kw_comment.xml"/>
-
-		<!-- External KWX plugin for tagging -->
-		<table file="tables/cc_tag.xml"/>
-		<table file="tables/cc_tagrelation.xml"/>
 	</tables>
 </context>
 
