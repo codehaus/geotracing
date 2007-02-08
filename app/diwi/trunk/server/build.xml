@@ -1,15 +1,15 @@
 <!--
 
-ANT Build file for GeoTracing server stuff.
+ANT Build file for Diwi server stuff.
 
 $Id: build.xml 353 2007-02-02 12:04:11Z just $
 -->
-<project name="gt-server" default="build" basedir=".">
+<project name="diwi-server" default="build" basedir=".">
 
 	<!-- Initialization of properties (dirs, files) -->
 
 	<!-- Project global properties; overrule by modifying build.properties -->
-    <property name="geotracing.base.dir" value="${basedir}/.."/>
+    <property name="geotracing.base.dir" value="${basedir}/../../base/"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
 	<property file="${geotracing.external.dir}/build.properties"/>
 
@@ -17,7 +17,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 	<!-- Use server utopia config as base config -->
 	<property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
 
-	<property file="${geotracing.base.dir}/build.properties"/>
+	<property file="../build.properties"/>
 	<property file="build.properties"/>
 
 
@@ -43,7 +43,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 	<property name="build.version.dir" value="${build.war.dir}/version"/>
 	<property name="dist.dir" value="${home}/dist"/>
 
-	<property name="external.dir" value="${home}/../external"/>
+	<property name="external.dir" value="${geotracing.external.dir}"/>
 <!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
 	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
 	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
@@ -55,10 +55,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
 
 	<!-- All sources to be compiled -->
-	<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
-
-	<!-- Client midlet stuff -->
-	<property name="home.client.dir" value="${home}/../client/mobitracer"/>
+	<property name="server.src.path" value="${home.src.dir}"/>
 
 	<!-- The .jar -->
 	<property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
@@ -141,6 +138,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 
 		<!-- Always do clean build -->
 		<delete file="${project.jar}"/>
+		<mkdir dir="${build.dir}/lib"/>
 
 		<!-- Create the jar file -->
 		<jar jarfile="${project.jar}" basedir="${build.class.dir}">
