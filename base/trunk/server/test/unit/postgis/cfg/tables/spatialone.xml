@@ -27,6 +27,7 @@
 		<field name="name" type="STRING" size="64" required="false" />
 		<field name="creationdate" type="TIMESTAMP"/>
 		<field name="modificationdate" type="TIMESTAMP"/>
-		<field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,INDEX_GIST"/>
+		<!-- spec="<TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]" -->
+		<field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/>
 	</data>
 </table>
