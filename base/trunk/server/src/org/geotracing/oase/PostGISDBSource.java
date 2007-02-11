@@ -13,12 +13,17 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Specific JDBC extensions for PostGIS.
+ * JDBC extensions for PostGIS spatial columns.
  * <p/>
  * <h3>Purpose</h3>
  * <p/>
- * General explanation
+ * This extension allows you to configure spatial columns in an Oase tabledef.
+ * For example you can add a 2 dimensional POINT column with SRID 4326 like this:
+ * &lt;field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/&gt;
  * <p/>
+ * <p>
+ * This maps a type OBJECT to the PostGIS class org.postgis.PGgeometryLW and set a spatial index on it.
+ * </p>
  * <h3>Examples</h3>
  * see {@link org.keyworx.oase.api.Record}
  * <p/>
@@ -33,7 +38,7 @@ import java.util.ArrayList;
  */
 
 public class PostGISDBSource extends PostgreSQLDBSource {
-	 public static final String INDEX_GIST = "INDEX_GIST";
+	public static final String INDEX_GIST = "INDEX_GIST";
 
 	/**
 	 * Extended DBSources may provide their specific DB post-creation constraints.
@@ -51,21 +56,28 @@ public class PostGISDBSource extends PostgreSQLDBSource {
 		String dbName = dbParms.db;
 		String tableName = aTableDef.getName();
 
-		for (int i=0; i < fieldDefs.length; i++) {
-		   fieldDef = fieldDefs[i];
+		// Check all fielddefs for (spatial) columns.
+		for (int i = 0; i < fieldDefs.length; i++) {
+			fieldDef = fieldDefs[i];
+
+			// Handle spatial object fields
 			if (fieldDef.getType() == FieldDef.TYPE_OBJECT) {
+				// spec has <TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]"
 				spec = fieldDef.getConfig().getAttr("spec");
+
 				fieldName = fieldDef.getName();
 				if (spec != null && spec.length() > 0) {
 					// Add spatial column using OGC OpenGIS syntax
 					specParms = spec.split(",");
-					result.add("SELECT AddGeometryColumn('" + dbName + "', '" + tableName + "', '" + fieldName +"', 4326, '" + specParms[0] + "', " + specParms[1] + "); ");
-					if (specParms.length > 2) {
+					result.add("SELECT AddGeometryColumn('" + dbName + "', '" + tableName + "', '" + fieldName + "', " + specParms[2] + ", '" + specParms[0] + "', " + specParms[1] + "); ");
+
+					// Add spatial index if specified
+					if (specParms.length > 3) {
 						// See http://postgis.refractions.net/docs/ch04.html#id2838748
 						// CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] GIST_GEOMETRY_OPS );
-						String indexType = specParms[2];
+						String indexType = specParms[3];
 						if (indexType.equals(INDEX_GIST)) {
-							result.add("CREATE INDEX idx_" + fieldName + " ON " + tableName + " USING GIST ( " + fieldName + " GIST_GEOMETRY_OPS ); ");
+							result.add("CREATE INDEX idx_" + tableName + fieldName + " ON " + tableName + " USING GIST ( " + fieldName + " GIST_GEOMETRY_OPS ); ");
 						}
 					}
 				}

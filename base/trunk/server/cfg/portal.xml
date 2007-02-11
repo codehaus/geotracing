@@ -1,4 +1,7 @@
 <portal name="geotracing">
+	<portal name="geotracing" xmlns="http://www.keyworx.org/portal/1.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.keyworx.org/portal/1.0 http://www.keyworx.org/schemas/portal-1.0.xsd">
 
 	<!-- Standard host-dependent container properties -->
 	<property name="siteurl" host="pundit">http://www.geotracing.com</property>

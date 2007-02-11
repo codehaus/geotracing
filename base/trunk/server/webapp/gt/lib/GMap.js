@@ -279,18 +279,15 @@ var GMAP = {
  *   // Use WMSSpec to create transparent overlay on a standard Google MapSpec
  *   var G_MAP_WMS_OVERLAY_SPEC = createWMSOverlaySpec(G_SATELLITE_TYPE, G_MAP_WMS_SPEC, "MyOvWMS", "MyOvWMS");
  *
- *   // Create mapspecs array
- *   var mapSpecs = [];
- *   mapSpecs.push(G_SATELLITE_TYPE);
- *   mapSpecs.push(G_MAP_WMS_SPEC);
- *   mapSpecs.push(G_MAP_WMS_OVERLAY_SPEC);
- *
  *   // Setup the map
- *   var map = new GMap(document.getElementById("map"), mapSpecs);
+ *   var map = new GMap2(document.getElementById("map"));
+ *   // Create mapspecs array
+ *	 map.addMapType(G_MAP_TYPE);
+ *	 map.addMapType(G_SATELLITE_TYPE);
+ * 	 map.addMapType(G_MAP_WMS_SPEC);
+ *	 map.addMapType(G_MAP_WMS_OVERLAY_SPEC);
  *   map.addControl(new GMapTypeControl());
- *   map.addControl(new GSmallMapControl());
- *   map.setMapType(G_SATELLITE_TYPE);
- *   map.setCenter(new GPoint(4.9, 52.35), 10);
+ *   map.setCenter(new GLatLon(52.35, 4.9), 10, G_MAP_WMS_OVERLAY_SPEC);
  */
 
 
@@ -428,7 +425,7 @@ function createWMSSpec(wmsURL, gName, gShortName, wmsLayers, wmsStyles, wmsForma
 
 /** Create transparent WMS overlay layer on standard GMap Spec. */
 function createWMSOverlaySpec(gSpec, wmsSpec, gName, gShortName) {
-	// New object
+/*	// New object
 	var overlaySpec = new Object();
 	// Override with members of wmsSpec
 	for (var m in wmsSpec) {
@@ -460,7 +457,15 @@ function createWMSOverlaySpec(gSpec, wmsSpec, gName, gShortName) {
 		return SIG;
 	};
 
-	return overlaySpec;
+	return overlaySpec;   */
+
+	// Simpler but need to consult new Google Maps v2 API
+	wmsSpec.getTileLayers()[0].getOpacity = function() {
+		return 1.0;
+	}
+	var layers = [gSpec.getTileLayers()[0], wmsSpec.getTileLayers()[0]];
+	return new GMapType(layers, gSpec.getProjection(), gShortName);
+
 }
 
 var SIG = '<a style="background-color:#555555; font:10px verdana;text-decoration:none;padding:2px;color:yellow;" href="#" onClick="window.open(\'http://www.geotracing.com\'); return false;">GeoTracing Powered</a>';

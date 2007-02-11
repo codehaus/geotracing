@@ -80,7 +80,7 @@ public class ProfileLogic {
 			// Add user icon/photo if present
 			Record[] photos = oase.getRelater().getRelated(person, TABLE_MEDIUM, REL_TAG_PHOTO);
 			if (photos.length > 0) {
-				profile.setChildText(FIELD_PHOTOID, photos[0].getIdString());				
+				profile.setChildText(FIELD_PHOTOID, photos[0].getIdString());
 			}
 
 			return profile;
@@ -105,7 +105,7 @@ public class ProfileLogic {
 
 			// First get current person/account info
 			Record person, account= null;
-			person = oase.getFinder().read(personId);
+			person = oase.getFinder().read(personId );
 			account = oase.getRelater().getRelated(person, TABLE_ACCOUNT, null)[0];
 
 			// Account updates
