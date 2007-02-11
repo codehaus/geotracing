@@ -389,13 +389,13 @@ KW.USER = {
 	 */
 	update: function(callback, profileObj) {
 		var req = KW.createRequest('profile-update-req');
-		addOptTextElement('firstname', profileObj.firstName);
-		addOptTextElement('lastname', profileObj.lastName);
-		addOptTextElement('email', profileObj.email);
-		addOptTextElement('password', profileObj.password);
-		addOptTextElement('mobilenr', profileObj.mobileNumber);
-		addOptTextElement('photoid', profileObj.photoid);
-		addOptTextElement('tags', profileObj.tags);
+		KW.UTIL.addOptTextElement('firstname', profileObj.firstName);
+		KW.UTIL.addOptTextElement('lastname', profileObj.lastName);
+		KW.UTIL.addOptTextElement('email', profileObj.email);
+		KW.UTIL.addOptTextElement('password', profileObj.password);
+		KW.UTIL.addOptTextElement('mobilenr', profileObj.mobileNumber);
+		KW.UTIL.addOptTextElement('photoid', profileObj.photoid);
+		KW.UTIL.addOptTextElement('tags', profileObj.tags);
 		//addOptTextElement('desc', profileObj.description);
 		//addOptTextElement('visibility', profileObj.visibility);
 		KW.utopia(req, callback);

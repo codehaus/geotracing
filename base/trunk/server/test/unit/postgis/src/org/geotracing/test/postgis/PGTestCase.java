@@ -17,6 +17,7 @@ import org.keyworx.common.util.Rand;
 public class PGTestCase extends TestCase {
 	static final public String OASE_CONTEXT_NAME = "postgistest";
 	static final public String SPATIAL_ONE_TABLE_NAME = "spatialone";
+	static final public String LOCATION_TABLE_NAME = "g_location";
 
 
 	private OaseSession session;

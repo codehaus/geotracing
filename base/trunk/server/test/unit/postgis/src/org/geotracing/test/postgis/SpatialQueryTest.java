@@ -1,8 +1,16 @@
 package org.geotracing.test.postgis;
 
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.Modifier;
+import org.keyworx.common.util.Sys;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
+import nl.justobjects.jox.dom.JXElement;
+import nl.justobjects.jox.parser.JXParser;
+import nl.justobjects.jox.parser.JXBuilder;
+
+import java.net.URL;
+import java.util.Vector;
 
 /**
  * Test class Oase-PostGIS spatial queries..
@@ -85,7 +93,7 @@ public class SpatialQueryTest extends PGTestCase {
 
 			info(queryNearest);
 			for (int i = 0; i < records.length; i++) {
-				info(records[i].getField("point")+"");
+				info(records[i].getField("point") + "");
 			}
 			assertEquals("result not equal ", 3, records.length);
 			assertEquals("result[0] not " + MIDDLE_POINT, MIDDLE_POINT, records[0].getField("point") + "");
@@ -118,7 +126,7 @@ public class SpatialQueryTest extends PGTestCase {
 
 			info(queryNearest);
 			for (int i = 0; i < records.length; i++) {
-				info(records[i].getField("point")+"");
+				info(records[i].getField("point") + "");
 			}
 			assertEquals("result not equal ", 1, records.length);
 			assertEquals("result[0] not " + MIDDLE_POINT, MIDDLE_POINT, records[0].getField("point") + "");
@@ -127,6 +135,74 @@ public class SpatialQueryTest extends PGTestCase {
 
 		} catch (Throwable t) {
 			failTest("testSelectNearestPointsInBBox: ", t);
+		}
+	}
+
+
+	public void testSelectPointsInBBoxIndexed() {
+		try {
+			fillGLocation();
+			// get all
+			long t1, t2;
+			Record[]	 records;
+
+			t1 = Sys.now();
+			String queryBBox = "SELECT * from g_location where lon >= 3 AND lat >= 52 AND lon <= 5 AND lat <= 54";
+			records = getFinder().freeQuery(queryBBox);
+			t2 = Sys.now();
+			info("Original lat/lon Query: " + (t2 - t1) + " ms   cnt=" + records.length);
+
+			t1 = Sys.now();
+			queryBBox = "SELECT * from g_location where pointnoidx && SetSRID('BOX3D(3 52, 5 54)'::box3d,4326)";
+			records = getFinder().freeQuery(queryBBox);
+			t2 = Sys.now();
+			info("Query without index: " + (t2 - t1) + " ms   cnt=" + records.length);
+
+			t1 = Sys.now();
+			queryBBox = "SELECT * from g_location where point && SetSRID('BOX3D(3 52, 5 54)'::box3d,4326)";
+			records = getFinder().freeQuery(queryBBox);
+			t2 = Sys.now();
+			info("Query with index: " + (t2 - t1) + " ms   cnt=" + records.length);
+		} catch (Throwable t) {
+			failTest("testSelectPointsInBBoxIndexed: ", t);
+		}
+	}
+
+	protected void fillGLocation() {
+		try {
+			String queryCount = "SELECT count(id) as count from g_location";
+			Record[] records = getFinder().freeQuery(queryCount);
+			long count = records[0].getLongField("count");
+			if (count > 0) {
+				return;
+			}
+			Modifier modifier = getModifier();
+			Record loc;
+			String lon, lat, pt;
+			info("inserting: recs");
+			int cnt=0;
+			for (int x = -45; x < 45; x++) {
+				for (int y = -90; y < 90; y++) {
+					loc = modifier.create(LOCATION_TABLE_NAME);
+					lon = x + "";
+					lat = y + "";
+					loc.setField("name", lon + "," + lat);
+					loc.setField("lon", lon);
+					loc.setField("lat", lat);
+					loc.setField("time", Sys.now() + "");
+					pt = "SRID=4326;POINT(" + lon + " " + lat + ")";
+					loc.setField("point", pt);
+					loc.setField("pointnoidx", pt);
+					modifier.insert(loc);
+					cnt++;
+
+				}
+
+			}
+
+			info("done: " + cnt + " recs");
+		} catch (Throwable t) {
+			failTest("fillGLocation: ", t);
 		}
 	}
 

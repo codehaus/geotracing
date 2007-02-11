@@ -4,6 +4,7 @@
 <context id="postgistest">
 	<tables>
 		<table file="tables/spatialone.xml"/>
+		<table file="tables/g_location.xml"/>
 	</tables>
 </context>
 
