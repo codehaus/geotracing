@@ -389,15 +389,18 @@ KW.USER = {
 	 */
 	update: function(callback, profileObj) {
 		var req = KW.createRequest('profile-update-req');
-		KW.UTIL.addOptTextElement('firstname', profileObj.firstName);
-		KW.UTIL.addOptTextElement('lastname', profileObj.lastName);
-		KW.UTIL.addOptTextElement('email', profileObj.email);
-		KW.UTIL.addOptTextElement('password', profileObj.password);
-		KW.UTIL.addOptTextElement('mobilenr', profileObj.mobileNumber);
-		KW.UTIL.addOptTextElement('photoid', profileObj.photoid);
-		KW.UTIL.addOptTextElement('tags', profileObj.tags);
+		var profile = req.createElement('profile');
+
+		KW.UTIL.addOptTextElement(profile, 'firstname', profileObj.firstname);
+		KW.UTIL.addOptTextElement(profile, 'lastname', profileObj.lastname);
+		KW.UTIL.addOptTextElement(profile, 'email', profileObj.email);
+		KW.UTIL.addOptTextElement(profile, 'password', profileObj.password);
+		KW.UTIL.addOptTextElement(profile, 'mobilenr', profileObj.mobilenr);
+		KW.UTIL.addOptTextElement(profile, 'photoid', profileObj.photoid);
+		KW.UTIL.addOptTextElement(profile, 'tags', profileObj.tags);
 		//addOptTextElement('desc', profileObj.description);
 		//addOptTextElement('visibility', profileObj.visibility);
+		req.documentElement.appendChild(profile);
 		KW.utopia(req, callback);
 	}
 }
