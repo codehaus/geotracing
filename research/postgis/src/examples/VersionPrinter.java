@@ -72,7 +72,7 @@ public class VersionPrinter {
 		printVersionString("getMinorVersion", d.getMinorVersion());
 
 		// Print PostgreSQL server versions
-		String dburl = "jdbc:postgresql://localhost:5432/gistest";
+		String dburl = "jdbc:postgresql://pundit:5432/gistest";
 		// String dburl = "jdbc:postgresql_lwgis://localhost:5432/gistest";
 		String driverClass = "org.postgresql.Driver";
 		// String driverClass = "org.postgis.DriverWrapperLW";

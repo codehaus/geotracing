@@ -14,6 +14,7 @@ keyworx with postgresql JDBC driver
 JDBC driver download
 http://jdbc.postgresql.org
 select postgresql-8.1-407.jdbc3.jar (JDBC 3)
+
 installed pgadminIII download from http://www.pgadmin.org
 installed 1.6.0 beta 1 mac os x
 
@@ -41,7 +42,7 @@ unpack
 cd jdbc2
 export POSTGIS_BUILD_CLASSPATH=/Users/just/project/waag/kwx/build/external/postgresql-8.1-407/postgresql.jar
 make
-make zitpfile postgis-jdbc-1.1.1.zip
+make zipfile postgis-jdbc-1.1.1.zip
 put in external and download when GT server is built
 
 - run postgresql server
@@ -125,6 +126,9 @@ GEOCOLUMN && Expand(GeomFromText(ÕPOINT(1000 1000)Õ,-1),100)
 AND
 Distance(GeomFromText(ÕPOINT(1000 1000)Õ,-1),GEOCOLUMN) < 100;
 
+See also:
+http://postgis.refractions.net/support/wiki/index.php?ExamplesFindNearby
+
 PostGresql online book
 http://www.faqs.org/docs/ppbook/book1.htm
 
@@ -153,6 +157,48 @@ i.e. the SELECT and GROUP BY fields must match
 see also
 http://drupal.org/node/56850
 http://drupal.org/node/20255
+
+Selecting geocoded postal codes within a given distance ( miles for example )
+http://postgis.refractions.net/pipermail/postgis-users/2002-December/001905.html
+
+DEBIAN INSTALL
+
+1) install
+apt-get install postgresql-8.1-postgis
+
+2) create oaseuser
+su postgres
+createuser oaseuser
+psql template1
+alter user oaseuser password '(the oase password)';
+\q
+
+check:
+psql -h localhost -U oaseuser template1
+
+3) setup postgis template DB
+su postgres
+createdb  postgis
+createlang plpgsql postgis
+psql -d postgis  -f /usr/share/postgresql-8.1-postgis/lwpostgis.sql
+psql -d postgis  -f /usr/share/postgresql-8.1-postgis/lwpostgis_upgrade.sql
+psql -d postgis  -f /usr/share/postgresql-8.1-postgis/spatial_ref_sys.sql
+
+4) phppgadmin
+apt-get install phppgadmin
+apt-get install php5-pgsql
+restart apache
+(may need to increase memsize php5 to 32M in /etc/php5/apache2/php.ini)
+
+MAC OS X
+phppgadmin
+- need pgsql.so in php
+- install php5
+ * download from http://www.entropy.ch/software/macosx/php/
+ * unpack .tar.gz
+ * uncomment php modules in /etc/httpd/httpd.conf
+ * run package installer
+
 
 
 
