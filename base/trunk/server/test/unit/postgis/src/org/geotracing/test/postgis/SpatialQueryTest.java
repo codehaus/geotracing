@@ -1,16 +1,8 @@
 package org.geotracing.test.postgis;
 
-import org.keyworx.oase.api.Record;
-import org.keyworx.oase.api.Modifier;
 import org.keyworx.common.util.Sys;
-import org.postgis.PGgeometry;
-import org.postgis.Point;
-import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXParser;
-import nl.justobjects.jox.parser.JXBuilder;
-
-import java.net.URL;
-import java.util.Vector;
+import org.keyworx.oase.api.Modifier;
+import org.keyworx.oase.api.Record;
 
 /**
  * Test class Oase-PostGIS spatial queries..
@@ -181,8 +173,8 @@ public class SpatialQueryTest extends PGTestCase {
 			String lon, lat, pt;
 			info("inserting: recs");
 			int cnt=0;
-			for (int x = -45; x < 45; x++) {
-				for (int y = -90; y < 90; y++) {
+			for (int x = 2; x < 10; x++) {
+				for (int y = 50; y < 60; y++) {
 					loc = modifier.create(LOCATION_TABLE_NAME);
 					lon = x + "";
 					lat = y + "";

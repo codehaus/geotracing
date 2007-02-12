@@ -20,7 +20,9 @@ public class AllTests extends SuiteRunner {
 		// Create the test suite using Class objects
 		TestSuite suite = new TestSuite("PostGIS Tests");
 		suite.addTestSuite(BasicsTest.class);
+		suite.addTestSuite(LineStringTest.class);
 		suite.addTestSuite(SpatialQueryTest.class);
+		suite.addTestSuite(AdminTest.class);
 		return suite;
 	}
 

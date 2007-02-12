@@ -1,10 +1,8 @@
 package org.geotracing.test.postgis;
 
-import org.keyworx.oase.api.*;
-import org.postgis.Point;
+import org.keyworx.oase.api.Record;
 import org.postgis.PGgeometryLW;
-import org.postgis.Geometry;
-import junit.framework.Assert;
+import org.postgis.Point;
 
 /**
  * Test class Oase-PostGIS basics..
@@ -65,8 +63,8 @@ public class BasicsTest extends PGTestCase {
 			assertEquals("result not equal to " + SRID_POINT_3 + " but " + result, result, SRID_POINT_3);
 
 			// METHOD 4: use OGC String format
-//			record.setField("point", "GeomFromText('POINT (4.92 52.35)', 4326)");
-			record.setField("point", SRID_POINT_4);
+			record.setStringField("point", "GeomFromText('POINT (-4.98 52.37)', 4326)");
+			// record.setField("point", SRID_POINT_4);
 			getModifier().update(record);
 			record = getFinder().read(id);
 			geom = (PGgeometryLW) record.getObjectField("point");
@@ -74,7 +72,7 @@ public class BasicsTest extends PGTestCase {
 			assertEquals("result not equal to " + SRID_POINT_4 + " but " + result, result, SRID_POINT_4);
 
 		} catch (Throwable t) {
-			failTest("testCreatePoint: ", t);
+			failTest("testInsertPoint: ", t);
 		}
 	}
 

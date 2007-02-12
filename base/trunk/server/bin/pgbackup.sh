@@ -3,11 +3,11 @@
 BACKUP_DIR="/var/keyworx/backup"
 
 PGHOST="localhost"
-PGUSER="postgres"
+# PGUSER="postgres"
 
 function pg_backup_database {
   DB=$1
-  pg_dump -o -bv -f $BACKUP_DIR/$DB.pgd -Fc $DB
+  pg_dump -obv -Fc -f $BACKUP_DIR/$DB.pgd $DB
 }
 
 if [ -n "$1" ]; then
