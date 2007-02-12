@@ -5,6 +5,7 @@
 	<tables>
 		<table file="tables/spatialone.xml"/>
 		<table file="tables/g_location.xml"/>
+		<table file="tables/g_track.xml"/>
 	</tables>
 </context>
 

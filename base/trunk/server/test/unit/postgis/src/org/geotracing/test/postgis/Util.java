@@ -1,8 +1,7 @@
 package org.geotracing.test.postgis;
 
-import org.postgis.Point;
 import org.postgis.PGgeometryLW;
-import org.postgis.PGgeometry;
+import org.postgis.Point;
 
 /**
  * Created by IntelliJ IDEA.

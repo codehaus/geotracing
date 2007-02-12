@@ -7,10 +7,17 @@ package org.geotracing.oase;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.TableDef;
 import org.keyworx.oase.api.FieldDef;
+import org.keyworx.oase.api.Record;
 import org.keyworx.oase.store.source.PostgreSQLDBSource;
+import org.keyworx.oase.store.record.RecordImpl;
+import org.keyworx.oase.config.TypeDef;
+import org.keyworx.oase.config.StoreContextConfig;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 /**
  * JDBC extensions for PostGIS spatial columns.
@@ -39,6 +46,102 @@ import java.util.ArrayList;
 
 public class PostGISDBSource extends PostgreSQLDBSource {
 	public static final String INDEX_GIST = "INDEX_GIST";
+
+	/**
+	 * Update Record.
+	 *
+	 * @throws org.keyworx.oase.api.OaseException
+	 *          Standard exception.
+	 */
+	public void update(Record aRecord) throws OaseException {
+
+		// Create the SQL SET part of prepared statement
+		Iterator changedFields = ((RecordImpl) aRecord).getChangedFields();
+		String fieldSQL = null;
+		TableDef tableDef = aRecord.getTableDef();
+		String nextFieldName = null;
+		int nextFieldType;
+		Object nextFieldValue;
+		while (changedFields.hasNext()) {
+			nextFieldName = (String) changedFields.next();
+			nextFieldType = tableDef.getFieldDef(nextFieldName).getType();
+
+			// Skip non-db fields.
+			if (!TypeDef.getSourceId(nextFieldType).equals(StoreContextConfig.SOURCE_DB)) {
+				continue;
+			}
+
+			// Geometry types may use OpenGIS string values
+			// these cannot be sent as String in a prepared statement but must
+			// be sent unquoted.
+			if (nextFieldType == FieldDef.TYPE_OBJECT) {
+				nextFieldValue = aRecord.getField(nextFieldName);
+				if (nextFieldValue != null && nextFieldValue instanceof String) {
+					if (fieldSQL == null) {
+						fieldSQL = nextFieldName + "=" + nextFieldValue;
+					} else {
+						fieldSQL += ", " + nextFieldName + "=" + nextFieldValue;
+					}
+					continue;
+				}
+			}
+
+			// Add the field name using smart ',' mapping.
+			if (fieldSQL == null) {
+				fieldSQL = nextFieldName + "=?";
+			} else {
+				fieldSQL += ", " + nextFieldName + "=?";
+			}
+		}
+
+		// Could be only non-db fields so do nothing in that case.
+		if (fieldSQL == null) {
+			return;
+		}
+
+		// Create the prepared statement and execute it.
+		Connection connection = null;
+		PreparedStatement statement = null;
+		try {
+			String sql = "UPDATE " + aRecord.getTableDef().getName() + " SET " + fieldSQL + " WHERE id = " + aRecord.getId();
+
+			connection = getConnection();
+			statement = connection.prepareStatement(sql);
+
+			// Fill in the values of the SQL SET part of prepared statement
+			changedFields = ((RecordImpl) aRecord).getChangedFields();
+			int nextFieldNuimber = 1;
+			while (changedFields.hasNext()) {
+				nextFieldName = (String) changedFields.next();
+				nextFieldType = tableDef.getFieldDef(nextFieldName).getType();
+
+				// Skip non-db fields.
+				if (!TypeDef.getSourceId(nextFieldType).equals(StoreContextConfig.SOURCE_DB))
+				{
+					continue;
+				}
+
+				// Skip for Geometry object types set as string
+				if (nextFieldType == FieldDef.TYPE_OBJECT) {
+					nextFieldValue = aRecord.getField(nextFieldName);
+					if (nextFieldValue != null && nextFieldValue instanceof String) {
+						continue;
+					}
+				}
+
+				// Set the field value.
+				statement.setObject(nextFieldNuimber++, aRecord.getField(nextFieldName));
+			}
+
+			// Perform the update.
+			statement.executeUpdate();
+
+		} catch (Throwable e) {
+			throw new OaseException("PostGISDBSource Record update failed for record id=" + aRecord.getId(), e);
+		} finally {
+			close(statement, connection);
+		}
+	}
 
 	/**
 	 * Extended DBSources may provide their specific DB post-creation constraints.

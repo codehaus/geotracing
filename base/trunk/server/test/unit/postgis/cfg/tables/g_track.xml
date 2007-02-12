@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+ 		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="name" />
+  		</list>
+
+		<query>
+			<field name="id" />
+			<field name="name" />
+  		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<field name="name" type="STRING" size="64" required="false" />
+
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="line" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,4,4326,INDEX_GIST"/>
+		<field name="linenoidx" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,4,4326"/>
+
+
+<!-- <field name="owner" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>
+		<field name="parent" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>
+		<field name="parenttable" type="INTEGER" required="true" foreignkey="nocascade" default="-1"/>
+		<field name="visibility" type="INTEGER" default="0" required="false" /> -->
+	</data>
+</table>

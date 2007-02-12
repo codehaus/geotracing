@@ -53,12 +53,16 @@ public class ProfileLogic {
 			}
 
 			JXElement profile = new JXElement(TAG_PROFILE);
-			String value = null;
+			String value;
+			Object objValue;
 
 			// Person info
 			for (int i = 0; i < PERSON_FIELDS.length; i++) {
-				value = person.getField(PERSON_FIELDS[i]).toString();
-				profile.setChildText(PERSON_FIELDS[i], value);
+				objValue = person.getField(PERSON_FIELDS[i]);
+				if (objValue == null) {
+					continue;
+				}
+				profile.setChildText(PERSON_FIELDS[i], objValue.toString());
 			}
 
 			// Person extra field
@@ -66,6 +70,9 @@ public class ProfileLogic {
 			if (extra != null) {
 				for (int i = 0; i < PERSON_EXTRA_FIELDS.length; i++) {
 					value = extra.getChildText(PERSON_EXTRA_FIELDS[i]);
+					if (value == null) {
+						continue;
+					}
 					profile.setChildText(PERSON_EXTRA_FIELDS[i], value);
 				}
 			}
@@ -73,7 +80,7 @@ public class ProfileLogic {
 			// Add tags related to user if present
 			TagLogic tagLogic = new TagLogic(oase.getOaseSession());
 			String tags = tagLogic.getTagsString(aPersonId, aPersonId);
-            if (tags != null && tags.length() > 0) {
+			if (tags != null && tags.length() > 0) {
 				profile.setChildText(FIELD_TAGS, tags);
 			}
 
@@ -104,8 +111,8 @@ public class ProfileLogic {
 			log.info("Updating profile for id=" + personId);
 
 			// First get current person/account info
-			Record person, account= null;
-			person = oase.getFinder().read(personId );
+			Record person, account = null;
+			person = oase.getFinder().read(personId);
 			account = oase.getRelater().getRelated(person, TABLE_ACCOUNT, null)[0];
 
 			// Account updates
@@ -154,7 +161,6 @@ public class ProfileLogic {
 				oase.getModifier().update(account);
 			}
 
-
 			// Update user photo ?
 			value = aProfileElm.getChildText(FIELD_PHOTOID);
 			if (value != null && value.length() > 0) {
@@ -174,11 +180,16 @@ public class ProfileLogic {
 			}
 
 			// Update tags
-			value = aProfileElm.getChildText(FIELD_TAGS);
-			if (value != null && value.length() > 0) {
-
-				// Split value string into tag array according to regexp
-				String[] tags = TagLogic.parseTagString(value);
+			JXElement tagsElm = aProfileElm.getChildByTag(FIELD_TAGS);
+			if (tagsElm != null) {
+				String[] tags = new String[0];
+				
+				// See if we have a value otherwise we will clear tags
+				value = tagsElm.getText();
+				if (value != null && value.length() > 0) {
+					// Split value string into tag array according to regexp
+					tags = TagLogic.parseTagString(value);
+				}
 
 				// Assign (may replace) all tags to this person
 				TagLogic tagLogic = new TagLogic(oase.getOaseSession());

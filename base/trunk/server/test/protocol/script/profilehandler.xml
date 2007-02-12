@@ -85,6 +85,7 @@
 						<lastname>newlastname</lastname>
 						<email>geo@app.com</email>
 						<mobilenr>0612345678</mobilenr>
+						<tags>geo app user</tags>
 					</profile>
 				</profile-get-rsp>
 			</utopia-rsp>
@@ -149,6 +150,45 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-update-clear-tags">
+		<send id="client1">
+			<utopia-req>
+				<profile-update-req>
+					<profile>
+						<tags/>
+					</profile>
+				</profile-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-get-req-after-clear-tags">
+		<send id="client1">
+			<utopia-req>
+				<profile-get-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-get-rsp>
+					<profile>
+						<firstname>newfirstname</firstname>
+						<lastname>newlastname</lastname>
+						<email>geo@app.com</email>
+						<mobilenr>0612345678</mobilenr>
+					</profile>
+				</profile-get-rsp>
 			</utopia-rsp>
 		</expect>
 	</test>

@@ -1,13 +1,10 @@
 package org.geotracing.test.postgis;
 
 import junit.framework.TestCase;
-import junit.framework.ComparisonFailure;
+import org.keyworx.oase.api.*;
 import org.keyworx.oase.config.StoreContextConfig;
 import org.keyworx.oase.main.Main;
 import org.keyworx.oase.main.OaseContextManager;
-import org.keyworx.oase.util.Util;
-import org.keyworx.oase.api.*;
-import org.keyworx.common.util.Rand;
 
 /**
  * Test class <code>Finder</code>.
@@ -18,6 +15,7 @@ public class PGTestCase extends TestCase {
 	static final public String OASE_CONTEXT_NAME = "postgistest";
 	static final public String SPATIAL_ONE_TABLE_NAME = "spatialone";
 	static final public String LOCATION_TABLE_NAME = "g_location";
+	static final public String TRACK_TABLE_NAME = "g_track";
 
 
 	private OaseSession session;
@@ -67,6 +65,7 @@ public class PGTestCase extends TestCase {
 	}
 
 	protected void deleteAll() throws OaseException {
+		deleteAll(TRACK_TABLE_NAME);
 		deleteAll(SPATIAL_ONE_TABLE_NAME);
 		deleteAll(StoreContextConfig.TABLE_NAME_RELATION);
 		deleteAll(StoreContextConfig.TABLE_NAME_RELATIONDEF);
