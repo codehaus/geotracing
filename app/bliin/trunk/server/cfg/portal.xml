@@ -41,6 +41,11 @@
 				<property name="max-content-chars">1024</property>
 				<property name="thread-alert">false</property>
 			</handler>
+			
+			<handler id="profile" class="org.geotracing.handler.ProfileHandler">
+				<property name="logic">org.geotracing.handler.ProfileLogic</property>
+			</handler>
+
 
 			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
 			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
