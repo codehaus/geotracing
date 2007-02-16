@@ -73,7 +73,7 @@
 
 	<!-- The comment delete request -->
 	<element tag="cmt-delete-req"  comment="comment delete request">
-		<attribute name="id" comment="the comment id: if omitted active comment is deleted" type="int" optional="true"/>
+		<attribute name="id" comment="the comment id: if omitted active comment is deleted" type="int" optional="false"/>
 	</element>
 
 	<!-- The comment delete response -->

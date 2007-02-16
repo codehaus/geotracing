@@ -68,7 +68,7 @@ public class LineStringTest extends PGTestCase {
 			String select = "SELECT AddPoint(line, GeomFromText('POINT(9 10 11 12)',4326)) as line FROM ( SELECT line FROM g_track WHERE id=" + id + ") foo;";
 			Record[] records = getFinder().freeQuery(select);
 			assertEquals("result not equal ", 1, records.length);
-			// LineString line = (LineString) ((PGgeometryLW) record.getObjectField("line")).getGeometry();
+			LineString line = (LineString) ((PGgeometryLW) record.getObjectField("line")).getGeometry();
 
 			// record.setObjectField("line", records[0].getField("line"));
 			

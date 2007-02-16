@@ -261,7 +261,7 @@ KW.TAG = {
 	 */
 	add: function(callback, itemIds, tags) {
 	    // <tagging-tag-req items="123,345,567" tags="tag1 tag2 'tag 3' 'tag 4' tag5 tag6" mode="add"/>
-		var req = KW.createRequest('tagging-tag-req ');
+		var req = KW.createRequest('tagging-tag-req');
 		KW.UTIL.setAttr(req, 'items', itemIds);
 		KW.UTIL.setAttr(req, 'tags', tags);
 		KW.UTIL.setAttr(req, 'mode', 'add');
@@ -276,7 +276,7 @@ KW.TAG = {
 	 */
 	replace: function(callback, itemIds, tags) {
 	    // <tagging-tag-req items="${item1id},${item2id},${item3id}" tags="tag1 tag2 'tag 3' 'tag 4' tag5 tag6" mode="replace"/>
-		var req = KW.createRequest('tagging-tag-req ');
+		var req = KW.createRequest('tagging-tag-req');
 		KW.UTIL.setAttr(req, 'items', itemIds);
 		KW.UTIL.setAttr(req, 'tags', tags);
 		KW.UTIL.setAttr(req, 'mode', 'replace');
@@ -291,7 +291,7 @@ KW.TAG = {
 	 */
 	del: function(callback, itemIds, tags) {
 		// <tagging-untag-req items="${item1id},${item2id}" tags="tag1 'tag 3'"/>
-		var req = KW.createRequest('tagging-untag-req ');
+		var req = KW.createRequest('tagging-untag-req');
 		KW.UTIL.setAttr(req, 'items', itemIds);
 		KW.UTIL.setAttr(req, 'tags', tags);
 		KW.utopia(req, callback);
