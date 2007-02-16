@@ -4,19 +4,23 @@
 	{
 		case "usemedia": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRR9K9grcqoQe1tHkLoYPt38-q6EehRkJh5NYPiv32J2_6Cs7EtFN96o0w"; $type="local"; break;
 		case "bliin.com": case "www.bliin.com": case "test.bliin.com": $key= "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRSFYVerP0SQAckZ4lP_icglXWi2BhSgH_3wnCI0rd9qUGwD7e6DSIMphw"; $type="online"; break;
-		case "local.bliin.com": $key= "ABQIAAAAD3bxjYK2kuWoA5XU4dh89xTYfeoXMe6zczV0GoFpYIhrtdK0uBR0hTiG02sjHqO9gqSpnNMp50FJ6Q"; break;
+		case "test.geotracing.com": $key= "ABQIAAAAD3bxjYK2kuWoA5XU4dh89xRwJAeN3G50o_YQw1rKznRUFZZPJBQfSrLrU-Dm48ebDMIZwnAIMGhljQ"; break;
 	}
 	//needed for google polylines in MSIE
-	if (eregi("MSIE",$_SERVER['HTTP_USER_AGENT']))
+	if (eregi("MSIE",$_SERVER["HTTP_USER_AGENT"]))
 	{
 		$urn = "xmlns:v=\"urn:schemas-microsoft-com:vml\"";
 		$vml = "\n<style type=\"text/css\">v\:* { behavior:url(#default#VML); }</style>\n";
 	}
 	//for beta development
  	$dev = eregi("dev",$_SERVER["REQUEST_URI"])? "javascript:tmp_debug('toggle')":"";
- 	$title = ($dev=="")? "bliin &ordm; navigating experiences":"bliin &ordm; development";
+ 	$title = ($dev=="")? "bliin YourLIVE! &ordm; real-time social network":"bliin &ordm; development";
  	$debug = ($dev=="")? "":"//debug mode ON\n\t\ttmp_debug('toggle');\n";
  	$defaultzoom = ($dev=="")? 2:15;
+ 	$queries = ($_GET['q']==1)? "ii_queries_off = false;":"ii_queries_off = true;";
+ 	if ($_GET['user']) $search = "ii_link = '".$_GET["user"]."'; ii_link_type = 'user';\n";
+ 	else if ($_GET['share']) $search = "ii_link = '".$_GET["share"]."'; ii_link_type = 'share';\n";
+ 	else $search = "ii_link = false;\n";
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" <?=$urn?>>
 
@@ -57,11 +61,16 @@
 <script type="text/javascript" src="/bliin01/lib/ajax-pushlet-client.js"></script>
 <script type="text/javascript" src="/bliin01/lib/KWClient.js"></script>
 <script type="text/javascript" src="/bliin01/lib/KWClientExt.js"></script>
+<!-- 
+<script type="text/javascript" src="script/KWClientExt_mod.js"></script>
+ -->
 
 <!-- init -->
 
 <script type="text/javascript">
 //<![CDATA[
+
+<?=$search?>
 
 function init()
 {
@@ -72,7 +81,7 @@ function init()
 	else
 	{
 		<?=$debug?>
-		iiLoadingAnim(true);
+		//iiLoadingAnim(true);
 		
 		/* init the google map */
 
@@ -110,6 +119,8 @@ function init()
 		/* init geotracing stuff */
 		
 		//queries
+		<?=$queries?> //use javascript boundingbox filtering instead of server query for each update
+		
 		SRV.init();
 		SRV.url = '/bliin01/srv/get.jsp?';
 		//requests
@@ -167,10 +178,13 @@ function iiUnload() //-> for beta development
 
 		<script type="text/javascript">document.write(tmp_dev())</script>
 
-		<img id="bliin_logo" src="media/bliin_nav_experiences_BETA.gif" style="position:absolute; left:45px; top:0px; border:0px" ondblclick="tmp_debug('toggle')"/>
+		<div id="bliin_logo" style="position:absolute; left:45px; top:0px; height:40px">
+			<img src="media/bliin_yourlive_BETA.gif" ondblclick="tmp_debug('toggle')" style="float:left">
+			<div id="live">localtime</div>
+		</div>
 
 		<div id="meta">
-			<span id="togglestatus"><a href="javascript://show_status" onclick="iiToggleDisplay()">show status</a> | </span><a href="javascript://about_bliin" onclick="iiAbout('pane')">about</a> | <a href="javascript://promo_videos" onclick="iiPromo('pane')">watch</a> | <a href="http://www.kkep.com/bliin/blog" target="_blank">blog</a> | <a href="javascript://bliin_downloads" onclick="iiDownload()">download</a><span id="ii_logout"></span>
+			<span id="togglestatus"><a href="javascript://show_status" onclick="iiToggleDisplay()">show status</a> | </span><a href="javascript://about_bliin" onclick="iiAbout('pane')">info</a><!--  | <a href="javascript://promo_videos" onclick="iiPromo('pane')">watch</a> --> | <a href="http://blog.bliin.com" target="_blank">blog</a> | <a href="http://forum.bliin.com" target="_blank">forum</a><span id="ii_logout"></span>
 		</div>
 		
 	</div>
