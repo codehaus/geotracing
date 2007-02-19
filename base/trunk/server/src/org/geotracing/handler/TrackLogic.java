@@ -810,7 +810,6 @@ public class TrackLogic {
 
 					if (timeMillis > 0) {
 						medium.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timeMillis));
-				//		oase.getModifier().update(medium);
 					}
 
 
