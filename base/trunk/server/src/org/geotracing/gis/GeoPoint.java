@@ -47,6 +47,9 @@ public class GeoPoint {
 		this(Double.parseDouble(aLonStr), Double.parseDouble(aLatStr));
 	}
 
+	public GeoPoint(String aLonStr, String aLatStr, String anEleStr) {
+		this(Double.parseDouble(aLonStr), Double.parseDouble(aLatStr), Double.parseDouble(anEleStr));
+	}
 	public GeoPoint(double aLon, double aLat) {
 		this(aLon, aLat, 0D);
 	}

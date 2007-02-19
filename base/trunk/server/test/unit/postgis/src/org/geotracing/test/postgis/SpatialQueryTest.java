@@ -178,6 +178,11 @@ public class SpatialQueryTest extends PGTestCase {
 					loc = modifier.create(LOCATION_TABLE_NAME);
 					lon = x + "";
 					lat = y + "";
+					if (x == 4 && y== 52) {
+						lon = x + ".73";
+						lat = y + ".37";
+
+					}
 					loc.setField("name", lon + "," + lat);
 					loc.setField("lon", lon);
 					loc.setField("lat", lat);

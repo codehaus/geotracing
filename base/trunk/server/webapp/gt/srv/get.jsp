@@ -698,12 +698,13 @@
 				addUserAttrs(result, "g_track");
 
 			} else if (command.equals(CMD_QUERY_ALL_TRACKS)) {
-				String tables = "utopia_person,utopia_account,g_track,g_location";
-				String fields = "g_track.id,g_track.name,g_track.state,utopia_account.loginname,g_location.lon,g_location.lat,g_location.time";
+				String tables = "g_track";
+				String fields = null;
 				String where = null;
-				String relations = "g_track,g_location,lastpt;g_track,utopia_person;utopia_person,utopia_account";
-				String postCond = "ORDER BY utopia_account.loginname";
+				String relations = null;
+				String postCond = null;
 				result = QueryHandler.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				addUserAttrs(result, "g_track");
 			} else if (command.equals(CMD_QUERY_TRACKS_BY_USER)) {
 				String userName = getParameter(request, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, userName);

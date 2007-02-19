@@ -5,6 +5,7 @@ import org.keyworx.oase.api.*;
 import org.keyworx.oase.config.StoreContextConfig;
 import org.keyworx.oase.main.Main;
 import org.keyworx.oase.main.OaseContextManager;
+import org.keyworx.common.util.Sys;
 
 /**
  * Test class <code>Finder</code>.
@@ -20,6 +21,7 @@ public class PGTestCase extends TestCase {
 
 	private OaseSession session;
 	private String name;
+	private long t1, t2;
 
 	public PGTestCase(String aName) {
 		super(aName);
@@ -66,7 +68,7 @@ public class PGTestCase extends TestCase {
 
 	protected void deleteAll() throws OaseException {
 		deleteAll(TRACK_TABLE_NAME);
-		deleteAll(SPATIAL_ONE_TABLE_NAME);
+		// deleteAll(SPATIAL_ONE_TABLE_NAME);
 		deleteAll(StoreContextConfig.TABLE_NAME_RELATION);
 		deleteAll(StoreContextConfig.TABLE_NAME_RELATIONDEF);
 	}
@@ -120,5 +122,14 @@ public class PGTestCase extends TestCase {
 
 	protected void dbg(String aMessage) {
 		System.err.println("DEBUG[" + name + "]: " + aMessage);
+	}
+
+	protected void startTimer() {
+		t1 = Sys.now();
+	}
+
+	protected void showTimeDelta(String msg) {
+		t2 = Sys.now();
+		info(msg + " time=" + (t2-t1) + " ms");
 	}
 }
