@@ -74,8 +74,9 @@ public class LineStringTest extends PGTestCase {
 			
 			// Update g_track set line=AddPoint(line, GeomFromText('POINT(4.92 52.35)',4326)) where id=101;
 			record.setStringField("line", "AddPoint(line, GeomFromText('POINT(9 10 11 12)',4326))");
+			startTimer();
 			getModifier().update(record);
-
+			showTimeDelta("AddPoint");
 			record = getFinder().read(id);
 			String result = record.getObjectField("line").toString();
 			assertEquals("result not equal to " + SRID_LINE_2 + " but " + result, result, SRID_LINE_2);

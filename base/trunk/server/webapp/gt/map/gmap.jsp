@@ -74,7 +74,7 @@
 
 		// e.g. http://mt.google.com/mt?v=.1&x=480&y=-109&zoom=5;
 		// v=ap.31
-		tileURL = "http://mt" + GoogleTiles.getTileServerNo(xy.x, xy.y) + ".google.com/mt?v=ap.31&" + tileRef;
+		tileURL = "http://mt" + GoogleTiles.getTileServerNo(xy.x, xy.y) + ".google.com/mt?" + tileRef;
 		// llBox = GoogleTiles.getBoundingBox(xy.x, xy.y, zoom);
 	}
 

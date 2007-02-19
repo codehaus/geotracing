@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.HashMap;
 
 /**
  * Implements logic for Track manipulation.
@@ -218,7 +219,7 @@ public class TrackLogic {
 							date = EXIF_TIME_FORMAT.parse(dateString);
 							log.trace("Got date from EXIF date=" + dateString + " java Date=" + date);
 						} catch (ParseException pe) {
-						   log.warn("Could not parse EXIF date: [" + dateString + "] for medium id=" + aMediumId);
+							log.warn("Could not parse EXIF date: [" + dateString + "] for medium id=" + aMediumId);
 							// timestamp will be medium creation date
 						}
 
@@ -683,6 +684,7 @@ public class TrackLogic {
 						} else {
 							timeMillis = Long.parseLong(time); // try for unix time
 						}
+
 						if (startTime == -1) {
 							startTime = timeMillis;
 						}
@@ -707,12 +709,6 @@ public class TrackLogic {
 			throw new UtopiaException("no track events could be distilled from GPX: ", ErrorCode.__6004_Invalid_attribute_value);
 		}
 
-		// Add Waypoints as media
-		Vector wptElms = aTrackDoc.getChildrenByTag("wpt");
-		if (wptElms != null && wptElms.size() > 0) {
-			// TODO import waypoints		
-		}
-
 		// Create and save the track
 		Track track = Track.create(oase);
 		track.insert(aPersonId, aName, Track.VAL_NORMAL_TRACK, startTime);
@@ -723,8 +719,128 @@ public class TrackLogic {
 		track.setState(Track.VAL_INACTIVE);
 		track.saveUpdate();
 
-		// track.addData(resumeElement);
-		log.info("Track imported trackId=" + track.getId() + " personId=" + aPersonId);
+		log.info("Track imported from GPX trackId=" + track.getId() + " personId=" + aPersonId);
+
+		// Add optional Waypoints as media,
+		Vector wptElms = aTrackDoc.getChildrenByTag("wpt");
+		if (wptElms != null && wptElms.size() > 0) {
+			log.info("Track adding " + wptElms.size() + " waypoints to GPX trackId=" + track.getId() + " personId=" + aPersonId);
+
+			// Read person once
+			Record person;
+			try {
+				person = oase.getFinder().read(aPersonId);
+			} catch (OaseException oe) {
+				throw new UtopiaException("cannot read person ", oe);
+			}
+
+			// Go through all waypoints, if we fail just skip over
+			// TODO: make more robust, now we just skip to the next waypt on error
+			for (int i = 0; i < wptElms.size(); i++) {
+				Transaction transaction=null;
+				try {
+					transaction = oase.startTransaction();
+					// Next wpt
+					JXElement nextWpt = (JXElement) wptElms.elementAt(i);
+
+					// Height (elevation)
+					String ele = nextWpt.getChildText("ele");
+					if (ele == null) {
+						ele = "0.0";
+					}
+
+					// Assuming lon/lat is ok.
+					GeoPoint geoPoint = new GeoPoint(nextWpt.getAttr("lon"), nextWpt.getAttr("lat"), ele);
+
+					// Handle time (optional)
+					String time = nextWpt.getChildText("time");
+					long timeMillis = -1;
+					if (time != null) {
+						try {
+							if (time.length() == 20) {
+								timeMillis = TrackExport.GPX_TIME_FORMAT.parse(time).getTime();
+							} else if (time.length() == 24) {
+								timeMillis = TrackExport.GPX_TIME_FORMAT_MILLIS.parse(time).getTime();
+							} else {
+								timeMillis = Long.parseLong(time); // try for unix time
+							}
+							if (timeMillis != -1) {
+								geoPoint.timestamp = timeMillis;
+							}
+						} catch (ParseException pe) {
+							throw new UtopiaException("Cannot parse time element in GPX: " + time, ErrorCode.__6004_Invalid_attribute_value);
+						}
+					}
+
+					// Store waypoint as medium, assemble media attrs as much as possible
+					HashMap mediaFields = new HashMap(3);
+
+					// Creation date if set
+
+					// Name and description
+					String name = nextWpt.getChildText("name");
+					if (name == null || name.length() == 0) {
+						name = "unnamed waypoint";
+					}
+
+					mediaFields.put(MediaFiler.FIELD_NAME, name);
+
+					String desc = nextWpt.getChildText("desc");
+					if (desc == null || desc.length() == 0) {
+						desc = "no description supplied";
+					}
+					mediaFields.put(MediaFiler.FIELD_DESCRIPTION, desc);
+
+					// Inserted media record
+					Record medium;
+
+					// Insert from link or as plain text dependent if "link" elm present
+					String link = nextWpt.getChildText("link");
+					if (link != null && link.length() > 0) {
+						// Link for waypoint: download and insert media file
+						medium = oase.getMediaFiler().grab(link, mediaFields)[0];
+					} else {
+						// No link: use description as text for medium file
+						medium = oase.getMediaFiler().insert(desc.getBytes(), mediaFields);
+					}
+
+					if (medium == null) {
+						continue;
+					}
+
+					if (timeMillis > 0) {
+						medium.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timeMillis));
+				//		oase.getModifier().update(medium);
+					}
+
+
+					// Ok medium record inserted link to person,track and location
+
+					// Create location record
+					Location location = Location.create(oase);
+					location.setLocation(geoPoint);
+					location.setStringValue(Location.FIELD_NAME, "Location for " + REL_TAG_MEDIUM);
+					location.saveInsert();
+
+					// Create all relations
+					oase.getRelater().relate(medium, person, REL_TAG_MEDIUM);
+					location.createRelation(medium, REL_TAG_MEDIUM);
+					track.createRelation(medium, REL_TAG_MEDIUM);
+					transaction.commit();
+				} catch (Throwable t) {
+					log.warn("Unexpected error adding GPX waypoint #" + i + " to track", t);
+					if (transaction != null) {
+						try {
+							transaction.cancel();
+						} catch (Throwable ignore) {
+							log.warn("Unexpected error canceling transaction for GPX waypoint #" + i + " to track", t);
+
+						}
+					}
+				}
+			}
+		}
+
 		return track;
 	}
 

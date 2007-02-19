@@ -519,6 +519,7 @@ public class TracingHandler extends DefaultHandler {
 	 */
 	public JXElement uploadFileMedium(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
+
 		String type = reqElm.getAttr(ATTR_TYPE, null);
 		String mime = reqElm.getAttr(ATTR_MIME, null);
 		// file attr is filename

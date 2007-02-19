@@ -63,4 +63,14 @@ public class WGS84toRD {
 		return new NLBesselpos(phiNL, lamNL);
 	}
 
+	public static void main(String[] args) {
+		if (args.length != 2) {
+			p("Usage: org.geotracing.gis.proj.WGS84toRD lon lat");
+			System.exit(0);
+		}
+
+		XY xy = calculate(args[1], args[0]);
+		p(xy.x + " " + xy.y);
+	}
+
 }
