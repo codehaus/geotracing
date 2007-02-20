@@ -60,8 +60,8 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 	<!-- The .jar -->
 	<property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
 	<property name="project.war" value="${build.dir}/${war.name}.war"/>
-	<property name="package.zip" value="${dist.dir}/${project.id}-${version}.zip"/>
-	<property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${version}.zip"/>
+	<property name="package.zip" value="${dist.dir}/${project.id}-${project.version}.zip"/>
+	<property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${project.version}.zip"/>
 
 	<!-- Construct compilation sourcepath -->
 	<path id="compile.sourcepath">
@@ -153,7 +153,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 				<attribute name="Built-By" value="${user.name}"/>
 				<section name="org/geotracing">
 					<attribute name="Implementation-Title" value="${project.name}"/>
-					<attribute name="Implementation-Version" value="${version}-${DSTAMP}-${TSTAMP}"/>
+					<attribute name="Implementation-Version" value="${project.version}-${DSTAMP}-${TSTAMP}"/>
 					<attribute name="Implementation-Vendor" value="Waag Society"/>
 				</section>
 			</manifest>
@@ -250,7 +250,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 		<!-- Make zip -->
 		<zip zipfile="${packagewar.zip}">
 			<zipfileset dir="${build.war.dir}"
-				prefix="${project.id}-war-${version}"
+				prefix="${project.id}-war-${project.version}"
 				excludes="WEB-INF/cfg/portal.xml" >
 			</zipfileset>
 		</zip>
@@ -267,7 +267,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 		<delete file="${package.zip}"/>
 		<zip zipfile="${package.zip}">
 			<zipfileset dir="${home}"
-				prefix="${project.id}-${version}"
+				prefix="${project.id}-${project.version}"
 				excludes="version/**,build/class/**,build/war/**,build/${project.war}"/>
 		</zip>
 
@@ -299,18 +299,6 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 	<target name="clean" depends="init">
 		<delete dir="${build.dir}"/>
 		<mkdir dir="${build.lib.dir}"/>
-	</target>
-
-	<target name="sync-site">
-		<copy todir="${deploy.live.dir}" overwrite="true">
-			<fileset dir="${home.webapp.dir}/site"/>
-		</copy>
-	</target>
-
-	<target name="sync-site-local">
-		<copy todir="${deploy.local.dir}/site" overwrite="true">
-			<fileset dir="${home.webapp.dir}/site"/>
-		</copy>
 	</target>
 
 	<target name="deploy-local">

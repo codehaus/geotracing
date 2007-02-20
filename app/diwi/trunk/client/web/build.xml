@@ -1,0 +1,108 @@
+<!--
+
+ANT Build file for DIWI Portal Web Client.
+
+$Id$
+-->
+<project name="diwi-web-client" default="build" basedir=".">
+
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+
+	<!-- Project global properties; overrule by modifying build.properties -->
+    <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+
+	<!-- Initialization of project properties (dirs, files) -->
+	<property file="${home}/../../build.properties"/>
+
+	<property name="home.external" value="${home}/lib"/>
+
+	<!-- The .jar -->
+	<property name="package.name" value="${project.id}-web-${project.version}"/>
+	<property name="package.zip" value="${home}/../../dist/${package.name}.zip"/>
+
+	<target name="clean">
+		<delete dir="${home.external}"/>
+		<delete file="${package.zip}"/>
+	</target>
+
+	<!-- Initialize: create dirs and set timestamp.. -->
+	<target name="init" depends="clean">
+		<mkdir dir="${home.external}"/>
+		<mkdir dir="${home}/../../dist"/>
+		<tstamp/>
+	</target>
+
+	<!-- Optional download/upack of external packages. -->
+	<target name="externals" depends="init">
+		<echo message="downloading and unpacking external packages"/>
+
+		<!-- OpenLayers - for map display in browser. -->
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${openlayers}"/>
+		</ant>
+	</target>
+
+	<!-- Assemble external files -->
+	<target name="assemble" depends="externals">
+		<echo message="Assembling files..."/>
+
+		<!-- Copy external JS libs. -->
+
+		<!-- GeoTracing base JS files. -->
+		<copy todir="${home.external}/gt">
+			<fileset dir="${geotracing.base.dir}/server/webapp/gt/lib" >
+				<include name="DHTML.js"/>
+				<include name="KWClient.js"/>
+				<include name="KWClientExt.js"/>
+				<include name="Record.js"/>
+				<include name="Server.js"/>
+			</fileset>
+		</copy>
+
+		<!-- OpenLayers JS files. -->
+		<copy todir="${home.external}/openlayers">
+			<fileset dir="${openlayers.dir}" >
+				<include name="img/**/*" />
+				<include name="lib/**/*" />
+				<include name="theme/**/*" />
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package" depends="assemble">
+		<echo message="Packaging distribution into ${package.zip}"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${home}"/>
+		</zip>
+	</target>
+
+	<!-- Build all clean. -->
+	<target name="build" depends="package"/>
+
+	<target name="copy-test" depends="assemble">
+		<exec executable="scp">
+			<arg line="-r"/>
+			<arg line="${home}/"/>
+			<arg line="${deploy.test.dir}/web" />
+		</exec>
+	</target>
+
+	<target name="deploy-local" depends="assemble">
+		<copy todir="${deploy.local.dir}/web" overwrite="true">
+			<fileset dir="${home}" />
+		</copy>
+	</target>
+
+	<target name="deploy-local-diwi-only" depends="assemble">
+		<copy todir="${deploy.local.dir}/web" overwrite="true">
+			<fileset dir="${home}" excludes="ext/**/*"/>
+		</copy>
+	</target>
+
+</project>
