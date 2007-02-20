@@ -16,6 +16,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.amuse.core.Protocol;
 
 /**
  * Handles all operations related to commenting.
@@ -41,7 +42,7 @@ public class RouteHandler extends DefaultHandler {
 		String service = anUtopiaReq.getServiceName();
 		log.trace("Handling request for service=" + service);
 
-		JXElement response = new JXElement();
+		JXElement response = Protocol.createResponse(service);
 
 		// Always return a response
 		log.trace("Handled service=" + service + " response=" + response.getTag());

@@ -1,0 +1,48 @@
+<testset id="routehandler" clients="1">
+
+	 <!-- Standard KWX login sequence -->
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<!-- A fake request to just test the entire setup -->
+	<test id="route-create-1">
+		<send id="client1">
+			<utopia-req>
+				<route-create-req>
+					<prefs bos="80"  heide="30" />
+				</route-create-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<route-create-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+
