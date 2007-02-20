@@ -17,6 +17,7 @@ public class PGTestCase extends TestCase {
 	static final public String SPATIAL_ONE_TABLE_NAME = "spatialone";
 	static final public String LOCATION_TABLE_NAME = "g_location";
 	static final public String TRACK_TABLE_NAME = "g_track";
+	static final public String ROUTE_TABLE_NAME = "g_route";
 
 
 	private OaseSession session;

@@ -7,6 +7,7 @@ import org.keyworx.oase.store.record.RecordImpl;
 import org.postgis.Point;
 import org.postgis.PGgeometryLW;
 import org.postgis.LineString;
+import org.postgis.PGgeometry;
 
 /**
  * Test class Oase-PostGIS LINESTRING type.
@@ -46,7 +47,27 @@ public class LineStringTest extends PGTestCase {
 		}
 	}
 
-	public void testAppendLine() {
+	public void testImportRoute() {
+		try {
+		   String gpxPath = "../data/ringvaart.gpx";
+			LineString lineString = Util.GPX2LineString(gpxPath);
+			PGgeometryLW geom = new PGgeometryLW(lineString);
+
+			// Simple: create and update and commit.
+			Record record = getModifier().create(ROUTE_TABLE_NAME);
+			assertNotNull("table.create()", record);
+
+			record.setStringField("name", "ringvaart");
+			record.setObjectField("route_geom", geom);
+			getModifier().insert(record);
+
+
+		} catch (Throwable t) {
+			failTest("testImportRoute: ", t);
+		}
+	}
+
+		public void testAppendLine() {
 		try {
 
 			// Simple: create and update and commit.
@@ -71,7 +92,7 @@ public class LineStringTest extends PGTestCase {
 			LineString line = (LineString) ((PGgeometryLW) record.getObjectField("line")).getGeometry();
 
 			// record.setObjectField("line", records[0].getField("line"));
-			
+
 			// Update g_track set line=AddPoint(line, GeomFromText('POINT(4.92 52.35)',4326)) where id=101;
 			record.setStringField("line", "AddPoint(line, GeomFromText('POINT(9 10 11 12)',4326))");
 			startTimer();
