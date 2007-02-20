@@ -280,7 +280,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 
 
 	<!-- Run protocol test client. -->
-	<target name="test" description="Runs protocol test client">
+	<target name="test-protocol" description="Runs protocol test client">
 
 		<java classname="org.keyworx.amuse.test.protocol.Main"
 			fork="true"
@@ -295,24 +295,6 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 			</classpath>
 		</java>
 	</target>
-
-	   <!-- Migration task (not used).
-	<target name="migrate" description="Migration of old geoskating/sailing">
-
-		<java classname="org.geotracing.util.MigrateTracks"
-			fork="true"
-			failonerror="true"
-			maxmemory="128m"
-			>
-			<arg value="${home.test.dir}/protocol/test.properties"/>
-
-			<classpath>
-				<pathelement location="${keyworx.jar}"/>
-				<pathelement location="${project.jar}"/>
-			</classpath>
-		</java>
-	</target>
-     -->
 
 	<target name="clean" depends="init">
 		<delete dir="${build.dir}"/>
@@ -330,7 +312,6 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 			<fileset dir="${home.webapp.dir}/site"/>
 		</copy>
 	</target>
-
 
 	<target name="deploy-local">
 		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>

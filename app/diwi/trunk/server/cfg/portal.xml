@@ -3,6 +3,8 @@
 	<!-- Standard host-dependent container properties -->
 	<property name="siteurl" host="amber">http://local.diwi.nl</property>
 	<property name="webappurl" host="amber">http://local.diwi.nl/diwi</property>
+	<property name="siteurl" host="suwa">http://local.diwi.nl</property>
+	<property name="webappurl" host="suwa">http://local.diwi.nl/diwi</property>
 
 	<!-- for testing only. -->
 	<property name="siteurl" host="test">http://test.diwi.nl</property>
@@ -30,6 +32,9 @@
 		<handlers>
 			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
 				<property name="max-file-size">1000000</property>
+			</handler>
+			<handler id="route" class="nl.diwi.control.RouteHandler">
+				<!-- <property name="max-file-size">1000000</property>  -->
 			</handler>
 		</handlers>
 
