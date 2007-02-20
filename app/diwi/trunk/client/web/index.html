@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>DIWI</title>
+	<link rel="stylesheet" href="css/diwi.css" type="text/css"/>
+	<script type="text/javascript" src="lib/openlayers/lib/OpenLayers.js"></script>
+	<script type="text/javascript">
+		<!--
+		var lon = 4.92;
+		var lat = 52.35;
+		var zoom = 10;
+		var map, layer1,layer2;
+
+		function init() {
+			map = new OpenLayers.Map( $('map') );
+			layer1 = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+					  "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+			map.addLayer(layer1);
+
+
+			/* layer2 = new OpenLayers.Layer.WMS( "TopoNL",
+					  "http://suwa:8080/geoserver/wms", {layers: 'topp:amstelveen'} );
+			map.addLayer(layer2);     */
+
+			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+			map.addControl( new OpenLayers.Control.LayerSwitcher() );
+
+		}
+		// -->
+	</script>
+
+</head>
+
+<body onload="init()">
+<div id="map"></div>
+</body>
+
+</html>
+

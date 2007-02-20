@@ -1,0 +1,71 @@
+
+/* This CSS is just a placeholder. */
+body {
+	margin: 0px;
+	padding: 0px;
+	background: #eeeeee;
+	margin-bottom: 50px;
+	color: #333;
+	font-size: 11px;
+	font-family: verdana, sans-serif;
+}
+
+p, h1, h2, h3, h4 {
+	margin: 0px 14px 14px 14px;
+	line-height: 150%;
+}
+
+a {
+	color: #CC3333;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #CC3333;
+	text-decoration: underline;
+}
+
+td {
+	font-size: 11px;
+}
+
+h1 {
+	font-size: 18px;
+}
+
+h2 {
+	font-size: 14px;
+	margin-bottom: 4px;
+}
+
+h2 a {
+	color: #333;
+	text-decoration: none;
+}
+
+h2 a:hover {
+	color: #333;
+	text-decoration: underline;
+}
+
+h3 {
+	font-size: 12px;
+	margin-bottom: 2px;
+}
+
+h1 a {
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.small {
+	font-size: 9px;
+}
+
+#map {
+	margin-left: 100px;
+	margin-top: 100px;
+	width: 600px;
+	height: 400px;
+}
+
