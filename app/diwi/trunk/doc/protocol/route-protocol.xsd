@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.waag.org/route-protocol/" xmlns:tns="http://www.waag.org/route-protocol/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="start-route-req">
+		<xs:complexType>
+			<xs:attribute name="id"
+						  type="xs:string"
+						  use="required"/>
+		</xs:complexType>
+    </xs:element>
+
+    <xs:element name="stop-route-req">
+		<xs:complexType>
+			<xs:attribute name="id"
+						  type="xs:string"
+						  use="required"/>
+		</xs:complexType>
+    </xs:element>
+    
+    <xs:element name="start-route-rsp"></xs:element>
+
+    <xs:element name="start-route-nrsp"></xs:element>
+
+    <xs:element name="query-routes-req">
+    </xs:element>
+
+    <xs:element name="route-detail-req">
+    </xs:element>
+</xs:schema>
