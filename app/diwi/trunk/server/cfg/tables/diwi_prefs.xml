@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Prefs table definition -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+			<field name="value"/>
+            <field name="type"/>
+      </insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="value"/>
+            <field name="type"/>
+        </list>
+
+		<query>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="value"/>
+            <field name="type"/>
+       </query>
+	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<!-- Owner is person id -->
+		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" />
+
+		<field name="name" type="STRING" size="128" required="true"/>
+        <field name="value" type="STRING"  size="128" required="true"/>
+        <field name="type" type="INTEGER" />
+
+        <field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+	</data>
+	<!--}data -->
+
+</table>
