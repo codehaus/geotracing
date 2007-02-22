@@ -10,15 +10,11 @@ import nl.diwi.logic.RouteLogic;
 import nl.diwi.util.Constants;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.oase.api.OaseException;
-import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.amuse.core.Protocol;
 
 import java.util.Vector;
 
@@ -80,13 +76,10 @@ public class RouteHandler extends DefaultHandler implements Constants {
         </route-generate-req>
      */
     protected JXElement generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		JXElement reqElm = anUtopiaReq.getRequestCommand();
-
         RouteLogic logic = createLogic(anUtopiaReq);
         Vector routes = logic.generateRoute(anUtopiaReq);
 
-
-        // Create and return response with open comment id.
+        // Create and return response with generated route Ids
 		JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChildren(routes);
 

@@ -22,6 +22,14 @@ public interface Constants {
     public final static String STARTDATE_FIELD = "startdate";
     public final static String ENDDATE_FIELD = "enddate";
     public final static String PLAYERS_FIELD = "players";
+    
+    // route types
+    public final static int ROUTE_TYPE_FIXED = 0;        
+    public final static int ROUTE_TYPE_DIRECT = 1;    
+    public final static int ROUTE_TYPE_GENERATED = 2;
+    public final static int ROUTE_TYPE_TEMP = 3;    
+    
+    
 
 
 }

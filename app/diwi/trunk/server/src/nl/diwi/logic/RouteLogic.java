@@ -5,6 +5,7 @@ package nl.diwi.logic;
 
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.keyworx.utopia.core.util.XML;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
@@ -71,6 +72,7 @@ public class RouteLogic implements Constants {
 
                 // create the pref
                 Record pref = oase.getModifier().create(PREFS_TABLE);
+                pref.setIntField(OWNER_FIELD, Integer.parseInt(personId));
                 pref.setStringField(NAME_FIELD, prefElm.getAttr(NAME_FIELD));
                 pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
                 pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
@@ -88,17 +90,19 @@ public class RouteLogic implements Constants {
                 JXElement gpxElm = (JXElement)gpxElms.elementAt(i);
                 Record route = oase.getModifier().create(ROUTE_TABLE);
                 route.setStringField(NAME_FIELD, gpxElm.getChildText(NAME_FIELD));
-                route.setStringField(DESCRIPTION_FIELD, gpxElm.getChildText(DESCRIPTION_FIELD));
+                route.setStringField(DESCRIPTION_FIELD, "");
+                route.setIntField(TYPE_FIELD, ROUTE_TYPE_TEMP);
                 route.setXMLField(PATH_FIELD, gpxElm);
                 oase.getModifier().insert(route);
 
                 // let's not add the gpx file....the client will have to wait to freakin long
-                JXElement routeElm = route.toXML();
+                //JXElement routeElm = route.toXML();
+                JXElement routeElm = XML.createElementFromRecord(ROUTE_ELM, route);
                 routeElm.removeChildByTag(PATH_FIELD);
                 results.add(routeElm);
 
                 // now relate the route to the person
-                oase.getRelater().relate(person, route);
+                //oase.getRelater().relate(person, route);
             }
 
             return results;
