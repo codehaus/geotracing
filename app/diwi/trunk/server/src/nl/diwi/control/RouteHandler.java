@@ -38,12 +38,12 @@ public class RouteHandler extends DefaultHandler {
 	public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		Log log = Logging.getLog(anUtopiaReq);
 
-		// Get the service name for the request
+		// Get the service name for the requestä
 		String service = anUtopiaReq.getServiceName();
 		log.trace("Handling request for service=" + service);
 
 		JXElement response = Protocol.createResponse(service);
-
+		
 		// Always return a response
 		log.trace("Handled service=" + service + " response=" + response.getTag());
 		return new UtopiaResponse(response);
