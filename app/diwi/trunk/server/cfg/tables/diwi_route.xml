@@ -10,6 +10,7 @@
 			<field name="description"/>
             <field name="type"/>
             <field name="path"/>
+            <field name="extra"/>
       </insert>
 
 		<list>
@@ -18,6 +19,7 @@
 			<field name="description"/>
             <field name="type"/>
             <field name="path"/>
+            <field name="extra"/>
         </list>
 
 		<query>
@@ -26,6 +28,7 @@
 			<field name="description"/>
             <field name="type"/>
             <field name="path"/>
+            <field name="extra"/>
        </query>
 	</views>
 
@@ -33,12 +36,13 @@
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true"/>
 		<!-- Owner is person id -->
-		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" />
+		<field name="owner" type="INTEGER" required="false" foreignkey="cascade" />
 
 		<field name="name" type="STRING" size="64" required="true"/>
         <field name="description" type="TEXT" required="true" />
         <field name="type" type="INTEGER" required="true" />
         <field name="path" type="XML" />
+        <field name="extra" type="XML" />
 
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>

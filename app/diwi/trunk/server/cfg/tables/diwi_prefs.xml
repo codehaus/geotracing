@@ -9,6 +9,7 @@
 			<field name="name"/>
 			<field name="value"/>
             <field name="type"/>
+            <field name="extra"/>
       </insert>
 
 		<list>
@@ -16,6 +17,7 @@
 			<field name="name"/>
 			<field name="value"/>
             <field name="type"/>
+            <field name="extra"/>
         </list>
 
 		<query>
@@ -23,6 +25,7 @@
 			<field name="name"/>
 			<field name="value"/>
             <field name="type"/>
+            <field name="extra"/>
        </query>
 	</views>
 
@@ -35,7 +38,8 @@
 		<field name="name" type="STRING" size="128" required="true"/>
         <field name="value" type="STRING"  size="128" required="true"/>
         <field name="type" type="INTEGER" />
-
+        <field name="extra" type="XML" />
+        
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
 	</data>
