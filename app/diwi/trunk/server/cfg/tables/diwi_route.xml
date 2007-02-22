@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Route table definition -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+			<field name="description"/>
+            <field name="type"/>
+            <field name="path"/>
+      </insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+            <field name="type"/>
+            <field name="path"/>
+        </list>
+
+		<query>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+            <field name="type"/>
+            <field name="path"/>
+       </query>
+	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<!-- Owner is person id -->
+		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" />
+
+		<field name="name" type="STRING" size="64" required="true"/>
+        <field name="description" type="TEXT" required="true" />
+        <field name="type" type="INTEGER" required="true" />
+        <field name="path" type="XML" />
+
+        <field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+	</data>
+	<!--}data -->
+
+</table>
