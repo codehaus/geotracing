@@ -4,6 +4,8 @@ public interface Constants {
     // tablenames
     public final static String ROUTE_TABLE = "diwi_route";
     public final static String PREFS_TABLE = "diwi_prefs";
+    public final static String LOCATION_TABLE = "g_location";
+    public final static String MEDIA_TABLE = "base_medium";
 
     // xml tags
     public final static String PREF_ELM = "pref";
@@ -27,9 +29,8 @@ public interface Constants {
     public final static int ROUTE_TYPE_FIXED = 0;        
     public final static int ROUTE_TYPE_DIRECT = 1;    
     public final static int ROUTE_TYPE_GENERATED = 2;
-    public final static int ROUTE_TYPE_TEMP = 3;    
+    public final static int ROUTE_TYPE_TEMP = 3;  
     
+    public final static String GENERATOR_URL = "diwi.routegenerator.url";
     
-
-
 }
