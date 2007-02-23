@@ -1,13 +1,9 @@
 <%@ page import="java.io.Writer" %>
 <%@ page import="nl.justobjects.jox.dom.JXElement" %>
 <%@ page import="nl.justobjects.jox.parser.JXBuilder" %>
-<%@ page import="org.keyworx.oase.api.Admin" %>
-<%@ page import="org.keyworx.oase.config.ComponentDef" %>
 <%@ page import="org.keyworx.amuse.core.Amuse" %>
 <%@ page import="org.keyworx.common.util.Sys" %>
-<%@ page import="org.keyworx.oase.config.OaseConfig" %>
 <%@ page import="org.keyworx.common.log.Logging" %>
-<%@ page import="org.keyworx.oase.config.StoreContextConfig" %>
 <%@ page import="org.keyworx.common.log.Log" %>
 <%@ page import="org.keyworx.utopia.core.util.Oase" %>
 
@@ -20,9 +16,7 @@
 %>
 <%
     // Get global Oase (DB) session.
-    try
-
-    {
+    try{
         // Use one Oase session
         if (oase == null) {
             oase = (Oase) application.getAttribute("oase");
@@ -39,12 +33,11 @@
         log.error("error creating oase session", th);
     }
 
-    JXElement xmlMsg = new JXBuilder().build("<some-xml />");
-
     String action = request.getParameter("action");
 
     response.setContentType("text/xml;charset=utf-8");
     try{
+        JXElement xmlMsg = new JXBuilder().build("<some-xml />");
         Writer writer = response.getWriter();
         writer.write(xmlMsg.toFormattedString());
         writer.flush();
