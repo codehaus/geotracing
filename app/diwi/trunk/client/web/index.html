@@ -7,15 +7,21 @@
 	<script type="text/javascript" src="lib/openlayers/lib/OpenLayers.js"></script>
 	<script type="text/javascript">
 		<!--
-		var lon = 4.75;
+		var lon = 4.80;
 		var lat = 52.35;
-		var zoom = 10;
+		var zoom = 13;
 		var map, layer1,layer2;
 
 		function init() {
 			map = new OpenLayers.Map( $('map'), {controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()], maxResolution: 1.40625/2, numZoomLevels: 17});
-			layer1 = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-					  "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+			//layer1 = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+			//		  "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+			//map.addLayer(layer1);
+
+			// PostGIS routes projected on topo-map
+			var aveen='http://berlin/cgi-bin/mapserv?map=/var/keyworx/webapps/mapserver/topnl/topnl.map';
+			layer1 = new OpenLayers.Layer.WMS( "TOPNL WMS",
+					  aveen, {layers: 'amstelveen,routes'} );
 			map.addLayer(layer1);
 
 			ww = new OpenLayers.Layer.WorldWind( "Bathy",
@@ -27,11 +33,11 @@
 			map.addLayer(ww);
 			map.addLayer(ww2);
 
-			layer2 = new OpenLayers.Layer.WMS( "Routes",
-					  "http://suwa:8080/geoserver/wms",
-				{layers: 'topp:g_route', format: 'image/png',
-				 transparent: 'true'});
-			map.addLayer(layer2);
+			//layer2 = new OpenLayers.Layer.WMS( "Routes",
+			//		  "http://suwa:8080/geoserver/wms",
+			//	{layers: 'topp:g_route', format: 'image/png',
+			//	 transparent: 'true'});
+			//map.addLayer(layer2);
 
 			map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
 			map.addControl( new OpenLayers.Control.LayerSwitcher() );
