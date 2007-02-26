@@ -685,7 +685,7 @@ print "Creating db ($dbname)\n";
 `createdb $createdb_opt $dbname`;
 die "Database creation failed\n" if ($?);
 print "Adding plpgsql\n";
-`createlang plpgsql $dbname`;
+`createlang plpgsql  $dbname`;
 
 #
 # Open a pipe to the SQL monitor

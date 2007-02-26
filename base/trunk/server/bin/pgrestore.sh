@@ -1,9 +1,18 @@
 #!/bin/bash
 
+PGHOST="localhost"
+PGUSER="oaseuser"
+PGPASSWORD="oase"
+
+
 
 function error() {
 	echo "Error: $1"
 	exit -1;
+}
+
+function warn() {
+	echo "WARNING: $1"
 }
 
 function usage() {
@@ -18,17 +27,18 @@ function restore() {
 	then
 		LWPOSTGIS="/opt/local/share/postgis/lwpostgis.sql"
 	fi
+
 	if [ ! -f ${LWPOSTGIS} ]
 	then
 		error "cannot find lwpostgis.sql"
 	fi
 
-	dropdb $1
+ 	if ! (dropdb  $1)
+   	then
+    	warn "dropdb failed"
+    fi
 
     postgis_restore.pl ${LWPOSTGIS}  $1 $2 -E UTF8 -T postgis
-    # createdb -E UTF8 -T postgis $1
-    # psql $1 < $2
-    # pg_restore -d $1 $2
 }
 
 DB=$1

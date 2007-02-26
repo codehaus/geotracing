@@ -3,11 +3,12 @@
 BACKUP_DIR="/var/keyworx/backup"
 
 PGHOST="localhost"
-# PGUSER="postgres"
+PGUSER="oaseuser"
+PGPASSWORD="oase"
 
 function pg_backup_database {
   DB=$1
-  pg_dump -obv -Fc -f $BACKUP_DIR/$DB.pgd $DB
+  pg_dump -obv -Fc -O -f $BACKUP_DIR/$DB.pgd $DB
 }
 
 if [ -n "$1" ]; then
