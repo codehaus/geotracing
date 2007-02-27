@@ -49,7 +49,7 @@ public class LineStringTest extends PGTestCase {
 
 	public void testImportRoute() {
 		try {
-		   String gpxPath = "../data/ringvaart.gpx";
+			String gpxPath = "../data/ringvaart.gpx";
 			LineString lineString = Util.GPX2LineString(gpxPath);
 			PGgeometryLW geom = new PGgeometryLW(lineString);
 
@@ -61,13 +61,24 @@ public class LineStringTest extends PGTestCase {
 			record.setObjectField("route_geom", geom);
 			getModifier().insert(record);
 
+			gpxPath = "../data/schiphol.gpx";
+			lineString = Util.GPX2LineString(gpxPath);
+			geom = new PGgeometryLW(lineString);
+
+			// Simple: create and update and commit.
+			record = getModifier().create(ROUTE_TABLE_NAME);
+			assertNotNull("table.create()", record);
+
+			record.setStringField("name", "schiphol");
+			record.setObjectField("route_geom", geom);
+			getModifier().insert(record);
 
 		} catch (Throwable t) {
 			failTest("testImportRoute: ", t);
 		}
 	}
 
-		public void testAppendLine() {
+	public void testAppendLine() {
 		try {
 
 			// Simple: create and update and commit.
@@ -83,7 +94,6 @@ public class LineStringTest extends PGTestCase {
 
 			// UPDATE stock SET stock = stock + 1 WHERE isbn = '0385121679';
 			// String update = "UPDATE g_track SET line  = GeomFromText(SELECT AddPoint(line, GeomFromText('POINT(9 10 11 12)',4326)) as line FROM ( SELECT line FROM g_track WHERE id=" + id + ") foo));";
-
 
 			// AddPoint(linestring, point, [<position>])
 			String select = "SELECT AddPoint(line, GeomFromText('POINT(9 10 11 12)',4326)) as line FROM ( SELECT line FROM g_track WHERE id=" + id + ") foo;";
