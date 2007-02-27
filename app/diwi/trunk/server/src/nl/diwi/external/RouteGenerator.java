@@ -81,7 +81,7 @@ public class RouteGenerator implements Constants {
 		
         
         
-		JXBuilder().build(new URL());
+		//JXBuilder().build(new URL());
         
         try {
 			route = oase.getModifier().create(ROUTE_TABLE);
