@@ -1,0 +1,70 @@
+
+
+mapfile
+
+# Start of map file
+#
+NAME TOPNL
+STATUS ON
+# SIZE 600 600
+# EXTENT 388107.634400379 5203120.88405952 500896.339019834 5310243.30613897
+# UNITS METERS
+SHAPEPATH "data"
+IMAGECOLOR 255 255 255
+
+PROJECTION
+   "init=epsg:4326"
+END
+
+#
+# Start of symbol definitions (we're only using a few)
+#
+SYMBOL
+  NAME 'line'
+  TYPE ELLIPSE
+  POINTS 1 1 END
+  FILLED TRUE
+END
+
+LAYER
+  NAME "amstelveen"
+  DATA "25d_amstelveen_4326.tiff"
+  TYPE RASTER
+  STATUS ON
+END
+
+### ROADS ###
+LAYER
+#       GROUP "Selected"
+        NAME "routes"
+        CONNECTIONTYPE postgis
+        CONNECTION "user=oaseuser password=oase  dbname=postgistest host=localhost"
+        DATA "route_geom from g_route"
+
+        TYPE LINE
+        STATUS ON
+
+        CLASS
+          STYLE
+                COLOR 255 0 0
+                SYMBOL "line"
+                SIZE 3
+          END
+        END
+
+#       PROJECTION #GEOGRAPHIC NAD83
+#               proj=longlat
+#               ellps=GRS80
+#               no_defs
+#       END
+#       TEMPLATE "IDgradyRoads.htm"
+#       METADATA
+#               legend_order "5"
+#       END
+END
+
+END
+
+mapserver SLD support
+http://mapserver.gis.umn.edu/docs/howto/sldhowto
+
