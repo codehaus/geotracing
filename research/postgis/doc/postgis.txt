@@ -1,37 +1,69 @@
-Logbook PostGIS research
+LOGBOOK PostGIS RESEARCH
 
-- environmnent
-Mac OSX Tiger 10.4.7
-installed Devloper tools/Xcode
-installed Darwinports
-port install postgresql8
-this installs PostgreSQL 8.1.3
-(postgresql81 installs 8.1.4 but postgis requires 8.1.3 if using DarwinPorts)
-
-config in /opt/local/share/postgresql8
-
-keyworx with postgresql JDBC driver
-JDBC driver download
-http://jdbc.postgresql.org
-select postgresql-8.1-407.jdbc3.jar (JDBC 3)
-
-installed pgadminIII download from http://www.pgadmin.org
-installed 1.6.0 beta 1 mac os x
-
-- postgis install
-sudo port install postgis
-installs postgis 1.1.1
-updates /opt/local/lib/pgsql8
-tutorial
+== Mac OSX Installation ==
+- What is PostGIS.
+* tutorials
 http://www.bostongis.com/?content_name=postgis_tut01
 see http://postgis.refractions.net/docs/ch02.html
 
-test postgis (see tutorial)
-* createdb gistest
-* shell: createlang plpgsql gistest
-* psql -d gistest  -f /opt/local/share/postgis/lwpostgis.sql (loads functions/objects)
-* psql -d gistest  -f /opt/local/share/postgis/spatial_ref_sys.sql (loads EPSG spatial ref system)
+- prerequisites
+Mac OSX Tiger 10.4.7
+Developer tools/Xcode installed
+Darwinports installed
+Assumed is that Darwinports is installed in /opt/local
 
+- overview
+Installing PostGIS usually involves a 3-step process:
+1) install PostgreSQL through DarwinPorts
+2) Install PostGIS from source
+3) configure a template DB for PostGIS
+
+1- install PostgreSQL
+sudo port install postgresql81
+this installs PostgreSQL 8.1.8
+Find the PostgreSQL config in /opt/local/share/postgresql81.
+No further config required.
+
+- postgis install
+Do not use Darwinports port (yet) as it installs PostgreSQL 8.2 which is incompatible with
+8.1 (the latest on Linux Debian testing) !
+download postgresql-1.2.1 from http://postgis.refractions.net/
+mkdir /opt/postgis
+tar xzvf postgis-1.2.1.tar.gz
+pg_config # sets all vars required for postgis compilation
+./configure
+make
+sudo make install
+
+updates /opt/local/lib/postgresql81/
+
+- create template postgis DB
+The name of our template is simply "postgis". It can be any name, but PostGIS
+DBs in GeoTracing will always use the template "postgis".
+Steps.
+* createdb postgis
+* shell: createlang plpgsql postgis
+* psql -d postgis  -f /opt/local/share/lwpostgis.sql (loads functions/objects)
+* psql -d postgis  -f /opt/local/share/spatial_ref_sys.sql (loads EPSG spatial ref system)
+
+- PGAdminIII
+Handy tool for managing PostgreSQL.
+* download from http://www.pgadmin.org
+* installed 1.6.0 beta 1 mac os x
+
+- PHPPgAdmin
+Web tool similar to PHPMyAdmin.
+- need pgsql.so in php
+- install php5
+ * download from http://www.entropy.ch/software/macosx/php/
+ * unpack .tar.gz
+ * uncomment php modules in /etc/httpd/httpd.conf
+ * run package installer
+
+- test keyworx with postgresql JDBC driver
+JDBC driver download
+http://jdbc.postgresql.org
+select postgresql-8.1-407.jdbc3.jar (JDBC 3)
 
 - postgis Java install
 not part of darwinport install so have to rebuild from source
@@ -132,6 +164,8 @@ http://postgis.refractions.net/support/wiki/index.php?ExamplesFindNearby
 PostGresql online book
 http://www.faqs.org/docs/ppbook/book1.htm
 
+postgis tutorial
+http://www.mapbender.org/presentations/Spatial_Data_Management_Arnulf_Christl/html/img0.html
 
 PostGIS/PostgresQL Linux
 apt-get -s install postgresql-8.1-postgis
@@ -190,14 +224,6 @@ apt-get install php5-pgsql
 restart apache
 (may need to increase memsize php5 to 32M in /etc/php5/apache2/php.ini)
 
-MAC OS X
-phppgadmin
-- need pgsql.so in php
-- install php5
- * download from http://www.entropy.ch/software/macosx/php/
- * unpack .tar.gz
- * uncomment php modules in /etc/httpd/httpd.conf
- * run package installer
 
 
 
