@@ -162,12 +162,12 @@ public class SpatialQueryTest extends PGTestCase {
 
 	protected void fillGLocation() {
 		try {
-			String queryCount = "SELECT count(id) as count from g_location";
+		/*	String queryCount = "SELECT count(id) as count from g_location";
 			Record[] records = getFinder().freeQuery(queryCount);
 			long count = records[0].getLongField("count");
 			if (count > 0) {
 				return;
-			}
+			} */
 			Modifier modifier = getModifier();
 			Record loc;
 			String lon, lat, pt;
@@ -178,11 +178,11 @@ public class SpatialQueryTest extends PGTestCase {
 					loc = modifier.create(LOCATION_TABLE_NAME);
 					lon = x + "";
 					lat = y + "";
-					if (x == 4 && y== 52) {
+	/*				if (x == 4 && y== 52) {
 						lon = x + ".73";
 						lat = y + ".37";
 
-					}
+					}   */
 					loc.setField("name", lon + "," + lat);
 					loc.setField("lon", lon);
 					loc.setField("lat", lat);
@@ -192,7 +192,6 @@ public class SpatialQueryTest extends PGTestCase {
 					loc.setField("pointnoidx", pt);
 					modifier.insert(loc);
 					cnt++;
-
 				}
 
 			}
