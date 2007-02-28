@@ -21,8 +21,25 @@ Installing PostGIS usually involves a 3-step process:
 1- install PostgreSQL
 sudo port install postgresql81
 this installs PostgreSQL 8.1.8
-Find the PostgreSQL config in /opt/local/share/postgresql81.
-No further config required.
+Find the PostgreSQL config in /opt/local/share/postgresql81
+add /opt/local/lib/pgsql8/bin to your PATh (e.g. in /etc/profile)
+
+## start: util script in /opt/bin/pgup
+export LOCAL_DB=/var/pgsql
+export PGDATA=$LOCAL_DB/data
+export PGHOST=$LOCAL_DB
+export PGLOG=/var/log/pgsql/log.txt
+
+# pg_ctl -w -l $PGLOG  -m immediate start (???? alt)
+postmaster -D /var/pgsql/data  &
+
+## stop: /opt/bin/pgdown
+export LOCAL_DB=/var/pgsql
+export PGDATA=$LOCAL_DB/data
+export PGHOST=$LOCAL_DB
+export PGLOG=/var/log/pgsql/log.txt
+
+pg_ctl -w -l $PGLOG  -m immediate stop
 
 - postgis install
 Do not use Darwinports port (yet) as it installs PostgreSQL 8.2 which is incompatible with
