@@ -16,7 +16,7 @@
 					<ogc:Filter>
 						<ogc:PropertyIsEqualTo>
 							<ogc:PropertyName>id</ogc:PropertyName>
-							<ogc:Literal>1126</ogc:Literal>
+							<ogc:Literal>120</ogc:Literal>
 						</ogc:PropertyIsEqualTo>
 					</ogc:Filter>
 					<LineSymbolizer>
