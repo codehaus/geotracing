@@ -22,7 +22,13 @@ Installing PostGIS usually involves a 3-step process:
 sudo port install postgresql81
 this installs PostgreSQL 8.1.8
 Find the PostgreSQL config in /opt/local/share/postgresql81
-add /opt/local/lib/pgsql8/bin to your PATh (e.g. in /etc/profile)
+add /opt/local/lib/postgresql81/bin to your PATh (e.g. in /etc/profile)
+
+/usr/local/pgsql/bin/initdb -D /var/pgsql/data
+/usr/local/pgsql/bin/postmaster -D /var/pgsql/data >logfile 2>&1 &
+/usr/local/pgsql/bin/createdb test
+/usr/local/pgsql/bin/psql test
+
 
 ## start: util script in /opt/bin/pgup
 export LOCAL_DB=/var/pgsql
