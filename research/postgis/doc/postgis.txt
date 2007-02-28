@@ -18,16 +18,21 @@ Installing PostGIS usually involves a 3-step process:
 2) Install PostGIS from source
 3) configure a template DB for PostGIS
 
-1- install PostgreSQL
+STEP 1- install PostgreSQL
+# install v8.1.8 from darwinports
 sudo port install postgresql81
-this installs PostgreSQL 8.1.8
-Find the PostgreSQL config in /opt/local/share/postgresql81
-add /opt/local/lib/postgresql81/bin to your PATh (e.g. in /etc/profile)
 
-/usr/local/pgsql/bin/initdb -D /var/pgsql/data
-/usr/local/pgsql/bin/postmaster -D /var/pgsql/data >logfile 2>&1 &
-/usr/local/pgsql/bin/createdb test
-/usr/local/pgsql/bin/psql test
+find the PostgreSQL config in /opt/local/share/postgresql81
+add /opt/local/lib/postgresql81/bin to your PATH (e.g. in /etc/profile)
+
+# create data dir
+mkdir /var/pgsql
+chown <yourself> /var/pgsql
+mkdir /var/pgsql/data
+chmod 700 /var/pgsql/data
+
+# create inital db
+initdb -D /var/pgsql/data
 
 
 ## start: util script in /opt/bin/pgup
@@ -47,20 +52,26 @@ export PGLOG=/var/log/pgsql/log.txt
 
 pg_ctl -w -l $PGLOG  -m immediate stop
 
-- postgis install
+STEP 2 - postgis install
 Do not use Darwinports port (yet) as it installs PostgreSQL 8.2 which is incompatible with
 8.1 (the latest on Linux Debian testing) !
+
+# download and unpack
 download postgresql-1.2.1 from http://postgis.refractions.net/
 mkdir /opt/postgis
 tar xzvf postgis-1.2.1.tar.gz
-pg_config # sets all vars required for postgis compilation
+
+# sets all vars required for postgis compilation
+pg_config
+
+# compile and install
 ./configure
 make
 sudo make install
 
 updates /opt/local/lib/postgresql81/
 
-- create template postgis DB
+STEP 3 - create template postgis DB
 The name of our template is simply "postgis". It can be any name, but PostGIS
 DBs in GeoTracing will always use the template "postgis".
 Steps.
@@ -69,6 +80,7 @@ Steps.
 * psql -d postgis  -f /opt/local/share/lwpostgis.sql (loads functions/objects)
 * psql -d postgis  -f /opt/local/share/spatial_ref_sys.sql (loads EPSG spatial ref system)
 
+STEP N
 - PGAdminIII
 Handy tool for managing PostgreSQL.
 * download from http://www.pgadmin.org
