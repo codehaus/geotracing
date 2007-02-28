@@ -16,7 +16,7 @@ public interface Constants {
     public final static String OWNER_FIELD = "owner";
     public final static String VERSION_FIELD = "version";
     public final static String NAME_FIELD = "name";
-    public final static String DESCRIPTION_FIELD = "description";
+    public final static String DESCRIPTION_FIELD = "descr";
     public final static String STATE_FIELD = "state";
     public final static String VALUE_FIELD = "value";
     public final static String PATH_FIELD = "path";

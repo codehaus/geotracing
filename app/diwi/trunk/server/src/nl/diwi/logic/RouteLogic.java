@@ -14,6 +14,7 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import java.util.Properties;
 import java.util.Vector;
 
+import nl.diwi.external.RouteGenerator;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
@@ -49,6 +50,8 @@ public class RouteLogic implements Constants {
              <pref name="eindpunt" value="groningen" type="route" />
              <pref name="lengte" value="130" type="route" />
         </route-generate-req>
+        
+        return vector of Route record converted to JXElement.
      */
     public Vector generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		try {
@@ -67,6 +70,7 @@ public class RouteLogic implements Constants {
 
             // now store the prefs            
             Vector prefElms = reqElm.getChildrenByTag(PREF_ELM);
+            prefs = new Record[prefElms.size()];
             for(int i=0;i<prefElms.size();i++){
                 JXElement prefElm = (JXElement) prefElms.elementAt(i);
 
@@ -77,16 +81,14 @@ public class RouteLogic implements Constants {
                 pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
                 pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
                 oase.getModifier().insert(pref);
-
+                prefs[i] = pref;
+                
                 // relate pref to person
                 oase.getRelater().relate(person, pref);
             }
 
-            // now access the WUR route-generator
-            // but for now just generate something ourselves
-            //Vector gpxElms = WURRouteGenerator(prefElms);
-
-            return results;
+            RouteGenerator generator = new RouteGenerator(oase);
+            return generator.generateRoutes(prefs);
 
         } catch (OaseException oe) {
 			throw new UtopiaException("Error in generateRoute", oe, ErrorCode.__6006_database_irregularity_error);

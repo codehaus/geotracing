@@ -11,6 +11,7 @@ import nl.justobjects.jox.parser.JXBuilder;
 import org.geotracing.gis.GeoPoint;
 
 import org.keyworx.server.ServerConfig;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.util.XML;
 import org.keyworx.oase.api.OaseException;
@@ -38,6 +39,9 @@ public class RouteGenerator implements Constants {
 			urlBuffer.append(prefs[i].getStringField(NAME_FIELD));
 			urlBuffer.append('=');
 			urlBuffer.append(prefs[i].getStringField(VALUE_FIELD));
+			if(i < prefs.length - 1) {
+				urlBuffer.append('&');			
+			}
 		}
 
 		//Get the GPX
@@ -59,7 +63,7 @@ public class RouteGenerator implements Constants {
 			try {
 				route = oase.getModifier().create(ROUTE_TABLE);
 				route.setStringField(NAME_FIELD, gpxElm.getChildText(NAME_FIELD));
-				route.setStringField(DESCRIPTION_FIELD, "");
+				route.setStringField(DESCRIPTION_FIELD, gpxElm.getChildText(NAME_FIELD));
 				route.setIntField(TYPE_FIELD, ROUTE_TYPE_TEMP);
 				route.setXMLField(PATH_FIELD, gpxElm);
 				oase.getModifier().insert(route);
@@ -67,7 +71,16 @@ public class RouteGenerator implements Constants {
 				e.printStackTrace();
 			}
 
-            results.add(route);
+			//Convert Route record to XML and add to result
+            JXElement routeElm = null;
+			try {
+				routeElm = XML.createElementFromRecord(ROUTE_ELM, route);
+				routeElm.removeChildByTag(PATH_FIELD);
+	            results.add(routeElm);
+			} catch (UtopiaException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}            
 
             // now relate the route to the person
             //oase.getRelater().relate(person, route);
@@ -79,8 +92,6 @@ public class RouteGenerator implements Constants {
 	public Record generateShortestRoute(GeoPoint from, GeoPoint to) {
         Record route = null;
 		
-        
-        
 		//JXBuilder().build(new URL());
         
         try {
