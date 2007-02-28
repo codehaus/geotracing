@@ -1,0 +1,98 @@
+<routes>
+	<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/1 http://www.topografix.com/GPX/Private/TopoGrafix/0/1/topografix.xsd" creator="Quikmaps: http://www.quikmaps.com/gpx/25485" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
+  <name>
+    <![CDATA[test1]]>
+  </name>
+  <desc>
+    <![CDATA[test route 1]]>
+  </desc>
+  <author>
+    <![CDATA[tmp1172158965]]>
+  </author>
+  <url>http://www.quikmaps.com/show/25485</url>
+  <urlname>http://www.quikmaps.com/show/25485</urlname>
+  <wpt lon="5.3606414794921875" lat="52.0854134721211">
+    <name></name>
+    <desc>
+      <![CDATA[]]>
+    </desc>
+    <sym>Waypoint</sym>
+    <type>
+      <![CDATA[Waypoint]]>
+    </type>
+  </wpt>
+  <wpt lon="5.394287109375" lat="52.08520250457352">
+    <name></name>
+    <desc>
+      <![CDATA[]]>
+    </desc>
+    <sym>Waypoint</sym>
+    <type>
+      <![CDATA[Waypoint]]>
+    </type>
+  </wpt>
+  <trk>
+    <name></name>
+    <desc></desc>
+    <trkseg>
+      <trkpt lon="5.40252685546875" lat="52.05523498618561"/>
+      <trkpt lon="5.357208251953125" lat="52.065578163132116"/>
+      <trkpt lon="5.360298156738281" lat="52.0833037517657"/>
+      <trkpt lon="5.394287109375" lat="52.08372570381537"/>
+      <trkpt lon="5.4032135009765625" lat="52.08182688817573"/>
+      <trkpt lon="5.4059600830078125" lat="52.07718499873697"/>
+      <trkpt lon="5.412483215332031" lat="52.076340966975515"/>
+      <trkpt lon="5.409393310546875" lat="52.06578922343797"/>
+      <trkpt lon="5.402870178222656" lat="52.05502387600311"/>
+    </trkseg>
+  </trk>
+</gpx>
+<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/1 http://www.topografix.com/GPX/Private/TopoGrafix/0/1/topografix.xsd" creator="Quikmaps: http://www.quikmaps.com/gpx/25485" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
+  <name>
+    <![CDATA[test2]]>
+  </name>
+  <desc>
+    <![CDATA[test route 2]]>
+  </desc>
+  <author>
+    <![CDATA[tmp1172158965]]>
+  </author>
+  <url>http://www.quikmaps.com/show/25485</url>
+  <urlname>http://www.quikmaps.com/show/25485</urlname>
+  <wpt lon="5.3606414794921875" lat="52.0854134721211">
+    <name></name>
+    <desc>
+      <![CDATA[]]>
+    </desc>
+    <sym>Waypoint</sym>
+    <type>
+      <![CDATA[Waypoint]]>
+    </type>
+  </wpt>
+  <wpt lon="5.394287109375" lat="52.08520250457352">
+    <name></name>
+    <desc>
+      <![CDATA[]]>
+    </desc>
+    <sym>Waypoint</sym>
+    <type>
+      <![CDATA[Waypoint]]>
+    </type>
+  </wpt>
+  <trk>
+    <name></name>
+    <desc></desc>
+    <trkseg>
+      <trkpt lon="5.40252685546875" lat="52.05523498618561"/>
+      <trkpt lon="5.357208251953125" lat="52.065578163132116"/>
+      <trkpt lon="5.360298156738281" lat="52.0833037517657"/>
+      <trkpt lon="5.394287109375" lat="52.08372570381537"/>
+      <trkpt lon="5.4032135009765625" lat="52.08182688817573"/>
+      <trkpt lon="5.4059600830078125" lat="52.07718499873697"/>
+      <trkpt lon="5.412483215332031" lat="52.076340966975515"/>
+      <trkpt lon="5.409393310546875" lat="52.06578922343797"/>
+      <trkpt lon="5.402870178222656" lat="52.05502387600311"/>
+    </trkseg>
+  </trk>
+</gpx>
+</routes>
