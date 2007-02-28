@@ -65,20 +65,21 @@ tar xzvf postgis-1.2.1.tar.gz
 pg_config
 
 # compile and install
+cd postgis-1.2.1/  
 ./configure
 make
 sudo make install
 
-updates /opt/local/lib/postgresql81/
+#PostGis is installed in /opt/local/lib/postgresql81/
 
 STEP 3 - create template postgis DB
-The name of our template is simply "postgis". It can be any name, but PostGIS
-DBs in GeoTracing will always use the template "postgis".
-Steps.
-* createdb postgis
-* shell: createlang plpgsql postgis
-* psql -d postgis  -f /opt/local/share/lwpostgis.sql (loads functions/objects)
-* psql -d postgis  -f /opt/local/share/spatial_ref_sys.sql (loads EPSG spatial ref system)
+#The name of our template is simply "postgis". It can be any name, but PostGIS
+#DBs in GeoTracing will always use the template "postgis".
+#Steps.
+createdb postgis
+createlang plpgsql postgis
+psql -d postgis  -f /opt/local/share/lwpostgis.sql #(loads functions/objects)
+psql -d postgis  -f /opt/local/share/spatial_ref_sys.sql (loads EPSG spatial ref system)
 
 STEP N
 - PGAdminIII
