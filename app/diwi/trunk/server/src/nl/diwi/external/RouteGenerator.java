@@ -62,8 +62,8 @@ public class RouteGenerator implements Constants {
             Record route = null;
 			try {
 				route = oase.getModifier().create(ROUTE_TABLE);
-				route.setStringField(NAME_FIELD, gpxElm.getChildText(NAME_FIELD));
-				route.setStringField(DESCRIPTION_FIELD, gpxElm.getChildText(NAME_FIELD));
+				route.setStringField(NAME_FIELD, new String(gpxElm.getChildByTag(NAME_ELM).getCDATA()));
+				route.setStringField(DESCRIPTION_FIELD, new String(gpxElm.getChildByTag(DESCRIPTION_ELM).getCDATA()));
 				route.setIntField(TYPE_FIELD, ROUTE_TYPE_TEMP);
 				route.setXMLField(PATH_FIELD, gpxElm);
 				oase.getModifier().insert(route);

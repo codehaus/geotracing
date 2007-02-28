@@ -10,13 +10,15 @@ public interface Constants {
     // xml tags
     public final static String PREF_ELM = "pref";
     public final static String ROUTE_ELM = "route";
-
+    public final static String DESCRIPTION_ELM = "desc";
+    public final static String NAME_ELM = "name";
+    
     // table fields
     public final static String ID_FIELD = "id";
     public final static String OWNER_FIELD = "owner";
     public final static String VERSION_FIELD = "version";
     public final static String NAME_FIELD = "name";
-    public final static String DESCRIPTION_FIELD = "descr";
+    public final static String DESCRIPTION_FIELD = "description";
     public final static String STATE_FIELD = "state";
     public final static String VALUE_FIELD = "value";
     public final static String PATH_FIELD = "path";
@@ -31,6 +33,8 @@ public interface Constants {
     public final static int ROUTE_TYPE_GENERATED = 2;
     public final static int ROUTE_TYPE_TEMP = 3;  
     
-    public final static String GENERATOR_URL = "diwi.routegenerator.url";
+    //properties
+    public final static String GENERATOR_URL = "diwi.routegenerator.url";   
+    
     
 }
