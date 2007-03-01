@@ -5,7 +5,7 @@ using System.Drawing;
 
 namespace Diwi {
     interface DiwiDrawable {
-        void Draw();
+        void draw();
         void setGraphics(Graphics g);
     }
 }

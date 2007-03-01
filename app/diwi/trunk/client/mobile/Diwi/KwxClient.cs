@@ -15,6 +15,8 @@ namespace Diwi {
         private string mServer;
         private string mAgentKey;
         private Thread mHbThread;
+        private XMLement selectAppRequest;
+        string trackId;
 
         static private KwxClient sKwxC = null;
 
@@ -32,9 +34,15 @@ namespace Diwi {
         }
 
         private KwxClient() {
+            string s = "";
             mServer = Diwi.Properties.Resources.KwxServerUrl;
             mAgentKey = null;
-            doLogin();
+            XMLement x = doLogin();
+            s = x.toString();
+            x = selectApp();
+            s = x.toString();
+            x = newTrack("diwiTrack");
+            s = x.toString();
         }
 
         public void stop() {
@@ -100,6 +108,62 @@ namespace Diwi {
             mHbThread.Start();
 
             return xml;
+        }
+
+        /// <summary>
+        /// create new track.
+        /// </summary>
+        public XMLement newTrack(string aName) {
+            DateTime d1 = DateTime.UtcNow;
+            XMLement req = new XMLement("t-trk-create-req");
+            req.addAttribute("name", aName);
+            req.addAttribute("t", d1.ToFileTime().ToString());
+            // Minimal mode: tracks are made daily (Track type 2)
+            req.addAttribute("type", "2");
+
+            req = utopiaRequest(req);
+
+            trackId = req.getAttributeValue("id");
+            return req;
+        }
+
+
+	/// <summary>
+    /// Select application on portal.
+    /// </summary>
+        public XMLement selectApp() {
+
+            // Create XML request
+            XMLement request = new XMLement(Protocol.TAG_SELECT_APP_REQ);
+            request.addAttribute(Protocol.ATTR_APPNAME, Diwi.Properties.Resources.KwApp);
+            request.addAttribute(Protocol.ATTR_ROLENAME, Diwi.Properties.Resources.KwRole);
+
+            // Save for later session restore
+            selectAppRequest = request;
+
+            // Execute request
+            request = doRequest(request);
+
+            // Throw exception or return positive response
+            return request;
+        }
+
+
+        /// <summary>
+        ///  Sends position sample to the server.
+        /// </summary>
+        public void sendSample() {
+            XMLement xml = new XMLement("t-trk-write-req");
+
+            XMLement pt = new XMLement("pt");
+
+            pt.addAttribute("nmea", GpsReader.nmea);
+
+            //pt.addAttribute("lon", GpsReader.lon.ToString());
+            //pt.addAttribute("lat", GpsReader.lat.ToString());
+            xml.addChild(pt);
+            xml = utopiaRequest(xml);
+            string s = xml.toString();
         }
 
 

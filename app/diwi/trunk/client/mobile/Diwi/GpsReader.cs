@@ -21,6 +21,7 @@ namespace Diwi {
         private Thread mReadDataThread = null;
         private bool mIsRunning = false;
         private string mPort;
+        private string mNMEA;
         private bool mIsLogging = true;
         private StreamReader demoNMEA = null;
 
@@ -34,6 +35,11 @@ namespace Diwi {
         private int   mNumSats;
 
         #region properties
+
+
+        static public string nmea {
+            get { return sGPS.mNMEA; }
+        }
 
         static public bool canDemo {
             get { return sGPS.mCanDemo; }
@@ -182,7 +188,7 @@ namespace Diwi {
                                 callback((int)sMess.M_DEMO);
                             }
                             // read 4 lines from file
-                            for (int i = 0; i < 4; i++) {
+                            for (int i = 0; i < 6; i++) {
                                 string s = demoNMEA.ReadLine();
                                 if (s != null) {
                                     parse(s);
@@ -231,6 +237,9 @@ namespace Diwi {
             if (mIsLogging) {
                 Program.sLog.WriteLine(sentence);
             }
+
+            mNMEA = sentence;
+
             words = sentence.Split(',');
 
             switch (words[0]) {

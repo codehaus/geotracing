@@ -21,13 +21,13 @@ namespace Diwi {
 
             Rectangle r = this.ClientRectangle;
 
-            kwxMessageText = new DiwiUIText(offScreenGraphics,Color.Black);
-            latLonText = new DiwiUIText(offScreenGraphics,Color.Black);
-            numSatText = new DiwiUIText(offScreenGraphics,Color.Black);
-            speedText = new DiwiUIText(offScreenGraphics,Color.Black);
-            hDopText = new DiwiUIText(offScreenGraphics,Color.Black);
-            demoText = new DiwiUIText(offScreenGraphics,Color.Red);
-            fixText = new DiwiUIText(offScreenGraphics,Color.Black);
+            kwxMessageText = new DiwiUIText(offScreenGraphics, Color.Black);
+            latLonText = new DiwiUIText(offScreenGraphics, Color.Black);
+            numSatText = new DiwiUIText(offScreenGraphics, Color.Black);
+            speedText = new DiwiUIText(offScreenGraphics, Color.Black);
+            hDopText = new DiwiUIText(offScreenGraphics, Color.Black);
+            demoText = new DiwiUIText(offScreenGraphics, Color.Red);
+            fixText = new DiwiUIText(offScreenGraphics, Color.Black);
             mouseText = new DiwiUIText(offScreenGraphics);
 
             addDrawable(kwxMessageText);
@@ -38,24 +38,26 @@ namespace Diwi {
             addDrawable(demoText);
             addDrawable(fixText);
 
-            mMenu.addItem("terug", null);
+            mMenu.addItem("speel video", null);
             mMenu.addItem("over diwi", null);
             mMenu.addItem("vragen", null);
-            mMenu.addItem("speel video", null);
+            mMenu.addItem("terug", null);
+
+            title = "Gps Status";
 
             Program.sGpsReader.callback += new GpsReader.CallbackHandler(gpsMessage);
         }
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-            Rectangle r = this.ClientRectangle;
-            kwxMessageText.x = 8; kwxMessageText.y = 12;
-            latLonText.x = 8; latLonText.y = 32;
-            numSatText.x = 8; numSatText.y = 52;
-            hDopText.x = 8; hDopText.y = 72;
-            speedText.x = 8; speedText.y = 92;
-            demoText.x = 8; demoText.y = 142;
-            fixText.x = 8; fixText.y = 112;
+            int y = this.ClientRectangle.Height - 4;
+            kwxMessageText.x = 8; kwxMessageText.y = y -= 20;
+            latLonText.x = 8; latLonText.y = y -= 20;
+            numSatText.x = 8; numSatText.y = y -= 20;
+            hDopText.x = 8; hDopText.y = y -= 20;
+            speedText.x = 8; speedText.y = y -= 20;
+            demoText.x = 8; demoText.y = y -= 20;
+            fixText.x = 8; fixText.y = y -= 20;
             if (Program.sKwxClient.agentKey != null) {
                 newKwxMessage("Kwx login succes: " + Program.sKwxClient.agentKey);
             }
@@ -69,23 +71,34 @@ namespace Diwi {
             mouseText.text = "mouse: " + e.X.ToString() + ", " + e.Y.ToString();
             mouseText.x = e.X;
             mouseText.y = e.Y;
-            mouseText.Draw();
+            mouseText.draw();
             redrawRect(oldRect, mouseText.rect);
         }
 
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             base.OnResize(e);
+            if (mIsInitialized) {
+                int y = this.ClientRectangle.Height - 4;
+                kwxMessageText.x = 8; kwxMessageText.y = y -= 20;
+                latLonText.x = 8; latLonText.y = y -= 20;
+                numSatText.x = 8; numSatText.y = y -= 20;
+                hDopText.x = 8; hDopText.y = y -= 20;
+                speedText.x = 8; speedText.y = y -= 20;
+                demoText.x = 8; demoText.y = y -= 20;
+                fixText.x = 8; fixText.y = y -= 20;
+                draw();
+            }
         }
 
 
         #region callbacks
- 
+
         private delegate void updateKwxMessageDelegate(string m);
         void updateKwxMessage(string m) {
             Rectangle oldRect = kwxMessageText.rect;
             kwxMessageText.erase(mBackgroundColor);
-            kwxMessageText.Draw(m);
+            kwxMessageText.draw(m);
             redrawRect(oldRect, kwxMessageText.rect);
         }
         void newKwxMessage(string m) {
@@ -99,14 +112,14 @@ namespace Diwi {
         void updatePrecision() {
             Rectangle oldRect = hDopText.rect;
             hDopText.erase(mBackgroundColor);
-            hDopText.Draw("HDOP: " + GpsReader.precision.ToString());
+            hDopText.draw("HDOP: " + GpsReader.precision.ToString());
             redrawRect(oldRect, hDopText.rect);
         }
 
         void updatePosition() {
             Rectangle oldRect = latLonText.rect;
             latLonText.erase(mBackgroundColor);
-            latLonText.Draw("lat: " + GpsReader.latitude + "   lon: " + GpsReader.longtitude);
+            latLonText.draw(GpsReader.latitude + "; " + GpsReader.longtitude);
             redrawRect(oldRect, latLonText.rect);
         }
 
@@ -114,7 +127,7 @@ namespace Diwi {
         void updateNumSats() {
             Rectangle oldRect = numSatText.rect;
             numSatText.erase(mBackgroundColor);
-            numSatText.Draw("sattelites in view: " + GpsReader.numSats.ToString());
+            numSatText.draw("sattelites in view: " + GpsReader.numSats.ToString());
             redrawRect(oldRect, numSatText.rect);
         }
 
@@ -122,7 +135,7 @@ namespace Diwi {
         void updateFix() {
             Rectangle oldRect = fixText.rect;
             fixText.erase(mBackgroundColor);
-            fixText.Draw(GpsReader.fix ? "found fix" : "no fix");
+            fixText.draw(GpsReader.fix ? "found fix" : "no fix");
             redrawRect(oldRect, fixText.rect);
         }
 
@@ -130,7 +143,7 @@ namespace Diwi {
         void updateSpeed() {
             Rectangle oldRect = speedText.rect;
             speedText.erase(mBackgroundColor);
-            speedText.Draw("speed: " + GpsReader.speed.ToString() + " kph.");
+            speedText.draw("speed: " + GpsReader.speed.ToString() + " kph.");
             redrawRect(oldRect, speedText.rect);
         }
 
@@ -138,7 +151,7 @@ namespace Diwi {
         void updateDemo() {
             Rectangle oldRect = demoText.rect;
             demoText.erase(mBackgroundColor);
-            demoText.Draw(GpsReader.demo ? "GPS Demo Mode!" : "");
+            demoText.draw(GpsReader.demo ? "GPS Demo Mode!" : "");
             redrawRect(oldRect, demoText.rect);
         }
 
@@ -159,6 +172,7 @@ namespace Diwi {
                     updateNumSats();
                     break;
                 case (int)GpsReader.sMess.M_POS:
+                    Program.sKwxClient.sendSample();
                     updatePosition();
                     break;
                 case (int)GpsReader.sMess.M_PREC:
