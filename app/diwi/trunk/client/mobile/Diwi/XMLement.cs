@@ -37,10 +37,17 @@ namespace Diwi
             }
         }
 
-        public XMLement()
-        {
+        public XMLement() {
             mAttribs = new Hashtable();
             mTag = "";
+            mNodeText = null;
+            mChildren = new ArrayList();
+        }
+
+
+        public XMLement(string t) {
+            mAttribs = new Hashtable();
+            mTag = t;
             mNodeText = null;
             mChildren = new ArrayList();
         }

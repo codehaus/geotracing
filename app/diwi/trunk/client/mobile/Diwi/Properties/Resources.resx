@@ -120,6 +120,12 @@
   <data name="GpsSerialPort" xml:space="preserve">
     <value>COM0</value>
   </data>
+  <data name="KwApp" xml:space="preserve">
+    <value>geoapp</value>
+  </data>
+  <data name="KwRole" xml:space="preserve">
+    <value>user</value>
+  </data>
   <data name="KwxServerPassword" xml:space="preserve">
     <value>testdiwi</value>
   </data>

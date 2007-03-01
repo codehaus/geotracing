@@ -67,6 +67,24 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to geoapp.
+        /// </summary>
+        internal static string KwApp {
+            get {
+                return ResourceManager.GetString("KwApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to user.
+        /// </summary>
+        internal static string KwRole {
+            get {
+                return ResourceManager.GetString("KwRole", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to testdiwi.
         /// </summary>
         internal static string KwxServerPassword {

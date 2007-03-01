@@ -20,12 +20,13 @@ namespace Diwi {   // base class for Diwi Pages.
         private ArrayList mDrawableElements;
         private Rectangle mCurrentRect;
         protected DiwiUIMenu mMenu;
+        private string mTitle;
 
         public DiwiPageBase(Form parent) {
 
 
             mParent = parent;
-            mBackgroundColor = Color.Green;
+            mBackgroundColor = Color.FromArgb(180, 250, 0);
 
             mCurrentRect = this.ClientRectangle;
 
@@ -49,6 +50,11 @@ namespace Diwi {   // base class for Diwi Pages.
             this.Text = "";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
+        }
+
+        public string title {
+            get { return mTitle; }
+            set { mTitle = value; }
         }
 
         protected void addDrawable(DiwiDrawable d) {
@@ -88,7 +94,7 @@ namespace Diwi {   // base class for Diwi Pages.
 
             }
             if (txt != "") {
-                Draw();
+                draw();
             }
 
             if (e.KeyCode == Keys.Enter) {
@@ -105,7 +111,7 @@ namespace Diwi {   // base class for Diwi Pages.
         protected void drawDebugText(string txt) {
             Rectangle oldRect = smallMessage.rect;
             smallMessage.erase(mBackgroundColor);
-            smallMessage.Draw(txt);
+            smallMessage.draw(txt);
             redrawRect(oldRect, smallMessage.rect);
         }
 
@@ -113,10 +119,10 @@ namespace Diwi {   // base class for Diwi Pages.
             onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
 
-        protected void Draw() {
+        protected void draw() {
             offScreenGraphics.Clear(mBackgroundColor);
             foreach (DiwiDrawable d in mDrawableElements) {
-                d.Draw();
+                d.draw();
             }
             onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
@@ -149,7 +155,6 @@ namespace Diwi {   // base class for Diwi Pages.
                 foreach (DiwiDrawable d in mDrawableElements) {
                     d.setGraphics(offScreenGraphics);
                 }
-                Draw();
             }
         }
     }

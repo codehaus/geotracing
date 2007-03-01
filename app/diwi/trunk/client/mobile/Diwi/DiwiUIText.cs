@@ -122,13 +122,13 @@ namespace Diwi {
             mTextGraphics.FillRectangle(meBrush, r);
         }
 
-        public void Draw() {
+        public void draw() {
             setTextRect();
             mTextGraphics.DrawString(mText, mFont, mBrush, _x, _y);
 
         }
 
-        public void Draw(string s) {
+        public void draw(string s) {
             mText = s;
             setTextRect();
             mTextGraphics.DrawString(mText, mFont, mBrush, _x, _y);
