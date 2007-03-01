@@ -1,19 +1,14 @@
 
 /* This CSS is just a placeholder. */
 body {
-	margin: 0px;
-	padding: 0px;
+	margin: 8px;
+	padding: 8px;
 	background: #eeeeee;
-	margin-bottom: 50px;
 	color: #333;
 	font-size: 11px;
 	font-family: verdana, sans-serif;
 }
 
-p, h1, h2, h3, h4 {
-	margin: 0px 14px 14px 14px;
-	line-height: 150%;
-}
 
 a {
 	color: #CC3333;
