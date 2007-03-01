@@ -6,6 +6,8 @@ using System.Windows.Forms;
 
 namespace Diwi {
     class DiwiUIMenu : DiwiDrawable {
+        public delegate void DiwiMenuCallbackHandler();
+
         public static Color sBackColor = Color.FromArgb(180, 250, 0);
         public static Color sBarColor = Color.FromArgb(220, 250, 0);
         public static Color sSelColor = Color.FromArgb(130, 100, 30);
@@ -14,7 +16,6 @@ namespace Diwi {
         private SolidBrush mBrush = new SolidBrush(Color.Red);
         private DiwiUIText mText = new DiwiUIText(null,Color.Black,"",new Font("Tahoma", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
-        public delegate void DiwiMenuCallbackHandler();
         private Graphics mMenuGraphics;
         private int mCurrentMenuIndex = 1;
 
@@ -31,6 +32,14 @@ namespace Diwi {
             mItems = new ArrayList();
             mCallbacks = new ArrayList();
             mItemRects = new ArrayList();
+        }
+
+        public void menuSelect() {
+            if (mCurrentMenuIndex != -1) {
+                DiwiMenuCallbackHandler cb = (DiwiMenuCallbackHandler)mCallbacks[mCurrentMenuIndex];
+                if (cb != null)
+                    cb();
+            }
         }
 
         public void setGraphics(Graphics g) {

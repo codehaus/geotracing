@@ -64,11 +64,14 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="GpsForm.cs">
+    <Compile Include="GpsPage.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GpsReader.cs" />
     <Compile Include="KwxClient.cs" />
+    <Compile Include="MainPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -86,6 +89,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Protocol.cs" />
+    <Compile Include="UitlegPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="XMLement.cs" />
   </ItemGroup>
   <ItemGroup>

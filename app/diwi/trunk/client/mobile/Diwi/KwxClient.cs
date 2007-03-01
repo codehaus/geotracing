@@ -129,7 +129,7 @@ namespace Diwi {
 
 
 	/// <summary>
-    /// Select application on portal.
+    /// Select application on server.
     /// </summary>
         public XMLement selectApp() {
 
@@ -214,9 +214,8 @@ namespace Diwi {
 
             } catch (WebException e) {
                 string str = string.Format("Caught WebException: {0}", e.Status.ToString());
-                Console.WriteLine(str);
-                throw e;
-
+                Program.sLog.WriteLine(str);
+                return new XMLement("web-exception");
                 /*
                 HttpWebResponse resp = (HttpWebResponse)e.Response;
                 if (null != resp)
