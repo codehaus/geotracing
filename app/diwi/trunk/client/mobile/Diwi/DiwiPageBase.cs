@@ -93,19 +93,21 @@ namespace Diwi {   // base class for Diwi Pages.
                     break;
 
             }
+
+
             if (txt != "") {
                 draw();
             }
 
             if (e.KeyCode == Keys.Enter) {
-                Program.sGpsReader.stop();
-                Program.sKwxClient.stop();
-                Thread.Sleep(1000);
-                Application.DoEvents();
-                Application.Exit();
+                mMenu.menuSelect();
             }
 
             e.Handled = true;  //all key events handled by the form
+        }
+
+        protected void doTerug() {
+            Close();
         }
 
         protected void drawDebugText(string txt) {

@@ -125,8 +125,13 @@ namespace Diwi {
 
         // open een seriele poort en start asynchroon lezen
         public void start() {
-            if(mCanDemo)
-                demoNMEA = new StreamReader(@"\DemoNMEA.txt");
+            if (mCanDemo) {
+                try {
+                    demoNMEA = new StreamReader(@"\DemoNMEA.txt");
+                } catch (FileNotFoundException) {
+                    mCanDemo = false;
+                }
+            }
             if (mReadDataThread == null) {
                 if (mSerialPort == null) {
                     mSerialPort = new System.IO.Ports.SerialPort(mPort);
@@ -194,7 +199,11 @@ namespace Diwi {
                                     parse(s);
                                 } else {
                                     demoNMEA.Close();
-                                    demoNMEA = new StreamReader(@"\DemoNMEA.txt");
+                                    try {
+                                        demoNMEA = new StreamReader(@"\DemoNMEA.txt");
+                                    } catch (Exception) {
+                                        mCanDemo = false;
+                                    }
                                 }
                             }
                         }

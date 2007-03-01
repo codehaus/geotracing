@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Diwi {
-    class GpsForm : DiwiPageBase {
+    class GpsPage : DiwiPageBase {
         private DiwiUIText latLonText;
         private DiwiUIText fixText;
         private DiwiUIText kwxMessageText;
@@ -16,7 +16,7 @@ namespace Diwi {
 
         private DiwiUIText mouseText;
 
-        public GpsForm(Form parent)
+        public GpsPage(Form parent)
             : base(parent) {
 
             Rectangle r = this.ClientRectangle;
@@ -38,16 +38,14 @@ namespace Diwi {
             addDrawable(demoText);
             addDrawable(fixText);
 
-            mMenu.addItem("speel video", null);
-            mMenu.addItem("over diwi", null);
-            mMenu.addItem("vragen", null);
-            mMenu.addItem("terug", null);
+            mMenu.addItem("terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Gps Status";
 
             Program.sGpsReader.callback += new GpsReader.CallbackHandler(gpsMessage);
         }
 
+       
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             int y = this.ClientRectangle.Height - 4;
