@@ -50,7 +50,7 @@ public class LineStringTest extends PGTestCase {
 	public void testImportRoute() {
 		try {
 			String gpxPath = "../data/ringvaart.gpx";
-			LineString lineString = Util.GPX2LineString(gpxPath);
+			LineString lineString = Util.GPX2LineString(gpxPath, 4326);
 			PGgeometryLW geom = new PGgeometryLW(lineString);
 
 			// Simple: create and update and commit.
@@ -62,7 +62,7 @@ public class LineStringTest extends PGTestCase {
 			getModifier().insert(record);
 
 			gpxPath = "../data/schiphol.gpx";
-			lineString = Util.GPX2LineString(gpxPath);
+			lineString = Util.GPX2LineString(gpxPath, 4326);
 			geom = new PGgeometryLW(lineString);
 
 			// Simple: create and update and commit.
@@ -71,6 +71,37 @@ public class LineStringTest extends PGTestCase {
 
 			record.setStringField("name", "schiphol");
 			record.setObjectField("route_geom", geom);
+			getModifier().insert(record);
+
+		} catch (Throwable t) {
+			failTest("testImportRoute: ", t);
+		}
+	}
+
+	public void testImportRouteRD() {
+		try {
+			String gpxPath = "../data/ringvaart.gpx";
+			LineString lineString = Util.GPX2LineString(gpxPath, 28992);
+			PGgeometryLW geom = new PGgeometryLW(lineString);
+
+			// Simple: create and update and commit.
+			Record record = getModifier().create(ROUTE_TABLE_NAME);
+			assertNotNull("table.create()", record);
+
+			record.setStringField("name", "ringvaart");
+			record.setObjectField("rd_route_geom", geom);
+			getModifier().insert(record);
+
+			gpxPath = "../data/schiphol.gpx";
+			lineString = Util.GPX2LineString(gpxPath, 28992);
+			geom = new PGgeometryLW(lineString);
+
+			// Simple: create and update and commit.
+			record = getModifier().create(ROUTE_TABLE_NAME);
+			assertNotNull("table.create()", record);
+
+			record.setStringField("name", "schiphol");
+			record.setObjectField("rd_route_geom", geom);
 			getModifier().insert(record);
 
 		} catch (Throwable t) {

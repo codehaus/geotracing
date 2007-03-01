@@ -14,6 +14,10 @@ GMAP.addKey('samoa',
                 'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xT1KtoWbeMbrx_g7jRPGAn87V0A9xStaNyH5qQZL4NcXSCP7qhrgmMGHw',
                 '^https?://samoa.sense.com/gt/.*' );
 
+GMAP.addKey('berlin',
+                'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xRBmw7pOXuVru6Jf3Kg5l94yjMP2BSytIoPexi6k1jqmh3g6qHW_a_iRg',
+                '^https?://test.diwi.nl/.*' );
+
 
 GMAP.loadGoogleMapScript('2.66');
 

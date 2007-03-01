@@ -75,7 +75,7 @@
 
 			<!-- Tracer Bot -->
 			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
-				<property name="intervalMillis">10000</property>
+				<property name="intervalMillis">20000</property>
 			</daemon>
 
 			<!-- Daemon for various upgrades -->
