@@ -16,7 +16,7 @@
 					<ogc:Filter>
 						<ogc:PropertyIsEqualTo>
 							<ogc:PropertyName>id</ogc:PropertyName>
-							<ogc:Literal>120</ogc:Literal>
+							<ogc:Literal>232</ogc:Literal>
 						</ogc:PropertyIsEqualTo>
 					</ogc:Filter>
 					<LineSymbolizer>
@@ -24,8 +24,8 @@
 							<PropertyName>center-line</PropertyName>
 						</Geometry>
 						<Stroke>
-							<CssParameter name="stroke">#ff0000</CssParameter>
-							<CssParameter name="stroke-width">3</CssParameter>
+							<CssParameter name="stroke">#ffff00</CssParameter>
+							<CssParameter name="stroke-width">8</CssParameter>
 							<!-- <CssParameter name="stroke-dasharray">1 1 1 1</CssParameter>  -->
 						</Stroke>
 					</LineSymbolizer>

@@ -96,7 +96,7 @@ $Id$
 	<target name="deploy-test-diwi-only" depends="assemble">
 		<exec executable="scp">
 			<arg line="-r"/>
-			<arg line="${home}/index.html"/>
+			<arg line="${home}/index.html ${home}/test"/>
 			<arg line="${deploy.test.dir}/web" />
 		</exec>
 	</target>

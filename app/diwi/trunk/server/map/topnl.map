@@ -1,0 +1,79 @@
+#
+# Start of map file
+#
+NAME TOPNL
+STATUS ON
+# SIZE 600 600
+EXTENT -157973.103596 300670.145842 472056.321374 678687.800824
+UNITS METERS
+SHAPEPATH "data"
+IMAGECOLOR 255 255 255
+PROJECTION
+   "init=epsg:28992"
+END
+
+#
+# Start of symbol definitions (we're only using a few)
+#
+
+# test url
+# http://88.198.19.182//cgi-bin/mapserv?map=/var/keyworx/webapps/mapserver/topnl/topnl.map&LAYERS=amstelveen%2Croutes&SLD=http%3A%2F%2F88.198.19.182%2Fmapserver%2Ftopnl%2Fselect-route.sld&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A4326&BBOX=4.768066%2C52.338867%2C4.790039%2C52.36084&WIDTH=256&HEIGHT=256
+SYMBOL
+  NAME 'line'
+  TYPE ELLIPSE
+  POINTS 1 1 END
+  FILLED TRUE
+END
+
+LAYER
+  NAME "amstelveen"
+  DATA "25d_amstelveen.tiff"
+  TYPE RASTER
+  STATUS OFF
+END
+
+WEB
+    IMAGEPATH "/var/keyworx/webapps/mapserver/tmp/"
+#    IMAGEURL ...
+END
+
+LAYER
+# http://www.geese.nl/milcon?LAYERS=w&REQUEST=GetMap&SERVICE=WMS&FORMAT=image%2Fpng&HEIGHT=256&VERSION=1.1.1&SRS=EPSG:4326&WIDTH=256&BBOX=4.8,52,5,52.50&TRANSPARENT=FALSE&EXCEPTIONS=application/vnd.ogc.se_inimage
+#	GROUP topnl
+	NAME topnl
+	TYPE RASTER
+	STATUS ON
+	CONNECTIONTYPE WMS
+	CONNECTION "http://www.geese.nl/milcon?"
+	METADATA
+		"wms_name" "t250,t50,t25,t10"
+		"wms_srs" "EPSG:28992"
+		"wms_server_version" "1.1.1"
+		"wms_request" "GetMap"
+		"wms_format" "image/png"
+		"wms_connectiontimeout" "60"
+	END
+END
+
+### ROADS ###
+LAYER
+#	GROUP "Selected"
+	NAME "routes"
+	CONNECTIONTYPE postgis
+	CONNECTION "user=oaseuser password=oase dbname=postgistest host=localhost"
+	DATA "rd_route_geom from (select id,rd_route_geom from g_route) as foo using unique id using SRID=28992"
+
+	DEBUG ON
+	TYPE LINE
+	STATUS ON
+
+	CLASS
+	  STYLE
+		COLOR 255 0 0
+		SYMBOL "line"
+		SIZE 3
+ 	  END
+	END
+END
+
+END
