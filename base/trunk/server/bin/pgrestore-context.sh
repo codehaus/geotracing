@@ -51,7 +51,11 @@ function postgisrestore() {
 	LWPOSTGIS="/usr/share/postgresql-8.1-postgis/lwpostgis.sql"
 	if [ ! -f ${LWPOSTGIS} ]
 	then
-		LWPOSTGIS="/opt/local/share/postgis/lwpostgis.sql"
+		LWPOSTGIS="/opt/local/share/lwpostgis.sql"
+	fi
+	if [ ! -f ${LWPOSTGIS} ]
+	then
+		LWPOSTGIS="/usr/share/lwpostgis.sql"
 	fi
 
 	if [ ! -f ${LWPOSTGIS} ]

@@ -27,6 +27,7 @@
 		<field name="creationdate" type="TIMESTAMP"/>
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="route_geom" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,4326,INDEX_GIST"/>
+		<field name="rd_route_geom" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,28992,INDEX_GIST"/>
 
 
 <!-- <field name="owner" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>

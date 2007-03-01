@@ -3,6 +3,8 @@ package org.geotracing.test.postgis;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
 import org.postgis.LineString;
+import org.geotracing.gis.proj.WGS84toRD;
+import org.geotracing.gis.proj.XY;
 
 import java.util.Vector;
 import java.util.List;
@@ -21,6 +23,7 @@ import nl.justobjects.jox.parser.JXBuilder;
  */
 public class Util {
 	public static final int DEFAULT_SRID = 4326;
+	public static final int SRID_RD = 28992;
 
 	public static PGgeometryLW createPoint(double lon, double lat) {
 		Point point = new Point(lon, lat);
@@ -40,7 +43,7 @@ public class Util {
 	 * @param aFilePath path to GPX file
 	 * @return a PG LineString
 	 */
-	public static LineString GPX2LineString(String aFilePath) {
+	public static LineString GPX2LineString(String aFilePath, int anSRID) {
 
 		try {
 			JXElement gpxDoc = new JXBuilder().build(new File(aFilePath));
@@ -73,8 +76,13 @@ public class Util {
 						JXElement nextTrkPt = (JXElement) nextTrkPts.elementAt(k);
 
 						// Lat/lon
-						double lon = nextTrkPt.getDoubleAttr("lon");
-						double lat = nextTrkPt.getDoubleAttr("lat");
+						double x = nextTrkPt.getDoubleAttr("lon");
+						double y = nextTrkPt.getDoubleAttr("lat");
+						if (anSRID == SRID_RD) {
+							XY xy = WGS84toRD.calculate(y, x);
+							x = xy.x;
+							y = xy.y;
+						}
 						double ele = 0.0d;
 						// Height (elevation)
 						String eleStr = nextTrkPt.getChildText("ele");
@@ -82,15 +90,15 @@ public class Util {
 							ele = Double.parseDouble(eleStr);
 						}
 
-						point = new Point(lon, lat, ele);
-						point.setSrid(DEFAULT_SRID);
+						point = new Point(x, y, ele);
+						point.setSrid(anSRID);
 						points.add(point);
 					}
 				}
 			}
 
 			lineString = new LineString((Point[]) points.toArray(new Point[points.size()]));
-			lineString.setSrid(DEFAULT_SRID);
+			lineString.setSrid(anSRID);
 			return lineString;
 
 
