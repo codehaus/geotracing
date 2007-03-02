@@ -36,7 +36,9 @@
 			<handler id="route" class="nl.diwi.control.RouteHandler">
 				<!-- <property name="max-file-size">1000000</property>  -->
 			</handler>
-		</handlers>
+            <handler id="poi" class="nl.diwi.control.POIHandler" />
+            <handler id="kich" class="nl.diwi.control.KICHHandler" />
+        </handlers>
 
 
 		<daemons>
