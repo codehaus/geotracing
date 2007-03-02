@@ -192,7 +192,7 @@ namespace Diwi {
                             if (callback != null) {
                                 callback((int)sMess.M_DEMO);
                             }
-                            // read 4 lines from file
+                            // read 6 lines from file
                             for (int i = 0; i < 6; i++) {
                                 string s = nmeaDemoFile.ReadLine();
                                 if (s != null) {
@@ -309,6 +309,7 @@ namespace Diwi {
                 // Notify the calling application of the change
                 if (callback != null)
                     callback((int)sMess.M_POS);
+                AppController.sKwxClient.sendSample();
             }
 
             if (words[7] != "") {

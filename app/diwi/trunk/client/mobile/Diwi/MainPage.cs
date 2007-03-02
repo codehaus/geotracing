@@ -39,7 +39,7 @@ namespace Diwi {
             gpsPage.ShowDialog();
         }
 
-       protected void doTerug() {
+       protected override void doTerug() {
             AppController.deactivate();
             Close();
         }

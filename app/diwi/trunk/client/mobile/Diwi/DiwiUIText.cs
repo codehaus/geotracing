@@ -101,8 +101,13 @@ namespace Diwi {
 
         #endregion
 
-        public int width() {
-            return (int) mTextGraphics.MeasureString(mText, mFont).Width;
+        public void doMouseClick(int x, int y) {
+        }
+
+        public int width {
+            get {
+                return (int)mTextGraphics.MeasureString(mText, mFont).Width;
+            }
         }
 
         private void setTextRect() {

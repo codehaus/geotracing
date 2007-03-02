@@ -12,6 +12,8 @@ namespace Diwi {
         public delegate void MessageCallback(string mess);
         public event MessageCallback messageCallback;
 
+        private string mUser = Diwi.Properties.Resources.KwxServerUsername;
+        private string mPass = Diwi.Properties.Resources.KwxServerPassword;
         private string mServer;
         private string mAgentKey;
         private Thread mHbThread;
@@ -39,14 +41,39 @@ namespace Diwi {
             mAgentKey = null;
         }
 
+        public void start(string u, string p) {
+            mUser = u;
+            mPass = p;
+            start();
+        }
+
+
         public void start() {
-            string s = "";
+
+            if (messageCallback != null) {
+                messageCallback("login: ");
+            }
             XMLement x = doLogin();
-            s = x.toString();
+
+            if (x.tag == "login-rsp") {
+                if (messageCallback != null) {
+                    messageCallback("login: succesful!");
+                }
+            }
+
             x = selectApp();
-            s = x.toString();
+            if (x.tag == "select-app-rsp") {
+                if (messageCallback != null) {
+                    messageCallback("select-app: succesful!");
+                }
+            }
+
             x = newTrack("diwiTrack");
-            s = x.toString();
+            if (x.tag == "utopia-rsp") {
+                if (messageCallback != null) {
+                    messageCallback("track created");
+               }
+            }
         }
 
 
@@ -89,8 +116,8 @@ namespace Diwi {
         public XMLement doLogin() {
             XMLement xml = new XMLement();
             xml.tag = Protocol.TAG_LOGIN_REQ;
-            xml.addAttribute(Protocol.ATTR_NAME, Diwi.Properties.Resources.KwxServerUsername);
-            xml.addAttribute(Protocol.ATTR_PASSWORD, Diwi.Properties.Resources.KwxServerPassword);
+            xml.addAttribute(Protocol.ATTR_NAME, mUser);
+            xml.addAttribute(Protocol.ATTR_PASSWORD, mPass);
             xml.addAttribute(Protocol.ATTR_PROTOCOLVERSION, Diwi.Properties.Resources.KwxServerProtocolVersion);
 
             lock (this) {

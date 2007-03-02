@@ -119,9 +119,9 @@ namespace Diwi {
                 mBrush.Color = sSelColor;
                 mMenuGraphics.FillRectangle(mBrush, x, y, 24, 24);
                 mText.text = item;
-                mText.x = x - 10 - mText.width();
+                mText.x = x - 10 - mText.width;
                 mText.y = y+2;
-                mItemRects[index] = r = new Rectangle(mText.x - 6, y , mText.width() + 10 + 28, 26);
+                mItemRects[index] = r = new Rectangle(mText.x - 6, y , mText.width + 10 + 28, 26);
                 if (index == mCurrentMenuIndex) {
                     mMenuGraphics.FillRectangle(mBrush, r.X, r.Y, r.Width - 26, 24);
                     mText.color = sSelTextColor;
