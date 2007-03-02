@@ -16,7 +16,7 @@
         <!-- DiWi specific tables -->
         <table file="tables/diwi_route.xml"/>
         <table file="tables/diwi_prefs.xml"/>
-        <table file="tables/g_location.xml"/>
+        <table file="tables/diwi_poi.xml"/>
 
 
 	<!--	<table file="tables/kw_comment.xml"/>     -->
