@@ -32,6 +32,7 @@ public interface Constants {
     public final static String ENDDATE_FIELD = "enddate";
     public final static String PLAYERS_FIELD = "players";
     public final static String MEDIA_FIELD = "media";
+    public final static String POINT_FIELD = "point";
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;        
