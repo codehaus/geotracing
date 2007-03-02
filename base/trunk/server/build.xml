@@ -56,7 +56,8 @@ $Id$
 	<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
 	<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
 	<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
- 
+	<property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
+
 	<!-- All sources to be compiled -->
 	<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
 
@@ -210,6 +211,7 @@ $Id$
 				<include name="geoapi-nogenerics-2.1-M2.jar"/>
 				<include name="gt2-epsg-wkt-2.3.0.jar"/>
 				<include name="gt2-referencing-2.3.0.jar"/>
+				<include name="jsr108-0.01.jar"/>
 			</fileset>
 			<fileset dir="${postgis-jdbc.dir}">
 				<include name="postgis.jar"/>
