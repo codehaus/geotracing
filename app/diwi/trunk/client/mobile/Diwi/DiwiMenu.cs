@@ -17,7 +17,7 @@ namespace Diwi {
         private DiwiUIText mText = new DiwiUIText(null,Color.Black,"",new Font("Tahoma", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
         private Graphics mMenuGraphics;
-        private int mCurrentMenuIndex = 1;
+        private int mCurrentMenuIndex = -1;
 
         ArrayList mItems;
         ArrayList mCallbacks;
@@ -34,13 +34,34 @@ namespace Diwi {
             mItemRects = new ArrayList();
         }
 
+        public void doMouseClick(int x, int y) {
+            Point p = new Point(x, y);
+            int i = 0;
+            foreach (Rectangle r in mItemRects) {
+                if (r != null && r.Contains(p)) {
+                    mCurrentMenuIndex = i;
+                    mParentForm.draw();
+                    DiwiMenuCallbackHandler cb = (DiwiMenuCallbackHandler)mCallbacks[i];
+                    if (cb != null) {
+                        mCurrentMenuIndex = -1;
+                        cb();
+                        return;
+                    }
+                }
+                i++;
+            }
+        }
+
         public void menuSelect() {
             if (mCurrentMenuIndex != -1) {
                 DiwiMenuCallbackHandler cb = (DiwiMenuCallbackHandler)mCallbacks[mCurrentMenuIndex];
-                if (cb != null)
+                if (cb != null) {
+                    mCurrentMenuIndex = -1;
                     cb();
+                }
             }
         }
+
 
         public void setGraphics(Graphics g) {
             mMenuGraphics = g;
@@ -100,12 +121,12 @@ namespace Diwi {
                 mText.text = item;
                 mText.x = x - 10 - mText.width();
                 mText.y = y+2;
-                mItemRects[index] = r = new Rectangle(mText.x - 6, y - 2, mText.width() + 10 + 28, 26);
+                mItemRects[index] = r = new Rectangle(mText.x - 6, y , mText.width() + 10 + 28, 26);
                 if (index == mCurrentMenuIndex) {
-                    mMenuGraphics.FillRectangle(mBrush, r.X, r.Y, r.Width - 26, 26);
+                    mMenuGraphics.FillRectangle(mBrush, r.X, r.Y, r.Width - 26, 24);
                     mText.color = sSelTextColor;
                     mBrush.Color = sSelTextColor;
-                    mMenuGraphics.FillRectangle(mBrush, x+3, y+3, 17, 17);
+                    mMenuGraphics.FillRectangle(mBrush, x+3, y+3, 18, 18);
                 } else {
                     mText.color = sTextColor;
                 }

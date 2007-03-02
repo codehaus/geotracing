@@ -9,16 +9,9 @@ namespace Diwi {
         /// The main entry point for the application.
         /// </summary>
 
-        public static StreamWriter sLog;
-        public static KwxClient sKwxClient;
-        public static GpsReader sGpsReader;
-
         [MTAThread]
         static void Main() {
-            sLog = File.CreateText("DiwiLog.txt");
-
-            Form f1 = new Form1();
-            Application.Run(f1);
+            Application.Run(new MainPage(null));
         }
     }
 }

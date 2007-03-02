@@ -12,17 +12,19 @@ namespace Diwi {   // base class for Diwi Pages.
         private enum sKeys { M_UP=38, M_DOWN=40, M_LEFT=37, M_RIGHT=39 };
         protected static Bitmap offScreenBitmap;
         protected static Graphics offScreenGraphics;
-        protected static Graphics onScreenGraphics;
-        protected Form mParent;
-        protected bool mIsInitialized=false;
-        protected Color mBackgroundColor;
-        private DiwiUIText smallMessage;
+        private static Rectangle mBaseRect = new Rectangle(0, 0, 0, 0);
+        protected Graphics onScreenGraphics;
+        protected DiwiPageBase mParent;
+        protected bool mIsInitialized = false;
         private ArrayList mDrawableElements;
         private Rectangle mCurrentRect;
         protected DiwiUIMenu mMenu;
+        protected Color mBackgroundColor;
+        private DiwiUIText mouseText;
+
         private string mTitle;
 
-        public DiwiPageBase(Form parent) {
+        public DiwiPageBase(DiwiPageBase parent) {
 
 
             mParent = parent;
@@ -30,38 +32,51 @@ namespace Diwi {   // base class for Diwi Pages.
 
             mCurrentRect = this.ClientRectangle;
 
-            offScreenBitmap = new Bitmap(this.ClientRectangle.Width, this.ClientRectangle.Height);
-            offScreenGraphics = Graphics.FromImage(offScreenBitmap);
-            onScreenGraphics = this.CreateGraphics();
-            offScreenGraphics.Clear(Color.Black);
-
-            mDrawableElements = new ArrayList();
-            mMenu = new DiwiUIMenu(offScreenGraphics,this);
-            addDrawable(mMenu);
-
-            smallMessage = new DiwiUIText(offScreenGraphics,Color.Black);
-            smallMessage.x = 4; smallMessage.y = this.ClientRectangle.Bottom - 20;
+            this.SuspendLayout();
 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = false;
+            this.BackColor = mBackgroundColor;
             this.ClientSize = new System.Drawing.Size(240, 320);
-        
             this.Name = "";
             this.Text = "";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
+
+
+            this.KeyDown += new KeyEventHandler(this.keydown);
+
+            baseResize(this.ClientRectangle);
+
+            mDrawableElements = new ArrayList();
+            mMenu = new DiwiUIMenu(offScreenGraphics, this);
+            addDrawable(mMenu);
+            mouseText = new DiwiUIText(offScreenGraphics);
+        
         }
 
+        protected override void OnMouseMove(MouseEventArgs e) {
+            Rectangle oldRect = mouseText.rect;
+            mouseText.erase(mBackgroundColor);
+
+            mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
+            mouseText.x = 4;
+            mouseText.y = mCurrentRect.Height-18;
+            mouseText.draw();
+            redrawRect(oldRect, mouseText.rect);
+        }
+      
+        
         public string title {
             get { return mTitle; }
-            set { mTitle = value; }
+            set { Name = mTitle = value; }
         }
 
         protected void addDrawable(DiwiDrawable d) {
             mDrawableElements.Add(d);
         }
 
-        public static void redrawRect(Rectangle oldR, Rectangle newR) {
+        public void redrawRect(Rectangle oldR, Rectangle newR) {
             if (oldR.Width > newR.Width)
                 onScreenGraphics.DrawImage(offScreenBitmap, newR.X, newR.Y, oldR, GraphicsUnit.Pixel);
             else
@@ -71,57 +86,54 @@ namespace Diwi {   // base class for Diwi Pages.
         protected override void OnLoad(EventArgs e) {
             this.Visible = true;
             this.Focus();  // give the form focus so it can receive KeyEvents
-            this.KeyDown += new KeyEventHandler(this.keydown);
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e) {
+            mMenu.doMouseClick(e.X, e.Y);
         }
 
         void keydown(Object o, KeyEventArgs e) {
-            string txt="";
             switch (e.KeyValue) {
                 case (int)sKeys.M_DOWN:
-                    txt = "down";
                     mMenu.decIndex();
+                    draw();
                     break;
                 case (int)sKeys.M_LEFT:
-                    txt = "left";
                     break;
                 case (int)sKeys.M_RIGHT:
-                    txt = "right";
                     break;
                 case (int)sKeys.M_UP:
-                    txt = "up";
                     mMenu.incIndex();
+                    draw();
                     break;
 
-            }
-
-
-            if (txt != "") {
-                draw();
-            }
-
-            if (e.KeyCode == Keys.Enter) {
-                mMenu.menuSelect();
             }
 
             e.Handled = true;  //all key events handled by the form
+            if (e.KeyCode == Keys.Enter) {
+                mMenu.menuSelect();
+            }  
         }
 
-        protected void doTerug() {
+        protected override void OnActivated(EventArgs e) {
+            base.OnActivated(e);
+            //this.Visible = true;
+            draw();
+        }
+
+        protected virtual void doTerug() {
+            //this.Visible = false;
+            if (mParent != null)
+                mParent.Show();
             Close();
         }
 
-        protected void drawDebugText(string txt) {
-            Rectangle oldRect = smallMessage.rect;
-            smallMessage.erase(mBackgroundColor);
-            smallMessage.draw(txt);
-            redrawRect(oldRect, smallMessage.rect);
-        }
 
         protected override void OnPaint(PaintEventArgs e) {
             onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
 
-        protected void draw() {
+        public void draw() {
             offScreenGraphics.Clear(mBackgroundColor);
             foreach (DiwiDrawable d in mDrawableElements) {
                 d.draw();
@@ -129,35 +141,43 @@ namespace Diwi {   // base class for Diwi Pages.
             onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
 
-        protected override void OnResize(EventArgs e) {
-            base.OnResize(e);
 
-            if (mCurrentRect.Width != this.ClientRectangle.Width || mCurrentRect.Height != this.ClientRectangle.Height) {
-
-                mCurrentRect = this.ClientRectangle;
-
-                if (onScreenGraphics != null)
-                    onScreenGraphics.Dispose();
+        static bool baseResize(Rectangle r) {
+            if (mBaseRect.Width != r.Width || mBaseRect.Height != r.Height) {
+                mBaseRect = r;
                 if (offScreenGraphics != null)
                     offScreenGraphics.Dispose();
                 if (offScreenBitmap != null)
                     offScreenBitmap.Dispose();
 
-                offScreenBitmap = new Bitmap(this.ClientRectangle.Width, this.ClientRectangle.Height);
+                offScreenBitmap = new Bitmap(mBaseRect.Width, mBaseRect.Height);
                 offScreenGraphics = Graphics.FromImage(offScreenBitmap);
-                offScreenGraphics.Clear(mBackgroundColor);
+                return true;
+            }
+            return false;
+        }
+
+
+        protected bool doResize(EventArgs e) {
+            
+            if (mCurrentRect.Width != this.ClientRectangle.Width || mCurrentRect.Height != this.ClientRectangle.Height) {
+
+                mCurrentRect = this.ClientRectangle;
+                bool didResize = baseResize(mCurrentRect);
+
                 onScreenGraphics = this.CreateGraphics();
 
-                mMenu.resize(this.ClientRectangle);
-                smallMessage.y = this.ClientRectangle.Bottom - 20;
-            }
 
-            if (mIsInitialized) {
-                smallMessage.setGraphics(offScreenGraphics);
-                foreach (DiwiDrawable d in mDrawableElements) {
-                    d.setGraphics(offScreenGraphics);
+                if (mIsInitialized) {
+                    if(didResize)
+                        foreach (DiwiDrawable d in mDrawableElements) {
+                            d.setGraphics(offScreenGraphics);
+                        }
+                    mMenu.resize(this.ClientRectangle);
+                    return true;
                 }
             }
+            return false;
         }
     }
 }
