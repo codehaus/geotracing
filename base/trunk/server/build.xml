@@ -53,7 +53,10 @@ $Id$
 	<property name="scp" value="${home.bin.dir}/scp.sh"/>
 	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
 	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
-
+	<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
+	<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
+	<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
+ 
 	<!-- All sources to be compiled -->
 	<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
 
@@ -75,6 +78,9 @@ $Id$
 		<pathelement location="${kwx-tagging.jar}"/>
 		<pathelement location="${servlet.jar}"/>
 		<pathelement location="${ehcache.jar}"/>
+		<pathelement location="${geoapi.jar}"/>
+		<pathelement location="${gt2-epsg-wkt.jar}"/>
+		<pathelement location="${gt2-referencing.jar}"/>
 	</path>
 
 	<!-- Initialize: create dirs and set timestamp.. -->
@@ -97,6 +103,9 @@ $Id$
 
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${servlet}"/>
+		</ant>
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${geotools-referencing}"/>
 		</ant>
 
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
@@ -196,6 +205,11 @@ $Id$
 		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true" >
 			<fileset dir="${pushlet.dir}/lib">
 				<include name="pushlet.jar"/>
+			</fileset>
+			<fileset dir="${geotools-referencing.dir}">
+				<include name="geoapi-nogenerics-2.1-M2.jar"/>
+				<include name="gt2-epsg-wkt-2.3.0.jar"/>
+				<include name="gt2-referencing-2.3.0.jar"/>
 			</fileset>
 			<fileset dir="${postgis-jdbc.dir}">
 				<include name="postgis.jar"/>

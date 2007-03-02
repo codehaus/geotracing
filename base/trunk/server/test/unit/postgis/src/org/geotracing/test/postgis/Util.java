@@ -3,8 +3,7 @@ package org.geotracing.test.postgis;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
 import org.postgis.LineString;
-import org.geotracing.gis.proj.WGS84toRD;
-import org.geotracing.gis.proj.XY;
+import org.geotracing.gis.Transform;
 
 import java.util.Vector;
 import java.util.List;
@@ -79,9 +78,9 @@ public class Util {
 						double x = nextTrkPt.getDoubleAttr("lon");
 						double y = nextTrkPt.getDoubleAttr("lat");
 						if (anSRID == SRID_RD) {
-							XY xy = WGS84toRD.calculate(y, x);
-							x = xy.x;
-							y = xy.y;
+							double[] xy = Transform.WGS84toRD(x, y);
+							x = xy[0];
+							y = xy[1];
 						}
 						double ele = 0.0d;
 						// Height (elevation)
