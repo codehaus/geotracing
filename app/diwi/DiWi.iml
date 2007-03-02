@@ -13,6 +13,9 @@
       <sourceFolder url="file://$MODULE_DIR$/../../base/trunk/external/keyworx-1.0.7rc4/common/java/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../base/trunk/external/keyworx-1.0.7rc4/server/src" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../../base/trunk/external/postgis-jdbc-1.1.1">
+      <sourceFolder url="file://$MODULE_DIR$/../../base/trunk/external/postgis-jdbc-1.1.1/src" isTestSource="false" />
+    </content>
     <orderEntry type="jdk" jdkName="1.4" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">

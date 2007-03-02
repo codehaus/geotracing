@@ -60,6 +60,8 @@
                     <poi>
                         <name>poi nummer 1</name>
                         <description>prachtig punt</description>
+                        <x>4.92</x>
+                        <y>52.35</y>
                         <media>
                             <kich-uri>http://www.kich.nl?id=100</kich-uri>
                             <kich-uri>http://www.kich.nl?id=200</kich-uri>
@@ -83,6 +85,8 @@
                     <poi>
                         <name>poi nummer 100</name>
                         <description>mooi punt</description>
+                        <x>4.92</x>
+                        <y>52.35</y>
                         <media>
                             <kich-uri>http://www.kich.nl?id=100</kich-uri>
                             <kich-uri>http://www.kich.nl?id=200</kich-uri>

@@ -3,7 +3,7 @@ package nl.diwi.util;
 public interface Constants {
     // tablenames
     public final static String ROUTE_TABLE = "diwi_route";
-    public final static String POI_TABLE = "g_location";
+    public final static String POI_TABLE = "diwi_poi";
     public final static String PREFS_TABLE = "diwi_prefs";
     public final static String LOCATION_TABLE = "g_location";
     public final static String MEDIA_TABLE = "base_medium";
@@ -22,6 +22,8 @@ public interface Constants {
     public final static String VERSION_FIELD = "version";
     public final static String NAME_FIELD = "name";
     public final static String DESCRIPTION_FIELD = "description";
+    public final static String X_FIELD = "x";
+    public final static String Y_FIELD = "y";
     public final static String STATE_FIELD = "state";
     public final static String VALUE_FIELD = "value";
     public final static String PATH_FIELD = "path";

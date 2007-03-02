@@ -10,6 +10,8 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.log.Log;
+import org.postgis.Point;
+import org.postgis.PGgeometryLW;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -32,6 +34,8 @@ public class POILogic implements Constants {
      * <poi>
      *      <name></name>
      *      <description></description>
+     *      <x></x>
+     *      <y></y>
      *      <media>
      *          <kich-uri><kich-uri>
      *          <kich-uri><kich-uri>
@@ -45,19 +49,20 @@ public class POILogic implements Constants {
      */
     public int insert(JXElement aPOIElement) throws UtopiaException {
         try {
-            log.info("dbg 1");
             Record poi = oase.getModifier().create(POI_TABLE);
-            log.info("dbg 1");
             poi.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
             poi.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
-            log.info("dbg 1");
-            poi.setXMLField(DESCRIPTION_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
-            log.info("dbg 1");
+
+            Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
+			point.setSrid(28992);
+			PGgeometryLW geom = new PGgeometryLW(point);
+			poi.setObjectField("point", geom);
+
+            poi.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+
             oase.getModifier().insert(poi);
-            log.info("dbg 1");
 
             dataSource.cudPOI(POI_INSERT_ACTION, aPOIElement);
-            log.info("dbg 1");
             return poi.getId();
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot insert poi record", oe, ErrorCode.__6006_database_irregularity_error);
@@ -67,11 +72,13 @@ public class POILogic implements Constants {
     }
 
     /**
-     * Inserts a poi.
+     * Updates a poi.
      *
      * <poi>
      *      <name></name>
      *      <description></description>
+     *      <x></x>
+     *      <y></y> 
      *      <media>
      *          <kich-uri><kich-uri>
      *          <kich-uri><kich-uri>
@@ -87,7 +94,14 @@ public class POILogic implements Constants {
             Record poi = oase.getFinder().read(aPOIId);
             poi.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
             poi.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
-            poi.setXMLField(DESCRIPTION_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+
+            Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
+            point.setSrid(28992);
+            PGgeometryLW geom = new PGgeometryLW(point);
+            poi.setObjectField("point", geom);
+
+            poi.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+
             oase.getModifier().update(poi);
 
             JXElement idElm = new JXElement(ID_FIELD);
