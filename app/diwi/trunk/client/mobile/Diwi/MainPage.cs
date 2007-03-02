@@ -1,17 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Diwi {
     class MainPage : DiwiPageBase {
 
         private DiwiPageBase uitLegPage = null;
         private DiwiPageBase gpsPage = null;
+        private DiwiPageBase liPage = null;
 
-        public MainPage(Form parent)
+        public MainPage(DiwiPageBase parent)
             : base(parent) {
+
+            AppController.activate();
 
             mMenu.addItem("Uitleg", new DiwiUIMenu.DiwiMenuCallbackHandler(doUitleg));
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute));
@@ -19,7 +22,7 @@ namespace Diwi {
             mMenu.addItem("Route maken", new DiwiUIMenu.DiwiMenuCallbackHandler(doMaakRoute));
             mMenu.addItem("Inloggen", new DiwiUIMenu.DiwiMenuCallbackHandler(doLogin));
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS));
-            mMenu.addItem("Quit", new DiwiUIMenu.DiwiMenuCallbackHandler(doQuit));
+            mMenu.addItem("Quit", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Hoofdmenu";
         }
@@ -28,23 +31,18 @@ namespace Diwi {
             if (uitLegPage == null)
                 uitLegPage = new UitlegPage(this);
             uitLegPage.ShowDialog();
-            draw();
         }
 
         void doGPS() {
             if (gpsPage == null)
                 gpsPage = new GpsPage(this);
             gpsPage.ShowDialog();
-            draw();
         }
 
-        void doQuit() {
-            Program.sGpsReader.stop();
-            Program.sKwxClient.stop();
-            Thread.Sleep(1000);
+       protected void doTerug() {
+            AppController.deactivate();
             Close();
         }
-
 
         void doKiesRoute() {
         }
@@ -56,6 +54,13 @@ namespace Diwi {
         }
 
         void doLogin() {
+          //  LoginPage lp = new LoginPage(this);
+           // lp.ShowDialog();
+            //lp.Dispose();
+
+            if (liPage == null)
+                liPage = new LoginPage(this);
+            liPage.ShowDialog();
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -65,12 +70,9 @@ namespace Diwi {
         
         protected override void OnResize(EventArgs e) {
             // change location of stuff
-            base.OnResize(e);
-            if (mIsInitialized) {
+            if( base.doResize(e) ) {
                 draw();
             }
         }
-
-  
     }
 }

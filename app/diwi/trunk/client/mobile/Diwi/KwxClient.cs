@@ -34,9 +34,13 @@ namespace Diwi {
         }
 
         private KwxClient() {
-            string s = "";
+            
             mServer = Diwi.Properties.Resources.KwxServerUrl;
             mAgentKey = null;
+        }
+
+        public void start() {
+            string s = "";
             XMLement x = doLogin();
             s = x.toString();
             x = selectApp();
@@ -44,6 +48,7 @@ namespace Diwi {
             x = newTrack("diwiTrack");
             s = x.toString();
         }
+
 
         public void stop() {
             if (mAgentKey != null) {
@@ -76,9 +81,7 @@ namespace Diwi {
             lock (this) {
                 xml = doRequest(xml);
             }
-
             mAgentKey = null;
-
             return xml;
         }
 
@@ -114,17 +117,20 @@ namespace Diwi {
         /// create new track.
         /// </summary>
         public XMLement newTrack(string aName) {
-            DateTime d1 = DateTime.UtcNow;
-            XMLement req = new XMLement("t-trk-create-req");
-            req.addAttribute("name", aName);
-            req.addAttribute("t", d1.ToFileTime().ToString());
-            // Minimal mode: tracks are made daily (Track type 2)
-            req.addAttribute("type", "2");
+            if (mAgentKey != null) {
+                DateTime d1 = DateTime.UtcNow;
+                XMLement req = new XMLement("t-trk-create-req");
+                req.addAttribute("name", aName);
+                req.addAttribute("t", d1.ToFileTime().ToString());
+                // Minimal mode: tracks are made daily (Track type 2)
+                req.addAttribute("type", "2");
 
-            req = utopiaRequest(req);
+                req = utopiaRequest(req);
 
-            trackId = req.getAttributeValue("id");
-            return req;
+                trackId = req.getAttributeValue("id");
+                return req;
+            }
+            return new XMLement("NotLoggedInError");
         }
 
 
@@ -153,17 +159,19 @@ namespace Diwi {
         ///  Sends position sample to the server.
         /// </summary>
         public void sendSample() {
-            XMLement xml = new XMLement("t-trk-write-req");
+            if (mAgentKey != null) {
+                XMLement xml = new XMLement("t-trk-write-req");
 
-            XMLement pt = new XMLement("pt");
+                XMLement pt = new XMLement("pt");
 
-            pt.addAttribute("nmea", GpsReader.nmea);
+                pt.addAttribute("nmea", GpsReader.nmea);
 
-            //pt.addAttribute("lon", GpsReader.lon.ToString());
-            //pt.addAttribute("lat", GpsReader.lat.ToString());
-            xml.addChild(pt);
-            xml = utopiaRequest(xml);
-            string s = xml.toString();
+                //pt.addAttribute("lon", GpsReader.lon.ToString());
+                //pt.addAttribute("lat", GpsReader.lat.ToString());
+                xml.addChild(pt);
+                xml = utopiaRequest(xml);
+                string s = xml.toString();
+            }
         }
 
 
@@ -214,7 +222,7 @@ namespace Diwi {
 
             } catch (WebException e) {
                 string str = string.Format("Caught WebException: {0}", e.Status.ToString());
-                Program.sLog.WriteLine(str);
+                AppController.sLog.WriteLine(str);
                 return new XMLement("web-exception");
                 /*
                 HttpWebResponse resp = (HttpWebResponse)e.Response;

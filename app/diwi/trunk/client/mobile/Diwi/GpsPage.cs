@@ -14,9 +14,8 @@ namespace Diwi {
         private DiwiUIText demoText;
         private DiwiUIText speedText;
 
-        private DiwiUIText mouseText;
 
-        public GpsPage(Form parent)
+        public GpsPage(DiwiPageBase parent)
             : base(parent) {
 
             Rectangle r = this.ClientRectangle;
@@ -28,7 +27,6 @@ namespace Diwi {
             hDopText = new DiwiUIText(offScreenGraphics, Color.Black);
             demoText = new DiwiUIText(offScreenGraphics, Color.Red);
             fixText = new DiwiUIText(offScreenGraphics, Color.Black);
-            mouseText = new DiwiUIText(offScreenGraphics);
 
             addDrawable(kwxMessageText);
             addDrawable(latLonText);
@@ -42,7 +40,7 @@ namespace Diwi {
 
             title = "Gps Status";
 
-            Program.sGpsReader.callback += new GpsReader.CallbackHandler(gpsMessage);
+            AppController.sGpsReader.callback += new GpsReader.CallbackHandler(gpsMessage);
         }
 
        
@@ -56,27 +54,14 @@ namespace Diwi {
             speedText.x = 8; speedText.y = y -= 20;
             demoText.x = 8; demoText.y = y -= 20;
             fixText.x = 8; fixText.y = y -= 20;
-            if (Program.sKwxClient.agentKey != null) {
-                newKwxMessage("Kwx login succes: " + Program.sKwxClient.agentKey);
+            if (AppController.sKwxClient.agentKey != null) {
+                newKwxMessage("Kwx login succes: " + AppController.sKwxClient.agentKey);
             }
             mIsInitialized = true;
         }
 
-        protected override void OnMouseMove(MouseEventArgs e) {
-            Rectangle oldRect = mouseText.rect;
-            mouseText.erase(mBackgroundColor);
-
-            mouseText.text = "mouse: " + e.X.ToString() + ", " + e.Y.ToString();
-            mouseText.x = e.X;
-            mouseText.y = e.Y;
-            mouseText.draw();
-            redrawRect(oldRect, mouseText.rect);
-        }
-
-        protected override void OnResize(EventArgs e) {
-            // change location of stuff
-            base.OnResize(e);
-            if (mIsInitialized) {
+       protected override void OnResize(EventArgs e) {
+            if (base.doResize(e)) {
                 int y = this.ClientRectangle.Height - 4;
                 kwxMessageText.x = 8; kwxMessageText.y = y -= 20;
                 latLonText.x = 8; latLonText.y = y -= 20;
@@ -170,7 +155,7 @@ namespace Diwi {
                     updateNumSats();
                     break;
                 case (int)GpsReader.sMess.M_POS:
-                    Program.sKwxClient.sendSample();
+                    AppController.sKwxClient.sendSample();
                     updatePosition();
                     break;
                 case (int)GpsReader.sMess.M_PREC:

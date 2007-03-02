@@ -23,7 +23,7 @@ namespace Diwi {
         private string mPort;
         private string mNMEA;
         private bool mIsLogging = true;
-        private StreamReader demoNMEA = null;
+        private StreamReader nmeaDemoFile = null;
 
         static private GpsReader sGPS = null;
 
@@ -127,7 +127,7 @@ namespace Diwi {
         public void start() {
             if (mCanDemo) {
                 try {
-                    demoNMEA = new StreamReader(@"\DemoNMEA.txt");
+                    nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
                 } catch (FileNotFoundException) {
                     mCanDemo = false;
                 }
@@ -156,9 +156,9 @@ namespace Diwi {
                 mReadDataThread = null;
             }
 
-            if (demoNMEA != null) {
-                demoNMEA.Close();
-                demoNMEA = null;
+            if (nmeaDemoFile != null) {
+                nmeaDemoFile.Close();
+                nmeaDemoFile = null;
             }
 
         }
@@ -194,13 +194,13 @@ namespace Diwi {
                             }
                             // read 4 lines from file
                             for (int i = 0; i < 6; i++) {
-                                string s = demoNMEA.ReadLine();
+                                string s = nmeaDemoFile.ReadLine();
                                 if (s != null) {
                                     parse(s);
                                 } else {
-                                    demoNMEA.Close();
+                                    nmeaDemoFile.Close();
                                     try {
-                                        demoNMEA = new StreamReader(@"\DemoNMEA.txt");
+                                        nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
                                     } catch (Exception) {
                                         mCanDemo = false;
                                     }
@@ -244,7 +244,7 @@ namespace Diwi {
             string[] words;
 
             if (mIsLogging) {
-                Program.sLog.WriteLine(sentence);
+                AppController.sLog.WriteLine(sentence);
             }
 
             mNMEA = sentence;
