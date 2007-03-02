@@ -56,7 +56,7 @@ public class POILogic implements Constants {
             Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
 			point.setSrid(28992);
 			PGgeometryLW geom = new PGgeometryLW(point);
-			poi.setObjectField("point", geom);
+			poi.setObjectField(POINT_FIELD, geom);
 
             poi.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
 
@@ -98,7 +98,7 @@ public class POILogic implements Constants {
             Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
             point.setSrid(28992);
             PGgeometryLW geom = new PGgeometryLW(point);
-            poi.setObjectField("point", geom);
+            poi.setObjectField(POINT_FIELD, geom);
 
             poi.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
 
@@ -126,7 +126,9 @@ public class POILogic implements Constants {
             Record[] pois = oase.getFinder().queryTable(POI_TABLE, null);
             Vector results = new Vector(pois.length);
             for(int i=0;i<pois.length;i++){
-                results.add(pois[i].toXML());
+                JXElement poiElm = pois[i].toXML();
+                poiElm.setTag(POI_ELM);
+                results.add(poiElm);
             }
             return results;
         } catch (OaseException oe) {
