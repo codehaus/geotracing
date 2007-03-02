@@ -89,7 +89,9 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         protected override void OnMouseDown(MouseEventArgs e) {
-            mMenu.doMouseClick(e.X, e.Y);
+            foreach (DiwiDrawable d in mDrawableElements) {
+                d.doMouseClick(e.X, e.Y);
+            }
         }
 
         void keydown(Object o, KeyEventArgs e) {

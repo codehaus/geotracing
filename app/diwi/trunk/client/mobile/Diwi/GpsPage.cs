@@ -8,7 +8,6 @@ namespace Diwi {
     class GpsPage : DiwiPageBase {
         private DiwiUIText latLonText;
         private DiwiUIText fixText;
-        private DiwiUIText kwxMessageText;
         private DiwiUIText numSatText;
         private DiwiUIText hDopText;
         private DiwiUIText demoText;
@@ -20,7 +19,6 @@ namespace Diwi {
 
             Rectangle r = this.ClientRectangle;
 
-            kwxMessageText = new DiwiUIText(offScreenGraphics, Color.Black);
             latLonText = new DiwiUIText(offScreenGraphics, Color.Black);
             numSatText = new DiwiUIText(offScreenGraphics, Color.Black);
             speedText = new DiwiUIText(offScreenGraphics, Color.Black);
@@ -28,7 +26,6 @@ namespace Diwi {
             demoText = new DiwiUIText(offScreenGraphics, Color.Red);
             fixText = new DiwiUIText(offScreenGraphics, Color.Black);
 
-            addDrawable(kwxMessageText);
             addDrawable(latLonText);
             addDrawable(numSatText);
             addDrawable(speedText);
@@ -47,23 +44,18 @@ namespace Diwi {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             int y = this.ClientRectangle.Height - 4;
-            kwxMessageText.x = 8; kwxMessageText.y = y -= 20;
             latLonText.x = 8; latLonText.y = y -= 20;
             numSatText.x = 8; numSatText.y = y -= 20;
             hDopText.x = 8; hDopText.y = y -= 20;
             speedText.x = 8; speedText.y = y -= 20;
             demoText.x = 8; demoText.y = y -= 20;
             fixText.x = 8; fixText.y = y -= 20;
-            if (AppController.sKwxClient.agentKey != null) {
-                newKwxMessage("Kwx login succes: " + AppController.sKwxClient.agentKey);
-            }
             mIsInitialized = true;
         }
 
        protected override void OnResize(EventArgs e) {
             if (base.doResize(e)) {
                 int y = this.ClientRectangle.Height - 4;
-                kwxMessageText.x = 8; kwxMessageText.y = y -= 20;
                 latLonText.x = 8; latLonText.y = y -= 20;
                 numSatText.x = 8; numSatText.y = y -= 20;
                 hDopText.x = 8; hDopText.y = y -= 20;
@@ -77,19 +69,6 @@ namespace Diwi {
 
         #region callbacks
 
-        private delegate void updateKwxMessageDelegate(string m);
-        void updateKwxMessage(string m) {
-            Rectangle oldRect = kwxMessageText.rect;
-            kwxMessageText.erase(mBackgroundColor);
-            kwxMessageText.draw(m);
-            redrawRect(oldRect, kwxMessageText.rect);
-        }
-        void newKwxMessage(string m) {
-            if (InvokeRequired)
-                this.Invoke(new updateKwxMessageDelegate(this.updateKwxMessage), new object[] { m });
-            else
-                updateKwxMessage(m);
-        }
 
 
         void updatePrecision() {
@@ -155,7 +134,6 @@ namespace Diwi {
                     updateNumSats();
                     break;
                 case (int)GpsReader.sMess.M_POS:
-                    AppController.sKwxClient.sendSample();
                     updatePosition();
                     break;
                 case (int)GpsReader.sMess.M_PREC:

@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppController.cs" />
+    <Compile Include="DiwiButton.cs" />
     <Compile Include="DiwiDrawable.cs" />
     <Compile Include="DiwiImage.cs" />
     <Compile Include="DiwiMenu.cs" />

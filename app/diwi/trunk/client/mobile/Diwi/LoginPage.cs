@@ -11,15 +11,36 @@ namespace Diwi {
         DiwiUIText mServerMess = new DiwiUIText(offScreenGraphics);
         TextBox mUserBox = new TextBox();
         TextBox mPassBox = new TextBox();
+        DiwiUIButton mOkButton;
         private Font mFont = new Font("Tahoma", 11, FontStyle.Bold);
 
         public LoginPage(DiwiPageBase parent)
             : base(parent) {
 
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mOkButton = new DiwiUIButton(offScreenGraphics, 146, 220, "Login", buttonOK, this);
+            addDrawable(mOkButton);
+
+            AppController.sKwxClient.messageCallback += new KwxClient.MessageCallback(serverMessage);
 
             title = "Login";
         }
+
+        
+        private delegate void updateKwxMessageDelegate(string m);
+        void updateKwxMessage(string m) {
+            Rectangle oldRect = mServerMess.rect;
+            mServerMess.erase(mBackgroundColor);
+            mServerMess.draw(m);
+            redrawRect(oldRect, mServerMess.rect);
+        }
+        void serverMessage(string m) {
+            if (InvokeRequired)
+                this.Invoke(new updateKwxMessageDelegate(this.updateKwxMessage), new object[] { m });
+            else
+                updateKwxMessage(m);
+        }
+
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
@@ -39,23 +60,27 @@ namespace Diwi {
             this.Controls.Add(mUserBox);
             this.Controls.Add(mPassBox);
 
-            mServerText.x = 4; mServerText.y = 160; mServerText.draw("user:");
-            mServerText.x = 4; mServerText.y = 186; mServerText.draw("pass:");
+            mServerMess.x = 4; mServerMess.y = 164; mServerMess.draw("user:");
+            mServerMess.x = 4; mServerMess.y = 190; mServerMess.draw("pass:");
 
             mUserBox.Focus();
 
+            mServerMess.y = this.ClientRectangle.Height - 34;
+            mServerMess.draw(Properties.Resources.KwxServerUrl);
             mIsInitialized = true;
         }
 
-
+        public void buttonOK() {
+            AppController.sKwxClient.stop();
+            AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
+        }
         
         
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (base.doResize(e)) {
                 int y = this.ClientRectangle.Height - 4;
-                mServerMess.x = 8; mServerMess.y = y -= 20;
-                mServerText.x = 8; mServerText.y = y -= 20;
+                mServerMess.x = 4; mServerMess.y = y -= 20;
             }
         }
     }
