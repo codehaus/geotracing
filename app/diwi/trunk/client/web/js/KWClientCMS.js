@@ -44,6 +44,7 @@ KW.CMS = {
         var poi = req.createElement('poi');
 		KW.UTIL.addOptTextElement(poi, 'name', poiObj.name);
 		KW.UTIL.addOptTextElement(poi, 'decription', poiObj.description);
+		KW.UTIL.addOptTextElement(poi, 'category', poiObj.category);
 		KW.UTIL.addOptTextElement(poi, 'x', poiObj.x);
 		KW.UTIL.addOptTextElement(poi, 'y', poiObj.y);
 
@@ -70,6 +71,7 @@ KW.CMS = {
         var poi = req.createElement('poi');
 		KW.UTIL.addOptTextElement(poi, 'name', poiObj.name);
 		KW.UTIL.addOptTextElement(poi, 'decription', poiObj.description);
+		KW.UTIL.addOptTextElement(poi, 'category', poiObj.category);
 		KW.UTIL.addOptTextElement(poi, 'x', poiObj.x);
 		KW.UTIL.addOptTextElement(poi, 'y', poiObj.y);
 
