@@ -8,6 +8,8 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.common.log.Logging;
+import org.keyworx.common.log.Log;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -16,6 +18,7 @@ public class POILogic implements Constants {
     private static final Properties properties = new Properties();
     private Oase oase;
     private DataSource dataSource;
+    private Log log = Logging.getLog("POILogic");
 
     public POILogic(Oase o) {
         oase = o;
@@ -42,14 +45,19 @@ public class POILogic implements Constants {
      */
     public int insert(JXElement aPOIElement) throws UtopiaException {
         try {
+            log.info("dbg 1");
             Record poi = oase.getModifier().create(POI_TABLE);
+            log.info("dbg 1");
             poi.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
             poi.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
+            log.info("dbg 1");
             poi.setXMLField(DESCRIPTION_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+            log.info("dbg 1");
             oase.getModifier().insert(poi);
+            log.info("dbg 1");
 
             dataSource.cudPOI(POI_INSERT_ACTION, aPOIElement);
-
+            log.info("dbg 1");
             return poi.getId();
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot insert poi record", oe, ErrorCode.__6006_database_irregularity_error);
