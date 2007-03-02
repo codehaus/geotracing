@@ -126,7 +126,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         throwOnMissingAttr(ID_FIELD, id);
         logic.delete(Integer.parseInt(id));
 
-        return createResponse(POI_INSERT_SERVICE);
+        return createResponse(POI_DELETE_SERVICE);
     }
 
     /**

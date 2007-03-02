@@ -3,6 +3,7 @@ package nl.diwi.external;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Properties;
 import java.io.*;
 
 import nl.diwi.util.Constants;
@@ -93,23 +94,21 @@ public class DataSource implements Constants {
     // creates, updates and deletes a poi in KICH
     public void cudPOI(String anAction, JXElement aPOIElement){
         String kichPostUrl = ServerConfig.getProperty("kich.post.url");
-        Hashtable postParams = new Hashtable(2);
-        postParams.put("action", anAction);
-        postParams.put("xml", aPOIElement);
-
+        Properties postParams = new Properties();
+        postParams.setProperty("action", anAction);
+        postParams.setProperty("xml", aPOIElement.toEscapedString());
         postData(kichPostUrl, postParams);
     }
 
     private void postData(String aPostUrl, Hashtable thePostParams){
         HttpClient client = new HttpClient();
         //client.getParams().setParameter("http.useragent", "Test Client");
-
         BufferedReader br = null;
         PostMethod method = new PostMethod(aPostUrl);
         method.setParameter("http.useragent", "KICH Client");
 
         if(thePostParams!=null){
-            Enumeration elements = thePostParams.elements();
+            Enumeration elements = thePostParams.keys();
             while (elements.hasMoreElements()){
                 String name = (String)elements.nextElement();
                 String value = (String)thePostParams.get(name);
@@ -136,6 +135,7 @@ public class DataSource implements Constants {
           method.releaseConnection();
           if(br != null) try { br.close(); } catch (Exception fe) {}
         }
+
     }
 
     private JXElement getXMLFromREST(String aRESTUrl){

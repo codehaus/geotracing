@@ -1,4 +1,4 @@
-<testset id="routehandler" clients="1">
+<testset id="cms-scenario" clients="1">
 
 	 <!-- Standard KWX login sequence -->
 	<test id="login-selapp">
