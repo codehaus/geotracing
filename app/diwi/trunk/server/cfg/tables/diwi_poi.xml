@@ -10,6 +10,7 @@
 			<field name="point" />
             <field name="type" />
             <field name="state" />
+            <field name="category" />
             <field name="media" />
             <field name="extra" />
         </insert>
@@ -21,6 +22,7 @@
 			<field name="point" />
             <field name="type" />
             <field name="state" />
+            <field name="category" />
             <field name="media" />
             <field name="extra" />
           </list>
@@ -32,6 +34,7 @@
 			<field name="point" />
             <field name="type" />
             <field name="state" />
+            <field name="category" />
             <field name="media" />
             <field name="extra" />
    		</query>
@@ -43,7 +46,8 @@
 		<field name="description" type="TEXT" required="false" />
         <field name="type" type="INTEGER" default="1" required="false" />
 		<field name="state" type="INTEGER" default="1" required="false" />
-		<field name="creationdate" type="TIMESTAMP"/>
+        <field name="category" type="STRING" size="64" required="false" />
+        <field name="creationdate" type="TIMESTAMP"/>
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="media" type="XML" required="false"/>
 		<field name="extra" type="XML" required="false"/>

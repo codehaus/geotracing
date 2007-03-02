@@ -34,6 +34,7 @@ public class POILogic implements Constants {
      * <poi>
      *      <name></name>
      *      <description></description>
+     *      <category></category>
      *      <x></x>
      *      <y></y>
      *      <media>
@@ -77,6 +78,7 @@ public class POILogic implements Constants {
      * <poi>
      *      <name></name>
      *      <description></description>
+     *      <category></category>
      *      <x></x>
      *      <y></y> 
      *      <media>
