@@ -17,7 +17,7 @@
 %>
 <%
     // Get global Oase (DB) session.
-    try{
+    /*try{
         // Use one Oase session
         if (oase == null) {
             oase = (Oase) application.getAttribute("oase");
@@ -33,18 +33,28 @@
         result.setText("error creating oase session" + th);
         log.error("error creating oase session", th);
     }
-
+*/
     String action = request.getParameter("action");
+    String xml = "";
+    if(action!=null){
+        if(action.equals("getmedia")){
+            xml = "<media>";
+            xml += "<medium><name>plaatje 1</name><description>echt een heel mooi plaatje</description><uri>http://www.kich.nl?id=100</uri></medium>";
+            xml += "<medium><name>plaatje 2</name><description>echt een heel mooi plaatje</description><uri>http://www.kich.nl?id=200</uri></medium>";
+            xml += "<medium><name>plaatje 3</name><description>echt een heel mooi plaatje</description><uri>http://www.kich.nl?id=300</uri></medium>";
+            xml += "</media>";
+        }
+    }
 
     response.setContentType("text/xml;charset=utf-8");
     try{
-        JXElement xmlMsg = new JXBuilder().build("<some-xml />");
+        JXElement xmlMsg = new JXBuilder().build(xml);
         Writer writer = response.getWriter();
         writer.write(xmlMsg.toFormattedString());
         writer.flush();
         writer.close();
     }catch (Throwable th){
-        log.info("error " + action + " writing response");
+        log.info("error writing response");
     }
 
 

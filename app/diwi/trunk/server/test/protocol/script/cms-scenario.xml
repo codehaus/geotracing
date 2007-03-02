@@ -1,0 +1,142 @@
+<testset id="routehandler" clients="1">
+
+	 <!-- Standard KWX login sequence -->
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+    <!--
+       ok so here's the CMS scenario:
+       - first fill up the KICH media browser
+       - secondly retrieve all poi's so they can be drawn onto the screen
+       - now add a poi
+       - update that poi
+       - delete that poi    
+    -->
+
+	<test id="kich-getlist-req">
+		<send id="client1">
+			<utopia-req>
+				<kich-getlist-req />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<kich-getlist-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="poi-getlist-req">
+		<send id="client1">
+			<utopia-req>
+				<poi-getlist-req />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<poi-getlist-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="poi-insert-req">
+		<send id="client1">
+			<utopia-req>
+				<poi-insert-req>
+                    <poi>
+                        <name>poi nummer 1</name>
+                        <description>prachtig punt</description>
+                        <media>
+                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
+                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
+                        </media>
+                    </poi>
+                </poi-insert-req>
+            </utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<poi-insert-rsp id="${poiid}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="poi-update-req">
+		<send id="client1">
+			<utopia-req>
+				<poi-update-req id="${poiid}">
+                    <poi>
+                        <name>poi nummer 100</name>
+                        <description>mooi punt</description>
+                        <media>
+                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
+                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
+                        </media>
+                    </poi>
+                </poi-update-req>
+            </utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<poi-update-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="poi-getlist-req">
+		<send id="client1">
+			<utopia-req>
+				<poi-getlist-req />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<poi-getlist-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="poi-delete-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-delete-req id="${poiid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-delete-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+
+    <test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+
