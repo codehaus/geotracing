@@ -4,74 +4,11 @@
 <head>
 	<title>DIWI</title>
 	<link rel="stylesheet" href="css/diwi.css" type="text/css"/>
-	<script type="text/javascript" src="lib/openlayers/lib/OpenLayers.js"></script>
-	<script type="text/javascript">
-		<!--
-		var lon = 4.80;
-		var lat = 52.35;
-		var x = 111000;
-		var y = 487000;
-		var zoom = 5;
-		var map, layer1,layer2;
-
-		function init() {
-			/* map = new OpenLayers.Map( $('map'),
-			{controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()],
-				maxResolution: 1.40625/2,
-				numZoomLevels: 17}); */
-
-			//<BoundingBox SRS="EPSG:28992" minx="3944.0000652443" miny="309541.000249053" maxx="276149.999934756"
-			//		 maxy="599336.999750947"/>
-			map = new OpenLayers.Map($('map'), {
-				controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()],
-				maxExtent: new OpenLayers.Bounds(-157973.103596, 300670.145842, 472056.321374,678687.800824),
-				units: 'meters', projection: "EPSG:28992", 'maxResolution':'auto'});
-			//layer1 = new OpenLayers.Layer.WMS( "OpenLayers WMS",
-			//		  "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
-			//map.addLayer(layer1);
-
-			// PostGIS routes projected on topo-map
-		/*	var wmsURL='http://88.198.19.182/cgi-bin/mapserv?map=/var/keyworx/webapps/mapserver/topnl/topnl.map';
-			var sld='http://88.198.19.182/mapserver/topnl/select-route.sld';
-			layer1 = new OpenLayers.Layer.WMS( "Amstelveen Routes",
-					  wmsURL, {layers: 'amstelveen,routes', sld: sld} );
-			map.addLayer(layer1);
-
-			layer2 = new OpenLayers.Layer.WMS( "Geese WMS",
-					  wmsURL, {layers: 'topnl,routes', sld: sld} );
-			map.addLayer(layer2);       */
-
-			wmsURL = 'http://www.geese.nl/milcon?';
-			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Geese",
-					  wmsURL, {layers: 't250,t50,t25,t10'} );
-			map.addLayer(layer3);
-
-	/*		ww = new OpenLayers.Layer.WorldWind( "Bathy",
-			 "http://worldwind25.arc.nasa.gov/tile/tile.aspx?", 36, 4,
-			 {T:"bmng.topo.bathy.200406"});
-			 ww2 = new OpenLayers.Layer.WorldWind( "LANDSAT",
-				 "http://worldwind25.arc.nasa.gov/tile/tile.aspx", 2.25, 4,
-				 {T:"105"});
-			map.addLayer(ww);
-			map.addLayer(ww2);      */
-
-			//layer2 = new OpenLayers.Layer.WMS( "Routes",
-			//		  "http://suwa:8080/geoserver/wms",
-			//	{layers: 'topp:g_route', format: 'image/png',
-			//	 transparent: 'true'});
-			//map.addLayer(layer2);
-
-			map.setCenter(new OpenLayers.LonLat(x, y), zoom);
-			map.addControl( new OpenLayers.Control.LayerSwitcher() );
-
-		}
-		// -->
-	</script>
 
 </head>
 
-<body onload="init()">
-<div id="map"></div>
+<body>
+<a href="test">diwi tests</a>
 </body>
 
 </html>
