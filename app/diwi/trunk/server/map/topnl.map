@@ -25,11 +25,19 @@ SYMBOL
   FILLED TRUE
 END
 
+#LAYER
+#  NAME "amstelveen"
+#  DATA "25d_amstelveen.tiff"
+#  TYPE RASTER
+#  STATUS OFF
+#END
+
 LAYER
   NAME "amstelveen"
-  DATA "25d_amstelveen.tiff"
-  TYPE RASTER
   STATUS OFF
+  TILEINDEX "topnl.shp"
+  TILEITEM "Location"
+  TYPE RASTER
 END
 
 WEB
@@ -63,7 +71,7 @@ LAYER
 	CONNECTION "user=oaseuser password=oase dbname=postgistest host=localhost"
 	DATA "rd_route_geom from (select id,rd_route_geom from g_route) as foo using unique id using SRID=28992"
 
-	DEBUG ON
+	DEBUG OFF
 	TYPE LINE
 	STATUS ON
 
