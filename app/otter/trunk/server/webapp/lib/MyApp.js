@@ -41,8 +41,17 @@ var MYAPP = {
 		GMAP.map.addControl(new GLargeMapControl());
 		GMAP.map.addControl(new GScaleControl());
 
+		GMAP.map.enableContinuousZoom();
+		GMAP.map.enableDoubleClickZoom();
+
+		// Set map parm defaults (may be overridden by page parms in GMAP.showMap())
 		// Weerribben
-		GMAP.map.setCenter(new GLatLng(52.782605, 5.96349), 10, GMAP.mapTypes['satellite']);
+		GMAP.setDefaultMapParms(new GLatLng(52.782605, 5.96349), 10, 'satellite');
+
+		// Show the map
+		GMAP.showMap();
+
+		// GMAP.map.setCenter(new GLatLng(52.782605, 5.96349), 10, GMAP.mapTypes['satellite']);
 		GTAPP.showStatus('Map created');
 
 	}
