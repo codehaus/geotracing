@@ -34,9 +34,9 @@
 				<property name="max-file-size">1000000</property>
 			</handler>
 
-			<handler id="t" class="org.geotracing.server.TracingHandler"/>
-			<handler id="query" class="org.geotracing.server.QueryHandler"/>
-			<handler id="cmt" class="org.geotracing.server.CommentHandler">
+			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
+			<handler id="query" class="org.geotracing.handler.QueryHandler"/>
+			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
 				<property name="allow-anonymous">true</property>
 				<property name="max-commments-per-target">256</property>
 				<property name="max-content-chars">1024</property>
@@ -57,6 +57,11 @@
 			<property name="password" host="pundit">email.upload.password.pundit</property>
 
                -->
+
+			<!-- Daemon for various upgrades
+			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
+				<property name="pois2textmedia">true</property>
+			</daemon>  -->
 
 		</daemons>
 	</application>
