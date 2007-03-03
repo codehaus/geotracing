@@ -162,7 +162,7 @@ focused {
     padding-left: 5;
     padding-right: 5;
     background {
-        color: WHITE;
+        color: BLACK;
     }
     /*layout: horizontal-expand | horizontal-center | vertical-center;*/
     layout: horizontal-expand | top | horizontal-center;
