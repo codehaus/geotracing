@@ -212,6 +212,7 @@ $Id$
 				<include name="gt2-epsg-wkt-2.3.0.jar"/>
 				<include name="gt2-referencing-2.3.0.jar"/>
 				<include name="jsr108-0.01.jar"/>
+				<include name="vecmath-1.3.1.jar"/>
 			</fileset>
 			<fileset dir="${postgis-jdbc.dir}">
 				<include name="postgis.jar"/>
