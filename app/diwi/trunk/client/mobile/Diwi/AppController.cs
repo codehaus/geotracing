@@ -5,8 +5,14 @@ using System.IO;
 using System.Threading;
 using System.Reflection;
 
+
 namespace Diwi {
-    class AppController {
+    /// <summary>
+    /// central controller for main components in the app.
+    /// KwxServer, GpsReader, MapReader, access to resources
+    /// </summary>
+    class AppController
+    {
         public static StreamWriter sLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;

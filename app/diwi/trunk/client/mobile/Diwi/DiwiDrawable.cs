@@ -4,7 +4,12 @@ using System.Text;
 using System.Drawing;
 
 namespace Diwi {
-    interface DiwiDrawable {
+    /// <summary>
+    /// Interface for all graphical elements in the app.
+    /// can draw and be clicked on, and receive key events (to do)
+    /// </summary>
+    interface DiwiDrawable
+    {
         void draw();
         void setGraphics(Graphics g);
         void doMouseClick(int x, int y);

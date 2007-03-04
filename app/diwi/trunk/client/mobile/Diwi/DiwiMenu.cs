@@ -5,7 +5,11 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Diwi {
-    class DiwiUIMenu : DiwiDrawable {
+    /// <summary>
+    /// The menu and title bar on every Diwi page.
+    /// </summary>
+    class DiwiUIMenu : DiwiDrawable
+    {
         public delegate void DiwiMenuCallbackHandler();
 
         public static Color sBackColor = Color.FromArgb(180, 250, 0);
