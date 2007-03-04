@@ -8,6 +8,12 @@ using System.Windows.Forms;
 using Diwi;
 
 namespace Diwi {
+    /// <summary>
+    /// The KeyWorx server singleton class.
+    /// Error handling needs work, media up- and download need to be implemented.
+    /// curently uses geotracing protocol...
+    /// </summary>
+
     class KwxClient {
         public delegate void MessageCallback(string mess);
         public event MessageCallback messageCallback;
@@ -47,7 +53,10 @@ namespace Diwi {
             start();
         }
 
-
+        /// <summary>
+        /// login, select app and make a track
+        /// currently no error recovery...
+        /// </summary>
         public void start() {
 
             if (messageCallback != null) {
@@ -84,7 +93,12 @@ namespace Diwi {
             }
         }
 
-        private void hbHandler() {
+        /// <summary>
+        /// While connected, send heartbeat every 5 seconds.
+        /// Asynchronous thread run loop.
+        /// </summary>
+        private void hbHandler()
+        {
             while (mAgentKey != null) {
                 Thread.Sleep(5000);
                 DateTime d1 = DateTime.UtcNow;
@@ -184,6 +198,7 @@ namespace Diwi {
 
         /// <summary>
         ///  Sends position sample to the server.
+        /// lat/lon format broken on server ?
         /// </summary>
         public void sendSample() {
             if (mAgentKey != null) {
@@ -202,7 +217,11 @@ namespace Diwi {
         }
 
 
-        public XMLement utopiaRequest(XMLement anElement) {
+        /// <summary>
+        /// Encapsulate request in utopia request.
+        /// </summary>
+        public XMLement utopiaRequest(XMLement anElement)
+        {
             XMLement req = new XMLement();
             req.tag = Protocol.TAG_UTOPIA_REQ;
             req.addChild(anElement);

@@ -5,7 +5,11 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace Diwi {
-    class DiwiUIButton : DiwiDrawable {
+    /// <summary>
+    /// Implements a simple clickable button in the Diwi style.
+    /// </summary>
+    class DiwiUIButton : DiwiDrawable
+    {
         public delegate void DiwiButtonCallbackHandler();
 
         public static Color sBackColor = Color.FromArgb(180, 250, 0);

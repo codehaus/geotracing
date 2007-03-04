@@ -9,7 +9,12 @@ using System.Windows.Forms;
 using Microsoft.WindowsMobile.Forms;
 
 namespace Diwi {
-    class DiwiImage : DiwiDrawable {
+    /// <summary>
+    /// Implements an image.
+    /// Needs picturebox to be able to scale...
+    /// </summary>
+    class DiwiImage : DiwiDrawable
+    {
         private Graphics mGraphics;
         private int _x = 10;
         private int _y = 170;

@@ -8,7 +8,13 @@ using System.Resources;
 using Diwi;
 
 namespace Diwi {
-    public class GpsReader {
+    /// <summary>
+    /// Implements the GPS connection.
+    /// singleton class; uses file with raw nmea if a GPS is not found.
+    /// communicates information through callback.
+    /// </summary>
+    public class GpsReader
+    {
         public enum sMess  {M_POS, M_SPEED, M_FIX, M_PREC, M_BEARING, M_NUMSAT, M_DEMO, M_MESSAGE };
         public static float KPHPerKnot = 1.852F;
 
@@ -123,7 +129,9 @@ namespace Diwi {
         }
 
 
-        // open een seriele poort en start asynchroon lezen
+        /// <summary>
+        /// open a serial port and start reading, asynchronously.
+        /// </summary>
         public void start() {
             if (mCanDemo) {
                 try {
@@ -142,7 +150,11 @@ namespace Diwi {
             mReadDataThread.Start();
         }
 
-        public void stop() {
+        /// <summary>
+        /// stop reading, close ports.
+        /// </summary>
+        public void stop()
+        {
             mIsRunning = false;
             Thread.Sleep(500);
             if (mSerialPort.IsOpen) {
@@ -162,6 +174,8 @@ namespace Diwi {
             }
 
         }
+
+
         void setFixStatus(bool f) {
             if (mHasFix != f) {
                 mHasFix = f;
@@ -171,12 +185,15 @@ namespace Diwi {
             }
         }
 
+        /// <summary>
+        /// thread sun loop reading GPS, or trying.
+        /// </summary>
         private void readThread() {
 
-            // blijf proberen te lezen of een poort te openen tot we niet meer runnen
+            // keep trying to open serial port; when fail, send data from file if 'candemo'
             while (mIsRunning == true) {
 
-                // probeer iedere 2 seconden de poort te openen
+                // new attempt every 2 seconds
                 while (mIsRunning == true) {
                     try {
                         mSerialPort.Open();
@@ -192,7 +209,7 @@ namespace Diwi {
                             if (callback != null) {
                                 callback((int)sMess.M_DEMO);
                             }
-                            // read 6 lines from file
+                            // read from file
                             for (int i = 0; i < 6; i++) {
                                 string s = nmeaDemoFile.ReadLine();
                                 if (s != null) {
@@ -212,26 +229,25 @@ namespace Diwi {
                 }
 
                 while (mIsRunning == true) {
-                    // kijk iedere seconde of er data is van de GPS
-
                     string data = "";
 
                     try {
                         data = mSerialPort.ReadLine();
                     } catch (IOException) {
-                        // lezen faalt, sluit de poort als open
+                        // port broken, or somesuch
                         if (mSerialPort.IsOpen) {
                             mSerialPort.Close();
                         }
-                        // een loop omhoog en probeer de poort opnieuw te openen
+                        // up one loop and try to open the port again
                         break;
                     } catch (TimeoutException) {
+                        // no data, sleep for a while and try again
                         Thread.Sleep(1000);
                         continue;
                     }
 
-                    if (data != null && data.Length > 0) {
-                        // data gelezen van de GPS
+                    if (data.Length > 0) {
+                        // got data from GPS
                         parse(data);
                     }
                 }
@@ -240,7 +256,12 @@ namespace Diwi {
 
         #region parsing
 
-        public bool parse(string sentence) {
+        /// <summary>
+        /// parse NMEA string received.
+        /// currently only RMC and GGA strings are processed
+        /// </summary>
+        public bool parse(string sentence)
+        {
             string[] words;
 
             if (mIsLogging) {
