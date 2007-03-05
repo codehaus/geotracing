@@ -68,7 +68,7 @@
 			<sources>
 
 
-<!--				<source id="db" class="org.keyworx.oase.store.source.MySQLDBSource">
+				<source id="db" class="org.keyworx.oase.store.source.MySQLDBSource">
 				<property name="driver">org.gjt.mm.mysql.Driver</property>
 				<property name="protocol">jdbc:mysql</property>
 				<property name="host">localhost</property>
@@ -77,9 +77,9 @@
 				<property name="password">oase</property>
 				<property name="poolSize">5</property>
 			</source>
- -->
 
-			<source id="db" class="org.geotracing.oase.PostGISDBSource">
+
+<!--			<source id="db" class="org.geotracing.oase.PostGISDBSource">
 					<property name="driver">org.postgis.DriverWrapperLW</property>
 					<property name="protocol">jdbc:postgresql_lwgis</property>
 					<property name="host">localhost</property>
@@ -90,7 +90,7 @@
 					<property name="template">postgis</property>
 					<property name="randomfun">RANDOM()</property>
 			</source>
-
+ -->
 			<source id="file" class="org.keyworx.oase.store.source.FileSource"/>
 
 			</sources>
