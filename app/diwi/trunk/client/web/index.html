@@ -38,19 +38,33 @@ function selectItem(obj) {
 }
 
 var imageCounter = 0;
-var imageAantal = 4;
-var imageNames = new Array('home/images/fotovideobox.gif','home/images/schapen.gif','home/images/fotovideobox.gif', 'home/images/grebbelinie01.jpg');
+var imageAantal = 6;
+var imageNames = new Array('home/images/01.gif','home/images/02.jpg','home/images/03.jpg','home/images/04.jpg','home/images/05.jpg','home/images/06.jpg');
+
+var fotoNamenTeller = 0;
+var fotoNamen = new Array('Broeker Pad','Het Heilge Hofje','Tank Route','Vogel Pad','De Laan Uit','Onder de Zoden');
 
 function nextImage() {
 	if (imageCounter>2) imageCounter=-1;
 	imageCounter++;
 	toonPlaatje();
+	fotoNamenTeller++;
+	if (fotoNamenTeller == 6) fotoNamenTeller = 0;
+	veranderFotoNaam();
 }
 
 function prevImage() {
 	if (imageCounter<1) imageCounter = imageAantal;
 	imageCounter--;
 	toonPlaatje();
+	fotoNamenTeller--;
+	if (fotoNamenTeller == -1) fotoNamenTeller = 5;
+	veranderFotoNaam();
+}
+
+function veranderFotoNaam() {
+	dummy = fotoNamen[fotoNamenTeller];
+	document.getElementsByTagName("fn")[0].innerHTML=dummy;
 }
 
 function toonPlaatje() {
@@ -101,7 +115,7 @@ function show(d){
 <div id="back">  <img src="home/images/backS.jpg" border="0"> </div>
 -->
 <div id="top"> <img src="home/images/top.jpg" border="0"> </div>
-<div id="topfoto"> <img id="plaatje" src="home/images/schapen.gif" border="0"> </div>
+<div id="topfoto"> <img id="plaatje" src="home/images/01.gif" border="0"> </div>
 <div id="videobox"> <img src="home/images/videobox.gif" border="0"> </div>
 <div id="fotovideobox"> <img src="home/images/fotovideobox.gif" border="0"> </div>
 <div id="spotmetbox"> <img src="home/images/spotmetbox.gif" border="0"> </div>
@@ -109,21 +123,14 @@ function show(d){
 <div id="line"><img src="home/images/lijn.gif" border="0"></div>
 <div id="fototekst"> 
 	<center> 
-	Het Broekerpad <br>
-<!--
+	<fn>Het Broekerpad</fn> <br>
 	<font size="+1"> 
-	<a onClick="prevImage()"><font color="#FFFFFF"> vorige </font></a> | 
-	<a href="http://www.hugokeizer.nl"><font color="#FFFFFF">details </font></a> | 
-	<a onClick="nextImage()"; "><font color="#FFFFFF">volgende </font></a> 
--->
+	<a onClick="prevImage()"><font color="#FFFFFF"> <strong>vorige</strong> </font></a> | 
+	<a href="http://www.hugokeizer.nl"><font color="#FFFFFF"><strong>details</strong> </font></a> | 
+	<a onClick="nextImage()";><font color="#FFFFFF"><strong>volgende</strong> </font></a> 
 	</font>
 	</center>
 
-
-	<map > 
-		<area shape="rect" coords="-20,30,100,60" onClick="prevImage()">
-		<area shape="rect" coords="160,30,160,60" onClick="nextImage()">
-	</map>
 </div>
 
 
