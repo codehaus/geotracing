@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+	<!--
+	  * This table holds foreign key relations between tables.
+	  * A record is created whenever a first foreign key reference is created.
+	  * There is one record for each combination of parent-tablename/child-tablename/childfield.
+	  * This table is consulted for potential cascading deletes.
+	  *
+	  * $Id:
+	 -->
+    <views>
+
+		<insert>
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="parent" />
+			<field name="child"  />
+ 			<field name="childfield" />
+			<field name="cascading" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="parent" />
+			<field name="child" />
+			<field name="childfield" />
+			<field name="cascading" />
+		</query>
+ 	</views>
+
+	<data>
+
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<!-- The parent table name -->
+		<field name="parent" type="STRING" required="true" size="32" index="true"/>
+
+		<!-- The child table name -->
+		<field name="child" type="STRING" required="true" size="32" />
+
+		<!-- The foreign key field in child table -->
+		<field name="childfield" type="STRING" required="true" size="24" />
+
+		<!-- Indicates if child should be deleted if parent is deleted -->
+		<field name="cascading" type="BOOLEAN" required="true" default="false"  />
+
+	</data>
+
+	<!--
+
+	CVS log:
+
+	$Log: oase_foreignkey.xml,v $
+	Revision 1.2  2006/11/08 11:27:56  just
+	increase field-size to 32 for table names in foreign_keys table
+
+	Revision 1.1  2006/10/23 13:39:25  just
+	first checkin for support of foreign keys in Oase
+
+
+	-->
+
+</table>

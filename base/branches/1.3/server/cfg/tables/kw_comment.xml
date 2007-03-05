@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="owner" />
+			<field name="target" />
+			<field name="targettable" />
+			<field name="targetperson" />
+			<field name="author" />
+			<field name="email" />
+			<field name="url" />
+			<field name="content" />
+			<field name="extra" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="owner" />
+			<field name="target" />
+			<field name="targettable" />
+			<field name="targetperson" />
+			<field name="author" />
+  			<field name="state" />
+  		</list>
+
+		<query>
+			<field name="id" />
+			<field name="author" />
+            <field name="state" />
+            <field name="content" />
+   		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<!-- Owner is person id (optional, e.g. anon comments) -->
+		<field name="owner" type="INTEGER" required="false" foreignkey="cascade" />
+
+		<!-- Target is to what/whom comment is directed. -->
+		<field name="target" type="INTEGER" required="true" index="true" foreignkey="cascade" />
+		<field name="targettable" type="INTEGER" required="true" foreignkey="nocascade"  />
+		<field name="targetperson" type="INTEGER" required="false" foreignkey="nocascade"  />
+
+		<field name="author" type="STRING" size="64" required="true" default="anon"/>
+		<field name="email" type="STRING" size="64" required="false" />
+		<field name="url" type="STRING" size="128" required="false" />
+		<field name="ip" type="STRING" size="64" required="false" />
+		<field name="content" type="TEXT" required="true" />
+
+		<!-- State: (1) unread (2) read -->
+		<field name="state" type="INTEGER" default="1" required="true" />
+
+		<!-- Automatically set by KeyWorx. -->
+		<field name="creationdate" type="TIMESTAMP" required="true"/>
+		<field name="modificationdate" type="TIMESTAMP" required="true" />
+
+		<!-- May be used for special purposes like attachments. -->
+		<field name="extra" type="XML" required="false"/>
+	</data>
+</table>

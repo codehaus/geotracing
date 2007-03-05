@@ -1,0 +1,12 @@
+# template for security.properties
+# this file should contain substitutions
+# for symbolic values of credential setting during the build
+# you should provide your own security.properties file
+# matching properties of your settings
+email.upload.host="the pop3 host e.g. pop3.foo.com"
+email.upload.email.pundit="the email address for uploads e.g mymedia@foo.com"
+email.upload.user.pundit="the pop3 user name"
+email.upload.password.pundit="the pop3 password"
+
+
+

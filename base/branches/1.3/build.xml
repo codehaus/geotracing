@@ -1,0 +1,55 @@
+<!--
+
+ANT Build file for GeoTracing.
+
+$Id$
+-->
+<project name="geotracing" default="build" basedir=".">
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+	<property name="client.dir" value="${home}/client"/>
+	<property name="server.dir" value="${home}/server"/>
+	<property name="version.dir" value="${home}/version"/>
+
+	<property file="${home}/build.properties"/>
+
+	<!-- The .jar -->
+	<property name="distro-src.zip" value="${version.dir}/${project.id}-src-${version}.zip"/>
+	<property name="distro-all.zip" value="${version.dir}/${project.id}-all-${version}.zip"/>
+
+	<!-- Build all -->
+	<target name="build">
+		<echo message="Building all of GeoTracing Base..."/>
+		
+		<!-- Build clients. -->
+		<ant antfile="client/mobitracer/build.xml" target="build" inheritall="false"/>
+
+		<!-- Builds server and all server depends on. -->
+		<ant antfile="server/build.xml" target="build" inheritall="false"/>
+
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="distro-src" >
+		<echo message="Packaging distribution into ${distro-src.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${distro-src.zip}"/>
+		<zip zipfile="${distro-src.zip}">
+			<zipfileset dir="${home}"
+				prefix="${project.id}-src-${version}"
+				excludes="external/**,**/version/**,**/build/**,**/*.class,**/security.properties"/>
+			<zipfileset dir="${home}"
+				prefix="${project.id}-src-${version}"
+				includes="external/build.xml,external/build.properties"/>
+		</zip>
+
+
+		<!--	<delete file="${versions.gzip.file}" />
+			<tar tarfile="${versions.tar.file}" basedir="${dist.dir}"/>
+			<gzip zipfile="${versions.gzip.file}" src="${versions.tar.file}"/>
+			<delete file="${versions.tar.file}" />     -->
+
+	</target>
+
+
+</project>

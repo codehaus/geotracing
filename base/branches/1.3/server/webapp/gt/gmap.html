@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<script src="http://maps.google.com/maps?file=api&v=2&key=ABQIAAAAD3bxjYK2kuWoA5XU4dh89xSe_qXQ5BXZS4lDFg6pkSfzEHxjBxR6ccYpabqe7iuFw2yB4mZitl5HcQ"
+			type="text/javascript"></script>
+</head>
+
+<body>
+<div id="map" style="width: 800px; height: 600px"></div>
+<script type="text/javascript">
+	//<![CDATA[
+	var map = new GMap2(document.getElementById('map'));
+	CustomGetTileUrl = function(a, b) {
+		var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
+		var lURL = "map/gmap-tile.jsp";
+		lURL += "?x=" + a.x;
+		lURL += "&y=" + a.y;
+		lURL += "&zoom=" + b;
+		lURL += khURL.substring(khURL.indexOf('&t'), khURL.length);
+		return lURL;
+	}
+	var tile = new GTileLayer(new GCopyrightCollection("GT"), 9, 11);
+	tile.getTileUrl = CustomGetTileUrl;
+	//tileCounty.getOpacity = function() {return 0.5;}
+
+
+	var satLayers = [G_SATELLITE_MAP.getTileLayers()[0], tile];
+	var mapLayers = [G_NORMAL_MAP.getTileLayers()[0], tile];
+
+	var satType = new GMapType(satLayers, G_SATELLITE_MAP.getProjection(), "satroute");
+	var mapType = new GMapType(mapLayers, G_NORMAL_MAP.getProjection(), "maproute");
+
+	map.addControl(new GOverviewMapControl());
+	map.addControl(new GLargeMapControl());
+	map.addControl(new GScaleControl());
+	map.addControl(new GMapTypeControl());
+	// map.getMapTypes().length = 0;
+	map.addMapType(satType);
+	map.addMapType(mapType);
+	// map.setMapType(mapType);
+	map.setCenter(new GLatLng(52.37261, 4.900435), 8, mapType);
+
+	//]]>
+</script>
+</body>
+</html>

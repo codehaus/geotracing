@@ -1,0 +1,67 @@
+
+	body {
+		margin:0px;
+		padding:0px;
+		background-image:url(awd-oase.jpg);
+    	background-repeat: no-repeat;
+		color:#333;
+		font-size:11px;
+		font-family: verdana, sans-serif;
+	}
+
+
+    .waypoint {
+    	position:absolute;
+		display:block;
+    }
+
+	.url {
+	    position:absolute;
+    	display:block;
+        cursor: pointer;
+		width:40px;
+  		height:40px;
+  		background-image:url(bgred02.gif);
+    	background-repeat: no-repeat;
+    }
+
+    .url:hover {
+       	background-image:url(bgblu04.gif);
+	}
+
+	.info {
+   		position:absolute;
+   		left: 300px;
+     	top: 50px;
+  		display:block;
+   		z-index: 100;
+    	visibility: hidden;
+   		padding: 12px;
+		background: #ffffff;
+		font-size:20px;
+	    color: #222222;
+		border: 4px groove #222222;
+	}
+
+    img {
+      vertical-align:middle;
+    }
+
+    .cimg {
+      text-align: center;
+
+    }
+
+
+    .limg {
+      text-align: left;
+           		padding: 15px;
+    }
+
+	.title {
+   		font-size:22px;
+   		font-weight:bold;
+	}
+
+
+

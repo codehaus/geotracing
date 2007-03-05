@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<script type="text/javascript">
+		//<![CDATA[
+
+		var GMAP = {
+
+			DEGREES_PER_RADIAN: 360 / (2 * Math.PI),
+			RAD_PER_DEGREE: 0.01745566,
+
+			heading: function(lat1, lon1, lat2, lon2) {
+				var v1, v2;
+				lat1 = lat1 * GMAP.RAD_PER_DEGREE;
+				lon1 = lon1 * GMAP.RAD_PER_DEGREE;
+				lat2 = lat2 * GMAP.RAD_PER_DEGREE;
+				lon2 = lon2 * GMAP.RAD_PER_DEGREE;
+
+				// The wiz-stuff
+				v1 = Math.sin(lon1 - lon2) * Math.cos(lat2);
+				v2 = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2);
+
+				// rounding error protection
+				if (Math.abs(v1) < 1e-15) {
+					v1 = 0.0;
+				}
+
+				if (Math.abs(v2) < 1e-15) {
+					v2 = 0.0;
+				}
+
+				var course = Math.atan2(v1, v2);
+
+				// Course is in radians from -PI to PI
+				// Correct for degrees 0..360
+				course = course * GMAP.DEGREES_PER_RADIAN
+
+				// hmmm, correct negative values
+				if (course < 0) {
+					course = -course;
+				}
+
+				// hmmmm correct when westbound...
+				if (lon2 < lon1) {
+					course = 360 - course;
+				}
+
+				return course;
+			}}
+
+		function go() {
+			pr('started');
+
+			// NE quadrant tests
+			var lat1 = 52.0;
+			var lon1 = 4.0;
+			hcalc(0, lat1, lon1, 53.0, 4.0);
+			hcalc(45, lat1, lon1, 53.0, 5.0);
+			hcalc(90, lat1, lon1, 52.0, 5.0);
+			hcalc(135, lat1, lon1, 51.0, 5.0);
+			hcalc(180, lat1, lon1, 51.0, 4.0);
+			hcalc(225, lat1, lon1, 51.0, 3.0);
+			hcalc(270, lat1, lon1, 52.0, 3.0);
+			hcalc(315, lat1, lon1, 53.0, 3.0);
+
+			// NW quadrant tests
+			lat1 = 52.0;
+			lon1 = -4.0;
+			pr(' ');
+			hcalc(0, lat1, lon1, 53, -4.0);
+			hcalc(45, lat1, lon1, 53.0, -3);
+			hcalc(90, lat1, lon1, 52.0, -3);
+			hcalc(135, lat1, lon1, 51.0, -3);
+			hcalc(180, lat1, lon1, 51.0, -4.0);
+			hcalc(225, lat1, lon1, 51.0, -5);
+			hcalc(270, lat1, lon1, 52.0, -5.0);
+			hcalc(315, lat1, lon1, 53, -5.0);
+
+			// SW quadrant tests
+			lat1 = -52.0;
+			lon1 = -4.0;
+			pr(' ');
+			hcalc(0, lat1, lon1, -51.0, -4.0);
+			hcalc(45, lat1, lon1, -51.0, -3);
+			hcalc(90, lat1, lon1, -52.0, -3);
+			hcalc(135, lat1, lon1, -53.0, -3);
+			hcalc(180, lat1, lon1, -53.0, -4.0);
+			hcalc(225, lat1, lon1, -53.0, -5);
+			hcalc(270, lat1, lon1, -52.0, -5.0);
+			hcalc(315, lat1, lon1, -51, -5.0);
+
+			// SE quadrant tests
+			lat1 = -52.0;
+			lon1 = 4.0;
+			pr(' ');
+			hcalc(0, lat1, lon1, -51, 4.0);
+			hcalc(45, lat1, lon1, -51, 5);
+			hcalc(90, lat1, lon1, -52.0, 5);
+			hcalc(135, lat1, lon1, -53.0, 5);
+			hcalc(180, lat1, lon1, -53.0, 4.0);
+			hcalc(225, lat1, lon1, -53.0, 3);
+			hcalc(270, lat1, lon1, -52.0, 3.0);
+			hcalc(315, lat1, lon1, -51, 3.0);
+		}
+
+		function hcalc(exp1, lat1, lon1, lat2, lon2) {
+			var h = GMAP.heading(lat1, lon1, lat2, lon2);
+			pr('ll1=' + lat1 + ',' + lon1 + ' ll2=' + lat2 + ',' + lon2 + ' h=' + h + ' (expected=' + exp1 + ')');
+		}
+
+		function pr(msg) {
+			var elm = document.getElementById('debug');
+			var html= elm.innerHTML + '<br/>' + msg;
+			elm.innerHTML = html;
+		}
+		//]]>
+	</script>
+
+</head>
+
+<body onload="go()">
+<div id="debug">debug info</div>
+</body>
+</html>

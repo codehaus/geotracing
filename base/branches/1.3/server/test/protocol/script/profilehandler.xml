@@ -1,0 +1,208 @@
+<testset id="profilehandler" clients="1">
+
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp time=""/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="profile-get-req">
+		<send id="client1">
+			<utopia-req>
+				<profile-get-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-get-rsp>
+					<profile/>
+				</profile-get-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-update-req-no-action">
+		<send id="client1">
+			<utopia-req>
+				<profile-update-req>
+					<profile/>
+				</profile-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-update-req-change-person-fields">
+		<send id="client1">
+			<utopia-req>
+				<profile-update-req>
+					<profile>
+						<firstname>newfirstname</firstname>
+						<lastname>newlastname</lastname>
+						<email>geo@app.com</email>
+						<mobilenr>0612345678</mobilenr>
+						<tags>geo app user</tags>
+					</profile>
+				</profile-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-get-req-after-update">
+		<send id="client1">
+			<utopia-req>
+				<profile-get-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-get-rsp>
+					<profile>
+						<firstname>newfirstname</firstname>
+						<lastname>newlastname</lastname>
+						<email>geo@app.com</email>
+						<mobilenr>0612345678</mobilenr>
+						<tags>geo app user</tags>
+					</profile>
+				</profile-get-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-update-req-change-password">
+		<send id="client1">
+			<utopia-req>
+				<profile-update-req>
+					<profile>
+						<password>newpassword</password>
+					</profile>
+				</profile-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+
+	<test id="login-selapp-after-password-change">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="newpassword" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp time=""/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="profile-update-req-change-password-back">
+		<send id="client1">
+			<utopia-req>
+				<profile-update-req>
+					<profile>
+						<password>user</password>
+					</profile>
+				</profile-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-update-clear-tags">
+		<send id="client1">
+			<utopia-req>
+				<profile-update-req>
+					<profile>
+						<tags/>
+					</profile>
+				</profile-update-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-update-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="profile-get-req-after-clear-tags">
+		<send id="client1">
+			<utopia-req>
+				<profile-get-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<profile-get-rsp>
+					<profile>
+						<firstname>newfirstname</firstname>
+						<lastname>newlastname</lastname>
+						<email>geo@app.com</email>
+						<mobilenr>0612345678</mobilenr>
+					</profile>
+				</profile-get-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="logout2">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+
+</testset>
+

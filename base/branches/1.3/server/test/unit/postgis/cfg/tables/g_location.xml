@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="lon" />
+            <field name="lat" />
+			<field name="name" />
+             <field name="type" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="lon" />
+			<field name="lat" />
+			<field name="time" />
+			<field name="name" />
+            <field name="type" />
+			<field name="state" />
+  		</list>
+
+		<query>
+			<field name="id" />
+			<field name="lon" />
+			<field name="lat" />
+			<field name="type" />
+            <field name="state" />
+            <field name="extra" />
+   		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<field name="name" type="STRING" size="64" required="false" />
+		<field name="description" type="TEXT" required="false" />
+
+
+		<field name="lon" type="REAL" required="true" default="-180"/>
+		<field name="lat" type="REAL" required="true" default="90" />
+		<field name="ele" type="REAL" required="false" default="0" />
+		<field name="time" type="TIMESTAMP" />
+
+		<field name="type" type="INTEGER" default="1" required="false" />
+		<field name="state" type="INTEGER" default="1" required="false" />
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML" required="false"/>
+		<field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/>
+		<field name="pointnoidx" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326"/>
+
+
+<!-- <field name="owner" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>
+		<field name="parent" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>
+		<field name="parenttable" type="INTEGER" required="true" foreignkey="nocascade" default="-1"/>
+		<field name="visibility" type="INTEGER" default="0" required="false" /> -->
+	</data>
+</table>

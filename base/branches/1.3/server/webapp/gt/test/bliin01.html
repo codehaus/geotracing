@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<title>mobile dhtml 01</title>
+
+	<!-- <link rel="stylesheet" href="bliin01.css" type="text/css">   -->
+	<style type="text/css" media="handheld,screen">
+		body {
+			margin: 0px;
+			padding: 0px;
+			font-family: verdana, sans-serif;
+			background-color: #444;
+		}
+
+		#msg {
+			margin: 4px;
+			padding: 4px;
+			text-align: center;
+			border: 2px double rgb(250,0,255);
+			font-size: large;
+			color: rgb(0,255,0);
+		}
+	</style>
+	<script type="text/javascript">
+
+		colorbars = new Array(50, 100, 150, 200, 250, 300);
+		messages = new Array('joes is near', 'fancy medium near', 'stef is near', 'selene is near', 'contacts near', 'track near');
+
+		function go()
+		{
+			window.setInterval('cycle()', 25)
+			window.setInterval('msg()', 4000)
+		}
+
+		function msg()
+		{
+			document.getElementById('msg').innerHTML =  messages[Math.round((messages.length-1)*Math.random())];
+		}
+
+		function cycle()
+		{
+			var divs = document.getElementsByTagName('td');
+
+			for (var i = 0; i < divs.length; i++)
+			{
+				colorbars[i] -= 5;
+
+				if (colorbars[i] < 50) colorbars[i] = 250;
+
+				divs[i].style.backgroundColor = 'rgb(' + colorbars[i] + ',0,0)';
+			}
+
+			// repeat = window.setTimeout('cycle()', 25)
+		}
+	</script>
+
+</head>
+
+<body onload="go()">
+<table width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+		<td height="40">&nbsp;</td>
+		<td height="40">&nbsp;</td>
+		<td height="40">&nbsp;</td>
+		<td height="40">&nbsp;</td>
+		<td height="40">&nbsp;</td>
+		<td height="40">&nbsp;</td>
+	</tr>
+</table>
+<div id="msg">
+	 no msg
+</div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/* Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
+ * Distributable under LGPL license. See terms of license at gnu.org.
+ * $Id: widget.css,v 1.14 2006-05-10 21:13:13 just Exp $
+ */
+
+/* Menu css */
+.mn-container {
+	position:absolute;
+    top: 10px;
+    left: 80px;
+    font-size:12px;
+    width: inherit;
+	margin: 0;
+	padding-left: 0;
+	background-color: white;
+	height: 1.20em;
+	border: 1px solid #666;
+	z-index: 100;
+}
+
+.mn-content {
+	font: bold 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
+	float: left;
+	width: inherit;
+	list-style: none;
+	line-height: 1.0;
+	color:black;
+	background-color: white;
+	padding: 0;
+	margin: 0;
+	z-index: 100;
+}
+
+.mn-content ul {
+	font: normal 12px "Trebuchet MS", Arial, Helvetica, sans-serif;
+	position: absolute;
+	left: -999em;
+	height: auto;
+	width: 11.4em;
+	w\idth: 12.0em;
+	list-style: none;
+	border-top: 0.1em solid #666;
+	border-right: 0.1em solid #666;
+	border-bottom: 0.1em solid #666;
+	border-left: 0.1em solid #666;
+	margin: 0;
+	padding: 0;
+	z-index: 100;
+}
+
+.mn-content li {
+	float: left;
+	padding: 0;
+	width: auto;
+	z-index: 100;
+}
+
+.mn-content ul li {
+	float: left;
+	padding: 0;
+	width: 10em;
+	z-index: 100;
+}
+
+.mn-content li a {
+	display: block;
+	width: auto;
+	border-left: 0.1em solid #fff;
+	border-top: 0.1em solid #fff;
+	border-right: 0.1em solid #aaa;
+	border-bottom: none;
+	padding: 0.25em 1.0em;
+	color: #111111;
+	background: white;
+	text-decoration: none;
+}
+
+.mn-content li li a {
+	width: 11em;
+	w\idth: 10em;
+	margin: 0;
+	padding: 0.25em 1.0em;
+	border-top: 0;
+	border-right: 0;
+	border-bottom: 0.1em solid #aaa;
+	border-left: 0;
+}
+
+.mn-content a:hover,
+.mn-content a:active {
+	color: #000;
+	background: #bbb;
+}
+
+.mn-content li ul ul {
+	margin: -1.75em 0 0 11em;
+	z-index: 100;
+}
+
+.mn-content li:hover ul ul,
+.mn-content li:hover ul ul ul,
+.mn-content li.sfhover ul ul,
+.mn-content li.sfhover ul ul ul {
+	left: -999em;
+	z-index: 100;
+}
+
+.mn-content li:hover ul,
+.mn-content li li:hover ul,
+.mn-content li li li:hover ul,
+.mn-content li.sfhover ul,
+.mn-content li li.sfhover ul,
+.mn-content li li li.sfhover ul {
+	left: auto;
+	z-index: 100;
+}
+
+.mn-content li:hover,
+.mn-content li.sfhover {
+	background: #bbb;
+	z-index: 100;
+}
+
+/* Panel CSS */
+.pn-container, .pn-header, .pn-content, .pn-footer, .pn-closer, .pn-resizer, .sel-form {
+  margin: 0px;
+  padding: 0px;
+  display: block;
+  position: absolute;
+}
+
+.pn-container {
+  background-color: #dddddd;
+  border:1px solid #444444;
+  min-width: 160px;
+  min-height: 30px;
+  width: 160px;
+  height: 150px;
+  float:left;
+}
+
+.pn-header {
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  height: 15px;
+  min-height: 15px;
+  cursor:move;
+  font-size: 10px;
+  text-align: center;
+  color: white;
+  width: 100%;
+ }
+
+.pn-content {
+  float:left;
+  overflow:auto;
+  background-color: #dddddd;
+  top: 15px;
+  right: 0px;
+  left: 0px;
+  bottom: 15px;
+  height: auto;
+  width: auto;
+}
+
+.pn-text-content {
+  margin: 8px;
+}
+
+.pn-footer {
+   left:0px;
+   bottom:0px;
+   height:15px;
+   width: 100%;
+   cursor:move;
+ }
+
+.pn-closer {
+	top: 0px;
+	left: 0px;
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+    background-image: url(../img/close.jpg);
+	background-repeat: no-repeat;
+}
+
+.pn-resizer {
+	bottom: 0px;
+	right: 0px;
+    height: 15px;
+    width: 15px;
+    cursor: move;
+    background-image: url(../img/resize.gif);
+	background-repeat: no-repeat;
+}
+
+select {
+	text-indent: 0px;
+	background-color: #F5F5F5;
+	font-size: 11px;
+	font-weight: normal;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
