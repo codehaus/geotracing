@@ -338,6 +338,8 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 			String nextTag = null;
 			JXElement nextSegment = null;
 			JXElement nextPoint = null;
+			GPSSample nextSample;
+			int ptCount=0;
 			for (int i = 0; i < elements.size(); i++) {
 				nextElement = (JXElement) elements.get(i);
 				nextTag = nextElement.getTag();
@@ -357,6 +359,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 					nextPoint.setAttr("lon", nextElement.getAttr(Track.ATTR_LON));
 					nextPoint.setAttr("lat", nextElement.getAttr(Track.ATTR_LAT));
 
+
 					// Time use time of GPS fix
 					JXElement fixTime = new JXElement("time");
 					fixTime.setText(GPX_TIME_FORMAT.format(new Date(nextElement.getLongAttr(Track.ATTR_TIME))));
@@ -367,7 +370,13 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 					ele.setText(nextElement.getAttr(Track.ATTR_ELE));
 					nextPoint.addChild(ele);
 
-					nextSegment.addChild(nextPoint);
+					// Possibly filter out samples too close to each other
+					// and excess samples.
+					nextSample = new GPSSample(nextPoint.getDoubleAttr("lat"), nextPoint.getDoubleAttr("lat"));
+					if (aTrackPointFilter.filter(nextSample)) {
+						nextSegment.addChild(nextPoint);
+						ptCount++;
+					}
 				}
 			}
 
@@ -377,6 +386,8 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 			}
 
 			gpx.addChild(trk);
+			log.info(aTrack.getName() + " GPX export ptCount=" + ptCount + " discardCount=" + aTrackPointFilter.getDiscardCount());
+
 			return gpx;
 		} catch (Throwable t) {
 			log.warn("Unexpected error in toGPX trackId=" + aTrack.getId(), t);
