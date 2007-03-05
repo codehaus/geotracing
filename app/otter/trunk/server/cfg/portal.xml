@@ -61,7 +61,7 @@
 			<!-- Daemon for various upgrades
 			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
 				<property name="pois2textmedia">true</property>
-			</daemon>  -->
+			</daemon> -->
 
 		</daemons>
 	</application>
