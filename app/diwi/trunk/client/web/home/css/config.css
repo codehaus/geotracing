@@ -48,6 +48,10 @@ p{
  line-height: 1.2em;
  font-size: 0.7em;
 }
+
+pp{
+	margin-left:30px;
+}
 /* All the content boxes belong to the content class. */
 .header {
  position: relative;
@@ -185,7 +189,7 @@ welkomtekst {
  position: absolute;
  width: auto;
  top: 138px;
- left: 261px;
+ left: 251px;
  z-index: 100;
  font-family:Georgia, "Times New Roman", Times, serif;
  font-size:35px;
