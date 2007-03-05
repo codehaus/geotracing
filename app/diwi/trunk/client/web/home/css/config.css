@@ -193,6 +193,7 @@ welkomtekst {
 }
 #fotoprev {
  position: absolute;
+ background-color:#FF00CC;
  width:140px;
  height: 30px;
  top: 30px;
@@ -201,6 +202,7 @@ welkomtekst {
 }
 #fotonext {
  position: absolute;
+ background-color:#FF00CC;
  width:140px;
  height: 30px;
  top: 30px;
