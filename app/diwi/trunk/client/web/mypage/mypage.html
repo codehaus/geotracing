@@ -1,0 +1,215 @@
+
+<html>
+<head>
+<title>De Digitale Wichelroede</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+  <link rel="stylesheet" type="text/css" href="css/config.css">
+
+</head>
+<script language="JavaScript" type="text/JavaScript">
+
+var currentSelection = 1; 
+var toolbarData = new Array();
+toolbarData[1] = new Array('buttons/routes.jpg', 'buttons/routes.jpg', 'buttons/routes.jpg');
+toolbarData[2] = new Array('buttons/zoek.jpg', 'buttons/zoek.jpg', 'buttons/zoek.jpg');
+toolbarData[3] = new Array('buttons/mijnpagina.jpg', 'buttons/mijnpagina.jpg', 'buttons/mijnpagina.jpg');
+toolbarData[4] = new Array('buttons/maakroute.jpg', 'buttons/maakroute.jpg', 'buttons/maakroute.jpg');
+toolbarData[5] = new Array('buttons/uitloggen.jpg', 'buttons/uitloggen.jpg', 'buttons/uitloggen.jpg');
+
+var buttons=5;
+
+var popupData = new Array("kaartpopup1","kaartpopup2","kaartpopup3","kaartpopup4");
+
+function highlightItem(obj, state) {
+    i = obj.getAttribute('id');
+    if (i != currentSelection) {
+		obj.setAttribute('src', toolbarData[i][state]);                  
+    }
+}
+
+function selectItem(obj) {
+    i = obj.getAttribute('id');
+	var tbar = new Array();
+	for (j=1; j<buttons+1;j++) {
+    	tbar[j] = document.getElementById(j);
+		tbar[j].setAttribute('src', toolbarData[(j)][0]);
+	}
+    obj.setAttribute('src', toolbarData[i][2]);
+    currentSelection = i;
+}
+
+
+function toonPlaatje(index) {
+	im = document.getElementById(200);
+    im.src = imageNames[index-1];
+}
+
+function laadtPlaatjes() {
+	var d=document; 
+	if(d.images){ 
+		if(!d.MM_p){ 
+			d.MM_p=new Array();
+		}										
+		var i,j=d.MM_p.length,a=laadtPlaatjes.arguments; 
+		for(i=0; i<a.length; i++) {
+			if (a[i].indexOf("#")!=0){ 
+				d.MM_p[j]=new Image; 
+				d.MM_p[j++].src=a[i];
+				j++;
+			}
+		}
+	}
+}
+
+function menu_goto( menuform )
+{
+    var baseurl = "http://www." ;
+    selecteditem = menuform.newurl.selectedIndex ;
+    newurl = menuform.newurl.options[ selecteditem ].value ;
+    if (newurl.length != 0) {
+      location.href = baseurl + newurl ;
+    }
+}
+
+function HidePopup(d) {
+if(d.length < 1) { return; }
+	document.getElementById(popupData[d]).style.display = "none";
+	}
+function ShowPopup(d) {
+	if(d.length < 1) { return; }
+	document.getElementById(popupData[d]).style.display = "block";
+}
+
+function show(d){
+	for (i=0;i<4;i++){
+		if (i==d) {
+			ShowPopup(i);
+		} else {
+			HidePopup(i);
+		}
+	}
+}
+
+</script>
+
+<body leftmargin="0" rightmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+<!--
+<div id="back">  <img src="images/back.jpg" border="0"> </div>
+-->
+
+<div id="logo"> <img src="images/logot.jpg" border="0"> </div>
+<div id="line"><img src="images/line.jpg" border="0"></div>
+<div id="kaart"><img src="images/kaart.jpg" border="0"></div>
+<div id="copyright"><img src="images/copyright.jpg" border="0"></div>
+<div id="personaliabox"><img src="images/personalia.jpg" border="0"></div>
+<div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
+
+<div id="butroutes"> 
+	<a><img id="1" src="buttons/routes.jpg"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);" border="0"></a> 
+</div>
+<div id="butzoek"> 
+	<a><img id="2" src="buttons/zoek.jpg"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(1);" border="0"></a> 
+</div>
+<div id="butmijnpagina"> 
+	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(2);" border="0"></a> 
+</div>
+<div id="butmaakroute"> 
+	<a><img id="4" src="buttons/maakroute.jpg"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(3);" border="0"></a> 
+</div>
+<div id="butuitloggen"> 
+	<a><img id="5" src="buttons/uitloggen.jpg"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(0);" border="0"></a> 
+</div>
+
+
+<div id="butspeelaf"> 
+	<a><img id="6" src="buttons/speelaf.jpg" border="0"></a> 
+</div>
+<div id="butwijzigprofiel"> 
+	<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> 
+</div>
+<div id="butkiesroute"> 
+	<form action="dummyvalue">
+	<select name="newurl" onChange="menu_goto(this.form)">
+		<option value="" selected="selected">kies een van mijn routes</option>
+		<option value="" >bunkerholen</option>
+		<option value="" >heeel lang</option>
+		<option value="" disabled="disabled"> ---- Miscellaneous ----</option>
+		<option value="" >snert route</option>
+	</select>
+	</form>
+</div>
+
+<!-- De popups op de kaart -->
+
+<div id="kaartpopup1" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
+<div id="kaartpopup2" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
+<div id="kaartpopup3" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
+<div id="kaartpopup4" style="display:block;"><img src="images/kaartpopup.jpg" border="0"></div>
+
+
+<div id="mijnpagina">
+	<mijnpagina>
+		<strong>Mijn pagina</strong><br>
+	</mijnpagina>
+</div>
+
+<div id="routeheader" > 
+  <titelrouteheader>
+	<strong>Ronde om de Grebbeberg</strong>
+  </titelrouteheader><br>
+  <author>
+		Kim Deal, gedaan op 23 februari 2007 <br><br>
+  </author>
+</div>
+
+<div id="ookgelopen"> 
+	<ookgelopen>
+		Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.	
+	</ookgelopen>
+</div>
+
+<div id="meerdetails"> 
+	<meerdetails>
+		<strong><a href="">Klik hier voor meer details over deze route >></a></strong>	
+	</ookgelopen>
+</div>
+<div id="commentaartekst">
+	<commentaarheader> <strong>Commentaar</strong></commentaarheader>
+	<br><br>
+	<commentaartekst> 
+	- Wat een te gekke muziek! <br>
+	- Meer van dit alles man!!! <br>
+	- Nog harder!!!!!!!!!!! <br>
+	</commentaartekst>
+</div>
+<div id="commentaarnavigatie">
+	<commentaarnavigatie>
+		<a href="">vorige</a> |<lichter> 1 van 5 </lichter>| <a href="">volgende</a>
+	</commentaarnavigatie>
+</div>
+
+
+<div id="personaliatekst">
+	<personaliaheader>
+		Steve Albini <br>
+	</personaliaheader>
+	<personaliatekst>
+	<img  src="images/self.jpg" border="0" align="left">
+	Haai, mijn naam is Steve Albini en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana! 
+	</personaliatekst>
+</div>
+<div id="personaliameer">
+	<personaliameer>
+		<a href="">Lees meer >></a>
+	</personaliameer>
+</div>
+
+</font>
+</body>
+</html>

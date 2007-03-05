@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>De Digitale Wichelroede</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+  <link rel="stylesheet" type="text/css" href="css/config.css">
+
+</head>
+
+<script language = "javascript">
+
+
+function validate(text1,text2,text3,text4)
+{
+ if (text1==text2 && text3==text4)
+ load('http://www.hugokeizer.nl');
+ else 
+ {
+  load('mypage.html');
+ }
+}
+function load(url)
+{
+ location.href=url;
+}
+</script>
+
+
+<body leftmargin="0" rightmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+<form>
+<p>ENTER USER NAME : 
+  <input type="text" name="text2">
+</p>
+<p> ENTER PASSWORD :
+<input type="password" name="text1">
+  <input type="button" value="Check In" name="Submit" onclick=javascript:validate(text2.value,"free",text1.value,"javascript") >
+</p>
+
+</form>
+
+
+</font>
+</body>
+</html>
