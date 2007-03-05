@@ -1,15 +1,289 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<html>
 <head>
-	<title>DIWI</title>
-	<link rel="stylesheet" href="css/diwi.css" type="text/css"/>
+<title>De Digitale Wichelroede</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+  <link rel="stylesheet" type="text/css" href="home/css/config.css">
 
 </head>
+<script language="JavaScript" type="text/JavaScript">
 
-<body>
-<a href="test">diwi tests</a>
+var currentSelection = 1; 
+var toolbarData = new Array();
+toolbarData[1] = new Array('home/buttons/welkom.gif', 'home/buttons/welkomH.gif', 'home/buttons/welkomH.gif');
+toolbarData[2] = new Array('home/buttons/route.gif', 'home/buttons/routeH.gif', 'home/buttons/routeH.gif');
+toolbarData[3] = new Array('home/buttons/aanmelden.gif', 'home/buttons/aanmeldenH.gif', 'home/buttons/aanmeldenH.gif');
+toolbarData[4] = new Array('home/buttons/faq.gif', 'home/buttons/faqH.gif', 'home/buttons/faqH.gif');
+
+var buttons=4;
+
+var texten = new Array("Welkom","faq");
+var aantaltexten =2;
+
+function highlightItem(obj, state) {
+    i = obj.getAttribute('id');
+    if (i != currentSelection) {
+		obj.setAttribute('src', toolbarData[i][state]);                  
+    }
+}
+function selectItem(obj) {
+    i = obj.getAttribute('id');
+	var tbar = new Array();
+	for (j=1; j<buttons+1;j++) {
+    	tbar[j] = document.getElementById(j);
+		tbar[j].setAttribute('src', toolbarData[(j)][0]);
+	}
+    obj.setAttribute('src', toolbarData[i][2]);
+    currentSelection = i;
+}
+
+var imageCounter = 0;
+var imageAantal = 4;
+var imageNames = new Array('home/images/fotovideobox.gif','home/images/schapen.gif','home/images/fotovideobox.gif', 'home/images/grebbelinie01.jpg');
+
+function nextImage() {
+	if (imageCounter>2) imageCounter=-1;
+	imageCounter++;
+	toonPlaatje();
+}
+
+function prevImage() {
+	if (imageCounter<1) imageCounter = imageAantal;
+	imageCounter--;
+	toonPlaatje();
+}
+
+function toonPlaatje() {
+	im = document.getElementById("plaatje");
+    im.src = imageNames[imageCounter];
+}
+
+function laadtPlaatjes() {
+	var d=document; 
+	if(d.images){ 
+		if(!d.MM_p){ 
+			d.MM_p=new Array();
+		}										
+		var i,j=d.MM_p.length,a=laadtPlaatjes.arguments; 
+		for(i=0; i<a.length; i++) {
+			if (a[i].indexOf("#")!=0){ 
+				d.MM_p[j]=new Image; 
+				d.MM_p[j++].src=a[i];
+				j++;
+			}
+		}
+	}
+}
+
+function HideText(d) {
+if(d.length < 1) { return; }
+	document.getElementById(texten[d]).style.display = "none";
+	}
+function ShowText(d) {
+	if(d.length < 1) { return; }
+	document.getElementById(texten[d]).style.display = "block";
+}
+
+function show(d){
+	for (i=0;i<aantaltexten;i++){
+		if (i==d) {
+			ShowText(i);
+		} else {
+			HideText(i);
+		}
+	}
+}
+</script>
+
+<body  background="home/images/back.gif" onLoad="nextImage();">
+
+<!--
+<div id="back">  <img src="home/images/backS.jpg" border="0"> </div>
+-->
+<div id="top"> <img src="home/images/top.jpg" border="0"> </div>
+<div id="topfoto"> <img id="plaatje" src="home/images/schapen.gif" border="0"> </div>
+<div id="videobox"> <img src="home/images/videobox.gif" border="0"> </div>
+<div id="fotovideobox"> <img src="home/images/fotovideobox.gif" border="0"> </div>
+<div id="spotmetbox"> <img src="home/images/spotmetbox.gif" border="0"> </div>
+
+<div id="line"><img src="home/images/lijn.gif" border="0"></div>
+<div id="fototekst"> 
+	<center> 
+	Het Broekerpad <br>
+<!--
+	<font size="+1"> 
+	<a onClick="prevImage()"><font color="#FFFFFF"> vorige </font></a> | 
+	<a href="http://www.hugokeizer.nl"><font color="#FFFFFF">details </font></a> | 
+	<a onClick="nextImage()"; "><font color="#FFFFFF">volgende </font></a> 
+-->
+	</font>
+	</center>
+
+
+	<map > 
+		<area shape="rect" coords="-20,30,100,60" onClick="prevImage()">
+		<area shape="rect" coords="160,30,160,60" onClick="nextImage()">
+	</map>
+</div>
+
+
+
+</div>
+
+
+
+<div id="butwelkom"> 
+		<a><img id="1" src="home/buttons/welkomH.gif"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); show(0)" border="0"></a> 
+</div>
+<div id="butroutes"> 
+		<a><img id="2" src="home/buttons/route.gif"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="nextImage()" border="0"></a> 
+</div>
+<div id="butaanmelden"> 
+		<a><img id="3" src="home/buttons/aanmelden.gif"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="" border="0"></a> 
+</div>
+<div id="butfaq"> 
+		<a><img id="4" src="home/buttons/faq.gif" onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); show(1)" border="0"></a> 
+</div>
+
+
+
+<div id="butinloggen"> 
+<!--		<a><img id="5" src="home/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggenH.gif'" 
+		onMouseOut="src='home/buttons/inloggen.gif'" onClick="location.href='mypage/inloggen.html'" border="0"></a>
+--> 
+		<a><img id="5" src="home/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggen.gif'" 
+		onMouseOut="src='home/buttons/inloggen.gif'" onClick="" border="0"></a> 
+</div>
+
+<div id="butmaakroute"> 
+		<a><img id="6" src="home/buttons/maakroute.gif"onMouseOver="src='home/buttons/maakrouteH.gif'" 
+		onMouseOut="src='home/buttons/maakroute.gif'" onClick="" border="0"></a> 
+</div>
+<div id="butmijnpagina"> 
+<!--
+		<a><img id="7" src="home/buttons/mijnpagina.gif"onMouseOver="src='home/buttons/mijnpaginaH.gif'" 
+		onMouseOut="src='home/buttons/mijnpagina.gif'" onClick="location.href='mypage/mypage.html'" border="0"></a> 
+-->
+		<a><img id="7" src="home/buttons/mijnpagina.gif"onMouseOver="src='home/buttons/mijnpaginaH.gif'" 
+		onMouseOut="src='home/buttons/mijnpagina.gif'" onClick="" border="0"></a> 
+</div>
+
+<div id="butintrovideo"> 
+		<a><img id="8" src="home/buttons/introvideo.gif"onMouseOver="" 
+		onMouseOut="" onClick="" border="0"></a> 
+</div>
+
+<div id="watistext">
+	<watistext>
+		Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.
+	</watistext>
+</div>
+
+<div id="Welkom" style="display:block;"> 
+
+		<WelkomHeader><strong>Welkom bij de Digitale Wichelroede</strong><br></WelkomHeader>
+		
+<!--		
+	<Author>Kim Deal, 23 februari 2007 <br><br></Author>
+-->	
+		<welkomtekst>
+<p>		
+Struinen door het landschap, met een persoonlijke ‘Digitale Wichelroede’ die interessante wetenswaardigheden toont op het moment dat jij als gebruiker persoonlijk geprikkeld wilt worden? Of wil je zelf je persoonlijke verhaal over de omgeving delen met andere Digitale Wichelaars? Het is allemaal mogelijk. Project de Digitale Wichelroede onderzoekt hoe op innovatieve wijze cultuurhistorische kennis beschikbaar gemaakt kan worden voor de recreant van nu, die wandelend of fietsend zijn omgeving fysiek én virtueel wil beleven. De moderne ‘wichelroede’ is geen eenvoudige wilge- of hazelaartak, maar een kien product uit de mobiele en locatie bepalingstechnologie.
+</p>
+
+<p>
+	Met een consortium waarin partners van uiteenlopende achtergrond zitting hebben wordt met project de Digitale Wichelroede onderzoek gedaan naar de kansen van zo’n moderne ‘wichelroede’. Immers, alvorens een product te ontwikkelen moet onderzocht worden hoe zo’n Digitale Wichelroede er het best uit kan zien en wat zijn technische en inhoudelijke mogelijkheden zijn. Er wordt dan ook hard gewerkt aan een pilotversie en deze wordt in de zomer van 2007 getest. Hoe en waarom we dat doen lees je hieronder.
+</p>
+<img src="home/images/pda.jpg" border="0" align="left"> 
+<strong>Een slim apparaat</strong><br>
+<p>
+	De Digitale Wichelroede is een slim apparaat dat een heleboel weet, zodat jij als gebruiker díe cultuurhistorische kennis eruit kan halen waarover je graag wat meer te weten wilt komen. Bij het ontwikkelen van het apparaat moet daarom eerst een heleboel kennis verzameld en gedigitaliseerd worden. Deze informatie halen we overal vandaan. Uit boeken, databases, maar ook van historische verenigingen en van mensen die in een bepaald gebied wonen. Al deze verhalen worden gekoppeld aan specifieke plekken in een bepaald gebied en vastgepind op een digitale geografische kaart. Nadat wetenswaardigheden en mogelijke routes en locaties zijn samengebracht worden ze in een speciaal voor het project ontworpen en gebouwd mobiel systeem geladen. Dit systeem beschikt ook over een GPS waardoor de struiner niet kan verdwalen. 
+</p>
+<p>
+	Leden van een speciaal testteam kunnen nu op pad. Ze zullen navigeren door het landschap, op zoek naar bijzondere plekken. Zo ontstaat een interactieve overdracht van informatie tussen mens en landschap. Maar hoe de test-recreant zijn tocht met de Digitale Wichelroede precies zal ervaren weten we natuurlijk nog niet. Daar komen we pas achter na de zomer van 2007 als de tests zijn afgerond. 
+</p>
+<p>
+		De resultaten van het onderzoek worden uiteindelijk opgetekend in een rapport waarin onder meer de bruikbaarheid van een systeem om kennis digitaal op te slaan, de interface, de ordening van informatie, het onderscheid tussen passief en actief gebruik met het oog op gebruiksgemak, -plezier en –intensiteit worden geëvalueerd. 
+</p>
+<p>
+	De (tussen)uitkomsten van het onderzoek zullen via verschillende kanalen kenbaar gemaakt worden. Via onze website www.digitalewichelroede.nl kun je ons volgen en kun je lezen over actuele ontwikkelingen.
+</p>
+
+	<strong>Motivatie</strong><br> 
+<p>
+	Het initiatief voor onderzoeksproject de Digitale Wichelroede sluit aan bij actuele ontwikkelingen op het gebied van recreatie, technologie, en onderzoek. Zo bestaat bij de recreant van nu de wens het landschap, cultuur en geschiedenis te willen ‘beleven’, het liefst op een zo persoonlijke manier. Daarnaast zal onder meer door de vergrijzing de komende jaren de vrije tijd toenemen. De verwachting is bovendien dat locatie gebaseerde technologie innoveert omdat het zich richt op de individuele, plaatsafhankelijke informatievraag, inspeelt op een veranderend gebruik van het landschap – denk bijvoorbeeld aan de economische vernieuwing van landelijke gebieden - en bijdraagt aan een toeristisch-recreatief product geschrankt op GEO-Informatie. 
+</p>
+<p>
+		Ook is veel cultuurhistorische informatie, bijvoorbeeld de kennis van historische verenigingen of verhalen van mensen die al heel lang in een bepaald gebied wonen nog niet ontsloten voor digitaal gebruik. Deze informatie is erg waardevol en gaat verloren als hij niet wordt gedocumenteerd. Naast deze noodzaak te ‘bewaren’ is onderzoek van belang omdat al doende bruggen gebouwd en geslagen worden tussen geo-informatie deskundigen, cultuurhistorische bronhouders (zoals gemeenten, provincies, stichtingen en bewoners van een bepaald gebied) en cultuur-toeristische informatie deskundigen. Tegelijkertijd dient het project tot projectontwikkeling. Het is immers een proeftuin voor geo-informatica en mobiele technologie. Kortom, redenen te over voor het doen van onderzoek naar nieuwe manieren van cultuur-toerisme.
+</p>
+
+		<strong>Testgebieden</strong><br>
+<p>
+	Binnen het project wordt ingezoomd op twee case-gebieden. Beide gebieden kennen een eigen schaal en cultuurhistorich verleden. 
+</p>
+	<strong>Nijevelt</strong><br>
+<p>
+In deze nieuwbouwwijk in de Vinexwijk Leidsche Rijn in Utrecht bevindt de geschiedenis zich letterlijk onder je voeten in de vorm van archeologische vondsten zoals houten Romeinse boten, een antieke snelweg, en een middeleeuws kasteel. Deze relicten zijn puzzelstukken die deel uitmaken van een groots verhaal dat vertelt over hoe deze plek er tweeduizend jaar geleden en in middeleeuwse tijd uitzag. Boven de grond is weinig meer te zien van het verleden en de Digitale Wichelroede biedt dan ook uitkomst om te verbeelden wat verloren is gegaan. Hier wordt de moderne wichelroede voor de beleving van een relatief klein gebied ingezet. Lopend over het terrein met een Digitale Wichelroede in de aanslag kun je de wereld van de Romeinen en ridders opnieuw oproepen en waan je je archeoloog, zoekend naar ‘sporen’ uit het verleden. 
+</p>
+<strong>Grebbelinie</strong><br>
+<p>	
+	Het gebied waar de Grebbelinie ligt is grootschaliger dan Nijevelt. Dit gebied vol achttiende-eeuwse fortificaties geldt als een belangrijk toeristisch gebied in de Gelderse Vallei. Hier bevind je je in een lagenlandschap van natuur, cultuur en historie. Met behulp van de Digitale Wichelroede kun je een persoonlijk toegesneden verkenningstocht organiseren door verschillende tijd- en cultuurlagen, op zoek naar kazematten, forten of bijvoorbeeld de mysterieuze drakentandenversperring. 
+	
+</p>
+</welkomtekst>
+<br><br>
+</div>
+
+
+<div id="faq" style="display:none;">
+	<br> 
+<welkomtekst>
+	<strong>Wat is de Digitale Wichelroede?</strong><br>
+<p>
+Bij de recreant van nu bestaat de wens het landschap, cultuur en geschiedenis te willen ‘beleven’, het liefst op een zo persoonlijke manier. Daarnaast zal onder meer door de vergrijzing de komende jaren de vrije tijd alleen maar toenemen. Tijd voor het ontwikkeling van nieuwe manieren van actief educatief recreëren. Struinen door het landschap bijvoorbeeld, met een persoonlijke ‘Wichelroede’ die informatie geeft op het moment dat jij als gebruiker persoonlijk geprikkeld wil worden, of die je kan ‘laden’ met eigen persoonlijke verhalen. Want de moderne ‘Wichelroede’ is geen eenvoudige wilge- of hazelaartak, maar een kien product uit de mobiele en locatie bepalingstechnologie, waarmee de gebruiker al lopend of fietsend zijn omgeving fysiek én virtueel kan beleven. 
+<br><br>
+Deze kennis wordt digitaal gemaakt en gekoppeld aan GEO-Informatie (informatie over geografische objecten, bijvoorbeeld land kaarten of luchtfoto’s). Kennis en mogelijke routes worden in een mobiel apparaat geladen en met behulp van GPS als navigator vindt vervolgens een interactieve overdracht plaats van informatie tussen consument of producent en landschap. Project de Digitale Wichelroede is een onderzoeksproject, hetgeen inhoudt dat we onderzoeken wat mogelijkheden en de onmogelijkheden van een Digitale Wichelroede zijn. Er wordt daarom een testversie ontwikkeld. 
+<br><br>
+</p>
+<strong>Is de Digitale Wichelroede te koop?</strong><br>
+<p>
+Nee. De Digitale Wichelroede is een onderzoeksproject. Dit betekent dat we een nul-versie ontwikkelen die in de zomer van 2007 door een speciaal team wordt getest. Uiteindelijk moeten de resultaten leiden tot het opstellen van een rapport waarin onder meer de bruikbaarheid van een systeem om kennis digitaal op te slaan en van de interface, de ordening van informatie, het onderscheid tussen passief en actief gebruik met het oog op gebruiksgemak, -plezier en intensiteit geëvalueerd wordt. Met de resultaten van ons onderzoek kan in een vervolgtraject een product voor de markt worden gemaakt.
+</p>
+<strong>Waarom is onderzoek naar mogelijkheden van gebruik van Locatie gebaseerde</strong> <br>
+</welkomtekst><welkomtekst>
+<strong>technologie van belang?</strong><br>
+<p>
+De verwachting is dat Locatie gebaseerde technologie innoveert omdat het zich richt op de individuele, plaatsafhankelijke informatievraag, inspeelt op een veranderend gebruik van het landschap (onder andere economische vernieuwing van landelijke gebieden) en bijdraagt aan een toeristisch-recreatief product geschrankt op GEO-Informatie. Bovendien is veel cultuurhistorische kennis nog niet ontsloten voor digitaal gebruik. Denk bijvoorbeeld aan de kennis van historische verenigingen of van mensen die vaak al jaar en dag in een bepaalde streek wonen en de prachtigste verhalen hebben. Deze kennis is wel erg waardevol. Het is belangrijk deze verhalen digitaal op te slaan zodat je ze makkelijk opnieuw kan gebruiken. Bijvoorbeeld voor de Digitale Wichelroede. Met project de Digitale Wichelroede bouwen en slaan we bruggen tussen geo-informatie deskundigen, cultuurhistorische bronhouders (zoals gemeenten, provincies, stichtingen en bewoners van een bepaald gebied) en educatie-toeristische informatie deskundigen. Tegelijkertijd dient het project tot projectontwikkeling, want is het een proeftuin voor geo-informatica en mobiele technologie. 
+</p>
+<strong>In welke gebieden wordt de Digitale Wichelroede in 2007 getest?</strong><br>
+<p>
+Er wordt op twee gebieden onderzoek gedaan. In Nijevelt, een nieuwbouwwijk in het Utrechtse Leidsche Rijn en in de rgeio waar de Grebbelinie ligt.
+</p>
+<strong>Nijevelt</strong><br>
+<p>
+In deze nieuwbouwwijk wordt de Digitale Wichelroede voor de beleving van een relatief klein gebied ingezet. In Nijevelt bevindt de geschiedenis zich letterlijk in de aarde onder je voeten, in de vorm van archeologische vondsten als boten en een antieke snelweg. Deze vondsten zijn puzzelstukken die deel uitmaken van een groot verhaal dat vertelt over hoe deze plek er tweeduizend jaar geleden uitzag. Boven de grond is weinig meer te zien van het verleden. Lopend over het terrein met een Digitale Wichelroede in de aanslag kun je de wereld van de Romeinen opnieuw oproepen en waan je je archeoloog, zoekend naar ‘sporen’ uit het verleden. 
+</p>
+<strong>Grebbelinie</strong><br>
+<p>
+Het gebied waar de Grebbelinie ligt is grootschaliger dan die van de Limesweg. Dit gebied vol achttiende-eeuwse fortificaties geldt als een belangrijk toeristisch gebied in de Gelderse Vallei. Hier bevindt de bezoeker zich in een lagenlandschap van natuur, cultuur en historie. Met behulp van locatie gebaseerde services kun je je persoonlijk toegesneden verkenningstocht organiseren en kennis opdoen van verschillende tijdslagen en cultuurlagen.
+</p>
+<strong>Contact</strong><br>
+<p>
+De Wichelroede wordt mede mogelijk gemaakt door Ruimte voor Geo-Informatie (RGI) en Provincie Utrecht en wordt uitgevoerd door een consortium waarin de volgende partners plaatsnemen: Alterra, DS, Galileo, Gemeente Utrecht, Kadaster TDN, KPN, Provincie Utrecht, Stichting Vernieuwing Gelderse Vallei (SVGV), Waag en Wageningen Universiteit. 
+
+Voor meer informatie kunt u contact opnemen met: <a href="mailto:info@digitalewichelroede.nl">info@digitalewichelroede.nl</a> of 06 466 11 870
+</p>
+<p>
+Het project gebruikt met toestemming van Paul Roncken (WUR-KGR-LAR) de titel De Digitale Wichelroede©
+</p>
+<br><br>
+</welkomtekst>
+</div>
+
+</font> 
 </body>
-
 </html>
-
