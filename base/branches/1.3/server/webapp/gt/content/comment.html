@@ -1,0 +1,39 @@
+<div id="commentpanel">
+	<form id="commentform" name="commentform" method="get" action="#" onsubmit="return CMT.addComment();">
+		<table border="0" cellspacing="4" cellpadding="4">
+			<tr>
+				<td colspan="2"><h3>Add Comment</h3></td>
+
+			</tr>
+			<tr>
+				<td colspan="2"><p>Type your comment below. Note: your email will never be shown.</p></td>
+
+			</tr>
+			<tr>
+				<td colspan="2"><textarea cols="40" rows="8" name="content" id="content"></textarea></td>
+
+			</tr>
+			<tr>
+				<td>your name (optional)</td><td><input name="name" id="name" type="text"/></td>
+			</tr>
+			<tr>
+				<td>your website (optional)</td><td><input name="url" id="url" type="text"/></td>
+			</tr>
+			<tr>
+				<td>your email (optional)</td><td><input name="email" id="email" type="text"/></td>
+			</tr>
+			<tr>
+				<td></td><td><input name="targetid" id="targetid" type="hidden" value="-13"/></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td><td><input type="submit" name="submit" value="Add Comment"/></td>
+			</tr>
+		</table>
+	</form>
+	<span class="cmtlink"><a id="addcommentlink" href="#" onclick="CMT.showAddCommentForm()">Add Comment &gt;&gt;</a></span>
+	<h3>Comments</h3>
+	<div id="commentlist">
+		getting comments...
+	</div>
+</div>
+

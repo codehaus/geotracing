@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<script type="text/javascript">
+//<![CDATA[
+
+function pr(s) {
+	var elm = document.getElementById('result');
+	elm.innerHTML = elm.innerHTML + '<br/>' + s;
+}
+
+Class = {
+	isPrototype: function () {
+	}, // magic anonymous value
+
+	create: function() {
+		return function() {
+			if (arguments && arguments[0] != Class.isPrototype) {
+				this.initialize.apply(this, arguments);
+			}
+		}
+	},
+
+	inherit: function () {
+		var superClass = arguments[0];
+		var proto = new superClass(Class.isPrototype);
+		for (var i = 1; i < arguments.length; i++) {
+			if (typeof arguments[i] == "function") {
+				var mixin = arguments[i];
+				arguments[i] = new mixin(Class.isPrototype);
+			}
+			for (property in arguments[i]) {
+				proto[property] = arguments[i][property];
+			}
+		}
+		return proto;
+	}
+};
+
+Animal = Class.create();
+
+Animal.prototype = {
+	name: null,
+
+	initialize : function(name) {
+		this.name = name;
+	},
+
+	introduce : function() {
+		pr('Animal.prototype: introduce: ' + this.name);
+	},
+
+	paint : function() {
+		pr('Animal.prototype: paint');
+	},
+
+	sound : function() {
+		pr('Animal.prototype: sound');
+	}
+}
+
+Dog = Class.create();
+Dog.prototype = Class.inherit(Animal,
+	{
+		initialize: function (name) {
+			Animal.prototype.initialize.apply(this, arguments);
+		},
+
+		sound : function() {
+			pr('Dog.prototype: bark');
+		},
+
+		paint : function() {
+			pr('Dog.prototype.paint: overridden ');
+		}
+	}
+);
+
+function go() {
+	pr('start');
+
+	var animal = new Animal('Animal-1');
+	animal.sound();
+	animal.introduce();
+
+	var dog = new Dog('Dog-1');
+	dog.sound();
+	dog.introduce();
+	dog.paint();
+}
+//]]>
+</script>
+
+
+</head>
+
+<body onload="go()">
+<div id="result">OK</div>
+
+</body>
+</html>

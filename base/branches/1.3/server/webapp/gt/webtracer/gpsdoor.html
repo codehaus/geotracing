@@ -1,0 +1,91 @@
+<html>
+<head>
+	<title>GPSDoor</title>
+	<link rel="stylesheet" type="text/css" href="webtracer.css">
+</head>
+
+<body>
+<h2>GPSDoor</h2>
+
+<p>GPSDoor is an application that provides access to a GPS locally attached to
+	your machine. It's the door to your GPS. If you follow the steps below
+	you can be up and running in a minute. The current version is
+	Mac OSX-only.
+</p>
+
+<h2>The Steps (MAC OSX)</h2>
+
+<h3>Prerequisites</h3>
+<ul>
+	<li>Mac OS X (10.3 and higher)</li>
+	<li>Bluetooth GPS module (USB GPS may use USB to serial)</li>
+	<li>switch on your GPS and wait for a fix</li>
+</ul>
+
+<h3>Download GPSDoor</h3>
+<ul>
+	<li><a href="gpsdoor-1.0.0.zip">download gpsdoor-1.0.0.zip</a></li>
+</ul>
+
+<h3>Install GPSDoor</h3>
+
+<p>Unpack the zip-file and place the application anywhere you like, for example in Applications folder.</p>
+
+<h3>Pair your GPS with your Mac</h3>
+<ul>
+	<li>in Bluetooth menu "Set up Bluetooth Device"</li>
+	<li>setup as "Any" and follow wizard-steps</li>
+	<li>if asked for a passkey: most devices have "0000" otherwise consult your GPS documentation</li>
+</ul>
+
+<h3>Make your GPS available as a device</h3>
+
+<p>This step is <strong>only required for OS X 10.3.x (Panther ) and lower</strong>. OS 10.4.x (Tiger) already has created a serial
+	device during the pairing step ("Set up Bluetooth Device") above. What happens is that your Bluetooth GPS becomes
+	a serial device like /dev/tty.HoluxGPSlim236-SPP1-Slave.
+</p>
+<ul>
+	<li>open Applications/Utility/Bluetooth Serial Utility</li>
+	<li>do New...</li>
+	<li>give a sensible name, e.g. "HoluxGPS"</li>
+	<li>select device and select the above paired Bluetooth GPS</li>
+	<li>set Port Direction to "Outgoing" (yes really!)</li>
+	<li>leave options blanc (auth, encryption, network preferences)</li>
+	<li>set Port type to RS-232</li>
+</ul>
+
+<h3>Run and check GPSDoor</h3>
+<ul>
+	<li>Start GPSDoor by clicking icon.</li>
+	<li>the GPSdoor window will on first use show that your GPS is not found</li>
+	<li>your browser (usually Safari) will start
+	 on the page <a href="http://localhost:7305">http://localhost:7305</a></li>
+	<li>Select your GPS
+	from the dropdown list on the right (something like "/dev/tty.HoluxGPSlim236-SPP1-Slave")</li>
+	<li>the GPSDoor window should show ++++++ (each + means a valid GPS-sample)</li>
+	<li>a new map will show you on your current location</li>
+	<li>you can now start a WebTracer-session (see next)</li>
+</ul>
+
+<h3>Start a WebTracing Session</h3>
+<a href="index.html">start a session</a>. If you don't have an account <a href="../my">create an account by registering</a>
+<h2>Notes</h2>
+<ul>
+	<li>GPSDoor saves selected config in /Users/[user]/gpsdoor.ini</li>
+	<li>sockets are not always closed properly, just wait after restart. GPSDoor will retry.</li>
+	<li><strong>Do not use "Cancel" button to stop GPSDoor but use "Quit" in dock or "Shutdown" in <a
+			href="http://localhost:7305">http://localhost:7305</a></strong>
+	</li>
+	<li><strong>Safari is the default browser but does not work well in all cases (at least on MAC OS X 10.3 Panther).
+		Please use FireFox or Mozilla.</strong>
+	</li>
+</ul>
+<h2>Technical</h2>
+<p>GPSDoor is a Python script that reads samples from your GPS using file-based (Unix-style) device access.
+At the same time GPSDoor runs a small webserver (on localhost port 7305) that makes GPS-data and status/management
+	available as web-services. One of the webservices (http://localhost:7305/js) provides a JavaScript
+	file that sets coordinates in your WebTracer web-page. The WebTracer fetches these coordinates
+	periodically using <a href="../lib/GPS.js">GPS.js</a>, sending them to the GeoTracing server within your session.
+</p>
+</body>
+</html>

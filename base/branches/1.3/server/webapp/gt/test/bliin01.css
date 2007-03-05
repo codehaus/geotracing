@@ -1,0 +1,28 @@
+body
+{
+	margin:0px;
+	padding:0px;
+	background:white;
+
+	font-family:verdana,sans-serif;
+	font-size:10px;
+	color:black;
+}
+
+#wrap1 {
+	display: inline;
+	max-width:360px;
+	min-width:176px;
+	margin:0 auto;
+}
+
+#colorbar1,#colorbar2, #colorbar3, #colorbar4, #colorbar5 {
+	width: 20%;
+	font-size:16px;
+	float:left;
+	height:200px;
+	background-color:rgb(250,0,0);
+}
+
+
+

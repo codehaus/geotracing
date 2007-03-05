@@ -1,0 +1,27 @@
+MIDlet-1: ${midlet.name}, ${midlet.icon}, ${midlet.class}
+MIDlet-Info-URL: ${midlet.info.url}
+MIDlet-Name: ${midlet.name}
+MIDlet-Vendor: ${midlet.vendor}
+MIDlet-Version: ${midlet.version}
+MIDlet-Icon: ${midlet.icon}
+MicroEdition-Configuration: ${midlet.cldc}
+MicroEdition-Profile: ${midlet.midp}
+MIDlet-Permissions: ${midlet.permissions}
+MIDlet-Permissions-Opt: ${midlet.permissions.opt}
+kw-url: http://www.geotracing.com/gt
+kw-timeout: 20
+kw-user: pleas_fill_in
+kw-password: pleas_fill_in
+kw-app: geoapp
+kw-role: user
+audio-rate: 8000
+audio-bits: 8
+gps-sample-interval: 15000
+gps-min-sats: 4
+gps-min-hdop: 2
+device-screen-width: 176
+device-screen-height: 208
+MPP-Show-Keypad: true
+MPP-Width: 176
+MPP-Height: 208
+mt-options: full

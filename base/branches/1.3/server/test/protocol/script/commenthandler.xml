@@ -1,0 +1,383 @@
+<testset id="commenthandler" clients="1">
+
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp time=""/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="t-trks-create-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid2}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-insert-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid1}</target>
+					<content>comments on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-read-by-id-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<id>${cmtid1}</id>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp>
+					<record>
+						<id>${cmtid1}</id>
+						<owner/>
+						<target>${trkid1}</target>
+						<targettable/>
+						<targetperson/>
+						<author>anon</author>
+						<email/>
+						<url/>
+						<ip/>
+						<content>comments on this track</content>
+						<state>1</state>
+						<creationdate/>
+						<modificationdate/>
+						<extra/>
+					</record>
+				</cmt-read-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="cmt-read-by-target-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<target>${trkid1}</target>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp>
+					<record>
+						<id>${cmtid1}</id>
+						<owner/>
+						<target>${trkid1}</target>
+						<targettable/>
+						<targetperson/>
+						<author>anon</author>
+						<email/>
+						<url/>
+						<ip/>
+						<content>comments on this track</content>
+						<state>1</state>
+						<creationdate/>
+						<modificationdate/>
+						<extra/>
+					</record>
+				</cmt-read-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="cmt-update-state-for-id-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-update-state-req id="${cmtid1}" state="2"/>
+			</utopia-req>
+			<utopia-req>
+				<cmt-update-state-req id="${cmtid1}" state="1"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="cmt-update-state-for-target-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid2}</target>
+					<content>comment1 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid2}</target>
+					<content>comment2 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+			<utopia-req>
+				<cmt-update-state-req target="${trkid2}" state="2"/>
+			</utopia-req>
+			<utopia-req>
+				<cmt-update-state-req target="${trkid2}" state="1"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid20}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid21}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid20},${cmtid21}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid20},${cmtid21}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="cmt-update-state-for-all-my-comments-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-update-state-req state="2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-update-state-rsp ids="${cmtid1},${cmtid20},${cmtid21}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-read-by-target-new-state-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<target>${trkid1}</target>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp>
+					<record>
+						<id>${cmtid1}</id>
+						<owner/>
+						<target>${trkid1}</target>
+						<targettable/>
+						<targetperson/>
+						<author>anon</author>
+						<email/>
+						<url/>
+						<ip/>
+						<content>comments on this track</content>
+						<state>2</state>
+						<creationdate/>
+						<modificationdate/>
+						<extra/>
+					</record>
+				</cmt-read-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-delete-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-delete-req id="${cmtid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-delete-rsp id="${cmtid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-read-by-id-empty-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<id>${cmtid1}</id>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-insert-two-comments-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid1}</target>
+					<content>comment1 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid1}</target>
+					<content>comment2 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid2}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-read-by-target-two-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<target>${trkid1}</target>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp>
+					<record>
+						<id>${cmtid2}</id>
+						<owner/>
+						<target>${trkid1}</target>
+						<targettable/>
+						<targetperson/>
+						<author>anon</author>
+						<email/>
+						<url/>
+						<ip/>
+						<content>comment1 on this track</content>
+						<state>1</state>
+						<creationdate/>
+						<modificationdate/>
+						<extra/>
+					</record>
+					<record>
+						<id>${cmtid3}</id>
+						<owner/>
+						<target>${trkid}</target>
+						<targettable/>
+						<targetperson/>
+						<author>anon</author>
+						<email/>
+						<url/>
+						<ip/>
+						<content>comment2 on this track</content>
+						<state>1</state>
+						<creationdate/>
+						<modificationdate/>
+						<extra/>
+					</record>
+				</cmt-read-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-delete-all-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req id="${trkid1}"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-delete-req id="${trkid2}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid2}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-read-by-id-empty-after-target-del-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<target>${trkid1}</target>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+

@@ -1,0 +1,88 @@
+<portal name="geotracing" xmlns="http://www.keyworx.org/portal/1.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.keyworx.org/portal/1.0 http://www.keyworx.org/schemas/portal-1.0.xsd">
+
+	<!-- Standard host-dependent container properties -->
+	<property name="siteurl" host="pundit">http://www.geotracing.com</property>
+	<property name="webappurl" host="pundit">http://www.geotracing.com/gt</property>
+	<property name="siteurl" host="suwa">http://test.geotracing.com</property>
+	<property name="webappurl" host="suwa">http://test.geotracing.com/gt</property>
+
+	<!-- for testing only. -->
+	<property name="siteurl" host="samoa">http://samoa.sense.com</property>
+	<property name="webappurl" host="samoa">http://samoa.sense.com/gt</property>
+
+	<config>
+		<!-- Oase context file. Context id becomes portal name -->
+		<context file="oase-context.xml"/>
+	</config>
+
+
+	<!-- Connectors -->
+	<connectors>
+		<connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+			<property name="port">4414</property>
+			<property name="pongTimeoutMillis">30000</property>
+		</connector>
+	</connectors>
+
+
+	<!-- Application context -->
+	<application name="geoapp" organisation="Just Objects">
+
+		<!-- Utopia protocol handlers -->
+		<handlers>
+			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+				<property name="max-file-size">1000000</property>
+			</handler>
+
+			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
+		<!--	<handler id="query" class="org.geotracing.handler.QueryHandler"/>  -->
+			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
+				<property name="allow-anonymous">true</property>
+				<property name="max-content-chars">1024</property>
+				<property name="max-commments-per-target">256</property>
+				<property name="thread-alert">false</property>
+			</handler>
+
+			<handler id="profile" class="org.geotracing.handler.ProfileHandler">
+				<property name="logic">org.geotracing.handler.ProfileLogic</property>
+			</handler>
+
+			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
+			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
+		</handlers>
+
+
+		<daemons>
+			<!-- Locative Media Upload -->
+			<daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
+				<property name="intervalMillis">25000</property>
+
+				<!-- Note these values are context-dependent and specified externally. -->
+				<property name="host">email.upload.host</property>
+
+				<!-- Production-server context -->
+				<property name="email" host="pundit">email.upload.email.pundit</property>
+				<property name="user" host="pundit">email.upload.user.pundit</property>
+				<property name="password" host="pundit">email.upload.password.pundit</property>
+
+				<!-- Test-server context
+				<property name="email" host="sumatra">email.upload.email.sumatra</property>
+				<property name="user" host="sumatra">email.upload.user.sumatra</property>
+				<property name="password" host="sumatra">email.upload.password.sumatra</property> -->
+			</daemon>
+
+			<!-- Tracer Bot -->
+			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
+				<property name="intervalMillis">20000</property>
+			</daemon>
+
+			<!-- Daemon for various upgrades -->
+			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
+				<property name="pois2textmedia">true</property>
+			</daemon>
+
+		</daemons>
+	</application>
+</portal>

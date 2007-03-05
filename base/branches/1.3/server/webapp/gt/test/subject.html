@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <script type="text/javascript" src="../lib/DHTML.js" ></script>
+    <script type="text/javascript" src="../lib/Subject.js" ></script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+
+		  function MySubject(records) {
+			  // Inherit from Subject
+			  Subject.apply(this);
+          }
+
+          function MyListener(id, subj) {
+			  this.onInit = function(obj, val) {
+				  obj.pr('catch: MyListener.onInit() val=' + val);
+			  }
+
+			  this.onSelect = function(obj, val) {
+				  obj.pr('catch: MyListener.onSelect() val=' + val);
+				  obj.subj.removeListener("select", obj.onSelect, obj);
+			  }
+
+			  this.onExit = function(obj, val) {
+				  obj.pr('catch: MyListener.onExit() val=' + val);
+			  }
+
+			  this.pr = function(msg) {
+				  pr('[' + this.id + '] ' + msg);
+			  }
+
+			  this.id = id;
+			  this.subj = subj;
+
+			  this.subj.addListener("init", this.onInit, this);
+			  this.subj.addListener("select", this.onSelect, this);
+		   }
+
+		function globEvent(obj, val) {
+			pr('globEvent val=' + val);
+		}
+			
+		 function go() {
+			 pr("started");
+
+			  var s = new MySubject();
+			  var l1 = new MyListener("L1", s);
+			  var l2 = new MyListener("L2", s);
+			  s.addListener("exit", l1.onExit, l1);
+			 s.addListener("exit", l2.onExit, l2);
+			 s.addListener("init", globEvent);
+			 s.addListener("exit", globEvent);
+
+			  pr('fire: init')
+			  s.fireEvent("init", 1234);
+			  pr('fire: select')
+			  s.fireEvent("select", "selval");
+			  pr('fire: exit')
+			  s.fireEvent("exit", 5678);
+			  s.removeListener("exit", l1.onExit, l1);
+			  pr('fire: init')
+			  s.fireEvent("init", 1234);
+			  pr('fire: exit')
+			  s.fireEvent("exit", 5678);
+		  }
+
+			function pr(msg) {
+				DH.addHTML('debug', '<br/>' + msg);
+
+			}
+        DH.addEvent(window, 'load', go, false);
+
+
+   //]]>
+   </script>
+
+   </head>
+  <body>
+      <div id="debug"></div>
+  </body>
+</html>

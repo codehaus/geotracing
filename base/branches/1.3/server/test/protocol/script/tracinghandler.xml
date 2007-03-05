@@ -1,0 +1,752 @@
+<testset id="tracinghandler" clients="1">
+
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp time=""/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+	<test id="t-heartbeat-req">
+		<send id="client1">
+			<utopia-req>
+				<t-hb-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-hb-req t="12345"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-hb-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-hb-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-create-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-delete-active-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-create-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid2}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-delete-any-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req id="${trkid2}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid2}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-resume-create-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-resume-active-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-suspend-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="t-trk-write-nmea-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,123511.044,5213.5053,N,00449.0491,E,1,05,3.3,50.5,M,47.0,M,73.7,0000*71"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="2" sr="2"
+						nmea="GPGGA,124249.017,5212.8792,N,00449.1183,E,1,05,3.4,43.8,M,47.0,M,73.7,0000*73"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="3" sr="2" nmea="GPRMC,131246.908,A,5211.3596,N,00445.6281,E,0.00,174.73,190605,,*0A"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-write-lon-lat-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.3731101950923" lon="4.890632629394531"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.37279578744234" lon="4.890718460083008"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt lat="52.372297970752534" lon="4.890761375427246"></pt>
+					<pt lat="52.371852551063455" lon="4.890718460083008"></pt>
+					<pt lat="52.37145952996045" lon="4.890632629394531"></pt>
+					<pt lat="52.37111890884237" lon="4.890546798706055"></pt>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-upload-image-medium">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,123511.000,5213.5053,N,00449.0491,E,1,05,3.3,50.5,M,47.0,M,73.7,0000*71"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-upload-medium-req
+						type="image"
+						mime="image/jpeg"
+						name="raw upload">
+					<data encoding="hexasc">
+						<![CDATA[ffd8ffe000104a46494600010200006400640000ffec00114475636b79000100040000001e0000ffee000e41646f62650064c000000001ffdb008400100b0b0b0c0b100c0c10170f0d0f171b141010141b1f17171717171f1e171a1a1a1a171e1e23252725231e2f2f33332f2f40404040404040404040404040404001110f0f1113111512121514111411141a141616141a261a1a1c1a1a2630231e1e1e1e23302b2e2727272e2b35353030353540403f404040404040404040404040ffc00011080010001003012200021101031101ffc4006000000301000000000000000000000000000102030401010000000000000000000000000000000010000103030301090000000000000000000201030411210531120600f0415171d1e1223213110100000000000000000000000000000000ffda000c03010002110311003f008f11e308c57239269894c3cc01b0c9a2388bfa0a39f531b1269ed7eb064a360b33026643171cb1f26150cdad5975b2ee4444f89a517b2d44f1ecebaf4b6424ca08d1d8605a36dc3d8d92343f9b641bedbf4adfd11b39c9e3824b8109a0751d426d64092517726d324d962aa697f3f0e83fffd9]]>
+					</data>
+				</t-trk-upload-medium-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-upload-medium-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+
+	</test>
+
+	<test id="t-trk-delete-medium">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-medium-req id="${mediumid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-medium-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+
+	</test>
+
+	<test id="t-trk-upload-text-medium">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,123511.000,5213.5053,N,00449.0491,E,1,05,3.3,50.5,M,47.0,M,73.7,0000*71"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-upload-medium-req
+						type="text"
+						mime="text/plain"
+						name="text upload" tags="tag1 tag2">
+					<data encoding="raw">
+						<![CDATA[dit is een text]]>
+					</data>
+				</t-trk-upload-medium-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-upload-medium-rsp id="${mediumid100}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+
+	</test>
+
+	<test id="t-trk-upload-spot-medium">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,123511.000,5213.5053,N,00449.0491,E,1,05,3.3,50.5,M,47.0,M,73.7,0000*71"/>
+				</t-trk-write-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-upload-medium-req
+						type="spot"
+						name="spot upload" tags="tag1 tag2">
+				</t-trk-upload-medium-req>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid4}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-upload-medium-rsp id="${mediumid1000}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-suspend-rsp id="${trkid4}"/>
+			</utopia-rsp>
+		</expect>
+
+	</test>
+
+	<test id="t-trk-upload-medium-no-loc">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-upload-medium-req
+						type="image"
+						mime="image/jpeg"
+						name="raw upload">
+					<data encoding="hexasc">
+						<![CDATA[ffd8ffe000104a46494600010200006400640000ffec00114475636b79000100040000001e0000ffee000e41646f62650064c000000001ffdb008400100b0b0b0c0b100c0c10170f0d0f171b141010141b1f17171717171f1e171a1a1a1a171e1e23252725231e2f2f33332f2f40404040404040404040404040404001110f0f1113111512121514111411141a141616141a261a1a1c1a1a2630231e1e1e1e23302b2e2727272e2b35353030353540403f404040404040404040404040ffc00011080010001003012200021101031101ffc4006000000301000000000000000000000000000102030401010000000000000000000000000000000010000103030301090000000000000000000201030411210531120600f0415171d1e1223213110100000000000000000000000000000000ffda000c03010002110311003f008f11e308c57239269894c3cc01b0c9a2388bfa0a39f531b1269ed7eb064a360b33026643171cb1f26150cdad5975b2ee4444f89a517b2d44f1ecebaf4b6424ca08d1d8605a36dc3d8d92343f9b641bedbf4adfd11b39c9e3824b8109a0751d426d64092517726d324d962aa697f3f0e83fffd9]]>
+					</data>
+				</t-trk-upload-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid5}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-upload-medium-nrsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-read-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-read-req id="${trkid4}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-read-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gtx-def-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gtx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gtx-format-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}" format="gtx"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gtx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gtx-format-attrs-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gtx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gtx-format-attrs-media-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gtx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gtx-format-attrs-media-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gtx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gtx-format-attrs-media-mindist-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}" format="gtx" attrs="lon,lat" media="true" mindist="100"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gtx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-export-gpx-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-export-req id="${trkid4}" format="gpx"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-export-rsp>
+					<gpx/>
+				</t-trk-export-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="t-trk-import-gpx-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-import-req>
+					<data>
+						<gpx version="1.1" creator="www.geotracing.org"
+							 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+							 xmlns="http://www.topografix.com/GPX/1/1"
+							 xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
+							 cnt="5">
+							<time>2006-06-28T09:27:09Z</time>
+							<name>track #1324512</name>
+							<number>1324512</number>
+							<wpt lon="4.8529167" lat="52.312225">
+								<ele>0.0</ele>
+								<time>2006-06-28T09:22:58Z</time>
+								<name>noname</name>
+								<desc>upload by sotc1@vodafone.nl</desc>
+								<type>image/jpeg</type>
+								<link>http://test.geotracing.com/gt/media.srv?id=1324525</link>
+							</wpt>
+							<trk>
+								<trkseg>
+									<trkpt lon="4.8529483" lat="52.3122800">
+										<time>2006-06-28T09:22:22Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529167" lat="52.3122267">
+										<time>2006-06-28T09:22:45Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529167" lat="52.3122250">
+										<time>2006-06-28T09:23:08Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529400" lat="52.3122283">
+										<time>2006-06-28T09:23:24Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529483" lat="52.3122333">
+										<time>2006-06-28T09:23:46Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529400" lat="52.3122433">
+										<time>2006-06-28T09:24:05Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529817" lat="52.3122500">
+										<time>2006-06-28T09:24:26Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529950" lat="52.3122450">
+										<time>2006-06-28T09:24:47Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529950" lat="52.3122450">
+										<time>2006-06-28T09:25:08Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529883" lat="52.3122383">
+										<time>2006-06-28T09:25:29Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529867" lat="52.3122333">
+										<time>2006-06-28T09:25:47Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529867" lat="52.3122383">
+										<time>2006-06-28T09:26:11Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529867" lat="52.3122433">
+										<time>2006-06-28T09:26:29Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529817" lat="52.3122367">
+										<time>2006-06-28T09:26:52Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+									<trkpt lon="4.8529983" lat="52.3122550">
+										<time>2006-06-28T09:27:09Z</time>
+										<ele>0.0</ele>
+									</trkpt>
+								</trkseg>
+							</trk>
+						</gpx>
+					</data>
+				</t-trk-import-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-import-rsp id="${trkid10}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cleanup1">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req id="${trkid3}"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-delete-req id="${trkid4}"/>
+			</utopia-req>
+
+			<utopia-req>
+				<t-trk-delete-req id="${trkid5}"/>
+			</utopia-req>
+			<utopia-req>
+				<t-trk-delete-req id="${trkid10}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-delete-rsp/>
+			</utopia-rsp>     
+			<utopia-rsp>
+				<t-trk-delete-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-delete-rsp/>
+			</utopia-rsp>
+
+		</expect>
+	</test>
+
+	<test id="t-daytrk-resume-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req type="2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid6}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-daytrk-suspend-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-suspend-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-suspend-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-daytrk-resume2-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req type="2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-daytrk-resume2-expiry-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-resume-req type="2" t="1184145037399"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-resume-rsp id="${trkid7}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cleanup-daytracks">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req id="${trkid6}"/>
+			</utopia-req>
+
+			<utopia-req>
+				<t-trk-delete-req id="${trkid7}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<t-trk-delete-rsp/>
+			</utopia-rsp>
+
+		</expect>
+	</test>
+
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+

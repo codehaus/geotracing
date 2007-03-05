@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<mediatypes>
+
+<!-- CVS $Id$ -->
+    <!-- See
+	http://www.utoronto.ca/ian/books/html4ed/appb/mimetype.html
+	http://filext.com/detaillist.php?extdetail=3GP
+	For a list of MIME types.
+	-->
+
+	<!-- binary media -->
+	<mediatype mime="application/octet-stream" kind="binary" ext="bin" />
+	<mediatype mime="application/pdf" kind="binary" ext="pdf" />
+	<mediatype mime="application/x-shockwave-flash" kind="binary" ext="swf" />
+
+	<!-- video media -->
+	<mediatype mime="video/quicktime" kind="video" ext="mov" />
+	<mediatype mime="video/mpeg" kind="video" ext="mpg" />
+	<mediatype mime="video/3gpp" kind="video" ext="3gp" />
+	<mediatype mime="video/mp4" kind="video" ext="mp4" />
+	<mediatype mime="video/x-msvideo" kind="video" ext="avi" />
+
+	<!-- audio media -->
+	<mediatype mime="audio/mpeg" kind="audio" ext="mp3" />
+	<mediatype mime="audio/x-aiff" kind="audio" ext="aif" />
+	<mediatype mime="audio/x-wav" kind="audio" ext="wav" />
+
+	<!-- image media -->
+	<mediatype mime="image/jpeg" kind="image" ext="jpg" />
+	<mediatype mime="image/gif" kind="image" ext="gif" />
+	<mediatype mime="image/png" kind="image" ext="png" />
+
+	<!-- text media -->
+	<mediatype mime="text/rtf" kind="text" ext="rtf" />
+	<mediatype mime="text/plain" kind="text" ext="txt" />
+	<mediatype mime="text/html" kind="text" ext="html" />
+	<mediatype mime="text/x-java" kind="text" ext="java" />
+	<mediatype mime="text/x-sms" kind="text" ext="sms" />
+	<mediatype mime="text/x-gps" kind="text" ext="gps" />
+
+	<!-- test entry -->
+	<mediatype mime="text/bla" kind="text" ext="bla" />
+
+<!--
+CVS log:
+
+$Log: mediatypes.xml,v $
+Revision 1.1  2005/03/16 15:51:06  just
+*** empty log message ***
+
+Revision 1.1.1.1  2005/03/10 21:42:13  just
+Import of keyworx server
+
+Revision 1.6  2004/11/10 11:40:19  just
+*** empty log message ***
+
+Revision 1.5  2004/11/09 10:47:22  just
+added video types mpeg4 and 3gpp
+
+Revision 1.4  2004/03/15 21:18:40  justb
+ok
+
+Revision 1.3  2003/07/02 19:02:00  justb
+added GPS mime
+
+Revision 1.2  2003/07/02 19:00:31  justb
+added SMS mime
+
+Revision 1.1.1.1  2003/05/27 21:28:22  justb
+no message
+
+Revision 1.1.1.1  2003/05/15 14:34:02  justb
+no message
+
+-->
+
+</mediatypes>
+

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+    <script type="text/javascript" src="script/dhtml.js" type="text/javascript"></script>
+    <script type="text/javascript" src="script/server.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+    //<![CDATA[
+          // Callback for query response
+          function onQueryRsp(records) {
+            DH.addHTML('show', '<p><b>results</b></p>');
+            for (i = 0; i < records.length; i++) {
+               DH.addHTML('show', records[i].toHTML());
+            }
+          }
+
+          // Callback for get-track command response
+          function onGetTrackRsp(gpxXML) {
+             DH.addHTML('show', '<p><b>onGetTrackRsp results</b></p>');
+
+			 var ptElements = gpxXML.documentElement.getElementsByTagName('trkpt');
+			 for (i = 0; i < ptElements.length; i++) {
+			   DH.addHTML('show', 'trkpt#' + i + ': ');
+
+			   // <time/> element
+               var time = ptElements[i].getElementsByTagName('time')[0].childNodes[0].nodeValue;
+               DH.addHTML('show', ' time=' + time);
+
+               // lat/lon attrs
+			   if (ptElements[i].attributes) {
+			    var attr;
+			    for (j = 0; j < ptElements[i].attributes.length; j++) {
+			      attr = ptElements[i].attributes[j];
+                  DH.addHTML('show', ' ' + attr.name + '=' + attr.value + ' ');
+                }
+               }
+               DH.addHTML('show', '<br/>');
+
+			 }
+	       }
+
+          function go() {
+            SRV.init();
+
+            DH.addHTML('show', 'START DO REQUESTS<br/>');
+
+            // Call "prepared query"
+            SRV.get('q-active-tracks', onQueryRsp);
+
+            // Call generic query
+            SRV.get('q-store', onQueryRsp, 'tables', 'g_location');
+
+            // Cal specific command (returns GPX XML document)
+            SRV.get('get-track', onGetTrackRsp, 'id', '304');
+
+            DH.addHTML('show', 'REQUESTS DONE, WAITING...<br/>');
+          }
+
+        DH.addEvent(window, 'load', go, false);
+
+
+   //]]>
+   </script>
+
+   </head>
+  <body>
+      <div id="show"></div>
+      <div id="activetracks"></div>
+
+  </body>
+</html>

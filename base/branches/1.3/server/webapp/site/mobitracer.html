@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+<meta content="GPS, GPRS, Mobile phone, Java, J2ME, where to skate, GeoTracing, GeoDrawing, GPSDrawing, inline skating, skeeler" name="KeyWords" />
+<meta content="Just van den Broecke" name="Author" />
+<meta content="GeoSkating, draw skate routes with GPS and mobile phones" name="Description" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+	<title>GeoTracing - MobiTracer</title>
+</head>
+
+<body>
+<div class="container">
+
+<div id="content">
+<p>
+<img src="img/geotracing-logo.gif" border="0"  alt="gt-logo" align="middle" />&nbsp;&nbsp;
+</p>
+<p>
+<a href="index.html">[Home]</a>&nbsp;&nbsp;
+<a href="http://www.geotracing.com/gt">[TraceLand]</a>&nbsp;&nbsp;
+<a href="mobitracer.html">[MobiTracer]</a>&nbsp;&nbsp;
+<a href="presentation/index.html">[Presentation]</a>&nbsp;&nbsp;
+<a href="wiki">[Documentation]</a>&nbsp;&nbsp;
+<!-- <a href="technical.html">[TECH]</a>&nbsp;&nbsp;
+<a href="albums.html">[ALBUMS]</a>&nbsp;&nbsp;
+<a href="links.html">[LINKS]</a>&nbsp;&nbsp;
+<a href="contact.html">[CONTACT]</a> -->
+</p>
+<hr/>
+
+<h2>About</h2>
+<p>
+The MobiTracer is the mobile phone application. It connects to both a Bluetooth GPS receiver
+and the GeoTracing server. When running, MobiTracer will read GPS location data and
+send these to the server. While tracing you can issue various commands
+to manage your tracklog data and make annotations as media (text/photos/audio/video).
+You can also scan the area around you for users and media using the <b><i>GeoRadar</i></b> (since v3).
+Users that are trying out MobiTracer can find more specific notes
+<a href="http://www.geotracing.com/wiki/index.php?title=GeoTracing:Apps:MobiTracer">in this document</a>.
+</p>
+<h2>Getting MobiTracer</h2>
+<p>
+Go to <a href="http://www.geotracing.com/gt">www.geotracing.com/gt</a> and select "My|Login".
+</p>
+<h2>Screenshots</h2>
+<p>Through the screenshots below some of the main features are shown.
+A more detailed manual is in the making. </p>
+<h3>Trace Screen</h3>
+<p>This shows the main screen.</p>
+<p>
+<img src="img/mobitracer-1.jpg" border="0">
+</p>
+<p>
+The left top label show the status of your GPS. The right top label shows the network
+status (sending GPS locations or paused).
+The middle shows various GPS or track info. At the bottom is a single
+button to issue various commands (see below).
+</p>
+<h3>GeoRadar</h3>
+<p>
+Detect and view users and media around you with the GeoRadar. The GeoRadar
+	continuously scans the area in a radius around your current location.
+	You get an auditory notification when you
+	hit the nearest object within 25 meter. Currently you can only view the
+	nearest object when you get the &lt;&lt;HIT&gt;&gt; notification. i.e. you have to be at that location.
+	Objects are shown as concentric circles relative to their distance from your location.
+	Each object type has its own color: image (red), video (yellow), audio (blue), text (white), users (pink).
+</p>
+<p>
+<img src="img/georadar-1-small.jpg" border="0">&nbsp;&nbsp; <img src="img/georadar-2-small.jpg" border="0"><br/>
+<i>Shows objects as concentric circles around you. <br/>
+Top of screen shows current radius (meters) and number of objects.<br/>
+Radius can be changed using the joystick.<br/>
+Bottom shows info on nearest object: user/object type/distance/unique object id.
+
+</i>
+</p>
+<p>
+<img src="img/georadar-hit-small.jpg" border="0">&nbsp;&nbsp; <img src="img/georadar-view-small.jpg" border="0"><br/>
+<i>Bumping on an object and viewing an object (press fire on joystick).</i>
+</p>
+
+<h3>Map Screen</h3>
+<p>
+On the MapScreen you can view your location on a Google Map.
+</p>
+<p>
+<img src="img/mobitracer-map1.jpg" border="0">&nbsp;&nbsp; <img src="img/mobitracer-map2.jpg" border="0">
+</p>
+
+<h2>Installation</h2>
+<p>
+MobiTracer is installed Over The Air (OTA), i.e. through a URL from your mobile phone.
+</p>
+<h2>Compatibility</h2>
+<p>
+Your phone needs to at least support J2ME MIDP2.0 with the
+Java Bluetooth API
+(JSR-82).
+	See also <a href="http://www.j2mepolish.org/devices/devices-btapi.html">this list of JSR-82 phones</a> and
+	optionally the J2ME MultiMedia API.
+</p>
+
+<h2>Manual</h2>
+<p>
+Below a short manual for those experimenting with MobiTracer.
+There is just one button at the bottom of the screen. The content
+of that button can be changed through the joystick on your phone.
+Firing the joystick issues the specific command. Below are the commands.
+Basically you are managing tracklogs that are kept on the server.
+</p>
+<p>
+<ul>
+  <li>NewTrack - create a new track</li>
+  <li>Suspend Track - pause sending GPS data to server (on startup GPS sending is paused)</li>
+   <li>Resume Track - resume sending GPS data to server</li>
+    <li>Add POI - add a point of interest</li>
+  <li>Send Photo - make a photo and add it to track (server will geotag location)</li>
+   <li>Send Audio - make audio recording add it to track (server will geotag location)</li>
+    <li>Sound Off - toggle beeps made when GPS samples are read and send to server</li>
+  <li>Hide GPS Info - hide/show detailed GPS information on screen</li>
+  <li>Lock Keyboard - lock the apps keys to prevent unwanted commands (unlock with #5)</li>
+  <li>View Log - view the log messages (for troubleshooting)</li>
+   <li>SelectGPS - find and pair your Bluetooth GPS to the phone</li>
+    <li>Keys 1 through 5 -  set the "RoadRating" e.g. asphalt rating (1=worst, 5=best)</li>
+   <li>Show Map - view your location on a (Google) map (experimental)</li>
+	<li>GeoRadar - detect and view media and users around you</li>
+	<li>Account - view/change your account settings</li>
+ <li>Quit - exit MobiTracer app</li>
+ </ul>
+</p>
+
+<h2>Usage</h2>
+<p>
+On first startup you need to pair your GPS. Issue the command "SelectGPS". Follow the
+directions on the form and exit MobiTracer. Start MobiTracer again and verify that
+the GPS connects ("connected" under GPS label) and that
+you get GPS data and
+can connect to the server.
+</p>
+<p>
+On first start you need to create a track through the "New Track" command. From then on all
+GPS data, POIs and media are coupled to that track. MobiTracer always operates on a single track being your
+active track. Creating a new track always will archive the current track.
+
+</p>
+<p>
+Note that GPS sending is by default paused. To start sending issue the command "Resume Track". Likewise
+to pause sending (e.g. when taking a break) issue "Suspend Track". Basically you are creating
+"track-segments" within your track.
+</p>
+<p>
+Beeps: a low beep indicates a GPS-location is read. A high beep indicates that a GPS-location is sent
+to the server. If this annoys you, toggle sound with the command "Sound On/Off".
+I usually lock the keyboard (command "Lock Keyboard") and put the phone in my pocket.
+hearing the beeps indicates all is well and working.
+</p>
+<p>
+Road rating: use the numeric keys 1-5 to set the road-rating for the current track. Default is -1 (no rating).
+While going the current rating is remembered and added to each sample sent to the server.
+Ratings may later be visualized with colours on the website.
+</p>
+<p>
+Sending media: within MobiTracer the commands "Send Photo" and "Send Audio" can be used to
+send media directly from within the application. The photo's are low-res currently.
+In addition you can send media through email (as attachments), either from
+your phone or any other means. In particular you can make .3gp movies on your phone
+and send them by email from the gallery. Your phone's email address needs to be known on the server
+as part of your subscription.
+I use a digital camera (Canon Ixus) and send photo's later. By timestamping
+your photo gets geotagged. For .3gp movies the time of email sending is used, so in that case
+you will have to send in immediately.
+</p>
+<p>
+GPS info: important values for the precision are the number of satellites used ("used"), should be 5 or more and
+the "hdop" values (should be about less than 2 or 3).
+</p>
+<h2>Viewing Your Tracks</h2>
+<p>
+View them at <a href="http://www.geotracing.com/gt">www.geotracing.com/gt</a>, the TraceLand page.
+Use the menu to show live or archived tracks (Show). You can change the background map with Map menu.
+</p>
+<h2>It doesn't work !</h2>
+<p>
+Yes this MobiTracer is experimental and under constant development. There's a wealth
+of mobile phone types, GPS types and provider-specific issues.
+<a href="http://www.geotracing.com/wiki/index.php?title=GeoTracing:Apps:MobiTracer">See this document for some specific notes</a>.
+
+</p>
+
+<p>
+Just van den Broecke -  just AT justobjects.nl
+</p>
+</div>
+</div>
+
+</body>
+
+</html>

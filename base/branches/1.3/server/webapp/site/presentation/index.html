@@ -1,0 +1,647 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>GeoTracing</title>
+<!-- metadata -->
+<meta name="generator" content="JO" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="20050728" />
+<meta name="author" content="Just van den Broecke" />
+<meta name="company" content="Just Objects" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="ui/default/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- embedded styles -->
+<style type="text/css" media="all">
+.imgcon {width: 525px; margin: 0 auto; padding: 0; text-align: center;}
+#anim {width: 270px; height: 320px; position: relative; margin-top: 0.5em;}
+#anim img {position: absolute; top: 42px; left: 24px;}
+img#me01 {top: 0; left: 0;}
+img#me02 {left: 23px;}
+img#me04 {top: 44px;}
+img#me05 {top: 43px;left: 36px;}
+</style>
+<!-- S5 JS -->
+<script src="ui/default/slides.js" type="text/javascript"></script>
+</head>
+<body>
+
+<div class="layout">
+<div id="controls"><!-- DO NOT EDIT --></div>
+<div id="currentSlide"><!-- DO NOT EDIT --></div>
+<div id="header"></div>
+<div id="footer"><h2>GeoTracing/FOSS4G-2006</h2></div>
+
+</div>
+<div class="presentation">
+<div class="slide">
+<h1><img src="ui/default/geotracing-logo.gif" alt="" title="Default" /></h1>
+<p>Just van den Broecke</p>
+	<p>
+just[AT]justobjects.nl<br/>
+<a href="http://www.justobjects.nl" target="_new">www.justobjects.nl</a><br/>
+<a href="http://www.geotracing.com" target="_new">www.geotracing.com</a>
+	</p>
+</div>
+
+<div class="slide">
+<h1>Credits</h1>
+<ul>
+<li><a href="http://lists.burri.to/mailman/listinfo/geowanking" target="_new">GeoWanking mailing list</a>
+<ul>
+	<li>helping me out with newbie GIS-questions</li>
+</ul>
+</li>
+<li><a href="http://www.mappinghacks.com" target="_new">Mapping Hacks</a>
+<ul>
+<li>showing me how to "do-GIS-yourself"</li>
+</ul>
+</li>
+<li><a href="http://www.waag.org" target="_new">Waag Society</a>,
+	<a href="http://www.kkep.com" target="_new">KKep</a>,
+	<a href="http://www.cityworks.nl" target="_new">CityWorks</a>
+<ul>
+	<li>organizing GeoTracing projects</li>
+	<li>(letting me make a living out of GeoTracing)</li>
+</ul>
+</li>
+<li><a href="http://www.meyerweb.com" target="_new">Eric Meyer</a>
+<ul>
+	<li>creating <a href="http://meyerweb.com/eric/tools/s5/" target="_new">S5 HTML Slide Show System</a></li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Subjects</h1>
+<ul>
+<li>History</li>
+<li>Concepts</li>
+<li>Applications</li>
+<li>Demos</li>
+<li>Technical</li>
+<li>Development</li>
+<li>Questions</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>About Me</h1>
+<ul>
+<li><a href="http://www.justobjects.nl/jo/cv.html" target="_new">20+ years in software industry</a></li>
+<li>1985-1996 <a href="http://www.lucent.com" target="_new">AT&amp;T Bell Labs/Lucent</a></li>
+<li>1997+ <a href="http://www.justobjects.nl" target="_new">Just Objects B.V.</a>
+	<ul>
+		<li>independent consultant/developer/trainer</li>
+		<li>emphasis on OOT/Java/Multimedia/Webtech/AJAX</li>
+		<li>OSS projects: <a href="http://www.keyworx.org" target="_new">KeyWorx</a>, <a href="http://www.pushlets.com" target="_new">Pushlets</a>, <a href="http://www.geotracing.com" target="_new">GeoTracing</a>, <a href="http://www.justobjects.org/cowcatcher" target="_new">CowCatcher</a></li>
+		<li>2004+:  <a href="http://www.justobjects.org/blog/index.php?cat=5" target="_new">locative media and GIS projects</a></li>
+		<li>2006+: fulltime <a href="http://www.geotracing.com" target="_new">GeoTracing</a> projects</li>
+	</ul>
+<li><a href="http://www.wordspy.com/words/neogeography.asp" target="_new">Neogeographer</a></li>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>GeoTracing in a Nutshell</h1>
+<h2>Software platform for creating tracking &amp; tracing applications</h2>
+<ul>
+<li>remote (mobile) track recording</li>
+<li>live tracking</li>
+<li>geotagged media (<a href="http://en.wikipedia.org/wiki/Locative_media" target="_new">locative media</a>)</li>
+<li>user-centric/multi-user interaction</li>
+<li>navigation/LBS (v2+)</li>
+<li>application-driven development</li>
+<li>tech: C/S, mobile, GPS, Java, AJAX, Google Maps</li>
+<li>OSS: LGPL, <a href="http://geotracing.codehaus.org" target="_new">geotracing.codehaus.org</a></li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Overview</h1>
+	<div class="center">
+	<img  src="assets/overview.jpg" alt="overview" />
+	</div>
+</div>
+
+<div class="slide">
+<h1>Application Domains</h1>
+<ul>
+<li>"Classic" tracking &amp; tracing</li>
+<li>Community mapping</li>
+<li>Sports</li>
+<li>Field observation (e.g. biology)</li>
+<li>Gaming</li>
+<li>Tourism</li>
+<li>Education</li>
+<li>Arts</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Thoughts</h1>
+<ul>
+<li>"Classic GIS": WHAT + WHERE
+<ul>
+	<li>maps with features</li>
+</ul>
+</li>
+<li>GeoTracing:  WHO + WHEN + WHAT + WHERE
+<ul>
+	<li>user-centric</li>
+	<li>time-based layers</li>
+</ul>
+</li>
+<li>Allow "Digital geo-story telling"
+<ul>
+	<li>mapping experience</li>
+	<li>navigating experience (2.0)</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>History</h1>
+	<div class="center">
+	<p>
+	<a href="history.html" target="_new" ><img src="assets/history-small.jpg" alt="history" /></a>
+		</p>
+	<p>
+	<a href="history.html" target="_new">View history through "WayPoints"</a>
+	</p>
+	</div>
+</div>
+
+
+<div class="slide">
+<h1>Applications - Realized</h1>
+<table border="0" cellspacing="4" cellpadding="8">
+	<tr>
+		<td align="center">
+			<a href="http://www.geotracing.com/gt" target="_new">
+				<img src="assets/traceland.jpg" width="200" height="150" alt="traceland" /><br/>
+			Traceland</a>
+		</td>
+		<td align="center">
+			<a href="http://www.geosailing.com" target="_new"><img src="assets/geosailing.jpg" width="200" height="150" alt="traceland" /><br/>
+			GeoSailing</a>
+
+		</td>
+		<td align="center">
+			<a href="http://www.n8spel.nl" target="_new"><img src="assets/n8spel.jpg" width="200" height="150" alt="traceland" /><br/>
+			N8Spel</a>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<a href="http://www.geotracing.com/otter" target="_new"><img src="assets/ottertracing.jpg" width="200" height="150" alt="traceland" /><br/>
+			OtterTracing</a>
+
+		</td>
+		<td align="center">
+			<a href="http://www.geoskating.com" target="_new"><img src="assets/geoskating.jpg" width="200" height="150" alt="traceland" /><br/>
+			GeoSkating</a>
+
+		</td>
+		<td align="center">
+			<a href="http://www.senseofthecity.nl" target="_new"><img src="assets/sotce.jpg" width="200" height="150" alt="traceland" /><br/>
+			Sense of the City</a>
+
+		</td>
+	</tr>
+</table>
+
+</div>
+
+
+<div class="slide">
+<h1>Applications - In Progress</h1>
+<table border="0" cellspacing="4" cellpadding="8">
+	<tr>
+		<td align="center">
+			<a href="http://www.senseofthecity.nl/sobp" target="_new">
+				<img src="assets/sobp.jpg" width="200" height="150" alt="sobp" /><br/>
+			Sense of Brainport</a>
+		</td>
+		<td align="center">
+			<a href="http://www.bliin.com" target="_new"><img src="assets/bliin.jpg" width="200" height="150" alt="traceland" /><br/>
+			Bliin</a>
+
+		</td>
+		<td align="center">
+			<a href="http://kwlabs-blog.waag.org/mediawiki/index.php/KWLocativeMedia" target="_new"><img src="assets/mlgk.jpg" width="200" height="150" alt="traceland" /><br/>
+			MLGK</a>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<a href="http://www.waag.org/programma/locativemedia" target="_new"><img src="assets/diwi.jpg" width="200" height="150" alt="traceland" /><br/>
+			Digital Dowsing-rod</a>
+
+		</td>
+		<td align="center">
+			<a href="http://www.geobiking.com" target="_new"><img src="assets/geobiking.jpg" width="200" height="150" alt="traceland" /><br/>
+			GeoBiking</a>
+
+		</td>
+		<td align="center">
+			<a href="http://www.geosailing.com" target="_new"><img src="assets/geosailing.jpg" width="200" height="150" alt="traceland" /><br/>
+			GeoSailing v2</a>
+		</td>
+	</tr>
+</table>
+
+</div>
+
+<div class="slide">
+<h1>Try it out</h1>
+<ul>
+<li>Sign up and login
+<ul>
+	<li>go to <a href="http://www.geotracing.com/gt">Traceland app</a></li>
+	<li>select "My | Admin"</li>
+	<li>sign up</li>
+	<li>login</li>
+</ul>
+</li>
+<li>download/install MobiTracer on your phone
+	<ul>
+		<li>need phone with J2ME (MIDP2.0) and Bluetooth Java (JSR-82)</li>
+	</ul>
+</li>
+<li>Start tracing!</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>MobiTracer</h1>
+	<div class="center">
+		<img  src="assets/mobitracer-phones.jpg" alt="mt-phones" />
+	</div>
+</div>
+
+<div class="slide">
+<h1>MobiTracer - Features</h1>
+<ul>
+<li>track recording
+<ul>
+	<li>create tracks</li>
+	<li>suspend/resume track</li>
+</ul>
+</li>
+<li>road rating
+	<ul>
+		<li>simply type number on keypad</li>
+		<li>rating tied to all subsequent track-points</li>
+	</ul>
+</li>
+<li>add media
+	<ul>
+		<li>send text/photo/video/audio</li>
+	</ul>
+</li>
+<li>view your location on Google Map
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Architecture</h1>
+	<div class="center">
+		<img  src="assets/architecture01.jpg" alt="architecture01" />
+	</div>
+</div>
+
+<div class="slide">
+<h1>Base Components - Server</h1>
+<ul>
+<li>Container model
+<ul>
+	<li><a href="http://www.springframework.org/" target="_new">Spring</a>-like</li>
+	<li>declarative components (XML) </li>
+	<li>.war file deployment (J2EE)</li>
+</ul>
+</li>
+<li>Protocol support
+	<ul>
+		<li>all-XML</li>
+		<li>core session protocol</li>
+		<li>extensible service protocols</li>
+	</ul>
+</li>
+<li>Data
+	<ul>
+		<li>storage layer (Oase)</li>
+		<li>multi-database support</li>
+		<li>now MySQL, PostGIS planned</li>
+	</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Base Components - Clients</h1>
+<ul>
+<li>MobiTracer
+	<ul>
+		<li>mobile phone client (Java/J2ME)</li>
+	</ul>
+</li>
+<li>WebTracer (prototype)
+	<ul>
+		<li>browser/AJAX client (possibly PDA as well)</li>
+		<li>connects locally to GPS through GPSDoor</li>
+	</ul>
+</li>
+	<li>WebEditor (/my)
+<ul>
+	<li>manage tracks/media</li>
+</ul>
+</li>
+<li>WebViewer
+<ul>
+	<li>public viewing</li>
+	<li>AJAX+Google Maps</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Externals</h1>
+<ul>
+<li><a href="http://www.keyworx.org" target="_new">KeyWorx</a>
+	<ul>
+		<li>supports GT main architecture</li>
+		<li>versatile  portal/CMS framework</li>
+		<li>multi-user/multimedia/multi-channel</li>
+		<li>extensible XML protocol</li>
+		<li><a href="http://www.springframework.org/" target="_new">Spring</a>-like container model</li>
+	</ul>
+</li>
+<li><a href="http://www.pushlets.com" target="_new">Pushlets</a>
+	<ul>
+		<li>HTTP/AJAX-based notification framework</li>
+	</ul>
+</li>
+<li><a href="http://www.google.com/apis/maps" target="_new">Google Maps</a></li>
+<li>Research: AJAX lib (<a href="http://www.dojotoolkit.org/" target="_new">Dojo?</a>, <a href="http://docs.codehaus.org/display/MAP/Home" target="_new">MapBuilder?</a>)</li>
+<li>Research: spatial RDBMS (<a href="http://http://www.postgis.org" target="_new">PostGIS?</a>)</li>
+</ul>
+</div>
+
+
+<div class="slide">
+<h1>XML Protocols</h1>
+<ul>
+<li>session protocol
+<ul>
+	<li>extends KeyWorx core protocol</li>
+	<li>register/login/logout/authorization</li>
+	<li>extensible services: media management, tracking, etc</li>
+</ul>
+</li>
+<li>notification service
+	<ul>
+		<li>Pushlets-based</li>
+		<li>notification of actions in sessions (user-move, media-create, etc)</li>
+		<li>will be integrated in session protocol</li>
+	</ul>
+</li>
+<li><a href="http://en.wikipedia.org/wiki/Representational_State_Transfer" target="_new">REST</a> services
+	<ul>
+		<li>all queries, exports (GPX, WFS?)</li>
+	</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Example - Session Protocol</h1>
+	<div class="center">
+		<img  src="assets/protocol-seq01.jpg" alt="protocol-seq" />
+	</div>
+</div>
+
+<div class="slide">
+<h1>Example - REST Service</h1>
+<pre>
+http://www..../get.jsp?cmd=q-active-tracks
+
+<code>
+&lt;query-store-rsp&gt;
+  &lt;record&gt;
+    &lt;id&gt;23045&lt;/id&gt;
+    &lt;name&gt;M13&lt;/name&gt;
+    &lt;lon&gt;4.9005367&lt;/lon&gt;
+    &lt;lat&gt;52.3689717&lt;/lat&gt;
+    &lt;time&gt;1131225381296&lt;/time&gt;
+    &lt;loginname&gt;green&lt;/loginname&gt;
+  &lt;/record&gt;
+
+  &lt;record&gt;
+    &lt;id&gt;177563&lt;/id&gt;
+    &lt;name&gt;KillerClub&lt;/name&gt;
+    &lt;lon&gt;4.8997617&lt;/lon&gt;
+       .
+	   .
+&lt;/query-store-rsp&gt;
+</code>
+</pre>
+</div>
+
+<div class="slide">
+<h1>GeoTagging Media</h1>
+<p>Steps</p>
+<ul>
+<li>Submit media file: HTTP upload, XML CDATA or email</li>
+<li>Server: date/time extraction
+<ul>
+	<li>from metadata (e.g. JPEG EXIF)</li>
+	<li>if not available take time-of-arrival</li>
+</ul>
+</li>
+<li>Server: find nearest track/point in time</li>
+<li>Server: Relate medium to Location, Track and Person</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Core Data Model</h1>
+	<div class="center">
+		<img  src="assets/database-core.jpg" alt="database-core" />
+	</div>
+	<p><i>Users, Tracks, Media as first class objects</i></p>
+</div>
+
+
+<div class="slide">
+<h1>Detailed Database Model (v1)</h1>
+	<div class="center">
+		<img  src="assets/database-v1-small.jpg" alt="database-v1" />
+	</div>
+</div>
+
+<div class="slide">
+<h1>Deployment</h1>
+<ul>
+<li>GeoTracing app is deployed as a J2EE .war file</li>
+<li>.war file contains
+<ul>
+	<li>server app</li>
+	<li>all client apps</li>
+</ul>
+</li>
+<li>Some setup required: Tomcat + MySQL</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Development - Extensibility</h1>
+	<p>GeoTracing offers the following extension possibilities</p>
+
+<ul>
+<li>extend client (AJAX) JS classes (Factory pattern)</li>
+<li>add new REST services (myget.jsp)</li>
+<li>add/modify new server-side session protocol handlers</li>
+<li>add new daemons</li>
+<li>add database tables</li>
+<li>create new clients based on session protocol</li>
+ </ul>
+</div>
+
+<div class="slide">
+<h1>Development - How to create Apps</h1>
+<p>The Basics</p>
+<ul>
+	<li><a href="http://ant.apache.org" target="_new">Ant</a> as swiss-army knife</li>
+	<li>create application dir</li>
+	<li>create configuration files</li>
+	<li>create files extending/replacing base files (e.g. JS)</li>
+	<li>refer default app (<a href="http://www.geotracing.org/gt" target="_new">Traceland</a>) as a base</li>
+	<li>unpacked gt.war is overwritten with your replacements</li>
+	<li>generate your .war</li>
+	<li>see examples in <a href="http://svn.codehaus.org/geotracing/app" target="_new">Subversion apps tree</a></li>
+</ul>
+
+</div>
+
+<div class="slide">
+<h1>Development - OSS </h1>
+<ul>
+<li>OSS (LGPL) since aug 2006</li>
+<li>hosting: <a href="http://geotracing.codehaus.org/" target="_new">geotracing.codehaus.org</a></li>
+<li>source code in Subversion
+<ul>
+	<li>base framework</li>
+	<li>applications</li>
+</ul>
+</li>
+<li>many TODOs: documentation, project organization, attract developers,..</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Development - Roadmap </h1>
+<ul>
+<li>current version (v1)
+<ul>
+	<li>organize OSS project</li>
+	<li>documentation</li>
+	<li>client: PDA</li>
+</ul>
+	</li>
+<li>planned features (v2)
+<ul>
+	<li>navigation/LBS</li>
+	<li>standards: openGIS, ...</li>
+	<li>server: spatial DB (PostGIS)</li>
+	<li>client: AJAX framework (DOJO?/MapBuilder?)</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Development - Subversion Layout</h1>
+<p><a href="http://svn.geotracing.codehaus.org/" target="_new"><img  src="assets/svn-layout.jpg" align="right" alt="svn-layout" /></a></p>
+<ul>
+<li><a href="http://svn.geotracing.codehaus.org/" target="_new">svn.geotracing.codehaus.org</a></li>
+<li>core framework (base) and apps combined</li>
+<li>each app has SVN trunk, tags, branches</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Apps - Sense of the City</h1>
+	<pre>
+
+
+	</pre>
+<div class="center">
+<i>A locative media tool for urban investigators
+to unveil individual mental maps  of city dwellers</i>
+</div>
+<ul>
+<li>SOTC Projects
+	<ul>
+	<li><a href="http://www.senseofthecity.nl" target="_new">Sense of the City Eindhoven (apr06)</a></li>
+	<li><a href="http://www.senseofthecity.nl/sobp" target="_new">Sense of Brainport (sep06)</a></li>
+	<li>Sense of the City Amersfoort (planned)</li>
+	<li>Any other city/place on earth</li>
+</ul>
+</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Apps - bliin.com</h1>
+<ul>
+<li>Location user- and media search</li>
+<li>Track, trace and interact with other logged on users & share personal locative media in real-time on a map</li>
+<li>Multi-User2User localisation, publication and communication</li>
+<li>Desktop Client - Pocket Client</li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>Apps - What's a Bliin ?</h1>
+<ul>
+<li>Bliin is about Navigating Experiences ... experiences are contained within locations ...
+locations are constantly traversed by users ... who continuously add experience ...
+</li>
+<li>A bliin is a personalised, dynamic perspective - a kind of radar - on a location and the users &amp; media within it</li>
+<li>1. Make new bliin >> 2. select location &amp; radius >> 3. select tags of interest >> 4. view &amp; save bliin</li>
+<li>Saved bliin's carry from desktop to pocket client</li>
+<li><a href="http://test.bliin.com/use" target="new">work-in-progress</a></li>
+</ul>
+</div>
+
+<div class="slide">
+<h1>A Bliin</h1>
+
+<img src="assets/bliin01.png" alt="" title="Default" />
+
+</div>
+
+<div class="slide">
+<h1>bliin.com</h1>
+<img src="assets/bliin02.png" alt="" title="Default" />
+
+</div>
+
+</div>
+
+</body>
+</html>

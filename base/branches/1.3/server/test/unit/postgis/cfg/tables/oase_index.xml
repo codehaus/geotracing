@@ -1,0 +1,23 @@
+<table>
+	<views>
+		<insert>
+			<field name="id"/>
+			<field name="tableid"/>
+		</insert>
+
+		<list>
+			<field name="id"/>
+			<field name="tableid"/>
+		</list>
+
+		<query>
+			<field name="id"/>
+			<field name="tableid"/>
+		</query>
+	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<field name="tableid" type="INTEGER" required="true"/>
+	</data>
+</table>

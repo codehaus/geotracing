@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Defines context, only tables for now. -->
+<context id="postgistest">
+	<tables>
+		<table file="tables/spatialone.xml"/>
+		<table file="tables/g_location.xml"/>
+		<table file="tables/g_track.xml"/>
+		<table file="tables/g_route.xml"/>
+	</tables>
+</context>
+
+

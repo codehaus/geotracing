@@ -1,0 +1,1 @@
+<% response.sendRedirect("img/download-new-mt.jpg"); %>

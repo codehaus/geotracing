@@ -1,0 +1,8 @@
+<testsuite>
+<!--	<testset file="tracinghandler.xml" />
+	<testset file="queryhandler.xml"/> -->
+<testset file="tracinghandler.xml" />
+	<testset file="commenthandler.xml"/>
+	<testset file="profilehandler.xml"/>
+</testsuite>
+

@@ -1,0 +1,109 @@
+/* Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
+ * Distributable under LGPL license. See terms of license at gnu.org.
+ * $Id: gtwidget.css,v 1.6 2006-06-16 11:49:22 just Exp $
+ */
+
+.medicon, .medicon a {
+	font-size: 6px;
+	cursor: pointer;
+	color: white;
+	width: 8px;
+	height: 8px;
+	line-height: 1px;
+	text-decoration: none;
+	margin: 0px;
+	padding: 0px;
+	/* clip: rect(0 8 8 0); */
+	border: 2px solid #000000;
+}
+
+.mediumpreview {
+	cursor: pointer;
+}
+
+.imagefull {
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+.texticon, .texticon a {
+	cursor: pointer;
+	font-size: 9px;
+}
+
+#trackinfo {
+	color: #eee;
+	text-align: center;
+}
+
+#tracerid {
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+#tracerdesc {
+	padding-left: 8px;
+}
+
+#featurepreview {
+	text-align: center;
+}
+
+#featureinfo {
+	padding-top: 8px;
+	padding-left: 8px;
+	padding-right: 8px;
+	text-align: left;
+	font-style: italic;
+}
+
+#featuredesc {
+	padding: 8px;
+	text-align: left;
+}
+
+.title {
+	padding-left: 8px;
+}
+
+#featurecontrols, #trackcontrols {
+	visibility: hidden;
+}
+
+#commentpanel {
+	padding: 8px;
+}
+
+#commentform {
+	display: none;
+}
+
+.infohead {
+	color: #eee;
+	text-align: center;
+}
+
+.controls {
+	text-align: center;
+}
+
+.control {
+	cursor: pointer;
+	color: #000044;
+	text-decoration: none;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.tracer, .tracername {
+	margin: 0px;
+	padding: 0px;
+}
+
+.tracername {
+	background-color: #333333;
+	color: white;
+	padding: 1px 4px;
+}
