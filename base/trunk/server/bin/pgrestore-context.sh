@@ -104,7 +104,7 @@ function restore() {
 
 
 function emptyDir() {
-	if ! /bin/rm -rf $1/*
+	if ! /bin/rm -rf $1
 	then
 		error "Cannot empty directory $1"
 	fi

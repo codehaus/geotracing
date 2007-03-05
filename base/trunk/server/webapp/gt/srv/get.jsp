@@ -1131,12 +1131,12 @@
 	try {
 		// Use one Oase session
 		if (oase == null) {
-			oase = (Oase) application.getAttribute("oase");
+			oase = (Oase) application.getAttribute("oaseq");
 			if (oase == null) {
 				// First time: create and save in app context
 				String oaseContextId = Amuse.server.getPortal().getId();
 				oase = Oase.createOaseSession(oaseContextId);
-				application.setAttribute("oase", oase);
+				application.setAttribute("oaseq", oase);
 				ComponentDef[] cDefs = OaseConfig.getOaseContextConfig(oaseContextId).getStoreContextConfig().getSourceDefs();
 				for (int i=0; i < cDefs.length; i++) {
 					if (cDefs[i].getId().equals(StoreContextConfig.SOURCE_DB) && cDefs[i].hasProperty("randomfun")) {
