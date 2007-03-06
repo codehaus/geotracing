@@ -4,35 +4,27 @@ using System.Text;
 using System.Xml;
 using Diwi;
 
-namespace Diwi
-{
-    class XMLement
-    {
+namespace Diwi {
+    class XMLement {
         private string mTag;
         private string mNodeText;
         Hashtable mAttribs;
         ArrayList mChildren;
 
-        public string tag
-        {
-            get
-            {
+        public string tag {
+            get {
                 return mTag;
             }
-            set
-            {
+            set {
                 mTag = value;
             }
         }
 
-        public string nodeText
-        {
-            get
-            {
+        public string nodeText {
+            get {
                 return mNodeText;
             }
-            set
-            {
+            set {
                 mNodeText = value;
             }
         }
@@ -53,47 +45,40 @@ namespace Diwi
         }
 
 
-        public void addChild(XMLement xm)
-        {
+        public void addChild(XMLement xm) {
             mChildren.Add(xm);
         }
 
-        public void addAttribute(string key, string val)
-        {
+        public void addAttribute(string key, string val) {
             mAttribs[key] = val;
         }
 
 
-        public string getAttributeValue(string key)
-        {
-            if( mAttribs.Contains(key) )
+        public string getAttributeValue(string key) {
+            if (mAttribs.Contains(key))
                 return (string)mAttribs[key];
             return null;
         }
 
 
 
-        public string toString()
-        {
+        public string toString() {
             StringBuilder sb = new StringBuilder("<");
             sb.Append(mTag + " ");
 
             IDictionaryEnumerator en = mAttribs.GetEnumerator();
 
-            while (en.MoveNext())
-            {
+            while (en.MoveNext()) {
                 sb.Append(en.Key + "=\"" + en.Value + "\" ");
             }
-            
+
             sb.Append(">");
 
-            if (mNodeText != null)
-            {
+            if (mNodeText != null) {
                 sb.Append("\r" + mNodeText + "\r");
             }
 
-            foreach (XMLement xml in mChildren)
-            {
+            foreach (XMLement xml in mChildren) {
                 sb.Append(xml.toString());
             }
 
@@ -103,17 +88,14 @@ namespace Diwi
 
         }
 
-        private XMLement(XmlNode msNode)
-        {
+        private XMLement(XmlNode msNode) {
             mAttribs = new Hashtable();
 
-            if (msNode.Attributes.Count > 0)
-            {
+            if (msNode.Attributes.Count > 0) {
                 XmlAttribute[] attrArr;
                 attrArr = new XmlAttribute[msNode.Attributes.Count];
                 msNode.Attributes.CopyTo(attrArr, 0);
-                foreach (XmlAttribute a in attrArr)
-                {
+                foreach (XmlAttribute a in attrArr) {
                     mAttribs.Add(a.Name, a.Value);
                 }
             }
@@ -122,23 +104,20 @@ namespace Diwi
             mNodeText = msNode.Value;
             mChildren = new ArrayList();
 
-            if (msNode.HasChildNodes)
-            {
+            if (msNode.HasChildNodes) {
                 XmlNodeList children = msNode.ChildNodes;
 
-                foreach (XmlNode x in children)
-                {
+                foreach (XmlNode x in children) {
                     if (x.GetType() == typeof(System.Xml.XmlText))
                         mNodeText = x.Value;
                     else
-                        mChildren.Add( new XMLement(x) );
+                        mChildren.Add(new XMLement(x));
                 }
 
-            }        
+            }
         }
 
-        static public XMLement createFromRawXml(string rawXml)
-        {
+        static public XMLement createFromRawXml(string rawXml) {
             XmlDocument msXml = new XmlDocument();
             msXml.LoadXml(rawXml);
             XmlElement msEl = msXml.DocumentElement;
