@@ -222,7 +222,11 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 			Log.trace("CACHE PUT record table=" + aRecord.getTableName() + " id=" + aRecord.getId());
 			return true;
 		} catch (Throwable t) {
-			Log.warn("CACHE PUT FAILED record table=" + aRecord.getTableName() + " id=" + aRecord.getId(), t);
+			if(aRecord != null) {
+				Log.warn("CACHE PUT FAILED record table=" + aRecord.getTableName() + " id=" + aRecord.getId(), t);
+			} else {
+				Log.warn("CACHE PUT FAILED", t);				
+			}
 			return false;
 		}
 	}
