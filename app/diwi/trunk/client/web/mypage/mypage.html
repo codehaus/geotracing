@@ -8,7 +8,7 @@
 </head>
 <script language="JavaScript" type="text/JavaScript">
 
-var currentSelection = 1; 
+var currentSelection = 1;
 var toolbarData = new Array();
 toolbarData[1] = new Array('buttons/routes.jpg', 'buttons/routes.jpg', 'buttons/routes.jpg');
 toolbarData[2] = new Array('buttons/zoek.jpg', 'buttons/zoek.jpg', 'buttons/zoek.jpg');
@@ -21,27 +21,27 @@ var buttons=5;
 var popupData = new Array("kaartpopup1","kaartpopup2","kaartpopup3","kaartpopup4");
 
 function highlightItem(obj, state) {
-    i = obj.getAttribute('id');
-    if (i != currentSelection) {
-		obj.setAttribute('src', toolbarData[i][state]);                  
-    }
+ i = obj.getAttribute('id');
+ if (i != currentSelection) {
+		obj.setAttribute('src', toolbarData[i][state]);
+ }
 }
 
 function selectItem(obj) {
-    i = obj.getAttribute('id');
+ i = obj.getAttribute('id');
 	var tbar = new Array();
 	for (j=1; j<buttons+1;j++) {
-    	tbar[j] = document.getElementById(j);
+  	tbar[j] = document.getElementById(j);
 		tbar[j].setAttribute('src', toolbarData[(j)][0]);
 	}
-    obj.setAttribute('src', toolbarData[i][2]);
-    currentSelection = i;
+obj.setAttribute('src', toolbarData[i][2]);
+ currentSelection = i;
 }
 
 
 function toonPlaatje(index) {
 	im = document.getElementById(200);
-    im.src = imageNames[index-1];
+ im.src = imageNames[index-1];
 }
 
 function laadtPlaatjes() {
