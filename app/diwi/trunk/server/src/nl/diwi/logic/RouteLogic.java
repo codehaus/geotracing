@@ -100,7 +100,7 @@ public class RouteLogic implements Constants {
     			route.setStringField(DESCRIPTION_FIELD, new String(generated.getChildByTag(DESCRIPTION_ELM).getCDATA()));
     			route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
 
-				PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPX2LineString(generated));
+				PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPXRoute2LineString(generated));
 				route.setObjectField(PATH_FIELD, geom);
     			oase.getModifier().insert(route);    			    			
 
@@ -109,7 +109,11 @@ public class RouteLogic implements Constants {
     		} catch (OaseException e) {
     			e.printStackTrace();
     		}
-            
+        
+    		route = oase.getFinder().freeQuery(
+    				"select ID, NAME, DESCRIPTION, length2d(path) AS LENGTH from diwi_route where id="
+    				+ route.getId())[0];
+    		
          	return route;
             
         } catch (OaseException oe) {
