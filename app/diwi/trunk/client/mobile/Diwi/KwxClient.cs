@@ -117,8 +117,7 @@ namespace Diwi {
 
 
         public XMLement doLogout() {
-            XMLement xml = new XMLement();
-            xml.tag = Protocol.TAG_LOGOUT_REQ;
+            XMLement xml = new XMLement(Protocol.TAG_LOGOUT_REQ);
             lock (this) {
                 xml = doRequest(xml);
             }
@@ -128,8 +127,7 @@ namespace Diwi {
 
 
         public XMLement doLogin() {
-            XMLement xml = new XMLement();
-            xml.tag = Protocol.TAG_LOGIN_REQ;
+            XMLement xml = new XMLement(Protocol.TAG_LOGIN_REQ);
             xml.addAttribute(Protocol.ATTR_NAME, mUser);
             xml.addAttribute(Protocol.ATTR_PASSWORD, mPass);
             xml.addAttribute(Protocol.ATTR_PROTOCOLVERSION, Diwi.Properties.Resources.KwxServerProtocolVersion);
