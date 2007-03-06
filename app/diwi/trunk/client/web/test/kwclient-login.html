@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<link rel="stylesheet" href="css/common.css" type="text/css"/>
+	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
+	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
+	<script type="text/javascript">
+
+
+		var TST = {
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 1, '/diwi');
+				TST.pr('init done');
+			},
+
+				// called from form submit
+			login: function() {
+				TST.pr('login start');
+				var loginForm = DH.getObject('loginform');
+				var name = loginForm.name.value;
+				var password = loginForm.password.value;
+				TST.pr('login name=' + name + ' password=' + password);
+
+				// Call KWClient
+				KW.login(name, password);
+				TST.pr('login sent');
+				return false;
+			},
+
+			logout: function() {
+				TST.pr('logout start');
+				// KeyWorx client
+				KW.logout();
+				TST.pr('logout sent');
+				return false;
+			},
+
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('server response ' + elm.tagName);
+				if (elm.tagName == 'login-rsp') {
+					KW.selectApp('geoapp', 'user');
+				} else if (elm.tagName == 'select-app-rsp') {
+					TST.pr('login OK');
+
+					// Show new content, here logout form
+					DH.hide('loginform');
+					DH.show('logoutform');
+				} else if (elm.tagName == 'logout-rsp') {
+					TST.pr('logout OK');
+					DH.show('loginform');
+					DH.hide('logoutform');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+	</script>
+
+</head>
+
+<body>
+
+<form id="loginform" action="#">
+	<p>ENTER USER NAME :
+		<input type="text" name="name">
+	</p>
+
+	<p> ENTER PASSWORD :
+		<input type="password" name="password">
+		<input type="button" value="Check In" name="Submit" onclick="javascript:TST.login()">
+	</p>
+</form>
+
+<form id="logoutform" action="#" style="visibility: hidden">
+	<input type="button" value="Logout" name="Submit" onclick="javascript:TST.logout()">
+</form>
+
+<div id="result">DEBUG INFO</div>
+
+</body>
+</html>
