@@ -43,7 +43,7 @@
 
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
-		<field name="path" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,4326,INDEX_GIST" />
+		<field name="path" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,28992,INDEX_GIST" />
 	</data>
 	<!--}data -->
 

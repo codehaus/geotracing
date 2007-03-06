@@ -12,15 +12,7 @@ import java.io.File;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
 
-/**
- * Created by IntelliJ IDEA.
- * User: just
- * Date: Feb 1, 2007
- * Time: 5:16:19 PM
- */
-
-public class PostGISUtil {
-	public static final int DEFAULT_SRID = 4326;
+public class PostGISUtil implements Constants {
 
 	public static PGgeometryLW createPoint(double lon, double lat) {
 		Point point = new Point(lon, lat);
@@ -39,7 +31,7 @@ public class PostGISUtil {
 	 * @param aFilePath path to GPX file
 	 * @return a PG LineString
 	 */
-	public static LineString GPX2LineString(JXElement gpx) {
+	public static LineString GPXTrack2LineString(JXElement gpx) {
 		try {
 			// Create new Track object
 			Vector trkElms = gpx.getChildrenByTag("trk");
@@ -98,4 +90,54 @@ public class PostGISUtil {
 		return null;
 	}
 
+	public static LineString GPXRoute2LineString(JXElement gpx) {
+		try {
+			// Create new Track object
+			Vector routeElements = gpx.getChildrenByTag("rte");
+
+			List points = new ArrayList();
+			Point point;
+			LineString lineString;
+
+			for (int i = 0; i < routeElements.size(); i++) {
+				JXElement nextRoute = (JXElement) routeElements.elementAt(i);
+				Vector pointElements = nextRoute.getChildrenByTag("rtept");
+				if (pointElements == null || pointElements.size() == 0) {
+					p("No route points found");
+					continue;
+				}
+
+				// Parse and handle all routepoints 
+				for (int j = 0; j < pointElements.size(); j++) {
+					JXElement nextPoint = (JXElement) pointElements.elementAt(j);
+
+					// Lat/lon
+					double lon = nextPoint.getDoubleAttr("lon");
+					double lat = nextPoint.getDoubleAttr("lat");
+					double ele = 0.0d;
+					// Height (elevation)
+					String eleStr = nextPoint.getChildText("ele");
+					if (eleStr != null) {
+						ele = Double.parseDouble(eleStr);
+					}
+
+					point = new Point(lon, lat, ele);
+					point.setSrid(DEFAULT_SRID);
+					points.add(point);
+				}
+			}
+
+			lineString = new LineString((Point[]) points.toArray(new Point[points.size()]));
+			lineString.setSrid(DEFAULT_SRID);
+			return lineString;
+
+
+		} catch (Throwable t) {
+			p("Error converting GPX to linestring: " + t);
+			t.printStackTrace();
+		}
+
+		return null;
+	}
+	
 }
