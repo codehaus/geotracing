@@ -11,7 +11,7 @@ namespace Diwi {
     /// <summary>
     /// The KeyWorx server singleton class.
     /// Error handling needs work, media up- and download need to be implemented.
-    /// curently uses geotracing protocol...
+    /// curently uses geotracing protocol....
     /// </summary>
 
     class KwxClient {
