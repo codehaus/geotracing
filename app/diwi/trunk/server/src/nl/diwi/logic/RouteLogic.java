@@ -10,6 +10,8 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.session.UtopiaRequest;
+import org.postgis.PGgeometry;
+import org.postgis.PGgeometryLW;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -82,7 +84,8 @@ public class RouteLogic implements Constants {
                 pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
                 pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
                 prefs[i] = pref;
-                
+				oase.getModifier().insert(pref);
+
                 // relate pref to person
                 oase.getRelater().relate(person, pref);
             }
@@ -96,7 +99,9 @@ public class RouteLogic implements Constants {
     			route.setStringField(NAME_FIELD, new String(generated.getChildByTag(NAME_ELM).getCDATA()));
     			route.setStringField(DESCRIPTION_FIELD, new String(generated.getChildByTag(DESCRIPTION_ELM).getCDATA()));
     			route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
-    			route.setObjectField(PATH_FIELD, (Object)PostGISUtil.GPX2LineString(generated));
+
+				PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPX2LineString(generated));
+				route.setObjectField(PATH_FIELD, geom);
     			oase.getModifier().insert(route);    			    			
 
     			// now relate the route to the person
