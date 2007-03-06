@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Vector;
 
 import nl.diwi.util.Constants;
+import nl.diwi.util.PostGISUtil;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
 
@@ -18,18 +19,12 @@ import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 
 public class RouteGenerator implements Constants {
-	Oase oase;
 	
 	private static String generatorUrl = ServerConfig.getProperty(GENERATOR_URL);
-	
-	public RouteGenerator(Oase oase) {
-		this.oase = oase;
-	}
-	
+		
 	//Query by example? non filled values are 'don't care'
-	public Vector generateRoutes(Record [] prefs) {
-		Vector results = new Vector();
-		JXElement resultRoutes = null;
+	public static JXElement generateRoute(Record [] prefs) {
+		JXElement resultRoute = null;
 		
 		//build the url
 		StringBuffer urlBuffer = new StringBuffer();
@@ -46,7 +41,7 @@ public class RouteGenerator implements Constants {
 
 		//Get the GPX
 		try {
-			resultRoutes = new JXBuilder().build(new URL(urlBuffer.toString()));
+			resultRoute = new JXBuilder().build(new URL(urlBuffer.toString()));
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,53 +50,15 @@ public class RouteGenerator implements Constants {
 			e.printStackTrace();
 		}
 		
-		Vector gpxElms = resultRoutes.getChildren();
-		//Process the GPX into datastructures
-        for(int i=0;i<gpxElms.size();i++){
-            JXElement gpxElm = (JXElement)gpxElms.elementAt(i);
-            Record route = null;
-			try {
-				route = oase.getModifier().create(ROUTE_TABLE);
-				route.setStringField(NAME_FIELD, new String(gpxElm.getChildByTag(NAME_ELM).getCDATA()));
-				route.setStringField(DESCRIPTION_FIELD, new String(gpxElm.getChildByTag(DESCRIPTION_ELM).getCDATA()));
-				route.setIntField(TYPE_FIELD, ROUTE_TYPE_TEMP);
-				route.setXMLField(PATH_FIELD, gpxElm);
-				oase.getModifier().insert(route);
-			} catch (OaseException e) {
-				e.printStackTrace();
-			}
-
-			//Convert Route record to XML and add to result
-            JXElement routeElm = null;
-			try {
-				routeElm = XML.createElementFromRecord(ROUTE_ELM, route);
-				routeElm.removeChildByTag(PATH_FIELD);
-	            results.add(routeElm);
-			} catch (UtopiaException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}            
-
-            // now relate the route to the person
-            //oase.getRelater().relate(person, route);
-        }
-		
-		return results;
+		return resultRoute;
 	}
 	
-	public Record generateShortestRoute(GeoPoint from, GeoPoint to) {
-        Record route = null;
+	public JXElement generateShortestRoute(GeoPoint from, GeoPoint to) {
+		JXElement route = null;
 		
 		//JXBuilder().build(new URL());
-        
-        try {
-			route = oase.getModifier().create(ROUTE_TABLE);
-		} catch (OaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-		return route;		
+		return route;
 	}
 	
 }

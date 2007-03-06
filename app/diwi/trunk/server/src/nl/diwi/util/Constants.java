@@ -5,7 +5,7 @@ public interface Constants {
     public final static String ROUTE_TABLE = "diwi_route";
     public final static String POI_TABLE = "diwi_poi";
     public final static String PREFS_TABLE = "diwi_prefs";
-    public final static String LOCATION_TABLE = "g_location";
+    public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
 
     // xml tags
@@ -14,6 +14,7 @@ public interface Constants {
     public final static String POI_ELM = "poi";
     public final static String DESCRIPTION_ELM = "desc";
     public final static String NAME_ELM = "name";
+    public final static String DISTANCE_ATTR = "distance";
     public final static String KICH_URI_ELM = "kich-uri";
 
     // table fields
@@ -37,8 +38,7 @@ public interface Constants {
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;        
     public final static int ROUTE_TYPE_DIRECT = 1;    
-    public final static int ROUTE_TYPE_GENERATED = 2;
-    public final static int ROUTE_TYPE_TEMP = 3;  
+    public final static int ROUTE_TYPE_GENERATED = 2; 
     
     //properties
     public final static String GENERATOR_URL = "diwi.routegenerator.url";
