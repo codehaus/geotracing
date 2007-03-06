@@ -82,7 +82,12 @@ function laadtPlaatjes() {
 		}
 	}
 }
-
+function toonInlogBox() {
+	document.getElementById('inlogbox').style.display = "block";
+}
+function verbergInlogBox() {
+	document.getElementById('inlogbox').style.display = "none";
+}
 function HideText(d) {
 if(d.length < 1) { return; }
 	document.getElementById(texten[d]).style.display = "none";
@@ -93,6 +98,7 @@ function ShowText(d) {
 }
 
 function show(d){
+	verbergInlogBox();
 	for (i=0;i<aantaltexten;i++){
 		if (i==d) {
 			ShowText(i);
@@ -110,9 +116,25 @@ function show(d){
 -->
 <div id="top"> <img src="home/images/top.jpg" border="0"> </div>
 <div id="topfoto"> <img id="plaatje" src="home/images/01.gif" border="0"> </div>
-<div id="videobox"> <img src="home/images/videobox.gif" border="0"> </div>
-<div id="fotovideobox"> <img src="home/images/fotovideobox.gif" border="0"> </div>
-<div id="spotmetbox"> <img src="home/images/spotmetbox.gif" border="0"> </div>
+
+<div id="rechterkolom">
+	<div id="inlogbox" style="display:none;"> <img src="home/images/videobox.gif" border="0"> </div>
+	<div id="videobox"> <img src="home/images/videobox.gif" border="0"> </div>
+	<div id="fotovideobox"> <img src="home/images/fotovideobox.gif" border="0"> </div>
+	<div id="spotmetbox"> <img src="home/images/spotmetbox.gif" border="0"> </div>
+
+	<div id="butintrovideo">
+		<a><img id="8" src="home/buttons/introvideo.gif"onMouseOver=""
+		onMouseOut="" onClick="" border="0"></a>
+	</div>
+	<div id="watistext">
+	<watistext>
+		Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.
+	</watistext>
+	</div>
+	
+</div>
+
 
 <div id="line"><img src="home/images/lijn.gif" border="0"></div>
 <div id="fototekst">
@@ -126,12 +148,6 @@ function show(d){
 	</center>
 
 </div>
-
-
-
-</div>
-
-
 
 <div id="butwelkom">
 		<a><img id="1" src="home/buttons/welkomH.gif"onMouseOver="highlightItem(this, 1)"
@@ -156,8 +172,8 @@ function show(d){
 <!--		<a><img id="5" src="home/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggenH.gif'"
 		onMouseOut="src='home/buttons/inloggen.gif'" onClick="location.href='mypage/inloggen.html'" border="0"></a>
 -->
-		<a><img id="5" src="home/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggen.gif'"
-		onMouseOut="src='home/buttons/inloggen.gif'" onClick="" border="0"></a>
+		<a><img id="5" src="home/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggenH.gif'"
+		onMouseOut="src='home/buttons/inloggen.gif'" onClick="toonInlogBox()" border="0"></a>
 </div>
 
 <div id="butmaakroute">
@@ -173,16 +189,7 @@ function show(d){
 		onMouseOut="src='home/buttons/mijnpagina.gif'" onClick="" border="0"></a>
 </div>
 
-<div id="butintrovideo">
-		<a><img id="8" src="home/buttons/introvideo.gif"onMouseOver=""
-		onMouseOut="" onClick="" border="0"></a>
-</div>
 
-<div id="watistext">
-	<watistext>
-		Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.
-	</watistext>
-</div>
 
 <div id="Welkom" style="display:block;">
 
