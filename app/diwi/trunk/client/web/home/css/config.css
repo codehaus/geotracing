@@ -143,34 +143,57 @@ welkomtekst {
  left: 207px;
  z-index: 70;
 }
-#videobox {
+#rechterkolom {
  position: absolute;
  width: auto;
  top: 100px;
  left: 608px;
  z-index: 100;
 }
-#fotovideobox {
- position: absolute;
+#inlogbox {
+	position:relative;
+	width: auto;
+	top: 0px;
+	left:0px;
+	z-index:100;
+}
+#videobox {
+ position: relative;
  width: auto;
- top: 110px;
- left: 623px;
+ top: 0px;
+ left: 0px;
+ z-index: 100;
+}
+#fotovideobox {
+ position: relative;
+ width: auto;
+ top: -180px;
+ left: 15px;
  z-index: 200;
 }
 #spotmetbox {
- position: absolute;
+ position: relative;
  width: auto;
- top: 260px;
- left: 606px;
+ top: -170px;
+ left: -2px;
  z-index: 50;
 }
-#watistext {
- position: absolute;
- width: 140px;
- top: 320px;
- left: 680px;
+#butintrovideo {
+ position: relative;
+ width: auto;
+ top: -302px;
+ left: 60px;
+ padding: 10px;
  z-index: 100;
 }
+#watistext {
+ position: relative;
+ width: 140px;
+ top: -300px;
+ left: 75px;
+ z-index: 100;
+}
+
 #line {
  position: absolute;
  width: auto;
@@ -248,15 +271,6 @@ welkomtekst {
  z-index: 100;
 }
 
-
-#butintrovideo {
- position: absolute;
- width: auto;
- top: 274px;
- left: 664px;
- padding: 10px;
- z-index: 100;
-}
 
 #butwelkom {
  position: absolute;
