@@ -38,7 +38,7 @@
 	</test>
 
 
-	<!-- scenario 2a -->
+	<!-- scenario 2a
 	<test id="route-">
 		<send id="client1">
 			<utopia-req>
@@ -71,7 +71,7 @@
 		</expect>
 	</test>
 
-
+   -->
 	<test id="logout">
 		<send id="client1">
 			<logout-req/>
