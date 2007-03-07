@@ -18,7 +18,7 @@ namespace Diwi {
         public static Color sTextColor = Color.Black;
         public static Color sSelTextColor = Color.FromArgb(180, 180, 180);
         private SolidBrush mBrush = new SolidBrush(Color.Red);
-        private DiwiUIText mText = new DiwiUIText(null,Color.Black,"",new Font("Tahoma", 11, FontStyle.Bold));
+        private DiwiUIText mText = new DiwiUIText(null,Color.Black,"",new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
         private Graphics mMenuGraphics;
         private int mCurrentMenuIndex = -1;
