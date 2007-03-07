@@ -937,6 +937,15 @@ var DH = {
 	}
 	,
 
+// Set the display style property of an object to visible
+	toggleDisplay: function(obj) {
+		var theObj = DH.getStyleObject(obj);
+		if (theObj != null) {
+			theObj.display = (theObj.display == "none") ? "block" : "none";
+		}
+	}
+	,
+
 // Set the visibility of an object to hidden
 	hide: function(obj) {
 		var theObj = DH.getStyleObject(obj);
