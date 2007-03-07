@@ -340,7 +340,7 @@ KW.TRACK = {
 	 */
 	suspend: function(callback, id) {
 		var req = KW.createRequest('t-trk-suspend-req');
-		KW.UTIL.settOptAttr(req, 'id', id);
+		KW.UTIL.setOptAttr(req, 'id', id);
 		KW.utopia(req, callback);
 	},
 
@@ -351,7 +351,7 @@ KW.TRACK = {
 	 */
 	resume: function(callback, id) {
 		var req = KW.createRequest('t-trk-resume-req');
-		KW.UTIL.settOptAttr(req, 'id', id);
+		KW.UTIL.setOptAttr(req, 'id', id);
 		KW.utopia(req, callback);
 	},
 
@@ -362,7 +362,7 @@ KW.TRACK = {
 	 */
 	del: function(callback, id) {
 		var req = KW.createRequest('t-trk-delete-req');
-		KW.UTIL.settAttr(req, 'id', id);
+		KW.UTIL.setAttr(req, 'id', id);
 		KW.utopia(req, callback);
 	}
 }

@@ -192,6 +192,16 @@ var KW = {
 	},
 
 
+// Store session data locally (cookies), for example when moving to other page.
+	storeSession: function() {
+		KW._createCookie('agentkey', KW.agentKey, 1);
+	},
+
+// Restore login-session e.g. when session was started on other page.
+	restoreSession: function( ) {
+		KW.agentKey = KW._readCookie('agentkey');
+	},
+
 //
 // Private/internal functions
 //
@@ -253,7 +263,7 @@ var KW = {
 		KW.onNegRsp(element.getAttribute('errorId'), element.getAttribute('error'), element.getAttribute('details'));
 	},
 
-	/** Session recovery: after re-establish re-issue request. */
+/** Session recovery: after re-establish re-issue request. */
 	_recoverSession: function(callback, reqDoc) {
 		KW.agentKey = null;
 		var onLoginRsp = function(rsp) {
@@ -265,7 +275,40 @@ var KW = {
 			KW.post(onSelectAppRsp, KW.selectAppReq);
 		}
 		KW.post(onLoginRsp, KW.loginReq);
+	},
+
+
+// COOKIES
+		// See http://www.quirksmode.org/js/cookies.html
+	_createCookie: function(name, value, days) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+			var expires = "; expires=" + date.toGMTString();
+		}
+		else var expires = "";
+		document.cookie = name + "=" + value + expires + "; path=/";
+	},
+
+	_readCookie: function(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for (var i = 0; i < ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1, c.length);
+			}
+			if (c.indexOf(nameEQ) == 0) {
+				return c.substring(nameEQ.length, c.length);
+			}
+		}
+		return null;
+	},
+
+	_eraseCookie: function(name) {
+		createCookie(name, "", -1);
 	}
+
 }
 
 /*----------------------------------------------------------------------------\
