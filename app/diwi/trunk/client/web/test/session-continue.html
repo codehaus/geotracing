@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<link rel="stylesheet" href="css/common.css" type="text/css"/>
+	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
+	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
+	<script type="text/javascript">
+
+
+		var TST = {
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+
+				// Try to restore and continue with saved session
+				TST.pr('init done, restoring session');
+				KW.restoreSession();
+				TST.pr('restored session, key=' + KW.agentKey);
+
+				TST.testUtopia();
+			},
+
+				// test fun to see if session is really active
+			testUtopia: function() {
+				TST.pr('testUtopia start');
+
+				// May use any request, here a common one: echo
+				var req = KW.createRequest('echo-req');
+				KW.post(TST.onRsp, req);
+			},
+
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('got server response ' + elm.tagName);
+				if (elm.tagName == 'person-getdefault-rsp') {
+					TST.pr('person-getlist OK');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+	</script>
+
+</head>
+
+<body>
+
+<div id="result">DEBUG INFO</div>
+
+</body>
+</html>

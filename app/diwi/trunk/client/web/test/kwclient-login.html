@@ -17,7 +17,7 @@
 				// callbacks (2x)
 				// server timeout in minutes
 				// server root path /diwi
-				KW.init(TST.onRsp, TST.onNegRsp, 1, '/diwi');
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
 				TST.pr('init done');
 			},
 
@@ -58,10 +58,15 @@
 					// Show new content, here logout form
 					DH.hide('loginform');
 					DH.show('logoutform');
+
+					TST.pr('storing session, key=' + KW.agentKey);
+					KW.storeSession();
+					DH.show('continuelink');
 				} else if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
 					DH.show('loginform');
 					DH.hide('logoutform');
+					DH.hide('continuelink');
 				} else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
 				}
@@ -101,6 +106,10 @@
 <form id="logoutform" action="#" style="visibility: hidden">
 	<input type="button" value="Logout" name="Submit" onclick="javascript:TST.logout()">
 </form>
+
+<div id="continuelink" style="visibility: hidden">
+	<a href="session-continue.html">continue session on other page &gt;&gt;&gt;</a>
+</div>
 
 <div id="result">DEBUG INFO</div>
 
