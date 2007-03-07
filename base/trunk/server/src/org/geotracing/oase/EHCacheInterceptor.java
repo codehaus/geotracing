@@ -192,12 +192,17 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 				switch (fieldDef.getType()) {
 
 					case FieldDef.TYPE_OBJECT:
+						if (fieldValue instanceof String) {
+							unCache(aRecord.getId(), tableDef.getName());
+							return false;
+						}
 						fieldValue = fieldValue.toString();
 						break;
 
 					case FieldDef.TYPE_BLOB:
 						Log.warn("blobs not supported for caching");
-						break;
+						unCache(aRecord.getId(), tableDef.getName());
+						return false;
 
 					case FieldDef.TYPE_FILE:
 						FileFieldImpl fileField = (FileFieldImpl) fieldValue;
@@ -205,7 +210,7 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 						if (file != null) {
 							fieldValue = file.getAbsolutePath();
 						} else {
-							// Set empty (is filled in getCache())
+							// Set empty (is filled in getCached())
 							fieldValue = "";
 						}
 						break;

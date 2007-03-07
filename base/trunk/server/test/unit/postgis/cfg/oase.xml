@@ -67,6 +67,8 @@
 
 				<interceptor id="notifier" class="org.keyworx.oase.store.interceptor.NotifierInterceptor"/>
 
+				<interceptor id="cache" class="org.geotracing.oase.EHCacheInterceptor"/> 
+
 				<interceptor id="source" class="org.keyworx.oase.store.interceptor.SourceInterceptor"/>
 
 			</interceptors>
