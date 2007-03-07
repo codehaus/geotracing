@@ -7,8 +7,8 @@
 	<property name="webappurl" host="suwa">http://local.diwi.nl/diwi</property>
 
 	<!-- for testing only. -->
-	<property name="siteurl" host="test">http://test.diwi.nl</property>
-	<property name="webappurl" host="test">http://test.diwi.nl/diwi</property>
+	<property name="siteurl" host="berlin">http://test.digitalewichelroede.nl</property>
+	<property name="webappurl" host="berlin">http://test.digitalewichelroede.nl/diwi</property>
 
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
