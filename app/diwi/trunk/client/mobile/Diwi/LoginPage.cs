@@ -48,8 +48,8 @@ namespace Diwi {
             mUserBox.Width = mPassBox.Width = 160;
             mUserBox.Height = mPassBox.Height = 20;
             mUserBox.Left = mPassBox.Left = 40;
-            mUserBox.Top = 80;
-            mPassBox.Top = 96;
+            mUserBox.Top = 100;
+            mPassBox.Top = 130;
 
             mUserBox.Text = Properties.Resources.KwxServerUsername;
             mPassBox.Text = Properties.Resources.KwxServerPassword;
@@ -60,8 +60,8 @@ namespace Diwi {
             this.Controls.Add(mUserBox);
             this.Controls.Add(mPassBox);
 
-            mServerMess.x = 4; mServerMess.y = 114; mServerMess.draw("user:");
-            mServerMess.x = 4; mServerMess.y = 140; mServerMess.draw("pass:");
+            mServerMess.x = 4; mServerMess.y = 110; mServerMess.draw("user:");
+            mServerMess.x = 4; mServerMess.y = 134; mServerMess.draw("pass:");
 
             mUserBox.Focus();
 
