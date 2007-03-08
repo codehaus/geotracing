@@ -112,7 +112,7 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.geotracing.com/gt/proto.srv.
+        ///   Looks up a localized string similar to http://test.digitalewichelroede.nl/diwi/proto.srv.
         /// </summary>
         internal static string KwxServerUrl {
             get {
