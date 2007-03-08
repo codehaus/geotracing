@@ -136,7 +136,7 @@
     <value>2</value>
   </data>
   <data name="KwxServerUrl" xml:space="preserve">
-    <value>http://www.geotracing.com/gt/proto.srv</value>
+    <value>http://test.digitalewichelroede.nl/diwi/proto.srv</value>
   </data>
   <data name="KwxServerUsername" xml:space="preserve">
     <value>diwitest</value>
