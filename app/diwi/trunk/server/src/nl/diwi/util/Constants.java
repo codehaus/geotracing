@@ -23,6 +23,7 @@ public interface Constants {
     public final static String VERSION_FIELD = "version";
     public final static String NAME_FIELD = "name";
     public final static String DESCRIPTION_FIELD = "description";
+    public final static String CATEGORY_FIELD = "category";
     public final static String X_FIELD = "x";
     public final static String Y_FIELD = "y";
     public final static String STATE_FIELD = "state";
@@ -34,6 +35,11 @@ public interface Constants {
     public final static String PLAYERS_FIELD = "players";
     public final static String MEDIA_FIELD = "media";
     public final static String POINT_FIELD = "point";
+    public final static String KICHID_FIELD = "kichid";
+
+    // poi types
+    public final static String POI_STARTPOINT = "startpoint";
+    public final static String POI_ENDPOINT = "endpoint";
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;        
