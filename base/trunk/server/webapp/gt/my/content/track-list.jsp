@@ -31,7 +31,7 @@ track properties and track-related media. <br>Click [view] to view your track on
    <%
 	   String actPre = "<a href=\"control.jsp?cmd=nav-track-edit&id=";
 	   String actPost = "\">[edit]</a>";
-	   String viewPre = "<a target=\"_new\" href=\"../?cmd=showtrack&user=" + userName + "&map=map&zoom=12&id=";
+	   String viewPre = "<a target=\"_new\" href=\"../?cmd=showtrack&user=" + userName + "&map=satellite&zoom=12&id=";
 	   String viewPost = "\">[view]</a>";
 	   String toGPXPre = "<a href=\"../srv/get.jsp?cmd=get-track&format=gpx&mindist=20&id=";
 	   String toGPXPost = "\">[GPX]</a>";

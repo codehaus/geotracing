@@ -96,6 +96,7 @@ public class Location extends BaseImpl {
 			throw new UtopiaException("Exception in createRelation", e);
 		}
 	}
+
 	/**
 	 * Get lon,lat, elevation and time values.
 	 *

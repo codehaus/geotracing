@@ -32,7 +32,7 @@
 			/* fields: */ null,
 			/* where:  */ "kind = 'image'",
 			/* relations: */ null,
-			/* postCond: */ "ORDER BY RAND() LIMIT " + count);
+			/* postCond: */ "ORDER BY RANDOM() LIMIT " + count);
 
 
 	String resize = request.getParameter("resize");

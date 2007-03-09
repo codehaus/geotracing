@@ -60,6 +60,7 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 
 	public void init() throws OaseException {
 		try {
+			// Initialize the caches. */
 			String configFilePath = OaseConfig.getConfigRootDir() + "/ehcache.xml";
 			cacheManager = CacheManager.create(configFilePath);
 			recordCache = cacheManager.getCache("oaserecordcache");
@@ -72,7 +73,7 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 	}
 
 	/**
-	 * Updates the Record values in .
+	 * Updates Record values.
 	 *
 	 * @throws org.keyworx.oase.api.OaseException
 	 *          Standard exception.
@@ -92,11 +93,12 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 	 *          Standard exception.
 	 */
 	public Record read(StoreSession aStoreSession, int aRecordId, String aTableName) throws OaseException {
+		// Just read Record when not cachable
 		if (!isCachable(aTableName)) {
 			return getNext().read(aStoreSession, aRecordId, aTableName);
 		}
 
-		// Ok we may get from cache
+		// Record is cachable: try get from cache
 		Record record = getCached(aRecordId, aTableName);
 		if (record == null) {
 			// Not in cache: read and put in cache
@@ -107,16 +109,16 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 	}
 
 	/**
-	 * Updates the Record values .
+	 * Updates the Record values.
 	 *
 	 * @throws org.keyworx.oase.api.OaseException
 	 *          Standard exception.
 	 */
 	public void update(StoreSession aStoreSession, Record aRecord) throws OaseException {
-		getNext().update(aStoreSession, aRecord);
 		if (isCachable(aRecord)) {
-			cache(aRecord);
+			unCache(aRecord);
 		}
+		getNext().update(aStoreSession, aRecord);
 	}
 
 
@@ -127,17 +129,11 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 	 *          Standard exception.
 	 */
 	public void delete(StoreSession aStoreSession, Record aRecord) throws OaseException {
-		int id = aRecord.getId();
-		String aTableName = aRecord.getTableName();
-		getNext().delete(aStoreSession, aRecord);
-		if (isCachable(aTableName)) {
-			unCache(id, aTableName);
+		if (isCachable(aRecord.getTableName())) {
+			unCache(aRecord);
 		}
+		getNext().delete(aStoreSession, aRecord);
 	}
-
-	/*final public void resume() throws OaseException {
-		 suspended = false;
-	} */
 
 	/**
 	 * Perform SQL query on a single table.
@@ -170,10 +166,15 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 		return getNext().queryStore(aStoreSession, queryString, tableName);
 	}
 
-
+	/** Put Record data in cache. */
 	protected boolean cache(Record aRecord) {
 
 		try {
+			if (aRecord == null) {
+				Log.warn("Trying to cache null Record, ignoring");
+				return false;
+			}
+
 			CachedRecord cachedRecord = new CachedRecord();
 			TableDef tableDef = aRecord.getTableDef();
 			cachedRecord.table = tableDef.getName();
@@ -192,16 +193,12 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 				switch (fieldDef.getType()) {
 
 					case FieldDef.TYPE_OBJECT:
-						if (fieldValue instanceof String) {
-							unCache(aRecord.getId(), tableDef.getName());
-							return false;
-						}
 						fieldValue = fieldValue.toString();
 						break;
 
 					case FieldDef.TYPE_BLOB:
 						Log.warn("blobs not supported for caching");
-						unCache(aRecord.getId(), tableDef.getName());
+						unCache(aRecord);
 						return false;
 
 					case FieldDef.TYPE_FILE:
@@ -227,16 +224,17 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 			Log.trace("CACHE PUT record table=" + aRecord.getTableName() + " id=" + aRecord.getId());
 			return true;
 		} catch (Throwable t) {
-			if(aRecord != null) {
+			if (aRecord != null) {
 				Log.warn("CACHE PUT FAILED record table=" + aRecord.getTableName() + " id=" + aRecord.getId(), t);
 			} else {
-				Log.warn("CACHE PUT FAILED", t);				
+				Log.warn("CACHE PUT FAILED", t);
 			}
 			return false;
 		}
 	}
 
 
+	/** Try fetching Record from cache. */
 	protected Record getCached(int aRecordId, String aTableName) throws OaseException {
 		try {
 			Element element = recordCache.get(aRecordId + "");
@@ -300,6 +298,17 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 		}
 	}
 
+	/** Remove Record data from cache. */
+	protected boolean unCache(Record aRecord) {
+		if (aRecord == null) {
+			Log.warn("Trying to uncache null Record, ignoring");
+			return false;
+		}
+
+		return unCache(aRecord.getId(), aRecord.getTableName());
+	}
+
+	/** Remove Record data from cache. */
 	protected boolean unCache(int anId, String aTableName) {
 
 		if (!recordCache.remove(anId + "", true)) {
@@ -309,14 +318,21 @@ public class EHCacheInterceptor extends DefaultInterceptor {
 		return true;
 	}
 
+	/** Can Records of this table be cached? . */
 	protected boolean isCachable(String aTableName) {
 		return ignoreTables.indexOf(aTableName) == -1;
 	}
 
+	/** Can Records of this table be cached? . */
 	protected boolean isCachable(Record aRecord) {
+		if (aRecord == null) {
+			Log.warn("Trying to check caching for null Record, ignoring");
+			return false;
+		}
 		return isCachable(aRecord.getTableName());
 	}
 
+	/** Record data to be cached. */
 	private static class CachedRecord {
 		public String table;
 		public Object[] values;
