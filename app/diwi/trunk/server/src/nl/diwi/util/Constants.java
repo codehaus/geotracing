@@ -38,8 +38,8 @@ public interface Constants {
     public final static String KICHID_FIELD = "kichid";
 
     // poi types
-    public final static String POI_STARTPOINT = "startpoint";
-    public final static String POI_ENDPOINT = "endpoint";
+    public final static int POI_STARTPOINT = 1;
+    public final static int POI_ENDPOINT = 2;
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;        

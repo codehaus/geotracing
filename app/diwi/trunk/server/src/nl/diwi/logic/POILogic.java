@@ -10,6 +10,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.log.Log;
+import org.keyworx.common.util.Java;
 import org.postgis.Point;
 import org.postgis.PGgeometryLW;
 
@@ -57,7 +58,7 @@ public class POILogic implements Constants {
             }
 
             Record poi = oase.getModifier().create(POI_TABLE);
-            setFields(poi, aPOIElement);
+            setFields(poi, kichId, aPOIElement);
             oase.getModifier().insert(poi);
 
             return poi.getId();
@@ -72,7 +73,7 @@ public class POILogic implements Constants {
         try {
             Record poi = oase.getModifier().create(POI_TABLE);
             poi.setStringField(KICHID_FIELD, aPOIElement.getChildText(ID_FIELD));
-            setFields(poi, aPOIElement);
+            setFields(poi, null, aPOIElement);
             oase.getModifier().insert(poi);
 
             return poi.getId();
@@ -119,7 +120,7 @@ public class POILogic implements Constants {
 
     public void updateForSync(Record aPOI, JXElement aPOIElement) throws UtopiaException {
         try {
-            setFields(aPOI, aPOIElement);
+            setFields(aPOI, null, aPOIElement);
             oase.getModifier().update(aPOI);
 
         } catch (OaseException oe) {
@@ -129,13 +130,22 @@ public class POILogic implements Constants {
         }
     }
 
-    private void setFields(Record aPOI, JXElement aPOIElement){
-        aPOI.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
-        aPOI.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
-        aPOI.setStringField(CATEGORY_FIELD, aPOIElement.getChildText(CATEGORY_FIELD));
-        aPOI.setStringField(TYPE_FIELD, aPOIElement.getChildText(TYPE_FIELD));
+    private void setFields(Record aPOI, String aKICHID, JXElement aPOIElement) throws UtopiaException{
+        String name = aPOIElement.getChildText(NAME_FIELD);
+        String desc = aPOIElement.getChildText(DESCRIPTION_FIELD);
+        String type = aPOIElement.getChildText(TYPE_FIELD);
+        String category = aPOIElement.getChildText(CATEGORY_FIELD);
+        String x = aPOIElement.getChildText(X_FIELD);
+        String y = aPOIElement.getChildText(Y_FIELD);
+        if(x == null || x.length() == 0 || y == null || y.length() == 0) throw new UtopiaException("No valid x and y coordinates found");
 
-        Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
+        if(aKICHID!=null && aKICHID.length()>0) aPOI.setStringField(KICHID_FIELD, aKICHID);
+        if(name!=null && name.length()>0) aPOI.setStringField(NAME_FIELD, name);
+        if(desc!=null && desc.length()>0) aPOI.setStringField(DESCRIPTION_FIELD, desc);
+        if(type!=null && type.length()>0 && Java.isInt(type)) aPOI.setIntField(TYPE_FIELD, Integer.parseInt(type));
+        if(category!=null && category.length()>0) aPOI.setStringField(CATEGORY_FIELD, category);
+
+        Point point = new Point(Double.parseDouble(x), Double.parseDouble(y));
         point.setSrid(28992);
         PGgeometryLW geom = new PGgeometryLW(point);
         aPOI.setObjectField(POINT_FIELD, geom);
