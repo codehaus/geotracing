@@ -5,6 +5,7 @@ import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
+import org.keyworx.common.util.Java;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
@@ -14,6 +15,9 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
 public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_INSERT_SERVICE = "poi-insert";
     public final static String POI_GETLIST_SERVICE = "poi-getlist";
+    public final static String POI_GET_SERVICE = "poi-get";
+    public final static String POI_GET_STARTPOINTS_SERVICE = "poi-get-startpoints";
+    public final static String POI_GET_ENDPOINTS_SERVICE = "poi-get-endpoints";
     public final static String POI_UPDATE_SERVICE = "poi-update";
     public final static String POI_DELETE_SERVICE = "poi-delete";
 
@@ -40,6 +44,9 @@ public class POIHandler extends DefaultHandler implements Constants {
             if (service.equals(POI_INSERT_SERVICE)) {
                 // Add a new poi
                 response = insertReq(anUtopiaReq);
+            } else if (service.equals(POI_GET_SERVICE)) {
+                // get poi
+                response = getReq(anUtopiaReq);
             } else if (service.equals(POI_GETLIST_SERVICE)) {
                 // get all pois
                 response = getListReq(anUtopiaReq);
@@ -130,6 +137,26 @@ public class POIHandler extends DefaultHandler implements Constants {
     }
 
     /**
+     * Gets a poi.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws UtopiaException standard Utopia exception
+     */
+    protected JXElement getReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(POI_GET_SERVICE);
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+        String id = reqElm.getAttr(ID_FIELD);
+        String kichid = reqElm.getAttr(KICHID_FIELD);
+        if(id!=null && id.length()>0 && Java.isInt(id)){
+            response.addChild(logic.get(Integer.parseInt(id)));
+        }else if(kichid!=null && kichid.length()>0){
+            response.addChild(logic.get(kichid));
+        }
+        return response;
+    }
+    
+    /**
      * Gets all pois.
      *
      * @param anUtopiaReq A UtopiaRequest
@@ -139,6 +166,32 @@ public class POIHandler extends DefaultHandler implements Constants {
     protected JXElement getListReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GETLIST_SERVICE);
         response.addChildren(logic.getList());
+        return response;
+    }
+
+    /**
+     * Gets all startpoint pois.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws UtopiaException standard Utopia exception
+     */
+    protected JXElement getStartPointsReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(POI_GET_STARTPOINTS_SERVICE);
+        response.addChildren(logic.getStartPoints());
+        return response;
+    }
+
+    /**
+     * Gets all endpoint pois.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws UtopiaException standard Utopia exception
+     */
+    protected JXElement getEndPointsReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(POI_GET_ENDPOINTS_SERVICE);
+        response.addChildren(logic.getEndPoints());
         return response;
     }
 

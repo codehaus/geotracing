@@ -50,20 +50,31 @@ public class POILogic implements Constants {
      */
     public int insert(JXElement aPOIElement) throws UtopiaException {
         try {
+            // first insert the data in the Kich DB
+            String kichId = dataSource.cudPOI(POI_INSERT_ACTION, aPOIElement);
+            if(kichId == null || kichId.length() == 0){
+                throw new UtopiaException("No valid kich id from KICH POI insert post message");
+            }
+
             Record poi = oase.getModifier().create(POI_TABLE);
-            poi.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
-            poi.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
-
-            Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
-			point.setSrid(28992);
-			PGgeometryLW geom = new PGgeometryLW(point);
-			poi.setObjectField(POINT_FIELD, geom);
-
-            poi.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
-
+            setFields(poi, aPOIElement);
             oase.getModifier().insert(poi);
 
-            dataSource.cudPOI(POI_INSERT_ACTION, aPOIElement);
+            return poi.getId();
+        } catch (OaseException oe) {
+            throw new UtopiaException("Cannot insert poi record", oe, ErrorCode.__6006_database_irregularity_error);
+        } catch (Throwable t) {
+            throw new UtopiaException("Exception in POILogic.insert() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
+        }
+    }
+
+    public int insertForSync(JXElement aPOIElement) throws UtopiaException {
+        try {
+            Record poi = oase.getModifier().create(POI_TABLE);
+            poi.setStringField(KICHID_FIELD, aPOIElement.getChildText(ID_FIELD));
+            setFields(poi, aPOIElement);
+            oase.getModifier().insert(poi);
+
             return poi.getId();
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot insert poi record", oe, ErrorCode.__6006_database_irregularity_error);
@@ -93,29 +104,87 @@ public class POILogic implements Constants {
      */
     public void update(int aPOIId, JXElement aPOIElement) throws UtopiaException {
         try {
-            Record poi = oase.getFinder().read(aPOIId);
-            poi.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
-            poi.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
-
-            Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
-            point.setSrid(28992);
-            PGgeometryLW geom = new PGgeometryLW(point);
-            poi.setObjectField(POINT_FIELD, geom);
-
-            poi.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
-
-            oase.getModifier().update(poi);
-
-            JXElement idElm = new JXElement(ID_FIELD);
-            idElm.setText("" + aPOIId);
-            aPOIElement.addChild(idElm);
+            // first update the KICH db
             dataSource.cudPOI(POI_UPDATE_ACTION, aPOIElement);
+
+            Record poi = oase.getFinder().read(aPOIId);
+            updateForSync(poi, aPOIElement);
+            
+        } catch (OaseException oe) {
+            throw new UtopiaException("Cannot update poi record", oe, ErrorCode.__6006_database_irregularity_error);
+        } catch (Throwable t) {
+            throw new UtopiaException("Exception in POILogic.update() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
+        }
+    }
+
+    public void updateForSync(Record aPOI, JXElement aPOIElement) throws UtopiaException {
+        try {
+            setFields(aPOI, aPOIElement);
+            oase.getModifier().update(aPOI);
 
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot update poi record", oe, ErrorCode.__6006_database_irregularity_error);
         } catch (Throwable t) {
             throw new UtopiaException("Exception in POILogic.update() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
         }
+    }
+
+    private void setFields(Record aPOI, JXElement aPOIElement){
+        aPOI.setStringField(NAME_FIELD, aPOIElement.getChildText(NAME_FIELD));
+        aPOI.setStringField(DESCRIPTION_FIELD, aPOIElement.getChildText(DESCRIPTION_FIELD));
+        aPOI.setStringField(CATEGORY_FIELD, aPOIElement.getChildText(CATEGORY_FIELD));
+        aPOI.setStringField(TYPE_FIELD, aPOIElement.getChildText(TYPE_FIELD));
+
+        Point point = new Point(Double.parseDouble(aPOIElement.getChildText(X_FIELD)), Double.parseDouble(aPOIElement.getChildText(Y_FIELD)));
+        point.setSrid(28992);
+        PGgeometryLW geom = new PGgeometryLW(point);
+        aPOI.setObjectField(POINT_FIELD, geom);
+
+        aPOI.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+    }
+
+    /**
+     * Gets a poi by id.
+     *
+     * @throws UtopiaException Standard exception
+     */
+    public JXElement get(int aPOIId) throws UtopiaException {
+        try {
+            Record poi = oase.getFinder().read(aPOIId);
+            JXElement poiElm = poi.toXML();
+            poiElm.setTag(POI_ELM);
+            return poiElm;
+        } catch (OaseException oe) {
+            throw new UtopiaException("Cannot read poi with id " + aPOIId, oe, ErrorCode.__6006_database_irregularity_error);
+        }
+    }
+
+    /**
+     * Gets a poi by KICH ID.
+     *
+     * @throws UtopiaException Standard exception
+     */
+    public Record getRecord(String aKICHId) throws UtopiaException {
+        try {
+            Record[] pois = oase.getFinder().queryTable(POI_TABLE, KICHID_FIELD + "='" + aKICHId + "'", null,  null);
+            if(pois.length == 0) return null;
+            if(pois.length > 1) throw new UtopiaException(pois.length + " poi's found with KICHID:" + aKICHId + ". This should not have happened");
+            return pois[0];
+        } catch (OaseException oe) {
+            throw new UtopiaException("Cannot read poi with KICHID " + aKICHId, oe, ErrorCode.__6006_database_irregularity_error);
+        }
+    }
+
+    /**
+     * Gets a poi by KICH ID.
+     *
+     * @throws UtopiaException Standard exception
+     */
+    public JXElement get(String aKICHId) throws UtopiaException {
+        Record poi = getRecord(aKICHId);
+        JXElement poiElm = poi.toXML();
+        poiElm.setTag(POI_ELM);
+        return poiElm;
     }
 
     /**
@@ -139,6 +208,46 @@ public class POILogic implements Constants {
     }
 
     /**
+     * Gets all start point pois.
+     *
+     * @throws UtopiaException Standard exception
+     */
+    public Vector getStartPoints() throws UtopiaException {
+        try {
+            Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + POI_STARTPOINT + "'", null, null);
+            Vector results = new Vector(pois.length);
+            for(int i=0;i<pois.length;i++){
+                JXElement poiElm = pois[i].toXML();
+                poiElm.setTag(POI_ELM);
+                results.add(poiElm);
+            }
+            return results;
+        } catch (OaseException oe) {
+            throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
+        }
+    }
+
+    /**
+     * Gets all start point pois.
+     *
+     * @throws UtopiaException Standard exception
+     */
+    public Vector getEndPoints() throws UtopiaException {
+        try {
+            Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + POI_ENDPOINT + "'", null, null);
+            Vector results = new Vector(pois.length);
+            for(int i=0;i<pois.length;i++){
+                JXElement poiElm = pois[i].toXML();
+                poiElm.setTag(POI_ELM);
+                results.add(poiElm);
+            }
+            return results;
+        } catch (OaseException oe) {
+            throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
+        }
+    }
+
+    /**
      * Delete a poi.
      *
      * @param aPOIId a poi id
@@ -146,13 +255,15 @@ public class POILogic implements Constants {
      */
     public void delete(int aPOIId) throws UtopiaException {
         try {
-            oase.getModifier().delete(aPOIId);
+            String kichId = oase.getFinder().read(aPOIId).getStringField(KICHID_FIELD);
             JXElement poi = new JXElement(POI_ELM);
             JXElement id = new JXElement(ID_FIELD);
-            id.setText("" + aPOIId);
+            id.setText(kichId);
             poi.addChild(id);
-
             dataSource.cudPOI(POI_DELETE_ACTION, poi);
+
+            oase.getModifier().delete(aPOIId);
+
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot delete poi record with id=" + aPOIId, oe, ErrorCode.__6006_database_irregularity_error);
         }
