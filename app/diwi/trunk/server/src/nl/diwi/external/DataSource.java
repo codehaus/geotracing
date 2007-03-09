@@ -131,7 +131,10 @@ public class DataSource implements Constants {
         Properties postParams = new Properties();
         postParams.setProperty("action", anAction);
         postParams.setProperty("xml", aPOIElement.toEscapedString());
-        return postData(kichPostUrl, postParams);
+        //return postData(kichPostUrl, postParams);
+        postData(kichPostUrl, postParams);
+        // TODO: change this later - only for testing purposes
+        return new String("1261265");
     }
 
     private String postData(String aPostUrl, Hashtable thePostParams) throws UtopiaException{

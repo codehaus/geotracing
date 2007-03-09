@@ -56,6 +56,12 @@ public class POIHandler extends DefaultHandler implements Constants {
             } else if (service.equals(POI_DELETE_SERVICE)) {
                 // Delete a poi by id
                 response = deleteReq(anUtopiaReq);
+            } else if (service.equals(POI_GET_STARTPOINTS_SERVICE)) {
+                // get startpoint type pois
+                response = getStartPointsReq(anUtopiaReq);
+            } else if (service.equals(POI_GET_ENDPOINTS_SERVICE)) {
+                // get endpoint type pois
+                response = getEndPointsReq(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
