@@ -88,7 +88,7 @@
 
 	public final static String OUTPUT_JSON = "json";
 	public final static String OUTPUT_XML = "xml";
-	public static String DB_RANDOM_FUN = "RAND()";
+	public static String DB_RANDOM_FUN = "RANDOM()";
 
 	public static Oase oase;
 	public static Log log = Logging.getLog("get.jsp");

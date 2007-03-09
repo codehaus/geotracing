@@ -31,7 +31,7 @@
 			/* fields: */ null,
 			/* where:  */ "kind = 'image'",
 			/* relations: */ null,
-			/* postCond: */ "ORDER BY RAND() LIMIT 1");
+			/* postCond: */ "ORDER BY RANDOM() LIMIT 1");
 
 
 	String url = webAppURL + "/media.srv?id=" + records[0].getId();
