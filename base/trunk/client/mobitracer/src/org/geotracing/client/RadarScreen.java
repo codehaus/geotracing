@@ -18,7 +18,7 @@ import java.util.Vector;
 public class RadarScreen extends GameCanvas {
 	private static final int MIN_HIT_DIST = 20;
 	private static final int START_RADIUS = 50;
-	private static final int MAX_OBJECTS = 11;
+	private static final int MAX_OBJECTS = 10;
 	private static final String OBJECT_TYPES = "medium";
 	private static final long REFRESH_INTERVAL_MILLIS = 8000;
 	private static final int AUDIO_VOLUME = 70;
@@ -304,7 +304,7 @@ public class RadarScreen extends GameCanvas {
 					nearestObject = null;
 					int visibleObjCount = 0;
 
-					if (detects.size() < max) {
+					if (detects.size() <= max) {
 						JXElement obj;
 						int objDist, objX, objY, objW, objH;
 						String objType, objId;
@@ -363,7 +363,7 @@ public class RadarScreen extends GameCanvas {
 						if (detects.size() >= max) {
 							visibleObjCount = detects.size();
 						}
-						msg += (visibleObjCount >= max) ? "too many " : visibleObjCount + " ";
+						msg += visibleObjCount + " ";
 						if (queryTypes.equals("medium")) {
 							msg += "media";
 						} else {
