@@ -4,11 +4,13 @@
 package org.geotracing.handler;
 
 import org.geotracing.gis.GeoPoint;
+import org.geotracing.oase.PostGISUtil;
 import org.keyworx.utopia.core.data.BaseImpl;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.postgis.PGgeometryLW;
 
 /**
  * The Location data object
@@ -48,6 +50,7 @@ public class Location extends BaseImpl {
 	public static final String FIELD_TIME = "time";
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_EXTRA = "extra";
+	public static final String FIELD_POINT = "point";
 
 	public static final int VAL_TYPE_MEDIUM = 1;
 	public static final int VAL_TYPE_TRACK_PT = 2;
@@ -126,6 +129,10 @@ public class Location extends BaseImpl {
 			setRealValue(FIELD_LAT, aLat);
 			setRealValue(FIELD_ELE, anEle);
 			setLongValue(FIELD_TIME, aTime);
+
+			PGgeometryLW geom = PostGISUtil.createPointGeom(PostGISUtil.SRID_DEFAULT, aLon, aLat, anEle, aTime);
+			getRecord().setObjectField(FIELD_POINT, geom);
+
 		} catch (Throwable e) {
 			throw new UtopiaException("Exception in Location.setLocation", e);
 		}

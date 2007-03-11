@@ -1,6 +1,5 @@
-/********************************************************
- * Copyright (C)2002 - Waag Society - See license below *
- ********************************************************/
+// Copyright (c) 2000 Just Objects B.V. <just@justobjects.nl>
+// Distributable under LGPL license. See terms of license at gnu.org.$
 
 package org.geotracing.oase;
 
@@ -12,12 +11,14 @@ import org.keyworx.oase.store.source.PostgreSQLDBSource;
 import org.keyworx.oase.store.record.RecordImpl;
 import org.keyworx.oase.config.TypeDef;
 import org.keyworx.oase.config.StoreContextConfig;
+import org.keyworx.oase.util.Log;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 /**
  * JDBC extensions for PostGIS spatial columns.
@@ -28,7 +29,7 @@ import java.sql.PreparedStatement;
  * For example you can add a 2 dimensional POINT column with SRID 4326 like this:
  * &lt;field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/&gt;
  * <p/>
- * <p>
+ * <p/>
  * This maps a type OBJECT to the PostGIS class org.postgis.PGgeometryLW and set a spatial index on it.
  * </p>
  * <h3>Examples</h3>
@@ -46,6 +47,38 @@ import java.sql.PreparedStatement;
 
 public class PostGISDBSource extends PostgreSQLDBSource {
 	public static final String INDEX_GIST = "INDEX_GIST";
+
+	/**
+	 * Add column to existing table.
+	 */
+	protected void addColumn(String aTableName, String aFieldName) throws OaseException {
+		TableDef tableDef = getStoreContext().getStoreContextConfig().getTableDef(aTableName);
+		FieldDef fieldDef = tableDef.getFieldDef(aFieldName);
+
+		// Do the standard implementation when not dealing with Object (in our case spatial) columns
+		if (fieldDef.getType() != FieldDef.TYPE_OBJECT) {
+			super.addColumn(aTableName, aFieldName);
+			return;
+		}
+
+		// Add PostGIS spatial column based on field def.
+		String sql = getAddSpatialColumnSQL(tableDef, fieldDef);
+		Connection connection = null;
+		Statement statement = null;
+		try {
+			connection = getConnection();
+			statement = connection.createStatement();
+
+			// Do the add.
+			statement.execute(sql);
+
+			Log.info("Added spatial column " + aFieldName + " to " + aTableName + " sql=" + sql);
+		} catch (Throwable e) {
+			throw new OaseException("Failed addColumn() for spatial: " + sql, e);
+		} finally {
+			close(statement, connection);
+		}
+	}
 
 	/**
 	 * Update Record.
@@ -116,8 +149,7 @@ public class PostGISDBSource extends PostgreSQLDBSource {
 				nextFieldType = tableDef.getFieldDef(nextFieldName).getType();
 
 				// Skip non-db fields.
-				if (!TypeDef.getSourceId(nextFieldType).equals(StoreContextConfig.SOURCE_DB))
-				{
+				if (!TypeDef.getSourceId(nextFieldType).equals(StoreContextConfig.SOURCE_DB)) {
 					continue;
 				}
 
@@ -149,44 +181,46 @@ public class PostGISDBSource extends PostgreSQLDBSource {
 	protected String[] getPostCreateTableSQL(TableDef aTableDef) throws OaseException {
 		// For PostGIS: select spatial columns (defined as type OBJECT)
 
-		// Syntax examples:
-		// SELECT AddGeometryColumn('gistest', 'latlon_test','point', 4326,'POINT',2)";
-		// SELECT AddGeometryColumn('gistest', 'latlon_test','line',4326,'LINESTRING',2)";
 		List result = new ArrayList(1);
 		FieldDef[] fieldDefs = aTableDef.getFieldDefs();
-		FieldDef fieldDef;
-		String spec, specParms[], fieldName;
-		String dbName = dbParms.db;
-		String tableName = aTableDef.getName();
 
 		// Check all fielddefs for (spatial) columns.
 		for (int i = 0; i < fieldDefs.length; i++) {
-			fieldDef = fieldDefs[i];
-
 			// Handle spatial object fields
-			if (fieldDef.getType() == FieldDef.TYPE_OBJECT) {
-				// spec has <TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]"
-				spec = fieldDef.getConfig().getAttr("spec");
-
-				fieldName = fieldDef.getName();
-				if (spec != null && spec.length() > 0) {
-					// Add spatial column using OGC OpenGIS syntax
-					specParms = spec.split(",");
-					result.add("SELECT AddGeometryColumn('" + dbName + "', '" + tableName + "', '" + fieldName + "', " + specParms[2] + ", '" + specParms[0] + "', " + specParms[1] + "); ");
-
-					// Add spatial index if specified
-					if (specParms.length > 3) {
-						// See http://postgis.refractions.net/docs/ch04.html#id2838748
-						// CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] GIST_GEOMETRY_OPS );
-						String indexType = specParms[3];
-						if (indexType.equals(INDEX_GIST)) {
-							result.add("CREATE INDEX idx_" + tableName + fieldName + " ON " + tableName + " USING GIST ( " + fieldName + " GIST_GEOMETRY_OPS ); ");
-						}
-					}
-				}
+			if (fieldDefs[i].getType() == FieldDef.TYPE_OBJECT) {
+				result.add(getAddSpatialColumnSQL(aTableDef, fieldDefs[i]));
 			}
 		}
 		return (String[]) result.toArray(new String[result.size()]);
+	}
+
+	/** Return SQL string to create spatial column in PostGIS. */
+	protected String getAddSpatialColumnSQL(TableDef aTableDef, FieldDef aFieldDef) {
+		// PostGIS syntax examples:
+		// SELECT AddGeometryColumn('gistest', 'latlon_test','point', 4326,'POINT',2)";
+		// SELECT AddGeometryColumn('gistest', 'latlon_test','line',4326,'LINESTRING',2)";
+
+		// Oase fielddef spec attr has <TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]"
+		String spec = aFieldDef.getConfig().getAttr("spec");
+		String result = null;
+		String fieldName = aFieldDef.getName();
+		String tableName = aTableDef.getName();
+		if (spec != null && spec.length() > 0) {
+			// Add spatial column using OGC OpenGIS syntax
+			String[] specParms = spec.split(",");
+			result = "SELECT AddGeometryColumn('" + dbParms.db + "', '" + tableName + "', '" + fieldName + "', " + specParms[2] + ", '" + specParms[0] + "', " + specParms[1] + "); ";
+
+			// Add spatial index if specified
+			if (specParms.length > 3) {
+				// See http://postgis.refractions.net/docs/ch04.html#id2838748
+				// CREATE INDEX [indexname] ON [tablename] USING GIST ( [geometryfield] GIST_GEOMETRY_OPS );
+				String indexType = specParms[3];
+				if (indexType.equals(INDEX_GIST)) {
+					result += "CREATE INDEX idx_" + tableName + fieldName + " ON " + tableName + " USING GIST ( " + fieldName + " GIST_GEOMETRY_OPS ); ";
+				}
+			}
+		}
+		return result;
 	}
 }
 
