@@ -16,7 +16,8 @@
 			<field name="lon" />
 			<field name="lat" />
 			<field name="time" />
-			<field name="name" />
+			<field name="point" />
+ 			<field name="name" />
             <field name="type" />
 			<field name="state" />
   		</list>
@@ -48,6 +49,7 @@
 		<field name="creationdate" type="TIMESTAMP"/>
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="extra" type="XML" required="false"/>
+		<field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,4,4326,INDEX_GIST" />
 
 <!--
 <field name="owner" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>

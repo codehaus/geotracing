@@ -25,6 +25,8 @@
 <%@ page import="java.util.Enumeration"%>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="org.postgis.Point"%>
+<%@ page import="org.postgis.PGgeometryLW"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -38,6 +40,7 @@
 	public static final String CMD_QUERY_STORE = "q-store";
 	public static final String CMD_QUERY_ACTIVE_TRACKS = "q-active-tracks";
 	public static final String CMD_QUERY_AROUND = "q-around";
+	public static final String CMD_QUERY_AROUND2 = "q-around2";
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
 	public static final String CMD_QUERY_BY_EXAMPLE = "q-by-example";
 	public static final String CMD_QUERY_COMMENTS_FOR_TARGET = "q-comments-for-target";
@@ -544,6 +547,7 @@
 				}
 
 				result = createResponse(oase.getFinder().queryTable(exampleRecord));
+
 			} else if (command.equals(CMD_QUERY_AROUND)) {
 				// Look for items around a point with a radius
 				String locString = getParameter(request, PAR_LOC, null);
@@ -561,14 +565,13 @@
 				// String type = getParameter(request, "type", null);
 				// See http://www.petefreitag.com/item/466.cfm
 				// LAST N: select * from table where key > (select max(key) - n from table)
-				String tables = "g_location";
-				String fields = null;
-				String where = null;
+				String where = "";
 				if (typesParm != null) {
 					String[] types = typesParm.split(",");
-					where  = "";
 					for (int i=0; i < types.length; i++) {
-						if (i == 0) where += " ( ";
+						if (i == 0) {
+							where += " AND ( ";
+						}
 						if (i > 0) {
 							where += " OR ";
 						}
@@ -585,12 +588,13 @@
 						}
 
 						// Brackets
-						if (i==types.length-1) where += " ) ";
+						if (i==types.length-1) {
+							where += " ) ";
+						}
 					}
 
 				}
 
-				String relations = null;
 
 				// Calculate BBOX
 				double radius = Double.parseDouble(radiusString);
@@ -602,7 +606,7 @@
 				GeoPoint locNE = new GeoPoint(location.lon + (radius / metersPerDeg.x), location.lat + (radius / metersPerDeg.y));
 
 				String bbox = locSW.lon + "," + locSW.lat + "," + locNE.lon + "," + locNE.lat;
-				where = addBBoxConstraint(bbox, where);
+				// where = addBBoxConstraint(bbox, where);
 				// log.info("mperdeg=" + metersPerDeg.x + "," + metersPerDeg.y + " bbox=" + bbox);
 
 				// Limit
@@ -615,18 +619,30 @@
 				String postCond = " LIMIT " + limit;
 
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				Record[] records = QueryHandler.queryStore(oase, tables, fields, where, relations, postCond);
+				String box = locSW.lon + " " + locSW.lat + "," + locNE.lon + " " + locNE.lat;
+				String distanceClause = "distance_sphere(GeomFromText('POINT(" + location.lon + " " + location.lat + ")',4326),point)";
+				// SELECT * FROM g_location WHERE distance_sphere(GeomFromText('POINT(5.1 4.1)',4326),point) < 100000
+				String queryNearest =
+						"SELECT *," + distanceClause + " AS distance FROM g_location where point && SetSRID('BOX3D(" + box + ")'::box3d,4326) " + where + " order by " + distanceClause + " asc limit " + limit;
+
+				// String query= "SELECT * from g_location where point && SetSRID('BOX3D(" + box + ")'::box3d,4326) " + postCond;
+				// String query= "SELECT * from g_location where point && SetSRID('BOX3D(" + box + ")'::box3d,4326) " + postCond;
+				// Record[] records = QueryHandler.queryStore(oase, tables, fields, where, relations, postCond);
+				t1 = Sys.now();
+				Record[] records = oase.getFinder().freeQuery(queryNearest);
+				t2=Sys.now();
+				log.info("spatial querytime=" + (t2-t1));
 				result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
 				JXElement nextElm;
 				Record nextRecord;
-				GeoPoint nextPoint;
+				Point nextPoint;
 				double nextDistance;
 				Relater relater = oase.getRelater();
 				Record[] relatedRecs;
 				for (int i = 0; i < records.length; i++) {
 					nextRecord = records[i];
-					nextPoint = new GeoPoint(nextRecord.getRealField("lon"), nextRecord.getRealField("lat"));
-					nextDistance = location.distance(nextPoint) * 1000;
+					nextPoint = (Point) ((PGgeometryLW) nextRecord.getObjectField("point")).getGeometry();
+					nextDistance = nextRecord.getRealField("distance");
 					if (nextDistance > radius) {
 						continue;
 					}
@@ -674,13 +690,12 @@
 					nextElm.setChildText("user", loginName);
 					nextElm.setChildText("type", type);
 					nextElm.setChildText("time", nextRecord.getField("time").toString());
-					nextElm.setChildText("lon", nextRecord.getField("lon").toString());
-					nextElm.setChildText("lat", nextRecord.getField("lat").toString());
+					nextElm.setChildText("lon", nextPoint.getX()+"");
+					nextElm.setChildText("lat", nextPoint.getY() + "");
 					nextElm.setChildText("distance", (int) nextDistance + "");
 					result.addChild(nextElm);
 				}
 				return result;
-
 			} else if (command.equals(CMD_QUERY_ACTIVE_TRACKS)) {
 				// Niet mooi maar wel optimized!!
 				// First get all active tracks

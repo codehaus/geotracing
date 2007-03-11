@@ -9,6 +9,9 @@ import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.*;
 import org.keyworx.plugin.tagging.logic.TagLogic;
+import org.postgis.PGgeometryLW;
+import org.geotracing.handler.Location;
+import org.geotracing.oase.PostGISUtil;
 
 import java.util.HashMap;
 
@@ -65,7 +68,62 @@ public class UpgradeDaemon extends Daemon {
 		if (getContext().getBoolProperty("pois2textmedia")) {
 			migratePOIs();
 		}
+		if (getContext().getBoolProperty("locations")) {
+			migrateLocations();
+		}
 
+	}
+
+	protected void migrateLocations() {
+		try {
+			// Start
+			log.info("START MIGRATING table g_location");
+			OaseSession oase = getContext().createOaseSession().getOaseSession();
+			Modifier modifier = oase.getModifier();
+
+			// 1. get list of Locations
+			Record[] locations = oase.getFinder().readAll(Location.TABLE_NAME);
+			if (locations.length == 0) {
+				log.info("MIGRATING LOCATIONS : NOTHING TODO");
+				return;
+			}
+
+			log.info("MIGRATING LOCATIONS : processing cnt=" + locations.length);
+
+			// 2. each Location
+			//  a. get lat/lon/time/ele
+			//  b. if point column not null: create PostGIS Point geom
+			//  c. update point column
+			Record location;
+			PGgeometryLW geom;
+			int cnt=0;
+			for (int i=0; i < locations.length; i++) {
+
+				location = locations[i];
+				geom = (PGgeometryLW) location.getObjectField(Location.FIELD_POINT);
+				if (geom != null) {
+					// already has point column filled
+					continue;
+				}
+
+				log.info("MIGRATING LOCATIONS : processing location id=" + location.getId());
+
+				// Create 4D point (time is 4th dimension)
+				geom = PostGISUtil.createPointGeom(
+						PostGISUtil.SRID_WGS84,
+						location.getRealField(Location.FIELD_LON),
+						location.getRealField(Location.FIELD_LAT),
+						location.getRealField(Location.FIELD_ELE),
+						location.getLongField(Location.FIELD_TIME));
+				location.setObjectField(Location.FIELD_POINT, geom);
+				modifier.update(location);
+				cnt++;
+				log.info("MIGRATING LOCATIONS : done id=" + location.getId());
+			}
+			log.info("FINISHED MIGRATING LOCATIONS OK: cnt=" + cnt + " OUT OF " + locations.length);
+		} catch (Throwable t) {
+			log.error("ERROR MIGRATING LOCATIONS", t);
+		}
 	}
 
 	protected void migratePOIs() {
