@@ -5,7 +5,6 @@ package org.geotracing.handler;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.pushlet.core.Dispatcher;
 import nl.justobjects.pushlet.core.Event;
-import org.geotracing.gis.GeoPoint;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
@@ -15,6 +14,7 @@ import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaSessionContext;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -185,10 +185,10 @@ public class EventPublisher {
 			}
 
 			// Only if location supplied
-			GeoPoint point = aLocation.getLocation();
-			event.setField(Location.FIELD_LON, point.lon + "");
-			event.setField(Location.FIELD_LAT, point.lat + "");
-			event.setField(Location.FIELD_ELE, point.elevation + "");
+			Point point = aLocation.getPoint();
+			event.setField(Location.FIELD_LON, point.x + "");
+			event.setField(Location.FIELD_LAT, point.y + "");
+			event.setField(Location.FIELD_ELE, point.z + "");
 
 			// Send pushlet event
 			multicast(event);

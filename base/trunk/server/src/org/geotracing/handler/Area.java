@@ -4,10 +4,10 @@
 package org.geotracing.handler;
 
 import org.geotracing.gis.GeoBox;
-import org.geotracing.gis.GeoPoint;
 import org.keyworx.utopia.core.data.BaseImpl;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
 
 /**
  * The Area data object
@@ -37,7 +37,7 @@ public class Area extends BaseImpl {
 	*/
 	public static final String TABLE_NAME = "g_area";
 
-    public static final String FIELD_LON1 = "lon1";
+	public static final String FIELD_LON1 = "lon1";
 	public static final String FIELD_LAT1 = "lat1";
 	public static final String FIELD_LON2 = "lon2";
 	public static final String FIELD_LAT2 = "lat2";
@@ -96,7 +96,7 @@ public class Area extends BaseImpl {
 	 *
 	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
 	 */
-	public void setArea(GeoPoint p1, GeoPoint p2) throws UtopiaException {
+	public void setArea(Point p1, Point p2) throws UtopiaException {
 		setArea(new GeoBox(p1, p2));
 	}
 

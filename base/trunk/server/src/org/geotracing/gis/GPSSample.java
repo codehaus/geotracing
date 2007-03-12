@@ -3,8 +3,37 @@
 package org.geotracing.gis;
 
 
-public class GPSSample extends GeoPoint {
+public class GPSSample {
+	/**
+	 * Longitude ("lengtegraad") coordinate.
+	 * <p/>
+	 * Values:  -180..180. Values in fractional degrees. Negative values denote
+	 * W, western hemisphere, positive is E.
+	 */
+	public double lon;
 
+	/**
+	 * Latitude ("breedtegraad") coordinate.
+	 * <p/>
+	 * Values: -90..90. Values in fractional degrees. Negative values denote
+	 * S, southern hemisphere, positive values N(orthern).
+	 */
+	public double lat;
+
+
+	/**
+	 * Elevation coordinate in meters. 0 means no value
+	 */
+	public double elevation;
+
+	/**
+	 * Time in ms after 1970 (UNIX-time).
+	 */
+	public long timestamp;
+
+	/**
+	 * The raw NMEA data.
+	 */
 	public String rawData = "";
 
 	/**
@@ -29,12 +58,17 @@ public class GPSSample extends GeoPoint {
 	public GPSSample(double aLatitude, double aLongitude, long aTimeStamp) {
 		this(aLatitude, aLongitude, aTimeStamp, 0.0, 100);
 	}
+	
+	public GPSSample(double aLatitude, double aLongitude, long aTimeStamp, double anElevation) {
+		this(aLatitude, aLongitude, aTimeStamp, anElevation, 100);
+	}
 
 	public GPSSample(double aLatitude, double aLongitude, long aTimeStamp,
 					 double anElevation, int anAccuracy) {
-		super(aLongitude, aLatitude);
-		timestamp = aTimeStamp;
+		lon = aLongitude;
+		lat = aLatitude;
 		elevation = anElevation;
+		timestamp = aTimeStamp;
 		accuracy = anAccuracy;
 	}
 
@@ -50,6 +84,13 @@ public class GPSSample extends GeoPoint {
 		accuracy = Integer.parseInt(sampleArray[4]);
 	}
 
+	/**
+	 * Return distance between two points.
+	 */
+	public double distance(GPSSample aGPSSample) {
+		// Calculate great-circle distance in kms
+		return GISCalc.distanceKm(lat, lon, aGPSSample.lat, aGPSSample.lon);
+	}
 
 	public String toString() {
 		return "{" + timestamp + "," + lat + "," + lon + "," + elevation + "," + accuracy + "," + speed + "}";

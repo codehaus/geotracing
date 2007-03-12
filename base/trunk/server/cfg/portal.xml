@@ -78,10 +78,10 @@
 				<property name="intervalMillis">20000</property>
 			</daemon>
 
-			<!-- Daemon for various upgrades  -->
+			<!-- Daemon for various upgrades
 			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
 				<property name="locations">true</property>
-			</daemon>
+			</daemon>        -->
 
 		</daemons>
 	</application>

@@ -24,7 +24,6 @@ public class GPSDecoder {
 
 	private BufferedReader reader;
 	private static String startYYMMDD;
-	private static GPSSample lastSample;
 
 	/**
 	 * Needed since GPS is 2 hours too early.
@@ -61,7 +60,6 @@ public class GPSDecoder {
 	// Convert to dd.ddddd
 	public static void setStartDate(String YYMMDD) {
 		startYYMMDD = YYMMDD;
-		lastSample = null;
 	}
 
 	// Convert to dd.ddddd
@@ -95,7 +93,7 @@ public class GPSDecoder {
 				}
 
 				// p("GGA time=" + tokens[1] + " lat=" + tokens[2] + tokens[3] + " long=" + tokens[4] + tokens[5]);
-				geoSample = new GPSSample(parseLatitude(tokens[2], tokens[3]), parseLongitude(tokens[4], tokens[5]), parseTime(tokens[1]));
+				geoSample = new GPSSample(parseLatitude(tokens[2], tokens[3]), parseLongitude(tokens[4], tokens[5]), parseTime(tokens[1]), parseElevation(tokens[9]));
 				geoSample.rawData = aLine;
 
 				// Horizontal Dilution of Precision
@@ -123,7 +121,6 @@ public class GPSDecoder {
 					// System.out.println("GGA speed=" + geoSample.speed);
 				} */
 
-				lastSample = geoSample;
 
 			}
 			/*
@@ -152,9 +149,7 @@ public class GPSDecoder {
 				geoSample = new GPSSample(parseLatitude(tokens[3], tokens[4]), parseLongitude(tokens[5], tokens[6]), parseTime(tokens[1]));
 				geoSample.speed = parseSpeed(tokens[7]);
 				// p("RMC time=" + tokens[1] + " lat=" + tokens[3] + tokens[4] + " long=" + tokens[5] + tokens[6]);
-
-				lastSample = geoSample;
-			} else {
+		} else {
 			}
 		} catch (Throwable t) {
 			p("ERROR: " + t);
@@ -184,6 +179,10 @@ public class GPSDecoder {
 
 	}
 
+	// Convert to dd.ddddd
+	private static double parseElevation(String aStr) {
+		return Double.parseDouble(aStr);
+	}
 
 	// Convert to dd.ddddd
 	private static double parseSpeed(String aKnotsStr) {

@@ -6,7 +6,6 @@ package org.geotracing.daemon;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
 import org.geotracing.gis.GPSSample;
-import org.geotracing.gis.GeoPoint;
 import org.geotracing.gis.GoogleTiles;
 import org.keyworx.common.util.IO;
 
@@ -578,7 +577,7 @@ public class MapDrawer extends Component {
 			}
 		}
 
-		public MapTile getMapTile(GeoPoint aPoint, int aZoom) {
+		public MapTile getMapTile(GPSSample aPoint, int aZoom) {
 			String khRef = GoogleTiles.getKeyholeRef(aPoint.lon, aPoint.lat, aZoom);
 			MapTile mapTile = (MapTile) mapTilesTable.get(khRef);
 			if (mapTile == null) {

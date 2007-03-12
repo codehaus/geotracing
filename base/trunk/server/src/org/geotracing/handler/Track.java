@@ -8,26 +8,24 @@ import nl.justobjects.jox.parser.JXBuilder;
 import nl.justobjects.jox.parser.JXBuilderListener;
 import org.geotracing.gis.GPSDecoder;
 import org.geotracing.gis.GPSSample;
-import org.geotracing.gis.GeoPoint;
 import org.geotracing.gis.GeoBox;
-import org.geotracing.handler.Area;
-import org.geotracing.handler.Location;
+import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.IO;
 import org.keyworx.common.util.Sys;
 import org.keyworx.oase.api.FileField;
+import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.Transaction;
-import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.store.record.FileFieldImpl;
 import org.keyworx.utopia.core.data.BaseImpl;
 import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.utopia.core.util.Core;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
 
-import java.io.FileInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -202,46 +200,47 @@ public class Track extends BaseImpl {
 					}
 
 					// Get current value of last point
-					GeoPoint lastPoint = lastLocation.getLocation();
-
+					Point lastPoint = lastLocation.getPoint();
+					Point newPoint = null;
 					// Handle GPS sample data
 					if (nextElement.hasAttr(ATTR_NMEA)) {
 						// Parse the NMEA line
-						GPSSample geoSample = GPSDecoder.parseSample(nextElement.getAttr(ATTR_NMEA));
+						GPSSample gpsSample = GPSDecoder.parseSample(nextElement.getAttr(ATTR_NMEA));
 
 						// Skip on parse error
-						if (geoSample == null) {
+						if (gpsSample == null) {
 							log.warn("Cannot parse NMEA line : " + nextElement.getAttr(ATTR_NMEA));
 							invalidSamples.add(nextElement);
 							continue;
 						}
 
 						// NOTE: always use time explicitly send by client (never GPS time)
-						geoSample.timestamp = nextElement.getLongAttr(ATTR_TIME);
+						gpsSample.timestamp = nextElement.getLongAttr(ATTR_TIME);
+						newPoint = PostGISUtil.createPoint(gpsSample);
 
 						// Transer parsed location values to point element
-						nextElement.setAttr(ATTR_LON, LAT_LON_FORMAT.format(geoSample.lon));
-						nextElement.setAttr(ATTR_LAT, LAT_LON_FORMAT.format(geoSample.lat));
-						nextElement.setAttr(ATTR_ELE, geoSample.elevation);
-						nextElement.setAttr(ATTR_ACCURACY, geoSample.accuracy);
+						nextElement.setAttr(ATTR_LON, LAT_LON_FORMAT.format(gpsSample.lon));
+						nextElement.setAttr(ATTR_LAT, LAT_LON_FORMAT.format(gpsSample.lat));
+						nextElement.setAttr(ATTR_ELE, gpsSample.elevation);
+						nextElement.setAttr(ATTR_ACCURACY, gpsSample.accuracy);
 
 						// Always calc speed even if provided by GPS (GPRMC)
                         // We don't use GPS-provided speed since this may be from
                         // a "spike" and thus an erroneous sample.
-                        if (pointCount > 1) {
-							geoSample.speed = lastPoint.speed(geoSample);
+                        if (lastPoint != null) {
+							gpsSample.speed = PostGISUtil.speed(lastPoint, newPoint);
 
 							// Check for unreasonable speed (GPS error)
 							// TODO: fix; we may have a sick case where the very first sample is erroneous
-							if (geoSample.speed > MAX_SPEED) {
-								log.warn("track-" + getId() + " Discard sample speed=" +geoSample.speed + " s=" + nextElement.getAttr(ATTR_NMEA));
+							if (gpsSample.speed > MAX_SPEED) {
+								log.warn("track-" + getId() + " Discard sample speed=" +gpsSample.speed + " s=" + nextElement.getAttr(ATTR_NMEA));
 								invalidSamples.add(nextElement);
 								continue;
 							}
 						}
 
 						// Always set speed
-						nextElement.setAttr(ATTR_SPEED, SPEED_FORMAT.format(geoSample.speed));
+						nextElement.setAttr(ATTR_SPEED, SPEED_FORMAT.format(gpsSample.speed));
 					} else if (nextElement.hasAttr(ATTR_LON) && nextElement.hasAttr(ATTR_LAT)) {
 						// Data already in lon,lat
 						nextElement.setAttr(ATTR_LON, LAT_LON_FORMAT.format(nextElement.getDoubleAttr(ATTR_LON)));
@@ -257,20 +256,20 @@ public class Track extends BaseImpl {
 						if (!nextElement.hasAttr(ATTR_ACCURACY)) {
 							nextElement.setAttr(ATTR_ACCURACY, 100);
 						}
+						newPoint = PostGISUtil.createPoint(nextElement.getDoubleAttr(ATTR_LON), nextElement.getDoubleAttr(ATTR_LAT), nextElement.getDoubleAttr(ATTR_ELE), nextElement.getLongAttr(ATTR_TIME));
 					}
 
 					setIntValue(FIELD_PTCOUNT, ++pointCount);
 
 					// Create object for new point
-					GeoPoint newPoint = new GeoPoint(nextElement.getDoubleAttr(ATTR_LON), nextElement.getDoubleAttr(ATTR_LAT), nextElement.getDoubleAttr(ATTR_ELE), nextElement.getLongAttr(ATTR_TIME));
-					if (!nextElement.hasAttr(ATTR_SPEED) && pointCount > 0) {
-						nextElement.setAttr(ATTR_SPEED, SPEED_FORMAT.format(lastPoint.speed(newPoint)));
+					if (!nextElement.hasAttr(ATTR_SPEED) && pointCount > 1) {
+						nextElement.setAttr(ATTR_SPEED, SPEED_FORMAT.format(PostGISUtil.speed(lastPoint,newPoint)));
 					}
 
 					// Update first Location only on first point
 					if (pointCount == 1) {
 						firstLocation = (Location) getRelatedObject(Location.class, REL_TAG_FIRST_PT);
-						firstLocation.setLocation(newPoint);
+						firstLocation.setPoint(newPoint);
 					}
 
 					// Update total distance if at least two points in Track
@@ -278,7 +277,7 @@ public class Track extends BaseImpl {
 						double distance = getRealValue(FIELD_DISTANCE);
 
 						// Use last Location
-						distance += lastPoint.distance(newPoint);
+						distance += PostGISUtil.distance(lastPoint, newPoint);
 
 						// Set formatted distance
 						setRealValue(FIELD_DISTANCE, Double.parseDouble(DISTANCE_FORMAT.format(distance)));
@@ -300,7 +299,7 @@ public class Track extends BaseImpl {
 					}
 
 					// Always update the last Location
-					lastLocation.setLocation(newPoint);
+					lastLocation.setPoint(newPoint);
 				}
 
 				// Remember last event

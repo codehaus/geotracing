@@ -12,8 +12,6 @@ import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.session.*;
 import org.keyworx.utopia.core.util.Oase;
-import org.geotracing.handler.EventPublisher;
-import org.geotracing.handler.Location;
 
 import java.io.File;
 import java.sql.Timestamp;
