@@ -119,7 +119,7 @@ public class PostGISUtil {
 	public static double speed(Point point1, Point point2) {
 		if (point1.getSrid() == SRID_WGS84) {
 			// Calculate great-circle distance in kms
-			return GISCalc.speedKmh(point1.y, point1.x, (long) point1.m, point2.y, point2.x, (long) point1.m);
+			return GISCalc.speedKmh(point1.y, point1.x, (long) point1.m, point2.y, point2.x, (long) point2.m);
 		} else {
 			// Calculate distance in SRID system (Pythagoras), e.g. meters in NL RD
 			throw new IllegalArgumentException("speed for this SRID not (yet) supported");
