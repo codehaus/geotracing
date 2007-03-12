@@ -1,6 +1,8 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement,org.keyworx.oase.api.MediaFiler" %>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="org.postgis.PGgeometryLW"%>
+<%@ page import="org.postgis.Point"%>
 <%@ include file="../model.jsp" %>
 <%
 	int id = Integer.parseInt(request.getParameter("id"));
@@ -61,7 +63,11 @@
 
 	String locationInfo = "no related location";
 	if (location != null) {
-		locationInfo = location.getField("lon") + ", " + location.getField("lat");
+		PGgeometryLW geom = (PGgeometryLW) location.getObjectField("point");
+		if (geom != null) {
+			Point point = (Point) geom.getGeometry();
+			locationInfo = point.x + ", " + point.y;
+		}
 	}
 
 %>

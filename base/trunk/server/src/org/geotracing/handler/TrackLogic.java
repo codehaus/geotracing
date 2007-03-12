@@ -4,11 +4,7 @@
 package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.gis.GeoPoint;
-import org.geotracing.handler.Area;
-import org.geotracing.handler.Location;
-import org.geotracing.handler.Track;
-import org.geotracing.handler.TrackExport;
+import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
@@ -17,14 +13,15 @@ import org.keyworx.oase.store.record.FileFieldImpl;
 import org.keyworx.server.ServerConfig;
 import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.HashMap;
 
 /**
  * Implements logic for Track manipulation.
@@ -149,8 +146,8 @@ public class TrackLogic {
 			// OK a track found
 
 			// Find nearest point in time within track
-			GeoPoint geoPoint = getPointByDate(track, aDate);
-			if (geoPoint == null) {
+			Point point = getPointByDate(track, aDate);
+			if (point == null) {
 				log.warn("Cannot find GeoPoint for person=" + aPersonId + " record=" + aRecordId + " tag=" + aTag);
 				throw new UtopiaException("Cannot find GeoPoint for record=" + aRecordId + " tag=" + aTag);
 			}
@@ -162,7 +159,7 @@ public class TrackLogic {
 
 			// Create and relate location record
 			Location location = Location.create(oase);
-			location.setLocation(geoPoint);
+			location.setPoint(point);
 			location.setStringValue(Location.FIELD_NAME, "Location for " + aTag);
 
 			location.saveInsert();
@@ -468,7 +465,7 @@ public class TrackLogic {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
-	public GeoPoint getPointByDate(int aPersonId, long aDate) throws UtopiaException {
+	public Point getPointByDate(int aPersonId, long aDate) throws UtopiaException {
 		// Find the Track(s) for the timestamp
 		Track track = getTrackByDateAndPerson(aDate, aPersonId);
 		if (track == null) {
@@ -496,8 +493,8 @@ public class TrackLogic {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
-	public GeoPoint getPointByDate(Track aTrack, long aDate) throws UtopiaException {
-		GeoPoint point = null;
+	public Point getPointByDate(Track aTrack, long aDate) throws UtopiaException {
+		Point point = null;
 		try {
 
 			Vector elements = aTrack.getDataElements();
@@ -519,7 +516,7 @@ public class TrackLogic {
 					continue;
 				} else {
 					// Found it!
-					point = new GeoPoint(nextElement.getDoubleAttr(Track.ATTR_LON),
+					point = PostGISUtil.createPoint(nextElement.getDoubleAttr(Track.ATTR_LON),
 							nextElement.getDoubleAttr(Track.ATTR_LAT), nextElement.getDoubleAttr(Track.ATTR_ELE), aDate);
 					break;
 				}
@@ -533,7 +530,7 @@ public class TrackLogic {
 					return null;
 				} else {
 					log.trace("using lastElement...");
-					point = new GeoPoint(lastElement.getDoubleAttr(Track.ATTR_LON),
+					point = PostGISUtil.createPoint(lastElement.getDoubleAttr(Track.ATTR_LON),
 							lastElement.getDoubleAttr(Track.ATTR_LAT), lastElement.getDoubleAttr(Track.ATTR_ELE), aDate);
 
 				}
@@ -556,7 +553,7 @@ public class TrackLogic {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
-	public GeoPoint getPointByDateAndPerson(long aDate, int aPersonId) throws UtopiaException {
+	public Point getPointByDateAndPerson(long aDate, int aPersonId) throws UtopiaException {
 		// get all Tracks for person on date
 		Track track = getTrackByDateAndPerson(aDate, aPersonId);
 		if (track == null) {
@@ -744,13 +741,13 @@ public class TrackLogic {
 					JXElement nextWpt = (JXElement) wptElms.elementAt(i);
 
 					// Height (elevation)
-					String ele = nextWpt.getChildText("ele");
-					if (ele == null) {
-						ele = "0.0";
+					String eleStr = nextWpt.getChildText("ele");
+					if (eleStr == null) {
+						eleStr = "0.0";
 					}
 
 					// Assuming lon/lat is ok.
-					GeoPoint geoPoint = new GeoPoint(nextWpt.getAttr("lon"), nextWpt.getAttr("lat"), ele);
+					Point geoPoint = PostGISUtil.createPoint(nextWpt.getAttr("lon"), nextWpt.getAttr("lat"), eleStr);
 
 					// Handle time (optional)
 					String time = nextWpt.getChildText("time");
@@ -765,7 +762,7 @@ public class TrackLogic {
 								timeMillis = Long.parseLong(time); // try for unix time
 							}
 							if (timeMillis != -1) {
-								geoPoint.timestamp = timeMillis;
+								geoPoint.setM(timeMillis);
 							}
 						} catch (ParseException pe) {
 							throw new UtopiaException("Cannot parse time element in GPX: " + time, ErrorCode.__6004_Invalid_attribute_value);
@@ -817,7 +814,7 @@ public class TrackLogic {
 
 					// Create location record
 					Location location = Location.create(oase);
-					location.setLocation(geoPoint);
+					location.setPoint(geoPoint);
 					location.setStringValue(Location.FIELD_NAME, "Location for " + REL_TAG_MEDIUM);
 					location.saveInsert();
 
@@ -893,23 +890,23 @@ public class TrackLogic {
 	 * Update last user location.
 	 *
 	 * @param aPerson   a person
-	 * @param aGeoPoint location
+	 * @param aPoint location
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
-	public void updateUserLocation(Person aPerson, GeoPoint aGeoPoint) throws UtopiaException {
+	public void updateUserLocation(Person aPerson, Point aPoint) throws UtopiaException {
 		Location lastUserLocation = (Location) aPerson.getRelatedObject(Location.class, RELTAG_USER_LAST_LOCATION);
 		if (lastUserLocation == null) {
 			lastUserLocation = Location.create(oase);
 			lastUserLocation.setStringValue(Location.FIELD_NAME, aPerson.getAccount().getLoginName());
 			lastUserLocation.setStringValue(Location.FIELD_DESCRIPTION, "Last location for " + aPerson.getFirstName() + " " + aPerson.getLastName());
-			lastUserLocation.setLocation(aGeoPoint);
+			lastUserLocation.setPoint(aPoint);
 			lastUserLocation.setIntValue(Location.FIELD_TYPE, Location.VAL_TYPE_USER_LOC);
 			lastUserLocation.saveInsert();
 			aPerson.createRelation(lastUserLocation, RELTAG_USER_LAST_LOCATION);
 			log.info("New last user location created for " + aPerson.getAccount().getLoginName());
 		} else {
-			lastUserLocation.setLocation(aGeoPoint);
+			lastUserLocation.setPoint(aPoint);
 			lastUserLocation.saveUpdate();
 		}
 	}
@@ -974,7 +971,7 @@ public class TrackLogic {
 		// Update the last location of the user
 		Location lastTrackLocation = (Location) track.getRelatedObject(Location.class, Track.REL_TAG_LAST_PT);
 		if (lastTrackLocation != null) {
-			updateUserLocation((Person) track.getRelatedObject(Person.class), lastTrackLocation.getLocation());
+			updateUserLocation((Person) track.getRelatedObject(Person.class), lastTrackLocation.getPoint());
 		}
 
 		log.trace("End write OK track=" + track + " count=" + result.size());

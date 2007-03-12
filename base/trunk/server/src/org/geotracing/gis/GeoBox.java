@@ -2,6 +2,8 @@
 // Distributable under LGPL license. See terms of license at gnu.org.$
 package org.geotracing.gis;
 
+import org.postgis.Point;
+
 /**
  * Rectangle of two lon,lat coordinates in resp SW and NE.
  *
@@ -22,8 +24,8 @@ public class GeoBox {
 	public GeoBox() {
 	}
 
-	public GeoBox(GeoPoint p1, GeoPoint p2) {
-		this(p1.lon, p1.lat, p2.lon, p2.lat);
+	public GeoBox(Point p1, Point p2) {
+		this(p1.x, p1.y, p2.x, p2.y);
 	}
 
 	public GeoBox(double aLon1, double aLat1, double aLon2, double aLat2) {
@@ -38,14 +40,14 @@ public class GeoBox {
 	/**
 	 * Is point inside the box ?.
 	 */
-	public boolean isInside(GeoPoint p) {
-		return p.lon >= lon1 && p.lon <= lon2 && p.lat >= lat1 && p.lat <= lat2;
+	public boolean isInside(Point p) {
+		return p.x >= lon1 && p.x <= lon2 && p.y >= lat1 && p.y <= lat2;
 	}
 
 	/**
 	 * Expand box if point outside.
 	 */
-	public boolean expand(GeoPoint p) {
+	public boolean expand(Point p) {
 		// No expand if point inside box
 		if (isInside(p)) {
 			return false;
@@ -54,16 +56,16 @@ public class GeoBox {
 		// Need to grow the box
 
 		// West expansion ?
-		lon1 = p.lon < lon1 ? p.lon : lon1;
+		lon1 = p.x < lon1 ? p.x : lon1;
 
 		// East expansion ?
-		lon2 = p.lon > lon2 ? p.lon : lon2;
+		lon2 = p.x > lon2 ? p.x : lon2;
 
 		// South expansion ?
-		lat1 = p.lat < lat1 ? p.lat : lat1;
+		lat1 = p.y < lat1 ? p.y : lat1;
 
 		// North expansion ?
-		lat2 = p.lat > lat2 ? p.lat : lat2;
+		lat2 = p.y > lat2 ? p.y : lat2;
 
 		return true;
 	}

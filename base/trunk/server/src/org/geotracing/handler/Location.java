@@ -3,19 +3,19 @@
 
 package org.geotracing.handler;
 
-import org.geotracing.gis.GeoPoint;
-import org.geotracing.oase.PostGISUtil;
+import org.geotracing.gis.PostGISUtil;
+import org.keyworx.oase.api.OaseException;
+import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.BaseImpl;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.oase.api.OaseException;
-import org.keyworx.oase.api.Record;
 import org.postgis.PGgeometryLW;
+import org.postgis.Point;
 
 /**
  * The Location data object
  *
- * @author   Just van den Broecke
+ * @author Just van den Broecke
  * @version $Id$
  */
 public class Location extends BaseImpl {
@@ -56,7 +56,9 @@ public class Location extends BaseImpl {
 	public static final int VAL_TYPE_TRACK_PT = 2;
 	public static final int VAL_TYPE_USER_LOC = 3;
 
-	/** Default constructor. */
+	/**
+	 * Default constructor.
+	 */
 	public Location() {
 		super(TABLE_NAME);
 	}
@@ -64,18 +66,19 @@ public class Location extends BaseImpl {
 	/**
 	 * Creates a new Location (but does not insert into DB).
 	 *
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
 	 */
 	static public Location create(Oase anOase) throws UtopiaException {
 		return (Location) anOase.get(Location.class);
 	}
 
 	/**
-	 * Creates a relation between this Track and a Record.
+	 * Creates a relation between this Location and a Record.
 	 *
 	 * @param aRecordId The record id of the target object.
-	 * @param aTag optional relation tag.
-	 * @exception UtopiaException Standard exception
+	 * @param aTag	  optional relation tag.
+	 * @throws UtopiaException Standard exception
 	 */
 	public void createRelation(int aRecordId, String aTag) throws UtopiaException {
 		try {
@@ -86,11 +89,11 @@ public class Location extends BaseImpl {
 	}
 
 	/**
-	 * Creates a relation between this Track and a Record.
+	 * Creates a relation between this Location and a Record.
 	 *
 	 * @param aRecord The record of the target object.
-	 * @param aTag optional relation tag.
-	 * @exception UtopiaException Standard exception
+	 * @param aTag	optional relation tag.
+	 * @throws UtopiaException Standard exception
 	 */
 	public void createRelation(Record aRecord, String aTag) throws UtopiaException {
 		try {
@@ -101,41 +104,27 @@ public class Location extends BaseImpl {
 	}
 
 	/**
-	 * Get lon,lat, elevation and time values.
+	 * Get lon,lat,elevation and time values.
 	 *
 	 * @return a GeoPoint
 	 */
-	public GeoPoint getLocation() {
-		return new GeoPoint(getRealValue(FIELD_LON), getRealValue(FIELD_LAT), getRealValue(FIELD_ELE), getLongValue(FIELD_TIME));
+	public Point getPoint() {
+		PGgeometryLW geom = (PGgeometryLW) getRecord().getObjectField(FIELD_POINT);
+		return (Point) (geom != null ? geom.getGeometry() : null);
 	}
 
 	/**
-	 * Set lon,lat and time values.
+	 * Set Point value.
 	 *
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
 	 */
-	public void setLocation(GeoPoint aGeoPoint) throws UtopiaException {
-		setLocation(aGeoPoint.lon, aGeoPoint.lat, aGeoPoint.elevation, aGeoPoint.timestamp);
-	}
+	public void setPoint(Point aPoint) throws UtopiaException {
+		// For the time being we set conventional columns as well...
+		setOldAttrs(aPoint.x, aPoint.y, aPoint.z, (long) aPoint.m);
 
-	/**
-	 * Set lon,lat and time values.
-	 *
-	 * @exception org.keyworx.utopia.core.data.UtopiaException Standard exception
-	 */
-	public void setLocation(double aLon, double aLat, double anEle, long aTime) throws UtopiaException {
-		try {
-			setRealValue(FIELD_LON, aLon);
-			setRealValue(FIELD_LAT, aLat);
-			setRealValue(FIELD_ELE, anEle);
-			setLongValue(FIELD_TIME, aTime);
-
-			PGgeometryLW geom = PostGISUtil.createPointGeom(PostGISUtil.SRID_DEFAULT, aLon, aLat, anEle, aTime);
-			getRecord().setObjectField(FIELD_POINT, geom);
-
-		} catch (Throwable e) {
-			throw new UtopiaException("Exception in Location.setLocation", e);
-		}
+		// Update geometry column using PostGIS Geometry wrapper
+		getRecord().setObjectField(FIELD_POINT, new PGgeometryLW(aPoint));
 	}
 
 	/**
@@ -144,10 +133,25 @@ public class Location extends BaseImpl {
 	 * @return the string
 	 */
 	public String toString() {
+		Point point = getPoint();
+		return point != null ? point.toString() : "empty";
+	}
+
+	/**
+	 * Set lon,lat and time values (for forward compat, to be removed).
+	 *
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
+	 */
+	protected void setOldAttrs(double aLon, double aLat, double anEle, long aTime) throws UtopiaException {
 		try {
-			return getLocation().toString();
-		} catch (Throwable t) {
-			return "error";
+			// For the time being we set conventional columns as well...
+			setRealValue(FIELD_LON, aLon);
+			setRealValue(FIELD_LAT, aLat);
+			setRealValue(FIELD_ELE, anEle);
+			setLongValue(FIELD_TIME, aTime);
+		} catch (Throwable e) {
+			throw new UtopiaException("Exception in Location.setOldAttrs", e);
 		}
 	}
 }

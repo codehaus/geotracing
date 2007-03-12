@@ -9,9 +9,9 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.MD5;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.plugin.tagging.logic.TagLogic;
 
 /**
  * Performs user profile management actions.

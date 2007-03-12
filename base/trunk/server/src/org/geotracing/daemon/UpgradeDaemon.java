@@ -11,7 +11,7 @@ import org.keyworx.oase.api.*;
 import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.postgis.PGgeometryLW;
 import org.geotracing.handler.Location;
-import org.geotracing.oase.PostGISUtil;
+import org.geotracing.gis.PostGISUtil;
 
 import java.util.HashMap;
 

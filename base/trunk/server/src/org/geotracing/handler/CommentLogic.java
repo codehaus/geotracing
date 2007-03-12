@@ -7,8 +7,8 @@ import org.keyworx.common.util.IO;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 
 import java.util.Properties;

@@ -2,10 +2,10 @@
 // Distributable under LGPL license. See terms of license at gnu.org.$
 package org.geotracing.handler;
 
+import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
-import nl.justobjects.jox.dom.JXElement;
 
 /**
  * Handles all operations related to Tracks.

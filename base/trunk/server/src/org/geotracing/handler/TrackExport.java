@@ -5,6 +5,8 @@ package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXAttributeTable;
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.gis.GPSSample;
+import org.keyworx.amuse.core.Amuse;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
@@ -12,10 +14,6 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.amuse.core.Amuse;
-import org.geotracing.gis.GPSSample;
-import org.geotracing.handler.Location;
-import org.geotracing.handler.Track;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

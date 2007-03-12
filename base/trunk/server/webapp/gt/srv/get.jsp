@@ -1,6 +1,4 @@
 <%@ page import="nl.justobjects.jox.parser.JXBuilder,
-				 org.geotracing.gis.GeoPoint,
-				 org.geotracing.gis.XYDouble,
 				 org.geotracing.handler.*,
 				 org.keyworx.amuse.core.Amuse,
 				 org.keyworx.amuse.core.Protocol,
@@ -27,6 +25,8 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="org.postgis.Point"%>
 <%@ page import="org.postgis.PGgeometryLW"%>
+<%@ page import="org.geotracing.gis.PostGISUtil"%>
+<%@ page import="org.geotracing.gis.GISCalc"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
@@ -117,13 +117,20 @@
 
 	/** Adds Bounding box WHERE constraint. */
 	public String addBBoxConstraint(String bboxParm, String where) throws Exception {
+		// point && SetSRID('BOX3D(2 2, 6 5)'::box3d,4326)
 		String[] bbox = bboxParm.split(",");
 		where = where == null ? "" : where + " AND";
-		where = where
+		/* where = where
 				+ " g_location.lon >= " + bbox[0]
 				+ " AND g_location.lat >= " + bbox[1]
 				+ " AND g_location.lon <= " + bbox[2]
-				+ " AND g_location.lat <= " + bbox[3];
+				+ " AND g_location.lat <= " + bbox[3];   */
+
+		where = where + "g_location.point && SetSRID('BOX3D("
+				+ bbox[0] + " "
+				+ bbox[1] + ","
+				+ bbox[2] + " "
+				+ bbox[3] + ")'::box3d,4326)";
 		return where;
 	}
 
@@ -148,6 +155,7 @@
 		String recordId;
 		Record record;
 		Record[] locationRecords;
+		Point nextPoint;
 		for (int i = 0; i < records.size(); i++) {
 			nextRecordElm = (JXElement) records.get(i);
 
@@ -163,7 +171,7 @@
 			// Get related location
 			if (aTableName != null && aTableName.equals("base_medium")) {
 				String tables = "base_medium,g_location";
-				String fields = "g_location.lon,g_location.lat";
+				String fields = "g_location.point";
 				String where = "base_medium.id = " + recordId;
 				String relations = "base_medium,g_location";
 				locationRecords = QueryHandler.queryStore(oase, tables, fields, where, relations, null);
@@ -178,13 +186,14 @@
 				locationRecords = relater.getRelated(record, "g_location", null);
 			}
 
-			if (locationRecords.length == 0) {
+			if (locationRecords.length == 0 || locationRecords[0].getObjectField("point") == null) {
 				continue;
 			}
 
 			// Add the location attrs
-			nextRecordElm.setChildText("lon", locationRecords[0].getField("lon").toString());
-			nextRecordElm.setChildText("lat", locationRecords[0].getField("lat").toString());
+			nextPoint = (Point) ((PGgeometryLW) locationRecords[0].getObjectField("point")).getGeometry();
+			nextRecordElm.setChildText("lon", nextPoint.getX()+"");
+			nextRecordElm.setChildText("lat", nextPoint.getY()+"");
 
 			// Add to response
 			rsp.addChild(nextRecordElm);
@@ -596,18 +605,16 @@
 				}
 
 
-				// Calculate BBOX
+				// Calculate BBOX around point
 				double radius = Double.parseDouble(radiusString);
 				String[] lonLatString = locString.split(",");
-				GeoPoint location = new GeoPoint(lonLatString[0], lonLatString[1]);
-				XYDouble metersPerDeg = location.metersPerDegree();
+				Point location = PostGISUtil.createPoint(lonLatString[0], lonLatString[1]);
+				double metersPerDegLon = GISCalc.metersPerDegreeLon(location.y, location.x);
+				double metersPerDegLat = GISCalc.metersPerDegreeLon(location.y, location.x);
 
-				GeoPoint locSW = new GeoPoint(location.lon - (radius / metersPerDeg.x), location.lat - (radius / metersPerDeg.y));
-				GeoPoint locNE = new GeoPoint(location.lon + (radius / metersPerDeg.x), location.lat + (radius / metersPerDeg.y));
 
-				String bbox = locSW.lon + "," + locSW.lat + "," + locNE.lon + "," + locNE.lat;
-				// where = addBBoxConstraint(bbox, where);
-				// log.info("mperdeg=" + metersPerDeg.x + "," + metersPerDeg.y + " bbox=" + bbox);
+				Point locSW = new Point(location.x - (radius / metersPerDegLon), location.y - (radius / metersPerDegLat));
+				Point locNE = new Point(location.x + (radius / metersPerDegLon), location.y + (radius / metersPerDegLat));
 
 				// Limit
 				int limit = Integer.parseInt(limitParm);
@@ -619,8 +626,8 @@
 				String postCond = " LIMIT " + limit;
 
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
-				String box = locSW.lon + " " + locSW.lat + "," + locNE.lon + " " + locNE.lat;
-				String distanceClause = "distance_sphere(GeomFromText('POINT(" + location.lon + " " + location.lat + ")',4326),point)";
+				String box = locSW.x + " " + locSW.y + "," + locNE.x + " " + locNE.y;
+				String distanceClause = "distance_sphere(GeomFromText('POINT(" + location.x + " " + location.y + ")',4326),point)";
 				// SELECT * FROM g_location WHERE distance_sphere(GeomFromText('POINT(5.1 4.1)',4326),point) < 100000
 				String queryNearest =
 						"SELECT *," + distanceClause + " AS distance FROM g_location where point && SetSRID('BOX3D(" + box + ")'::box3d,4326) " + where + " order by " + distanceClause + " asc limit " + limit;
@@ -848,15 +855,18 @@
 				String postCond;
 
 				// WHERE clause
-				// Optional media type
-				String type = getParameter(request, "type", null);
-				if (type != null) {
-					where = "base_medium.kind = '" + type + "'";
-				}
 
+				// Optional bounding box
 				String bboxParm = getParameter(request, PAR_BBOX, null);
 				if (bboxParm != null) {
 					where = addBBoxConstraint(bboxParm, where);
+				}
+
+				// Optional media type
+				String type = getParameter(request, "type", null);
+				if (type != null) {
+					where = (where != null ? where + " AND " : "");
+					where += ("base_medium.kind = '" + type + "'");
 				}
 
 				// POSTCONDITION
@@ -1056,10 +1066,10 @@
 				if (activeTrack != null) {
 					Location loc = (Location) activeTrack.getRelatedObject(Location.class, "lastpt");
 					if (loc != null) {
-						GeoPoint pt = loc.getLocation();
-						userInfo.setChildText("lon", pt.lon + "");
-						userInfo.setChildText("lat", pt.lat + "");
-						userInfo.setChildText("lonlattime", pt.timestamp + "");
+						Point pt = loc.getPoint();
+						userInfo.setChildText("lon", pt.getX() + "");
+						userInfo.setChildText("lat", pt.getY() + "");
+						userInfo.setChildText("lonlattime", (long) pt.getM() + "");
 					}
 				}
 
