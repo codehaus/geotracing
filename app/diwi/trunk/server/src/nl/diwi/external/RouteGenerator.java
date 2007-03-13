@@ -1,22 +1,14 @@
 package nl.diwi.external;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Vector;
-
 import nl.diwi.util.Constants;
-import nl.diwi.util.PostGISUtil;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
-
-import org.geotracing.gis.GeoPoint;
-
-import org.keyworx.server.ServerConfig;
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.utopia.core.util.XML;
-import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.keyworx.server.ServerConfig;
+import org.postgis.Point;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class RouteGenerator implements Constants {
 	
@@ -53,7 +45,7 @@ public class RouteGenerator implements Constants {
 		return resultRoute;
 	}
 	
-	public JXElement generateShortestRoute(GeoPoint from, GeoPoint to) {
+	public JXElement generateShortestRoute(Point from, Point to) {
 		JXElement route = null;
 		
 		//JXBuilder().build(new URL());
