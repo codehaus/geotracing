@@ -10,6 +10,7 @@
 	<property name="siteurl" host="berlin">http://test.digitalewichelroede.nl</property>
 	<property name="webappurl" host="berlin">http://test.digitalewichelroede.nl/diwi</property>
 
+	
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
 		<context file="oase-context.xml"/>
