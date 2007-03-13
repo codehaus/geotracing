@@ -41,12 +41,12 @@
 					  wmsURL, {layers: 'amstelveen,routes'} );
 			map.addLayer(layer2);
 
-			layer3 = new OpenLayers.Layer.WMS.Untiled( "Geese WMS Diwi Routes",
-					  wmsURL, {layers: 'topnl,diwiroutes'} );
-			map.addLayer(layer3);
+			layer3 = new OpenLayers.Layer.WMS.Untiled( "Geese - Diwi Routes",
+					  wmsURL, {layers: 'topnl,all_diwiroutes'} );
+			// map.addLayer(layer3);
 
-			layer4 = new OpenLayers.Layer.WMS.Untiled( "Geese WMS Single Route",
-					  wmsURL, {layers: 'topnl,routes', sld: sld} );
+			layer4 = new OpenLayers.Layer.WMS.Untiled( "Geese - Single Diwi Route",
+					  wmsURL, {layers: 'topnl,single_diwiroute', id:'117'} );
 			map.addLayer(layer4);
 
 			layer5 = new OpenLayers.Layer.WMS.Untiled( "Single Route Only",

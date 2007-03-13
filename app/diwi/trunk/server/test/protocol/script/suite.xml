@@ -1,7 +1,7 @@
 <testsuite>
-<!--	<testset file="tracinghandler.xml" />
-	<testset file="queryhandler.xml"/> -->
-	<!--<testset file="routehandler.xml"/>-->
-  <testset file="cms-scenario.xml"/>
+	<!--	<testset file="tracinghandler.xml" />
+		<testset file="queryhandler.xml"/> -->
+	<testset file="routehandler.xml"/>
+	<testset file="cms-scenario.xml"/>
 </testsuite>
 

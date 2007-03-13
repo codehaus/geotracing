@@ -47,7 +47,9 @@ public interface Constants {
     public final static int ROUTE_TYPE_GENERATED = 2; 
     
     //properties
-    public final static String GENERATOR_URL = "diwi.routegenerator.url";
+    public final static String GENERATOR_URL = "routegeneratorurl";
+	public final static String KICH_POST_URL = "kichposturl";
+	public final static String KICH_REST_URL = "kichresturl";
 
     //actions
     public final static String POI_INSERT_ACTION = "insert";

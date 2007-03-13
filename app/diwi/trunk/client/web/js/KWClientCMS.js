@@ -1,4 +1,4 @@
-/*
+ /*
  * KWClient extension functions for DiWi CMS.
  *
  * EXTERNALS
