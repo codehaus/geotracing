@@ -73,6 +73,7 @@
 					document.getElementById('butmijnpagina').style.display = "none";
 					DH.show('loginform');
 					DH.hide('logoutform');
+					verbergInlogBox();
 				} else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
 				}
@@ -240,7 +241,7 @@ function show(d){
 		</form>
 	
 		<form id="logoutform" action="#" style="visibility: hidden">
-			<input type="button" value="Logout" name="Submit" onclick="javascript:TST.logout()">
+			<input type="button" value="Logout" name="Submit" onClick="javascript:TST.logout()">
 		</form>
 	</div>
 
