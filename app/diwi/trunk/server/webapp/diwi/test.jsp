@@ -12,8 +12,7 @@
 	if(request.getQueryString() != null) {
 		for(int i=0; i < mappings.length;i++) {
 			if(java.util.regex.Pattern.matches(mappings[i][0], request.getQueryString())) {
-			    response.setContentType("text/xml;charset=utf-8");
-	        	pageContext.include(mappings[i][1]);	
+	        	%><jsp:forward page="<%=mappings[i][1]%>"/><%
 			} 
 		}
 	} else {
