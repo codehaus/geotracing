@@ -39,25 +39,25 @@
 			map.addLayer(layer1);
 
 			layer2 = new OpenLayers.Layer.WMS.Untiled( "Geese - Single Diwi Route",
-					  wmsURL, {layers: 'topnl_geese,single_diwi_route', id: '117'} );
+					  wmsURL, {layers: 'topnl_geese,single_diwi_route', id: '117', format: 'image/png'} );
 			map.addLayer(layer2);
 
 			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - Single Skeeler Route",
-					  wmsURL, {layers: 'topnl_raster,single_skeeler_route', id: '17'} );
+					  wmsURL + '?ID=17&LAYERS=topnl_raster,single_skeeler_route');
 			map.addLayer(layer3);
 
 			layer4 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - All Skeeler Routes",
-					  wmsURL, {layers: 'topnl_raster,all_skeeler_routes'} );
+					  wmsURL, {layers: 'topnl_raster,all_skeeler_routes', format: 'image/png'} );
 			map.addLayer(layer4);
 
 
-			layer5 = new OpenLayers.Layer.WMS.Untiled( "Single Route Only",
+		/*	layer5 = new OpenLayers.Layer.WMS.Untiled( "Single Route Only",
 					  wmsURL, {layers: 'routes', sld: sld} );
 			map.addLayer(layer5);
 
 			layer6 = new OpenLayers.Layer.WMS.Untiled( "All Routes Only",
 					  wmsURL, {layers: 'all_skeeler_routes'} );
-			map.addLayer(layer6);
+			map.addLayer(layer6);       */
 
 
 			/* wmsURL = 'http://www.geese.nl/milcon?';

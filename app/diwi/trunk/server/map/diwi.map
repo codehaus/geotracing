@@ -17,7 +17,6 @@ END
 #
 
 # test url
-# http://88.198.19.182//cgi-bin/mapserv?map=/var/keyworx/webapps/diwi/map/diwi.map&LAYERS=amstelveen%2Croutes&SLD=http%3A%2F%2F88.198.19.182%2Fmapserver%2Ftopnl%2Fselect-route.sld&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A4326&BBOX=4.768066%2C52.338867%2C4.790039%2C52.36084&WIDTH=256&HEIGHT=256
 SYMBOL
   NAME 'line'
   TYPE ELLIPSE
@@ -41,7 +40,7 @@ LAYER
 END
 
 WEB
-    IMAGEPATH "/var/keyworx/webapps/mapserver/tmp/"
+    IMAGEPATH "/var/keyworx/webapps/diwi/map/tmp/"
 #    IMAGEURL ...
 END
 

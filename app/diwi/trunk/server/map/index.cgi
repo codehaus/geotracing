@@ -1,6 +1,6 @@
 #!/bin/sh
 MAPSERV="/usr/lib/cgi-bin/mapserv"
-MAPFILE="/var/keyworx/webapps/mapserver/topnl/diwi.map"
+MAPFILE="/var/keyworx/webapps/diwi/map/diwi.map"
 if [ "${REQUEST_METHOD}" = "GET" ]; then
   if [ -z "${QUERY_STRING}" ]; then
     QUERY_STRING="map=${MAPFILE}"
