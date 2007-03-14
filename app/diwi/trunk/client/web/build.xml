@@ -85,7 +85,7 @@ $Id$
 	<!-- Build all clean. -->
 	<target name="build" depends="package"/>
 
-	<target name="sync-test" depends="assemble">
+	<target name="deploy-test" depends="assemble">
 		<exec executable="rsync">
 			<arg line="-alzvx --delete -e ssh "/>
 			<arg line="${home}/"/>
