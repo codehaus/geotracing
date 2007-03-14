@@ -39,15 +39,15 @@
 			map.addLayer(layer1);
 
 			layer2 = new OpenLayers.Layer.WMS.Untiled( "Geese - Single Diwi Route",
-					  wmsURL, {layers: 'topnl_geese,single_diwi_route', id: '117', format: 'image/png'} );
+					  wmsURL, {layers: 'topnl_geese,single_diwi_route', id: '161', format: 'image/png'} );
 			map.addLayer(layer2);
 
-			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - Single Skeeler Route",
-					  wmsURL + '?ID=17&LAYERS=topnl_raster,single_skeeler_route');
+			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - Single Diwi Route",
+					  wmsURL + '?ID=161&LAYERS=topnl_raster,single_diwi_route');
 			map.addLayer(layer3);
 
-			layer4 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - All Skeeler Routes",
-					  wmsURL, {layers: 'topnl_raster,all_skeeler_routes', format: 'image/png'} );
+			layer4 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - All Diwi Routes",
+					  wmsURL, {layers: 'topnl_raster,all_diwi_routes', format: 'image/png'} );
 			map.addLayer(layer4);
 
 
