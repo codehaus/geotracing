@@ -113,7 +113,7 @@ KW.CMS = {
 	 * @param callback - user callback function or null
 	 * @param commentId - id of comment
 	 */
-	getallpoi: function(callback) {
+	getallmedia: function(callback) {
 		var req = KW.createRequest('kich-getlist-req');
 		KW.utopia(req, callback);
 	}

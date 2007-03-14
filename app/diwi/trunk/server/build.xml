@@ -337,7 +337,7 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 			</copy> -->
 	</target>
 
-	<target name="deploy-berlin">
+	<target name="deploy-berlin" depends="clean, war">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
 			<arg line="${deploy.test.server}:/var/keyworx/webapps/diwi"/>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<link rel="stylesheet" href="css/common.css" type="text/css"/>
+	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
+	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
+	<script type="text/javascript" src="../js/KWClientDiWi.js"></script>
+	<script type="text/javascript">
+
+
+		var TST = {
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+				TST.login();
+				
+				TST.pr('init done');
+			},
+
+				// called from form submit
+			login: function() {
+				TST.pr('login start');
+				var name = 'geoapp-user';
+				var password = 'user';
+				TST.pr('login name=' + name + ' password=' + password);
+
+				// Call KWClient
+				KW.login(name, password);
+				TST.pr('login sent');
+				return false;
+			},
+
+			logout: function() {
+				TST.pr('logout start');
+				// KeyWorx client
+				KW.logout();
+				TST.pr('logout sent');
+				return false;
+			},
+
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('server response ' + elm.tagName);
+				if (elm.tagName == 'login-rsp') {
+					KW.selectApp('geoapp', 'user');
+				} else if (elm.tagName == 'select-app-rsp') {
+					TST.pr('login OK');
+					TST.pr('storing session, key=' + KW.agentKey);
+					
+					var params = new Array();
+					params[KW.DIWI.BOS_PARAM] = 15;
+					KW.DIWI.generateroute(null, params);				
+					
+					params = new Array();
+					params[KW.DIWI.HEIDE_PARAM] = 80;	
+					KW.DIWI.generateroute(null, params);											
+					
+				} else if (elm.tagName == 'logout-rsp') {
+					TST.pr('logout OK');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+	</script>
+
+</head>
+
+<body>
+
+<div id="result">DEBUG INFO</div>
+
+</body>
+</html>
