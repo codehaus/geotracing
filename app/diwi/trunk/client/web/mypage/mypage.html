@@ -4,10 +4,16 @@
 <title>De Digitale Wichelroede</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
   <link rel="stylesheet" type="text/css" href="css/config.css">
+  <link rel="stylesheet" type="text/css" href="../css/winclassic.css">
 
 </head>
 	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
+			<!--- slider js --->
+	<script src="../js/range.js" type="text/javascript"></script>
+	<script src="../js/timer.js" type="text/javascript"></script>
+	<script src="../js/slider.js" type="text/javascript"></script>
+
 	<script type="text/javascript">
 
 /************ De Session wordt uit een koekje gehaald... ********************/
@@ -79,7 +85,7 @@
 		}
 
 		// Call TST.init() when page is fully loaded
-		DH.addEvent(window, 'load', TST.init, false);
+//		DH.addEvent(window, 'load', TST.init, false);
 /*******************************************************************************/
 var currentSelection = 1;
 var toolbarData = new Array();
@@ -152,7 +158,14 @@ function ShowPopup(d) {
 	if(d.length < 1) { return; }
 	document.getElementById(popupData[d]).style.display = "block";
 }
-
+function toonmijnpagina() {
+	document.getElementById("mijnpaginacontainer").style.display = "block";
+	document.getElementById("maakroutecontainer").style.display = "none";
+}
+function toonmaakroutepagina() {
+	document.getElementById("mijnpaginacontainer").style.display = "none";
+	document.getElementById("maakroutecontainer").style.display = "block";
+}
 function show(d){
 	for (i=0;i<4;i++){
 		if (i==d) {
@@ -173,7 +186,6 @@ function show(d){
 
 <div id="logo"> <img src="images/logot.jpg" border="0"> </div>
 <div id="line"><img src="images/line.jpg" border="0"></div>
-<div id="kaart"><img src="images/kaart.jpg" border="0"></div>
 <div id="copyright"><img src="images/copyright.jpg" border="0"></div>
 <div id="personaliabox"><img src="images/personalia.jpg" border="0"></div>
 <div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
@@ -188,101 +200,245 @@ function show(d){
 </div>
 <div id="butmijnpagina"> 
 	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(2);" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);toonmijnpagina();" border="0"></a> 
 </div>
 <div id="butmaakroute"> 
 	<a><img id="4" src="buttons/maakroute.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(3);" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);toonmaakroutepagina();" border="0"></a> 
 </div>
 <div id="butuitloggen"> 
 	<a><img id="5" src="buttons/uitloggen.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); javascript:TST.logout()" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); javascript:TST.logout();" border="0"></a> 
 </div>
 
+<!-- Alles wat op mijnpagina getoond moet worden. ---------------------------------------------------->
+	<div id="mijnpaginacontainer" style="display:none;">
+		<div id="kaart"><img src="images/kaart.jpg" border="0"></div>
+		
+		<div id="butspeelaf"> 
+			<a><img id="6" src="buttons/speelaf.jpg" border="0"></a> 
+		</div>
+		
+		<div id="butwijzigprofiel"> 
+			<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> 
+		</div>
+		
+		
+		<div id="butkiesroute"> 
+			<form action="dummyvalue">
+			<select name="newurl" onChange="menu_goto(this.form)">
+				<option value="" selected="selected">kies een van mijn routes</option>
+				<option value="" >bunkerholen</option>
+				<option value="" >heeel lang</option>
+				<option value="" disabled="disabled"> ---- Miscellaneous ----</option>
+				<option value="" >snert route</option>
+			</select>
+			</form>
+		</div>
+		
+		<!-- De popups op de kaart -->
+		
+		<div id="kaartpopup1" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
+		<div id="kaartpopup2" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
+		<div id="kaartpopup3" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
+		<div id="kaartpopup4" style="display:block;"><img src="images/kaartpopup.jpg" border="0"></div>
+		
+		
+		<div id="mijnpagina">
+			<mijnpagina>
+				<strong>Mijn pagina</strong><br>
+			</mijnpagina>
+		</div>
+		
+		<div id="routeheader" > 
+		  <titelrouteheader>
+			<strong>Ronde om de Grebbeberg</strong>
+		  </titelrouteheader><br>
+		  <author>
+				Kim Deal, gedaan op 23 februari 2007 <br><br>
+		  </author>
+		</div>
+		
+		<div id="ookgelopen"> 
+			<ookgelopen>
+				Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.	
+			</ookgelopen>
+		</div>
+		
+		<div id="meerdetails"> 
+			<meerdetails>
+				<strong><a href="">Klik hier voor meer details over deze route >></a></strong>	
+			</ookgelopen>
+		</div>
+		
+		<div id="personaliatekst">
+			<personaliaheader>
+				Steve Albini <br>
+			</personaliaheader>
+			<personaliatekst>
+			<img  src="images/self.jpg" border="0" align="left">
+			Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana! 
+			</personaliatekst>
+		</div>
+		
+		<div id="personaliameer">
+			<personaliameer>
+				<a href="">Lees meer >></a>
+		</personaliameer>
+		</div>
+		
+		<div id="commentaartekst">
+			<commentaarheader> <strong>Commentaar</strong></commentaarheader>
+			<br><br>
+			<commentaartekst> 
+			- Wat een te gekke muziek! <br>
+			- Meer van dit alles man!!! <br>
+			- Nog harder!!!!!!!!!!! <br>
+			</commentaartekst>
+		</div>
+		
+		<div id="commentaarnavigatie">
+			<commentaarnavigatie>
+				<a href="">vorige</a> |<lichter> 1 van 5 </lichter>| <a href="">volgende</a>
+			</commentaarnavigatie>
+		</div>
 
-<div id="butspeelaf"> 
-	<a><img id="6" src="buttons/speelaf.jpg" border="0"></a> 
-</div>
-<div id="butwijzigprofiel"> 
-	<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> 
-</div>
-<div id="butkiesroute"> 
-	<form action="dummyvalue">
-	<select name="newurl" onChange="menu_goto(this.form)">
-		<option value="" selected="selected">kies een van mijn routes</option>
-		<option value="" >bunkerholen</option>
-		<option value="" >heeel lang</option>
-		<option value="" disabled="disabled"> ---- Miscellaneous ----</option>
-		<option value="" >snert route</option>
-	</select>
-	</form>
-</div>
+	</div>
+<!-- Einde alles wat op mijnpagina getoond moet worden ---------------------------------------------->
 
-<!-- De popups op de kaart -->
+<!-- Alles wat op maakroutepagina getoond moet worden. ---------------------------------------------------->
+<div id="maakroutecontainer" style="display:none;">
+	
+	<div class="slider" id="slider1" >
+		<input class="slider-input" id="s1input"/>
+	</div>
+	<div id="s1text">
+		Value: <input id="s1value" value="0" onchange="s1.setValue(parseInt(this.value))" />
+	</div>
 
-<div id="kaartpopup1" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
-<div id="kaartpopup2" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
-<div id="kaartpopup3" style="display:none;"><img src="images/kaartpopup.jpg" border="0"></div>
-<div id="kaartpopup4" style="display:block;"><img src="images/kaartpopup.jpg" border="0"></div>
+	<div class="slider" id="slider2" >
+		<input class="slider-input" id="s2input"/>
+	</div>
+	<div id="s2text">
+		Value: <input id="s2value" value="0" onchange="s2.setValue(parseInt(this.value))" />
+	</div>
+	
+	<div class="slider" id="slider3" >
+		<input class="slider-input" id="s3input"/>
+	</div>
+	<div id="s3text">
+		Value: <input id="s3value" value="0" onchange="s3.setValue(parseInt(this.value))" />
+	</div>
 
+	<div class="slider" id="slider4" >
+		<input class="slider-input" id="s4input"/>
+	</div>
+	<div id="s4text">
+		Value: <input id="s4value" value="0" onchange="s4.setValue(parseInt(this.value))" />
+	</div>
+	
+	<div class="slider" id="slider5" >
+		<input class="slider-input" id="s5input"/>
+	</div>
+	<div id="s5text">
+		Value: <input id="s5value" value="0" onchange="s5.setValue(parseInt(this.value))" />
+	</div>
 
-<div id="mijnpagina">
-	<mijnpagina>
-		<strong>Mijn pagina</strong><br>
-	</mijnpagina>
-</div>
+	<div class="slider" id="slider6" >
+		<input class="slider-input" id="s6input"/>
+	</div>
+	<div id="s6text">
+		Value: <input id="s6value" value="0" onchange="s6.setValue(parseInt(this.value))" />
+	</div>
+	
+	<div class="slider" id="slider7" >
+		<input class="slider-input" id="s7input"/>
+	</div>
+	<div id="s7text">
+		Value: <input id="s7value"  value="0" onchange="s7.setValue(parseInt(this.value))" />
+	</div>
 
-<div id="routeheader" > 
-  <titelrouteheader>
-	<strong>Ronde om de Grebbeberg</strong>
-  </titelrouteheader><br>
-  <author>
-		Kim Deal, gedaan op 23 februari 2007 <br><br>
-  </author>
-</div>
+	<div class="slider" id="slider8" >
+		<input class="slider-input" id="s8input"/>
+	</div>
+	<div id="s8text">
+		Value: <input id="s8value"  value="0" onchange="s8.setValue(parseInt(this.value))" />
+	</div>
 
-<div id="ookgelopen"> 
-	<ookgelopen>
-		Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.	
-	</ookgelopen>
 </div>
+	
+<script type="text/javascript">
 
-<div id="meerdetails"> 
-	<meerdetails>
-		<strong><a href="">Klik hier voor meer details over deze route >></a></strong>	
-	</ookgelopen>
-</div>
-<div id="commentaartekst">
-	<commentaarheader> <strong>Commentaar</strong></commentaarheader>
-	<br><br>
-	<commentaartekst> 
-	- Wat een te gekke muziek! <br>
-	- Meer van dit alles man!!! <br>
-	- Nog harder!!!!!!!!!!! <br>
-	</commentaartekst>
-</div>
-<div id="commentaarnavigatie">
-	<commentaarnavigatie>
-		<a href="">vorige</a> |<lichter> 1 van 5 </lichter>| <a href="">volgende</a>
-	</commentaarnavigatie>
-</div>
+	var s1 = new Slider(document.getElementById("slider1"), document.getElementById("s1input"));
+	s1.setMinimum(0);
+	s1.setMaximum(100);
+	s1.onchange = function () {
+		document.getElementById("s1value").value = s1.getValue();
+	};
+	s1.setValue(0);
 
+	var s2 = new Slider(document.getElementById("slider2"), document.getElementById("s2input"));
+	s2.setMinimum(0);
+	s2.setMaximum(100);
+	s2.onchange = function () {
+		document.getElementById("s2value").value = s2.getValue();
+	};
+	s2.setValue(0);
+	
+	var s3 = new Slider(document.getElementById("slider3"), document.getElementById("s3input"));
+	s3.setMinimum(0);
+	s3.setMaximum(100);
+	s3.onchange = function () {
+		document.getElementById("s3value").value = s3.getValue();
+	};
+	s3.setValue(0);
 
-<div id="personaliatekst">
-	<personaliaheader>
-		Steve Albini <br>
-	</personaliaheader>
-	<personaliatekst>
-	<img  src="images/self.jpg" border="0" align="left">
-	Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana! 
-	</personaliatekst>
-</div>
-<div id="personaliameer">
-	<personaliameer>
-		<a href="">Lees meer >></a>
-	</personaliameer>
-</div>
+	var s4 = new Slider(document.getElementById("slider4"), document.getElementById("s4input"));
+	s4.setMinimum(0);
+	s4.setMaximum(100);
+	s4.onchange = function () {
+		document.getElementById("s4value").value = s4.getValue();
+	};
+	s4.setValue(0);
+	
+	var s5 = new Slider(document.getElementById("slider5"), document.getElementById("s5input"));
+	s5.setMinimum(0);
+	s5.setMaximum(100);
+	s5.onchange = function () {
+		document.getElementById("s5value").value = s5.getValue();
+	};
+	s5.setValue(0);
+
+	var s6 = new Slider(document.getElementById("slider6"), document.getElementById("s6input"));
+	s6.setMinimum(0);
+	s6.setMaximum(100);
+	s6.onchange = function () {
+		document.getElementById("s6value").value = s6.getValue();
+	};
+	s6.setValue(0);
+		
+	var s7 = new Slider(document.getElementById("slider7"), document.getElementById("s7input"));
+	s7.setMinimum(0);
+	s7.setMaximum(100);
+	s7.onchange = function () {
+		document.getElementById("s7value").value = s7.getValue();
+	};
+	s7.setValue(0);
+
+	var s8 = new Slider(document.getElementById("slider8"), document.getElementById("s8input"));
+	s8.setMinimum(0);
+	s8.setMaximum(100);
+	s8.onchange = function () {
+		document.getElementById("s8value").value = s8.getValue();
+	};
+	s8.setValue(0);
+	
+</script>
+
+<!-- Einde van alles wat op maakroutepagina getoond moet worden. ------------------------------------------>
 
 </font>
 </body>
+
+
 </html>
