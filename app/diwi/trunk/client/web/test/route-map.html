@@ -34,21 +34,22 @@
 			var wmsURL='http://test.digitalewichelroede.nl/map';
 			var sld='http://88.198.19.182/mapserver/topnl/select-route.sld';
 
-			layer1 = new OpenLayers.Layer.WMS.Untiled( "Geese - Diwi Routes",
+			layer1 = new OpenLayers.Layer.WMS.Untiled( "Geese - All Routes",
 					  wmsURL, {layers: 'topnl_geese,all_diwi_routes'} );
 			map.addLayer(layer1);
 
-			layer2 = new OpenLayers.Layer.WMS.Untiled( "Geese - Single Diwi Route",
+			layer2 = new OpenLayers.Layer.WMS.Untiled( "Geese - Single Route",
 					  wmsURL, {layers: 'topnl_geese,single_diwi_route', id: '161', format: 'image/png'} );
 			map.addLayer(layer2);
 
-			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - Single Diwi Route",
-					  wmsURL + '?ID=161&LAYERS=topnl_raster,single_diwi_route');
+			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - All Routes",
+					  wmsURL, {layers: 'topnl_raster,all_diwi_routes', format: 'image/png'} );
 			map.addLayer(layer3);
 
-			layer4 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - All Diwi Routes",
-					  wmsURL, {layers: 'topnl_raster,all_diwi_routes', format: 'image/png'} );
+			layer4 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - Single Route",
+					  wmsURL + '?ID=161&LAYERS=topnl_raster,single_diwi_route');
 			map.addLayer(layer4);
+
 
 
 		/*	layer5 = new OpenLayers.Layer.WMS.Untiled( "Single Route Only",
