@@ -23,6 +23,13 @@ input {
 	padding:			1px;
 	margin-right:		15px;
 }
+h11{
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.6em;
+ font-size: 1.5em;
+ margin: 0 0 16px 0;
+ color:#000000;
+}
 
 .content>p {
  margin: 0;
@@ -60,13 +67,7 @@ mijnpagina {
  font-size: 1.4em;
  margin: 0 0 16px 0;
 }
-titelrouteheader {
- font-family: Georgia, Times New Roman, Times, serif;
- line-height: 1.1em;
- font-size: 1.1em;
- margin: 0 0 16px 0;
- padding: 0;
-}
+
 author {
  line-height: 0.8em;
  font-size: 0.6em;
@@ -74,31 +75,14 @@ author {
  padding: 0;
  color:#CCCCCC;
 }
-meerdetails {
- line-height:1.0em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#909090;
-}
-ookgelopen {
- line-height: 0.8em;
- font-size: 0.6em;
- margin: 0 0 16px 0;
- color:#949693;
-}
+
 /*           Commentaarbox        */
-commentaarheader {
+h10 {
  font-family: Georgia, Times New Roman, Times, serif;
  line-height: 1.1em;
  font-size: 1.0em;
  margin: 0 0 16px 0;
  color:#000000;
-}
-commentaartekst {
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#949693;
 }
 commentaarnavigatie {
  line-height: 1.1em;
@@ -110,25 +94,6 @@ lichter {
  color:#B4B4B4;
 }
 /*          personaliabox            */
-personaliaheader {
- font-family: Georgia, Times New Roman, Times, serif;
- line-height: 1.6em;
- font-size: 1.5em;
- margin: 0 0 16px 0;
- color:#000000;
-}
-personaliatekst {
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#949693;
-}
-personaliameer {
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#949693;
-}
 
 
 /************************** Nulde laag, z=1 **************************************************/
@@ -146,14 +111,14 @@ personaliameer {
  width: 800px;
  top: 0px;
  left: 0px;
- z-index: 1;
+ z-index: 100;
 }
 #maakroutecontainer{
  position: absolute;
  width: 800px;
  top: 0px;
  left: 0px;
- z-index: 1;
+ z-index: 100;
 }
 
 
@@ -193,8 +158,14 @@ personaliameer {
  left: 20px;
  z-index: 100; 
 }
+#ookgelopen p{
+ line-height: 0.8em;
+ font-size: 0.6em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
 
-
+/* Maak route *********************************************************************************/
 #slider1 {
  position: absolute;
  width: 280px;
@@ -309,6 +280,13 @@ personaliameer {
  left: 350px;
  z-index: 100; 
 }	
+#butmaakeigenroute {
+ position: absolute;
+ width: 80px;
+ top: 520px;
+ left: 350px;
+ z-index: 100; 
+}	
 
 
 #total {
@@ -326,6 +304,19 @@ personaliameer {
  z-index: 100; 
 }	
 
+#radiobuttons { 
+ position: absolute;
+ width: auto;
+ top: 107px;
+ left: 157px;
+ z-index: 500; 
+}
+
+#radiobuttons input {
+ width:	10px;
+ text-align: left;
+ padding: 0-px;
+ margin-right: 0px;}	
 
 /************************* Tweede laag, z=500 **********************************************/
 #line {
@@ -427,12 +418,27 @@ personaliameer {
  z-index: 500;
  background-color:#F6F8F5;
 }
-#mijnpagina {
+#routeheader p {
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.1em;
+ font-size: 1.1em;
+ margin: 0 0 16px 0;
+ padding: 0;
+ font-weight:bold;
+}
+#paginaheader {
  position: absolute;
  width: auto;
  top: 67px;
  left: 157px;
  z-index: 500; 
+}
+#paginaheader p{
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.6em;
+ font-size: 1.4em;
+ margin: 0 0 16px 0;
+ font-weight:bold;
 }
 #meerdetails {
  position: absolute;
@@ -441,6 +447,14 @@ personaliameer {
  left: 260px;
  z-index: 500; 
 }
+#meerdetails p{
+ line-height:1.0em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#909090;
+ font-weight:bold;
+}
+
 #commentaartekst {
  position: absolute;
  width: 200px;
@@ -448,12 +462,28 @@ personaliameer {
  left: 605px;
  z-index: 500;
 }
+#commentaartekst p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
 #commentaarnavigatie {
  position: absolute;
  width: auto;
  top: 505px;
  left: 620px;
  z-index: 500; 
+}
+#commentaarnavigatie a{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#505050;
+}
+#commentaarnavigatie p {
+ color:#B4B4B4;
 }
 #personaliameer {
  position: absolute;
@@ -462,6 +492,13 @@ personaliameer {
  left: 663px;
  z-index: 500;
 }
+#personaliameer p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
 #personaliatekst {
  position: absolute;
  width: 200px;
@@ -469,6 +506,13 @@ personaliameer {
  left: 605px;
  z-index: 500;
 }
+#personaliatekst p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
 /*********************************** Derde laag, z=1000 *****************************************************************/
 #butkiesroute {
  position: absolute;

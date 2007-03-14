@@ -244,63 +244,63 @@ function show(d){
 		<div id="kaartpopup4" style="display:block;"><img src="images/kaartpopup.jpg" border="0"></div>
 		
 		
-		<div id="mijnpagina">
-			<mijnpagina>
-				<strong>Mijn pagina</strong><br>
-			</mijnpagina>
+		<div id="paginaheader">
+			<p>
+				Mijn pagina<br>
+			</p>
 		</div>
 		
 		<div id="routeheader" > 
-		  <titelrouteheader>
-			<strong>Ronde om de Grebbeberg</strong>
-		  </titelrouteheader><br>
+		  <p>
+			Ronde om de Grebbeberg
+		  </p>
 		  <author>
 				Kim Deal, gedaan op 23 februari 2007 <br><br>
 		  </author>
 		</div>
 		
 		<div id="ookgelopen"> 
-			<ookgelopen>
+			<p>
 				Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.	
-			</ookgelopen>
+			</p>
 		</div>
 		
 		<div id="meerdetails"> 
-			<meerdetails>
-				<strong><a href="">Klik hier voor meer details over deze route >></a></strong>	
-			</ookgelopen>
+			<p>
+				<a href="">Klik hier voor meer details over deze route >></a>	
+			</p>
 		</div>
 		
 		<div id="personaliatekst">
-			<personaliaheader>
+			<h11>
 				Steve Albini <br>
-			</personaliaheader>
-			<personaliatekst>
+			</h11>
+			<p>
 			<img  src="images/self.jpg" border="0" align="left">
 			Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana! 
-			</personaliatekst>
+			</p>
 		</div>
 		
 		<div id="personaliameer">
-			<personaliameer>
+			<p>
 				<a href="">Lees meer >></a>
-		</personaliameer>
+		</p>
 		</div>
 		
 		<div id="commentaartekst">
-			<commentaarheader> <strong>Commentaar</strong></commentaarheader>
+			<H10>Commentaar</H10>
 			<br><br>
-			<commentaartekst> 
+			<p> 
 			- Wat een te gekke muziek! <br>
 			- Meer van dit alles man!!! <br>
 			- Nog harder!!!!!!!!!!! <br>
-			</commentaartekst>
+			</p>
 		</div>
 		
 		<div id="commentaarnavigatie">
-			<commentaarnavigatie>
-				<a href="">vorige</a> |<lichter> 1 van 5 </lichter>| <a href="">volgende</a>
-			</commentaarnavigatie>
+			
+				<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>
+			
 		</div>
 
 	</div>
@@ -308,6 +308,29 @@ function show(d){
 
 <!-- Alles wat op maakroutepagina getoond moet worden. ---------------------------------------------------->
 <div id="maakroutecontainer" style="display:none;">
+	<div id="paginaheader">
+		<p>
+			Route samenstellen<br>
+		</p>
+	</div>
+	
+	<div id="radiobuttons">
+		<input id="wandelen" name=rb1 type=checkbox  onClick="selectWandelen()"> Wandelen
+		<input id="fietsen" name=rb2 type=checkbox  onClick="selectFietsen()"> Fietsen
+	</div>
+
+<script type="text/javascript">
+	document.getElementById("wandelen").checked = true;
+	
+	function selectWandelen() {
+		document.getElementById("wandelen").checked = true;	
+		document.getElementById("fietsen").checked = false;	
+	}
+	function selectFietsen() {
+		document.getElementById("wandelen").checked = false;	
+		document.getElementById("fietsen").checked = true;	
+	}
+</script>	
 	
 	<div class="slider" id="slider1" >
 		<input class="slider-input" id="s1input"/>
@@ -363,6 +386,10 @@ function show(d){
 	</div>
 	<div id="s8text">
 		Value: <input id="s8value"  value="0" onchange="s8.setValue(parseInt(this.value))" />
+	</div>
+	
+	<div id="butmaakeigenroute">
+		<a><img  src="buttons/maakroute.jpg"onMouseOver="" onMouseOut="" onClick="" border="0"></a> 
 	</div>
 
 </div>
