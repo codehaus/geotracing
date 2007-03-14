@@ -55,6 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppController.cs" />
+    <Compile Include="TestPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DiwiButton.cs" />
     <Compile Include="DiwiDrawable.cs" />
     <Compile Include="DiwiImage.cs" />
@@ -93,6 +96,7 @@
     <Compile Include="XMLement.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\start.bmp" />
     <Content Include="Resources\start.gif" />
   </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
