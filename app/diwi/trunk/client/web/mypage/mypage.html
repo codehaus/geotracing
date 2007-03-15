@@ -3,7 +3,9 @@
 <head>
 <title>De Digitale Wichelroede</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
-  <link rel="stylesheet" type="text/css" href="css/config.css">
+  <link rel="stylesheet" type="text/css" href="css/basis.css">
+  <link rel="stylesheet" type="text/css" href="css/maakroute.css">
+  <link rel="stylesheet" type="text/css" href="css/mijnpagina.css">
   <link rel="stylesheet" type="text/css" href="../css/winclassic.css">
 
 </head>
@@ -52,7 +54,28 @@
 				TST.pr('logout sent');
 				return false;
 			},
-
+			
+			maakroutes: function() {
+				TST.pr('maakroute start');
+				var params = new Array();
+				params[KW.DIWI.BESLOTEN_PARAM] = document.getElementById("besloten").value;
+				params[KW.DIWI.HALFOPEN_PARAM] = document.getElementById("halfopen").value;
+				params[KW.DIWI.OPEN_PARAM] = document.getElementById("open").getValue();
+				params[KW.DIWI.BEDRIJVEN_PARAM] = document.getElementById("bedrijven").value;
+				params[KW.DIWI.BEWONING_PARAM] = document.getElementById("bewoning").value;
+				params[KW.DIWI.BOS_PARAM] = document.getElementById("bos").value;
+				params[KW.DIWI.HEIDE_PARAM] = document.getElementById("heide").value;
+				params[KW.DIWI.GRASLAND_PARAM] = document.getElementById("grasland").value;
+				params[KW.DIWI.ZEE_PARAM] = document.getElementById("zee").value;
+				params[KW.DIWI.SLOTEN_PARAM] = document.getElementById("sloten").value;
+//				params[KW.DIWI.STARTPUNT_PARAM] = document.getElementById("startpunt").getValue();
+//				params[KW.DIWI.EINDPUNT_PARAM] = document.getElementById("s1input").getValue();
+//				params[KW.DIWI.THEMA_PARAM] = document.getElementById("s1input").getValue();
+//				params[KW.DIWI.AFSTAND_PARAM] = document.getElementById("s1input").getValue();
+				params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
+	
+				KW.DIWI.generateroute(null, params);				
+			},
 
 			onRsp: function(elm) {
 				if (!elm) {
@@ -216,12 +239,10 @@ function show(d){
 		<div id="kaart"><img src="images/kaart.jpg" border="0"></div>
 		
 		<div id="butspeelaf"> 
-			<a><img id="6" src="buttons/speelaf.jpg" border="0"></a> 
-		</div>
+			<a><img id="6" src="buttons/speelaf.jpg" border="0"></a>		</div>
 		
 		<div id="butwijzigprofiel"> 
-			<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> 
-		</div>
+			<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a>		</div>
 		
 		
 		<div id="butkiesroute"> 
@@ -252,8 +273,7 @@ function show(d){
 		
 		<div id="routeheader" > 
 		  <p>
-			Ronde om de Grebbeberg
-		  </p>
+			Ronde om de Grebbeberg		  </p>
 		  <author>
 				Kim Deal, gedaan op 23 februari 2007 <br><br>
 		  </author>
@@ -261,14 +281,12 @@ function show(d){
 		
 		<div id="ookgelopen"> 
 			<p>
-				Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.	
-			</p>
+				Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.			</p>
 		</div>
 		
 		<div id="meerdetails"> 
 			<p>
-				<a href="">Klik hier voor meer details over deze route >></a>	
-			</p>
+				<a href="">Klik hier voor meer details over deze route >></a>			</p>
 		</div>
 		
 		<div id="personaliatekst">
@@ -277,14 +295,12 @@ function show(d){
 			</h11>
 			<p>
 			<img  src="images/self.jpg" border="0" align="left">
-			Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana! 
-			</p>
+			Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!			</p>
 		</div>
 		
 		<div id="personaliameer">
 			<p>
-				<a href="">Lees meer >></a>
-		</p>
+				<a href="">Lees meer >></a>		</p>
 		</div>
 		
 		<div id="commentaartekst">
@@ -299,14 +315,13 @@ function show(d){
 		
 		<div id="commentaarnavigatie">
 			
-				<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>
-			
-		</div>
-
+				<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>		</div>
 	</div>
-<!-- Einde alles wat op mijnpagina getoond moet worden ---------------------------------------------->
+<!-- Einde alles wat op mijnpagina getoond moet worden ----------------------------------------------------->
 
-<!-- Alles wat op maakroutepagina getoond moet worden. ---------------------------------------------------->
+
+
+<!-- Alles wat op maakroutepagina getoond moet worden. ----------------------------------------------------->
 <div id="maakroutecontainer" style="display:none;">
 	<div id="paginaheader">
 		<p>
@@ -314,9 +329,9 @@ function show(d){
 		</p>
 	</div>
 	
-	<div id="radiobuttons">
-		<input id="wandelen" name=rb1 type=checkbox  onClick="selectWandelen()"> Wandelen
-		<input id="fietsen" name=rb2 type=checkbox  onClick="selectFietsen()"> Fietsen
+	<div id="radiobuttons" class="radiocaption">
+		<input id="wandelen" name=rb1 type=radio  onClick="selectWandelen()"> Wandelen
+		<input id="fietsen" name=rb2 type=radio  onClick="selectFietsen()"> Fietsen
 	</div>
 
 <script type="text/javascript">
@@ -330,66 +345,155 @@ function show(d){
 		document.getElementById("wandelen").checked = false;	
 		document.getElementById("fietsen").checked = true;	
 	}
-</script>	
+</script>
+	
+	<div class="listboxes" id="startpunt-lb"> 
+	<form action="dummyvalue">
+	<select name="newurl" onChange="menu_goto(this.form)">
+		<option value="" selected="selected">geen voorkeur</option>
+		<option value="" >bunkerholen</option>
+		<option value="" >heeel lang</option>
+		<option value="" >snert route</option>
+	</select>
+	</form>
+	</div>
+	<div class="listboxes" id="eindpunt-lb"> 
+	<form action="dummyvalue">
+	<select name="newurl" onChange="menu_goto(this.form)">
+		<option value="" selected="selected">geen voorkeur</option>
+		<option value="" >bunkerholen</option>
+		<option value="" >heeel lang</option>
+		<option value="" >snert route</option>
+	</select>
+	</form>
+	</div>
+	<div class="listboxes" id="thema-lb"> 
+	<form action="dummyvalue">
+	<select name="newurl" onChange="menu_goto(this.form)">
+		<option value="" selected="selected">geen voorkeur</option>
+		<option value="" >bunkerholen</option>
+		<option value="" >heeel lang</option>
+		<option value="" >snert route</option>
+	</select>
+	</form>
+	</div>
+	<div class="listboxes" id="afstand-lb"> 
+	<form action="dummyvalue">
+	<select name="newurl" onChange="menu_goto(this.form)">
+		<option value="" selected="selected">geen voorkeur</option>
+		<option value="" >3 km</option>
+		<option value="" >5 km</option>
+		<option value="" >10 km</option>
+		<option value="" >15 km</option>
+		<option value="" >20 km</option>
+	</select>
+	</form>
+	</div>
+
+
+	<div  class="slidercaption" id="caption1">
+		Besloten agrarisch gebied
+	</div>	
 	
 	<div class="slider" id="slider1" >
 		<input class="slider-input" id="s1input"/>
 	</div>
-	<div id="s1text">
-		Value: <input id="s1value" value="0" onchange="s1.setValue(parseInt(this.value))" />
+	<div class="slidertext" id="besloten">
+		 <input  id="s1value" value="0" onchange="s1.setValue(parseInt(this.value))" />
 	</div>
 
+	<div  class="slidercaption" id="caption2">
+		Halfopen agrarisch gebied
+	</div>	
 	<div class="slider" id="slider2" >
 		<input class="slider-input" id="s2input"/>
 	</div>
-	<div id="s2text">
-		Value: <input id="s2value" value="0" onchange="s2.setValue(parseInt(this.value))" />
+	<div class="slidertext" id="halfopen">
+		 <input id="s2value" value="0" onchange="s2.setValue(parseInt(this.value))" />
 	</div>
 	
+	<div  class="slidercaption" id="caption3">
+		Open agrarisch gebied
+	</div>	
 	<div class="slider" id="slider3" >
 		<input class="slider-input" id="s3input"/>
 	</div>
-	<div id="s3text">
-		Value: <input id="s3value" value="0" onchange="s3.setValue(parseInt(this.value))" />
+	<div  class="slidertext" id="open">
+		 <input id="s3value" value="0" onchange="s3.setValue(parseInt(this.value))" />
 	</div>
 
+	<div  class="slidercaption" id="caption4">
+		Bedrijven en industrie
+	</div>	
 	<div class="slider" id="slider4" >
 		<input class="slider-input" id="s4input"/>
 	</div>
-	<div id="s4text">
-		Value: <input id="s4value" value="0" onchange="s4.setValue(parseInt(this.value))" />
+	<div  class="slidertext" id="bedrijven">
+		 <input id="s4value" value="0" onchange="s4.setValue(parseInt(this.value))" />
 	</div>
 	
+	<div  class="slidercaption" id="caption5">
+		Bewoningskernen
+	</div>	
 	<div class="slider" id="slider5" >
 		<input class="slider-input" id="s5input"/>
 	</div>
-	<div id="s5text">
-		Value: <input id="s5value" value="0" onchange="s5.setValue(parseInt(this.value))" />
+	<div class="slidertext" id="bewoning">
+		 <input id="s5value" value="0" onchange="s5.setValue(parseInt(this.value))" />
 	</div>
 
+	<div  class="slidercaption" id="caption6">
+		Bos
+	</div>	
 	<div class="slider" id="slider6" >
 		<input class="slider-input" id="s6input"/>
 	</div>
-	<div id="s6text">
-		Value: <input id="s6value" value="0" onchange="s6.setValue(parseInt(this.value))" />
+	<div class="slidertext"  id="bos">
+		 <input id="s6value" value="0" onchange="s6.setValue(parseInt(this.value))" />
 	</div>
 	
+	<div  class="slidercaption" id="caption7">
+		Heide zand en duingebied
+	</div>	
 	<div class="slider" id="slider7" >
 		<input class="slider-input" id="s7input"/>
 	</div>
-	<div id="s7text">
-		Value: <input id="s7value"  value="0" onchange="s7.setValue(parseInt(this.value))" />
+	<div class="slidertext"  id="heide">
+		 <input id="s7value"  value="0" onchange="s7.setValue(parseInt(this.value))" />
 	</div>
 
+	<div  class="slidercaption" id="caption8">
+		Natuurlijk grasland, moeras <br>en riet
+	</div>	
 	<div class="slider" id="slider8" >
 		<input class="slider-input" id="s8input"/>
 	</div>
-	<div id="s8text">
-		Value: <input id="s8value"  value="0" onchange="s8.setValue(parseInt(this.value))" />
+	<div class="slidertext"  id="grasland">
+		 <input id="s8value"  value="0" onchange="s8.setValue(parseInt(this.value))" />
+	</div>
+
+	<div  class="slidercaption" id="caption9">
+		Zee en grote meren
+	</div>	
+	<div class="slider" id="slider9" >
+		<input class="slider-input" id="s9input"/>
+	</div>
+	<div class="slidertext"  id="zee">
+		 <input id="s9value"  value="0" onchange="s9.setValue(parseInt(this.value))" />
+	</div>
+
+	<div  class="slidercaption" id="caption10">
+		Sloten, beken, rivieren en <br>plassen
+	</div>	
+	<div class="slider" id="slider10" >
+		<input class="slider-input" id="s10input"/>
+	</div>
+	<div class="slidertext"  id="sloten">
+		 <input id="s10value"  value="0" onchange="s10.setValue(parseInt(this.value))" />
 	</div>
 	
 	<div id="butmaakeigenroute">
-		<a><img  src="buttons/maakroute.jpg"onMouseOver="" onMouseOut="" onClick="" border="0"></a> 
+		<a><img  src="buttons/maakroute.jpg"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a> 
 	</div>
 
 </div>
@@ -459,6 +563,22 @@ function show(d){
 		document.getElementById("s8value").value = s8.getValue();
 	};
 	s8.setValue(0);
+	
+	var s9 = new Slider(document.getElementById("slider9"), document.getElementById("s9input"));
+	s9.setMinimum(0);
+	s9.setMaximum(100);
+	s9.onchange = function () {
+		document.getElementById("s9value").value = s9.getValue();
+	};
+	s9.setValue(0);
+
+	var s10 = new Slider(document.getElementById("slider10"), document.getElementById("s10input"));
+	s10.setMinimum(0);
+	s10.setMaximum(100);
+	s10.onchange = function () {
+		document.getElementById("s10value").value = s10.getValue();
+	};
+	s10.setValue(0);
 	
 </script>
 

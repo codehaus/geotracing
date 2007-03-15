@@ -32,9 +32,20 @@
  * Diwi portal functions.
  */
 KW.DIWI = {
+	BESLOTEN_PARAM:		'besloten',
+	HALFOPEN_PARAM:		'halfopen',
+	OPEN_PARAM:			'open',
+	BEDRIJVEN_PARAM:	'bedrijven',
+	BEWONINGPARAM:		'bewoning',
 	BOS_PARAM:          'bos',
 	HEIDE_PARAM: 		'heide',
-	START_POINT_PARAM:	'startpoint',
+	GRASLAND_PARAM:		'grasland',
+	ZEE_PARAM:			'zee',
+	SLOTEN_PARAM:		'sloten',
+	START_PUNT_PARAM:	'startpoint',
+	EINDPUNT_PARAM:		'eindpunt',
+	THEMA_PARAM:		'thema',
+	WANDELAAR_PARAM:	'wandelaar',
 	DISTANCE_PARAM:		'distance',
 
 
