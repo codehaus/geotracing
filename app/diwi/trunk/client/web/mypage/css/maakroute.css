@@ -1,0 +1,237 @@
+#maakroutecontainer{
+ position: absolute;
+ width: 800px;
+ top: 0px;
+ left: 0px;
+ z-index: 100;
+}
+
+.slidertext{
+ position:absolute;
+ left: 420px;
+ z-index: 100;
+ width:auto; 
+}
+.slidercaption{
+ text-align:center;
+ line-height:13px;
+ font-size:12px;
+ position:absolute;
+ left: 20px;
+ z-index: 100;
+ width:auto; 
+}
+.radiocaption{
+ text-align:center;
+ line-height:13px;
+ font-size:12px;
+}
+
+#caption1{
+ top: 253px;
+}
+#slider1 {
+ position: absolute;
+ top: 252px;
+ left: 200px;
+ z-index: 100; 
+}	
+#besloten {
+ top: 250px;
+}
+	
+#caption2{
+ top: 283px;
+}
+#slider2 {
+ position: absolute;
+ top: 282px;
+ left: 200px;
+ z-index: 100; 
+}	
+#halfopen {
+ top: 280px;
+}	
+
+
+#caption3{
+ top: 313px;
+}
+#slider3 {
+ position: absolute;
+ top: 312px;
+ left: 200px;
+ z-index: 100; 
+}	
+#open {
+ top: 310px;
+}	
+
+#caption4{
+ top: 343px;
+}
+#slider4 {
+ position: absolute;
+ top: 342px;
+ left: 200px;
+ z-index: 100; 
+}	
+#bedrijven {
+ top: 340px;
+}	
+
+#caption5{
+ top: 373px;
+}
+#slider5 {
+ position: absolute;
+ top: 372px;
+ left: 200px;
+ z-index: 100; 
+}	
+#bewoning {
+ top: 370px;
+}	
+
+#caption6{
+ top: 403px;
+}
+#slider6 {
+ position: absolute;
+ top: 402px;
+ left: 200px;
+ z-index: 100; 
+}	
+#bos {
+ top: 400px;
+}	
+
+#caption7{
+ top: 433px;
+}
+#slider7 {
+ position: absolute;
+ top: 432px;
+ left: 200px;
+ z-index: 100; 
+}	
+#heide {
+ top: 430px;
+}	
+
+#caption8{
+ top: 463px;
+}
+#slider8 {
+ position: absolute;
+ top: 462px;
+ left: 200px;
+ z-index: 100; 
+}	
+#grasland {
+ top: 460px;
+}	
+
+#caption9{
+ top: 493px;
+}
+#slider9 {
+ position: absolute;
+ top: 492px;
+ left: 200px;
+ z-index: 100; 
+}	
+#zee {
+ top: 490px;
+}	
+
+#caption10{
+ top: 523px;
+}
+#slider10 {
+ position: absolute;
+ top: 522px;
+ left: 200px;
+ z-index: 100; 
+}	
+#sloten {
+ top: 520px;
+}	
+
+#butmaakeigenroute {
+ position: absolute;
+ width: 80px;
+ top: 520px;
+ left: 500px;
+ z-index: 10000; 
+}	
+
+
+#total {
+ position: absolute;
+ width: 50px;
+ top: 80px;
+ left: 100px;
+ z-index: 100; 
+}	
+#totaltekst {
+ position: absolute;
+ width: 50px;
+ top: 170px;
+ left: 100px;
+ z-index: 100; 
+}	
+
+#radiobuttons { 
+ position: absolute;
+ width: auto;
+ top: 107px;
+ left: 157px;
+ z-index: 500; 
+}
+
+#radiobuttons input {
+ width:	10px;
+ text-align: left;
+ padding: 0-px;
+ margin-right: 0px;}	
+
+.listboxes{
+ position:absolute;
+ top:180px;
+ z-index: 100;
+ width:auto; 
+}
+#startpunt-lb{
+ left: 15px;
+}
+#eindpunt-lb{
+ left: 145px;
+}
+#thema-lb{
+ left: 275px;
+}
+#afstand-lb{
+ left: 405px;
+}
+
+
+
+/************************* Tweede laag, z=500 **********************************************/
+
+ #routeheader {
+ position: absolute;
+ width: auto;
+ top: 130px;
+ left: 157px;
+ z-index: 500;
+ background-color:#F6F8F5;
+}
+#routeheader p {
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.1em;
+ font-size: 1.1em;
+ margin: 0 0 16px 0;
+ padding: 0;
+ font-weight:bold;
+}
