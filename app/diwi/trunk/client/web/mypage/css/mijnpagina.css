@@ -1,0 +1,186 @@
+mijnpagina {
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.6em;
+ font-size: 1.4em;
+ margin: 0 0 16px 0;
+}
+
+author {
+ line-height: 0.8em;
+ font-size: 0.6em;
+ margin: 0 0 16px 0;
+ padding: 0;
+ color:#CCCCCC;
+}
+
+/*           Commentaarbox        */
+h10 {
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.1em;
+ font-size: 1.0em;
+ margin: 0 0 16px 0;
+ color:#000000;
+}
+commentaarnavigatie {
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#505050;
+}
+lichter {
+ color:#B4B4B4;
+}
+/*          personaliabox            */
+
+
+/************************** Nulde laag, z=1 **************************************************/
+
+#mijnpaginacontainer{
+ position: absolute;
+ width: 800px;
+ top: 0px;
+ left: 0px;
+ z-index: 100;
+}
+
+/************************** Eerste laag, z=100 ************************************************/
+#ookgelopen {
+ position: absolute;
+ width: 530px;
+ top: 520px;
+ left: 20px;
+ z-index: 100; 
+}
+#ookgelopen p{
+ line-height: 0.8em;
+ font-size: 0.6em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
+/************************* Tweede laag, z=500 **********************************************/
+#kaartpopup1 {
+ position: absolute;
+ width: auto;
+ top: 198px;
+ left: 158px;
+ z-index: 500;
+}
+#kaartpopup2 {
+ position: absolute;
+ width: auto;
+ top: 198px;
+ left: 358px;
+ z-index: 500;
+}
+#kaartpopup3 {
+ position: absolute;
+ width: auto;
+ top: 368px;
+ left: 158px;
+ z-index: 500;
+}
+#kaartpopup4 {
+ position: absolute;
+ width: auto;
+ top: 368px;
+ left: 358px;
+ z-index: 500;
+}
+#meerdetails {
+ position: absolute;
+ width: auto;
+ top: 560px;
+ left: 260px;
+ z-index: 500; 
+}
+#meerdetails p{
+ line-height:1.0em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#909090;
+ font-weight:bold;
+}
+
+#commentaartekst {
+ position: absolute;
+ width: 200px;
+ top: 380px;
+ left: 605px;
+ z-index: 500;
+}
+#commentaartekst p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
+#commentaarnavigatie {
+ position: absolute;
+ width: auto;
+ top: 505px;
+ left: 620px;
+ z-index: 500; 
+}
+#commentaarnavigatie a{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#505050;
+}
+#commentaarnavigatie p {
+ color:#B4B4B4;
+}
+#personaliameer {
+ position: absolute;
+ width: auto;
+ top: 263px;
+ left: 663px;
+ z-index: 500;
+}
+#personaliameer p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
+#personaliatekst {
+ position: absolute;
+ width: 200px;
+ top: 60px;
+ left: 605px;
+ z-index: 500;
+}
+#personaliatekst p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#949693;
+}
+
+/*********************************** Derde laag, z=1000 *****************************************************************/
+#butspeelaf {
+ position: absolute;
+ width: auto;
+ top: 476px;
+ left: 74px;
+ z-index: 500;
+}
+#butwijzigprofiel {
+ position: absolute;
+ width: auto;
+ top: 310px;
+ left: 650px;
+ z-index: 500;
+}
+#butkiesroute {
+ position: absolute;
+ width: auto;
+ top: 102px;
+ left: 156;
+ z-index: 1000;
+}
+
+
