@@ -11,7 +11,8 @@
 </head>
 	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
-			<!--- slider js --->
+	<script type="text/javascript" src="../js/KWClientDiWi.js"></script>
+		<!--- slider js --->
 	<script src="../js/range.js" type="text/javascript"></script>
 	<script src="../js/timer.js" type="text/javascript"></script>
 	<script src="../js/slider.js" type="text/javascript"></script>
@@ -58,21 +59,22 @@
 			maakroutes: function() {
 				TST.pr('maakroute start');
 				var params = new Array();
-				params[KW.DIWI.BESLOTEN_PARAM] = document.getElementById("besloten").value;
-				params[KW.DIWI.HALFOPEN_PARAM] = document.getElementById("halfopen").value;
-				params[KW.DIWI.OPEN_PARAM] = document.getElementById("open").getValue();
-				params[KW.DIWI.BEDRIJVEN_PARAM] = document.getElementById("bedrijven").value;
-				params[KW.DIWI.BEWONING_PARAM] = document.getElementById("bewoning").value;
-				params[KW.DIWI.BOS_PARAM] = document.getElementById("bos").value;
-				params[KW.DIWI.HEIDE_PARAM] = document.getElementById("heide").value;
-				params[KW.DIWI.GRASLAND_PARAM] = document.getElementById("grasland").value;
-				params[KW.DIWI.ZEE_PARAM] = document.getElementById("zee").value;
-				params[KW.DIWI.SLOTEN_PARAM] = document.getElementById("sloten").value;
-//				params[KW.DIWI.STARTPUNT_PARAM] = document.getElementById("startpunt").getValue();
-//				params[KW.DIWI.EINDPUNT_PARAM] = document.getElementById("s1input").getValue();
-//				params[KW.DIWI.THEMA_PARAM] = document.getElementById("s1input").getValue();
-//				params[KW.DIWI.AFSTAND_PARAM] = document.getElementById("s1input").getValue();
-				params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
+//				params[KW.DIWI.BESLOTEN_PARAM] = document.getElementById("besloten").value;
+				params[KW.DIWI.BESLOTEN_PARAM] = 	s1.getValue();
+				params[KW.DIWI.HALFOPEN_PARAM] = 	s2.getValue();
+				params[KW.DIWI.OPEN_PARAM] = 		s3.getValue();
+				params[KW.DIWI.BEDRIJVEN_PARAM] = 	s4.getValue();
+				params[KW.DIWI.BEWONING_PARAM] = 	s5.getValue();
+				params[KW.DIWI.BOS_PARAM] = 		s6.getValue();
+				params[KW.DIWI.HEIDE_PARAM] = 		s7.getValue();
+				params[KW.DIWI.GRASLAND_PARAM] = 	s8.getValue();
+				params[KW.DIWI.ZEE_PARAM] = 		s9.getValue();
+				params[KW.DIWI.SLOTEN_PARAM] = 		s10.getValue();
+				params[KW.DIWI.STARTPUNT_PARAM] = 	document.getElementById("startpunt").value;
+				params[KW.DIWI.EINDPUNT_PARAM] = 	document.getElementById("eindpunt").value;
+				params[KW.DIWI.THEMA_PARAM] = 		document.getElementById("thema").value;
+				params[KW.DIWI.AFSTAND_PARAM] = 	document.getElementById("afstand").value;
+				params[KW.DIWI.WANDELAAR_PARAM] = 	document.getElementById("wandelen").checked;
 	
 				KW.DIWI.generateroute(null, params);				
 			},
@@ -93,6 +95,11 @@
 					TST.pr('logout OK');
 					document.location.href='../index.html' ;
 				} 
+				else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+				}
+				
 			},
 
 		// KWClient negative response handler.
@@ -108,7 +115,7 @@
 		}
 
 		// Call TST.init() when page is fully loaded
-//		DH.addEvent(window, 'load', TST.init, false);
+		DH.addEvent(window, 'load', TST.init, false);
 /*******************************************************************************/
 var currentSelection = 1;
 var toolbarData = new Array();
@@ -348,44 +355,44 @@ function show(d){
 </script>
 	
 	<div class="listboxes" id="startpunt-lb"> 
-	<form action="dummyvalue">
-	<select name="newurl" onChange="menu_goto(this.form)">
-		<option value="" selected="selected">geen voorkeur</option>
-		<option value="" >bunkerholen</option>
-		<option value="" >heeel lang</option>
-		<option value="" >snert route</option>
+	<form>
+	<select id="startpunt" >
+		<option value="0" selected="selected">geen voorkeur</option>
+		<option value="1" >bunkerholen</option>
+		<option value="2" >heeel lang</option>
+		<option value="3" >snert route</option>
 	</select>
 	</form>
 	</div>
 	<div class="listboxes" id="eindpunt-lb"> 
-	<form action="dummyvalue">
-	<select name="newurl" onChange="menu_goto(this.form)">
-		<option value="" selected="selected">geen voorkeur</option>
-		<option value="" >bunkerholen</option>
-		<option value="" >heeel lang</option>
-		<option value="" >snert route</option>
+	<form>
+	<select id="eindpunt" >
+		<option value="0" selected="selected">geen voorkeur</option>
+		<option value="1" >bunkerholen</option>
+		<option value="2" >heeel lang</option>
+		<option value="3" >snert route</option>
 	</select>
 	</form>
 	</div>
 	<div class="listboxes" id="thema-lb"> 
-	<form action="dummyvalue">
-	<select name="newurl" onChange="menu_goto(this.form)">
-		<option value="" selected="selected">geen voorkeur</option>
-		<option value="" >bunkerholen</option>
-		<option value="" >heeel lang</option>
-		<option value="" >snert route</option>
+	<form>
+	<select id="thema" >
+		<option value="0" selected="selected">geen voorkeur</option>
+		<option value="1" >bunkerholen</option>
+		<option value="2" >heeel lang</option>
+		<option value="3" >snert route</option>
 	</select>
 	</form>
 	</div>
 	<div class="listboxes" id="afstand-lb"> 
-	<form action="dummyvalue">
-	<select name="newurl" onChange="menu_goto(this.form)">
-		<option value="" selected="selected">geen voorkeur</option>
-		<option value="" >3 km</option>
-		<option value="" >5 km</option>
-		<option value="" >10 km</option>
-		<option value="" >15 km</option>
-		<option value="" >20 km</option>
+	<form>
+	<select id="afstand">
+		<option value="0" selected="selected">geen voorkeur</option>
+		<option value="3" >3 km</option>
+		<option value="5" >5 km</option>
+		<option value="10" >10 km</option>
+		<option value="15" >15 km</option>
+		<option value="20" >20 km</option>
 	</select>
 	</form>
 	</div>
