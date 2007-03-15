@@ -61,38 +61,7 @@ a:hover {
  z-index: 300;
 }
 
-mijnpagina {
- font-family: Georgia, Times New Roman, Times, serif;
- line-height: 1.6em;
- font-size: 1.4em;
- margin: 0 0 16px 0;
-}
 
-author {
- line-height: 0.8em;
- font-size: 0.6em;
- margin: 0 0 16px 0;
- padding: 0;
- color:#CCCCCC;
-}
-
-/*           Commentaarbox        */
-h10 {
- font-family: Georgia, Times New Roman, Times, serif;
- line-height: 1.1em;
- font-size: 1.0em;
- margin: 0 0 16px 0;
- color:#000000;
-}
-commentaarnavigatie {
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#505050;
-}
-lichter {
- color:#B4B4B4;
-}
 /*          personaliabox            */
 
 
@@ -106,20 +75,6 @@ lichter {
  z-index: 1;
 }
 
-#mijnpaginacontainer{
- position: absolute;
- width: 800px;
- top: 0px;
- left: 0px;
- z-index: 100;
-}
-#maakroutecontainer{
- position: absolute;
- width: 800px;
- top: 0px;
- left: 0px;
- z-index: 100;
-}
 
 
 /************************** Eerste laag, z=100 ************************************************/
@@ -151,172 +106,13 @@ lichter {
  left: 18px;
  z-index: 100;
 }
-#ookgelopen {
+#copyright{
  position: absolute;
- width: 530px;
- top: 520px;
- left: 20px;
- z-index: 100; 
+ width: auto;
+ top: 570px;
+ left: 0px;
+ z-index: 100;
 }
-#ookgelopen p{
- line-height: 0.8em;
- font-size: 0.6em;
- margin: 0 0 16px 0;
- color:#949693;
-}
-
-/* Maak route *********************************************************************************/
-#slider1 {
- position: absolute;
- width: 280px;
- top: 180px;
- left: 50px;
- z-index: 100; 
-}	
-#s1text {
- position: absolute;
- width: 280px;
- top: 180px;
- left: 350px;
- z-index: 100; 
-}	
-#slider2 {
- position: absolute;
- width: 280px;
- top: 220px;
- left: 50px;
- z-index: 100; 
-}	
-#s2text {
- position: absolute;
- width: 280px;
- top: 220px;
- left: 350px;
- z-index: 100; 
-}	
-#slider3 {
- position: absolute;
- width: 280px;
- top: 260px;
- left: 50px;
- z-index: 100; 
-}	
-#s3text {
- position: absolute;
- width: auto;
- top: 260px;
- left: 350px;
- z-index: 100; 
-}	
-#slider4 {
- position: absolute;
- width: 280px;
- top: 300px;
- left: 50px;
- z-index: 100; 
-}	
-#s4text {
- position: absolute;
- width: 280px;
- top: 300px;
- left: 350px;
- z-index: 100; 
-}	
-
-#slider5 {
- position: absolute;
- width: 280px;
- top: 340px;
- left: 50px;
- z-index: 100; 
-}	
-#s5text {
- position: absolute;
- width: auto;
- top: 340px;
- left: 350px;
- z-index: 100; 
-}	
-#slider6 {
- position: absolute;
- width: 280px;
- top: 380px;
- left: 50px;
- z-index: 100; 
-}	
-#s6text {
- position: absolute;
- width: 280px;
- top: 380px;
- left: 350px;
- z-index: 100; 
-}	
-
-#slider7 {
- position: absolute;
- width: 280px;
- top: 420px;
- left: 50px;
- z-index: 100; 
-}	
-#s7text {
- position: absolute;
- width: auto;
- top: 420px;
- left: 350px;
- z-index: 100; 
-}	
-#slider8 {
- position: absolute;
- width: 280px;
- top: 460px;
- left: 50px;
- z-index: 100; 
-}	
-#s8text {
- position: absolute;
- width: 280px;
- top: 460px;
- left: 350px;
- z-index: 100; 
-}	
-#butmaakeigenroute {
- position: absolute;
- width: 80px;
- top: 520px;
- left: 350px;
- z-index: 100; 
-}	
-
-
-#total {
- position: absolute;
- width: 50px;
- top: 80px;
- left: 100px;
- z-index: 100; 
-}	
-#totaltekst {
- position: absolute;
- width: 50px;
- top: 170px;
- left: 100px;
- z-index: 100; 
-}	
-
-#radiobuttons { 
- position: absolute;
- width: auto;
- top: 107px;
- left: 157px;
- z-index: 500; 
-}
-
-#radiobuttons input {
- width:	10px;
- text-align: left;
- padding: 0-px;
- margin-right: 0px;}	
 
 /************************* Tweede laag, z=500 **********************************************/
 #line {
@@ -326,41 +122,7 @@ lichter {
  left: 155px;
  z-index: 500;
 }
-#copyright {
- position: absolute;
- width: auto;
- top: 570px;
- left: 0px;
- z-index: 500;
-}
-#kaartpopup1 {
- position: absolute;
- width: auto;
- top: 198px;
- left: 158px;
- z-index: 500;
-}
-#kaartpopup2 {
- position: absolute;
- width: auto;
- top: 198px;
- left: 358px;
- z-index: 500;
-}
-#kaartpopup3 {
- position: absolute;
- width: auto;
- top: 368px;
- left: 158px;
- z-index: 500;
-}
-#kaartpopup4 {
- position: absolute;
- width: auto;
- top: 368px;
- left: 358px;
- z-index: 500;
-}
+
 #butroutes {
  position: absolute;
  width: auto;
@@ -389,13 +151,7 @@ lichter {
  left: 630px;
  z-index: 500;
 }
-#butspeelaf {
- position: absolute;
- width: auto;
- top: 476px;
- left: 74px;
- z-index: 500;
-}
+
 #butuitloggen {
  position: absolute;
  width: auto;
@@ -403,29 +159,7 @@ lichter {
  left:745px;
  z-index: 500;
 }
-#butwijzigprofiel {
- position: absolute;
- width: auto;
- top: 310px;
- left: 650px;
- z-index: 500;
-}
- #routeheader {
- position: absolute;
- width: auto;
- top: 130px;
- left: 157px;
- z-index: 500;
- background-color:#F6F8F5;
-}
-#routeheader p {
- font-family: Georgia, Times New Roman, Times, serif;
- line-height: 1.1em;
- font-size: 1.1em;
- margin: 0 0 16px 0;
- padding: 0;
- font-weight:bold;
-}
+
 #paginaheader {
  position: absolute;
  width: auto;
@@ -440,86 +174,3 @@ lichter {
  margin: 0 0 16px 0;
  font-weight:bold;
 }
-#meerdetails {
- position: absolute;
- width: auto;
- top: 560px;
- left: 260px;
- z-index: 500; 
-}
-#meerdetails p{
- line-height:1.0em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#909090;
- font-weight:bold;
-}
-
-#commentaartekst {
- position: absolute;
- width: 200px;
- top: 380px;
- left: 605px;
- z-index: 500;
-}
-#commentaartekst p{
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#949693;
-}
-
-#commentaarnavigatie {
- position: absolute;
- width: auto;
- top: 505px;
- left: 620px;
- z-index: 500; 
-}
-#commentaarnavigatie a{
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#505050;
-}
-#commentaarnavigatie p {
- color:#B4B4B4;
-}
-#personaliameer {
- position: absolute;
- width: auto;
- top: 263px;
- left: 663px;
- z-index: 500;
-}
-#personaliameer p{
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#949693;
-}
-
-#personaliatekst {
- position: absolute;
- width: 200px;
- top: 60px;
- left: 605px;
- z-index: 500;
-}
-#personaliatekst p{
- line-height: 1.1em;
- font-size: 0.7em;
- margin: 0 0 16px 0;
- color:#949693;
-}
-
-/*********************************** Derde laag, z=1000 *****************************************************************/
-#butkiesroute {
- position: absolute;
- width: auto;
- top: 102px;
- left: 156;
- z-index: 1000;
-}
-
-
