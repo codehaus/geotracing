@@ -2,6 +2,7 @@ package nl.diwi.control;
 
 import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
+import nl.diwi.logic.TrafficLogic;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
@@ -38,6 +39,11 @@ public class KICHHandler extends DefaultHandler implements Constants {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
             }
+
+            // store the traffic
+            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
+            
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());

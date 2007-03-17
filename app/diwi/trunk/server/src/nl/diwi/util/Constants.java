@@ -7,6 +7,7 @@ public interface Constants {
     public final static String PREFS_TABLE = "diwi_prefs";
     public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
+    public final static String TRAFFIC_TABLE = "diwi_traffic";
 
     // xml tags
     public final static String PREF_ELM = "pref";
@@ -16,6 +17,7 @@ public interface Constants {
     public final static String NAME_ELM = "name";
     public final static String DISTANCE_ATTR = "distance";
     public final static String KICH_URI_ELM = "kich-uri";
+    public final static String TRAFFIC_ELM = "traffic";
 
     // table fields
     public final static String ID_FIELD = "id";
@@ -36,6 +38,8 @@ public interface Constants {
     public final static String MEDIA_FIELD = "media";
     public final static String POINT_FIELD = "point";
     public final static String KICHID_FIELD = "kichid";
+    public final static String REQUEST_FIELD = "request";
+    public final static String RESPONSE_FIELD = "response";
 
     // poi types
     public final static int POI_STARTPOINT = 1;
