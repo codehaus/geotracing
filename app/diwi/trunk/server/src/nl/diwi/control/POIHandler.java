@@ -1,6 +1,7 @@
 package nl.diwi.control;
 
 import nl.diwi.logic.POILogic;
+import nl.diwi.logic.TrafficLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -11,6 +12,8 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.oase.api.Record;
 
 public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_INSERT_SERVICE = "poi-insert";
@@ -33,6 +36,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
         Log log = Logging.getLog(anUtopiaReq);
+
         logic = createLogic(anUtopiaReq);
 
         // Get the service name for the request
@@ -66,6 +70,11 @@ public class POIHandler extends DefaultHandler implements Constants {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
             }
+
+            // store the traffic
+            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
+            
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());

@@ -7,6 +7,7 @@ package nl.diwi.control;
 
 import nl.justobjects.jox.dom.JXElement;
 import nl.diwi.logic.RouteLogic;
+import nl.diwi.logic.TrafficLogic;
 import nl.diwi.util.Constants;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
@@ -58,7 +59,12 @@ public class RouteHandler extends DefaultHandler implements Constants {
 				// May be overridden in subclass
 				response = unknownReq(anUtopiaReq);
 			}
-		} catch (UtopiaException ue) {
+
+            // store the traffic
+            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
+            
+        } catch (UtopiaException ue) {
 			log.warn("Negative response service=" + service, ue);
 			response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
 		} catch (Throwable t) {
