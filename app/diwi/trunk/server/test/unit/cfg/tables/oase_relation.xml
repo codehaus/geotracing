@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="rec1" />
+			<field name="rec2" />
+			<field name="reltype" />
+			<field name="tag" />
+			<field name="rank" />
+			<field name="state" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="rec1" />
+			<field name="rec2" />
+			<field name="reltype" />
+			<field name="tag" />
+			<field name="rank" />
+			<field name="state" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="rec1" />
+			<field name="rec2" />
+			<field name="reltype" />
+			<field name="tag" />
+			<field name="rank" />
+			<field name="state" />
+		</query>
+ 	</views>
+
+	<data>
+
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<field name="rec1" type="INTEGER" required="true" index="true"/>
+
+		<field name="rec2" type="INTEGER" required="true" index="true" />
+
+		<field name="reltype" type="INTEGER" required="true" />
+
+		<field name="tag" type="STRING" size="32" />
+
+		<field name="rank" type="INTEGER" required="true" default="1" />
+
+		<field name="state" type="INTEGER" required="true" default="1" />
+	</data>
+
+	<!--
+
+	CVS log:
+
+	$Log: oase_relation.xml,v $
+	Revision 1.2  2006/10/08 14:11:13  just
+	oase changes: index and post table create support plus tests
+	
+	Revision 1.1  2005/03/16 15:51:06  just
+	*** empty log message ***
+	
+	Revision 1.1.1.1  2005/03/10 21:42:13  just
+	Import of keyworx server
+	
+	Revision 1.5  2003/07/03 13:19:21  justb
+	added relation handling in webapp
+	
+	Revision 1.4  2003/06/05 19:41:26  justb
+	removed reltype in insert of relation
+	
+	Revision 1.3  2003/06/04 14:51:28  justb
+	added tagged relations and tests for them
+	
+	Revision 1.2  2003/05/27 22:50:02  justb
+	ok
+	
+	Revision 1.1.1.1  2003/05/27 21:28:22  justb
+	no message
+	
+	Revision 1.1.1.1  2003/05/15 14:34:02  justb
+	no message
+	
+
+	-->
+
+</table>

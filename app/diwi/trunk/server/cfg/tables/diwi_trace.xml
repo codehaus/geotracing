@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Route table definition -->
+<table>
+	<views>
+		<insert>
+			<field name="name"/>
+			<field name="description"/>
+            <field name="type"/>
+            <field name="path"/>
+            <field name="extra"/>
+      </insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="type"/>
+             <field name="state"/>
+            <field name="extra"/>
+        </list>
+
+		<query>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+            <field name="type"/>
+            <field name="state"/>
+            <field name="extra"/>
+       </query>
+	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<!-- Owner is person id -->
+		<field name="owner" type="INTEGER" required="false" foreignkey="cascade" />
+
+		<field name="name" type="STRING" size="64" required="true" default="noname"/>
+        <field name="description" type="TEXT" required="true" default="geen beschrijving"/>
+		<field name="state" type="INTEGER" required="true" default="1" />
+        <field name="type" type="INTEGER" required="true" default="1" />
+        <field name="extra" type="XML" />
+
+        <field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+		<field name="path" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,4,28992,INDEX_GIST" />
+	</data>
+	<!--}data -->
+
+</table>
