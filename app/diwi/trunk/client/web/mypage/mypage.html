@@ -3,9 +3,9 @@
 <head>
 <title>De Digitale Wichelroede</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
-  <link rel="stylesheet" type="text/css" href="css/basis.css">
-  <link rel="stylesheet" type="text/css" href="css/maakroute.css">
-  <link rel="stylesheet" type="text/css" href="css/mijnpagina.css">
+  <link rel="stylesheet" type="text/css" href="../css/mypagebasis.css">
+  <link rel="stylesheet" type="text/css" href="../css/maakroute.css">
+  <link rel="stylesheet" type="text/css" href="../css/mijnpagina.css">
   <link rel="stylesheet" type="text/css" href="../css/winclassic.css">
 
 </head>
@@ -59,7 +59,6 @@
 			maakroutes: function() {
 				TST.pr('maakroute start');
 				var params = new Array();
-//				params[KW.DIWI.BESLOTEN_PARAM] = document.getElementById("besloten").value;
 				params[KW.DIWI.BESLOTEN_PARAM] = 	s1.getValue();
 				params[KW.DIWI.HALFOPEN_PARAM] = 	s2.getValue();
 				params[KW.DIWI.OPEN_PARAM] = 		s3.getValue();
@@ -208,7 +207,7 @@ function show(d){
 
 </script>
 
-<body leftmargin="0" rightmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<body  bgcolor="#F6F8F5" >
 
 <!--
 <div id="back">  <img src="images/back.jpg" border="0"> </div>
@@ -279,22 +278,28 @@ function show(d){
 		</div>
 		
 		<div id="routeheader" > 
-		  <p>
-			Ronde om de Grebbeberg		  </p>
-		  <author>
-				Kim Deal, gedaan op 23 februari 2007 <br><br>
-		  </author>
+		  	<p>
+			Ronde om de Grebbeberg		  
+			</p>
 		</div>
+		 
+		 <div id="author">
+		 		<p>
+				Kim Deal, gedaan op 23 februari 2007 
+				</p>
+		 </div>
 		
 		<div id="ookgelopen"> 
 			<p>
 				Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.			</p>
 		</div>
-		
+<!--		Later.		
 		<div id="meerdetails"> 
 			<p>
-				<a href="">Klik hier voor meer details over deze route >></a>			</p>
+				<a href="">Klik hier voor meer details over deze route >></a>
+			</p>
 		</div>
+-->
 		
 		<div id="personaliatekst">
 			<h11>
@@ -302,13 +307,14 @@ function show(d){
 			</h11>
 			<p>
 			<img  src="images/self.jpg" border="0" align="left">
-			Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!			</p>
+			Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!						            </p>
 		</div>
-		
+<!--    	Later		
 		<div id="personaliameer">
 			<p>
 				<a href="">Lees meer >></a>		</p>
 		</div>
+-->
 		
 		<div id="commentaartekst">
 			<H10>Commentaar</H10>
@@ -320,9 +326,11 @@ function show(d){
 			</p>
 		</div>
 		
-		<div id="commentaarnavigatie">
-			
-				<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>		</div>
+		<div id="commentaarnavigatie">	
+			<p>
+				<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>		
+			</p>
+		</div>
 	</div>
 <!-- Einde alles wat op mijnpagina getoond moet worden ----------------------------------------------------->
 
@@ -406,7 +414,7 @@ function show(d){
 		<input class="slider-input" id="s1input"/>
 	</div>
 	<div class="slidertext" id="besloten">
-		 <input  id="s1value" value="0" onchange="s1.setValue(parseInt(this.value))" />
+		 <input  id="s1value" value="0" onChange="s1.setValue(parseInt(this.value))" />
 	</div>
 
 	<div  class="slidercaption" id="caption2">
@@ -416,7 +424,7 @@ function show(d){
 		<input class="slider-input" id="s2input"/>
 	</div>
 	<div class="slidertext" id="halfopen">
-		 <input id="s2value" value="0" onchange="s2.setValue(parseInt(this.value))" />
+		 <input id="s2value" value="0" onChange="s2.setValue(parseInt(this.value))" />
 	</div>
 	
 	<div  class="slidercaption" id="caption3">
@@ -426,7 +434,7 @@ function show(d){
 		<input class="slider-input" id="s3input"/>
 	</div>
 	<div  class="slidertext" id="open">
-		 <input id="s3value" value="0" onchange="s3.setValue(parseInt(this.value))" />
+		 <input id="s3value" value="0" onChange="s3.setValue(parseInt(this.value))" />
 	</div>
 
 	<div  class="slidercaption" id="caption4">
@@ -436,7 +444,7 @@ function show(d){
 		<input class="slider-input" id="s4input"/>
 	</div>
 	<div  class="slidertext" id="bedrijven">
-		 <input id="s4value" value="0" onchange="s4.setValue(parseInt(this.value))" />
+		 <input id="s4value" value="0" onChange="s4.setValue(parseInt(this.value))" />
 	</div>
 	
 	<div  class="slidercaption" id="caption5">
@@ -446,7 +454,7 @@ function show(d){
 		<input class="slider-input" id="s5input"/>
 	</div>
 	<div class="slidertext" id="bewoning">
-		 <input id="s5value" value="0" onchange="s5.setValue(parseInt(this.value))" />
+		 <input id="s5value" value="0" onChange="s5.setValue(parseInt(this.value))" />
 	</div>
 
 	<div  class="slidercaption" id="caption6">
@@ -456,7 +464,7 @@ function show(d){
 		<input class="slider-input" id="s6input"/>
 	</div>
 	<div class="slidertext"  id="bos">
-		 <input id="s6value" value="0" onchange="s6.setValue(parseInt(this.value))" />
+		 <input id="s6value" value="0" onChange="s6.setValue(parseInt(this.value))" />
 	</div>
 	
 	<div  class="slidercaption" id="caption7">
@@ -466,7 +474,7 @@ function show(d){
 		<input class="slider-input" id="s7input"/>
 	</div>
 	<div class="slidertext"  id="heide">
-		 <input id="s7value"  value="0" onchange="s7.setValue(parseInt(this.value))" />
+		 <input id="s7value"  value="0" onChange="s7.setValue(parseInt(this.value))" />
 	</div>
 
 	<div  class="slidercaption" id="caption8">
@@ -476,7 +484,7 @@ function show(d){
 		<input class="slider-input" id="s8input"/>
 	</div>
 	<div class="slidertext"  id="grasland">
-		 <input id="s8value"  value="0" onchange="s8.setValue(parseInt(this.value))" />
+		 <input id="s8value"  value="0" onChange="s8.setValue(parseInt(this.value))" />
 	</div>
 
 	<div  class="slidercaption" id="caption9">
@@ -486,7 +494,7 @@ function show(d){
 		<input class="slider-input" id="s9input"/>
 	</div>
 	<div class="slidertext"  id="zee">
-		 <input id="s9value"  value="0" onchange="s9.setValue(parseInt(this.value))" />
+		 <input id="s9value"  value="0" onChange="s9.setValue(parseInt(this.value))" />
 	</div>
 
 	<div  class="slidercaption" id="caption10">
@@ -496,7 +504,7 @@ function show(d){
 		<input class="slider-input" id="s10input"/>
 	</div>
 	<div class="slidertext"  id="sloten">
-		 <input id="s10value"  value="0" onchange="s10.setValue(parseInt(this.value))" />
+		 <input id="s10value"  value="0" onChange="s10.setValue(parseInt(this.value))" />
 	</div>
 	
 	<div id="butmaakeigenroute">
