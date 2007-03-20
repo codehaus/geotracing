@@ -187,14 +187,7 @@ function ShowPopup(d) {
 	if(d.length < 1) { return; }
 	document.getElementById(popupData[d]).style.display = "block";
 }
-function toonmijnpagina() {
-	document.getElementById("mijnpaginacontainer").style.display = "block";
-	document.getElementById("maakroutecontainer").style.display = "none";
-}
-function toonmaakroutepagina() {
-	document.getElementById("mijnpaginacontainer").style.display = "none";
-	document.getElementById("maakroutecontainer").style.display = "block";
-}
+
 function show(d){
 	for (i=0;i<4;i++){
 		if (i==d) {
@@ -203,6 +196,46 @@ function show(d){
 			HidePopup(i);
 		}
 	}
+}
+
+function PageQuery(q) {
+	if(q.length > 1) this.q = q.substring(1, q.length);
+	else this.q = null;
+	this.keyValuePairs = new Array();
+	if(q) {
+		for(var i=0; i < this.q.split("&").length; i++) {
+			this.keyValuePairs[i] = this.q.split("&")[i];
+		}
+	}
+	this.getKeyValuePairs = function() { return this.keyValuePairs; }
+	this.getValue = function(s) {
+		for(var j=0; j < this.keyValuePairs.length; j++) {
+			if(this.keyValuePairs[j].split("=")[0] == s)
+				return this.keyValuePairs[j].split("=")[1];
+		}
+		return false;
+	}
+	this.getParameters = function() {
+		var a = new Array(this.getLength());
+		for(var j=0; j < this.keyValuePairs.length; j++) {
+			a[j] = this.keyValuePairs[j].split("=")[0];
+		}
+		return a;
+	}
+	this.getLength = function() { return this.keyValuePairs.length; }	
+}
+function queryString(key){
+	var page = new PageQuery(window.location.search); 
+	return unescape(page.getValue(key)); 
+}
+
+function beginpagina() {
+	if (queryString('mp')=='true') { 
+		toonmijnpagina();
+	} else {
+		toonmaakroutepagina();
+	}
+	
 }
 
 </script>
@@ -216,7 +249,8 @@ function show(d){
 <div id="logo"> <img src="images/logot.jpg" border="0"> </div>
 <div id="line"><img src="images/line.jpg" border="0"></div>
 <div id="copyright"><img src="images/copyright.jpg" border="0"></div>
-<div id="personaliabox"><img src="images/personalia.jpg" border="0"></div>
+<div id="personaliabox"><img src="../home/images/videobox.gif" border="0"></div>
+<!--<div id="personaliabox"><img src="images/personalia.jpg" border="0"></div>-->
 <div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
 
 <div id="butroutes"> 
@@ -225,7 +259,7 @@ function show(d){
 </div>
 <div id="butzoek"> 
 	<a><img id="2" src="buttons/zoek.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);show(1);" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="location.href='../index.html';" border="0"></a> 
 </div>
 <div id="butmijnpagina"> 
 	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)" 
@@ -241,7 +275,7 @@ function show(d){
 </div>
 
 <!-- Alles wat op mijnpagina getoond moet worden. ---------------------------------------------------->
-	<div id="mijnpaginacontainer" style="display:none;">
+	<div id="mijnpaginacontainer" style="display:block;">
 		<div id="kaart"><img src="images/kaart.jpg" border="0"></div>
 		
 		<div id="butspeelaf"> 
@@ -332,6 +366,17 @@ function show(d){
 			</p>
 		</div>
 	</div>
+<script type="text/javascript">
+	
+	function toonmijnpagina() {
+		document.getElementById("mijnpaginacontainer").style.display = "block";
+		document.getElementById("maakroutecontainer").style.display = "none";
+	}
+	function toonmaakroutepagina() {
+		document.getElementById("mijnpaginacontainer").style.display = "none";
+		document.getElementById("maakroutecontainer").style.display = "block";
+	}
+</script>
 <!-- Einde alles wat op mijnpagina getoond moet worden ----------------------------------------------------->
 
 
@@ -363,6 +408,9 @@ function show(d){
 </script>
 	
 	<div class="listboxes" id="startpunt-lb"> 
+	<p>
+	Startpunt
+	</p>
 	<form>
 	<select id="startpunt" >
 		<option value="0" selected="selected">geen voorkeur</option>
@@ -373,6 +421,9 @@ function show(d){
 	</form>
 	</div>
 	<div class="listboxes" id="eindpunt-lb"> 
+	<p>
+	Eindpunt
+	</p>
 	<form>
 	<select id="eindpunt" >
 		<option value="0" selected="selected">geen voorkeur</option>
@@ -383,6 +434,9 @@ function show(d){
 	</form>
 	</div>
 	<div class="listboxes" id="thema-lb"> 
+	<p>
+	Thema
+	</p>
 	<form>
 	<select id="thema" >
 		<option value="0" selected="selected">geen voorkeur</option>
@@ -393,6 +447,9 @@ function show(d){
 	</form>
 	</div>
 	<div class="listboxes" id="afstand-lb"> 
+	<p>
+	Afstand
+	</p>
 	<form>
 	<select id="afstand">
 		<option value="0" selected="selected">geen voorkeur</option>
@@ -598,6 +655,9 @@ function show(d){
 </script>
 
 <!-- Einde van alles wat op maakroutepagina getoond moet worden. ------------------------------------------>
+<script type="text/javascript">
+	DH.addEvent(window, 'load', beginpagina(), false);
+</script>
 
 </font>
 </body>

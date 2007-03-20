@@ -5,13 +5,6 @@ mijnpagina {
  margin: 0 0 16px 0;
 }
 
-author {
- line-height: 0.8em;
- font-size: 0.6em;
- margin: 0 0 16px 0;
- padding: 0;
- color:#CCCCCC;
-}
 
 /*           Commentaarbox        */
 h10 {
@@ -129,6 +122,12 @@ lichter {
  margin: 0 0 16px 0;
  color:#505050;
 }
+#commentaarnavigatie p{
+ line-height: 1.1em;
+ font-size: 0.7em;
+ margin: 0 0 16px 0;
+ color:#505050;
+}
 #commentaarnavigatie p {
  color:#B4B4B4;
 }
@@ -158,6 +157,21 @@ lichter {
  font-size: 0.7em;
  margin: 0 0 16px 0;
  color:#949693;
+}
+#author {
+ position: absolute;
+ width: auto;
+ top: 160px;
+ left: 157px;
+ z-index: 500;
+ background-color:#F6F8F5;
+ }
+#author p{
+ line-height: 0.8em;
+ font-size: 0.6em;
+ margin: 0 0 16px 0;
+ padding: 0;
+ color:#CCCCCC;
 }
 
 /*********************************** Derde laag, z=1000 *****************************************************************/

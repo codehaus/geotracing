@@ -28,141 +28,141 @@
 }
 
 #caption1{
- top: 253px;
+ top: 223px;
 }
 #slider1 {
+ position: absolute;
+ top: 222px;
+ left: 200px;
+ z-index: 100; 
+}	
+#besloten {
+ top: 220px;
+}
+	
+#caption2{
+ top: 253px;
+}
+#slider2 {
  position: absolute;
  top: 252px;
  left: 200px;
  z-index: 100; 
 }	
-#besloten {
+#halfopen {
  top: 250px;
-}
-	
-#caption2{
+}	
+
+
+#caption3{
  top: 283px;
 }
-#slider2 {
+#slider3 {
  position: absolute;
  top: 282px;
  left: 200px;
  z-index: 100; 
 }	
-#halfopen {
+#open {
  top: 280px;
 }	
 
-
-#caption3{
+#caption4{
  top: 313px;
 }
-#slider3 {
+#slider4 {
  position: absolute;
  top: 312px;
  left: 200px;
  z-index: 100; 
 }	
-#open {
+#bedrijven {
  top: 310px;
 }	
 
-#caption4{
+#caption5{
  top: 343px;
 }
-#slider4 {
+#slider5 {
  position: absolute;
  top: 342px;
  left: 200px;
  z-index: 100; 
 }	
-#bedrijven {
+#bewoning {
  top: 340px;
 }	
 
-#caption5{
+#caption6{
  top: 373px;
 }
-#slider5 {
+#slider6 {
  position: absolute;
  top: 372px;
  left: 200px;
  z-index: 100; 
 }	
-#bewoning {
+#bos {
  top: 370px;
 }	
 
-#caption6{
+#caption7{
  top: 403px;
 }
-#slider6 {
+#slider7 {
  position: absolute;
  top: 402px;
  left: 200px;
  z-index: 100; 
 }	
-#bos {
+#heide {
  top: 400px;
 }	
 
-#caption7{
+#caption8{
  top: 433px;
 }
-#slider7 {
+#slider8 {
  position: absolute;
  top: 432px;
  left: 200px;
  z-index: 100; 
 }	
-#heide {
+#grasland {
  top: 430px;
 }	
 
-#caption8{
+#caption9{
  top: 463px;
 }
-#slider8 {
+#slider9 {
  position: absolute;
  top: 462px;
  left: 200px;
  z-index: 100; 
 }	
-#grasland {
+#zee {
  top: 460px;
 }	
 
-#caption9{
+#caption10{
  top: 493px;
 }
-#slider9 {
+#slider10 {
  position: absolute;
  top: 492px;
  left: 200px;
  z-index: 100; 
 }	
-#zee {
- top: 490px;
-}	
-
-#caption10{
- top: 523px;
-}
-#slider10 {
- position: absolute;
- top: 522px;
- left: 200px;
- z-index: 100; 
-}	
 #sloten {
- top: 520px;
+ top: 490px;
 }	
 
 #butmaakeigenroute {
  position: absolute;
  width: 80px;
  top: 520px;
- left: 500px;
+ left: 400px;
  z-index: 10000; 
 }	
 
@@ -185,22 +185,26 @@
 #radiobuttons { 
  position: absolute;
  width: auto;
- top: 107px;
- left: 157px;
+ top: 530px;
+ left: 220px;
  z-index: 500; 
 }
 
 #radiobuttons input {
- width:	10px;
+ width:	auto;
  text-align: left;
  padding: 0-px;
  margin-right: 0px;}	
 
 .listboxes{
  position:absolute;
- top:180px;
+ top:130px;
  z-index: 100;
  width:auto; 
+}
+.listboxes p{
+ text-align:center;
+ line-height:8px;
 }
 #startpunt-lb{
  left: 15px;
