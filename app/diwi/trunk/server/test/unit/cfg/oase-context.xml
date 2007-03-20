@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Defines context, only tables for now.   -->
+<context id="diwitest">
+	<tables>
+		<!-- Standard KeyWorx Portal tables (required)
+		<table file="tables/utopia_portal.xml"/>
+		<table file="tables/utopia_application.xml"/>
+		<table file="tables/utopia_account.xml"/>
+		<table file="tables/utopia_group.xml"/>
+		<table file="tables/utopia_organisation.xml"/>
+		<table file="tables/utopia_person.xml"/>
+		<table file="tables/utopia_right.xml"/>
+		<table file="tables/utopia_role.xml"/> -->
+
+        <!-- DiWi specific tables -->
+        <table file="../../../cfg/tables/diwi_route.xml"/>
+        <table file="../../../cfg/tables/diwi_prefs.xml"/>
+        <table file="../../../cfg/tables/diwi_poi.xml"/>
+        <table file="../../../cfg/tables/diwi_ugc.xml"/>
+        <table file="../../../cfg/tables/diwi_traffic.xml"/>
+		<table file="../../../cfg/tables/diwi_trace.xml"/>
+
+	<!--	<table file="tables/kw_comment.xml"/>     -->
+
+		<!-- External KWX plugin for tagging
+		<table file="tables/cc_tag.xml"/>
+		<table file="tables/cc_tagrelation.xml"/> -->
+	</tables>
+</context>
+
+
