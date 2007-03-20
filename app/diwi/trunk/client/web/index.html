@@ -67,13 +67,14 @@
 					document.getElementById('butmijnpagina').style.display = "block";
 					DH.hide('loginform');
 					toonlogoutbutton();
+					verbergInlogBox();
 //					DH.show('logoutform');
 				} else if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
 					document.getElementById('butmaakroute').style.display = "none";
 					document.getElementById('butmijnpagina').style.display = "none";
 					DH.show('loginform');
-					DH.hide('logoutform');
+//					DH.hide('logoutform');
 					verbergInlogBox();
 				} else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
@@ -257,10 +258,11 @@ function show(d){
 				<input type="button" value="Check In" name="Submit" onClick="javascript:TST.login()">
 			</p>
 		</form>
-	
+<!--	
 		<form id="logoutform" action="#" style="visibility: hidden">
 			<input type="button" value="Logout" name="Submit" onClick="javascript:TST.logout()">
 		</form>
+-->
 	</div>
 
 
