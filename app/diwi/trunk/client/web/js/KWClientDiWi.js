@@ -42,11 +42,11 @@ KW.DIWI = {
 	GRASLAND_PARAM:		'grasland',
 	ZEE_PARAM:			'zee',
 	SLOTEN_PARAM:		'sloten',
-	STARTPUNT_PARAM:	'startpoint',
+	STARTPUNT_PARAM:	'startpunt',
 	EINDPUNT_PARAM:		'eindpunt',
 	THEMA_PARAM:		'thema',
 	WANDELAAR_PARAM:	'wandelaar',
-	AFSTAND_PARAM:		'distance',
+	AFSTAND_PARAM:		'afstand',
 
 
 	/*
@@ -62,12 +62,58 @@ KW.DIWI = {
 		var req = KW.createRequest('route-generate-req');
 		var key;
 		for (key in params) {
-			var pref = req.createElement('pref');
-			pref.setAttribute('name', key);
-			pref.setAttribute('value', params[key]);			
-			req.documentElement.appendChild(pref);
+			if(params[key] != null && params[key] != "") {
+				var pref = req.createElement('pref');
+				pref.setAttribute('name', key);
+				pref.setAttribute('value', params[key]);			
+				req.documentElement.appendChild(pref);
+			}
 		} 
 
 		KW.utopia(req, callback);
+	},
+	
+	getroute: function(callback, id) {
+		var req = KW.createRequest('route-get-req');
+		req.documentElement.setAttribute('id', id);
+
+		KW.utopia(req, callback);
+	},
+	
+	getpreferences: function(callback) {
+		var req = KW.createRequest('diwi-get-preferences-req');
+
+		KW.utopia(req, callback);		
+	},
+	
+	getendpoints: function(callback) {
+		var req = KW.createRequest('poi-get-endpoints');
+
+		KW.utopia(req, callback);
+	},	
+
+	getstartpoints: function(callback) {
+		var req = KW.createRequest('poi-get-startpoints-req');
+
+		KW.utopia(req, callback);
+	},	
+
+
+	getthemes: function(callback) {
+		var req = KW.createRequest('route-get-themes-req');
+
+		KW.utopia(req, callback);
+	},	
+
+	getmap: function(callback, id, width, height) {
+		var req = KW.createRequest('route-get-map-req');
+
+		req.documentElement.setAttribute('id', id);
+		req.documentElement.setAttribute('height', height);
+		req.documentElement.setAttribute('width', width);
+
+		KW.utopia(req, callback);		
 	}
+	
+	
 }

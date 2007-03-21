@@ -19,6 +19,8 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.XML;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Vector;
 
 /**
@@ -33,8 +35,10 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
     public final static String ROUTE_SAVE_SERVICE = "route-save";
+    public final static String ROUTE_GET_SERVICE = "route-get";    
+    public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";  
+    public final static String ROUTE_THEMES_SERVICE = "route-themes";  
     
-
     /**
 	 * Processes the Client Request.
 	 *
@@ -55,6 +59,10 @@ public class RouteHandler extends DefaultHandler implements Constants {
 				response = generateRoute(anUtopiaReq);
 			} else if (service.equals(ROUTE_SAVE_SERVICE)) {
 				response = saveRoute(anUtopiaReq);
+			} else if (service.equals(ROUTE_GET_SERVICE)) {
+				response = getRoute(anUtopiaReq);
+			} else if (service.equals(ROUTE_GET_MAP_SERVICE)) {
+				response = getMap(anUtopiaReq);
 			} else {
 				// May be overridden in subclass
 				response = unknownReq(anUtopiaReq);
@@ -77,6 +85,32 @@ public class RouteHandler extends DefaultHandler implements Constants {
 		return new UtopiaResponse(response);
 	}
 
+	private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        RouteLogic logic = createLogic(anUtopiaReq);   
+        int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
+        int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
+        int width = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(WIDTH_FIELD));
+		
+		JXElement response = createResponse(ROUTE_GET_MAP_SERVICE);
+        try {
+			response.setAttr(URL_FIELD, URLEncoder.encode(logic.getMapUrl(routeId, width, height), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return response;
+	}
+
+	private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        RouteLogic logic = createLogic(anUtopiaReq);   
+        JXElement routeElm = logic.getRoute(Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)));
+        
+        JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
+        response.addChild(routeElm);
+
+        return response;
+	}
+
 	/*
         <route-generate-req >
              <pref name="bos" value="40" type="outdoor-params" />
@@ -89,25 +123,13 @@ public class RouteHandler extends DefaultHandler implements Constants {
      */
     protected JXElement generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
-        Record route = logic.generateRoute(anUtopiaReq);
-
-		//Convert Route record to XML and add to result
-        JXElement routeElm = null;
-		try {
-			routeElm = XML.createElementFromRecord(ROUTE_ELM, route);
-			
-			//replace path data with calculated distance
-			routeElm.removeChildByTag(PATH_FIELD);
-			// calculate length of route
-			//routeElm.setAttr(DISTANCE_ATTR, (()route.getObjectField(PATH_FIELD).)
-					
-		} catch (UtopiaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}            
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+        // ok so this person is the one generating the routes!!
+        int personId  = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
         
+        JXElement route = logic.generateRoute(reqElm, personId);        
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
-        response.addChild(routeElm);
+        response.addChild(route);
 
         return response;
 	}

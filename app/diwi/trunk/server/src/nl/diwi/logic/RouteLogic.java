@@ -9,10 +9,11 @@ import org.keyworx.utopia.core.util.XML;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.postgis.PGgeometry;
 import org.postgis.PGgeometryLW;
+import org.postgis.PGbox2d;
 
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -56,14 +57,9 @@ public class RouteLogic implements Constants {
         
         return vector of Route record converted to JXElement.
      */
-    public Record generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    public JXElement generateRoute(JXElement reqElm, int personId) throws UtopiaException {
 		try {
-            Vector results = new Vector(3);
-
-            JXElement reqElm = anUtopiaReq.getRequestCommand();
-            // ok so this person is the one generating the routes!!
-            String personId  = anUtopiaReq.getUtopiaSession().getContext().getUserId();
-            Record person = oase.getFinder().read(Integer.parseInt(personId));
+            Record person = oase.getFinder().read(personId);
 
             // first delete existing prefs
             Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, null);
@@ -79,7 +75,7 @@ public class RouteLogic implements Constants {
 
                 // create the pref
                 Record pref = oase.getModifier().create(PREFS_TABLE);
-                pref.setIntField(OWNER_FIELD, Integer.parseInt(personId));
+                pref.setIntField(OWNER_FIELD, personId);
                 pref.setStringField(NAME_FIELD, prefElm.getAttr(NAME_FIELD));
                 pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
                 pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
@@ -110,52 +106,84 @@ public class RouteLogic implements Constants {
     			e.printStackTrace();
     		}
         
-    		route = oase.getFinder().freeQuery(
-    				"select ID, NAME, DESCRIPTION, length2d(path) AS LENGTH from diwi_route where id="
-    				+ route.getId())[0];
-    		
-         	return route;
-            
+    		//Convert Route record to XML and add to result
+            JXElement routeElm = getRoute(route.getId());          
+
+    		return routeElm;
         } catch (OaseException oe) {
 			throw new UtopiaException("Error in generateRoute", oe, ErrorCode.__6006_database_irregularity_error);
 		}
 	}
 
+	public JXElement getRoute(int routeId) {
+        JXElement routeElm = null;
+		try {
+			Record route = oase.getFinder().read(routeId);
+			routeElm = XML.createElementFromRecord(ROUTE_ELM, route);			
+			routeElm.removeChildByTag(PATH_FIELD);
+			
+			JXElement lengthElm = new JXElement(DISTANCE_FIELD);
+			lengthElm.setText("" + getDistance(route));
+			routeElm.addChild(lengthElm);
+		} catch (OaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UtopiaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return routeElm;
+	}
+	
     /**
 	 * Delete a route.
 	 *
 	 * @param aRouteId a comment id
 	 * @throws UtopiaException Standard exception
 	 */
-	public void delete(int aRouteId) throws UtopiaException {
+	public void deleteRoute(int aRouteId) throws UtopiaException {
 		try {
 			oase.getModifier().delete(aRouteId);
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot delete route record with id=" + aRouteId, oe, ErrorCode.__6006_database_irregularity_error);
 		}
 	}
-
-	/** Properties passed on from Handler. */
-	public static String getProperty(String propertyName) {
-		return (String) properties.get(propertyName);
+	
+	private int getDistance(Record route) throws OaseException {
+		Record distance = oase.getFinder().freeQuery(
+				"select length2d(path) AS distance from diwi_route where id="
+				+ route.getId())[0];
+		
+		return (int)Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());	
 	}
 
-	/** Properties passed on from Handler. */
-	protected static void setProperty(String propertyName, String propertyValue) {
-		properties.put(propertyName, propertyValue);
-	}
 
-	/** Trim content for empty begin/end and maximum chars allowed. */
-	protected String trimContent(String aContentString) {
-		String result = aContentString.trim();
+	public String getMapUrl(int routeId, int width, int height) {
+		Record bounds = null;
+		try {
+			bounds = oase.getFinder().freeQuery(
+					"select box2d(path) AS bbox from diwi_route where id="
+					+ routeId)[0];
 
-		// Check for maximum allowed content size, trim if necessary
-		int maxContentSize = Integer.parseInt(properties.getProperty(PROP_MAX_CONTENT_CHARS, "512"));
-		if (aContentString.length() > maxContentSize) {
-			result = result.substring(0, maxContentSize);
+		} catch (OaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return result;
-	}
-
+		PGgeometryLW geom = (PGgeometryLW)bounds.getObjectField("bbox");
+		
+		
+		/*
+		PGbox2d box = (PGbox2d)geom.getGeometry();
+		try {
+			box = new PGbox2d(bounds.getField("bbox").toString());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		*/
+		String boxString = "153929.028192%2C459842.063363%2C158851.133074%2C463123.466618";
+		String url = "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+		return url;
+	}	
 }
 
