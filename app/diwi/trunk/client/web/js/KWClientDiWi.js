@@ -47,8 +47,7 @@ KW.DIWI = {
 	THEMA_PARAM:		'thema',
 	WANDELAAR_PARAM:	'wandelaar',
 	AFSTAND_PARAM:		'afstand',
-
-
+	
 	/*
 	sample calling:
 	
@@ -113,7 +112,17 @@ KW.DIWI = {
 		req.documentElement.setAttribute('width', width);
 
 		KW.utopia(req, callback);		
-	}
+	},
 	
+	getfixedroutes: function(callback) {
+		var req = KW.createRequest('route-query-req');
+		KW.utopia(req, callback);		
+	},
 	
+	getactiveroute: function(callback) {
+		var req = KW.createRequest('route-get-active-req');
+		KW.utopia(req, callback);		
+	}, 
+	
+		
 }
