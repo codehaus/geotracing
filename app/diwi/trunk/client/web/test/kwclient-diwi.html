@@ -45,6 +45,68 @@
 				return false;
 			},
 
+			generateRoute: function(form) {
+				var params = new Array();
+
+				params[KW.DIWI.BESLOTEN_PARAM] = form[KW.DIWI.BESLOTEN_PARAM].value;
+				params[KW.DIWI.HALFOPEN_PARAM] = form[KW.DIWI.HALFOPEN_PARAM].value;
+				params[KW.DIWI.OPEN_PARAM] = form[KW.DIWI.OPEN_PARAM].value;
+				params[KW.DIWI.BEDRIJVEN_PARAM] = form[KW.DIWI.BEDRIJVEN_PARAM].value;
+				params[KW.DIWI.BEWONING_PARAM] = form[KW.DIWI.BEWONING_PARAM].value;
+				params[KW.DIWI.HEIDE_PARAM] = form[KW.DIWI.HEIDE_PARAM].value;
+				params[KW.DIWI.BOS_PARAM] = form[KW.DIWI.BOS_PARAM].value;
+				params[KW.DIWI.GRASLAND_PARAM] = form[KW.DIWI.GRASLAND_PARAM].value;
+				params[KW.DIWI.ZEE_PARAM] = form[KW.DIWI.ZEE_PARAM].value;
+				params[KW.DIWI.SLOTEN_PARAM] = form[KW.DIWI.SLOTEN_PARAM].value;
+				params[KW.DIWI.STARTPUNT_PARAM] = form[KW.DIWI.STARTPUNT_PARAM].value;
+				params[KW.DIWI.EINDPUNT_PARAM] = form[KW.DIWI.EINDPUNT_PARAM].value;
+				params[KW.DIWI.THEMA_PARAM] = form[KW.DIWI.THEMA_PARAM].value;
+				params[KW.DIWI.WANDELAAR_PARAM] = form[KW.DIWI.WANDELAAR_PARAM].value;
+				params[KW.DIWI.AFSTAND_PARAM] = form[KW.DIWI.AFSTAND_PARAM].value;
+				TST.pr('generate route');
+				KW.DIWI.generateroute(TST.onRsp, params);				
+			},
+
+			getRoute: function(form) {
+				var id = form.id.value
+				TST.pr('Get Route for ' + id);
+				KW.DIWI.getroute(TST.onRsp, id);
+			},
+
+			getMap: function(form) {
+				var id = form.id.value;
+				var height = form.height.value;
+				var width = form.width.value;
+				
+				TST.pr('Get Map for ' + id + "(" + width + "," + height + ")");
+				KW.DIWI.getmap(TST.onMapRsp, id, width, height);
+			},
+
+			getPreferences: function(form) {
+				KW.DIWI.getpreferences(TST.onRsp);							
+			},
+
+			getStartPoints: function(form) {
+				KW.DIWI.getstartpoints(TST.onRsp);							
+			},
+
+			getEndPoints: function(form) {
+				KW.DIWI.getendpoints(TST.onRsp);							
+			},
+
+			getThemes: function(form) {
+				KW.DIWI.getthemes(TST.onRsp);							
+			},
+
+			onMapRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('<a href="' + unescape(elm.getAttribute('url')) + '">show image</a>');
+			},
+
 			onRsp: function(elm) {
 				if (!elm) {
 					TST.pr('empty response');
@@ -58,13 +120,6 @@
 					TST.pr('login OK');
 					TST.pr('storing session, key=' + KW.agentKey);
 					
-					var params = new Array();
-					params[KW.DIWI.BOS_PARAM] = 15;
-					KW.DIWI.generateroute(null, params);				
-					
-					params = new Array();
-					params[KW.DIWI.HEIDE_PARAM] = 80;	
-					KW.DIWI.generateroute(null, params);											
 					
 				} else if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
@@ -93,8 +148,72 @@
 </head>
 
 <body>
+<div id="services" style="height: 470px; overflow:  scroll">
+<form>
+	<h2>Generate Route</h2>
+	<table>
+	<tr><td><b>besloten:</b> </td><td><input type="text" name="besloten" value=""/></td></tr>
+	<tr><td><b>halfopen:</b> </td><td><input type="text" name="halfopen" value=""/></td></tr>
+	<tr><td><b>open:</b> </td><td><input type="text" name="open" value=""/></td></tr>
+	<tr><td><b>bedrijven:</b> </td><td><input type="text" name="bedrijven" value=""/></td></tr>
+	<tr><td><b>bewoning:</b> </td><td><input type="text" name="bewoning" value=""/></td></tr>
+	<tr><td><b>bos:</b> </td><td><input type="text" name="bos" value=""/></td></tr>
+	<tr><td><b>heide:</b> </td><td><input type="text" name="heide" value=""/></td></tr>
+	<tr><td><b>grasland:</b> </td><td><input type="text" name="grasland" value=""/></td></tr>
+	<tr><td><b>zee:</b> </td><td><input type="text" name="zee" value=""/></td></tr>
+	<tr><td><b>sloten:</b> </td><td><input type="text" name="sloten" value=""/></td></tr>
+	<tr><td><b>startpunt:</b> </td><td><input type="text" name="startpunt" value=""/></td></tr>
+	<tr><td><b>eindpunt:</b> </td><td><input type="text" name="eindpunt" value=""/></td></tr>
+	<tr><td><b>thema:</b> </td><td><input type="text" name="thema" value=""/></td></tr>
+	<tr><td><b>wandelaar:</b> </td><td><input type="text" name="wandelaar" value=""/></td></tr>
+	<tr><td><b>afstand:</b> </td><td><input type="text" name="afstand" value=""/></td></tr>			
+	<tr><td><input type="button" name="button" value="Generate Route" onClick="TST.generateRoute(this.form)"/></td></tr>		
+	</table>
+		
+</form>
 
-<div id="result">DEBUG INFO</div>
+<form>
+	<h2>Get Themes</h2>
+	<input type="button" name="button" value="Get Themes" onClick="TST.getThemes(this.form)"/>	
+</form>
+
+<form>
+	<h2>Get Start Points</h2>
+	<input type="button" name="button" value="Get Start Points" onClick="TST.getStartPoints(this.form)"/>	
+</form>
+
+<form>
+	<h2>Get End Points</h2>
+	<input type="button" name="button" value="Get End Points" onClick="TST.getEndPoints(this.form)"/>	
+</form>
+
+<form>
+	<h2>Get Route</h2>
+	<b>ID:</b> <input type="text" name="id" value=""/><br/>
+	<input type="button" name="button" value="Get Route" onClick="TST.getRoute(this.form)"/>		
+</form>
+
+<form>
+	<h2>Get Map</h2>
+	<table>
+	<tr><td><b>ID:</b> </td><td><input type="text" name="id" value=""/></td></tr>
+	<tr><td><b>Height:</b> </td><td><input type="text" name="height" value=""/></td></tr>
+	<tr><td><b>Width:</b> </td><td><input type="text" name="width" value=""/></td></tr>	
+	<tr><td><input type="button" name="button" value="Get Map" onClick="TST.getMap(this.form)"/></td></tr>		
+	</table>
+</form>
+
+
+<form>
+	<h2>Get Preferences</h2>
+	<input type="button" name="button" value="Get Preferences" onClick="TST.getPreferences(this.form)"/>		
+</form>
+</div>
+
+
+<div id="result" style="height: 200px; overflow:  scroll"><b>DEBUG INFO</b></div>
+
+
 
 </body>
 </html>

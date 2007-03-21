@@ -52,6 +52,7 @@
 			</handler>
             <handler id="poi" class="nl.diwi.control.POIHandler" />
             <handler id="kich" class="nl.diwi.control.KICHHandler" />
+			<handler id="diwi" class="nl.diwi.control.DiWiHandler"/>
         </handlers>
 
 

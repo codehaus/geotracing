@@ -40,7 +40,12 @@ public interface Constants {
     public final static String KICHID_FIELD = "kichid";
     public final static String REQUEST_FIELD = "request";
     public final static String RESPONSE_FIELD = "response";
-
+    public final static String DISTANCE_FIELD = "distance";
+    public final static String BOUNDS_FIELD = "bounds";
+    public final static String HEIGHT_FIELD = "height";
+    public final static String WIDTH_FIELD = "width";
+    public final static String URL_FIELD = "url";
+    
     // poi types
     public final static int POI_STARTPOINT = 1;
     public final static int POI_ENDPOINT = 2;
