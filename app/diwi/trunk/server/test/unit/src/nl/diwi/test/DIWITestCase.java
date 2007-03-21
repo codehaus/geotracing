@@ -1,11 +1,11 @@
 package nl.diwi.test;
 
 import junit.framework.TestCase;
+import org.keyworx.common.util.Sys;
 import org.keyworx.oase.api.*;
 import org.keyworx.oase.config.StoreContextConfig;
 import org.keyworx.oase.main.Main;
 import org.keyworx.oase.main.OaseContextManager;
-import org.keyworx.common.util.Sys;
 
 /**
  * Test class <code>Finder</code>.
