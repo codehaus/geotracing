@@ -13,6 +13,8 @@ import org.postgis.PGgeometry;
 import org.postgis.PGgeometryLW;
 import org.postgis.PGbox2d;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Vector;
@@ -158,7 +160,7 @@ public class RouteLogic implements Constants {
 	}
 
 
-	public String getMapUrl(int routeId, int width, int height) {
+	public String getMapUrl(int routeId, double width, double height) {
 		Record bounds = null;
 		try {
 			bounds = oase.getFinder().freeQuery(
@@ -169,20 +171,44 @@ public class RouteLogic implements Constants {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		PGgeometryLW geom = (PGgeometryLW)bounds.getObjectField("bbox");
+		PGbox2d bbox = (PGbox2d)bounds.getObjectField("bbox");
+
+		double boundsHeight = bbox.getURT().y - bbox.getLLB().y;
+		double boundsWidth = bbox.getURT().x - bbox.getLLB().x;
+				
+		if(width/height > boundsWidth/boundsHeight) {
+			//pad x
+			double padWidth = ((width/height) * boundsHeight) - boundsWidth;
+			bbox.getLLB().x -= (padWidth/2); 
+			bbox.getURT().x += (padWidth/2);
+		} else {
+			//pad y			
+			double padHeight = (boundsWidth * (height/width)) - boundsHeight;
+			bbox.getLLB().y -= (padHeight/2); 
+			bbox.getURT().y += (padHeight/2); 
+		}
+
+		//add a 10% border
+		boundsHeight = bbox.getURT().y - bbox.getLLB().y;
+		boundsWidth = bbox.getURT().x - bbox.getLLB().x;
+		double padHeight = 0.1 * boundsHeight;
+		double padWidth = 0.1 * boundsWidth;
+		bbox.getLLB().x -= padWidth/2; 
+		bbox.getURT().x += padWidth/2; 
+		bbox.getLLB().y -= padHeight/2; 
+		bbox.getURT().y += padHeight/2; 
 		
 		
-		/*
-		PGbox2d box = (PGbox2d)geom.getGeometry();
+		String boxString = null;
 		try {
-			box = new PGbox2d(bounds.getField("bbox").toString());
-		} catch (SQLException e) {
+			boxString = URLEncoder.encode(""+ bbox.getLLB().x + "," + bbox.getLLB().y +  ","+ bbox.getURT().x + "," + bbox.getURT().y, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
-		String boxString = "153929.028192%2C459842.063363%2C158851.133074%2C463123.466618";
-		String url = "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+		
+		//String boxString = "153929.028192%2C459842.063363%2C158851.133074%2C463123.466618";
+		String url = "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height + "&TEST=" + bbox.toString() + boundsWidth/boundsHeight ;
 		return url;
 	}	
 }
