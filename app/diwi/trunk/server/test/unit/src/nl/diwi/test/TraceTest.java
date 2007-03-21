@@ -1,13 +1,8 @@
 package nl.diwi.test;
 
-import org.keyworx.common.util.Sys;
-import org.keyworx.oase.api.Modifier;
 import org.keyworx.oase.api.Record;
-import org.keyworx.oase.store.record.RecordImpl;
-import org.postgis.Point;
-import org.postgis.PGgeometryLW;
 import org.postgis.LineString;
-import org.postgis.PGgeometry;
+import org.postgis.PGgeometryLW;
 
 /**
  * Test class Oase-PostGIS LINESTRING type.
