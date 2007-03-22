@@ -9,11 +9,10 @@
 	<script type="text/javascript" src="lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClientExt.js"></script>
+	<script type="text/javascript" src="js/KWClientDiWi.js"></script>
+	<script type="text/javascript" src="js/selectstartpage.js"></script>
+
 	<script language="JavaScript" type="text/JavaScript">
-	
-// *******************************************************************************************************************
-// 		Inlogcode
-// *******************************************************************************************************************
 		var TST = {
 			// Initialization of KWClient library
 			init: function() {
@@ -48,6 +47,9 @@
 				TST.pr('logout sent');
 				return false;
 			},
+			getFixedRoutes: function() {
+				KW.DIWI.getfixedroutes(TST.onRsp);
+			},
 
 			onRsp: function(elm) {
 				if (!elm) {
@@ -63,19 +65,16 @@
 
 					KW.storeSession();
 					// Show new content, here logout form
-					document.getElementById('butmaakroute').style.display = "block";
-					document.getElementById('butmijnpagina').style.display = "block";
+					DH.toggleDisplay(document.getElementById('butmaakroute'));
+					DH.toggleDisplay(document.getElementById('butmijnpagina'));
 					DH.hide('loginform');
-					toonlogoutbutton();
-					verbergInlogBox();
-//					DH.show('logoutform');
+					toggleLogButton();
+					toggleInlogBox();
 				} else if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
-					document.getElementById('butmaakroute').style.display = "none";
-					document.getElementById('butmijnpagina').style.display = "none";
+					DH.toggleDisplay(document.getElementById('butmaakroute'));
+					DH.toggleDisplay(document.getElementById('butmijnpagina'));
 					DH.show('loginform');
-//					DH.hide('logoutform');
-					verbergInlogBox();
 				} else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
 				}
@@ -126,7 +125,7 @@ function selectItem(obj) {
   	tbar[j] = document.getElementById(j);
 		tbar[j].setAttribute('src', toolbarData[(j)][0]);
 	}
-obj.setAttribute('src', toolbarData[i][2]);
+ obj.setAttribute('src', toolbarData[i][2]);
  currentSelection = i;
 }
 
@@ -175,46 +174,53 @@ function laadtPlaatjes() {
 		}
 	}
 }
-function toonInlogBox() {
-	document.getElementById('inlogbox').style.display = "block";
-	document.getElementById('inlogform').style.display = "block";
+
+function toggleInlogBox() {
+	DH.toggleDisplay(document.getElementById('inlogbox'));
+	DH.toggleDisplay(document.getElementById('inlogform'));
 }
-function verbergInlogBox() {
-	document.getElementById('inlogbox').style.display = "none";
-	document.getElementById('inlogform').style.display = "none";
+function toggleLogButton() {
+	DH.toggleDisplay(document.getElementById('butuitloggen'));
+	DH.toggleDisplay(document.getElementById('butinloggen'));
 }
 
-function toonlogoutbutton() {
-	document.getElementById('butuitloggen').style.display = "block";
-	document.getElementById('butinloggen').style.display = "none";
+function toonLogoutButton() {
+	toggleLogButton();
 }
 
-function toonloginbutton() {
+function toonLoginButton() {
 	TST.logout();
-	document.getElementById('butuitloggen').style.display = "none";
-	document.getElementById('butinloggen').style.display = "block";
-
+	toggleLogButton();
 }
 
-function HideText(d) {
+function hideText(d) {
 if(d.length < 1) { return; }
 	document.getElementById(texten[d]).style.display = "none";
 	}
-function ShowText(d) {
+function showText(d) {
 	if(d.length < 1) { return; }
 	document.getElementById(texten[d]).style.display = "block";
 }
 
 function show(d){
-	verbergInlogBox();
 	for (i=0;i<aantaltexten;i++){
 		if (i==d) {
-			ShowText(i);
+			showText(i);
 		} else {
-			HideText(i);
+			hideText(i);
 		}
 	}
 }
+
+function restoreLoggedIn() {
+	if (queryString('logged')=='true') { 
+		KW.restoreSession();
+		document.getElementById('butinloggen').style.display = "none";
+		document.getElementById('butuitloggen').style.display = "block";
+	}
+}
+
+
 </script>
 
 <body  background="home/images/back.gif">
@@ -230,11 +236,11 @@ function show(d){
 
 	<div id="butinloggen" style="display:block">
 		<a><img id="5" src="home/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggenH.gif'"
-		onMouseOut="src='home/buttons/inloggen.gif'" onClick="toonInlogBox()" border="0"></a>
+		onMouseOut="src='home/buttons/inloggen.gif'" onClick="toggleInlogBox()" border="0"></a>
 	</div>
 	<div id="butuitloggen" style="display:none">
 		<a><img id="8" src="home/buttons/uitloggen.gif" onMouseOver="src='home/buttons/uitloggenH.gif'"
-		onMouseOut="src='home/buttons/uitloggen.gif'" onClick="toonloginbutton()" border="0"></a>
+		onMouseOut="src='home/buttons/uitloggen.gif'" onClick="toonLoginButton()" border="0"></a>
 	</div>
 	
 	<div id="butmaakroute" style="display:none;">
@@ -258,11 +264,6 @@ function show(d){
 				<input type="button" value="Check In" name="Submit" onClick="javascript:TST.login()">
 			</p>
 		</form>
-<!--	
-		<form id="logoutform" action="#" style="visibility: hidden">
-			<input type="button" value="Logout" name="Submit" onClick="javascript:TST.logout()">
-		</form>
--->
 	</div>
 
 

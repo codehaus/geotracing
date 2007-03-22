@@ -106,6 +106,13 @@ a:hover {
  left: 18px;
  z-index: 100;
 }
+#map {
+ position: absolute;
+ width: auto;
+ top: 170px;
+ left: 18px;
+ z-index: 100;
+}
 #copyright{
  position: absolute;
  width: auto;

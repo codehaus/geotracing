@@ -219,4 +219,25 @@
  left: 405px;
 }
 
+#generated-routes{
+ position: absolute;
+ width: auto;
+ top: 80px;
+ left: 615px;
+ z-index: 500;
+ }
 
+#generated-routes-image{
+ position: absolute;
+ width: auto;
+ top: 380px;
+ left: 615px;
+ z-index: 500;
+ }
+#generated-routes-image-big{
+ position: absolute;
+ width: auto;
+ top: 80px;
+ left: 50px;
+ z-index: 500;
+ }
