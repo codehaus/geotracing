@@ -207,8 +207,7 @@ public class RouteLogic implements Constants {
 			e.printStackTrace();
 		}
 		
-		//String boxString = "153929.028192%2C459842.063363%2C158851.133074%2C463123.466618";
-		String url = "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height + "&TEST=" + bbox.toString() + boundsWidth/boundsHeight ;
+		String url = "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
 		return url;
 	}	
 }
