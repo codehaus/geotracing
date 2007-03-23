@@ -12,8 +12,7 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.oase.api.Record;
+
 
 public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_INSERT_SERVICE = "poi-insert";
@@ -47,25 +46,25 @@ public class POIHandler extends DefaultHandler implements Constants {
         try {
             if (service.equals(POI_INSERT_SERVICE)) {
                 // Add a new poi
-                response = insertReq(anUtopiaReq);
+                response = insertPoi(anUtopiaReq);
             } else if (service.equals(POI_GET_SERVICE)) {
                 // get poi
-                response = getReq(anUtopiaReq);
+                response = getPoi(anUtopiaReq);
             } else if (service.equals(POI_GETLIST_SERVICE)) {
                 // get all pois
-                response = getListReq(anUtopiaReq);
+                response = getPoiList(anUtopiaReq);
             } else if (service.equals(POI_UPDATE_SERVICE)) {
                 // Update poi
-                response = updateReq(anUtopiaReq);
+                response = updatePoi(anUtopiaReq);
             } else if (service.equals(POI_DELETE_SERVICE)) {
                 // Delete a poi by id
-                response = deleteReq(anUtopiaReq);
+                response = deletePoi(anUtopiaReq);
             } else if (service.equals(POI_GET_STARTPOINTS_SERVICE)) {
                 // get startpoint type pois
-                response = getStartPointsReq(anUtopiaReq);
+                response = getStartPoints(anUtopiaReq);
             } else if (service.equals(POI_GET_ENDPOINTS_SERVICE)) {
                 // get endpoint type pois
-                response = getEndPointsReq(anUtopiaReq);
+                response = getEndPoints(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -97,7 +96,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @throws org.keyworx.utopia.core.data.UtopiaException
      *          Standard Utopia exception
      */
-    protected JXElement insertReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement insertPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
 
         // Insert poi object
@@ -120,7 +119,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @throws org.keyworx.utopia.core.data.UtopiaException
      *          Standard Utopia exception
      */
-    protected JXElement updateReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement updatePoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
 
         // Update poi object
@@ -140,7 +139,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @throws org.keyworx.utopia.core.data.UtopiaException
      *          Standard Utopia exception
      */
-    protected JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement deletePoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
 
         // delete poi object
@@ -158,7 +157,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @return A UtopiaResponse.
      * @throws UtopiaException standard Utopia exception
      */
-    protected JXElement getReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement getPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_SERVICE);
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         String id = reqElm.getAttr(ID_FIELD);
@@ -178,7 +177,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @return A UtopiaResponse.
      * @throws UtopiaException standard Utopia exception
      */
-    protected JXElement getListReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement getPoiList(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GETLIST_SERVICE);
         response.addChildren(logic.getList());
         return response;
@@ -191,7 +190,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @return A UtopiaResponse.
      * @throws UtopiaException standard Utopia exception
      */
-    protected JXElement getStartPointsReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement getStartPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_STARTPOINTS_SERVICE);
         response.addChildren(logic.getStartPoints());
         return response;
@@ -204,7 +203,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @return A UtopiaResponse.
      * @throws UtopiaException standard Utopia exception
      */
-    protected JXElement getEndPointsReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    protected JXElement getEndPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_ENDPOINTS_SERVICE);
         response.addChildren(logic.getEndPoints());
         return response;

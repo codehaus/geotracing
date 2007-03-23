@@ -18,7 +18,8 @@ public interface Constants {
     public final static String DISTANCE_ATTR = "distance";
     public final static String KICH_URI_ELM = "kich-uri";
     public final static String TRAFFIC_ELM = "traffic";
-
+    public final static String THEME_ELM = "theme";
+    
     // table fields
     public final static String ID_FIELD = "id";
     public final static String OWNER_FIELD = "owner";

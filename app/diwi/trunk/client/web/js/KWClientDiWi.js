@@ -85,25 +85,6 @@ KW.DIWI = {
 		KW.utopia(req, callback);		
 	},
 	
-	getendpoints: function(callback) {
-		var req = KW.createRequest('poi-get-endpoints');
-
-		KW.utopia(req, callback);
-	},	
-
-	getstartpoints: function(callback) {
-		var req = KW.createRequest('poi-get-startpoints-req');
-
-		KW.utopia(req, callback);
-	},	
-
-
-	getthemes: function(callback) {
-		var req = KW.createRequest('route-get-themes-req');
-
-		KW.utopia(req, callback);
-	},	
-
 	getmap: function(callback, id, width, height) {
 		var req = KW.createRequest('route-get-map-req');
 
