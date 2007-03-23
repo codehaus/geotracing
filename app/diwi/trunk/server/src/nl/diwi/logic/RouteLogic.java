@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import nl.diwi.external.RouteGenerator;
+import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.diwi.util.PostGISUtil;
 import nl.justobjects.jox.dom.JXElement;
@@ -109,7 +110,7 @@ public class RouteLogic implements Constants {
     		}
         
     		//Convert Route record to XML and add to result
-            JXElement routeElm = getRoute(route.getId());          
+            JXElement routeElm = getRoute(route.getId());
 
     		return routeElm;
         } catch (OaseException oe) {
@@ -117,15 +118,58 @@ public class RouteLogic implements Constants {
 		}
 	}
 
-	public JXElement getRoute(int routeId) {
+    public int insertRoute(JXElement aRouteElement){
+        Record route = null;
+        try{
+            // fixed routes have unique names so check first
+            String name = new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA());
+            Record[] recs = oase.getFinder().queryTable(ROUTE_TABLE, NAME_FIELD + "='" + name + "'", null, null);
+            if(recs.length>0){
+                // do an update
+                route = oase.getFinder().read(recs[0].getId());
+                route.setStringField(NAME_FIELD, new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA()));
+                route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
+                route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+
+                PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPXRoute2LineString(aRouteElement));
+                route.setObjectField(PATH_FIELD, geom);
+                oase.getModifier().update(route);
+
+            }else{
+                // do an insert
+                route = oase.getModifier().create(ROUTE_TABLE);
+                route.setStringField(NAME_FIELD, new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA()));
+                route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
+                route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+
+                PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPXRoute2LineString(aRouteElement));
+                route.setObjectField(PATH_FIELD, geom);
+                oase.getModifier().insert(route);                
+            }
+        }catch(Throwable t){
+            t.printStackTrace();
+        }
+        return route.getId();
+    }
+
+    public JXElement getRoute(int routeId) {
+        JXElement routeElm = null;
+        try{
+            return getRoute(oase.getFinder().read(routeId));
+        }catch(OaseException oe){
+            oe.printStackTrace();
+        }
+        return routeElm;
+    }
+
+    public JXElement getRoute(Record aRoute){
         JXElement routeElm = null;
 		try {
-			Record route = oase.getFinder().read(routeId);
-			routeElm = XML.createElementFromRecord(ROUTE_ELM, route);			
+			routeElm = XML.createElementFromRecord(ROUTE_ELM, aRoute);
 			routeElm.removeChildByTag(PATH_FIELD);
-			
+
 			JXElement lengthElm = new JXElement(DISTANCE_FIELD);
-			lengthElm.setText("" + getDistance(route));
+			lengthElm.setText("" + getDistance(aRoute));
 			routeElm.addChild(lengthElm);
 		} catch (OaseException e) {
 			// TODO Auto-generated catch block
@@ -135,6 +179,27 @@ public class RouteLogic implements Constants {
 			e.printStackTrace();
 		}
 		return routeElm;
+	}
+
+    public Vector getRoutes(int aRouteType) throws UtopiaException {
+        Vector results = null;
+		try {
+            Record[] routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
+            // sync some!!
+            if(routes.length == 0 && aRouteType == ROUTE_TYPE_FIXED){
+                DataSource ds = new DataSource(oase);
+                ds.syncFixedRoutes();
+                routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
+            }
+            results = new Vector(routes.length);
+            for(int i=0;i<routes.length;i++){
+                results.add(getRoute(routes[i]));
+            }
+		} catch (OaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return results;
 	}
 	
     /**

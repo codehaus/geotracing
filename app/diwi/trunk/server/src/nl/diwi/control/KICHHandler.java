@@ -15,7 +15,8 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
 public class KICHHandler extends DefaultHandler implements Constants {
     public final static String KICH_GET_MEDIA_SERVICE = "kich-get-media";
     public final static String KICH_GET_THEMES_SERVICE = "kich-get-themes";
-    
+    public final static String KICH_SYNC_SERVICE = "kich-sync";
+
     /**
      * Processes the Client Request.
      *
@@ -36,9 +37,12 @@ public class KICHHandler extends DefaultHandler implements Constants {
             if (service.equals(KICH_GET_MEDIA_SERVICE)) {
                 // get all kich media
                 response = getMedia(anUtopiaReq);
-            } if (service.equals(KICH_GET_THEMES_SERVICE)) {
+            } else if (service.equals(KICH_GET_THEMES_SERVICE)) {
                 // get all kich media
                 response = getThemes(anUtopiaReq);            
+            } else if (service.equals(KICH_SYNC_SERVICE)) {
+                // get all kich media
+                response = syncKICH(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -70,7 +74,16 @@ public class KICHHandler extends DefaultHandler implements Constants {
         return response;
 	}
 
-	/**
+    private JXElement syncKICH(UtopiaRequest anUtopiaReq) throws UtopiaException{
+        JXElement response = createResponse(KICH_SYNC_SERVICE);
+        DataSource ds = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        ds.syncFixedRoutes();
+        ds.syncPOIs();
+
+        return response;
+    }
+
+    /**
      * Gets all media.
      *
      * @param anUtopiaReq A UtopiaRequest

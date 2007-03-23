@@ -1,0 +1,50 @@
+<pois>
+    <poi>
+        <id>1</id>
+        <name>poi 1</name>
+        <description>hele mooie poi</description>
+        <category>forten</category>
+        <x>52</x>
+        <y>24</y>
+        <media>
+            <kich-uri>http://www.kich.nl?id=22</kich-uri>
+            <kich-uri>http://www.kich.nl?id=23</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>2</id>
+        <name>poi 2</name>
+        <description>hele mooie poi</description>
+        <category>forten</category>
+        <x>52</x>
+        <y>24</y>
+        <media>
+            <kich-uri>http://www.kich.nl?id=24</kich-uri>
+            <kich-uri>http://www.kich.nl?id=25</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>3</id>
+        <name>poi 3</name>
+        <description>hele mooie poi</description>
+        <category>forten</category>
+        <x>52</x>
+        <y>24</y>
+        <media>
+            <kich-uri>http://www.kich.nl?id=26</kich-uri>
+            <kich-uri>http://www.kich.nl?id=27</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>4</id>
+        <name>poi 4</name>
+        <description>hele mooie poi</description>
+        <category>forten</category>
+        <x>52</x>
+        <y>24</y>
+        <media>
+            <kich-uri>http://www.kich.nl?id=28</kich-uri>
+            <kich-uri>http://www.kich.nl?id=29</kich-uri>
+        </media>
+    </poi>
+</pois>

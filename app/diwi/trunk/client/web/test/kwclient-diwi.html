@@ -98,7 +98,16 @@
 				KW.DIWI.getthemes(TST.onRsp);							
 			},
 
-			onMapRsp: function(elm) {
+            getFixedRoutes: function(form) {
+				KW.DIWI.getfixedroutes(TST.onRsp);
+			},
+
+            getGeneratedRoute: function(form) {
+                var personid = form.personid.value;
+                KW.DIWI.getgeneratedroute(TST.onRsp, personid);
+			},
+
+            onMapRsp: function(elm) {
 				if (!elm) {
 					TST.pr('empty response');
 					return;
@@ -192,6 +201,19 @@
 <form>
 	<h2>Get Preferences</h2>
 	<input type="button" name="button" value="Get Preferences" onClick="TST.getPreferences(this.form)"/>		
+</form>
+
+<form>
+	<h2>Get Fixed Routes</h2>
+	<input type="button" name="button" value="Get Fixed Routes" onClick="TST.getFixedRoutes(this.form)"/>
+</form>
+
+<form>
+	<h2>Get Generated Route</h2>
+    <table>
+	<tr><td><b>PERSONID:</b> </td><td><input type="text" name="personid" value=""/></td></tr>
+	<tr><td><input type="button" name="button" value="Get Generated Route" onClick="TST.getGeneratedARoute(this.form)"/></td></tr>
+	</table>
 </form>
 </div>
 
