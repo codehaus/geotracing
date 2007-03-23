@@ -13,8 +13,6 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class TestPage : DiwiPageBase {
 
-        private DiwiImage res;
-
         public TestPage(DiwiPageBase parent)
             : base(parent) {
 
@@ -22,17 +20,50 @@ namespace Diwi {
 
             title = "Test";
 
+            setImage();
+            getRoutes();
+            Stream mov = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("");
+            //File f = File.Create("sdc");
+            //viewVideoFileInWMP(f);
+            
+        }
+
+        private void setImage(){
             System.Reflection.Assembly asse = System.Reflection.Assembly.GetExecutingAssembly();
             Stream stream = null;
-            try{
+            try
+            {
                 stream = asse.GetManifestResourceStream("start.bmp");
                 Bitmap resBmp = new Bitmap(stream);
                 DiwiImage res = new DiwiImage(offScreenGraphics, this);
                 addDrawable(res);
                 draw();
-            }catch(System.IO.FileNotFoundException e){
+            }
+            catch (System.IO.FileNotFoundException e)
+            {
                 MessageBox.Show(e.Message);
             }
+        }
+
+        private void viewVideoFileInWMP(string fn)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = fn;
+            process.StartInfo.Verb = "Open";
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
+        }
+
+        private void getRoutes(){
+            // first get the fixed routes
+            XMLement getRoutesReq = new XMLement("route-getfixed-req");
+            XMLement getRoutesRsp = AppController.sKwxClient.utopiaRequest(getRoutesReq);
+
+            // now get the personal active route
+            XMLement getMyRouteReq = new XMLement("route-get-req");
+            getMyRouteReq.addAttribute("personid", "73");
+            XMLement getMyRouteRsp = AppController.sKwxClient.utopiaRequest(getMyRouteReq);
+            
         }
 
         protected override void OnLoad(EventArgs e) {
