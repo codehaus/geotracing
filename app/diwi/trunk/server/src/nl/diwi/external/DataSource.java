@@ -86,16 +86,18 @@ public class DataSource implements Constants {
             if (poisElm == null) throw new UtopiaException("No results from the KICH DB");*/
             // TODO: only done for test purposes
 
-            JXElement poisElm = new JXBuilder().build(Amuse.server.getPortal().getProperty(GENERATOR_URL) + "/../testreponse/pois.xml");
-
-            Vector poiElms = poisElm.getChildrenByTag(POI_ELM);
-            for (int i = 0; i < poiElms.size(); i++) {
-                JXElement poiElm = (JXElement) poiElms.elementAt(i);
-                Record poi = logic.getRecord(poiElm.getChildText(ID_FIELD));
-                if (poi != null) {
-                    logic.updateForSync(poi, poiElm);
-                } else {
-                    logic.insertForSync(poiElm);
+            String url = Amuse.server.getPortal().getProperty(GENERATOR_URL) +  "/../testresponse/pois.xml";
+            JXElement poisElm = new JXBuilder().build(url);
+            if(poisElm!=null){
+                Vector poiElms = poisElm.getChildrenByTag(POI_ELM);
+                for (int i = 0; i < poiElms.size(); i++) {
+                    JXElement poiElm = (JXElement) poiElms.elementAt(i);
+                    Record poi = logic.getRecord(poiElm.getChildText(ID_FIELD));
+                    if (poi != null) {
+                        logic.updateForSync(poi, poiElm);
+                    } else {
+                        logic.insertForSync(poiElm);
+                    }
                 }
             }
         }catch(Throwable t){

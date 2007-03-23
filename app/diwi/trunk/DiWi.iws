@@ -17,17 +17,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/KICHHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/KICHHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/web/js/KWClientCMS.js" afterPath="$PROJECT_DIR$/client/web/js/KWClientCMS.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/web/js/KWClientDiWi.js" afterPath="$PROJECT_DIR$/client/web/js/KWClientDiWi.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DiWi.ipr" afterPath="$PROJECT_DIR$/DiWi.ipr" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/web/test/kwclient-cms.html" afterPath="$PROJECT_DIR$/client/web/test/kwclient-cms.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/web/test/kwclient-diwi.html" afterPath="$PROJECT_DIR$/client/web/test/kwclient-diwi.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DiWi.iws" afterPath="$PROJECT_DIR$/DiWi.iws" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/server/webapp/diwi/testresponse/pois.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java" />
     </list>
   </component>
   <component name="ChangeListSynchronizer" />
@@ -158,16 +149,7 @@
       <file leaf-file-name="KWClientCMS.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/web/js/KWClientCMS.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="146" column="45" selection-start="4281" selection-end="4281" vertical-scroll-proportion="0.83157897">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/webapp/diwi/test.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="146" column="45" selection-start="4281" selection-end="4281" vertical-scroll-proportion="0.8464286">
               <folding />
             </state>
           </provider>
@@ -189,7 +171,7 @@
       <file leaf-file-name="KWClientDiWi.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/client/web/js/KWClientDiWi.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="104" column="49" selection-start="2651" selection-end="2651" vertical-scroll-proportion="0.845614">
+            <state line="104" column="49" selection-start="2651" selection-end="2651" vertical-scroll-proportion="0.86071426">
               <folding />
             </state>
           </provider>
@@ -207,10 +189,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RouteLogic.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RouteLogic.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="187" column="26" selection-start="7348" selection-end="7348" vertical-scroll-proportion="0.64285713">
+            <state line="36" column="13" selection-start="1116" selection-end="1116" vertical-scroll-proportion="0.2">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataSource.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="90" column="12" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.11547619">
               <folding />
             </state>
           </provider>
@@ -1083,13 +1074,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="10" y="22" width="1267" height="1002" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2676519" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23973727" order="0" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928178" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5403315" order="8" />
@@ -1097,7 +1088,7 @@
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24712643" order="1" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15845649" order="1" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
@@ -1217,13 +1208,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="101" column="41" selection-start="3527" selection-end="3527" vertical-scroll-proportion="0.64047617">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/webapp/diwi/testresponse/pois.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="38" column="13" selection-start="1044" selection-end="1044" vertical-scroll-proportion="0.53333336">
@@ -1254,7 +1238,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/web/js/KWClientCMS.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="146" column="45" selection-start="4281" selection-end="4281" vertical-scroll-proportion="0.83157897">
+        <state line="146" column="45" selection-start="4281" selection-end="4281" vertical-scroll-proportion="0.8464286">
           <folding />
         </state>
       </provider>
@@ -1296,7 +1280,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/client/web/js/KWClientDiWi.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="104" column="49" selection-start="2651" selection-end="2651" vertical-scroll-proportion="0.845614">
+        <state line="104" column="49" selection-start="2651" selection-end="2651" vertical-scroll-proportion="0.86071426">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="13" selection-start="631" selection-end="631" vertical-scroll-proportion="0.057142857">
           <folding />
         </state>
       </provider>
@@ -1311,16 +1302,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java">
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="13" selection-start="631" selection-end="631" vertical-scroll-proportion="0.057142857">
+        <state line="36" column="13" selection-start="1116" selection-end="1116" vertical-scroll-proportion="0.2">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="187" column="26" selection-start="7348" selection-end="7348" vertical-scroll-proportion="0.64285713">
+        <state line="90" column="12" selection-start="3040" selection-end="3040" vertical-scroll-proportion="0.11547619">
           <folding />
         </state>
       </provider>
