@@ -181,10 +181,17 @@ public class RouteLogic implements Constants {
 		return routeElm;
 	}
 
-    public Vector getRoutes(int aRouteType) throws UtopiaException {
+    public Vector getRoutes(int aRouteType, String aPersonId) throws UtopiaException {
         Vector results = null;
 		try {
-            Record[] routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
+            Record[] routes;
+            if(aRouteType == ROUTE_TYPE_GENERATED){
+                Record person = oase.getFinder().read(Integer.parseInt(aPersonId));
+                routes = oase.getRelater().getRelated(person, ROUTE_TABLE, null);
+            }else{
+                routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
+            }
+
             // sync some!!
             if(routes.length == 0 && aRouteType == ROUTE_TYPE_FIXED){
                 DataSource ds = new DataSource(oase);
