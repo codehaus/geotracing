@@ -96,14 +96,17 @@ KW.DIWI = {
 	},
 	
 	getfixedroutes: function(callback) {
-		var req = KW.createRequest('route-query-req');
-		KW.utopia(req, callback);		
+		var req = KW.createRequest('route-getlist-req');
+        req.documentElement.setAttribute('type', 'fixed');
+        KW.utopia(req, callback);
 	},
 	
-	getactiveroute: function(callback) {
-		var req = KW.createRequest('route-get-active-req');
-		KW.utopia(req, callback);		
-	}, 
+	getgeneratedroute: function(callback, personid) {
+		var req = KW.createRequest('route-getlist-req');
+        req.documentElement.setAttribute('type', 'generated');
+        req.documentElement.setAttribute('personid', personid);
+        KW.utopia(req, callback);
+	}
 	
 		
 }

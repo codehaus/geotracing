@@ -97,9 +97,13 @@
 
 			getAllMedia: function(form) {
 				KW.CMS.getallmedia(TST.onRsp);							
-			},		
-				
-			Poi: function(form) {
+			},
+
+            syncKICH: function(form) {
+				KW.CMS.syncKICH(TST.onRsp);
+			},
+
+            Poi: function(form) {
 				KW.CMS.getthemes(TST.onRsp);							
 			},			
 			onRsp: function(elm) {
@@ -193,6 +197,10 @@
 	<input type="button" name="button" value="Get all Media" onClick="TST.getAllMedia(this.form)"/>		
 </form>
 
+<form>
+	<h2>Sync KICH</h2>
+	<input type="button" name="button" value="sync KICH" onClick="TST.syncKICH(this.form)"/>
+</form>
 
 </div>
 

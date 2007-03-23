@@ -1,6 +1,7 @@
 package nl.diwi.external;
 
 import nl.diwi.logic.POILogic;
+import nl.diwi.logic.RouteLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
@@ -60,41 +61,70 @@ public class DataSource implements Constants {
 
 	// This request is required to get all points of interest for 'struinen'
 	public void syncPOIs() throws UtopiaException {
-		POILogic logic = new POILogic(oase);
-		String kichRESTUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);
-		/*
-				<pois>
-					<poi>
-						<id></id>
-						<name><name>
-						<description></description>
-						<category></category>
-						<x></x>
-						<y></y>
-						<media>
-							<kich-uri><kich-uri>
-							<kich-uri><kich-uri>
-						</media>
-					</poi>
-				</pois>
-				 */
-		JXElement poisElm = getXMLFromREST(kichRESTUrl);
-		if (poisElm == null) throw new UtopiaException("No results from the KICH DB");
+        try{
+            POILogic logic = new POILogic(oase);
+            String kichRESTUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);
 
-		Vector poiElms = poisElm.getChildrenByTag(POI_ELM);
-		for (int i = 0; i < poiElms.size(); i++) {
-			JXElement poiElm = (JXElement) poiElms.elementAt(i);
-			Record poi = logic.getRecord(poiElm.getChildText(ID_FIELD));
-			if (poi != null) {
-				logic.updateForSync(poi, poiElm);
-			} else {
-				logic.insertForSync(poiElm);
-			}
-		}
-	}
+            /*
+            <pois>
+                <poi>
+                    <id></id>
+                    <name><name>
+                    <description></description>
+                    <category></category>
+                    <x></x>
+                    <y></y>
+                    <media>
+                        <kich-uri><kich-uri>
+                        <kich-uri><kich-uri>
+                    </media>
+                </poi>
+            </pois>
+             */
 
-	public Vector syncFixedRoutes() {
-		return new Vector();
+            /*JXElement poisElm = getXMLFromREST(kichRESTUrl);
+            if (poisElm == null) throw new UtopiaException("No results from the KICH DB");*/
+            // TODO: only done for test purposes
+
+            JXElement poisElm = new JXBuilder().build(Amuse.server.getPortal().getProperty(GENERATOR_URL) + "/../testreponse/pois.xml");
+
+            Vector poiElms = poisElm.getChildrenByTag(POI_ELM);
+            for (int i = 0; i < poiElms.size(); i++) {
+                JXElement poiElm = (JXElement) poiElms.elementAt(i);
+                Record poi = logic.getRecord(poiElm.getChildText(ID_FIELD));
+                if (poi != null) {
+                    logic.updateForSync(poi, poiElm);
+                } else {
+                    logic.insertForSync(poiElm);
+                }
+            }
+        }catch(Throwable t){
+            throw new UtopiaException(t);
+        }
+    }
+
+	public void syncFixedRoutes() throws UtopiaException{
+        try{
+            RouteLogic logic = new RouteLogic(oase);
+            /*
+            String url = Amuse.server.getPortal().getProperty(KICH_REST_URL);
+            url += "?action=getroutes";
+            JXElement result = getXMLFromREST(url);
+            if(result == null) throw new UtopiaException("No routes from KICH");*/
+
+            // TODO: only done for test purposes
+            JXElement result = new JXElement("routes");
+            result.addChild(new JXBuilder().build(Amuse.server.getPortal().getProperty(GENERATOR_URL) + "/../testreponse/generateroute1.xml"));
+            result.addChild(new JXBuilder().build(Amuse.server.getPortal().getProperty(GENERATOR_URL) + "/../testreponse/generateroute2.xml"));
+
+            Vector routes = result.getChildrenByTag(ROUTE_ELM);
+            for(int i=0;i<routes.size();i++){
+                logic.insertRoute((JXElement)routes.elementAt(i));
+            }
+        }catch(Throwable t){
+
+        }
+
 	}
 
 	// not needed all poi's are synced in one go

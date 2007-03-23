@@ -35,8 +35,10 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
     public final static String ROUTE_SAVE_SERVICE = "route-save";
-    public final static String ROUTE_GET_SERVICE = "route-get";    
-    public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";  
+    public final static String ROUTE_INSERT_SERVICE = "route-insert";
+    public final static String ROUTE_GET_SERVICE = "route-get";
+    public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
+    public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
     public final static String ROUTE_THEMES_SERVICE = "route-themes";  
     
     /**
@@ -59,8 +61,12 @@ public class RouteHandler extends DefaultHandler implements Constants {
 				response = generateRoute(anUtopiaReq);
 			} else if (service.equals(ROUTE_SAVE_SERVICE)) {
 				response = saveRoute(anUtopiaReq);
+			} else if (service.equals(ROUTE_INSERT_SERVICE)) {
+				response = insertRoute(anUtopiaReq);
 			} else if (service.equals(ROUTE_GET_SERVICE)) {
 				response = getRoute(anUtopiaReq);
+			} else if (service.equals(ROUTE_GETLIST_SERVICE)) {
+				response = getRoutes(anUtopiaReq);
 			} else if (service.equals(ROUTE_GET_MAP_SERVICE)) {
 				response = getMap(anUtopiaReq);
 			} else {
@@ -101,8 +107,18 @@ public class RouteHandler extends DefaultHandler implements Constants {
         return response;
 	}
 
-	private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        RouteLogic logic = createLogic(anUtopiaReq);   
+    private JXElement insertRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        RouteLogic logic = createLogic(anUtopiaReq);
+        int id = logic.insertRoute(anUtopiaReq.getRequestCommand().getChildByTag(ROUTE_ELM));
+        
+        JXElement response = createResponse(ROUTE_INSERT_SERVICE);
+        response.setAttr(ID_FIELD, id);
+
+        return response;
+	}
+
+    private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        RouteLogic logic = createLogic(anUtopiaReq);
         JXElement routeElm = logic.getRoute(Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)));
         
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
@@ -111,7 +127,27 @@ public class RouteHandler extends DefaultHandler implements Constants {
         return response;
 	}
 
-	/*
+    private JXElement getRoutes(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        RouteLogic logic = createLogic(anUtopiaReq);
+        String type = anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD);
+        int t = -1;
+        if(type.equals("fixed")){
+            t = ROUTE_TYPE_FIXED;
+        }else if(type.equals("direct")){
+            t = ROUTE_TYPE_DIRECT;
+        }else if(type.equals("generated")){
+            t = ROUTE_TYPE_GENERATED;
+        }
+
+        Vector routes = logic.getRoutes(t);
+
+        JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
+        response.addChildren(routes);
+
+        return response;
+	}
+
+    /*
         <route-generate-req >
              <pref name="bos" value="40" type="outdoor-params" />
              <pref name="heide" value="20" type="outdoor-params" />

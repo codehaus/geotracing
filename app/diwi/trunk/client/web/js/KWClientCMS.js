@@ -137,6 +137,15 @@ KW.CMS = {
 	getallmedia: function(callback) {
 		var req = KW.createRequest('kich-getlist-req');
 		KW.utopia(req, callback);
+	},
+
+    /**
+	 * Syncs KICH pois and routes
+	 * @param callback - user callback function or null
+	 */
+	syncKICH: function(callback) {
+		var req = KW.createRequest('kich-sync-req');
+		KW.utopia(req, callback);
 	}
 	
 	
