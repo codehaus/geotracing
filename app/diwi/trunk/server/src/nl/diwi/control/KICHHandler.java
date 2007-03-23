@@ -13,8 +13,9 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 
 public class KICHHandler extends DefaultHandler implements Constants {
-    public final static String KICH_GETLIST_SERVICE = "kich-getlist";
-
+    public final static String KICH_GET_MEDIA_SERVICE = "kich-get-media";
+    public final static String KICH_GET_THEMES_SERVICE = "kich-get-themes";
+    
     /**
      * Processes the Client Request.
      *
@@ -32,9 +33,12 @@ public class KICHHandler extends DefaultHandler implements Constants {
 
         JXElement response;
         try {
-            if (service.equals(KICH_GETLIST_SERVICE)) {
+            if (service.equals(KICH_GET_MEDIA_SERVICE)) {
                 // get all kich media
-                response = getListReq(anUtopiaReq);
+                response = getMedia(anUtopiaReq);
+            } if (service.equals(KICH_GET_THEMES_SERVICE)) {
+                // get all kich media
+                response = getThemes(anUtopiaReq);            
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -57,7 +61,16 @@ public class KICHHandler extends DefaultHandler implements Constants {
         return new UtopiaResponse(response);
     }
 
-    /**
+    private JXElement getThemes(UtopiaRequest anUtopiaReq) {
+        JXElement response = createResponse(KICH_GET_THEMES_SERVICE);
+        
+        response.addTextChild(THEME_ELM, "Forten");
+        response.addTextChild(THEME_ELM, "Romeins");
+        
+        return response;
+	}
+
+	/**
      * Gets all media.
      *
      * @param anUtopiaReq A UtopiaRequest
@@ -65,8 +78,8 @@ public class KICHHandler extends DefaultHandler implements Constants {
      * @throws org.keyworx.utopia.core.data.UtopiaException
      *          standard Utopia exception
      */
-    protected JXElement getListReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        JXElement response = createResponse(KICH_GETLIST_SERVICE);
+    protected JXElement getMedia(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(KICH_GET_MEDIA_SERVICE);
         DataSource dataSource = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
         response.addChild(dataSource.getKICHMedia());
         return response;
