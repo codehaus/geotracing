@@ -139,7 +139,8 @@ public class RouteHandler extends DefaultHandler implements Constants {
             t = ROUTE_TYPE_GENERATED;
         }
 
-        Vector routes = logic.getRoutes(t);
+        String personId = anUtopiaReq.getUtopiaSession().getContext().getUserId();
+        Vector routes = logic.getRoutes(t, personId);
 
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChildren(routes);

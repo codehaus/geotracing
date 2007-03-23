@@ -103,8 +103,7 @@ KW.DIWI = {
 	
 	getgeneratedroute: function(callback, personid) {
 		var req = KW.createRequest('route-getlist-req');
-        req.documentElement.setAttribute('type', 'generated');
-        req.documentElement.setAttribute('personid', personid);
+        req.documentElement.setAttribute('type', 'generated');        
         KW.utopia(req, callback);
 	}
 	
