@@ -1,5 +1,10 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
+2.0.2 - 25.mrt.2007
+- upgrade to Keyworx 1.0.7rc7 (includes new Parser handling charsets and cdata)
+- refinements to use PostGIS Point for g_location table
+- mobitracer: use media servlet for media upload
+
 2.0.1 - 11.mrt.2007
 - migration of g_location to use PostGIS Point geometry
 - fixed bugs in caching interceptor for Object types

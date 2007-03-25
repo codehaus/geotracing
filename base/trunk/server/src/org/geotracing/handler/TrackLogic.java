@@ -524,7 +524,7 @@ public class TrackLogic {
 
 			// Found ?
 			if (point == null) {
-				log.trace("cannot find GeoPoint trying lastGeoSample...");
+				log.trace("cannot find Point trying last track sample...");
 				if (lastElement == null) {
 					log.warn("also lastElement == null, giving up...");
 					return null;

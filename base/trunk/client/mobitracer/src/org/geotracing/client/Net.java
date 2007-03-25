@@ -5,6 +5,7 @@ package org.geotracing.client;
 
 import nl.justobjects.mjox.JXElement;
 import org.keyworx.mclient.HTTPClient;
+import org.keyworx.mclient.Protocol;
 
 import javax.microedition.midlet.MIDlet;
 import java.util.Timer;
@@ -38,7 +39,7 @@ public class Net {
 	private static String trackId;
 	private Timer heartbeatTimer;
 	private long lastCommandTime = -1;
-
+	private String agentKey;
 	private static final Net instance = new Net();
 	private String url, user, password, app, role;
 	private boolean minimal;
@@ -254,6 +255,41 @@ public class Net {
 
 		// send the request
 		return utopiaReq(uploadReq);
+
+		/* HTTPUploader uploader = new HTTPUploader();
+				JXElement rsp = null;
+				try {
+					uploader.connect(url + "/media.srv?agentkey=" + agentKey);
+					if (aName == null) {
+						aName = "mt-upload";
+					}
+
+					uploader.writeField("name", aName);
+					// uploader.writeFile(aName, aMime, "mt-upload", theData);
+
+
+					rsp = uploader.getResponse();
+					if (Protocol.isNegativeResponse(rsp)) {
+						return rsp;
+					}
+
+					// Upload OK, now add medium to track
+					String id = rsp.getAttr("id");
+					JXElement req = new JXElement("t-trk-add-medium-req");
+					req.setAttr("id", id);
+
+					req.setAttr("t", aTime);
+
+					// Optional tags
+					if (theTags != null && theTags.length() > 0) {
+						req.setAttr("tags", theTags);
+					}
+					rsp = utopiaReq(req);
+
+				} catch (Throwable t) {
+					Log.log("Upload err: " + t);
+				}
+				return rsp;   */
 	}
 
 	public JXElement utopiaReq(JXElement aReq) {
@@ -283,6 +319,10 @@ public class Net {
 			JXElement rsp = kwClient.login(user, password);
 			if (rsp.hasAttr("time")) {
 				Util.setTime(rsp.getLongAttr("time"));
+			}
+
+			if (rsp.hasAttr(HTTPClient.ATTR_AGENTKEY)) {
+				agentKey = rsp.getAttr(HTTPClient.ATTR_AGENTKEY);
 			}
 			kwClient.selectApp(app, role);
 			lastCommandTime = Util.getTime();

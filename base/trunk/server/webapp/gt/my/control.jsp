@@ -270,7 +270,7 @@
 					req.setAttr(TracingHandler.ATTR_MIME, "text/plain");
 					JXElement data = new JXElement("data");
 					data.setAttr(TracingHandler.ATTR_ENCODING, "raw");
-					data.setCDATA(IO.forHTMLTag(content).getBytes());
+					data.setCDATA(IO.forHTMLTag(content));
 					req.addChild(data);
 					JXElement rspElm = HttpConnector.executeRequest(session, req);
 					if (Protocol.isNegativeResponse(rspElm)) {

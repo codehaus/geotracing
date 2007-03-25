@@ -32,6 +32,27 @@ import java.util.TimeZone;
 public class Util {
 	private static boolean soundOn = true;
 	private static long timeOffset = 0;
+	/** Constant representing earth radius: 60 * 1.1515 * 1609.344 */
+	private static MFloat DIST_CONST = new MFloat(111189, 5769);
+
+	/** Great circle distance in meters between two lon/lat points. */
+	public static MFloat distanceMeters(MFloat lon1, MFloat lat1, MFloat lon2, MFloat lat2) {
+		// Same points: zero distance
+		if (lat1.Sub(lat2).Equal(MFloat.ZERO) && lon1.Sub(lon2).Equal(MFloat.ZERO)) {
+			return MFloat.ZERO;
+		}
+
+		MFloat theta = MFloat.toRadians(lon1.Sub(lon2));
+		lat1 = MFloat.toRadians(lat1);
+		lat2 = MFloat.toRadians(lat2);
+
+		MFloat dist = MFloat.sin(lat1).Mul(MFloat.sin(lat2).Add(MFloat.cos(lat1).Mul(MFloat.cos(lat2)).Mul(MFloat.cos(theta))));
+
+		dist = MFloat.acos(dist);
+		dist = MFloat.toDegrees(dist);
+		dist = dist.Mul(DIST_CONST);
+		return dist;
+	}
 
 	/**
 	 * Create a string from the TimeOfDay portion of a time/date as

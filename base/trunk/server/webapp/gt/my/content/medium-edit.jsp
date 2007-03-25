@@ -3,6 +3,7 @@
 <%@ page import="java.util.Vector"%>
 <%@ page import="org.postgis.PGgeometryLW"%>
 <%@ page import="org.postgis.Point"%>
+<%@ page import="org.geotracing.handler.Location"%>
 <%@ include file="../model.jsp" %>
 <%
 	int id = Integer.parseInt(request.getParameter("id"));
@@ -63,9 +64,8 @@
 
 	String locationInfo = "no related location";
 	if (location != null) {
-		PGgeometryLW geom = (PGgeometryLW) location.getObjectField("point");
-		if (geom != null) {
-			Point point = (Point) geom.getGeometry();
+		Point point = Location.getPoint(location);
+		if (point != null) {
 			locationInfo = point.x + ", " + point.y;
 		}
 	}
