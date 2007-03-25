@@ -8,6 +8,7 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.IO;
 import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.OaseException;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.session.*;
@@ -140,14 +141,38 @@ public class TracingHandler extends DefaultHandler {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard Utopia exception
 	 */
-	public JXElement addMediumReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+	public JXElement addMediumReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 
 		// Mandatory medium id attr
 		int mediumId = reqElm.getIntAttr(ATTR_ID);
 		HandlerUtil.throwOnNegNumAttr(ATTR_ID, mediumId);
 
-		Location location = trackLogic.createMediumLocation(mediumId);
+		// Create Location for medium and relate to track and location tables
+		Location location;
+		if (reqElm.hasAttr(ATTR_T)) {
+			// if a timestamp was provided we assume we already have the correct creation time
+			Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+			Record personRecord = oase.getFinder().read(HandlerUtil.getUserId(anUtopiaReq));
+			Record mediumRecord = oase.getFinder().read(mediumId);
+			long timestamp = reqElm.getLongAttr(ATTR_T);
+
+			// Set medium creationdate to timestamp
+			mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timestamp));
+			oase.getModifier().update(mediumRecord);
+		 
+			location = trackLogic.createLocation(personRecord.getId(), mediumId, timestamp, TrackLogic.REL_TAG_MEDIUM);
+		} else {
+			// Determines timestamp from medium (e.g. EXIF) to create location
+			location = trackLogic.createMediumLocation(mediumId);
+		}
+
+		// Add optional tags
+		if (reqElm.hasAttr(ATTR_TAGS)) {
+			addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumId+"");
+		}
+
+
 		JXElement rsp = createResponse(T_TRK_ADD_MEDIUM_SERVICE);
 		rsp.setId(location.getId());
 
@@ -639,18 +664,18 @@ public class TracingHandler extends DefaultHandler {
 		try {
 			Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 			MediaFiler mediaFiler = oase.getMediaFiler();
-			byte[] rawData = new byte[0];
+			String rawData = "";
 			if (type.equals(MediaFiler.KIND_TEXT) || type.equals(VAL_SPOT)) {
 				if (data.hasText()) {
-					rawData = IO.forHTMLTag(data.getText()).getBytes();
+					rawData = IO.forHTMLTag(data.getText());
 				} else if (data.hasCDATA()) {
-					rawData = IO.forHTMLTag(new String(data.getCDATA())).getBytes();
+					rawData = IO.forHTMLTag(data.getCDATA());
 				}
 			} else {
 				rawData = data.getCDATA();
 			}
 
-			mediumRecord = mediaFiler.insert(rawData, encoding, fields);
+			mediumRecord = mediaFiler.insert(rawData.getBytes(), encoding, fields);
 			if (reqElm.hasAttr(ATTR_T)) {
 				mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(reqElm.getLongAttr(ATTR_T)));
 				oase.getModifier().update(mediumRecord);

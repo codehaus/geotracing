@@ -538,7 +538,7 @@ public class TraceScreen extends GameCanvas {
 				String text = textBox.getString();
 				String tags = tagsField.getString();
 				if (name != null && name.length() > 0 && text != null && text.length() > 0) {
-					tracer.getNet().uploadMedium(name, "text", "text/plain", Util.getTime(), text.getBytes(), false, tags);
+					tracer.getNet().uploadMedium(name, "text", "text/plain", Util.getTime(), text.getBytes(), true, tags);
 				} else {
 					setStatus("Type title and tags");
 				}

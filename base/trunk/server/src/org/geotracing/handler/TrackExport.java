@@ -14,6 +14,8 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
+import org.postgis.PGgeometryLW;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -103,7 +105,7 @@ public class TrackExport {
 					Record[] media = relater.getRelated(aTrack.getRecord(), "base_medium", TrackLogic.REL_TAG_MEDIUM);
 					TreeMap sortedMediaMap = new TreeMap();
 					String mediumDesc;
-						for (int j = 0; j < media.length; j++) {
+					for (int j = 0; j < media.length; j++) {
 						nextMedium = media[j];
 						JXElement mediumElm = new JXElement("medium");
 						mediumElm.setAttr("id", nextMedium.getId());
@@ -123,12 +125,13 @@ public class TrackExport {
 						mediumElm.setAttr("time", time);
 
 						nextLocations = relater.getRelated(nextMedium, Location.TABLE_NAME, "medium");
+						Point nextPoint;
 						if (nextLocations.length == 1) {
 							// Has location: add location attrs
-							nextLoc = nextLocations[0];
-							mediumElm.setAttr("lon", nextLoc.getRealField("lon"));
-							mediumElm.setAttr("lat", nextLoc.getRealField("lat"));
-							mediumElm.setAttr("time", nextLoc.getLongField("time"));
+							nextPoint = Location.getPoint(nextLocations[0]);
+							mediumElm.setAttr("lon", nextPoint.x+"");
+							mediumElm.setAttr("lat", nextPoint.y+"");
+							mediumElm.setAttr("time", (long) nextPoint.m + "");
 						}
 
 						// Sort media by timestamp
@@ -263,8 +266,9 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 
 			// Add media ? add as waypoints with links
 			if (addMedia) {
-				// Add media related to track
-				Record nextMedium, nextLocations[], nextLoc;
+				// Add media related to track as waypoint elements
+				Record nextMedium, nextLocations[];
+				Point nextPoint;
 				String webAppURL = Amuse.server.getPortal().getProperty("webappurl");
 				String mediumURL = webAppURL + "/media.srv?id=";
 				try {
@@ -274,23 +278,28 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 					String mediumName, mediumDesc;
 					for (int j = 0; j < media.length; j++) {
 						nextMedium = media[j];
+						nextPoint = null;
 
 						// Create waypoint
 						// See http://www.topografix.com/GPX/1/1/#type_wptType
 						JXElement mediumElm = new JXElement("wpt");
 
-						// First lat/lon/time/ele
+						// First lat/lon/time/ele from Location related to medium
 						nextLocations = relater.getRelated(nextMedium, Location.TABLE_NAME, "medium");
 						if (nextLocations.length == 1) {
 							// Has location: add location attrs
-							nextLoc = nextLocations[0];
-						} else {
+							nextPoint = Location.getPoint(nextLocations[0]);
+						}
+
+						if (nextPoint == null) {
+							// Sick case: medium without location
 							continue;
 						}
 
-						mediumElm.setAttr("lon", nextLoc.getRealField("lon"));
-						mediumElm.setAttr("lat", nextLoc.getRealField("lat"));
-						mediumElm.setChildText("ele", nextLoc.getRealField("ele") + "");
+						// Lon/lat/elevation from Point
+						mediumElm.setAttr("lon", nextPoint.x+"");
+						mediumElm.setAttr("lat", nextPoint.y+"");
+						mediumElm.setChildText("ele", nextPoint.z + "");
 
 						long ctime = nextMedium.getLongField("creationdate");
 						mediumElm.setChildText("time", GPX_TIME_FORMAT.format(new Date(ctime)));

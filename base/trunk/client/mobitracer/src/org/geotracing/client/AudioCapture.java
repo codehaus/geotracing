@@ -105,7 +105,7 @@ public class AudioCapture extends Form implements CommandListener {
 			}
 			append("SUBMITTING AUDIO...", " (takes a while)");
 
-			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, false);
+			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, true);
 			if (rsp == null) {
 				append("cannot submit audio !");
 			} else if (Protocol.isPositiveResponse(rsp)) {

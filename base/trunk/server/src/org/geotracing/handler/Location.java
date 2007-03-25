@@ -104,13 +104,22 @@ public class Location extends BaseImpl {
 	}
 
 	/**
+	 * Get Point object from location record.
+	 * @return a Point
+	 *
+	 */
+	static public Point getPoint(Record aLocationRecord) {
+		PGgeometryLW geom = (PGgeometryLW) aLocationRecord.getObjectField(FIELD_POINT);
+		return (Point) (geom != null ? geom.getGeometry() : null);
+	}
+
+	/**
 	 * Get lon,lat,elevation and time values.
 	 *
-	 * @return a GeoPoint
+	 * @return a Point
 	 */
 	public Point getPoint() {
-		PGgeometryLW geom = (PGgeometryLW) getRecord().getObjectField(FIELD_POINT);
-		return (Point) (geom != null ? geom.getGeometry() : null);
+		return getPoint(getRecord());
 	}
 
 	/**

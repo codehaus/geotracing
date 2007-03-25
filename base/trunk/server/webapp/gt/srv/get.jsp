@@ -186,12 +186,16 @@
 				locationRecords = relater.getRelated(record, "g_location", null);
 			}
 
-			if (locationRecords.length == 0 || locationRecords[0].getObjectField("point") == null) {
+			if (locationRecords.length == 0) {
 				continue;
 			}
 
 			// Add the location attrs
-			nextPoint = (Point) ((PGgeometryLW) locationRecords[0].getObjectField("point")).getGeometry();
+			nextPoint = Location.getPoint(locationRecords[0]);
+			if (nextPoint == null) {
+				continue;
+			}
+			
 			nextRecordElm.setChildText("lon", nextPoint.getX()+"");
 			nextRecordElm.setChildText("lat", nextPoint.getY()+"");
 
@@ -1067,9 +1071,11 @@
 					Location loc = (Location) activeTrack.getRelatedObject(Location.class, "lastpt");
 					if (loc != null) {
 						Point pt = loc.getPoint();
-						userInfo.setChildText("lon", pt.getX() + "");
-						userInfo.setChildText("lat", pt.getY() + "");
-						userInfo.setChildText("lonlattime", (long) pt.getM() + "");
+						if (pt != null) {
+							userInfo.setChildText("lon", pt.getX() + "");
+							userInfo.setChildText("lat", pt.getY() + "");
+							userInfo.setChildText("lonlattime", (long) pt.getM() + "");
+						}
 					}
 				}
 
@@ -1198,7 +1204,7 @@
 			response.setContentType("text/xml;charset=utf-8");
 			try {
 				Writer writer = response.getWriter();
-				writer.write(result.toFormattedString());
+				writer.write(result.toString(false));
 				writer.flush();
 				writer.close();
 				} catch (Throwable th) {

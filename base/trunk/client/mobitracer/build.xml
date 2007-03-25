@@ -4,81 +4,85 @@
   $Id$
 -->
 <project name="MobiTracer" default="build" basedir=".">
-    <property name="geotracing.base.dir" value="${basedir}/../.."/>
+	<property name="geotracing.base.dir" value="${basedir}/../.."/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
 
-    <!-- sets paths to all external package dirs. -->
+	<!-- sets paths to all external package dirs. -->
 	<property file="${geotracing.external.dir}/build.properties"/>
 
-	<property name="build.dir" value="${basedir}/build"/>
-	
-	<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
-	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
-	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
-	<!-- Project global properties; overrule by modifying build.properties -->
-	<property file="build.properties"/>
-
-	<!-- <property name="project.src.path" value="${basedir}/src${path.separator}${kwclient.src}${path.separator}${mjox.src}"/> -->
-	<property name="project.rsc.dir" value="${basedir}/rsc"/>
-	<property name="project.etc.dir" value="${basedir}/etc"/>
-	<property name="project.manifest" value="${project.etc.dir}/MANIFEST.MF"/>
-
-	<property name="project.jar" value="${build.dir}/${project.name}.jar"/>
-
-	<property name="projectobf.jar" value="${build.dir}/${project.name}obf.jar"/>
-	<property name="project.jad" value="${build.dir}/${project.name}.jad"/>
-
-	<property name="proguard.jar" value="${proguard.dir}/lib/proguard.jar"/>
-
-	<property name="classes.dir" value="${build.dir}/classes"/>
-	<property name="obf.dir" value="${build.dir}/obf"/>
-	<property name="preverify.dir" value="${build.dir}/preverify"/>
-
-	<property name="preverify" value="${mppsdk.dir}/osx/preverify/preverify"/>
-	<property name="btsend" value="${project.etc.dir}/btsend.sh"/>
-
-	<property name="connbridge.jar" value="${mppsdk.dir}/bluetooth/connbridge/lib/connbridge.jar"/>
-	<property name="emulator.jar" value="${mppsdk.dir}/player.jar"/>
-	<property name="emulator.class" value="com.mpp.player.PowerPlayerApp"/>
-	<property name="midpemu.jar" value="${mppsdk.dir}/midp.jar"/>
-	<property name="btpemu.jar" value="${mppsdk.dir}/bluetooth/bt.jar"/>
-	<property name="cldcemu.jar" value="${mppsdk.dir}/cldc.jar"/>
-	<property name="adapter.jar" value="${mppsdk.dir}/adapter.jar"/>
-	<property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
-
-	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
-	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
+	<!-- Initialize: setup properties, create dirs and set timestamp.. -->
+	<target name="init" depends="externals">
 
 
-	<!-- Various paths -->
-	<property name="preverify.classpath" value="${midp2.dir}/classes${path.separator}${jsr82.zip}"/>
-	<property name="boot.classpath" value="${midp2.dir}/classes"/>
+		<property name="build.dir" value="${basedir}/build"/>
 
-	<path id="compile.sourcepath">
-		<pathelement location="${basedir}/src"/>
-		<pathelement location="${kwclient.src}"/>
-		<pathelement location="${mjox.src}"/>
-	</path>
+		<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
+		<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
+		<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
+		<!-- Project global properties; overrule by modifying build.properties -->
+		<property file="build.properties"/>
 
-	<path id="compile.classpath">
-		<pathelement location="${jsr82.zip}"/>
-		<pathelement location="${mmapi.jar}"/>
-	</path>
+		<!-- <property name="project.src.path" value="${basedir}/src${path.separator}${kwclient.src}${path.separator}${mjox.src}"/> -->
+		<property name="project.rsc.dir" value="${basedir}/rsc"/>
+		<property name="project.etc.dir" value="${basedir}/etc"/>
+		<property name="project.manifest" value="${project.etc.dir}/MANIFEST.MF"/>
 
-	<path id="emulator.classpath">
-		<pathelement location="${connbridge.jar}"/>
-		<pathelement location="${avetana.jar}"/>
-		<pathelement location="${emulator.jar}"/>
-		<pathelement location="${adapter.jar}"/>
-		<pathelement location="${cldcemu.jar}"/>
-		<pathelement location="${midpemu.jar}"/>
-		<pathelement location="${emulator.jar}"/>
-	</path>
+		<property name="project.jar" value="${build.dir}/${project.name}.jar"/>
+
+		<property name="projectobf.jar" value="${build.dir}/${project.name}obf.jar"/>
+		<property name="project.jad" value="${build.dir}/${project.name}.jad"/>
+
+		<property name="proguard.jar" value="${proguard.dir}/lib/proguard.jar"/>
+
+		<property name="classes.dir" value="${build.dir}/classes"/>
+		<property name="obf.dir" value="${build.dir}/obf"/>
+		<property name="preverify.dir" value="${build.dir}/preverify"/>
+
+		<property name="btsend" value="${project.etc.dir}/btsend.sh"/>
+
+		<property name="connbridge.jar" value="${mppsdk.dir}/bluetooth/connbridge/lib/connbridge.jar"/>
+		<property name="emulator.jar" value="${mppsdk.dir}/player.jar"/>
+		<property name="emulator.class" value="com.mpp.player.PowerPlayerApp"/>
+		<property name="midpemu.jar" value="${mppsdk.dir}/midp.jar"/>
+		<property name="btpemu.jar" value="${mppsdk.dir}/bluetooth/bt.jar"/>
+		<property name="cldcemu.jar" value="${mppsdk.dir}/cldc.jar"/>
+		<property name="adapter.jar" value="${mppsdk.dir}/adapter.jar"/>
+		<property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
+
+		<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
+		<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
+
+
+		<!-- Various paths -->
+		<property name="preverify.classpath" value="${midp2.dir}/classes${path.separator}${jsr82.zip}"/>
+		<property name="boot.classpath" value="${midp2.dir}/classes"/>
+
+		<path id="compile.sourcepath">
+			<pathelement location="${basedir}/src"/>
+			<pathelement location="${kwclient.src}"/>
+			<pathelement location="${mjox.src}"/>
+		</path>
+
+		<path id="compile.classpath">
+			<pathelement location="${jsr82.zip}"/>
+			<pathelement location="${mmapi.jar}"/>
+		</path>
+
+		<path id="emulator.classpath">
+			<pathelement location="${connbridge.jar}"/>
+			<pathelement location="${avetana.jar}"/>
+			<pathelement location="${emulator.jar}"/>
+			<pathelement location="${adapter.jar}"/>
+			<pathelement location="${cldcemu.jar}"/>
+			<pathelement location="${midpemu.jar}"/>
+			<pathelement location="${emulator.jar}"/>
+		</path>
+	</target>
 
 	<!-- Optional download/upack of external packages. -->
 	<target name="externals">
 		<echo message="downloading and unpacking external packages"/>
-		
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${avetana}"/>
 		</ant>
@@ -90,20 +94,20 @@
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${keyworx}"/>
 		</ant>
-		
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${midp2}"/>
 		</ant>
-		
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${mmapi}"/>
 		</ant>
-		
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${mppsdk}"/>
 		</ant>
-		
-		<chmod file="${preverify}" perm="ugo+x"/>
+
+		<chmod file="${preverify.cmd}" perm="ugo+x"/>
 
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${proguard}"/>
@@ -111,12 +115,12 @@
 
 	</target>
 
-	<target name="compile" depends="clean,externals">
+	<target name="compile" depends="clean,init">
 		<mkdir dir="${classes.dir}"/>
 		<javac
-			destdir="${classes.dir}"
-			target="1.1"
-			bootclasspath="${boot.classpath}">
+				destdir="${classes.dir}"
+				target="1.1"
+				bootclasspath="${boot.classpath}">
 			<classpath refid="compile.classpath"/>
 			<src refid="compile.sourcepath"/>
 		</javac>
@@ -137,7 +141,7 @@
 
 	<target name="preverify" depends="obfuscate">
 		<mkdir dir="${preverify.dir}"/>
-		<exec executable="${preverify}">
+		<exec executable="${preverify.cmd}">
 			<arg line="-classpath ${preverify.classpath}"/>
 			<arg line="-d ${preverify.dir}"/>
 			<arg line="${obf.dir}"/>
@@ -174,8 +178,8 @@
 		</concat>
 
 		<jar basedir="${preverify.dir}"
-			jarfile="${project.jar}"
-			manifest="${manifest.file}">
+			 jarfile="${project.jar}"
+			 manifest="${manifest.file}">
 			<fileset dir="${project.rsc.dir}">
 				<include name="*.png"/>
 			</fileset>
@@ -186,7 +190,7 @@
 
 	</target>
 
-	<target name="run">
+	<target name="run" depends="init">
 		<java classname="${emulator.class}" fork="true">
 			<classpath refid="emulator.classpath"/>
 			<!-- <arg value="-clearRecordStores"/> -->
@@ -194,16 +198,16 @@
 		</java>
 	</target>
 
-	<target name="install">
-		
-		<chmod file="${btsend}" perm="ugo+x" />
-		
+	<target name="install" depends="init">
+
+		<chmod file="${btsend}" perm="ugo+x"/>
+
 		<exec executable="${btsend}">
 			<arg line="${project.jar}"/>
 		</exec>
 	</target>
 
-	<target name="clean">
+	<target name="clean" depends="init">
 		<delete dir="${build.dir}"/>
 	</target>
 

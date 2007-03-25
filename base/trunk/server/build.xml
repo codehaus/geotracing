@@ -9,87 +9,88 @@ $Id$
 	<!-- Initialization of properties (dirs, files) -->
 
 	<!-- Project global properties; overrule by modifying build.properties -->
-    <property name="geotracing.base.dir" value="${basedir}/.."/>
-	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
-	<property file="${geotracing.external.dir}/build.properties"/>
-
-	<property file="${keyworx.dir}/build.properties"/>
-	<!-- Use server utopia config as base config -->
-	<property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
-
+	<property name="geotracing.base.dir" value="${basedir}/.."/>
 	<property file="${geotracing.base.dir}/build.properties"/>
 	<property file="build.properties"/>
 
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
 
-	<!-- Java compiler options -->
-	<property name="javac.debug" value="false"/>
-	<property name="javac.deprecation" value="false"/>
-	<property name="javac.optimize" value="true"/>
 
-	<!-- Directory locations -->
-	<property name="home" value="${basedir}"/>
-	<property name="home.bin.dir" value="${home}/bin"/>
-	<property name="home.cfg.dir" value="${home}/cfg"/>
-	<property name="home.data.dir" value="${home}/data"/>
-	<property name="home.src.dir" value="${home}/src"/>
-	<property name="home.test.dir" value="${home}/test"/>
-	<property name="home.webapp.dir" value="${home}/webapp"/>
+	<!-- Initialize: setup properties, create dirs and set timestamp.. -->
+	<target name="init" depends="externals">
 
-	<property name="build.dir" value="${home}/build"/>
-	<property name="build.class.dir" value="${build.dir}/class"/>
-	<property name="build.lib.dir" value="${build.dir}/lib"/>
-	<property name="build.doc.dir" value="${build.dir}/doc"/>
-	<property name="build.war.dir" value="${build.dir}/war"/>
-	<property name="build.version.dir" value="${build.war.dir}/version"/>
-	<property name="dist.dir" value="${home}/dist"/>
+		<!-- Use server utopia config as base config -->
+		<property name="keyworx.server.cfg" value="${keyworx.dir}/server/cfg/utopia"/>
 
-	<property name="external.dir" value="${home}/../external"/>
-<!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
-	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
-	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
-	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
-	<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
-	<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
-	<property name="scp" value="${home.bin.dir}/scp.sh"/>
-	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
-	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
-	<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
-	<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
-	<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
-	<property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
 
-	<!-- All sources to be compiled -->
-	<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
+		<!-- Java compiler options -->
+		<property name="javac.debug" value="false"/>
+		<property name="javac.deprecation" value="false"/>
+		<property name="javac.optimize" value="true"/>
 
-	<!-- Client midlet stuff -->
-	<property name="home.client.dir" value="${home}/../client/mobitracer"/>
+		<!-- Directory locations -->
+		<property name="home" value="${basedir}"/>
+		<property name="home.bin.dir" value="${home}/bin"/>
+		<property name="home.cfg.dir" value="${home}/cfg"/>
+		<property name="home.data.dir" value="${home}/data"/>
+		<property name="home.src.dir" value="${home}/src"/>
+		<property name="home.test.dir" value="${home}/test"/>
+		<property name="home.webapp.dir" value="${home}/webapp"/>
 
-	<!-- The .jar -->
-	<property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
-	<property name="project.war" value="${build.dir}/${war.name}.war"/>
-	<property name="package.zip" value="${dist.dir}/${project.id}-${version}.zip"/>
-	<property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${version}.zip"/>
+		<property name="build.dir" value="${home}/build"/>
+		<property name="build.class.dir" value="${build.dir}/class"/>
+		<property name="build.lib.dir" value="${build.dir}/lib"/>
+		<property name="build.doc.dir" value="${build.dir}/doc"/>
+		<property name="build.war.dir" value="${build.dir}/war"/>
+		<property name="build.version.dir" value="${build.war.dir}/version"/>
+		<property name="dist.dir" value="${home}/dist"/>
 
-	<!-- Construct compilation classpath -->
-	<path id="compile.classpath">
-		<pathelement location="${build.class.dir}"/>
-		<pathelement location="${pushlet.jar}"/>
-		<pathelement location="${postgis-jdbc.jar}"/>
-		<pathelement location="${keyworx.jar}"/>
-		<pathelement location="${kwx-tagging.jar}"/>
-		<pathelement location="${servlet.jar}"/>
-		<pathelement location="${ehcache.jar}"/>
-		<pathelement location="${geoapi.jar}"/>
-		<pathelement location="${gt2-epsg-wkt.jar}"/>
-		<pathelement location="${gt2-referencing.jar}"/>
-	</path>
+		<property name="external.dir" value="${home}/../external"/>
+		<!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
+		<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+		<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
+		<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
+		<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+		<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
+		<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
+		<property name="scp" value="${home.bin.dir}/scp.sh"/>
+		<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
+		<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
+		<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
+		<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
+		<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
+		<property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
 
-	<!-- Initialize: create dirs and set timestamp.. -->
-	<target name="init">
+		<!-- All sources to be compiled -->
+		<property name="server.src.path" value="${home.src.dir}:${home.test.dir}/unit/postgis/src"/>
+
+		<!-- Client midlet stuff -->
+		<property name="home.client.dir" value="${home}/../client/mobitracer"/>
+
+		<!-- The .jar -->
+		<property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
+		<property name="project.war" value="${build.dir}/${war.name}.war"/>
+		<property name="package.zip" value="${dist.dir}/${project.id}-${version}.zip"/>
+		<property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${version}.zip"/>
+
+		<!-- Construct compilation classpath -->
+		<path id="compile.classpath">
+			<pathelement location="${build.class.dir}"/>
+			<pathelement location="${pushlet.jar}"/>
+			<pathelement location="${postgis-jdbc.jar}"/>
+			<pathelement location="${keyworx.jar}"/>
+			<pathelement location="${kwx-tagging.jar}"/>
+			<pathelement location="${ehcache.jar}"/>
+			<pathelement location="${geoapi.jar}"/>
+			<pathelement location="${gt2-epsg-wkt.jar}"/>
+			<pathelement location="${gt2-referencing.jar}"/>
+		</path>
+
 		<mkdir dir="${build.dir}"/>
 		<tstamp/>
 	</target>
-	
+
 	<!-- Optional download/upack of external packages. -->
 	<target name="externals">
 		<echo message="downloading and unpacking external packages"/>
@@ -125,7 +126,7 @@ $Id$
 	</target>
 
 	<!-- Compile the java files. -->
-	<target name="compile" depends="init,externals">
+	<target name="compile" depends="init">
 		<echo message="Compiling java files..."/>
 
 		<!-- Always do clean build -->
@@ -134,11 +135,11 @@ $Id$
 
 		<!-- Compile all java files-->
 		<javac
-			destdir="${build.class.dir}"
-			debug="${javac.debug}"
-			deprecation="${javac.deprecation}"
-			optimize="${javac.optimize}"
-			includes="**/*.java">
+				destdir="${build.class.dir}"
+				debug="${javac.debug}"
+				deprecation="${javac.deprecation}"
+				optimize="${javac.optimize}"
+				includes="**/*.java">
 			<src path="${server.src.path}"/>
 
 			<classpath refid="compile.classpath"/>
@@ -199,11 +200,11 @@ $Id$
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${home.bin.dir}/drawloc.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${home.bin.dir}/mapdrawer.sh" overwrite="true"/>
-			<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+		<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
 			<fileset dir="${home.data.dir}"/>
 		</copy>
 
-		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true" >
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
 			<fileset dir="${pushlet.dir}/lib">
 				<include name="pushlet.jar"/>
 			</fileset>
@@ -236,13 +237,13 @@ $Id$
 		</copy>
 
 		<!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
-		 <copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
-			 <fileset dir="${kwx-metadata.dir}/cfg/tables">
-				 <exclude name="cc_tag.xml"/>
-				 <exclude name="cc_tagrelation.xml"/>
-			 </fileset>
-			 <fileset dir="${kwx-tagging.dir}/cfg/tables"/>
-		 </copy>
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			<fileset dir="${kwx-metadata.dir}/cfg/tables">
+				<exclude name="cc_tag.xml"/>
+				<exclude name="cc_tagrelation.xml"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/cfg/tables"/>
+		</copy>
 
 		<!-- OTA for MobiTracer download -->
 		<copy todir="${build.war.dir}/ota">
@@ -291,16 +292,16 @@ $Id$
 	</target>
 
 	<target name="packagewar" depends="clean,war">
-		<delete file="${packagewar.zip}" />
+		<delete file="${packagewar.zip}"/>
 
 		<!-- Make zip -->
 		<zip zipfile="${packagewar.zip}">
 			<zipfileset dir="${build.war.dir}"
-				prefix="${project.id}-war-${version}"
-				excludes="WEB-INF/cfg/portal.xml" >
+						prefix="${project.id}-war-${version}"
+						excludes="WEB-INF/cfg/portal.xml">
 			</zipfileset>
 		</zip>
-    </target>
+	</target>
 
 	<!-- Build all clean. -->
 	<target name="build" depends="clean,war"/>
@@ -313,8 +314,8 @@ $Id$
 		<delete file="${package.zip}"/>
 		<zip zipfile="${package.zip}">
 			<zipfileset dir="${home}"
-				prefix="${project.id}-${version}"
-				excludes="version/**,build/class/**,build/war/**,build/${project.war}"/>
+						prefix="${project.id}-${version}"
+						excludes="version/**,build/class/**,build/war/**,build/${project.war}"/>
 		</zip>
 
 		<!--	<delete file="${versions.gzip.file}" />
@@ -326,13 +327,13 @@ $Id$
 
 
 	<!-- Run protocol test client. -->
-	<target name="test" description="Runs protocol test client">
+	<target name="test" depends="init" description="Runs protocol test client">
 
 		<java classname="org.keyworx.amuse.test.protocol.Main"
-			fork="true"
-			failonerror="true"
-			maxmemory="128m"
-			>
+			  fork="true"
+			  failonerror="true"
+			  maxmemory="128m"
+				>
 			<arg value="${home.test.dir}/protocol/test.properties"/>
 
 			<classpath>
@@ -341,48 +342,30 @@ $Id$
 			</classpath>
 		</java>
 	</target>
-
-	   <!-- Migration task (not used).
-	<target name="migrate" description="Migration of old geoskating/sailing">
-
-		<java classname="org.geotracing.util.MigrateTracks"
-			fork="true"
-			failonerror="true"
-			maxmemory="128m"
-			>
-			<arg value="${home.test.dir}/protocol/test.properties"/>
-
-			<classpath>
-				<pathelement location="${keyworx.jar}"/>
-				<pathelement location="${project.jar}"/>
-			</classpath>
-		</java>
-	</target>
-     -->
 
 	<target name="clean" depends="init">
 		<delete dir="${build.dir}"/>
 		<mkdir dir="${build.lib.dir}"/>
 	</target>
 
-	<target name="sync-site">
+	<target name="sync-site" depends="init">
 		<copy todir="${deploy.live.dir}" overwrite="true">
 			<fileset dir="${home.webapp.dir}/site"/>
 		</copy>
 	</target>
 
-	<target name="sync-site-local">
+	<target name="sync-site-local" depends="init">
 		<copy todir="${deploy.local.dir}/site" overwrite="true">
 			<fileset dir="${home.webapp.dir}/site"/>
 		</copy>
 	</target>
 
 
-	<target name="deploy-local">
+	<target name="deploy-local" depends="init">
 		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-local-raw">
+	<target name="deploy-local-raw" depends="init">
 		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}/${war.name}"/>
 		</copy>
@@ -396,26 +379,17 @@ $Id$
 			</copy> -->
 	</target>
 
-	<target name="deploy-live">
+	<target name="deploy-live" depends="init">
 		<copy file="${project.war}" todir="${deploy.live.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-live-raw">
+	<target name="deploy-live-raw"  depends="init">
 		<copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
 			<fileset dir="${home.webapp.dir}/${war.name}"/>
 		</copy>
 	</target>
 
-	<target name="deploy-gmap">
-		<copy todir="${deploy.live.dir}/gmap" overwrite="true">
-			<fileset dir="${home.webapp.dir}/gmap"/>
-		</copy>
-		<copy todir="${deploy.live.dir}/${war.name}/player" overwrite="true">
-			<fileset dir="${home.webapp.dir}/${war.name}/player"/>
-		</copy>
-	</target>
-
-	<target name="doc" >
+	<target name="doc" depends="init">
 		<mkdir dir="${build.doc.dir}/jsdoc"/>
 		<exec executable="${jsdoc}">
 			<arg line="-d ${build.doc.dir}/jsdoc"/>
