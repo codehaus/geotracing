@@ -5,7 +5,7 @@
 <!-- <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
-	<title>GeoTracing, loading please wait....</title>
+	<title>Jeugd GePoSitioneerd, laden...</title>
 	<link rel="stylesheet" type="text/css" href="css/widget.css"/>
 	<link rel="stylesheet" type="text/css" href="css/gtwidget.css"/>
 	<link rel="stylesheet" type="text/css" href="css/gtapp.css"/>
@@ -100,7 +100,7 @@
 		&nbsp;
 	</td>
 	<td height="25" width="320" bgcolor="#ffffff">
-		<span id="title" class="logotekst">Sense of Brainport</span>
+		<span id="title" class="logotekst">Jeugd GePoSitioneerd</span>
 	</td>
 </tr>
 <tr>
@@ -220,7 +220,7 @@
 		</tr>
 		<tr>
 			<td>
-				<div class="copyright">© 2006 Sense of Brainport</div>
+				<div class="copyright">© 2007 Jeugd GePoSitioneerd</div>
 			</td>
 		</tr>
 		<tr>
