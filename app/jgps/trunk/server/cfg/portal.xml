@@ -1,0 +1,62 @@
+<portal name="jgps">
+
+	<!-- Standard host-dependent container properties -->
+	<!-- <property name="siteurl" host="test">http://www.senseofbrainport.nl</property>
+	<property name="webappurl" host="test">http://www.senseofthecity.nl/sobp</property>    -->
+	<property name="siteurl" host="suwa">http://test.geotracing.com/jgps</property>
+	<property name="webappurl" host="suwa">http://test.geotracing.com/jgps</property>
+
+	<config>
+		<!-- Oase context file. Context id becomes portal name -->
+		<context file="oase-context.xml"/>
+	</config>
+
+
+	<!-- Connectors -->
+	<connectors>
+		<!-- Mainly needed for TracerDaemon and LocEmailUploadDaemon -->
+		<connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+			<property name="port">4054</property>
+			<property name="pongTimeoutMillis">30000</property>
+		</connector>
+	</connectors>
+
+
+	<!-- Application context -->
+	<application name="geoapp" organisation="Just Objects">
+
+		<!-- Utopia handlers -->
+		<handlers>
+			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+				<property name="max-file-size">1000000</property>
+			</handler>
+
+			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
+			<handler id="query" class="org.geotracing.handler.QueryHandler"/>
+			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
+				<property name="allow-anonymous">true</property>
+				<property name="max-commments-per-target">256</property>
+				<property name="max-content-chars">1024</property>
+			</handler>
+		</handlers>
+
+
+		<daemons>
+			<!-- Tracer Bot
+			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
+				<property name="intervalMillis">10000</property>
+			</daemon> -->
+
+			<!-- <daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
+				<property name="intervalMillis">20000</property>
+
+				<property name="host">email.upload.host</property>
+
+				<property name="email" host="test">email.upload.email.test</property>
+				<property name="user" host="test">email.upload.user.test</property>
+				<property name="password" host="test">email.upload.password.test</property>
+			</daemon> -->
+
+		</daemons>
+	</application>
+</portal>
