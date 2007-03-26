@@ -11,12 +11,12 @@ import java.io.*;
  * <code>HTTPUploader</code> is used to write
  * "multipart/form-data" to a <code>java.net.URLConnection</code> for
  * POSTing.  This is primarily for file uploading to HTTP servers.
- * See
+ * See original version at:
  * http://forum.java.sun.com/thread.jspa?forumID=256&threadID=451245
+ * other:
+ * http://www.thisismobility.com/blog/?p=15&mobilenow
  * <p/>
- * URL url = new URL("http://www.domain.com/webems/upload.do");
- * <p/>
- * // Example
+ * Example
  * HTTPUploader uploader = new HTTPUploader();
  * uploader.connect("http://www.bla.com/upload.jsp");
  * <p/>
@@ -42,7 +42,7 @@ public class HTTPUploader {
 	/**
 	 * HTTP connection to remote host.
 	 */
-	HttpConnection httpConn;
+	private HttpConnection httpConn;
 
 	/**
 	 * The output stream to write to.
@@ -106,7 +106,8 @@ public class HTTPUploader {
 			write(boundary);
 			write(PREFIX);
 			write(NEWLINE);
-			out.flush();
+			// out.flush();
+			out.close();
 
 			// Getting the response code will open the connection,
 			// send the request, and read the HTTP response headers.
@@ -124,11 +125,6 @@ public class HTTPUploader {
 			// Always cleanup connections
 			if (is != null) {
 				is.close();
-			}
-
-			if (out != null) {
-				out.close();
-				out = null;
 			}
 
 			if (httpConn != null) {
@@ -170,7 +166,7 @@ public class HTTPUploader {
 		// write content
 		write(value);
 		write(NEWLINE);
-		out.flush();
+		// out.flush();
 	}
 
 	/**
@@ -208,7 +204,7 @@ public class HTTPUploader {
 		// write content
 		out.write(data);
 		write(NEWLINE);
-		out.flush();
+		// out.flush();
 	}
 
 
