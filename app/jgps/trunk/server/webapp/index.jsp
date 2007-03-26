@@ -5,7 +5,7 @@
 																				alt="logo brainport" width="170"
 																				height="133"/></td>
 		<td colspan="2" valign="top"><div class="nieuwsbericht">
-			<div class="nieuwsberichttitel">Welkom bij Sense of Brainport</div><br/>
+			<div class="nieuwsberichttitel">Welkom bij Jeugd GePoSitioneerd</div><br/>
 Sense of Brainport geeft u een kijkje in de wereld van Brainport.
 			Zes dagen lang brengen <a href="deelnemers.jsp">20 smaakmakers</a> uit de regio Eindhoven/Zuidoost
 			Brabant in kaart hoe zij de regio beleven.
