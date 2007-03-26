@@ -208,7 +208,7 @@ public class Net {
 			JXElement rsp = kwClient.utopia(req);
 			trackId = rsp.getAttr("id", null);
 			listener.onNetStatus("paused");
-			listener.onNetInfo("paused: trkid=" + trackId);
+			listener.onNetInfo("paused trkid=" + trackId);
 		} catch (Throwable pe) {
 			listener.onNetStatus("error");
 		} finally {
@@ -220,7 +220,7 @@ public class Net {
 		return uploadMedium(aName, aType, aMime, aTime, theData, encode, null);
 	}
 
-	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
+	/* public JXElement uploadMediumOld(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
 
 		// get the current image bytes
 		// byte[] imageBytes = getImgFromRecStore(aKey);
@@ -255,42 +255,44 @@ public class Net {
 
 		// send the request
 		return utopiaReq(uploadReq);
+	}  */
 
-		/* HTTPUploader uploader = new HTTPUploader();
-				JXElement rsp = null;
-				try {
-					uploader.connect(url + "/media.srv?agentkey=" + agentKey);
-					if (aName == null) {
-						aName = "mt-upload";
-					}
+	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
+		HTTPUploader uploader = new HTTPUploader();
+		JXElement rsp = null;
+		try {
+			uploader.connect(url + "/media.srv");
+			if (aName == null) {
+				aName = "mt-upload";
+			}
 
-					uploader.writeField("name", aName);
-					// uploader.writeFile(aName, aMime, "mt-upload", theData);
+			uploader.writeField("agentkey", agentKey);
+			uploader.writeField("name", aName);
+			uploader.writeFile(aName, aMime, "mt-upload", theData);
 
+			rsp = uploader.getResponse();
+			if (Protocol.isNegativeResponse(rsp)) {
+				return rsp;
+			}
 
-					rsp = uploader.getResponse();
-					if (Protocol.isNegativeResponse(rsp)) {
-						return rsp;
-					}
+			// Upload OK, now add medium to track
+			JXElement req = new JXElement("t-trk-add-medium-req");
+			req.setAttr("id", rsp.getAttr("id"));
+			req.setAttr("t", aTime);
 
-					// Upload OK, now add medium to track
-					String id = rsp.getAttr("id");
-					JXElement req = new JXElement("t-trk-add-medium-req");
-					req.setAttr("id", id);
+			// Optional tags
+			if (theTags != null && theTags.length() > 0) {
+				req.setAttr("tags", theTags);
+			}
 
-					req.setAttr("t", aTime);
+			utopiaReq(req);
 
-					// Optional tags
-					if (theTags != null && theTags.length() > 0) {
-						req.setAttr("tags", theTags);
-					}
-					rsp = utopiaReq(req);
-
-				} catch (Throwable t) {
-					Log.log("Upload err: " + t);
-				}
-				return rsp;   */
+		} catch (Throwable t) {
+			Log.log("Upload err: " + t);
+		}
+		return rsp;
 	}
+
 
 	public JXElement utopiaReq(JXElement aReq) {
 		if (kwClient == null) {

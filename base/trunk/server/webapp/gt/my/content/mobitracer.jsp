@@ -3,7 +3,7 @@
 <%
 	String webAppURL  =  request.getRequestURL().toString().split("/my")[0];
 	String mtURL = webAppURL + "/ota/mt.jsp?u=" + model.getString(ATTR_USER_NAME) + "&amp;p=&lt;your password&gt;";
-
+	String mtJarURL = webAppURL + "/ota/mobitracer.jar";
 	String mediaEmail = "";
 	try {
 		Container geoApp = (Container) Amuse.server.getPortal().getComponent("geoapp");
@@ -28,8 +28,15 @@
 	Most phones have an "Application Manager" where you can enter the URL. Some phones may also
 	allow installation through their web-browser. Best is to make a bookmark of the download URL
 	such that you can quickly install new versions. After installation you should modify the
-	default application
-	settings (Network access, Connectivity and Multimedia) to prevent pop-ups while running MobiTracer.
+	default application (suite)
+	settings on your phone's Application Manager (Network access, Connectivity and Multimedia) to prevent pop-ups while running MobiTracer.
+</p>
+<p>
+	On some phones (e.g. Siemens) the above download URL may not work. In these cases you may try downloading
+	the application directly using <a href="<%= mtJarURL %>">the mobitracer.jar file</a>. You can e.g.
+	download mobitracer.jar to your computer and then send it to your phone via bluetooth or cable.
+	Note that you need to adapt the settings under "Account" to be able to login. You will need your
+	user name and password and set the server URL: <%= webAppURL %>.
 </p>
 <h3>Sending Media</h3>
 <p>
