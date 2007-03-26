@@ -41,6 +41,7 @@ zet webapps dir naar /var/keyworx/webapps
 <Host name="localhost" debug="0" appBase="webapps"
 moet worden
 <Host name="localhost" debug="0" appBase="/var/keyworx/webapps"
+test door naar http://localhost:8080
 
 PostgreSQL
 - installer
@@ -54,6 +55,33 @@ PostGIS
 
 SVN
 - https://svn.codehaus.org/geotracing/ (invoeren in SVN client)
+- checkout hele GeoTracing boom (base,app,research)
+
+Build
+Eerst geoTracing frmaework bouwen ("base")
+- cd geotracing/base/trunk
+- ant
+- downloads external SW into base/trunk/external
+- problemen: 
+* mobitracer preverify programma
+base/trunk/client/mobitracer/build.properties
+evt Sun Java Wireless Toolkit (WTK) installeren (preverify.exe) en
+build.properties aanpassen
+* base/trunk/server/security.properties missing:
+copy security.proeprties.template naar security.properties
+
+Dan JGPS app builden
+- cd geotracing/app/jgps/trunk/server
+- ant
+
+Deploy
+- copy van jgps.war naar /var/keyworx/webapps
+
+Test
+http://localhost:8080/jgps
+
+
+
 
 
 
