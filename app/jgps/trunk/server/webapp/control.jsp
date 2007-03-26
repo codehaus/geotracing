@@ -16,6 +16,7 @@
 <%@ page import="java.text.CharacterIterator" %>
 <%@ page import="java.text.StringCharacterIterator" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="nl.justobjects.jox.dom.JXElement"%>
 
 <%@ include file="model.jsp" %>
 
