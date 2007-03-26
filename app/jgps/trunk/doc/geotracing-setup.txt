@@ -1,0 +1,65 @@
+GeoTracing
+www.geotracing.com
+
+TraceLand (voorbeeld app)
+www.geotracing.com/gt
+http://geotracing.codehaus.org/ (Open Source Hosting)
+
+PostgreSQL/PostGIS
+http://postgis.refractions.net
+http://www.postgresql.org
+
+OpenGIS OGC - http://www.opengeospatial.org/
+
+KeyWorx - portal framework/app server waar GeoTracing op gebouwd is
+www.keyworx.org
+
+Apache ANT - "zwitsers zakmes"
+http://ant.apache.org
+
+Google Maps
+http://www.google.com/apis/maps
+http://www.google.com/apis/maps/documentation/
+
+Inrichting Werkstation
+Tools
+- Java 1.4
+- Tomcat 5.5 (niet 6)
+- Apache Ant
+- PostgreSQL (v8.2)
+- PostGIS (v1.2.1)
+- SVN (?)
+
+Configureren
+Dir aanmaken: 
+/var/keyworx
+/var/keyworx/webapps
+
+Tomcat:
+zet webapps dir naar /var/keyworx/webapps
+<tomcatinstall-dir>/conf/server.xml
+<Host name="localhost" debug="0" appBase="webapps"
+moet worden
+<Host name="localhost" debug="0" appBase="/var/keyworx/webapps"
+
+PostgreSQL
+- installer
+- NIET PostGIS included in PostgreSQL installeren (PostGIS apart downloaden/installeren)
+
+PostGIS
+- downloaden van postgis.refractions.net
+- installeren
+- maak een template PostGIS DB die "postgis" heet
+- maak een user aan in PostGIS: "oaseuser" pwd "oase"
+
+SVN
+- https://svn.codehaus.org/geotracing/ (invoeren in SVN client)
+
+
+
+
+
+
+
+
+
