@@ -16,23 +16,6 @@
 
 	</div>
 
-	<span class="subkop">Brainport</span>
-<div class="fragmenttekst">
-	<p align="left"><a href="http://www.brainport.nl"><img src="images/colofon/brainport.jpg"
-														   alt="Brainport" width="100" hspace="10"
-														   vspace="0" border="0" align="right"
-														   class="logo"/></a>
-		Stichting Brainport coordineert en faciliteert programma's en
-		projecten die bijdragen aan de economische en
-		sociaal maatschappelijke ontwikkeling van de regio Eindhoven/Zuidoost Brabant.
-		Deze regio wordt sinds enige tijd aangeduid als Brainport omdat de regio hoog
-		scoort als het gaat om toptechnologie, innovatie en bedrijvigheid.
-		De uitzonderlijke prestaties komen onder meer tot stand doordat bedrijven,
-		kennis- en onderwijsinstellingen en   overheden binnen de regio nauw samenwerken.
-		De regio heeft de ambitie om toptechologie regio nummer 1 in Europa te worden.
-<br/>
-		Info: <a href="http://www.brainport.nl">www.brainport.nl</a></p>
-</div>
 	<div align="right"></div>
     <span class="subkop">CityWorks</span>
 <div class="fragmenttekst">
@@ -81,24 +64,6 @@ CityWorks ontwikkelde <a href="http://www.senseofthecity.nl">Sense of the City</
 </div>
 
 <div align="right"></div>
-<span class="subkop">Gemeente Eindhoven</span>
-
-<div class="fragmenttekst">
-	<p><a href="http://www.eindhoven.nl/"><img src="images/colofon/eindhoven.jpg"
-											   alt="Gemeente Eindhoven" width="150" hspace="10"
-											   vspace="10" border="0" align="right"
-											   class="logo"/></a>
-		De gemeente Eindhoven en de inwoners vertellen elkaar wat er in de stad gebeurt.
-		En wat er zou moeten gebeuren om de stad tot een prettigere plaats te maken om te wonen, leven en werken.
-		In het proces van het in kaart brengen van de beleving van de openbare ruimte en de behoefte
-		van de inwoners gaf de gemeente de aanzet tot Sense of the City Eindhoven.
-		De gemeente Eindhoven verzorgde tevens het ontwerp van de website voor Sense of Brainport.
-		<br/>Info: <a href="http://www.eindhoven.nl">www.eindhoven.nl</a>
-
-	</p>
-</div>
-
-<div align="right"></div>
 <span class="subkop">PHC Telecom	</span>
 
 <div class="fragmenttekst">
@@ -109,35 +74,6 @@ CityWorks ontwikkelde <a href="http://www.senseofthecity.nl">Sense of the City</
 		de TU/e en PSV,
 		vindt PHC het een leuke uitdaging om dit technisch hoogstandje mogelijk te maken.<br/>
 		Info: <a href="http://www.phc-telecom.com">www.phc-telecom.com</a></p>
-</div>
-
-<div align="right"></div>
-<span class="subkop">Waag Society</span>
-
-<div class="fragmenttekst">
-	<p><a href="http://www.waag.org"><img src="images/colofon/waag.jpg" alt="Waag Society"
-										  width="100" hspace="10" border="0" align="right"
-										  class="logo"/></a>Waag Society is een medialab voor
-		onderzoek en ontwikkeling van sociale
-		en culturele soft- en hardware. Hierbij staat de gebruiker en de manier
-		waarop deze wil communiceren centraal.<br/>
-		Info: <a href="http://www.waag.org">www.waag.org</a></p>
-</div>
-
-<div align="right"></div>
-
-<span class="subkop">Ruimte voor Geo-Informatie	   </span>
-
-<div class="fragmenttekst">
-	<p><a href="http://www.rgi.nl"><img src="images/colofon/geoinfo.gif"
-										alt="Ruimte voor Geoinformatie" width="75" hspace="10"
-										border="0" align="right" class="logo"/></a>Ruimte voor
-		Geo-Informatie verdeelt 20 miljoen Euro subsidie om alle plaatsgebonden informatie,
-		zogeheten geo-informatie, bruikbaar te maken. Zodat iedere Nederlander straks met een klik
-		van
-		zijn muis alles te weten komt over de plek waar hij is,
-		de onweersbui die boven zijn hoofd hangt of het restaurant dat in zijn buurt is. <br/>
-		Info: <a href="http://www.rgi.nl">www.rgi.nl</a></p>
 </div>
 
 <div align="right"></div>
