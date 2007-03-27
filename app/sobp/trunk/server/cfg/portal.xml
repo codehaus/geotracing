@@ -58,6 +58,11 @@
 				<property name="user" host="test">email.upload.user.test</property>
 				<property name="password" host="test">email.upload.password.test</property>
 			</daemon>
+			
+			<!-- Daemon for various upgrades -->
+			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
+				<property name="locations">true</property>
+			</daemon>
 
 		</daemons>
 	</application>
