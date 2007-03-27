@@ -7,25 +7,6 @@
  * PURPOSE
  * Provide direct usable functions for DiWi CMS Handler requests in Ajax.
  *
- * USAGE
- * Use KWClient to login and then call functions of this library.
- *
- * Each function has an optional "callback" parameter:
- * - used only for positive (utopia) responses
- * - if callback is null then the positive callback function specified in KW.init() is used
- * - negative responses will still use KW.onNegRsp specified in KW.init()
- *
- * Example:
- * KW.init(MY.rspCallback, My.nrspCallback);
- * KW.login('auser', 'apasswd');
- * KW.selectApp('basicapp', 'user');
- *
- * KW.TAG.add(myCallback, '123,345,678', 'monkey,lion')
- *  .
- * KW.logout();
- *
- * Author: Just van den Broecke
- * $Id: KWClientExt.js 377 2007-02-16 11:24:05Z just $
  */
 
 /**
@@ -43,7 +24,8 @@ KW.CMS = {
 		var req = KW.createRequest('poi-insert-req');
         var poi = req.createElement('poi');
 		KW.UTIL.addOptTextElement(poi, 'name', poiObj.name);
-		KW.UTIL.addOptTextElement(poi, 'decription', poiObj.description);
+		KW.UTIL.addOptTextElement(poi, 'description', poiObj.description);
+		KW.UTIL.addOptTextElement(poi, 'type', poiObj.type);
 		KW.UTIL.addOptTextElement(poi, 'category', poiObj.category);
 		KW.UTIL.addOptTextElement(poi, 'x', poiObj.x);
 		KW.UTIL.addOptTextElement(poi, 'y', poiObj.y);
@@ -54,7 +36,9 @@ KW.CMS = {
         KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri1);
         KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri2);
         KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri3);
-
+		
+		req.documentElement.appendChild(poi);
+		
         KW.utopia(req, callback);
 	},
 
@@ -69,7 +53,8 @@ KW.CMS = {
         KW.UTIL.setAttr(req, 'id', targetId);
         var poi = req.createElement('poi');
 		KW.UTIL.addOptTextElement(poi, 'name', poiObj.name);
-		KW.UTIL.addOptTextElement(poi, 'decription', poiObj.description);
+		KW.UTIL.addOptTextElement(poi, 'description', poiObj.description);
+		KW.UTIL.addOptTextElement(poi, 'type', poiObj.type);
 		KW.UTIL.addOptTextElement(poi, 'category', poiObj.category);
 		KW.UTIL.addOptTextElement(poi, 'x', poiObj.x);
 		KW.UTIL.addOptTextElement(poi, 'y', poiObj.y);
@@ -80,6 +65,8 @@ KW.CMS = {
         KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri1);
         KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri2);
         KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri3);
+
+		req.documentElement.appendChild(poi);
 
         KW.utopia(req, callback);
 	},
