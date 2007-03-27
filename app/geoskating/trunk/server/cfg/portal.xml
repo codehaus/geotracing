@@ -54,10 +54,10 @@
 				<property name="password" host="pundit">email.upload.password.pundit</property>
 			</daemon>
 
-			<!-- Daemon for various upgrades
+			<!-- Daemon for various upgrades -->
 			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
-				<property name="pois2textmedia">true</property>
-			</daemon>  -->
+				<property name="locations">true</property>
+			</daemon>
 
 		</daemons>
 	</application>
