@@ -11,34 +11,31 @@
 					<td valign="top" width="560">
 
 					<div class="nieuwsbericht">
-							<div class="nieuwsberichttitel">Wat is Sense of Brainport</div><br/>
-					Sense of Brainport registreert hoe smaakmakers in de regio Eindhoven/Zuidoost Brabant het
-						vinden om in deze regio te ondernemen, werken, studeren en te leven.
-						Door hun 'mental maps' te verbinden met geografische kaarten ontstaat,
-						letterlijk en figuurlijk, een concreet beeld van wat Brainport in de ogen van de  deelnemers is en kan worden. De alertheid en energie van de deelnemers is voor de toekomst van Brainport goud waard.
-						Door deze te laten overspringen op anderen, wordt Brainport
-						hopelijk voor nog meer mensen 'the place to be'.
+							<div class="nieuwsberichttitel">Wat is Jeugd GePoSitioneerd</div><br/>
+					Cum enim saepe mecum ageres ut de amicitia scriberem aliquid,
+						digna mihi res cum omnium cognitione tum nostra familiaritate visa est. Itaque
+						feci non invitus ut prodessem multis rogatu tuo. Sed ut in Catone Maiore, qui
+						est scriptus ad te de senectute, Catonem induxi senem disputantem, quia nulla
+						videbatur aptior persona quae de illa aetate loqueretur quam eius qui et
+						diutissime senex fuisset et in ipsa senectute praeter ceteros floruisset,
+						sic cum accepissemus a patribus maxime memorabilem C. Laeli et P. Scipionis familiaritatem fuisse, idonea mihi Laeli
+						persona visa est quae de amicitia ea ipsa dissereret quae disputata ab eo
+						meminisset Scaevola.
 					</div>
 					<div class="nieuwsbericht">
-							<div class="nieuwsberichttitel">Wat is Brainport</div><br/>
-						De regio Eindhoven/Zuidoost Brabant heeft de ambitie zich te ontwikkelen tot
-						toptechnologische hotspot van Europa. Want dat draagt ertoe bij dat regio economisch
-						floreert en dat het er goed ondernemen, werken, studeren en leven is.
-Om dit te bewerkstelligen werken bedrijfsleven, kennis- en onderwijsinstellingen en overheid nauw samen.
-						Dit komt onder andere tot uiting in diverse programma's en projecten die zij
-						samen ontwikkelen en aansturen via de Stichting Brainport.
+							<div class="nieuwsberichttitel">Wat is ...</div><br/>
+						Genus autem hoc sermonum positum in hominum veterum auctoritate,
+						et eorum inlustrium, plus nescio quo pacto videtur habere gravitatis;
+						itaque ipse mea legens sic afficior interdum ut Catonem, non me loqui existimem.
 					</div>
 					<div class="nieuwsbericht">
-							<div class="nieuwsberichttitel">Waarom Sense of Brainport</div><br/>
-Door te kiezen voor de allernieuwste onderzoek- en communicatietechniek wil de Stichting Brainport het beeld
-						versterken dat de regio Eindhoven/Zuidoost Brabant een smeltkroes is van technologische
-						en creatieve energie.
+							<div class="nieuwsberichttitel">Waarom Jeugd GePoSitioneerd</div><br/>
+Door te kiezen voor de allernieuwste onderzoek- en communicatietechniek ...
 De methode, die  is ontwikkeld door het consortium <a href="http://www.cityworks.nl">CityWorks</a>,
 						<a href="http://www.geotracing.com">GeoTracing</a> en
 							<a href="http://www.ds.arch.tue.nl">TU Eindhoven</a>, heeft de
-						potentie zich te ontwikkelen tot een blog dat binnen de regio Eindhoven/Zuidoost
-						Brabant voor een sterke identificatie kan zorgen. Bovendien biedt ze mogelijkheden
-						voor een wereldwijd inspirerende en innovatieve manifestatie van Brainport.
+						potentie zich te ontwikkelen tot een blog dat binnen de regio .... Bovendien biedt ze mogelijkheden
+						voor een wereldwijd inspirerende en innovatieve manifestatie van ....
 					</div>
 
 

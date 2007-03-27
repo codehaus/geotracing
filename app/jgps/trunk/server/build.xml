@@ -119,6 +119,14 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	</target>
 
 
+<!--	<target name="deploy-live-raw">
+		<exec executable="scp">
+			<arg line="-r"/>
+			<arg line="${home.webapp.dir}/"/>
+			<arg line="samoa@samoa:/home/www/senseofthecity.nl/jgps" />
+		</exec>
+	</target> -->
+
 	<target name="copy-war-samoa">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
