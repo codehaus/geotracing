@@ -37,7 +37,7 @@ $Id$
 		<zip zipfile="${distro-src.zip}">
 			<zipfileset dir="${home}"
 				prefix="${project.id}-src-${version}"
-				excludes="external/**,**/version/**,**/build/**,**/*.class,**/security.properties"/>
+				excludes="external/**,**/version/*.zip,**/build/**,**/*.class,**/security.properties,server/webapp/site/**"/>
 			<zipfileset dir="${home}"
 				prefix="${project.id}-src-${version}"
 				includes="external/build.xml,external/build.properties"/>

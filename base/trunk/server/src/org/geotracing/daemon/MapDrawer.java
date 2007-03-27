@@ -12,9 +12,7 @@ import org.keyworx.common.util.IO;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -366,11 +364,11 @@ public class MapDrawer extends Component {
 	static public void saveProperties(JXElement properties, String aFilePath) {
 	   		try {
 			File file = new File(aFilePath);
-			FileOutputStream fos = new FileOutputStream(file);
-			DataOutputStream dos = new DataOutputStream(fos);
-			dos.writeBytes(properties.toFormattedString() + "\n");
-			dos.flush();
-			dos.close();
+			Writer fos = new FileWriter(file);
+			String propertiesText =  properties.toFormattedString() + "\n";
+			fos.write(propertiesText.replaceAll("&", "&amp;"));
+			fos.flush();
+			fos.close();
 		} catch (Throwable e) {
 			e("Cannot save properties to " + aFilePath, e);
 		}
@@ -456,7 +454,7 @@ public class MapDrawer extends Component {
 				noTile.save();
 			}
 
-			Tile legend = new Tile(tileDir + "/" + getProperty(properties, "legend"), 256, 116);
+			Tile legend = new Tile(tileDir + "/" + getProperty(properties, "legend"), 256, 132);
 			legend.create();
 			Graphics2D g2 = legend.getGraphics();
 
@@ -492,12 +490,12 @@ public class MapDrawer extends Component {
 			g2.fillOval(x - size / 2, y - size / 2, size, size);
 
 			g2.setColor(Color.BLACK);
-			g2.drawString("so so road quality", x + 10, y + 5);
+			g2.drawString("poor road quality", x + 10, y + 5);
 
 			size = 6;
 			x = 10;
 			y = 40;
-			idx = 5;
+			idx = 4;
 
 			g2.setColor(borderColor);
 			g2.fillOval(x - size / 2, y - size / 2, size, size);
@@ -512,6 +510,21 @@ public class MapDrawer extends Component {
 			size = 6;
 			x = 10;
 			y = 55;
+			idx = 5;
+
+			g2.setColor(borderColor);
+			g2.fillOval(x - size / 2, y - size / 2, size, size);
+
+			g2.setColor(COLOR_INDEX[idx]);
+			size = 4;
+			g2.fillOval(x - size / 2, y - size / 2, size, size);
+
+			g2.setColor(Color.BLACK);
+			g2.drawString("excellent road quality", x + 10, y + 5);
+
+			size = 6;
+			x = 10;
+			y = 70;
 			idx = 0;
 
 			g2.setColor(borderColor);
@@ -522,11 +535,11 @@ public class MapDrawer extends Component {
 			g2.fillOval(x - size / 2, y - size / 2, size, size);
 
 			g2.setColor(Color.BLACK);
-			g2.drawString("unknown road quality", x + 10, y + 5);
+			g2.drawString("unknown road quality (but skated)", x + 10, y + 5);
 
 			size = 2;
 			x = 10;
-			y = 75;
+			y = 90;
 			idx = 5;
 			g2.setColor(lowZoomColor);
 			g2.fillOval(x - size / 2, y - size / 2, size, size);
@@ -542,7 +555,7 @@ public class MapDrawer extends Component {
 			g2.setColor(Color.BLACK);
 			size = 10;
 			x = 10;
-			y = 100;
+			y = 115;
 			idx = 5;
 			g2.fillRect(x - size / 2, y - size / 2, size, size);
 			g2.setColor(Color.RED);
