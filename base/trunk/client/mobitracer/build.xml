@@ -107,7 +107,6 @@
 			<property name="package" value="${mppsdk}"/>
 		</ant>
 
-		<chmod file="${preverify.cmd}" perm="ugo+x"/>
 
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${proguard}"/>
@@ -141,6 +140,7 @@
 
 	<target name="preverify" depends="obfuscate">
 		<mkdir dir="${preverify.dir}"/>
+		<chmod file="${preverify.cmd}" perm="ugo+x"/>
 		<exec executable="${preverify.cmd}">
 			<arg line="-classpath ${preverify.classpath}"/>
 			<arg line="-d ${preverify.dir}"/>
