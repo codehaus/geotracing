@@ -1,10 +1,10 @@
 <portal name="jgps">
 
 	<!-- Standard host-dependent container properties -->
-	<!-- <property name="siteurl" host="test">http://www.senseofbrainport.nl</property>
-	<property name="webappurl" host="test">http://www.senseofthecity.nl/sobp</property>    -->
-	<property name="siteurl" host="suwa">http://test.geotracing.com/jgps</property>
-	<property name="webappurl" host="suwa">http://test.geotracing.com/jgps</property>
+	<property name="siteurl" host="samoa">http://www.senseofthecity.nl/jgps</property>
+	<property name="webappurl" host="samoa">http://www.senseofthecity.nl/jgps</property>
+	<property name="siteurl" host="suwa">http://suwa/jgps</property>
+	<property name="webappurl" host="suwa">http://suwa/jgps</property>
 
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
