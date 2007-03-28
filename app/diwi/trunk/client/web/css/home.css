@@ -257,7 +257,7 @@ H4 {
  height: 30px;
  top: 30px;
  left: -20px;
- z-index: 50000;
+ z-index: 500;
 }
 #fotonext {
  position: absolute;
@@ -266,7 +266,7 @@ H4 {
  height: 30px;
  top: 30px;
  left: 140px;
- z-index: 50000;
+ z-index: 500;
 }
 #fotonavigatie {
 	color:#6600FF;

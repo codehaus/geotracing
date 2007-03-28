@@ -33,16 +33,38 @@ lichter {
  width: 800px;
  top: 0px;
  left: 0px;
- z-index: 100;
+ z-index: 50;
 }
 
 /************************** Eerste laag, z=100 ************************************************/
+#personaliabox {
+ position: absolute;
+ width: auto;
+ top: 80px;
+ left: 578px;
+ z-index: 50;
+}
+#commentaarbox {
+ position: absolute;
+ width: auto;
+ top: 355px;
+ left:560px;
+ z-index: 50;
+}
+#map {
+ position: absolute;
+ width: 420px;
+ height: 320px;
+ top: 190px;
+ left: 60px;
+ z-index: 100;
+}
 #ookgelopen {
  position: absolute;
  width: 530px;
  top: 520px;
  left: 20px;
- z-index: 100; 
+ z-index: 50; 
 }
 #ookgelopen p{
  line-height: 0.8em;
@@ -57,35 +79,35 @@ lichter {
  width: auto;
  top: 198px;
  left: 158px;
- z-index: 500;
+ z-index: 60;
 }
 #kaartpopup2 {
  position: absolute;
  width: auto;
  top: 198px;
  left: 358px;
- z-index: 500;
+ z-index: 60;
 }
 #kaartpopup3 {
  position: absolute;
  width: auto;
  top: 368px;
  left: 158px;
- z-index: 500;
+ z-index: 60;
 }
 #kaartpopup4 {
  position: absolute;
  width: auto;
  top: 368px;
  left: 358px;
- z-index: 500;
+ z-index: 60;
 }
 #meerdetails {
  position: absolute;
  width: auto;
  top: 560px;
  left: 260px;
- z-index: 500; 
+ z-index: 60; 
 }
 #meerdetails p{
  line-height:1.0em;
@@ -100,7 +122,7 @@ lichter {
  width: 200px;
  top: 380px;
  left: 605px;
- z-index: 500;
+ z-index: 60;
 }
 #commentaartekst p{
  line-height: 1.1em;
@@ -114,7 +136,7 @@ lichter {
  width: auto;
  top: 505px;
  left: 620px;
- z-index: 500; 
+ z-index: 60; 
 }
 #commentaarnavigatie a{
  line-height: 1.1em;
@@ -136,7 +158,7 @@ lichter {
  width: auto;
  top: 263px;
  left: 663px;
- z-index: 500;
+ z-index: 60;
 }
 #personaliameer p{
  line-height: 1.1em;
@@ -150,7 +172,7 @@ lichter {
  width: 200px;
  top: 80px;
  left: 605px;
- z-index: 500;
+ z-index: 60;
 }
 #personaliatekst p{
  line-height: 1.1em;
@@ -163,7 +185,7 @@ lichter {
  width: auto;
  top: 160px;
  left: 157px;
- z-index: 500;
+ z-index: 60;
  background-color:#F6F8F5;
  }
 #author p{
@@ -180,21 +202,21 @@ lichter {
  width: auto;
  top: 476px;
  left: 74px;
- z-index: 500;
+ z-index: 60;
 }
 #butwijzigprofiel {
  position: absolute;
  width: auto;
  top: 310px;
  left: 650px;
- z-index: 500;
+ z-index: 60;
 }
 #butkiesroute {
  position: absolute;
  width: auto;
  top: 102px;
  left: 156;
- z-index: 1000;
+ z-index: 70;
 }
 
 

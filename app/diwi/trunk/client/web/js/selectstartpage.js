@@ -43,9 +43,13 @@
 	function toonMijnPagina() {	
 		document.getElementById("mijnpaginacontainer").style.display = "block";
 		document.getElementById("maakroutecontainer").style.display = "none";
+		var button = document.getElementById("3");
+		selectItem(button);
 	}
 	
 	function toonMaakRoutePagina() {
 		document.getElementById("mijnpaginacontainer").style.display = "none";
 		document.getElementById("maakroutecontainer").style.display = "block";
+		var button = document.getElementById("4");
+		selectItem(button);
 	}

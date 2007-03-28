@@ -71,54 +71,36 @@ a:hover {
  position: absolute;
  width: 800px;
  top: 0px;
- left: 0px;
+ left: 556px;
  z-index: 1;
 }
 
 
 
 /************************** Eerste laag, z=100 ************************************************/
-#commentaarbox {
- position: absolute;
- width: auto;
- top: 355px;
- left:560px;
- z-index: 100;
-}
+
 #logo {
  position: absolute;
  width: auto;
  top: 0px;
  left: 0px;
- z-index: 100;
+ z-index: 20;
 }
-#personaliabox {
- position: absolute;
- width: auto;
- top: 80px;
- left: 578px;
- z-index: 100;
-}
+
 #kaart {
  position: absolute;
  width: auto;
  top: 170px;
  left: 18px;
- z-index: 100;
+ z-index: 20;
 }
-#map {
- position: absolute;
- width: auto;
- top: 170px;
- left: 18px;
- z-index: 100;
-}
+
 #copyright{
  position: absolute;
  width: auto;
  top: 570px;
- left: 0px;
- z-index: 100;
+ left: -5px;
+ z-index: 20;
 }
 
 /************************* Tweede laag, z=500 **********************************************/
@@ -126,8 +108,8 @@ a:hover {
  position: absolute;
  width: auto;
  top: 50px;
- left: 155px;
- z-index: 500;
+ left: 150px;
+ z-index: 30;
 }
 
 #butroutes {
@@ -135,28 +117,28 @@ a:hover {
  width: auto;
  top: 0px;
  left: 216px;
- z-index: 500;
+ z-index: 30;
 }
-#butzoek {
+#buthome {
  position: absolute;
  width: auto;
  top: 0px;
  left: 306px;
- z-index: 500;
+ z-index: 30;
 }
 #butmijnpagina {
  position: absolute;
  width: auto;
  top: 0px;
  left: 491px;
- z-index: 500;
+ z-index: 30;
 }
 #butmaakroute {
  position: absolute;
  width: auto;
  top: 0px;
  left: 630px;
- z-index: 500;
+ z-index: 30;
 }
 
 #butuitloggen {
@@ -164,7 +146,7 @@ a:hover {
  width: auto;
  top: 0px;
  left:745px;
- z-index: 500;
+ z-index: 30;
 }
 
 #paginaheader {
@@ -172,7 +154,7 @@ a:hover {
  width: auto;
  top: 67px;
  left: 157px;
- z-index: 500; 
+ z-index: 30; 
 }
 #paginaheader p{
  font-family: Georgia, Times New Roman, Times, serif;
@@ -186,7 +168,7 @@ a:hover {
  width: auto;
  top: 130px;
  left: 157px;
- z-index: 500;
+ z-index: 30;
  background-color:#F6F8F5;
 }
 #routeheader p {

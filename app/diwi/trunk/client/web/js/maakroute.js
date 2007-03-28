@@ -10,103 +10,69 @@
 		document.getElementById("wandelen").checked = false;	
 		document.getElementById("fietsen").checked = true;	
 	}
-	
-	
-/*
-	<div class="listboxes" id="startpunt-lb"> 
-	<p>
-	Startpunt
-	</p>
-	<form>
-	<select id="startpunt" >
-		<option value="0" selected="selected">geen voorkeur</option>
-		<option value="1" >bunkerholen</option>
-		<option value="2" >heeel lang</option>
-		<option value="3" >snert route</option>
-	</select>
-	</form>
-	</div>
-	<div class="listboxes" id="eindpunt-lb"> 
-	<p>
-	Eindpunt
-	</p>
-	<form>
-	<select id="eindpunt" >
-		<option value="0" selected="selected">geen voorkeur</option>
-		<option value="1" >bunkerholen</option>
-		<option value="2" >heeel lang</option>
-		<option value="3" >snert route</option>
-	</select>
-	</form>
-	</div>
-	<div class="listboxes" id="thema-lb"> 
-	<p>
-	Thema
-	</p>
-	<form>
-	<select id="thema" >
-		<option value="0" selected="selected">geen voorkeur</option>
-		<option value="1" >bunkerholen</option>
-		<option value="2" >heeel lang</option>
-		<option value="3" >snert route</option>
-	</select>
-	</form>
-	</div>
-	<div class="listboxes" id="afstand-lb"> 
-	<p>
-	Afstand
-	</p>
-	<form>
-	<select id="afstand">
-		<option value="0" selected="selected">geen voorkeur</option>
-		<option value="3" >3 km</option>
-		<option value="5" >5 km</option>
-		<option value="10" >10 km</option>
-		<option value="15" >15 km</option>
-		<option value="20" >20 km</option>
-	</select>
-	</form>
-	</div>
-*/	
-	
-	var startpuntString = '<p>Startpunt</p><form><select id="startpunt" ><option value="0" selected="selected">';
-	var eindpuntString = '<p>Eindpunt</p><form><select id="eindpunt" ><option value="0" selected="selected">';
-	var themesString = '<p>Thema\'s</p><form><select id="thema" ><option value="0" selected="selected">';
-	var afstandString = '<p>Afstand</p><form><select id="afstand" ><option value="0" selected="selected">geen voorkeur</option><option value="3" >3 km</option><option value="5" >5 km</option><option value="10" >10 km</option><option value="15" >15 km</option><option value="20" >20 km</option></select></form>';
-	
+		
 	function maakStartpuntForm(elm) {
-		startpuntString += 'geen voorkeur</option> <option value="1" >bunkerholen</option><option value="2" >heeel lang</option><option value="3" >snert route';
-		startpuntString += '</option></select></form>';
-	
+		var start_punt_string = '<p>Startpunt</p><form><select id="startpunt" ><option value="0" selected="selected">geen voorkeur</option>';
+
+		var start_punt_list = elm.getElementsByTagName('name');
+		var n_start_punt = start_punt_list.length;
+		var j;
+		for (i = 0; i < n_start_punt; i++){ 
+			j = i+1;
+			start_punt_string += '<option value=' + j + '>';
+			start_punt_string += start_punt_list.item(i).firstChild.nodeValue;
+			start_punt_string += '</option>';
+		}
+		start_punt_string += '</select></form>';
+
 		var ni = document.getElementById('startpunt-lb');
-		ni.innerHTML = startpuntString;
+		ni.innerHTML = start_punt_string;
 	
 	}
 	function maakEindpuntForm(elm) {
-		eindpuntString += 'geen voorkeur</option><option value="1" >bunkerholen</option><option value="2" >heeel lang</option><option value="3" >snert route';
-		eindpuntString += '</option></select></form>';
-	
+		var eind_punt_string = '<p>Eindpunt</p><form><select id="eindpunt" ><option value="0" selected="selected">geen voorkeur</option>';
+
+		var eind_punt_list = elm.getElementsByTagName('name');
+		var n_eind_punt = eind_punt_list.length;
+		var j;
+		for (i = 0; i < n_eind_punt; i++){ 
+			j = i+1;
+			eind_punt_string += '<option value=' + j + '>';
+			eind_punt_string += eind_punt_list.item(i).firstChild.nodeValue;
+			eind_punt_string += '</option>';
+		}
+		eind_punt_string += '</select></form>';
+		
 		var ni = document.getElementById('eindpunt-lb');
-		ni.innerHTML = eindpuntString;
+		ni.innerHTML = eind_punt_string;
 	
 	}
+
+	
 	function maakThemasForm(elm) {
-//		var themes = elm.firstChild;
-		themesString += 'geen voorkeur</option><option value="1" >bunkerholen</option><option value="2" >heeel lang</option><option value="3" >snert route';
-		themesString += '</option></select></form>';
+		var themesString = '<p>Thema\'s</p><form><select id="thema" ><option value="0" selected="selected">geen voorkeur</option>';
+		var themes_list = elm.getElementsByTagName('theme');
+		var n_themes = themes_list.length;
+		var j;
+		for (i = 0; i < n_themes; i++){ 
+			j = i+1;
+			themesString += '<option value=' + j + '>';
+			themesString += themes_list.item(i).firstChild.nodeValue;
+			themesString += '</option>';
+		}
+		themesString += '</select></form>';
 	
 		var ni = document.getElementById('thema-lb');
 		ni.innerHTML = themesString;
 	}	
+	
 	function maakAfstandForm() {
-
+		var afstandString = '<p>Afstand</p><form><select id="afstand" ><option value="0" selected="selected">geen voorkeur</option><option value="3" >3 km</option><option value="5" >5 km</option><option value="10" >10 km</option><option value="15" >15 km</option><option value="20" >20 km</option></select></form>';
+		
 		var ni = document.getElementById('afstand-lb');
 		ni.innerHTML = afstandString;
 	}
-	// Deze moeten weg...
-	maakStartpuntForm();
-	maakEindpuntForm(0);
-	maakThemasForm(0);
+
 	maakAfstandForm(0);
 
 
@@ -131,7 +97,9 @@
 	}
 	
 	function verwerkPlaatje (elm) {
-		imageString = '<a onClick="TST.getBigMap();" ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
+	//	plaatje = unescape(elm.getAttribute('url'));
+	//	imageString = '<a href=' + plaatje + ' rel="lightbox"><img src=' + plaatje + '></a>';
+		imageString = '<a href=\'TST.getBigMap();\' ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
 	//	imageString = '<img src=\"' + unescape(elm.getAttribute('url')) + '\">';
 	
 		var ni = document.getElementById('generated-routes-image');
@@ -139,7 +107,6 @@
 	}	
 	function verwerkBigPlaatje (elm) {
 		imageString = '<a onClick=";" ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
-	//	imageString = '<img src=\"' + unescape(elm.getAttribute('url')) + '\">';
 	
 		var ni = document.getElementById('generated-routes-image-big');
 		ni.innerHTML = imageString;	
