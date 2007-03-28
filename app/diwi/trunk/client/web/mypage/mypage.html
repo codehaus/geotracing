@@ -7,11 +7,13 @@
   <link rel="stylesheet" type="text/css" href="../css/maakroute.css">
   <link rel="stylesheet" type="text/css" href="../css/mijnpagina.css">
   <link rel="stylesheet" type="text/css" href="../css/winclassic.css">
+  <link rel="stylesheet" type="text/css" href="../css/lightbox.css">
 
 </head>
 	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="../js/KWClientDiWi.js"></script>
+	<script type="text/javascript" src="../js/KWClientCMS.js"></script>
 	<script type="text/javascript" src="../js/selectstartpage.js"></script>
 	<script type="text/javascript" src="../lib/openlayers/lib/OpenLayers.js"></script>
 		<!--- slider js --->
@@ -39,8 +41,8 @@
 				document.getElementsByTagName("name")[0].innerHTML=KW.agentKey;
 				TST.pr('restored session, key=' + KW.agentKey);
 				
-				//TST.getStartPoints();
-				//TST.getEndPoints();
+				TST.getStartPoints();
+				TST.getEndPoints();
 				TST.getThemes();
 
 				TST.testUtopia();
@@ -90,15 +92,15 @@
 				KW.DIWI.getmap(TST.onMapRsp, id, width, height);
 			},
 			getStartPoints: function() {
-				KW.DIWI.getstartpoints(TST.onRsp);							
+				KW.CMS.getstartpoints(TST.onRsp);							
 			},
 
 			getEndPoints: function() {
-				KW.DIWI.getendpoints(TST.onRsp);							
+				KW.CMS.getendpoints(TST.onRsp);							
 			},
 
 			getThemes: function() {
-				KW.DIWI.getthemes(TST.onRsp);							
+				KW.CMS.getthemes(TST.onRsp);							
 			},
 			getActiveRoute: function() {
 				KW.DIWI.getactiveroute(TST.inRsp);
@@ -115,6 +117,7 @@
 					return;
 				}
 				verwerkPlaatje(elm);
+				document.getElementById("maakroutebox").style.display='block';
 			},
 
 			onRsp: function(elm) {
@@ -130,7 +133,7 @@
 					maakStartpuntForm(elm);
 				} else if (elm.tagName == 'poi-get-endpoints-rsp') {
 					maakEindpuntForm(elm);
-				} else if (elm.tagName == 'poi-get-themes-rsp') {
+				} else if (elm.tagName == 'kich-get-themes-rsp') {
 					maakThemasForm(elm);
 				}  else if (elm.tagName == 'poi-get-fixedroutes-rsp') {
 					maakThemasForm(elm);
@@ -173,10 +176,10 @@
 	var currentSelection = 1;
 	var toolbarData = new Array();
 	toolbarData[1] = new Array('buttons/routes.jpg', 'buttons/routes.jpg', 'buttons/routes.jpg');
-	toolbarData[2] = new Array('buttons/zoek.jpg', 'buttons/zoek.jpg', 'buttons/zoek.jpg');
-	toolbarData[3] = new Array('buttons/mijnpagina.jpg', 'buttons/mijnpagina.jpg', 'buttons/mijnpagina.jpg');
-	toolbarData[4] = new Array('buttons/maakroute.jpg', 'buttons/maakroute.jpg', 'buttons/maakroute.jpg');
-	toolbarData[5] = new Array('buttons/uitloggen.jpg', 'buttons/uitloggen.jpg', 'buttons/uitloggen.jpg');
+	toolbarData[2] = new Array('buttons/home.jpg', 'buttons/homeH.jpg', 'buttons/homeH.jpg');
+	toolbarData[3] = new Array('buttons/mijnpagina.jpg', 'buttons/mijnpaginaH.jpg', 'buttons/mijnpaginaH.jpg');
+	toolbarData[4] = new Array('buttons/maakroute.jpg', 'buttons/maakrouteH.jpg', 'buttons/maakrouteH.jpg');
+	toolbarData[5] = new Array('buttons/uitloggen.jpg', 'buttons/uitloggenH.jpg', 'buttons/uitloggenH.jpg');
 	
 	var buttons=5;
 	
@@ -247,25 +250,27 @@
 
 <body  bgcolor="#F6F8F5" >
 
-<!--
-<div id="back">  <img src="images/back.jpg" border="0"> </div>
--->
+<script type="text/javascript" src="../js/lightbox.js"></script>
+<script type="text/javascript">
+	initLightbox();
+</script>
+
+
+<div id="back">  <img src="../images/back.gif" border="0"> </div>
+
 
 <div id="logo"> <img src="images/logot.jpg" border="0"> </div>
 <div id="line"><img src="images/line.jpg" border="0"></div>
 <div id="copyright"><img src="images/copyright.jpg" border="0"></div>
-<div id="personaliabox"><img src="../home/images/videobox.gif" border="0"></div>
-<!--<div id="personaliabox"><img src="images/personalia.jpg" border="0"></div>-->
-<div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
 
 <div id="butroutes"> 
 	<a><img id="1" src="buttons/routes.jpg"onMouseOver="highlightItem(this, 1)" 
 		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);" border="0"></a> 
 </div>
-<div id="butzoek"> 
-	<a><img id="2" src="buttons/zoek.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="location.href='../index.html?logged=true';" border="0"></a> 
-</div>
+<div id="buthome"> 
+	<a><img id="2" src="buttons/home.jpg"onMouseOver="highlightItem(this, 1)" 
+		onMouseOut="highlightItem(this, 0)" onClick="location.href='../index.html?logged=true';" border="0"></a></div>
+
 <div id="butmijnpagina"> 
 	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)" 
 		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);toonMijnPagina();" border="0"></a> 
@@ -282,7 +287,11 @@
 <!-- Alles wat op mijnpagina getoond moet worden. ---------------------------------------------------->
 <div id="mijnpaginacontainer" style="display:block;">
 <!--	<div id="kaart"><img src="images/kaart.jpg" border="0"></div> -->
-		<div id="map"> </div>
+	<div id="personaliabox"><img src="../home/images/videobox.gif" border="0"></div>
+	<div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
+
+	<div id="map">
+	</div>
 
 
 	<script type="text/javascript">
@@ -328,10 +337,12 @@
 	</script>
 	
 	<div id="butspeelaf"> 
-		<a><img id="6" src="buttons/speelaf.jpg" border="0"></a>		</div>
+		<a><img id="6" src="buttons/speelaf.jpg" border="0"></a>		
+	</div>
 	
 	<div id="butwijzigprofiel"> 
-		<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a>		</div>
+		<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a>		
+	</div>
 	
 	
 	<div id="butkiesroute"> 
@@ -415,6 +426,7 @@
 
 <!-- Alles wat op maakroutepagina getoond moet worden. ----------------------------------------------------->
 <div id="maakroutecontainer" style="display:none;">
+
 	<div id="paginaheader">
 		<p>
 			Route samenstellen<br>
@@ -538,16 +550,19 @@
 	</div>
 	
 	<div id="butmaakeigenroute">
-		<a><img  src="buttons/maakroute.jpg"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a> 
+		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a> 
 	</div>
-	
-	<div id="generated-routes">
+	<div id="maakroutebox" style="display:none"><img src="buttons/maakroute_blokken.gif" border="0"></div>
+
+	<div id="generated-routes" class="genroutetekst">
 	</div>
 	
 	<div id="generated-routes-image">
+<!--	<a href="../home/images/fotovideobox.gif" rel="lightbox"><img src="../home/images/fotovideobox.gif" border="0"></a> -->
 	</div>	
 	
-	<div id="generated-routes-image-big">	</div>	
+	<div id="generated-routes-image-big">	
+	</div>	
 </div>
 
 <!-- slcr.js maakt de sliders... -->	

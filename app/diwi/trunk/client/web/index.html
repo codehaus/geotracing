@@ -4,6 +4,7 @@
 <title>De Digitale Wichelroede</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
   <link rel="stylesheet" type="text/css" href="css/home.css">
+  <link rel="stylesheet" type="text/css" href="css/lightbox.css">
 
 </head>
 	<script type="text/javascript" src="lib/gt/DHTML.js"></script>
@@ -220,12 +221,14 @@ function restoreLoggedIn() {
 	}
 }
 
+//	DH.addEvent(window, 'load', initLightbox(), false);
 
 </script>
 
 <body  background="home/images/back.gif">
 
-<!--
+<script type="text/javascript" src="js/lightbox.js"></script>
+	<!--
 <div id="back">  <img src="home/images/backS.jpg" border="0"> </div>
 -->
 <div id="top"> <img src="home/images/top2.jpg" border="0"> </div>
@@ -268,12 +271,11 @@ function restoreLoggedIn() {
 
 
 	<div id="videobox"> <img src="home/images/videobox.gif" border="0"> </div>
-	<div id="fotovideobox"> <img src="home/images/fotovideobox.gif" border="0"> </div>
+	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" border="0"></a> </div>
 	<div id="spotmetbox"> <img src="home/images/spotmetbox.gif" border="0"> </div>
 
 	<div id="butintrovideo">
-		<a><img id="8" src="home/buttons/introvideo.gif"onMouseOver=""
-		onMouseOut="" onClick="" border="0"></a>
+		<a><img id="8" src="home/buttons/introvideo.gif"onMouseOver="" onMouseOut="" onClick=""  border="0"></a>
 	</div>
 	<div id="watistext">
 	
