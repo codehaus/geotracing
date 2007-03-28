@@ -11,5 +11,12 @@ GMAP.addKey('samoa',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xS-vCblWLXmudcU-JW5OkSvDJzjCRTAUvj-e2mXTEURjJ08LkmbQmbLUQ',
 		'^https?://www.senseofthecity.nl/.*' );
 
+GMAP.addKey('localhost',
+		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xT2yXp_ZAY8_ufC3CFXhHIE1NvwkxQmXwokFbwCU6m1yIXPVkTAcikiIA',
+		'^https?://localhost/.*' );
+
+GMAP.addKey('localhost8080',
+		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xTwM0brOpm-All5BF6PoaKBxRWWERRoOsVQVA34Dw_ROVWVdbWHUb4KkA',
+		'^https?://localhost:8080/.*' );
 
 GMAP.loadGoogleMapScript('2.66');
