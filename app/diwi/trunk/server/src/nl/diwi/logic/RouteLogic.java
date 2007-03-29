@@ -9,22 +9,18 @@ import org.keyworx.utopia.core.util.XML;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.postgis.PGgeometry;
 import org.postgis.PGgeometryLW;
 import org.postgis.PGbox2d;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.Vector;
 
 import nl.diwi.external.RouteGenerator;
-import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.diwi.util.PostGISUtil;
 import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXBuilder;
 
 /**
   * Handles all logic related to commenting.
@@ -198,6 +194,7 @@ public class RouteLogic implements Constants {
                 ds.syncFixedRoutes();
                 routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
             }
+            
             results = new Vector(routes.length);
             for(int i=0;i<routes.length;i++){
                 results.add(getRoute(routes[i]));

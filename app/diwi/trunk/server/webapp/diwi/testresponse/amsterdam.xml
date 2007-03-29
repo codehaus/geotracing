@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/1 http://www.topografix.com/GPX/Private/TopoGrafix/0/1/topografix.xsd"
+     creator="Quikmaps: http://www.quikmaps.com/gpx/25485" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
+    <name>
+        <![CDATA[amsterdam]]>
+    </name>
+    <desc>
+        <![CDATA[prachtige route in de buurt van de PdZ]]>
+    </desc>
+    <wpt x="123373.75" y="487731.42">
+        <name>13_13</name>
+    </wpt>
+     <wpt x="123312.48" y="487747.85">
+        <name>14_14</name>
+    </wpt>
+    <wpt x="123339.34" y="487835.12">
+        <name>15_15</name>
+    </wpt>
+    <wpt x="123369.16" y="487928.21">
+        <name>16_16</name>
+    </wpt>
+    <wpt x="123447" y="487990.38">
+        <name>17_17</name>
+    </wpt>
+    <wpt x="123399.08" y="488035.87">
+        <name>18_18</name>
+    </wpt>
+    <wpt x="123350.75" y="488018.69">
+        <name>19_19</name>
+    </wpt>    
+</gpx>

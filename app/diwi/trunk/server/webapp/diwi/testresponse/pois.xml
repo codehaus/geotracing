@@ -1,50 +1,269 @@
 <pois>
     <poi>
-        <id>1</id>
+        <id>1_1</id>
         <name>poi 1</name>
-        <description>hele mooie poi</description>
-        <category>forten</category>
-        <x>52</x>
-        <y>24</y>
+        <description>beschrijving poi 1</description>
+        <category>italiaans</category>
+        <type>startpoint</type>
+        <x>166463</x>
+        <y>470532.17</y>
         <media>
-            <kich-uri>http://www.kich.nl?id=22</kich-uri>
-            <kich-uri>http://www.kich.nl?id=23</kich-uri>
+            <medium name="1.jpg"/>
+            <medium name="1.mp3"/>
+            <kich-uri>http://www.kich.nl?id=photo1</kich-uri>
+            <kich-uri>http://www.kich.nl?id=audio1</kich-uri>
         </media>
     </poi>
     <poi>
-        <id>2</id>
+        <id>2_2</id>
         <name>poi 2</name>
-        <description>hele mooie poi</description>
-        <category>forten</category>
-        <x>52</x>
-        <y>24</y>
+        <description>beschrijving poi 2</description>
+        <category>italiaans</category>
+        <type></type>
+        <x>162901.21</x>
+        <y>467997.33</y>
         <media>
-            <kich-uri>http://www.kich.nl?id=24</kich-uri>
-            <kich-uri>http://www.kich.nl?id=25</kich-uri>
+            <medium name="2.jpg"/>
+            <medium name="3.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo2</kich-uri>
+            <kich-uri>http://www.kich.nl?id=photo3</kich-uri>
         </media>
     </poi>
     <poi>
-        <id>3</id>
+        <id>3_3</id>
         <name>poi 3</name>
-        <description>hele mooie poi</description>
-        <category>forten</category>
-        <x>52</x>
-        <y>24</y>
+        <description>beschrijving poi 3</description>
+        <category>italiaans</category>
+        <type></type>
+        <x>163282.86</x>
+        <y>464344.32</y>
         <media>
-            <kich-uri>http://www.kich.nl?id=26</kich-uri>
-            <kich-uri>http://www.kich.nl?id=27</kich-uri>
+            <medium name="4.jpg"/>
+            <medium name="1.3gp"/>
+            <kich-uri>http://www.kich.nl?id=photo4</kich-uri>
+            <kich-uri>http://www.kich.nl?id=mov1</kich-uri>
         </media>
     </poi>
     <poi>
-        <id>4</id>
+        <id>4_4</id>
         <name>poi 4</name>
-        <description>hele mooie poi</description>
-        <category>forten</category>
-        <x>52</x>
-        <y>24</y>
+        <description>beschrijving poi 4</description>
+        <category>italiaans</category>
+        <type></type>
+        <x>167137.29</x>
+        <y>463414.99</y>
         <media>
-            <kich-uri>http://www.kich.nl?id=28</kich-uri>
-            <kich-uri>http://www.kich.nl?id=29</kich-uri>
+            <medium name="5.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo5</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>5_5</id>
+        <name>poi 5</name>
+        <description>beschrijving poi 5</description>
+        <category>italiaans</category>
+        <type></type>
+        <x>171077.74</x>
+        <y>465394.26</y>
+        <media>
+            <medium name="6.jpg"/>
+            <medium name="2.mp3"/>
+            <kich-uri>http://www.kich.nl?id=photo6</kich-uri>
+            <kich-uri>http://www.kich.nl?id=audio2</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>6_6</id>
+        <name>poi 6</name>
+        <description>beschrijving poi 6</description>
+        <category>italiaans</category>
+        <type>endpoint</type>
+        <x>169655.69</x>
+        <y>469791.72</y>
+        <media>
+            <medium name="7.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo7</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>7_7</id>
+        <name>poi 7</name>
+        <description>beschrijving poi 7</description>
+        <category>forten</category>
+        <type>startpoint</type>
+        <x>166417.39</x>
+        <y>449521.2</y>
+        <media>
+            <medium name="8.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo8</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>8_8</id>
+        <name>poi 8</name>
+        <description>beschrijving poi 8</description>
+        <category>forten</category>
+        <type></type>
+        <x>163124.07</x>
+        <y>446505.97</y>
+        <media>
+            <medium name="9.jpg"/>
+            <medium name="2.3gp"/>
+            <kich-uri>http://www.kich.nl?id=photo9</kich-uri>
+            <kich-uri>http://www.kich.nl?id=mov2</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>9_9</id>
+        <name>poi 9</name>
+        <description>beschrijving poi 9</description>
+        <category>forten</category>
+        <type></type>
+        <x>163980.32</x>
+        <y>442273.3</y>
+        <media>
+            <medium name="10.jpg"/>
+            <medium name="11.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo10</kich-uri>
+            <kich-uri>http://www.kich.nl?id=photo11</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>10_10</id>
+        <name>poi 10</name>
+        <description>beschrijving poi 10</description>
+        <category>forten</category>
+        <type></type>
+        <x>167476.8</x>
+        <y>440397.84</y>
+        <media>
+            <medium name="12.jpg"/>
+            <medium name="3.mp3"/>
+            <kich-uri>http://www.kich.nl?id=photo12</kich-uri>
+            <kich-uri>http://www.kich.nl?id=audio3</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>11_11</id>
+        <name>poi 11</name>
+        <description>beschrijving poi 11</description>
+        <category>forten</category>
+        <type></type>
+        <x>170207.73</x>
+        <y>442664.92</y>
+        <media>
+            <medium name="13.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo13</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>12_12</id>
+        <name>poi 12</name>
+        <description>beschrijving poi 12</description>
+        <category>forten</category>
+        <type>endpoint</type>
+        <x>169816.28</x>
+        <y>447367.78</y>
+        <media>
+            <medium name="14.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo14</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>13_13</id>
+        <name>poi 13</name>
+        <description>beschrijving poi 13</description>
+        <category>creatief</category>
+        <type>startpoint</type>
+        <x>123373.75</x>
+        <y>487731.42</y>
+        <media>
+            <medium name="15.jpg"/>
+            <medium name="4.mp3"/>
+            <kich-uri>http://www.kich.nl?id=photo15</kich-uri>
+            <kich-uri>http://www.kich.nl?id=audio4</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>14_14</id>
+        <name>poi 14</name>
+        <description>beschrijving poi 14</description>
+        <category>creatief</category>
+        <type></type>
+        <x>123312.48</x>
+        <y>487747.85</y>
+        <media>
+            <medium name="16.jpg"/>
+            <medium name="3.3gp"/>
+            <kich-uri>http://www.kich.nl?id=photo16</kich-uri>
+            <kich-uri>http://www.kich.nl?id=mov3</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>15_15</id>
+        <name>poi 15</name>
+        <description>beschrijving poi 15</description>
+        <category>creatief</category>
+        <type></type>
+        <x>123339.34</x>
+        <y>487835.12</y>
+        <media>
+            <medium name="17.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo17</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>16_16</id>
+        <name>poi 16</name>
+        <description>beschrijving poi 16</description>
+        <category>creatief</category>
+        <type></type>
+        <x>123369.16</x>
+        <y>487928.21</y>
+        <media>
+            <medium name="18.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo18</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>17_17</id>
+        <name>poi 17</name>
+        <description>beschrijving poi 17</description>
+        <category>creatief</category>
+        <type></type>
+        <x>123447</x>
+        <y>487990.38</y>
+        <media>
+            <medium name="19.jpg"/>
+            <medium name="20.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo19</kich-uri>
+            <kich-uri>http://www.kich.nl?id=photo20</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>18_18</id>
+        <name>poi 18</name>
+        <description>beschrijving poi 18</description>
+        <category>creatief</category>
+        <type></type>
+        <x>123399.08</x>
+        <y>488035.87</y>
+        <media>
+            <medium name="21.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo21</kich-uri>
+        </media>
+    </poi>
+    <poi>
+        <id>19_19</id>
+        <name>poi 19</name>
+        <description>beschrijving poi 19</description>
+        <category>creatief</category>
+        <type>endpoint</type>
+        <x>123350.75</x>
+        <y>488018.69</y>
+        <media>
+            <medium name="22.jpg"/>
+            <kich-uri>http://www.kich.nl?id=photo22</kich-uri>
         </media>
     </poi>
 </pois>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/1 http://www.topografix.com/GPX/Private/TopoGrafix/0/1/topografix.xsd"
+     creator="Quikmaps: http://www.quikmaps.com/gpx/25485" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
+    <name>
+        <![CDATA[grebbelinie]]>
+    </name>
+    <desc>
+        <![CDATA[prachtige route in de buurt van de grebbelinie]]>
+    </desc>
+    <wpt x="166417.39" y="449521.2">
+        <name>7_7</name>
+    </wpt>
+     <wpt x="163124.07" y="446505.97">
+        <name>8_8</name>
+    </wpt>
+    <wpt x="163980.32" y="442273.3">
+        <name>9_9</name>
+    </wpt>
+    <wpt x="167476.8" y="440397.84">
+        <name>10_10</name>
+    </wpt>
+    <wpt x="170207.73" y="442664.92">
+        <name>11_11</name>
+    </wpt>
+    <wpt x="169816.28" y="447367.78">
+        <name>12_12</name>
+    </wpt>
+</gpx>

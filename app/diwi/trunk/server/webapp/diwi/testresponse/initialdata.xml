@@ -1,0 +1,221 @@
+<data>
+    <route name="nijevelt">
+        <poi>
+            <name>poi 1</name>
+            <description>beschrijving poi 1</description>
+            <category>italiaans</category>
+            <type>startpoint</type>
+            <x>166463</x>
+            <y>470532.17</y>
+            <property name="" value="" />
+            <media>
+                <medium name="1.jpg" />
+                <medium name="1.mp3" />
+                <kich-uri>http://www.kich.nl?id=1</kich-uri>
+                <kich-uri>http://www.kich.nl?id=2</kich-uri>
+            </media>
+        </poi>
+        <poi>
+            <name>poi 2</name>
+            <description>beschrijving poi 2</description>
+            <category>italiaans</category>
+            <type></type>
+            <x>162901.21</x>
+            <y>467997.33</y>
+            <property name="" value="" />
+            <media>
+                <medium name="2.jpg" />
+                <medium name="3.jpg" />
+                <kich-uri>http://www.kich.nl?id=1</kich-uri>
+                <kich-uri>http://www.kich.nl?id=2</kich-uri>
+            </media>
+        </poi>
+        <poi>
+            <name>poi 3</name>
+            <description>beschrijving poi 3</description>
+            <category>italiaans</category>
+            <type></type>
+            <x>163282.86</x>
+            <y>464344.32</y>
+            <property name="" value="" />
+            <medium name="4.jpg" />
+            <medium name="1.3gp" />
+        </poi>
+        <poi>
+            <name>poi 4</name>
+            <description>beschrijving poi 4</description>
+            <category>italiaans</category>
+            <type></type>
+            <x>167137.29</x>
+            <y>463414.99</y>
+            <property name="" value="" />
+            <medium name="5.jpg" />
+        </poi>
+        <poi>
+            <name>poi 5</name>
+            <description>beschrijving poi 5</description>
+            <category>italiaans</category>
+            <type></type>
+            <x>171077.74</x>
+            <y>465394.26</y>
+            <property name="" value="" />
+            <medium name="6.jpg" />
+            <medium name="2.mp3" />
+        </poi>
+        <poi>
+            <name>poi 6</name>
+            <description>beschrijving poi 6</description>
+            <category>italiaans</category>
+            <type>endpoint</type>
+            <x>169655.69</x>
+            <y>469791.72</y>
+            <property name="" value="" />
+            <medium name="7.jpg" />
+        </poi>
+    </route>
+    <route name="grebbelinie">
+        <poi>
+            <name>poi 7</name>
+            <description>beschrijving poi 7</description>
+            <category>forten</category>
+            <type>startpoint</type>
+            <x>166417.39</x>
+            <y>449521.2</y>
+            <property name="" value="" />
+            <medium name="8.jpg" />
+        </poi>
+        <poi>
+            <name>poi 8</name>
+            <description>beschrijving poi 8</description>
+            <category>forten</category>
+            <type></type>
+            <x>163124.07</x>
+            <y>446505.97</y>
+            <property name="" value="" />
+            <medium name="9.jpg" />
+            <medium name="1.3gp" />
+        </poi>
+        <poi>
+            <name>poi 9</name>
+            <description>beschrijving poi 9</description>
+            <category>forten</category>
+            <type></type>
+            <x>163980.32</x>
+            <y>442273.3</y>
+            <property name="" value="" />
+            <medium name="10.jpg" />
+            <medium name="11.jpg" />
+        </poi>
+        <poi>
+            <name>poi 10</name>
+            <description>beschrijving poi 10</description>
+            <category>forten</category>
+            <type></type>
+            <x>167476.8</x>
+            <y>440397.84</y>
+            <property name="" value="" />
+            <medium name="12.jpg" />
+            <medium name="3.mp3" />
+        </poi>
+        <poi>
+            <name>poi 11</name>
+            <description>beschrijving poi 11</description>
+            <category>forten</category>
+            <type></type>
+            <x>170207.73</x>
+            <y>442664.92</y>
+            <property name="" value="" />
+            <medium name="13.jpg" />
+        </poi>
+        <poi>
+            <name>poi 12</name>
+            <description>beschrijving poi 12</description>
+            <category>forten</category>
+            <type>endpoint</type>
+            <x>169816.28</x>
+            <y>447367.78</y>
+            <property name="" value="" />
+            <medium name="14.jpg" />
+        </poi>
+    </route>
+    <route name="amsterdam">
+        <poi>
+            <name>poi 13</name>
+            <description>beschrijving poi 13</description>
+            <category>creatief</category>
+            <type>startpoint</type>
+            <x>123373.75</x>
+            <y>487731.42</y>
+            <property name="" value="" />
+            <medium name="15.jpg" />
+            <medium name="4.mp3" />
+        </poi>
+        <poi>
+            <name>poi 14</name>
+            <description>beschrijving poi 14</description>
+            <category>creatief</category>
+            <type></type>
+            <x>123312.48</x>
+            <y>487747.85</y>
+            <property name="" value="" />
+            <medium name="16.jpg" />
+            <medium name="3.3gp" />
+        </poi>
+        <poi>
+            <name>poi 15</name>
+            <description>beschrijving poi 15</description>
+            <category>creatief</category>
+            <type></type>
+            <x>123339.34</x>
+            <y>487835.12</y>
+            <property name="" value="" />
+            <medium name="17.jpg" />
+        </poi>
+        <poi>
+            <name>poi 16</name>
+            <description>beschrijving poi 16</description>
+            <category>creatief</category>
+            <type></type>
+            <x>123369.16</x>
+            <y>487928.21</y>
+            <property name="" value="" />
+            <medium name="18.jpg" />
+        </poi>
+        <poi>
+            <name>poi 17</name>
+            <description>beschrijving poi 17</description>
+            <category>creatief</category>
+            <type></type>
+            <x>123447</x>
+            <y>487990.38</y>
+            <property name="" value="" />
+            <medium name="19.jpg" />
+            <medium name="20.jpg" />
+        </poi>
+        <poi>
+            <name>poi 18</name>
+            <description>beschrijving poi 18</description>
+            <category>creatief</category>
+            <type></type>
+            <x>123399.08</x>
+            <y>488035.87</y>
+            <property name="" value="" />
+            <medium name="21.jpg" />
+        </poi>
+        <poi>
+            <name>poi 19</name>
+            <description>beschrijving poi 19</description>
+            <category>creatief</category>
+            <type>endpoint</type>
+            <x>123350.75</x>
+            <y>488018.69</y>
+            <property name="" value="" />
+            <medium name="22.jpg" />
+        </poi>
+    </route>
+
+
+
+
+
+</data>
