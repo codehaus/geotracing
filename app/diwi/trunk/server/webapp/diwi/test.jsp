@@ -4,7 +4,9 @@
 		{"test", "testresponse/route1.xml"},
 		{"test2", "testresponse/route2.xml"},	
 		{".*heide.*", "testresponse/generateroute1.xml"},		
-		{".*bos.*", "testresponse/generateroute2.xml"}		
+		{".*bos.*", "testresponse/generateroute2.xml"},
+		{"sync", "testresponse/pois.xml"}	
+			
 	};
 
 
