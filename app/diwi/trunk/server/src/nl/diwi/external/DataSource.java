@@ -18,6 +18,7 @@ import org.keyworx.utopia.core.util.Oase;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
@@ -61,7 +62,8 @@ public class DataSource implements Constants {
 
 	// This request is required to get all points of interest for 'struinen'
 	public void syncPOIs() throws UtopiaException {
-        try{
+		log.info("Sync Pois requested");
+		try{
             POILogic logic = new POILogic(oase);
             String kichRESTUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);
 
@@ -86,9 +88,12 @@ public class DataSource implements Constants {
             if (poisElm == null) throw new UtopiaException("No results from the KICH DB");*/
             // TODO: only done for test purposes
 
-            String url = Amuse.server.getPortal().getProperty(GENERATOR_URL) +  "/../testresponse/pois.xml";
+            
+            URL url = new URL(Amuse.server.getPortal().getProperty(GENERATOR_URL) +  "?sync");
+            log.info("url " + url);
             JXElement poisElm = new JXBuilder().build(url);
             if(poisElm!=null){
+                log.info("poisElm " + new String(poisElm.toBytes(false), "UTF-8"));
                 Vector poiElms = poisElm.getChildrenByTag(POI_ELM);
                 for (int i = 0; i < poiElms.size(); i++) {
                     JXElement poiElm = (JXElement) poiElms.elementAt(i);
@@ -101,6 +106,7 @@ public class DataSource implements Constants {
                 }
             }
         }catch(Throwable t){
+        	log.error("Could not sync", t);
             throw new UtopiaException(t);
         }
     }
