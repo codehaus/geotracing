@@ -1,7 +1,7 @@
 package nl.diwi.logic;
 
-import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
+import nl.diwi.external.DataSource;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
