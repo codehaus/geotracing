@@ -60,6 +60,8 @@ public interface Constants {
     public final static String GENERATOR_URL = "routegeneratorurl";
 	public final static String KICH_POST_URL = "kichposturl";
 	public final static String KICH_REST_URL = "kichresturl";
+	public final static String ROUTING_SERVLET_URL = "routingservleturl";
+	public final static String TEST_DATA_URL = "testdataurl";
 
     //actions
     public final static String POI_INSERT_ACTION = "insert";

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<gpx xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd http://www.topografix.com/GPX/Private/TopoGrafix/0/1 http://www.topografix.com/GPX/Private/TopoGrafix/0/1/topografix.xsd"
+     creator="Quikmaps: http://www.quikmaps.com/gpx/25485" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
+    <name>
+        <![CDATA[nijevelt]]>
+    </name>
+    <desc>
+        <![CDATA[prachtige route in de buurt van nijevelt]]>
+    </desc>
+    <wpt x="166463" y="470532.17">
+        <name>1_1</name>
+    </wpt>
+     <wpt x="162901.21" y="467997.33">
+        <name>2_2</name>
+    </wpt>
+    <wpt x="163282.86" y="464344.32">
+        <name>3_3</name>
+    </wpt>
+    <wpt x="167137.29" y="463414.99">
+        <name>4_4</name>
+    </wpt>
+    <wpt x="171077.74" y="465394.26">
+        <name>5_5</name>
+    </wpt>
+    <wpt x="169655.69" y="469791.72">
+        <name>6_6</name>        
+    </wpt>    
+</gpx>
