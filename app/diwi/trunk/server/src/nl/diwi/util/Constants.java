@@ -48,8 +48,9 @@ public interface Constants {
     public final static String URL_FIELD = "url";
     
     // poi types
-    public final static int POI_STARTPOINT = 1;
-    public final static int POI_ENDPOINT = 2;
+    public final static int POI_BASICPOINT = 1;
+    public final static int POI_STARTPOINT = 2;
+    public final static int POI_ENDPOINT = 3;
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;        
@@ -62,6 +63,7 @@ public interface Constants {
 	public final static String KICH_REST_URL = "kichresturl";
 	public final static String ROUTING_SERVLET_URL = "routingservleturl";
 	public final static String TEST_DATA_URL = "testdataurl";
+	public final static String MEDIA_URL = "mediaurl";
 
     //actions
     public final static String POI_INSERT_ACTION = "insert";
