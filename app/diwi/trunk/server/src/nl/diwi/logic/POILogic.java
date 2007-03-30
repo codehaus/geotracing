@@ -1,22 +1,25 @@
 package nl.diwi.logic;
 
 import nl.diwi.util.Constants;
-import nl.diwi.external.DataSource;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.util.Java;
+import org.keyworx.amuse.core.Amuse;
 import org.postgis.Point;
 import org.postgis.PGgeometryLW;
 import org.geotracing.gis.PostGISUtil;
 
 import java.util.Properties;
 import java.util.Vector;
+import java.util.HashMap;
+import java.io.File;
 
 public class POILogic implements Constants {
 	private static final Properties properties = new Properties();
@@ -76,16 +79,59 @@ public class POILogic implements Constants {
 			poi.setStringField(KICHID_FIELD, aPOIElement.getChildText(ID_FIELD));
 			setFields(poi, null, aPOIElement);
 			oase.getModifier().insert(poi);
+            
+            processTestMedia(aPOIElement, poi);
 
-			return poi.getId();
-		} catch (OaseException oe) {
+            return  poi.getId();
+        } catch (OaseException oe) {
 			throw new UtopiaException("Cannot insert poi record", oe, ErrorCode.__6006_database_irregularity_error);
 		} catch (Throwable t) {
 			throw new UtopiaException("Exception in POILogic.insert() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
 		}
 	}
 
-	/**
+    private void processTestMedia(JXElement aPOIElement, Record aPOI)throws UtopiaException{
+        try{
+            String mediaUrl = Amuse.server.getPortal().getProperty(MEDIA_URL);
+            // now check if there's is media present so we can add these
+            JXElement media = aPOIElement.getChildByTag("media");
+            if(media!=null){
+                Vector uris = media.getChildrenByTag(KICH_URI_ELM);
+                for(int i=0;i<uris.size();i++){
+                    JXElement uri = (JXElement)uris.elementAt(i);
+                    String mediumFileName = uri.getAttr("medium");
+                    if(mediumFileName!=null && mediumFileName.length()>0){
+                        //File f = new File(TEST_DATA_URL + "/" + mediumFileName);
+                        File f = new File("/var/keyworx/webapps/local.diwi.nl/diwi/testresponse/" + mediumFileName);
+                        if(f.exists()){
+                            log.info("create the medium!!:" + mediumFileName);
+                            HashMap attrs = new HashMap(3);
+                            attrs.put(MediaFiler.FIELD_FILENAME, mediumFileName);
+                            if(mediumFileName.indexOf("3gp")!=-1){
+                                attrs.put(MediaFiler.FIELD_MIME, "video/3gpp");
+                            }
+                            Record medium = oase.getMediaFiler().insert(f, attrs);
+                            oase.getRelater().relate(aPOI, medium);
+
+                            uri.setText(mediaUrl + medium.getId());
+                            uri.removeAttr("medium");
+                        }else{
+                            log.info("could not find the file!!!:" + mediumFileName);
+                        }
+                    }
+                }
+                // update the poi
+                aPOI.setXMLField(MEDIA_FIELD, media);
+                oase.getModifier().update(aPOI);
+            }
+        }catch(Throwable t){
+            log.error("Exception in processTestMedia:" + t.toString());
+            throw new UtopiaException("Exception in processTestMedia:" + t.toString(), t);
+
+        }
+    }
+
+    /**
 	 * Updates a poi.
 	 * <p/>
 	 * <poi>
