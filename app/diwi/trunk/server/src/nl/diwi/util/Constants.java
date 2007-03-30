@@ -63,6 +63,7 @@ public interface Constants {
 	public final static String KICH_REST_URL = "kichresturl";
 	public final static String ROUTING_SERVLET_URL = "routingservleturl";
 	public final static String TEST_DATA_URL = "testdataurl";
+	public final static String TEST_DATA_LOCATION = "testdatalocation";
 	public final static String MEDIA_URL = "mediaurl";
 
     //actions

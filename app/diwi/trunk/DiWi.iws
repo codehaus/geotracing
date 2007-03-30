@@ -17,19 +17,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/KICHHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/KICHHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/external/RouteGenerator.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/external/RouteGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/TrafficHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/TrafficHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/util/NetConnection.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/util/NetConnection.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/util/PostGISUtil.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/util/PostGISUtil.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/protocol/script/suite.xml" afterPath="$PROJECT_DIR$/server/test/protocol/script/suite.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/DiWiHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/DiWiHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/logic/TrafficLogic.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/logic/TrafficLogic.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/protocol/script/mobileclient-scenario.xml" afterPath="$PROJECT_DIR$/server/test/protocol/script/mobileclient-scenario.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/protocol/test.properties" afterPath="$PROJECT_DIR$/server/test/protocol/test.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/cfg/portal.xml" afterPath="$PROJECT_DIR$/server/cfg/portal.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/protocol/script/suite.xml" afterPath="$PROJECT_DIR$/server/test/protocol/script/suite.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DiWi.iws" afterPath="$PROJECT_DIR$/DiWi.iws" />
     </list>
     <list name="Failed commit: Default (2)" comment="test media" />
@@ -148,49 +140,31 @@
   <component name="FavoritesProjectViewPane" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Constants.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="57" column="28" selection-start="2653" selection-end="2653" vertical-scroll-proportion="0.6210526">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DataSource.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/external/DataSource.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="158" column="0" selection-start="6743" selection-end="6743" vertical-scroll-proportion="0.97192985">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="KICHHandler.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/KICHHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="67" column="46" selection-start="2904" selection-end="2904" vertical-scroll-proportion="0.33333334">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="POILogic.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="13" selection-start="755" selection-end="755" vertical-scroll-proportion="-1.6404762">
+            <state line="104" column="82" selection-start="3635" selection-end="3635" vertical-scroll-proportion="0.24047619">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RouteLogic.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="RouteLogic.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
           <provider selected="true" editor-type-id="text-editor">
             <state line="225" column="18" selection-start="9132" selection-end="9132" vertical-scroll-proportion="0.1904762">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/build.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="339" column="18" selection-start="12323" selection-end="12323" vertical-scroll-proportion="0.6">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -202,24 +176,6 @@
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DiWiHandler.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/DiWiHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="13" selection-start="606" selection-end="606" vertical-scroll-proportion="0.057142857">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="POIHandler.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/POIHandler.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="13" selection-start="554" selection-end="554" vertical-scroll-proportion="0.071428575">
-              <folding />
             </state>
           </provider>
         </entry>
@@ -236,7 +192,43 @@
       <file leaf-file-name="suite.xml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/test/protocol/script/suite.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="0" selection-start="279" selection-end="279" vertical-scroll-proportion="0.12631579">
+            <state line="6" column="51" selection-start="261" selection-end="261" vertical-scroll-proportion="0.08421053">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sync-scenario.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/test/protocol/script/sync-scenario.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.properties" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/test/protocol/test.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="1" selection-start="199" selection-end="199" vertical-scroll-proportion="0.112280704">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="portal.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/cfg/portal.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="33" column="36" selection-start="1926" selection-end="1942" vertical-scroll-proportion="0.47142857">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Constants.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="65" column="49" selection-start="3046" selection-end="3064" vertical-scroll-proportion="0.7719298">
               <folding />
             </state>
           </provider>
@@ -920,7 +912,7 @@
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25895765" order="0" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25895765" order="0" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24640884" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5370166" order="8" />
@@ -928,7 +920,7 @@
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15798046" order="1" />
+      <window_info id="Ant Build" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15798046" order="1" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="8" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="2" />
@@ -1042,34 +1034,6 @@
     <option name="myLastEditedConfigurable" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/server/webapp/diwi/rest.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="55" selection-start="606" selection-end="606" vertical-scroll-proportion="0.21428572">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/webapp/diwi/testresponse/nijevelt.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="29" selection-start="1007" selection-end="1007" vertical-scroll-proportion="0.48701298">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/webapp/diwi/testresponse/grebbelinie.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="29" selection-start="1020" selection-end="1020" vertical-scroll-proportion="0.35714287">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/cfg/tables/diwi_poi.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="52" selection-start="1383" selection-end="1383" vertical-scroll-proportion="1.7291067">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/webapp/diwi/testresponse/pois.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="232" column="15" selection-start="8159" selection-end="8159" vertical-scroll-proportion="1.1">
@@ -1084,34 +1048,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/protocol/script/suite.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="0" selection-start="279" selection-end="279" vertical-scroll-proportion="0.12631579">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="28" selection-start="2653" selection-end="2653" vertical-scroll-proportion="0.6210526">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="13" selection-start="755" selection-end="755" vertical-scroll-proportion="-1.6404762">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/test/protocol/script/mobileclient-scenario.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="32" selection-start="1567" selection-end="1567" vertical-scroll-proportion="0.4245614">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/DiWiHandler.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="16" column="13" selection-start="606" selection-end="606" vertical-scroll-proportion="0.057142857">
@@ -1121,7 +1057,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/POIHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="13" selection-start="554" selection-end="554" vertical-scroll-proportion="0.071428575">
+        <state line="16" column="13" selection-start="554" selection-end="554" vertical-scroll-proportion="0.17291066">
           <folding />
         </state>
       </provider>
@@ -1148,6 +1084,62 @@
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/build.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="339" column="18" selection-start="12323" selection-end="12323" vertical-scroll-proportion="0.6">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/protocol/script/mobileclient-scenario.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="77" column="32" selection-start="1567" selection-end="1567" vertical-scroll-proportion="0.4245614">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/protocol/script/suite.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="51" selection-start="261" selection-end="261" vertical-scroll-proportion="0.08421053">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/protocol/script/sync-scenario.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/cfg/portal.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="33" column="36" selection-start="1926" selection-end="1942" vertical-scroll-proportion="0.47142857">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="49" selection-start="3046" selection-end="3064" vertical-scroll-proportion="0.7719298">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/POILogic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="104" column="82" selection-start="3635" selection-end="3635" vertical-scroll-proportion="0.24047619">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/protocol/test.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="1" selection-start="199" selection-end="199" vertical-scroll-proportion="0.112280704">
+          <folding />
         </state>
       </provider>
     </entry>

@@ -102,8 +102,8 @@ public class POILogic implements Constants {
                     JXElement uri = (JXElement)uris.elementAt(i);
                     String mediumFileName = uri.getAttr("medium");
                     if(mediumFileName!=null && mediumFileName.length()>0){
-                        //File f = new File(TEST_DATA_URL + "/" + mediumFileName);
-                        File f = new File("/var/keyworx/webapps/local.diwi.nl/diwi/testresponse/" + mediumFileName);
+                        //File f = new File(TEST_DATA_URL + "/" + mediumFileName);                        
+                        File f = new File(Amuse.server.getPortal().getProperty(TEST_DATA_LOCATION) + "/" + mediumFileName);
                         if(f.exists()){
                             log.info("create the medium!!:" + mediumFileName);
                             HashMap attrs = new HashMap(3);
