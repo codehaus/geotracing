@@ -18,7 +18,6 @@ import java.util.Properties;
 import java.util.Vector;
 
 import nl.diwi.external.RouteGenerator;
-import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.diwi.util.PostGISUtil;
 import nl.justobjects.jox.dom.JXElement;
@@ -115,7 +114,7 @@ public class RouteLogic implements Constants {
 		}
 	}
 
-    public int insertRoute(JXElement aRouteElement){
+    public int insertRoute(JXElement aRouteElement, int aRouteType){
         Record route = null;
         try{
             // fixed routes have unique names so check first
@@ -126,7 +125,7 @@ public class RouteLogic implements Constants {
                 route = oase.getFinder().read(recs[0].getId());
                 route.setStringField(NAME_FIELD, new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA()));
                 route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
-                route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+                route.setIntField(TYPE_FIELD, aRouteType);
 
                 PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPXRoute2LineString(aRouteElement));
                 route.setObjectField(PATH_FIELD, geom);
@@ -137,7 +136,7 @@ public class RouteLogic implements Constants {
                 route = oase.getModifier().create(ROUTE_TABLE);
                 route.setStringField(NAME_FIELD, new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA()));
                 route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
-                route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+                route.setIntField(TYPE_FIELD, aRouteType);
 
                 PGgeometryLW geom = new PGgeometryLW(PostGISUtil.GPXRoute2LineString(aRouteElement));
                 route.setObjectField(PATH_FIELD, geom);
