@@ -10,7 +10,10 @@
 	<property name="siteurl" host="suwa">http://local.diwi.nl</property>
 	<property name="webappurl" host="suwa">http://local.diwi.nl/diwi</property>
 
-	<!-- for testing only. -->
+    <property name="siteurl" host="ronald">http://local.diwi.nl</property>
+	<property name="webappurl" host="ronald">http://local.diwi.nl/diwi</property>
+
+    <!-- for testing only. -->
 	<property name="siteurl" host="berlin">http://test.digitalewichelroede.nl</property>
 	<property name="webappurl" host="berlin">http://test.digitalewichelroede.nl/diwi</property>
 
@@ -18,15 +21,17 @@
 
 	<property name="kichposturl" host="berlin">http://test.digitalewichelroede.nl/diwi/kich.jsp</property>
 	<property name="kichresturl" host="berlin">http://test.digitalewichelroede.nl/diwi/rest.jsp</property>
-    <property name="routegeneratorurl"  host="berlin">http://test.diwi.nl/diwi/test.jsp</property>
+    <property name="routegeneratorurl"  host="berlin">http://test.diwi.nl/diwi/rest.jsp</property>
     <property name="testdataurl"  host="berlin">http://test.diwi.nl/diwi/testresponse</property>
     <property name="routingservleturl" host="berlin">http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet</property>
+    <property name="mediaurl" host="berlin">http://test.diwi.nl/diwi/media.srv?id=</property>
 
-	<property name="kichposturl" >http://local.diwi.nl/diwi/kich.jsp</property>
+    <property name="kichposturl" >http://local.diwi.nl/diwi/kich.jsp</property>
 	<property name="kichresturl" >http://local.diwi.nl/diwi/rest.jsp</property>
-	<property name="routegeneratorurl" >http://local.diwi.nl/diwi/test.jsp</property>
-    <property name="testdataurl"  host="berlin">http://local.diwi.nl/diwi/testresponse</property>
-    <property name="routingservleturl">http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet</property>
+	<property name="routegeneratorurl" >http://local.diwi.nl/diwi/rest.jsp</property>
+    <property name="testdataurl" >http://local.diwi.nl/diwi/testresponse</property>
+    <property name="routingservleturl">http://local.diwi.nl/diwi/rest.jsp</property>
+    <property name="mediaurl">http://local.diwi.nl/diwi/media.srv?id=</property>
 
     <config>
 		<!-- Oase context file. Context id becomes portal name -->

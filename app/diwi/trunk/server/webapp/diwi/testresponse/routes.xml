@@ -1,0 +1,11 @@
+<routes>
+    <route>
+        <id>amsterdam</id>
+    </route>
+    <route>
+        <id>grebbelinie</id>
+    </route>
+    <route>
+        <id>nijevelt</id>
+    </route>
+</routes>

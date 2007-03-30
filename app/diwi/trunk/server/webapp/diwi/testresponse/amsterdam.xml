@@ -8,25 +8,39 @@
     <desc>
         <![CDATA[prachtige route in de buurt van de PdZ]]>
     </desc>
-    <wpt x="123373.75" y="487731.42">
+    <wpt lon="123373.75" lat="487731.42">
         <name>13_13</name>
     </wpt>
-     <wpt x="123312.48" y="487747.85">
+     <wpt lon="123312.48" lat="487747.85">
         <name>14_14</name>
     </wpt>
-    <wpt x="123339.34" y="487835.12">
+    <wpt lon="123339.34" lat="487835.12">
         <name>15_15</name>
     </wpt>
-    <wpt x="123369.16" y="487928.21">
+    <wpt lon="123369.16" lat="487928.21">
         <name>16_16</name>
     </wpt>
-    <wpt x="123447" y="487990.38">
+    <wpt lon="123447" lat="487990.38">
         <name>17_17</name>
     </wpt>
-    <wpt x="123399.08" y="488035.87">
+    <wpt lon="123399.08" lat="488035.87">
         <name>18_18</name>
     </wpt>
-    <wpt x="123350.75" y="488018.69">
+    <wpt lon="123350.75" lat="488018.69">
         <name>19_19</name>
-    </wpt>    
+    </wpt>
+    <rte>
+        <rtept lon="154100" lat="464306" />
+        <rtept lon="154121" lat="463936" />
+        <rtept lon="154424" lat="463056" />
+        <rtept lon="156509" lat="461410" />
+        <rtept lon="155166" lat="464954" />
+        <rtept lon="154487" lat="464951" />
+        <rtept lon="154441" lat="464837" />
+        <rtept lon="154408" lat="464759" />
+        <rtept lon="154321" lat="464725" />
+        <rtept lon="154309" lat="464720" />
+        <rtept lon="154114" lat="464317" />
+        <rtept lon="154100" lat="464306" />
+    </rte>
 </gpx>
