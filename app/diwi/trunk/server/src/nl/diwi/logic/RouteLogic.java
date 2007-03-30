@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.Vector;
 
 import nl.diwi.external.RouteGenerator;
+import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.diwi.util.PostGISUtil;
 import nl.justobjects.jox.dom.JXElement;
