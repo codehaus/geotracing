@@ -1,17 +1,15 @@
 <pois>
     <poi>
         <id>1_1</id>
-        <name>poi 1</name>
-        <description>beschrijving poi 1</description>
+        <name>Kazemat en loopgraaf bij de stoplijn</name>
+        <description>Kazemat S-17, een zogenaamd Stekelvarken, maakte deel uit van de Nederlandse verdediging op de Grebbeberg. In 1939-‘40 zaten in en rond deze kazemat een sergeant en een aantal soldaten, bewapend met een tweetal mitrailleurs. De bomen en struiken die nu voor de kazemat groeien, stonden er in 1939 nog niet. Vanuit de drie schietgaten hadden de soldaten een (min of meer) vrij schootsveld op de verderop gelegen Cuneraweg en de boomgaard daarachter. Stelt u zich eens voor hoe de soldaten zich moeten hebben gevoeld toen ze de Duitsers uit deze richting op hen af zagen komen… De Duitse generaals hadden een strategie uitgestippeld waarbij op de eerste aanvalsdag – 10 mei 1940 - de Grebbeberg moest zijn veroverd. Maar zo snel ging het niet… eenmaal over de grens ondervonden de Duitse soldaten meer tegenstand dan verwacht. Pas tegen de avonduren van de tiende mei bereikte het eerste Duitse regiment het verderop gelegen Wageningen. De volgende dag werd de aanval op de Grebbeberg ingezet. De Grebbeberg lag onder hevig vuur. De strijd duurde drie dagen. Een deel van de Nederlandse soldaten moest zich overgeven, waaronder de soldaten in kazemat S-17. De kazemat is gerestaureerd in 2001-‘02. Ook de directe omgeving van de kazemat is in oude luister hersteld. Zo is de toegang nagebouwd en is met paaltjes een deel van het originele loopgravenstelsel zichtbaar gemaakt. Deze zigzaglijn is ook te voelen: het loopgravenstelsel is na de strijd dichtgegooid - de grond is daar waar de loopgraaf liep veel zachter.</description>
         <category>italiaans</category>
-        <type>startpoint</type>
+        <type>2</type>
         <x>166463</x>
         <y>470532.17</y>
         <media>
-            <medium name="1.jpg"/>
-            <medium name="1.mp3"/>
-            <kich-uri>http://www.kich.nl?id=photo1</kich-uri>
-            <kich-uri>http://www.kich.nl?id=audio1</kich-uri>
+            <kich-uri medium="1.jpg">id=photo1</kich-uri>
+            <kich-uri medium="1.mp3">id=audio1</kich-uri>
         </media>
     </poi>
     <poi>
@@ -23,10 +21,8 @@
         <x>162901.21</x>
         <y>467997.33</y>
         <media>
-            <medium name="2.jpg"/>
-            <medium name="3.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo2</kich-uri>
-            <kich-uri>http://www.kich.nl?id=photo3</kich-uri>
+            <kich-uri medium="2.jpg">id=photo2</kich-uri>
+            <kich-uri medium="3.jpg">id=photo3</kich-uri>
         </media>
     </poi>
     <poi>
@@ -38,10 +34,8 @@
         <x>163282.86</x>
         <y>464344.32</y>
         <media>
-            <medium name="4.jpg"/>
-            <medium name="1.3gp"/>
-            <kich-uri>http://www.kich.nl?id=photo4</kich-uri>
-            <kich-uri>http://www.kich.nl?id=mov1</kich-uri>
+            <kich-uri medium="4.jpg">id=photo4</kich-uri>
+            <kich-uri medium="1.3gp">id=mov1</kich-uri>
         </media>
     </poi>
     <poi>
@@ -53,8 +47,7 @@
         <x>167137.29</x>
         <y>463414.99</y>
         <media>
-            <medium name="5.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo5</kich-uri>
+            <kich-uri medium="5.jpg">id=photo5</kich-uri>
         </media>
     </poi>
     <poi>
@@ -66,10 +59,8 @@
         <x>171077.74</x>
         <y>465394.26</y>
         <media>
-            <medium name="6.jpg"/>
-            <medium name="2.mp3"/>
-            <kich-uri>http://www.kich.nl?id=photo6</kich-uri>
-            <kich-uri>http://www.kich.nl?id=audio2</kich-uri>
+            <kich-uri medium="6.jpg">id=photo6</kich-uri>
+            <kich-uri medium="2.mp3">id=audio2</kich-uri>
         </media>
     </poi>
     <poi>
@@ -77,12 +68,11 @@
         <name>poi 6</name>
         <description>beschrijving poi 6</description>
         <category>italiaans</category>
-        <type>endpoint</type>
+        <type>3</type>
         <x>169655.69</x>
         <y>469791.72</y>
         <media>
-            <medium name="7.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo7</kich-uri>
+            <kich-uri medium="7.jpg">id=photo7</kich-uri>
         </media>
     </poi>
     <poi>
@@ -90,12 +80,11 @@
         <name>poi 7</name>
         <description>beschrijving poi 7</description>
         <category>forten</category>
-        <type>startpoint</type>
+        <type>2</type>
         <x>166417.39</x>
         <y>449521.2</y>
         <media>
-            <medium name="8.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo8</kich-uri>
+            <kich-uri medium="8.jpg">id=photo8</kich-uri>
         </media>
     </poi>
     <poi>
@@ -107,10 +96,8 @@
         <x>163124.07</x>
         <y>446505.97</y>
         <media>
-            <medium name="9.jpg"/>
-            <medium name="2.3gp"/>
-            <kich-uri>http://www.kich.nl?id=photo9</kich-uri>
-            <kich-uri>http://www.kich.nl?id=mov2</kich-uri>
+            <kich-uri medium="9.jpg">id=photo9</kich-uri>
+            <kich-uri medium="2.3gp">id=mov2</kich-uri>
         </media>
     </poi>
     <poi>
@@ -122,10 +109,8 @@
         <x>163980.32</x>
         <y>442273.3</y>
         <media>
-            <medium name="10.jpg"/>
-            <medium name="11.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo10</kich-uri>
-            <kich-uri>http://www.kich.nl?id=photo11</kich-uri>
+            <kich-uri medium="10.jpg">id=photo10</kich-uri>
+            <kich-uri medium="11.jpg">id=photo11</kich-uri>
         </media>
     </poi>
     <poi>
@@ -137,10 +122,8 @@
         <x>167476.8</x>
         <y>440397.84</y>
         <media>
-            <medium name="12.jpg"/>
-            <medium name="3.mp3"/>
-            <kich-uri>http://www.kich.nl?id=photo12</kich-uri>
-            <kich-uri>http://www.kich.nl?id=audio3</kich-uri>
+            <kich-uri medium="12.jpg">id=photo12</kich-uri>
+            <kich-uri medium="3.mp3">id=audio3</kich-uri>
         </media>
     </poi>
     <poi>
@@ -152,8 +135,7 @@
         <x>170207.73</x>
         <y>442664.92</y>
         <media>
-            <medium name="13.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo13</kich-uri>
+            <kich-uri medium="13.jpg">id=photo13</kich-uri>
         </media>
     </poi>
     <poi>
@@ -161,12 +143,11 @@
         <name>poi 12</name>
         <description>beschrijving poi 12</description>
         <category>forten</category>
-        <type>endpoint</type>
+        <type>3</type>
         <x>169816.28</x>
         <y>447367.78</y>
         <media>
-            <medium name="14.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo14</kich-uri>
+            <kich-uri medium="14.jpg">id=photo14</kich-uri>
         </media>
     </poi>
     <poi>
@@ -174,14 +155,12 @@
         <name>poi 13</name>
         <description>beschrijving poi 13</description>
         <category>creatief</category>
-        <type>startpoint</type>
+        <type>2</type>
         <x>123373.75</x>
         <y>487731.42</y>
         <media>
-            <medium name="15.jpg"/>
-            <medium name="4.mp3"/>
-            <kich-uri>http://www.kich.nl?id=photo15</kich-uri>
-            <kich-uri>http://www.kich.nl?id=audio4</kich-uri>
+            <kich-uri medium="15.jpg">id=photo15</kich-uri>
+            <kich-uri medium="4.mp3">id=audio4</kich-uri>
         </media>
     </poi>
     <poi>
@@ -193,10 +172,8 @@
         <x>123312.48</x>
         <y>487747.85</y>
         <media>
-            <medium name="16.jpg"/>
-            <medium name="3.3gp"/>
-            <kich-uri>http://www.kich.nl?id=photo16</kich-uri>
-            <kich-uri>http://www.kich.nl?id=mov3</kich-uri>
+            <kich-uri medium="16.jpg">id=photo16</kich-uri>
+            <kich-uri medium="3.3gp">id=mov3</kich-uri>
         </media>
     </poi>
     <poi>
@@ -208,8 +185,7 @@
         <x>123339.34</x>
         <y>487835.12</y>
         <media>
-            <medium name="17.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo17</kich-uri>
+            <kich-uri medium="17.jpg">id=photo17</kich-uri>
         </media>
     </poi>
     <poi>
@@ -221,8 +197,7 @@
         <x>123369.16</x>
         <y>487928.21</y>
         <media>
-            <medium name="18.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo18</kich-uri>
+            <kich-uri medium="18.jpg">id=photo18</kich-uri>
         </media>
     </poi>
     <poi>
@@ -234,10 +209,8 @@
         <x>123447</x>
         <y>487990.38</y>
         <media>
-            <medium name="19.jpg"/>
-            <medium name="20.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo19</kich-uri>
-            <kich-uri>http://www.kich.nl?id=photo20</kich-uri>
+            <kich-uri medium="19.jpg">id=photo19</kich-uri>
+            <kich-uri medium="20.jpg">id=photo20</kich-uri>
         </media>
     </poi>
     <poi>
@@ -249,8 +222,7 @@
         <x>123399.08</x>
         <y>488035.87</y>
         <media>
-            <medium name="21.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo21</kich-uri>
+            <kich-uri medium="21.jpg">id=photo21</kich-uri>
         </media>
     </poi>
     <poi>
@@ -258,12 +230,11 @@
         <name>poi 19</name>
         <description>beschrijving poi 19</description>
         <category>creatief</category>
-        <type>endpoint</type>
+        <type>3</type>
         <x>123350.75</x>
         <y>488018.69</y>
         <media>
-            <medium name="22.jpg"/>
-            <kich-uri>http://www.kich.nl?id=photo22</kich-uri>
+            <kich-uri medium="22.jpg">id=photo22</kich-uri>
         </media>
     </poi>
 </pois>

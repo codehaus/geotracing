@@ -8,22 +8,36 @@
     <desc>
         <![CDATA[prachtige route in de buurt van de grebbelinie]]>
     </desc>
-    <wpt x="166417.39" y="449521.2">
+    <wpt lon="166417.39" lat="449521.2">
         <name>7_7</name>
     </wpt>
-     <wpt x="163124.07" y="446505.97">
+     <wpt lon="163124.07" lat="446505.97">
         <name>8_8</name>
     </wpt>
-    <wpt x="163980.32" y="442273.3">
+    <wpt lon="163980.32" lat="442273.3">
         <name>9_9</name>
     </wpt>
-    <wpt x="167476.8" y="440397.84">
+    <wpt lon="167476.8" lat="440397.84">
         <name>10_10</name>
     </wpt>
-    <wpt x="170207.73" y="442664.92">
+    <wpt lon="170207.73" lat="442664.92">
         <name>11_11</name>
     </wpt>
-    <wpt x="169816.28" y="447367.78">
+    <wpt lon="169816.28" lat="447367.78">
         <name>12_12</name>
     </wpt>
+    <rte>
+        <rtept lon="154100" lat="464306" />
+        <rtept lon="154121" lat="463936" />
+        <rtept lon="154424" lat="463056" />
+        <rtept lon="156509" lat="461410" />
+        <rtept lon="155166" lat="464954" />
+        <rtept lon="154487" lat="464951" />
+        <rtept lon="154441" lat="464837" />
+        <rtept lon="154408" lat="464759" />
+        <rtept lon="154321" lat="464725" />
+        <rtept lon="154309" lat="464720" />
+        <rtept lon="154114" lat="464317" />
+        <rtept lon="154100" lat="464306" />
+    </rte>
 </gpx>

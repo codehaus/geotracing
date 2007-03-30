@@ -1,0 +1,67 @@
+<testset id="mobileclient-scenario" clients="1">
+
+	 <!-- Standard KWX login sequence -->
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+    <!--
+    1. retrieve fixed routes
+    2. retrieve personal route
+    3. retrieve route & details
+    4. start route
+    5. retrieve a poi from the route
+    6. retrieve media from the poi
+    -->
+
+    <test id="route-getlist-req">
+		<send id="client1">
+			<utopia-req>
+				<route-getlist-req type="2" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<route-getlist-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="route-getlist-req">
+		<send id="client1">
+			<utopia-req>
+				<route-getlist-req type="2" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<route-getlist-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+
