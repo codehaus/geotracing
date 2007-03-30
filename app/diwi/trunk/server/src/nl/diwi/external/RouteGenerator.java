@@ -28,7 +28,6 @@ public class RouteGenerator implements Constants {
         if(routeElm == null){
             url = buildUrl(prefs, generatorUrl);
         }
-
 		//Get the GPX
 		try {
 			resultRoute = new JXBuilder().build(new URL(url));
