@@ -3,25 +3,25 @@
 
 package nl.diwi.logic;
 
+import nl.diwi.external.RouteGenerator;
+import nl.diwi.util.Constants;
+import nl.diwi.util.PostGISUtil;
+import nl.justobjects.jox.dom.JXElement;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
-import org.keyworx.utopia.core.util.XML;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.postgis.PGgeometryLW;
+import org.keyworx.utopia.core.util.XML;
 import org.postgis.PGbox2d;
+import org.postgis.PGgeometryLW;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Properties;
 import java.util.Vector;
-
-import nl.diwi.external.RouteGenerator;
-import nl.diwi.external.DataSource;
-import nl.diwi.util.Constants;
-import nl.diwi.util.PostGISUtil;
-import nl.justobjects.jox.dom.JXElement;
 
 /**
   * Handles all logic related to commenting.
@@ -33,6 +33,7 @@ import nl.justobjects.jox.dom.JXElement;
  */
 public class RouteLogic implements Constants {
 	public static final String TABLE_PERSON = "utopia_person";
+    private Log log = Logging.getLog("RouteLogic");
 
     private static final Properties properties = new Properties();
     public static final String PROP_MAX_CONTENT_CHARS = "max-content-chars";
@@ -107,16 +108,15 @@ public class RouteLogic implements Constants {
     		}
         
     		//Convert Route record to XML and add to result
-            JXElement routeElm = getRoute(route.getId());
-
-    		return routeElm;
-        } catch (OaseException oe) {
-			throw new UtopiaException("Error in generateRoute", oe, ErrorCode.__6006_database_irregularity_error);
+            return getRoute(route.getId());
+        } catch (Throwable t) {
+            log.error("Exception in generateRoute: " + t.toString());
+            throw new UtopiaException("Error in generateRoute", t, ErrorCode.__6006_database_irregularity_error);
 		}
 	}
 
-    public int insertRoute(JXElement aRouteElement, int aRouteType){
-        Record route = null;
+    public int insertRoute(JXElement aRouteElement, int aRouteType) throws UtopiaException{
+        Record route;
         try{
             // fixed routes have unique names so check first
             String name = new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA());
@@ -144,23 +144,25 @@ public class RouteLogic implements Constants {
                 oase.getModifier().insert(route);                
             }
         }catch(Throwable t){
-            t.printStackTrace();
+            log.error("Exception in insertRoute: " + t.toString());
+            throw new UtopiaException("Error in insertRoute", t, ErrorCode.__6006_database_irregularity_error);
         }
         return route.getId();
     }
 
-    public JXElement getRoute(int routeId) {
-        JXElement routeElm = null;
+    public JXElement getRoute(int routeId) throws UtopiaException{
+        JXElement routeElm;
         try{
-            return getRoute(oase.getFinder().read(routeId));
-        }catch(OaseException oe){
-            oe.printStackTrace();
+            routeElm = getRoute(oase.getFinder().read(routeId));
+        }catch(Throwable t){
+            log.error("Exception in getRoute: " + t.toString());
+            throw new UtopiaException("Error in getRoute", t, ErrorCode.__6006_database_irregularity_error);
         }
         return routeElm;
     }
 
-    public JXElement getRoute(Record aRoute){
-        JXElement routeElm = null;
+    public JXElement getRoute(Record aRoute) throws UtopiaException{
+        JXElement routeElm;
 		try {
 			routeElm = XML.createElementFromRecord(ROUTE_ELM, aRoute);
 			routeElm.removeChildByTag(PATH_FIELD);
@@ -168,18 +170,15 @@ public class RouteLogic implements Constants {
 			JXElement lengthElm = new JXElement(DISTANCE_FIELD);
 			lengthElm.setText("" + getDistance(aRoute));
 			routeElm.addChild(lengthElm);
-		} catch (OaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UtopiaException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Throwable t) {
+			log.error("Exception in getRoute: " + t.toString());
+            throw new UtopiaException("Error in getRoute", t, ErrorCode.__6006_database_irregularity_error);
 		}
 		return routeElm;
 	}
 
     public Vector getRoutes(int aRouteType, String aPersonId) throws UtopiaException {
-        Vector results = null;
+        Vector results;
 		try {
             Record[] routes;
             if(aRouteType == ROUTE_TYPE_GENERATED){
@@ -188,21 +187,14 @@ public class RouteLogic implements Constants {
             }else{
                 routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
             }
-
-            // sync some!!
-            if(routes.length == 0 && aRouteType == ROUTE_TYPE_FIXED){
-                DataSource ds = new DataSource(oase);
-                ds.syncFixedRoutes();
-                routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + aRouteType, null, null);
-            }
             
             results = new Vector(routes.length);
             for(int i=0;i<routes.length;i++){
                 results.add(getRoute(routes[i]));
             }
-		} catch (OaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Throwable t) {
+			log.error("Exception in getRoutes: " + t.toString());
+            throw new UtopiaException("Error in getRoutes", t, ErrorCode.__6006_database_irregularity_error);
 		}
         return results;
 	}
@@ -216,8 +208,9 @@ public class RouteLogic implements Constants {
 	public void deleteRoute(int aRouteId) throws UtopiaException {
 		try {
 			oase.getModifier().delete(aRouteId);
-		} catch (OaseException oe) {
-			throw new UtopiaException("Cannot delete route record with id=" + aRouteId, oe, ErrorCode.__6006_database_irregularity_error);
+		} catch (Throwable t) {
+            log.error("Exception in deleteRoute: " + t.toString());
+            throw new UtopiaException("Cannot delete route record with id=" + aRouteId, t, ErrorCode.__6006_database_irregularity_error);
 		}
 	}
 	
@@ -230,16 +223,16 @@ public class RouteLogic implements Constants {
 	}
 
 
-	public String getMapUrl(int routeId, double width, double height) {
-		Record bounds = null;
+	public String getMapUrl(int routeId, double width, double height) throws UtopiaException {
+		Record bounds;
 		try {
 			bounds = oase.getFinder().freeQuery(
 					"select box2d(path) AS bbox from diwi_route where id="
 					+ routeId)[0];
 
 		} catch (OaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            log.error("Exception in deleteRoute: " + e.toString());
+            throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
 		}
 		PGbox2d bbox = (PGbox2d)bounds.getObjectField("bbox");
 
@@ -269,16 +262,15 @@ public class RouteLogic implements Constants {
 		bbox.getURT().y += padHeight/2; 
 		
 		
-		String boxString = null;
+		String boxString;
 		try {
 			boxString = URLEncoder.encode(""+ bbox.getLLB().x + "," + bbox.getLLB().y +  ","+ bbox.getURT().x + "," + bbox.getURT().y, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Exception in deleteRoute: " + e.toString());
+            throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
 		}
 		
-		String url = "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
-		return url;
+		return "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
 	}	
 }
 

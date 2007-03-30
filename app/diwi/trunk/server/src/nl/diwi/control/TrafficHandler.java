@@ -1,15 +1,15 @@
 package nl.diwi.control;
 
-import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.session.UtopiaRequest;
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.utopia.core.data.ErrorCode;
+import nl.diwi.logic.TrafficLogic;
+import nl.diwi.util.Constants;
+import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import nl.diwi.util.Constants;
-import nl.diwi.logic.TrafficLogic;
-import nl.justobjects.jox.dom.JXElement;
+import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.session.UtopiaRequest;
+import org.keyworx.utopia.core.session.UtopiaResponse;
 
 import java.util.Vector;
 

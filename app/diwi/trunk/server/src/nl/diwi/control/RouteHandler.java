@@ -4,20 +4,17 @@ package nl.diwi.control;
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
 
-
-import nl.justobjects.jox.dom.JXElement;
 import nl.diwi.logic.RouteLogic;
 import nl.diwi.logic.TrafficLogic;
 import nl.diwi.util.Constants;
+import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.util.XML;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,7 +31,6 @@ import java.util.Vector;
 public class RouteHandler extends DefaultHandler implements Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
-    public final static String ROUTE_SAVE_SERVICE = "route-save";
     public final static String ROUTE_INSERT_SERVICE = "route-insert";
     public final static String ROUTE_GET_SERVICE = "route-get";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
@@ -59,8 +55,6 @@ public class RouteHandler extends DefaultHandler implements Constants {
 		try {
 			if (service.equals(ROUTE_GENERATE_SERVICE)) {
 				response = generateRoute(anUtopiaReq);
-			} else if (service.equals(ROUTE_SAVE_SERVICE)) {
-				response = saveRoute(anUtopiaReq);
 			} else if (service.equals(ROUTE_INSERT_SERVICE)) {
 				response = insertRoute(anUtopiaReq);
 			} else if (service.equals(ROUTE_GET_SERVICE)) {
@@ -101,8 +95,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         try {
 			response.setAttr(URL_FIELD, URLEncoder.encode(logic.getMapUrl(routeId, width, height), "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new UtopiaException("Exception in getMap", e);
 		}
         return response;
 	}
@@ -121,7 +114,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         RouteLogic logic = createLogic(anUtopiaReq);
         JXElement routeElm = logic.getRoute(Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)));
         
-        JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
+        JXElement response = createResponse(ROUTE_GET_SERVICE);
         response.addChild(routeElm);
 
         return response;
@@ -142,7 +135,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         String personId = anUtopiaReq.getUtopiaSession().getContext().getUserId();
         Vector routes = logic.getRoutes(t, personId);
 
-        JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
+        JXElement response = createResponse(ROUTE_GETLIST_SERVICE);
         response.addChildren(routes);
 
         return response;
@@ -171,13 +164,6 @@ public class RouteHandler extends DefaultHandler implements Constants {
         return response;
 	}
 
-    private JXElement saveRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        // Create and return response with genera
-		JXElement response = createResponse(ROUTE_SAVE_SERVICE);
-
-        return response;
-	}
-    
     /**
 	 * Get user (Person) id from request.
 	 */

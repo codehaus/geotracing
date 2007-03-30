@@ -9,7 +9,6 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.postgis.Point;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class RouteGenerator implements Constants {

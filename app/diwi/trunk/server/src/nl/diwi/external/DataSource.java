@@ -1,21 +1,19 @@
 package nl.diwi.external;
 
-import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.common.log.Log;
-import org.keyworx.common.log.Logging;
-import org.keyworx.amuse.core.Amuse;
-import org.keyworx.oase.api.Record;
 import nl.diwi.logic.POILogic;
 import nl.diwi.logic.RouteLogic;
-import nl.diwi.util.NetConnection;
 import nl.diwi.util.Constants;
+import nl.diwi.util.NetConnection;
 import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXBuilder;
+import org.keyworx.amuse.core.Amuse;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.log.Logging;
+import org.keyworx.oase.api.Record;
+import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.util.Oase;
 
-import java.net.URL;
-import java.util.Vector;
 import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Created by IntelliJ IDEA.

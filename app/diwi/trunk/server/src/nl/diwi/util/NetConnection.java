@@ -1,20 +1,19 @@
 package nl.diwi.util;
 
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.common.net.NetUtil;
-import org.keyworx.common.log.Log;
-import org.keyworx.common.log.Logging;
+import nl.justobjects.jox.dom.JXElement;
+import nl.justobjects.jox.parser.JXBuilder;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.log.Logging;
+import org.keyworx.common.net.NetUtil;
+import org.keyworx.utopia.core.data.UtopiaException;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
-import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXBuilder;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * Created by IntelliJ IDEA.

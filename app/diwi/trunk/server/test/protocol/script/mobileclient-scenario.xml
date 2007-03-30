@@ -20,15 +20,18 @@
     1. retrieve fixed routes
     2. retrieve personal route
     3. retrieve route & details
-    4. start route
-    5. retrieve a poi from the route
-    6. retrieve media from the poi
+    4. retrieve route map
+    5. start route (no test)
+    6. retrieve a poi from the route
+    7. retrieve media from the poi (no test - use the kich-uri from the poi response)
+
+    Note: Test uses fixed id's based on a test db set.
     -->
 
     <test id="route-getlist-req">
 		<send id="client1">
 			<utopia-req>
-				<route-getlist-req type="2" />
+				<route-getlist-req type="0" />
 			</utopia-req>
 		</send>
 
@@ -49,6 +52,48 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<route-getlist-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="route-get-req">
+		<send id="client1">
+			<utopia-req>
+				<route-get-req id="107" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<route-get-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="route-get-map-req">
+		<send id="client1">
+			<utopia-req>
+				<route-get-map-req id="107" height="240" width="320"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<route-get-map-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+     <test id="poi-get-req">
+		<send id="client1">
+			<utopia-req>
+				<poi-get-req kichid="1_1" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<poi-get-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
