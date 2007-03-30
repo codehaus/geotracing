@@ -1,16 +1,13 @@
 package nl.diwi.util;
 
+import nl.justobjects.jox.dom.JXElement;
+import org.postgis.LineString;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
-import org.postgis.LineString;
 
-import java.util.Vector;
-import java.util.List;
 import java.util.ArrayList;
-import java.io.File;
-
-import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXBuilder;
+import java.util.List;
+import java.util.Vector;
 
 public class PostGISUtil implements Constants {
 

@@ -8,8 +8,8 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 
-import java.util.Vector;
 import java.util.Properties;
+import java.util.Vector;
 
 public class TrafficLogic implements Constants {
     private Oase oase;

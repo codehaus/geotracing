@@ -1,26 +1,26 @@
 package nl.diwi.logic;
 
-import nl.diwi.util.Constants;
 import nl.diwi.external.DataSource;
+import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.gis.PostGISUtil;
+import org.keyworx.amuse.core.Amuse;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.log.Logging;
+import org.keyworx.common.util.Java;
+import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
-import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.common.log.Logging;
-import org.keyworx.common.log.Log;
-import org.keyworx.common.util.Java;
-import org.keyworx.amuse.core.Amuse;
-import org.postgis.Point;
 import org.postgis.PGgeometryLW;
-import org.geotracing.gis.PostGISUtil;
+import org.postgis.Point;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.HashMap;
-import java.io.File;
 
 public class POILogic implements Constants {
 	private static final Properties properties = new Properties();
