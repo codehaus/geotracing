@@ -21,11 +21,12 @@
 
 	<property name="kichposturl" host="berlin">http://test.digitalewichelroede.nl/diwi/kich.jsp</property>
 	<property name="kichresturl" host="berlin">http://test.digitalewichelroede.nl/diwi/rest.jsp</property>
-    <property name="routegeneratorurl"  host="berlin">http://test.diwi.nl/diwi/rest.jsp</property>
-    <property name="testdataurl"  host="berlin">http://test.diwi.nl/diwi/testresponse</property>
+    <property name="routegeneratorurl"  host="berlin">http://test.digitalewichelroede.nl/diwi/rest.jsp</property>
+    <property name="testdataurl"  host="berlin">http://test.digitalewichelroede.nl/diwi/testresponse</property>
     <property name="testdatalocation"  host="berlin">/var/keyworx/webapps/diwi/diwi/testresponse</property>
-    <property name="routingservleturl" host="berlin">http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet</property>
-    <property name="mediaurl" host="berlin">http://test.diwi.nl/diwi/media.srv?id=</property>
+    <!--<property name="routingservleturl" host="berlin">http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet</property>-->
+    <property name="routingservleturl" host="berlin">http://test.digitalewichelroede.nl/diwi/rest.jsp</property>
+    <property name="mediaurl" host="berlin">http://test.digitalewichelroede.nl/diwi/media.srv?id=</property>
 
     <property name="kichposturl" >http://local.diwi.nl/diwi/kich.jsp</property>
 	<property name="kichresturl" >http://local.diwi.nl/diwi/rest.jsp</property>
