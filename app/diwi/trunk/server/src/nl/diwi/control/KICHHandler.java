@@ -1,6 +1,5 @@
 package nl.diwi.control;
 
-import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.diwi.logic.TrafficLogic;
 import nl.justobjects.jox.dom.JXElement;

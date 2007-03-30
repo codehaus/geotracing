@@ -109,7 +109,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
     private JXElement insertRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
-        int id = logic.insertRoute(anUtopiaReq.getRequestCommand().getChildByTag(ROUTE_ELM));
+        int id = logic.insertRoute(anUtopiaReq.getRequestCommand().getChildByTag(ROUTE_ELM), Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD)));
         
         JXElement response = createResponse(ROUTE_INSERT_SERVICE);
         response.setAttr(ID_FIELD, id);
