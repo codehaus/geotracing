@@ -7,7 +7,7 @@ import java.util.Vector;
 
 /**
  * Selects best GPS location from a series of samples.
- * <p>
+ * <p/>
  * GPS samples tend to have a drift. Some GPS devices produce anomalous
  * "spikes" under shielding conditions. This class acts as a filter to
  * select the best sample from a series.
@@ -15,32 +15,84 @@ import java.util.Vector;
  * and select the sample closest to the average. Samples (floats) are normalized
  * to long values for ease/efficiency of calculation.
  * </p>
- * 
+ *
  * @author Just van den Broecke
  * @version $Id$
  */
 public class GPSSmoother {
-	/** To convert float to long for easier calculations. */
+	/**
+	 * To convert float to long for easier calculations.
+	 */
 	private static final long NORMALIZE_FACT = 1000000L;
 
-	/** Minimum number of samples required for best location calculation. */
+	/**
+	 * Minimum number of samples required for best location calculation.
+	 */
 	private static final int MIN_SAMPLES = 10;
 
-	/** Maximum (target) number of samples to be held for best location calculation. */
+	/**
+	 * Maximum (target) number of samples to be held for best location calculation.
+	 */
 	private static final int MAX_SAMPLES = 15;
 
-	/** Series of GPS locations. */
+	/**
+	 * Series of GPS locations.
+	 */
 	private Vector gpsLocations = new Vector(MAX_SAMPLES);
 
-	/** Normalized averages. */
+	/**
+	 * Last GPS location.
+	 */
+	private GPSLocation lastLocation;
+
+	/**
+	 * Normalized averages.
+	 */
 	private long avgLon = 0L;
 	private long avgLat = 0L;
+
+	/**
+	 * Number of samples discarded so far.
+	 */
+	private int startDiscards;
+
+	/**
+	 * Minimum time passed before we restart.
+	 */
+	private final long RESTART_THRESHOLD_MILLIS = 20000;
+
+	/**
+	 * Number of samples to discard when (re)starting.
+	 */
+	private final int START_MAX_DISCARD_COUNT = 10;
 
 	public GPSSmoother() {
 	}
 
-	/** Add sample to the series. */
+	/**
+	 * Add sample to the series.
+	 */
 	public void addLocation(GPSLocation aLocation) {
+		// A rough way of smoothing by discarding the first START_MAX_DISCARD_COUNT
+		// samples. Most GPS-es seem to provide "peaks" in the first N samples.
+
+		// If we have a cold start or our last sample was "long ago"
+		// discard the first
+		if (lastLocation == null || (aLocation.time - lastLocation.time > RESTART_THRESHOLD_MILLIS)) {
+			// Start discarding upto START_MAX_DISCARD_COUNT samples
+			Log.log("GPSSmoother: start discard");
+			startDiscards = 0;
+		}
+
+		// Always remember last location, regardless of reset()s
+		lastLocation = aLocation;
+
+		// Discard first START_MAX_DISCARD_COUNT samples
+		if (startDiscards < START_MAX_DISCARD_COUNT) {
+			startDiscards++;
+			return;
+		}
+
 		gpsLocations.addElement(aLocation);
 
 		// No umlimited number of samples
@@ -51,7 +103,9 @@ public class GPSSmoother {
 		}
 	}
 
-	/** Get best location so far or null if not enough samples. */
+	/**
+	 * Get best location so far or null if not enough samples.
+	 */
 	public GPSLocation getBestLocation() {
 		int count = gpsLocations.size();
 		if (count < MIN_SAMPLES) {
@@ -70,7 +124,7 @@ public class GPSSmoother {
 		// Go through other locations, select the best (closest to average).
 		GPSLocation nextLocation;
 		int bestIndex = 1;
-		for (int i=1; i < count; i++) {
+		for (int i = 1; i < count; i++) {
 			nextLocation = (GPSLocation) gpsLocations.elementAt(i);
 
 			// Calc diff from average
@@ -88,25 +142,39 @@ public class GPSSmoother {
 		// Log.log("cnt=" + count + " bestIdx=" + bestIndex);
 		return bestLocation;
 	}
+	
+	/**
+	 * Are we discarding samples right now ?.
+	 */
+	public boolean isDiscarding() {
+		return startDiscards < START_MAX_DISCARD_COUNT;
+	}
 
-	/** Start new series. */
+
+	/**
+	 * Start new series.
+	 */
 	public void reset() {
 		gpsLocations.removeAllElements();
 		avgLat = 0L;
 		avgLat = 0L;
 	}
 
-	/** Calc absolute difference with average for a float. */
+	/**
+	 * Calc absolute difference with average for a float.
+	 */
 	private long avgDiff(long avg, MFloat coord) {
-		return Math.abs(avg  - coord.Mul(NORMALIZE_FACT).toLong());
+		return Math.abs(avg - coord.Mul(NORMALIZE_FACT).toLong());
 	}
 
-	/** Calculate average for the series. */
+	/**
+	 * Calculate average for the series.
+	 */
 	private void average() {
 		GPSLocation nextLocation;
 		int count = gpsLocations.size();
-		long sumLon=0L, sumLat=0L;
-		for (int i=0; i < count; i++) {
+		long sumLon = 0L, sumLat = 0L;
+		for (int i = 0; i < count; i++) {
 
 			nextLocation = (GPSLocation) gpsLocations.elementAt(i);
 

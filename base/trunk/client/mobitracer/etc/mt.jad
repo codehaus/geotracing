@@ -17,4 +17,5 @@ kw-password: KW_PASSWORD
 kw-app: geoapp
 kw-role: user
 gps-sample-interval: GPS_SAMPLE_INTERVAL
+gps-send-interval: GPS_SEND_INTERVAL
 mt-options: MT_OPTIONS

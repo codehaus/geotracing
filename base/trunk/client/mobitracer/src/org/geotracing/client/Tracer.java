@@ -4,23 +4,30 @@
 package org.geotracing.client;
 
 
+import nl.justobjects.mjox.JXElement;
+
 import javax.microedition.midlet.MIDlet;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.Vector;
 
 
 /**
  * Integrates GPS, Screen and Network interaction.
  *
- * @author  Just van den Broecke
+ * @author Just van den Broecke
  * @version $Id$
  */
 public class Tracer implements GPSFetcherListener, NetListener {
 
-	/** instance of GPSFetcher */
+	/**
+	 * instance of GPSFetcher
+	 */
 	private GPSFetcher gpsFetcher;
 
-	/** Instance of KeyWorx client. */
+	/**
+	 * Instance of KeyWorx client.
+	 */
 	private Net net;
 	private MIDlet midlet;
 
@@ -29,6 +36,10 @@ public class Tracer implements GPSFetcherListener, NetListener {
 	private int VOLUME = 70;
 	public TraceScreen traceScreen;
 	private int roadRating = -1;
+	public static final long DEFAULT_LOC_SEND_INTERVAL_MILLIS = 25000;
+	private long locSendIntervalMillis = DEFAULT_LOC_SEND_INTERVAL_MILLIS;
+	private long lastTimeLocSent;
+	private Vector points = new Vector(3);
 
 	/**
 	 * Starts GPS fetching and KW client.
@@ -60,6 +71,7 @@ public class Tracer implements GPSFetcherListener, NetListener {
 	 * Starts GPS fetching and KW client.
 	 */
 	public void start() {
+		locSendIntervalMillis = Long.parseLong(midlet.getAppProperty("gps-send-interval"));
 		net.setProperties(midlet);
 		net.start();
 		startGPSFetcher();
@@ -114,12 +126,16 @@ public class Tracer implements GPSFetcherListener, NetListener {
 		Util.playTone(60, 250, VOLUME);
 	}
 
-	/** From GPSFetcher: GPS meta NMEA sample received. */
+	/**
+	 * From GPSFetcher: GPS meta NMEA sample received.
+	 */
 	synchronized public void onGPSInfo(GPSInfo theInfo) {
 		traceScreen.setGPSInfo(theInfo);
 	}
 
-	/** From GPSFetcher: GPS NMEA sample received. */
+	/**
+	 * From GPSFetcher: GPS NMEA sample received.
+	 */
 	synchronized public void onGPSLocation(GPSLocation aLocation) {
 		Util.playTone(84, 50, VOLUME);
 
@@ -129,16 +145,39 @@ public class Tracer implements GPSFetcherListener, NetListener {
 			traceScreen.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
 			return;
 		}
-		net.sendSample(aLocation.data, roadRating, aLocation.time, sampleCount);
+
+
+		JXElement pt = new JXElement("pt");
+		pt.setAttr("nmea", aLocation.data);
+
+		pt.setAttr("t", aLocation.time);
+
+		if (roadRating != -1) {
+			pt.setAttr("rr", roadRating);
+		}
+
+		points.addElement(pt);
+
+		// Send collected points to server if interval passed
+		long now = Util.getTime();
+		if (now - lastTimeLocSent > locSendIntervalMillis) {
+			lastTimeLocSent = now;
+			net.sendPoints(points, sampleCount);
+			points.removeAllElements();
+		}
 	}
 
-	/** From GPSFetcher: disconnect */
+	/**
+	 * From GPSFetcher: disconnect
+	 */
 	public void onGPSDisconnect() {
 		traceScreen.onGPSStatus("disconnected");
 		traceScreen.setStatus("GPS disconnected");
 	}
 
-	/** From GPSFetcher: disconnect */
+	/**
+	 * From GPSFetcher: disconnect
+	 */
 	public void onGPSError(String aReason, Throwable anException) {
 		Log.log("GPS error: " + aReason + " e=" + anException);
 		traceScreen.onGPSStatus("error");
@@ -148,7 +187,9 @@ public class Tracer implements GPSFetcherListener, NetListener {
 		Util.playTone(70, 100, VOLUME);
 	}
 
-	/** From GPSFetcher: status update */
+	/**
+	 * From GPSFetcher: status update
+	 */
 	public void onGPSStatus(String aStatusMsg) {
 		traceScreen.onGPSStatus(aStatusMsg);
 		traceScreen.setStatus("GPS " + aStatusMsg);
@@ -172,7 +213,9 @@ public class Tracer implements GPSFetcherListener, NetListener {
 
 	}
 
-	/** Check local midlet version with the one from server. */
+	/**
+	 * Check local midlet version with the one from server.
+	 */
 	public String versionCheck() {
 		String myVersion = midlet.getAppProperty("MIDlet-Version");
 

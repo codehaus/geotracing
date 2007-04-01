@@ -24,6 +24,10 @@ var MYAPP = {
 		GTAPP.createMap = MYAPP.createMap;
 	},
 
+	start: function() {
+		GTAPP.mShowHelp("content/message.html");
+    },
+
 // Called in GTAPP.init() (see overload above)
 	createMap: function() {
 		GTAPP.blinkStatus('Creating map...');

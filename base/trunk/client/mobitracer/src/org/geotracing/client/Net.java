@@ -6,10 +6,12 @@ package org.geotracing.client;
 import nl.justobjects.mjox.JXElement;
 import org.keyworx.mclient.HTTPClient;
 import org.keyworx.mclient.Protocol;
+import org.geotracing.client.kwx.TCPClient;
 
 import javax.microedition.midlet.MIDlet;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 
 
 /**
@@ -48,7 +50,7 @@ public class Net {
 	public static final String PROP_USER = "kw-user";
 	public static final String PROP_PASSWORD = "kw-password";
 	public static final String PROP_URL = "kw-url";
-
+	
 	private Net() {
 	}
 
@@ -169,18 +171,34 @@ public class Net {
 	/**
 	 * Send GPS sample.
 	 */
-	public void sendSample(String theData, int aRoadRating, long theTime, int theCount) {
+	public void sendPoint(JXElement aPoint, int theCount) {
 		JXElement req = new JXElement("t-trk-write-req");
 
-		JXElement pt = new JXElement("pt");
-		pt.setAttr("nmea", theData);
+		req.addChild(aPoint);
 
-		req.addChild(pt);
-		pt.setAttr("t", theTime);
+		try {
+			listener.onNetStatus("sending #" + theCount);
+			JXElement rsp = kwClient.utopia(req);
+			lastCommandTime = Util.getTime();
+			if (rsp != null) {
+				listener.onNetStatus("sent #" + theCount);
+				Util.playTone(96, 75, VOLUME);
+			} else {
+				listener.onNetStatus("send error");
+			}
 
-		if (aRoadRating != -1) {
-			pt.setAttr("rr", aRoadRating);
+		} catch (Throwable pe) {
+			listener.onNetStatus("send error");
+			kwClient = null;
 		}
+	}
+
+	/**
+	 * Send GPS points.
+	 */
+	public void sendPoints(Vector thePoints, int theCount) {
+		JXElement req = new JXElement("t-trk-write-req");
+		req.addChildren(thePoints);
 
 		try {
 			listener.onNetStatus("sending #" + theCount);
@@ -262,8 +280,8 @@ public class Net {
 		JXElement rsp = null;
 		try {
 			uploader.connect(url + "/media.srv");
-			if (aName == null) {
-				aName = "mt-upload";
+			if (aName == null || aName.length() == 0) {
+				aName = "unnamed " + aType;
 			}
 
 			uploader.writeField("agentkey", agentKey);
@@ -318,6 +336,8 @@ public class Net {
 		try {
 			// traceScreen.hideCommands();
 			kwClient = new HTTPClient(url + "/proto.srv");
+			//kwClient = new TCPClient();
+			//kwClient.connect("localhost", 4414);
 			JXElement rsp = kwClient.login(user, password);
 			if (rsp.hasAttr("time")) {
 				Util.setTime(rsp.getLongAttr("time"));

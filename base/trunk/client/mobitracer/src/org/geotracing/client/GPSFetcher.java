@@ -146,6 +146,9 @@ public class GPSFetcher implements Runnable {
 						if (now - lastTimeStatusSent > statusIntervalMillis) {
 							lastTimeStatusSent = now;
 							gpsListener.onGPSInfo(info);
+							if (gpsSmoother.isDiscarding()) {
+								gpsListener.onGPSStatus("fixing");
+							}
 						}
 
 						// Notify listener if interval passed and location available

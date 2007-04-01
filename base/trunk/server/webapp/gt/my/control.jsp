@@ -156,8 +156,8 @@
 				PersonLogic personLogic = new PersonLogic(model.getOase());
 				personLogic.insertUser(portalId, applicationId, null, null, firstName, lastName, null, null, null, null, null, null, null, mobile, email, null, loginName, password, null);
 				model.set(ATTR_STATUS_MSG, STATUS_MSG_NULL);
-				model.set(ATTR_TOP_MENU_URL, "menu/top-null.html");
-				model.set(ATTR_LEFT_MENU_URL, "menu/left-null.html");
+				model.set(ATTR_TOP_MENU_URL, "menu/top-init.html");
+				model.set(ATTR_LEFT_MENU_URL, "menu/left-init.html");
 				model.set(ATTR_CONTENT_URL, "content/login-form.jsp");
 				model.setResultMsg("register ok user=" + loginName);
 			} else if ("nav-media".equals(command)) {
