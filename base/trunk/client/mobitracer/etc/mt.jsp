@@ -58,7 +58,11 @@
 	jadString = jadString.replaceFirst("MT_OPTIONS", properties.getProperty("mt.options", "full"));
 
 	// GPS sample interval in millis default 20 secs
-	jadString = jadString.replaceFirst("GPS_SAMPLE_INTERVAL", properties.getProperty("gps.sample.interval", "20000"));
+	jadString = jadString.replaceFirst("GPS_SAMPLE_INTERVAL", properties.getProperty("gps.sample.interval", "5000"));
+
+
+	// GPS sample interval in millis default 20 secs
+	jadString = jadString.replaceFirst("GPS_SEND_INTERVAL", properties.getProperty("gps.send.interval", "25000"));
 
 	// Set username/password from query parms
 	String user = getParameter(request, "u", null);
