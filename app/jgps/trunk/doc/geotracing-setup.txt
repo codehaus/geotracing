@@ -84,6 +84,23 @@ keyworx admin
 http://localhost:8080/jgps/kwx
 default: admin, admin
 
+Client/Server communicatie
+1) sessie
+XML over HTTP/TCP
+login/create-track etc
+
+2) URL voor queries
+http://www.senseofthecity.nl/jgps/srv/get.jsp
+basis queries
+uitbreiden:
+server/webapp/srv/myget.jsp
+
+3) notificatie
+alleen voor real-time events via Pushlets
+
+Web/JavaScript debugger voor Firefox: Firebug
+http://www.getfirebug.com/
+
 
 
 

@@ -1,0 +1,27 @@
+
+<form id="addlocationform" name="addlocationform" enctype="multipart/form-data"  method="post" action="media.srv">
+	<table>
+		<tr>
+			<td>name *</td><td><input name="name" id="name" type="text"/></td>
+		</tr>
+		<tr>
+			<td>description</td><td><input name="description" id="description" type="text"/></td>
+		</tr>
+		<tr>
+			<td>file</td><td>
+			<input name="file" id="file" type="file"/>
+		</td>
+		</tr>
+		<tr>
+			<td>longitude</td><td><input name="lon" id="lon" type="text"/></td>
+		</tr>
+		<tr>
+			<td>latitude</td><td><input name="lat" id="lat" type="text"/></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<a href="#" onclick="return LOCAPP.addLocation();">[Add Location]</a>
+			</td>
+		</tr>
+	</table>
+</form>

@@ -22,14 +22,28 @@ var MYAPP = {
 	WINDOW_TITLE: 'GeoTracing - JGPS',
 	media: null,
 
+/** Load file that contains app-specific menu. */
+	createMenu: function(aMenuContent) {
+		if (!aMenuContent) {
+			DH.getURL('locmenu.html', GTAPP.createMenu);
+			return;
+		}
+
+		// Content loaded: setup menu
+		DH.setHTML('menucontainer', aMenuContent);
+		GTAPP.menu = new Menu('mainmenu');
+	},
+
 	empty: function() {
 
 	},
 
-	/** Bootstrap: called by GTAPP.init() */
+
+/** Bootstrap: called by GTAPP.init() */
 	init: function() {
 		// Overrule GTApp.js functions here
 		GTAPP.createMap = MYAPP.createMap;
+		GTAPP.createMenu = MYAPP.createMenu;
 
 		// Disable menu
 		//GTAPP.createMenu = MYAPP.empty;
@@ -66,7 +80,7 @@ var MYAPP = {
 		GTAPP.showStatus('Laden OK');
 	},
 
-	/** Bootstrap: called by GTAPP.init() */
+/** Bootstrap: called by GTAPP.init() */
 	start: function() {
 		// Position mainmenu (solves IE menu positioning problem)
 		if (DH.isIE == true) {
@@ -80,6 +94,7 @@ var MYAPP = {
 			}
 		}
 	},
+		
 
 	createMap: function() {
 		GTAPP.showStatus('Kaart laden ...');
@@ -105,7 +120,7 @@ var MYAPP = {
 		GMAP.map.enableDoubleClickZoom();
 
 		// Set map parm defaults (may be overridden by page parms in GMAP.showMap())
-		GMAP.setDefaultMapParms(new GLatLng(50.9303,5.3382), 13, 'hybrid');
+		GMAP.setDefaultMapParms(new GLatLng(50.9303, 5.3382), 13, 'hybrid');
 
 		// Show the map
 		GMAP.showMap();
