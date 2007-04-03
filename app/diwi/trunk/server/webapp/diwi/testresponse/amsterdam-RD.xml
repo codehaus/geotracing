@@ -3,28 +3,31 @@
      creator="Quikmaps: http://www.quikmaps.com/gpx/25485" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
      version="1.0" xmlns="http://www.topografix.com/GPX/1/0">
     <name>
-        <![CDATA[nijevelt]]>
+        <![CDATA[amsterdam]]>
     </name>
     <desc>
-        <![CDATA[prachtige route in de buurt van nijevelt]]>
+        <![CDATA[prachtige route in de buurt van de PdZ]]>
     </desc>
-    <wpt lon="5.4622650146484375" lat="52.20802744871354">
-        <name>1_1</name>
+    <wpt lon="123373.75" lat="487731.42">
+        <name>13_13</name>
     </wpt>
-     <wpt lon="5.479774475097656" lat="52.212866084558016">
-        <name>2_2</name>
+     <wpt lon="123312.48" lat="487747.85">
+        <name>14_14</name>
     </wpt>
-    <wpt lon="5.497283935546875" lat="52.20865860501437">
-        <name>3_3</name>
+    <wpt lon="123339.34" lat="487835.12">
+        <name>15_15</name>
     </wpt>
-    <wpt lon="5.491447448730469" lat="52.197085981518015">
-        <name>4_4</name>
+    <wpt lon="123369.16" lat="487928.21">
+        <name>16_16</name>
     </wpt>
-    <wpt lon="5.4801177978515625" lat="52.186773287414255">
-        <name>5_5</name>
+    <wpt lon="123447" lat="487990.38">
+        <name>17_17</name>
     </wpt>
-    <wpt lon="5.470848083496094" lat="52.19687554228558">
-        <name>6_6</name>        
+    <wpt lon="123399.08" lat="488035.87">
+        <name>18_18</name>
+    </wpt>
+    <wpt lon="123350.75" lat="488018.69">
+        <name>19_19</name>
     </wpt>
     <rte>
         <rtept lon="154100" lat="464306" />
