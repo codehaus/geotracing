@@ -20,6 +20,11 @@
         <table file="tables/diwi_ugc.xml"/>
         <table file="tables/diwi_traffic.xml"/>
 
+		<!-- GeoTracing tables, needed for recording tracks. -->
+		<table file="tables/g_track.xml"/>
+		<table file="tables/g_location.xml"/>
+		<table file="tables/g_area.xml"/>
+
 	<!--	<table file="tables/kw_comment.xml"/>     -->
 
 		<!-- External KWX plugin for tagging

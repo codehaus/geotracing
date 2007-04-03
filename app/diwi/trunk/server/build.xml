@@ -237,6 +237,15 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 			</fileset>
 		</copy>
 
+		<!-- Copy relevant GeoTracing tables -->	
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			 <fileset dir="${geotracing.server.dir}/cfg/tables">
+				 <include name="g_track.xml"/>
+				 <include name="g_location.xml"/>
+				 <include name="g_area.xml"/>
+			 </fileset>
+		 </copy>
+
 		<!-- until kwx plugins truly work in KeyWorx copy the jars and tables to get things working-->
 		 <copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
 			 <fileset dir="${kwx-metadata.dir}/cfg/tables">
