@@ -7,7 +7,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
-import java.awt.*;
 import java.io.IOException;
 
 /**
