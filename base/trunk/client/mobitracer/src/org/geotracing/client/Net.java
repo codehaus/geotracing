@@ -6,7 +6,6 @@ package org.geotracing.client;
 import nl.justobjects.mjox.JXElement;
 import org.keyworx.mclient.HTTPClient;
 import org.keyworx.mclient.Protocol;
-import org.geotracing.client.kwx.TCPClient;
 
 import javax.microedition.midlet.MIDlet;
 import java.util.Timer;
