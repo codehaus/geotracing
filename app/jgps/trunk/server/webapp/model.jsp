@@ -7,6 +7,7 @@
 <%@ page import="javax.servlet.ServletContext"%>
 <%@ page import="javax.servlet.http.HttpSession"%>
 <%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="org.geotracing.handler.QueryLogic"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("E' 'dd' 'MMM', 'yyyy");
@@ -125,7 +126,7 @@
 		}
 
 		public Record[] query(String tables, String fields, String where, String rels, String postCond) throws OaseException {
-			return QueryHandler.queryStore(getOase(), tables, fields, where, rels, postCond);
+			return QueryLogic.queryStore(getOase(), tables, fields, where, rels, postCond);
 		}
 	}
 
