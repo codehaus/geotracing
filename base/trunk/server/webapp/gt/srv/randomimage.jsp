@@ -3,6 +3,7 @@
 <%@ page import="org.keyworx.oase.api.Record"%>
 <%@ page import="org.keyworx.utopia.core.util.Oase"%>
 <%@ page import="javax.servlet.ServletContext"%>
+<%@ page import="org.geotracing.handler.QueryLogic"%>
 <%!
 	public static Oase oase;
 
@@ -26,7 +27,7 @@
 <%
 	String webAppURL  =  request.getRequestURL().toString().split("/srv/")[0];
 
-	Record[] records = QueryHandler.queryStore(getOase(application),
+	Record[] records = QueryLogic.getInstance().queryStore(getOase(application),
 			/* tables: */ "base_medium",
 			/* fields: */ null,
 			/* where:  */ "kind = 'image'",

@@ -3,23 +3,19 @@
 package org.geotracing.handler;
 
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.common.util.IO;
 import org.keyworx.common.util.Sys;
-import org.keyworx.oase.api.MediaFiler;
-import org.keyworx.oase.api.Record;
-import org.keyworx.oase.api.OaseException;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.data.*;
-import org.keyworx.utopia.core.session.*;
+import org.keyworx.utopia.core.data.Account;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.session.UtopiaRequest;
+import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.session.UtopiaSessionContext;
 import org.keyworx.utopia.core.util.Oase;
-import org.geotracing.gis.PostGISUtil;
-
-import java.io.File;
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * Handles all operations related to Tracks.
