@@ -10,7 +10,6 @@ import javax.microedition.io.ContentConnection;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Image;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
@@ -18,10 +17,9 @@ import javax.microedition.midlet.MIDlet;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Vector;
-import java.util.Date;
 import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.Date;
+import java.util.Vector;
 
 /**
  * Misc utilities.

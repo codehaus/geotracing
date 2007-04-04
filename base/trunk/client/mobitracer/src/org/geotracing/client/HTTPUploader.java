@@ -1,11 +1,13 @@
 package org.geotracing.client;
 
-import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.JXBuilder;
+import nl.justobjects.mjox.JXElement;
 
-import javax.microedition.io.HttpConnection;
 import javax.microedition.io.Connector;
-import java.io.*;
+import javax.microedition.io.HttpConnection;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * <code>HTTPUploader</code> is used to write

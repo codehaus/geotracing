@@ -3,8 +3,6 @@ package org.geotracing.client;
 import nl.justobjects.mjox.JXElement;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
 import java.io.IOException;
