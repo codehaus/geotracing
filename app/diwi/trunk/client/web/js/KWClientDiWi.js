@@ -105,7 +105,29 @@ KW.DIWI = {
 		var req = KW.createRequest('route-getlist-req');
         req.documentElement.setAttribute('type', 'generated');        
         KW.utopia(req, callback);
-	}
+	},
 	
+	tracepoint: function(callback, lat, lon, time) {
+		var req = KW.createRequest('nav-point-req');
+		var pt = req.createElement('pt');
+		pt.setAttribute('lat', lat);
+		pt.setAttribute('lon', lon);			
+		pt.setAttribute('t', time);			
 		
+		req.documentElement.appendChild(pt);
+				
+		KW.utopia(req, callback);		
+	},
+	
+	starttrace: function(callback) {
+		var req = KW.createRequest('nav-start-req');
+
+		KW.utopia(req, callback);		
+	},
+	
+	stoptrace: function(callback) {
+		var req = KW.createRequest('nav-stop-req');
+
+		KW.utopia(req, callback);		
+	}		
 }

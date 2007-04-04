@@ -107,6 +107,22 @@
                 KW.DIWI.getgeneratedroute(TST.onRsp, personid);
 			},
 
+			tracePoint: function(form) {
+				var lat = form.lat.value;
+				var lon = form.lon.value;
+				var time = new Date().getTime();
+
+				KW.DIWI.tracepoint(TST.onRsp, lat, lon, time);							
+			},
+
+			startTrace: function(form) {
+				KW.DIWI.starttrace(TST.onRsp);							
+			},
+
+			stopTrace: function(form) {
+				KW.DIWI.stoptrace(TST.onRsp);							
+			},
+
             onMapRsp: function(elm) {
 				if (!elm) {
 					TST.pr('empty response');
@@ -197,6 +213,24 @@
 	</table>
 </form>
 
+<form>
+	<h2>Track Point</h2>
+	<table>
+	<tr><td><b>lon:</b> </td><td><input type="text" name="lon" value=""/></td></tr>
+	<tr><td><b>lat:</b> </td><td><input type="text" name="lat" value=""/></td></tr>	
+	<tr><td><input type="button" name="button" value="Track Point" onClick="TST.tracePoint(this.form)"/></td></tr>		
+	</table>
+</form>
+
+<form>
+	<h2>Start Tracing</h2>
+	<input type="button" name="button" value="Start Trace" onClick="TST.startTrace(this.form)"/>		
+</form>
+
+<form>
+	<h2>Stop Tracing</h2>
+	<input type="button" name="button" value="Stop Trace" onClick="TST.stopTrace(this.form)"/>		
+</form>
 
 <form>
 	<h2>Get Preferences</h2>
@@ -210,7 +244,7 @@
 
 <form>
 	<h2>Get Generated Route</h2>
-    <input type="button" name="button" value="Get Generated Route" onClick="TST.getGeneratedARoute(this.form)"/>
+    <input type="button" name="button" value="Get Generated Route" onClick="TST.getGeneratedRoute(this.form)"/>
 </form>
 </div>
 
