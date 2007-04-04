@@ -64,7 +64,8 @@
 			</handler>
             <handler id="poi" class="nl.diwi.control.POIHandler" />
             <handler id="kich" class="nl.diwi.control.KICHHandler" />
-			<handler id="diwi" class="nl.diwi.control.DiWiHandler"/>
+			<handler id="user" class="nl.diwi.control.UserHandler"/>
+			<handler id="nav" class="nl.diwi.control.NavigationHandler"/>
         </handlers>
 
 
