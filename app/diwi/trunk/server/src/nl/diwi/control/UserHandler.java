@@ -14,9 +14,10 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 
-public class DiWiHandler extends DefaultHandler implements Constants {
+public class UserHandler extends DefaultHandler implements Constants {
 
-    public final static String DIWI_GET_PREFERENCES = "diwi-get-preferences";	
+    public final static String USER_GET_PREFERENCES = "user-get-preferences";	
+    
 	
     /**
 	 * Processes the Client Request.
@@ -32,7 +33,7 @@ public class DiWiHandler extends DefaultHandler implements Constants {
 
 		JXElement response;
 		try {
-			if (service.equals(DIWI_GET_PREFERENCES)) {
+			if (service.equals(USER_GET_PREFERENCES)) {
 				response = getPreferences(anUtopiaReq);
 			} else {
 				// May be overridden in subclass
@@ -61,7 +62,7 @@ public class DiWiHandler extends DefaultHandler implements Constants {
 		Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 		String personId  = anUtopiaReq.getUtopiaSession().getContext().getUserId();
         Record person;
-        JXElement response = createResponse(DIWI_GET_PREFERENCES);
+        JXElement response = createResponse(USER_GET_PREFERENCES);
 
         try {
 			person = oase.getFinder().read(Integer.parseInt(personId));
