@@ -11,6 +11,7 @@ namespace Diwi {
         private DiwiPageBase gpsPage = null;
         private DiwiPageBase liPage = null;
         private DiwiPageBase testPage = null;
+        private DiwiPageBase startPage = null;
 
         public MainPage(DiwiPageBase parent)
             : base(parent) {
@@ -24,12 +25,14 @@ namespace Diwi {
             mMenu.addItem("Inloggen", new DiwiUIMenu.DiwiMenuCallbackHandler(doLogin));
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS));
             mMenu.addItem("Test", new DiwiUIMenu.DiwiMenuCallbackHandler(doTest));
+            mMenu.addItem("Startpagina", new DiwiUIMenu.DiwiMenuCallbackHandler(doStart));
             mMenu.addItem("Quit", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Hoofdmenu";
         }
 
-        void doUitleg() {
+        void doUitleg()
+        {
             if (uitLegPage == null)
                 uitLegPage = new UitlegPage(this);
             uitLegPage.ShowDialog();
@@ -47,7 +50,12 @@ namespace Diwi {
                 testPage = new TestPage(this);
             testPage.ShowDialog();
         }
-
+        void doStart()
+        {
+            if (startPage == null)
+                startPage = new StartPage(this);
+            startPage.ShowDialog();
+        }
        protected override void doTerug() {
             AppController.deactivate();
             Close();

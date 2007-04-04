@@ -12,8 +12,6 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class StartPage : DiwiPageBase {
 
-        private DiwiImage mFoto;
-
         public StartPage(DiwiPageBase parent)
             : base(parent) {
 
@@ -21,49 +19,15 @@ namespace Diwi {
             //mMenu.addItem("Maak foto", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             //mMenu.addItem("Over DiWi", new DiwiUIMenu.DiwiMenuCallbackHandler(doOver));
             //mMenu.addItem("FAQ", new DiwiUIMenu.DiwiMenuCallbackHandler(doFaq));
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            //mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "StartPagina";
-
-            mFoto = new DiwiImage(offScreenGraphics, this);
-            mFoto.size = new Size(180, 135);
-            mFoto.x = 10;
-            mFoto.y = 170;
-            addDrawable(mFoto);
-
             //display start image
-            System.Reflection.Assembly asse = System.Reflection.Assembly.GetExecutingAssembly();
-            Stream stream = null;
-            try
-            {
-                stream = asse.GetManifestResourceStream("Diwi.start.gif");
-                Bitmap resBmp = new Bitmap(stream);
-                Graphics gScreen = CreateGraphics();
-                gScreen.DrawImage(resBmp, 10, 10);
-            }
-            catch (System.IO.FileNotFoundException e)
-            {
-                MessageBox.Show(e.Message);
-            }
+            setImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
             
         }
-        
-        void doFoto() {
-            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
-            cameraCaptureDialog.Owner = this;
-            cameraCaptureDialog.Title = "Neem een foto";
-            cameraCaptureDialog.Mode = CameraCaptureMode.Still;
-            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
-                mFoto.bitmap = new Bitmap(cameraCaptureDialog.FileName);
-                draw();
-            }
-        }
-        
-        
-        void doOver() {
-        }
 
-        void doFaq() {
+        void doOver() {
         }
 
         protected override void OnLoad(EventArgs e) {
@@ -75,12 +39,11 @@ namespace Diwi {
             // change location of stuff
             if (base.doResize(e) == true) {
                 if (mIsInitialized) {
-                    if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-                        mFoto.x = 10;
-                        mFoto.y = 100;
+                    if (this.ClientRectangle.Width > this.ClientRectangle.Height)
+                    {
+                        setImg(@"Diwi.Resources.start_horz.gif", 320, 240, 0, 0);
                     } else {
-                        mFoto.x = 10;
-                        mFoto.y = 170;
+                        setImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
                     }
                     draw();
                 }
