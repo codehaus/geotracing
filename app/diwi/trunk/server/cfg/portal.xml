@@ -66,6 +66,12 @@
             <handler id="kich" class="nl.diwi.control.KICHHandler" />
 			<handler id="user" class="nl.diwi.control.UserHandler"/>
 			<handler id="nav" class="nl.diwi.control.NavigationHandler"/>
+
+			<!-- Handler for ALL queries -->
+			<handler id="query" class="org.geotracing.handler.QueryHandler">
+				<property name="logic">org.geotracing.handler.QueryLogic</property>
+			</handler>
+ 
         </handlers>
 
 
