@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Threading;
 using System.Collections;
+using System.IO;
 
 namespace Diwi {   // base class for Diwi Pages.
     // 
@@ -74,6 +75,24 @@ namespace Diwi {   // base class for Diwi Pages.
 
         protected void addDrawable(DiwiDrawable d) {
             mDrawableElements.Add(d);
+        }
+
+        protected void setImg(String anImageName, int aWidth, int aHeight, int aX, int aY){
+            System.Reflection.Assembly asse = System.Reflection.Assembly.GetExecutingAssembly();
+            Stream stream = null;
+            try{
+                stream = asse.GetManifestResourceStream(anImageName);
+                DiwiImage img = new DiwiImage(offScreenGraphics, this);
+                img.bitmap = new Bitmap(stream);
+                Size size = new Size(aWidth, aHeight);
+                img.size = size;
+                img.x = aX;
+                img.y = aY;
+                addDrawable(img);
+                draw();
+            }catch (System.IO.FileNotFoundException e){
+                MessageBox.Show(e.Message);
+            }
         }
 
         public void redrawRect(Rectangle oldR, Rectangle newR) {

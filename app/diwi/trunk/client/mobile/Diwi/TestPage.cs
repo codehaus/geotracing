@@ -20,31 +20,12 @@ namespace Diwi {
 
             title = "Test";
 
-            setImage();
-            getRoutes();
-            Stream mov = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("");
+            //getRoutes();
+            //Stream mov = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("");
             //File f = File.Create("sdc");
             //viewVideoFileInWMP(f);
             
         }
-
-        private void setImage(){
-            System.Reflection.Assembly asse = System.Reflection.Assembly.GetExecutingAssembly();
-            Stream stream = null;
-            try
-            {
-                stream = asse.GetManifestResourceStream("start.bmp");
-                Bitmap resBmp = new Bitmap(stream);
-                DiwiImage res = new DiwiImage(offScreenGraphics, this);
-                addDrawable(res);
-                draw();
-            }
-            catch (System.IO.FileNotFoundException e)
-            {
-                MessageBox.Show(e.Message);
-            }
-        }
-
         private void viewVideoFileInWMP(string fn)
         {
             Process process = new Process();
