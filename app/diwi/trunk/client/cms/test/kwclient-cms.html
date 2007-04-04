@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+		"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+	<link rel="stylesheet" href="css/common.css" type="text/css"/>
+	<script type="text/javascript" src="../lib/gt/DHTML.js"></script>
+	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
+	<script type="text/javascript" src="../lib/gt/KWClientExt.js"></script>
+	<script type="text/javascript" src="../js/KWClientCMS.js"></script>
+	<script type="text/javascript">
+
+
+		var TST = {
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+				TST.login();
+				
+				TST.pr('init done');
+			},
+
+				// called from form submit
+			login: function() {
+				TST.pr('login start');
+				var name = 'geoapp-user';
+				var password = 'user';
+				TST.pr('login name=' + name + ' password=' + password);
+
+				// Call KWClient
+				KW.login(name, password);
+				TST.pr('login sent');
+				return false;
+			},
+
+			logout: function() {
+				TST.pr('logout start');
+				// KeyWorx client
+				KW.logout();
+				TST.pr('logout sent');
+				return false;
+			},
+
+			getStartPoints: function(form) {
+				KW.CMS.getstartpoints(TST.onRsp);							
+			},
+
+			getEndPoints: function(form) {
+				KW.CMS.getendpoints(TST.onRsp);							
+			},
+
+			getThemes: function(form) {
+				KW.CMS.getthemes(TST.onRsp);							
+			},
+
+			insertPoi: function(form) {
+				var poi = new Object();
+				poi.name = form.name.value; 
+				poi.description = form.description.value;
+				poi.category = form.category.value;
+				poi.type = form.type.value;
+				poi.x = form.x.value;
+				poi.y = form.y.value;
+				poi.kichuri1 = form.kichuri1.value;
+				poi.kichuri2 = form.kichuri2.value;
+				poi.kichuri3 = form.kichuri3.value;
+							
+				KW.CMS.addpoi(TST.onRsp, poi);							
+			},
+			
+			updatePoi: function(form) {
+				var poi = new Object();
+				var id = form.id.value;
+				poi.name = form.name.value; 
+				poi.description = form.description.value;
+				poi.category = form.category.value;
+				poi.type = form.type.value;
+				poi.x = form.x.value;
+				poi.y = form.y.value;
+				poi.kichuri1 = form.kichuri1.value;
+				poi.kichuri2 = form.kichuri2.value;
+				poi.kichuri3 = form.kichuri3.value;
+				KW.CMS.updatepoi(TST.onRsp, id, poi);							
+			},
+
+			deletePoi: function(form) {
+				var id = form.id.value;
+				KW.CMS.deletePoi(TST.onRsp, id);							
+			},
+			
+			getAllPoi: function(form) {
+				KW.CMS.getallpoi(TST.onRsp);							
+			},		
+
+			getAllMedia: function(form) {
+				KW.CMS.getallmedia(TST.onRsp);							
+			},
+
+            syncKICH: function(form) {
+				KW.CMS.syncKICH(TST.onRsp);
+			},
+
+            Poi: function(form) {
+				KW.CMS.getthemes(TST.onRsp);							
+			},			
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('server response ' + elm.tagName);
+				if (elm.tagName == 'login-rsp') {
+					KW.selectApp('geoapp', 'user');
+				} else if (elm.tagName == 'select-app-rsp') {
+					TST.pr('login OK');
+					TST.pr('storing session, key=' + KW.agentKey);
+					
+					
+				} else if (elm.tagName == 'logout-rsp') {
+					TST.pr('logout OK');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+	</script>
+
+</head>
+
+<body>
+<div id="services" style="height: 470px; overflow:  scroll">
+
+<form>
+	<h2>Get Themes</h2>
+	<input type="button" name="button" value="Get Themes" onClick="TST.getThemes(this.form)"/>	
+</form>
+
+<form>
+	<h2>Get Start Points</h2>
+	<input type="button" name="button" value="Get Start Points" onClick="TST.getStartPoints(this.form)"/>	
+</form>
+
+<form>
+	<h2>Get End Points</h2>
+	<input type="button" name="button" value="Get End Points" onClick="TST.getEndPoints(this.form)"/>	
+</form>
+
+<form>
+	<h2>Insert/Update POI</h2>
+	<table>
+	<tr><td><b>ID:</b> </td><td><input type="text" name="id" value=""/></td></tr>
+	<tr><td><b>name:</b> </td><td><input type="text" name="name" value=""/></td></tr>
+	<tr><td><b>description:</b> </td><td><input type="text" name="description" value=""/></td></tr>
+	<tr><td><b>type:</b> </td><td><input type="text" name="type" value=""/></td></tr>
+	<tr><td><b>category:</b> </td><td><input type="text" name="category" value=""/></td></tr>
+	<tr><td><b>x:</b> </td><td><input type="text" name="x" value=""/></td></tr>
+	<tr><td><b>y:</b> </td><td><input type="text" name="y" value=""/></td></tr>
+	<tr><td><b>uri1:</b> </td><td><input type="text" name="kichuri1" value=""/></td></tr>
+	<tr><td><b>uri1:</b> </td><td><input type="text" name="kichuri2" value=""/></td></tr>
+	<tr><td><b>uri1:</b> </td><td><input type="text" name="kichuri3" value=""/></td></tr>
+	<tr><td><input type="button" name="button" value="Insert POI" onClick="TST.insertPoi(this.form)"/><input type="button" name="button" value="Update POI" onClick="TST.updatePoi(this.form)"/></td></tr>		
+	</table>
+		
+</form>
+
+<form>
+	<h2>Delete POI</h2>
+	<b>ID:</b> <input type="text" name="id" value=""/><br/>
+	<input type="button" name="button" value="Delete Poi" onClick="TST.deletePoi(this.form)"/>		
+</form>
+
+<form>
+	<h2>All POIs</h2>
+	<input type="button" name="button" value="Get all Pois" onClick="TST.getAllPoi(this.form)"/>		
+</form>
+
+<form>
+	<h2>All Media</h2>
+	<input type="button" name="button" value="Get all Media" onClick="TST.getAllMedia(this.form)"/>		
+</form>
+
+<form>
+	<h2>Sync KICH</h2>
+	<input type="button" name="button" value="sync KICH" onClick="TST.syncKICH(this.form)"/>
+</form>
+
+</div>
+
+<div id="result"><b>DEBUG INFO</b></div>
+
+
+
+</body>
+</html>
