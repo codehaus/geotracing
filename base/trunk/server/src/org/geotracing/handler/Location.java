@@ -3,7 +3,6 @@
 
 package org.geotracing.handler;
 
-import org.geotracing.gis.PostGISUtil;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.BaseImpl;

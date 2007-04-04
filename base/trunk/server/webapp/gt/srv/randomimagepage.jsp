@@ -1,4 +1,4 @@
-<%@ page import="org.geotracing.handler.QueryHandler"%>
+<%@ page import="org.geotracing.handler.QueryLogic"%>
 <%@ page import="org.keyworx.amuse.core.Amuse"%>
 <%@ page import="org.keyworx.oase.api.Record"%>
 <%@ page import="org.keyworx.utopia.core.util.Oase"%>
@@ -27,7 +27,7 @@
 	String webAppURL  =  request.getRequestURL().toString().split("/srv/")[0];
 
 	int count = 12;
-	Record[] records = QueryHandler.queryStore(getOase(application),
+	Record[] records = QueryLogic.queryStore(getOase(application),
 			/* tables: */ "base_medium",
 			/* fields: */ null,
 			/* where:  */ "kind = 'image'",

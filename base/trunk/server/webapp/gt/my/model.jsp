@@ -10,6 +10,7 @@
 <%@ page import="javax.servlet.ServletContext"%>
 <%@ page import="javax.servlet.http.HttpSession"%>
 <%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="org.geotracing.handler.QueryLogic"%>
 <%!
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 	public static final SimpleDateFormat DATE_ONLY_FORMAT = new SimpleDateFormat("E' 'dd' 'MMM', 'yyyy");
@@ -165,7 +166,7 @@
 		public Record[] query(String tables, String fields, String where, String relations, String postCond) {
 			try {
 				long t1 = Sys.now();
-				Record[] recs = QueryHandler.queryStore(getOase(), tables, fields, where, relations, postCond);
+				Record[] recs = QueryLogic.getInstance().queryStore(getOase(), tables, fields, where, relations, postCond);
 				long t2 = Sys.now();
 				setResultMsg("Query OK cnt=" + recs.length + " delta=" + (t2-t1) + " ms");
 				return recs;

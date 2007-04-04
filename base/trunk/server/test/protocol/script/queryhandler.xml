@@ -16,6 +16,34 @@
 		</expect>
 	</test>
 
+	<test id="unknown-query">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-unknown" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-nrsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="query-tracks-by-user">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-tracks-by-user" user="just"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+<!--
 	<test id="query-one-table-all">
 		<send id="client1">
 			<utopia-req>
@@ -87,7 +115,7 @@
 			</utopia-rsp>
 		</expect>
 	</test>
-
+   -->
 	<test id="logout">
 		<send id="client1">
 			<logout-req/>

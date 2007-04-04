@@ -15,7 +15,6 @@ import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.Point;
-import org.postgis.PGgeometryLW;
 
 import java.text.SimpleDateFormat;
 import java.util.*;

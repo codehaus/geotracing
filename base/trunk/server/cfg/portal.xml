@@ -37,7 +37,11 @@
 			</handler>
 
 			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
-		<!--	<handler id="query" class="org.geotracing.handler.QueryHandler"/>  -->
+
+			<!-- Handler for ALL queries -->
+			<handler id="query" class="org.geotracing.handler.QueryHandler">
+				<property name="logic">org.geotracing.handler.QueryLogic</property>				
+			</handler>
 
 			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
 				<property name="allow-anonymous">true</property>
