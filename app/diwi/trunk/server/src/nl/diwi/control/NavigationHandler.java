@@ -1,8 +1,16 @@
 package nl.diwi.control;
 
+import java.util.Vector;
+
+import nl.diwi.logic.RouteLogic;
 import nl.diwi.logic.TrafficLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
+
+import org.geotracing.handler.EventPublisher;
+import org.geotracing.handler.HandlerUtil;
+import org.geotracing.handler.Track;
+import org.geotracing.handler.TrackLogic;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
@@ -16,10 +24,12 @@ import org.keyworx.utopia.core.util.Oase;
 
 public class NavigationHandler extends DefaultHandler implements Constants {
 
-    public final static String NAV_GET_MAP = "nav_get_map";	
-    public final static String NAV_POINT = "nav_point";	
-    public final static String NAV_ACTIVATE_ROUTE = "nav_activate_route";	    
-    public final static String NAV_DEACTIVATE_ROUTE = "nav_deactivate_route";	    
+    public final static String NAV_GET_MAP = "nav-get-map";	
+    public final static String NAV_POINT = "nav-point";	
+    public final static String NAV_START = "nav-start";	
+    public final static String NAV_STOP = "nav-stop";	    
+    public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";	    
+    public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";	    
     
     /**
 	 * Processes the Client Request.
@@ -37,6 +47,12 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		try {
 			if (service.equals(NAV_GET_MAP)) {
 				response = getMap(anUtopiaReq);
+			} else if (service.equals(NAV_START)) {
+				response = startNavigation(anUtopiaReq);
+			} else if (service.equals(NAV_STOP)) {
+				response = stopNavigation(anUtopiaReq);
+			} else if (service.equals(NAV_POINT)) {
+				response = handlePoint(anUtopiaReq);
 			} else {
 				// May be overridden in subclass
 				response = unknownReq(anUtopiaReq);
@@ -58,6 +74,38 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		// Always return a response
 		log.trace("Handled service=" + service + " response=" + response.getTag());
 		return new UtopiaResponse(response);		
+	}
+
+	private JXElement handlePoint(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		JXElement reqElm = anUtopiaReq.getRequestCommand();
+		TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+
+		Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+		
+		//result contains 'pt' elements with everything filled out if an EMEA string was sent.
+				
+		return createResponse(NAV_POINT);
+		
+	}
+
+	private JXElement stopNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+		
+		// Resume current Track for this user
+		trackLogic.suspend(HandlerUtil.getUserId(anUtopiaReq), System.currentTimeMillis());
+
+		// Create and return response with open track id.
+		return createResponse(NAV_STOP);
+	}
+
+	private JXElement startNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+		
+		// Resume current Track for this user
+		trackLogic.resume(HandlerUtil.getUserId(anUtopiaReq), Track.VAL_DAY_TRACK, System.currentTimeMillis());
+
+		// Create and return response with open track id.
+		return createResponse(NAV_START);
 	}
 
 	private JXElement getMap(UtopiaRequest anUtopiaReq) {
