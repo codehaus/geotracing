@@ -1,0 +1,291 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <style type="text/css">
+ 	 #map {
+	width: 512px;
+	height: 512px;
+	border: 1px solid black;
+	top: 80px;
+	 }
+    </style>
+
+  <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+  <script src="http://test.digitalewichelroede.nl/web/lib/gt/DHTML.js"></script>  
+  <script src="http://test.digitalewichelroede.nl/web/lib/gt/KWClient.js"></script>
+  <script src="http://test.digitalewichelroede.nl/web/lib/gt/KWClientExt.js"></script>
+  <script src="http://test.digitalewichelroede.nl/web/lib/gt/KWClientCMS.js"></script>  
+  
+ <script type="text/javascript">
+<!--
+
+/*		
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+OpenLayer implementaties
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+		var x = 155500;
+		var y = 462500;
+		var zoom = 6;		
+        function init(){
+		
+			// mag control initieren (RD projectie)
+			var map = new OpenLayers.Map($('map'), {
+				controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()],
+				maxExtent: new OpenLayers.Bounds(-157973.103596, 300670.145842, 472056.321374,678687.800824),
+				units: 'meters', projection: "EPSG:28992", 'maxResolution':'auto', numZoomLevels: 15});			
+		
+            //declaratie van de wms lagen
+			var referentie_en_routes = new OpenLayers.Layer.WMS.Untiled( "refentie en routes", "http://test.digitalewichelroede.nl/map", {layers: 'topnl_geese,all_diwi_routes'});
+  	       
+		
+			//lagen toevoegen aan map
+            map.addLayer(referentie_en_routes);
+			map.setCenter(new OpenLayers.LonLat(x, y), zoom);
+			
+			// widget voor wisselen lagen
+			map.addControl(new OpenLayers.Control.LayerSwitcher());
+			
+			// real world coordinaten van de huidig muis positie
+			map.addControl(new OpenLayers.Control.MousePosition());
+			   
+			// click event om huidige positie van muiswijzer te vangen en te vertalen naar RD
+			map.events.register("click", map, function(e) { 
+            	var lonlat = map.getLonLatFromViewPortPx(e.xy);
+				document.poidata.x.value = lonlat.lon;
+				document.poidata.y.value = lonlat.lat;
+            });
+		}
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Einde Openlayer functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+KeyWorx functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+		var TST = 
+		{
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+				TST.login();
+				
+				TST.pr('init done');
+			},
+
+				// called from form submit
+			login: function() {
+				TST.pr('login start');
+				var name = 'geoapp-user';
+				var password = 'user';
+				TST.pr('login name=' + name + ' password=' + password);
+
+				// Call KWClient
+				KW.login(name, password);
+				TST.pr('login sent');
+				return false;
+			},
+
+			logout: function() {
+				TST.pr('logout start');
+				// KeyWorx client
+				KW.logout();
+				TST.pr('logout sent');
+				return false;
+			},
+
+			getStartPoints: function(form) {
+				KW.CMS.getstartpoints(TST.onRsp);							
+			},
+
+			getEndPoints: function(form) {
+				KW.CMS.getendpoints(TST.onRsp);							
+			},
+
+			getThemes: function(form) {
+				KW.CMS.getthemes(TST.onRsp);							
+			},
+
+			insertPoi: function(form) {
+				var poi = new Object();
+				poi.name = form.name.value; 
+				poi.description = form.description.value;
+				poi.category = form.category.value;
+				poi.type = form.type.value;
+				poi.x = form.x.value;
+				poi.y = form.y.value;
+				poi.kichuri1 = form.kichuri1.value;
+				poi.kichuri2 = form.kichuri2.value;
+				poi.kichuri3 = form.kichuri3.value;
+							
+				KW.CMS.addpoi(TST.onRsp, poi);							
+			},
+			
+			updatePoi: function(form) {
+				var poi = new Object();
+				var id = form.id.value;
+				poi.name = form.name.value; 
+				poi.description = form.description.value;
+				poi.category = form.category.value;
+				poi.type = form.type.value;
+				poi.x = form.x.value;
+				poi.y = form.y.value;
+				poi.kichuri1 = form.kichuri1.value;
+				poi.kichuri2 = form.kichuri2.value;
+				poi.kichuri3 = form.kichuri3.value;
+				KW.CMS.updatepoi(TST.onRsp, id, poi);							
+			},
+
+			deletePoi: function(form) {
+				var id = form.id.value;
+				KW.CMS.deletePoi(TST.onRsp, id);							
+			},
+			
+			getAllPoi: function(form) {
+				KW.CMS.getallpoi(TST.onRsp);							
+			},		
+
+			getAllMedia: function(form) {
+				KW.CMS.getallmedia(TST.onRsp);							
+			},
+
+            syncKICH: function(form) {
+				KW.CMS.syncKICH(TST.onRsp);
+			},
+
+            Poi: function(form) {
+				KW.CMS.getthemes(TST.onRsp);							
+			},			
+			
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('server response ' + elm.tagName);
+				if (elm.tagName == 'login-rsp') {
+					KW.selectApp('geoapp', 'user');
+				} else if (elm.tagName == 'select-app-rsp') {
+					TST.pr('login OK');
+					TST.pr('storing session, key=' + KW.agentKey);
+					
+				} else if (elm.tagName == 'logout-rsp') {
+					TST.pr('logout OK');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Einde KW functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+// -->
+</script>
+
+  </head>
+</html>
+<div id="Layer1" style="position:absolute; width:200px; height:115px; z-index:2"></div>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  </head>
+  <body onload="init()">  
+  <h3>DIWI CMS</h3>
+  <p>&nbsp;</p>
+  <div id="stap1" style="position:absolute; width:511px; z-index:3; left: 11px; top: 55px;">
+    <p><strong>stap 1: </strong>click op de kaart of bestaande poi om toe te voegen of aan te passen: </p>
+  </div>
+  <div id="poidata" style="position:absolute; width:423px; height:514px; z-index:2; left: 545px; top: 80px;">
+<form action="http://www.naardiwi.nl/" method="get" name="poidata" id="poidata">
+			<table width="400" border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="200"><strong>id:<br>
+                </strong><strong>
+                <input name="id" type="text" id="id2" size="25">
+                </strong></td>
+                <td width="200"><strong>type:<br>
+                    <select name="type" id="type">
+                      <option value="0">maak keuze.............</option>
+                      <option value="1">KICH</option>
+                      <option value="2">Gebruiker</option>
+                      <option value="3">Horeca</option>
+                    </select>
+                </strong></td>
+              </tr>
+              <tr>
+                <td><strong>x:<br>
+                </strong>
+                  <input name="x" type="text" id="x3" size="25">
+                  <strong></strong></td>
+                <td><strong>categorie:<br>
+                    <select name="category" id="category">
+                      <option value="0">maak keuze.............</option>
+                      <option value="1">Cat1</option>
+                      <option value="2">Cat2</option>
+                      <option value="3">Cat3</option>
+                    </select>
+                </strong></td>
+              </tr>
+              <tr>
+                <td><strong>y:</strong><br>
+                  <input name="y" type="text" id="y2" size="25"></td>
+                <td><strong>naam:<br>
+                    <input name="name" type="text" id="name" size="25">
+                </strong></td>
+              </tr>
+            </table>
+			<br>
+			<strong>beschrijving:<br>
+	            <textarea name="description" cols="50" rows="10" id="description"></textarea>
+	</strong><strong>            </strong></p>
+	<p><strong>uri 1:</strong><strong>
+			  <input name="kichuri1" type="text" id="kichuri1" size="50">
+			</strong></p>
+			<p><strong>uri 2:</strong><strong>
+            <input name="kichuri2" type="text" id="kichuri2" size="50">
+			</strong></p>
+			<p><strong>uri 3:</strong><strong>
+            <input name="kichuri3" type="text" id="kichuri3" size="50">
+			</strong></p>
+			<p>
+			  <input type="button" name="Button" value="Voeg toe" onClick="TST.insertPoi(this.form)"/>		
+			  <input type="button" name="Button" value="Pas aan" onClick="TST.updatePoi(this.form)"/>		
+			  <input type="button" name="Button" value="Verwijder" onClick="TST.deletePoi(this.form)"/>		
+    </p>
+</form>
+  </div>
+  
+    <div id="map" style="position:absolute; z-index:1">	</div>
+
+    <div id="stap2" style="position:absolute; width:432px; z-index:4; left: 545px; top: 55px;"><strong>stap 2</strong>: voeg gegevens toe of pas deze aan </div>
+  </body>
+</htm
