@@ -56,6 +56,6 @@
 		<field name="media" type="XML" required="false"/>
 		<field name="extra" type="XML" required="false"/>
         <!-- spec="<TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]" -->
-        <field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,28992,INDEX_GIST"/>
+        <field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/>
     </data>
 </table>

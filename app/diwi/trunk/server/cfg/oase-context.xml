@@ -17,7 +17,6 @@
         <table file="tables/diwi_route.xml"/>
         <table file="tables/diwi_prefs.xml"/>
         <table file="tables/diwi_poi.xml"/>
-        <table file="tables/diwi_ugc.xml"/>
         <table file="tables/diwi_traffic.xml"/>
 
 		<!-- GeoTracing tables, needed for recording tracks. -->

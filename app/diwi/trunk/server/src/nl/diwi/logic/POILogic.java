@@ -80,59 +80,59 @@ public class POILogic implements Constants {
 			poi.setStringField(KICHID_FIELD, aPOIElement.getChildText(ID_FIELD));
 			setFields(poi, null, aPOIElement);
 			oase.getModifier().insert(poi);
-            
-            processTestMedia(aPOIElement, poi);
 
-            return  poi.getId();
-        } catch (OaseException oe) {
+			processTestMedia(aPOIElement, poi);
+
+			return poi.getId();
+		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot insert poi record", oe, ErrorCode.__6006_database_irregularity_error);
 		} catch (Throwable t) {
 			throw new UtopiaException("Exception in POILogic.insert() : " + t.toString(), ErrorCode.__6005_Unexpected_error);
 		}
 	}
 
-    private void processTestMedia(JXElement aPOIElement, Record aPOI)throws UtopiaException{
-        try{
-            String mediaUrl = Amuse.server.getPortal().getProperty(MEDIA_URL);
-            // now check if there's is media present so we can add these
-            JXElement media = aPOIElement.getChildByTag("media");
-            if(media!=null){
-                Vector uris = media.getChildrenByTag(KICH_URI_ELM);
-                for(int i=0;i<uris.size();i++){
-                    JXElement uri = (JXElement)uris.elementAt(i);
-                    String mediumFileName = uri.getAttr("medium");
-                    if(mediumFileName!=null && mediumFileName.length()>0){
-                        //File f = new File(TEST_DATA_URL + "/" + mediumFileName);                        
-                        File f = new File(Amuse.server.getPortal().getProperty(TEST_DATA_LOCATION) + "/" + mediumFileName);
-                        if(f.exists()){
-                            log.info("create the medium!!:" + mediumFileName);
-                            HashMap attrs = new HashMap(3);
-                            attrs.put(MediaFiler.FIELD_FILENAME, mediumFileName);
-                            if(mediumFileName.indexOf("3gp")!=-1){
-                                attrs.put(MediaFiler.FIELD_MIME, "video/3gpp");
-                            }
-                            Record medium = oase.getMediaFiler().insert(f, attrs);
-                            oase.getRelater().relate(aPOI, medium);
+	private void processTestMedia(JXElement aPOIElement, Record aPOI) throws UtopiaException {
+		try {
+			String mediaUrl = Amuse.server.getPortal().getProperty(MEDIA_URL);
+			// now check if there's is media present so we can add these
+			JXElement media = aPOIElement.getChildByTag("media");
+			if (media != null) {
+				Vector uris = media.getChildrenByTag(KICH_URI_ELM);
+				for (int i = 0; i < uris.size(); i++) {
+					JXElement uri = (JXElement) uris.elementAt(i);
+					String mediumFileName = uri.getAttr("medium");
+					if (mediumFileName != null && mediumFileName.length() > 0) {
+						//File f = new File(TEST_DATA_URL + "/" + mediumFileName);
+						File f = new File(Amuse.server.getPortal().getProperty(TEST_DATA_LOCATION) + "/" + mediumFileName);
+						if (f.exists()) {
+							log.info("create the medium!!:" + mediumFileName);
+							HashMap attrs = new HashMap(3);
+							attrs.put(MediaFiler.FIELD_FILENAME, mediumFileName);
+							if (mediumFileName.indexOf("3gp") != -1) {
+								attrs.put(MediaFiler.FIELD_MIME, "video/3gpp");
+							}
+							Record medium = oase.getMediaFiler().insert(f, attrs);
+							oase.getRelater().relate(aPOI, medium);
 
-                            uri.setText(mediaUrl + medium.getId());
-                            uri.removeAttr("medium");
-                        }else{
-                            log.info("could not find the file!!!:" + mediumFileName);
-                        }
-                    }
-                }
-                // update the poi
-                aPOI.setXMLField(MEDIA_FIELD, media);
-                oase.getModifier().update(aPOI);
-            }
-        }catch(Throwable t){
-            log.error("Exception in processTestMedia:" + t.toString());
-            throw new UtopiaException("Exception in processTestMedia:" + t.toString(), t);
+							uri.setText(mediaUrl + medium.getId());
+							uri.removeAttr("medium");
+						} else {
+							log.info("could not find the file!!!:" + mediumFileName);
+						}
+					}
+				}
+				// update the poi
+				aPOI.setXMLField(MEDIA_FIELD, media);
+				oase.getModifier().update(aPOI);
+			}
+		} catch (Throwable t) {
+			log.error("Exception in processTestMedia:" + t.toString());
+			throw new UtopiaException("Exception in processTestMedia:" + t.toString(), t);
 
-        }
-    }
+		}
+	}
 
-    /**
+	/**
 	 * Updates a poi.
 	 * <p/>
 	 * <poi>
@@ -185,7 +185,7 @@ public class POILogic implements Constants {
 		String category = aPOIElement.getChildText(CATEGORY_FIELD);
 		String x = aPOIElement.getChildText(X_FIELD);
 		String y = aPOIElement.getChildText(Y_FIELD);
-		if (x == null || x.length() == 0 || y == null || y.length() == 0)  {
+		if (x == null || x.length() == 0 || y == null || y.length() == 0) {
 			throw new UtopiaException("No valid x and y coordinates found");
 		}
 
@@ -205,8 +205,9 @@ public class POILogic implements Constants {
 			aPOI.setStringField(CATEGORY_FIELD, category);
 		}
 
+		// Create and set location: assume default SRID (4326)
 		Point point = new Point(Double.parseDouble(x), Double.parseDouble(y));
-		point.setSrid(28992);
+		point.setSrid(DEFAULT_SRID);
 		PGgeometryLW geom = new PGgeometryLW(point);
 		aPOI.setObjectField(POINT_FIELD, geom);
 
