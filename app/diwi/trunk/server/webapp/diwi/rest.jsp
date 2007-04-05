@@ -7,9 +7,9 @@
 		{".*bos.*", "testresponse/generateroute2.xml"},
 		{".*request=GetPois.*", "testresponse/pois.xml"},
 		{".*request=GetPredefinedRouteList.*", "testresponse/routes.xml"},
-		{".*request=GetPredefinedRoute&RouteID=amsterdam", "testresponse/amsterdam.xml"},
-		{".*request=GetPredefinedRoute&RouteID=grebbelinie", "testresponse/grebbelinie.xml"},
-		{".*request=GetPredefinedRoute&RouteID=nijevelt", "testresponse/nijevelt.xml"}
+		{".*request=GetPredefinedRoute&RouteID=amsterdam", "testresponse/amsterdam-RD.xml"},
+		{".*request=GetPredefinedRoute&RouteID=grebbelinie", "testresponse/grebbelinie-RD.xml"},
+		{".*request=GetPredefinedRoute&RouteID=nijevelt", "testresponse/nijevelt-RD.xml"}
 	};
 
 
