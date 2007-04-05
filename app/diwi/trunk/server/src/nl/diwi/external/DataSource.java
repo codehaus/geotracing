@@ -135,7 +135,7 @@ public class DataSource implements Constants {
          * </medium>
          * </media>
          *
-         * @return
+         * @return media element
          */
         public JXElement getKICHMedia() {
             String kichRestUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);

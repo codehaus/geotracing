@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class PostGISUtil implements Constants {
+public class GPXUtil implements Constants {
 
 	public static PGgeometryLW createPoint(double lon, double lat) {
 		Point point = new Point(lon, lat);
@@ -120,6 +120,8 @@ public class PostGISUtil implements Constants {
 
 					point = new Point(lon, lat, ele);
 					point.setSrid(DEFAULT_SRID);
+
+
 					points.add(point);
 				}
 			}

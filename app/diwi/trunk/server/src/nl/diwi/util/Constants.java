@@ -75,5 +75,8 @@ public interface Constants {
     public static final int EPSG_DUTCH_RD = 28992;
     public static final int EPSG_WGS84 = 4326; //google maps lat lon
     
-	public static final int DEFAULT_SRID = EPSG_DUTCH_RD;    
+	public static final int DEFAULT_SRID = EPSG_WGS84;
+
+	public static final int SRID_ROUTING_API = EPSG_DUTCH_RD;
+	public static final int SRID_KICH_API = EPSG_DUTCH_RD;
 }
