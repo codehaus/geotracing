@@ -69,10 +69,11 @@
 
 			<!-- Handler for ALL queries -->
 			<handler id="query" class="org.geotracing.handler.QueryHandler">
-				<property name="logic">org.geotracing.handler.QueryLogic</property>
+				<property name="logic">nl.diwi.logic.DIWIQueryLogic</property>
 			</handler>
  
         </handlers>
+        
 
 
 		<daemons>
