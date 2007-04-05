@@ -122,7 +122,7 @@ public class QueryLogic {
 
 	private static QueryLogic instance;
 
-	private QueryLogic() {
+	protected QueryLogic() {
 	}
 
 	public static QueryLogic create(String aClassName) throws Exception {
@@ -930,7 +930,7 @@ public class QueryLogic {
 
 	}
 
-	String getParameter(Map parms, String name, String defaultValue) {
+	protected String getParameter(Map parms, String name, String defaultValue) {
 		Object value = parms.get(name);
 		if (value == null) {
 			return defaultValue;

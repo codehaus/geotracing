@@ -48,7 +48,6 @@ public class QueryHandler extends DefaultHandler {
 	 * @throws UtopiaException Standard Utopia exception
 	 */
 	public UtopiaResponse processRequest(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-		Log log = Logging.getLog(anUtopiaRequest);
 
 		// Get the service name for the request
 		String service = anUtopiaRequest.getServiceName();
