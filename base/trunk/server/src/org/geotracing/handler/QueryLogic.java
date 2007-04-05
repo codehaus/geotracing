@@ -140,16 +140,16 @@ public class QueryLogic {
 			throw e;
 		}
 
-		instance =  (QueryLogic) Class.forName(aClassName).newInstance();
+		instance = (QueryLogic) Class.forName(aClassName).newInstance();
 		return instance;
 	}
 
-	public static QueryLogic getInstance()  {
+	public static QueryLogic getInstance() {
 		return instance;
 	}
 
 
-	public static Oase getOase()  {
+	public static Oase getOase() {
 		return oase;
 	}
 
@@ -838,14 +838,7 @@ public class QueryLogic {
 	static public Record[] queryStore(Oase oase, String tables, String fields, String where, String relations, String postCond) throws OaseException {
 
 		try {
-			Record[] result = null;
-
-			// Init query constraints
-			String constraints = null;
-			StringBuffer constraintBuf = new StringBuffer();
-			if (where != null || relations != null) {
-				constraintBuf.append("WHERE ");
-			}
+			Record[] result;
 
 			// Null means all fields.
 			if (fields == null) {
@@ -853,6 +846,14 @@ public class QueryLogic {
 			}
 
 			if (tables.indexOf(",") > 0) {
+				// Query on multiple tables and optional relations: build up query constraints
+				StringBuffer constraintBuf = new StringBuffer();
+				if (where != null || relations != null) {
+					constraintBuf.append("WHERE ");
+				}
+				// Init query constraints
+				String constraints;
+
 				// Prepare query store parms
 				if (relations != null) {
 
@@ -900,7 +901,7 @@ public class QueryLogic {
 				}
 
 				if (postCond != null) {
-					constraintBuf.append(" " + postCond);
+					constraintBuf.append(" ").append(postCond);
 				}
 
 				constraints = (constraintBuf.length() > 0) ? constraintBuf.toString() : null;
@@ -908,18 +909,23 @@ public class QueryLogic {
 				// Let oase do multi-table query
 				result = oase.getFinder().queryStore(tables, fields, constraints);
 			} else {
-				// Query on single table
+				// Query on single table: build up SELECT query
+				StringBuffer queryBuf = new StringBuffer("SELECT ");
+				queryBuf.append(fields);
+				queryBuf.append(" FROM ").append(tables).append(" ");
+
+				// Optional WHERE e.g. "type = 13"
 				if (where != null) {
-					constraintBuf.append(where);
-				}
-				if (postCond != null) {
-					constraintBuf.append(" " + postCond);
+					queryBuf.append(where);
 				}
 
-				constraints = (constraintBuf.length() > 0) ? constraintBuf.toString() : null;
+				// Optional postcondition (e.g. "ORDER BY type")
+				if (postCond != null) {
+					queryBuf.append(" ").append(postCond);
+				}
 
 				// Simple one-table query
-				result = oase.getFinder().queryTable(tables, constraints);
+				result = oase.getFinder().freeQuery(queryBuf.toString());
 			}
 			return result;
 		} catch (OaseException oe) {

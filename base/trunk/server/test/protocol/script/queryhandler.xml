@@ -43,11 +43,11 @@
 			</utopia-rsp>
 		</expect>
 	</test>
-<!--
+
 	<test id="query-one-table-all">
 		<send id="client1">
 			<utopia-req>
-				<query-store-req tables="utopia_person"/>
+				<query-store-req cmd="q-by-example" table="utopia_person"/>
 			</utopia-req>
 		</send>
 
@@ -61,9 +61,7 @@
 	<test id="query-one-table-constraints">
 		<send id="client1">
 			<utopia-req>
-				<query-store-req tables="utopia_person">
-					lastname = 'user'
-				</query-store-req>
+				<query-store-req cmd="q-by-example" table="utopia_person" lastname="user"/>
 			</utopia-req>
 		</send>
 
@@ -73,21 +71,7 @@
 			</utopia-rsp>
 		</expect>
 	</test>
-
-	<test id="query-one-table-all-ordering">
-		<send id="client1">
-			<utopia-req>
-				<query-store-req tables="utopia_person" orderby="creationdate" directions="desc"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<query-store-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
+   <!--
 	<test id="query-two-tables-all">
 		<send id="client1">
 			<utopia-req>
