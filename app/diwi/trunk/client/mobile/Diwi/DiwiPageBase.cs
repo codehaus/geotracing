@@ -23,6 +23,8 @@ namespace Diwi {   // base class for Diwi Pages.
         protected Color mBackgroundColor;
         private DiwiUIText mouseText;
 
+        DiwiImage mBackImage = null;
+
         private string mTitle;
 
         public DiwiPageBase(DiwiPageBase parent) {
@@ -77,18 +79,17 @@ namespace Diwi {   // base class for Diwi Pages.
             mDrawableElements.Add(d);
         }
 
-        protected void setImg(String anImageName, int aWidth, int aHeight, int aX, int aY){
+        protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY){
             System.Reflection.Assembly asse = System.Reflection.Assembly.GetExecutingAssembly();
             Stream stream = null;
             try{
                 stream = asse.GetManifestResourceStream(anImageName);
-                DiwiImage img = new DiwiImage(offScreenGraphics, this);
-                img.bitmap = new Bitmap(stream);
+                mBackImage = new DiwiImage(offScreenGraphics, this);
+                mBackImage.bitmap = new Bitmap(stream);
                 Size size = new Size(aWidth, aHeight);
-                img.size = size;
-                img.x = aX;
-                img.y = aY;
-                addDrawable(img);
+                mBackImage.size = size;
+                mBackImage.x = aX;
+                mBackImage.y = aY;
                 draw();
             }catch (System.IO.FileNotFoundException e){
                 MessageBox.Show(e.Message);
@@ -156,6 +157,9 @@ namespace Diwi {   // base class for Diwi Pages.
 
         public void draw() {
             offScreenGraphics.Clear(mBackgroundColor);
+            if (mBackImage != null) {
+                mBackImage.draw();
+            }
             foreach (DiwiDrawable d in mDrawableElements) {
                 d.draw();
             }

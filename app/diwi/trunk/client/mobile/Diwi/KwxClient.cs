@@ -73,15 +73,9 @@ namespace Diwi {
             x = selectApp();
             if (x.tag == "select-app-rsp") {
                 if (messageCallback != null) {
+                    string s = x.toString();
                     messageCallback("select-app: succesful!");
                 }
-            }
-
-            x = newTrack("diwiTrack");
-            if (x.tag == "utopia-rsp") {
-                if (messageCallback != null) {
-                    messageCallback("track created");
-               }
             }
         }
 
@@ -146,31 +140,38 @@ namespace Diwi {
                 throw new Exception("login failed: " + xml.getAttributeValue("reason"));
             }
 
-            mHbThread = new Thread(new ThreadStart(hbHandler));
-            mHbThread.Start();
+           // mHbThread = new Thread(new ThreadStart(hbHandler));
+           // mHbThread.Start();
 
             return xml;
         }
 
         /// <summary>
-        /// create new track.
+        /// get route list.
         /// </summary>
-        public XMLement newTrack(string aName) {
+        public XMLement getRouteList() {
             if (mAgentKey != null) {
-                DateTime d1 = DateTime.UtcNow;
-                XMLement req = new XMLement("t-trk-create-req");
-                req.addAttribute("name", aName);
-                req.addAttribute("t", d1.ToFileTime().ToString());
-                // Minimal mode: tracks are made daily (Track type 2)
+                XMLement req = new XMLement("route-getlist-req");
                 req.addAttribute("type", "2");
 
                 req = utopiaRequest(req);
-
-                trackId = req.getAttributeValue("id");
                 return req;
             }
             return new XMLement("NotLoggedInError");
         }
+
+        public XMLement getRoute(int id) {
+            if (mAgentKey != null) {
+                XMLement req = new XMLement("route-get-req");
+                req.addAttribute("id",id.ToString());
+
+                req = utopiaRequest(req);
+
+                return req;
+            }
+            return new XMLement("NotLoggedInError");
+        }
+
 
 
 	/// <summary>
@@ -279,8 +280,7 @@ namespace Diwi {
                     // close the response
                     resp.Close();
                 }
-                else
-                {
+                else {
                     // generic connection error
                     status = (HttpStatusCode)(-1);
                 }
