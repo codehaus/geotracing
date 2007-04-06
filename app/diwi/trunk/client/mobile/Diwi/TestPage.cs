@@ -16,6 +16,8 @@ namespace Diwi {
         public TestPage(DiwiPageBase parent)
             : base(parent) {
 
+            mMenu.addItem("GetRouteList", new DiwiUIMenu.DiwiMenuCallbackHandler(doGRL));
+            mMenu.addItem("GetRoute", new DiwiUIMenu.DiwiMenuCallbackHandler(doGR));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Test";
@@ -26,6 +28,17 @@ namespace Diwi {
             //viewVideoFileInWMP(f);
             
         }
+
+        private void doGRL() {
+            XMLement getRoutesReq = AppController.sKwxClient.getRouteList();
+            string s = getRoutesReq.toString();
+        }
+
+        private void doGR() {
+            XMLement getRoutesReq = AppController.sKwxClient.getRoute(107);
+            string s = getRoutesReq.toString();
+        }
+
         private void viewVideoFileInWMP(string fn)
         {
             Process process = new Process();

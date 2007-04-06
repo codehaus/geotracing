@@ -19,12 +19,12 @@ namespace Diwi {
             //mMenu.addItem("Maak foto", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             //mMenu.addItem("Over DiWi", new DiwiUIMenu.DiwiMenuCallbackHandler(doOver));
             //mMenu.addItem("FAQ", new DiwiUIMenu.DiwiMenuCallbackHandler(doFaq));
-            //mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "StartPagina";
             //display start image
-            setImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
-            
+            setBackGroundImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
+
         }
 
         void doOver() {
@@ -41,9 +41,9 @@ namespace Diwi {
                 if (mIsInitialized) {
                     if (this.ClientRectangle.Width > this.ClientRectangle.Height)
                     {
-                        setImg(@"Diwi.Resources.start_horz.gif", 320, 240, 0, 0);
+                        setBackGroundImg(@"Diwi.Resources.start_horz.gif", 320, 240, 0, 0);
                     } else {
-                        setImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
+                        setBackGroundImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
                     }
                     draw();
                 }
