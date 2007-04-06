@@ -23,7 +23,7 @@ namespace Diwi {
 
             title = "StartPagina";
             //display start image
-            setBackGroundImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
+            //setBackGroundImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
 
         }
 

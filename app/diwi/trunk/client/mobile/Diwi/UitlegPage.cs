@@ -13,7 +13,7 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class UitlegPage : DiwiPageBase {
 
-        private DiwiImage mFoto;
+        private DiwiScalingImage mFoto;
 
         public UitlegPage(DiwiPageBase parent)
             : base(parent) {
@@ -26,7 +26,7 @@ namespace Diwi {
 
             title = "Uitleg";
 
-            mFoto = new DiwiImage(offScreenGraphics, this);
+            mFoto = new DiwiScalingImage(this);
             mFoto.size = new Size(180, 135);
             mFoto.x = 10;
             mFoto.y = 170;

@@ -83,7 +83,6 @@ namespace Diwi {
         public void stop() {
             if (mAgentKey != null) {
                 doLogout();
-                mHbThread.Abort();
             }
         }
 

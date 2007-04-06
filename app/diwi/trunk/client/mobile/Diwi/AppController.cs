@@ -16,7 +16,7 @@ namespace Diwi {
         public static StreamWriter sLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;
-        Assembly sAssembly = Assembly.GetExecutingAssembly();
+        public static Assembly sAssembly = Assembly.GetExecutingAssembly();
 
 
         public static void activate() {

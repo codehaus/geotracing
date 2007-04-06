@@ -11,7 +11,6 @@ namespace Diwi {
     interface DiwiDrawable
     {
         void draw();
-        void setGraphics(Graphics g);
         void doMouseClick(int x, int y);
     }
 }
