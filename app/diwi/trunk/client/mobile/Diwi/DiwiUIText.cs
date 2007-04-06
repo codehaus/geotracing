@@ -12,7 +12,6 @@ namespace Diwi {
         private Font mFont = new Font("Tahoma", 10, FontStyle.Bold);
         private string mText = string.Empty;
         private Rectangle mTextRect;
-        private Graphics mTextGraphics;
         private int _x = 10;
         private int _y = 260;
 
@@ -20,9 +19,6 @@ namespace Diwi {
 
         #region Properties
 
-        public void setGraphics(Graphics g) {
-            mTextGraphics = g;
-        }
 
         public Color color {
             get { return mBrush.Color; }
@@ -65,20 +61,17 @@ namespace Diwi {
 
         public DiwiUIText(Graphics g) {
             mTextRect = new Rectangle();
-            mTextGraphics = g;
         }
 
         public DiwiUIText(Graphics g, Color color) {
             mTextRect = new Rectangle();
             mBrush = new SolidBrush(color);
-            mTextGraphics = g;
         }
 
         public DiwiUIText(Graphics g, Color color, string text) {
             mTextRect = new Rectangle();
             mBrush = new SolidBrush(color);
             mText = text;
-            mTextGraphics = g;
         }
 
         public DiwiUIText(Graphics g, Color color, string text, Font font) {
@@ -86,7 +79,6 @@ namespace Diwi {
             mBrush = new SolidBrush(color);
             mFont = font;
             mText = text;
-            mTextGraphics = g;
         }
 
         public DiwiUIText(Graphics g, Color color, string text, Font font, int x, int y) {
@@ -96,7 +88,6 @@ namespace Diwi {
             mText = text;
             _x = x;
             _y = y;
-             mTextGraphics = g;
        }
 
         #endregion
@@ -106,12 +97,12 @@ namespace Diwi {
 
         public int width {
             get {
-                return (int)mTextGraphics.MeasureString(mText, mFont).Width;
+                return (int)DiwiPageBase.offScreenGraphics.MeasureString(mText, mFont).Width;
             }
         }
 
         private void setTextRect() {
-            SizeF ts = mTextGraphics.MeasureString(mText, mFont);
+            SizeF ts = DiwiPageBase.offScreenGraphics.MeasureString(mText, mFont);
             mTextRect.X = _x;
             mTextRect.Y = _y;
             mTextRect.Width = (int)(ts.Width + 0.5);
@@ -124,19 +115,19 @@ namespace Diwi {
             r.X -= 1; r.Y += 1;
             r.Width += 2;
             r.Height += 2;
-            mTextGraphics.FillRectangle(meBrush, r);
+            DiwiPageBase.offScreenGraphics.FillRectangle(meBrush, r);
         }
 
         public void draw() {
             setTextRect();
-            mTextGraphics.DrawString(mText, mFont, mBrush, _x, _y);
+            DiwiPageBase.offScreenGraphics.DrawString(mText, mFont, mBrush, _x, _y);
 
         }
 
         public void draw(string s) {
             mText = s;
             setTextRect();
-            mTextGraphics.DrawString(mText, mFont, mBrush, _x, _y);
+            DiwiPageBase.offScreenGraphics.DrawString(mText, mFont, mBrush, _x, _y);
         }
     }
 

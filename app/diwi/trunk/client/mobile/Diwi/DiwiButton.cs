@@ -18,14 +18,11 @@ namespace Diwi {
         private SolidBrush mBrush = new SolidBrush(Color.Red);
         private DiwiUIText mText = new DiwiUIText(null, sTextColor, "", new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
-        private Graphics mGraphics;
         private Rectangle mRect;
         private DiwiButtonCallbackHandler mCallback;
 
         public DiwiUIButton(Graphics g, int x, int y, string t, DiwiButtonCallbackHandler cb,DiwiPageBase form) {
             mParentForm = form;
-            mGraphics = g;
-            mText.setGraphics(g);
             mText.text = t;
             mRect = new Rectangle(x, y, 12 + mText.width , 24);
             mCallback = cb;
@@ -47,15 +44,9 @@ namespace Diwi {
             }
         }
 
-
-        public void setGraphics(Graphics g) {
-            mGraphics = g;
-            mText.setGraphics(g);
-        }
-
         public void draw() {
             mBrush.Color = sButColor;
-            mGraphics.FillRectangle(mBrush, mRect.X, mRect.Y, mRect.Width, mRect.Height);
+            DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mRect.X, mRect.Y, mRect.Width, mRect.Height);
 
             mText.x = mRect.X+5;
             mText.y = mRect.Y+2;

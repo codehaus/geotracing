@@ -17,10 +17,10 @@ namespace Diwi {
         public static Color sSelColor = Color.FromArgb(130, 100, 30);
         public static Color sTextColor = Color.Black;
         public static Color sSelTextColor = Color.FromArgb(180, 180, 180);
+        static Bitmap mMiniLogo = null;
         private SolidBrush mBrush = new SolidBrush(Color.Red);
         private DiwiUIText mText = new DiwiUIText(null,Color.Black,"",new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
-        private Graphics mMenuGraphics;
         private int mCurrentMenuIndex = -1;
 
         ArrayList mItems;
@@ -28,14 +28,15 @@ namespace Diwi {
         ArrayList mItemRects;
         Rectangle mParentRect;
 
-        public DiwiUIMenu(Graphics g, DiwiPageBase form) {
+        public DiwiUIMenu(DiwiPageBase form) {
             mParentForm = form;
             mParentRect = form.ClientRectangle;
-            mMenuGraphics = g;
-            mText.setGraphics(g);
             mItems = new ArrayList();
             mCallbacks = new ArrayList();
             mItemRects = new ArrayList();
+            if (mMiniLogo == null) {
+                mMiniLogo = new Bitmap(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.minis.gif"));
+            }
         }
 
         public void doMouseClick(int x, int y) {
@@ -64,12 +65,6 @@ namespace Diwi {
                     cb();
                 }
             }
-        }
-
-
-        public void setGraphics(Graphics g) {
-            mMenuGraphics = g;
-            mText.setGraphics(g);
         }
 
         public void addItem(string text, DiwiMenuCallbackHandler cb) {
@@ -105,11 +100,13 @@ namespace Diwi {
 
             // draw yellow bar on the side
             mBrush.Color = sBarColor;
-            mMenuGraphics.FillRectangle(mBrush, x, y, 30, mParentRect.Height);
+            DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 30, mParentRect.Height);
+
+            DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, 5, 4);
 
             mBrush.Color = sSelColor;
-            mMenuGraphics.FillRectangle(mBrush, 32, 4, mParentRect.Width - 32 - 4 - 30, 24);
-            mMenuGraphics.FillRectangle(mBrush, mParentRect.Width - 27, 4, 24, 24);
+            DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, 32, 4, mParentRect.Width - 32 - 4 - 30, 24);
+            DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mParentRect.Width - 27, 4, 24, 24);
             mText.text = mParentForm.title;
             mText.x = 36;
             mText.y = 5;
@@ -121,16 +118,16 @@ namespace Diwi {
 
             foreach (string item in mItems) {
                 mBrush.Color = sSelColor;
-                mMenuGraphics.FillRectangle(mBrush, x, y, 24, 24);
+                DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 24, 24);
                 mText.text = item;
                 mText.x = x - 10 - mText.width;
                 mText.y = y+2;
                 mItemRects[index] = r = new Rectangle(mText.x - 6, y , mText.width + 10 + 28, 26);
                 if (index == mCurrentMenuIndex) {
-                    mMenuGraphics.FillRectangle(mBrush, r.X, r.Y, r.Width - 26, 24);
+                    DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, r.X, r.Y, r.Width - 26, 24);
                     mText.color = sSelTextColor;
                     mBrush.Color = sSelTextColor;
-                    mMenuGraphics.FillRectangle(mBrush, x+3, y+3, 18, 18);
+                    DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x + 3, y + 3, 18, 18);
                 } else {
                     mText.color = sTextColor;
                 }

@@ -12,7 +12,7 @@ namespace Diwi {   // base class for Diwi Pages.
     class DiwiPageBase : Form {
         private enum sKeys { M_UP=38, M_DOWN=40, M_LEFT=37, M_RIGHT=39 };
         protected static Bitmap offScreenBitmap;
-        protected static Graphics offScreenGraphics;
+        public static Graphics offScreenGraphics;
         private static Rectangle mBaseRect = new Rectangle(0, 0, 0, 0);
         protected Graphics onScreenGraphics;
         protected DiwiPageBase mParent;
@@ -52,7 +52,7 @@ namespace Diwi {   // base class for Diwi Pages.
             baseResize(this.ClientRectangle);
 
             mDrawableElements = new ArrayList();
-            mMenu = new DiwiUIMenu(offScreenGraphics, this);
+            mMenu = new DiwiUIMenu(this);
             addDrawable(mMenu);
             mouseText = new DiwiUIText(offScreenGraphics);
         
@@ -80,16 +80,15 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY){
-            System.Reflection.Assembly asse = System.Reflection.Assembly.GetExecutingAssembly();
             Stream stream = null;
             try{
-                stream = asse.GetManifestResourceStream(anImageName);
-                mBackImage = new DiwiImage(offScreenGraphics, this);
-                mBackImage.bitmap = new Bitmap(stream);
+                stream = AppController.sAssembly.GetManifestResourceStream(anImageName);
+                mBackImage = new DiwiImage(this);
                 Size size = new Size(aWidth, aHeight);
                 mBackImage.size = size;
                 mBackImage.x = aX;
                 mBackImage.y = aY;
+                mBackImage.bitmap = new Bitmap(stream);
                 draw();
             }catch (System.IO.FileNotFoundException e){
                 MessageBox.Show(e.Message);
@@ -184,7 +183,7 @@ namespace Diwi {   // base class for Diwi Pages.
 
 
         protected bool doResize(EventArgs e) {
-            
+
             if (mCurrentRect.Width != this.ClientRectangle.Width || mCurrentRect.Height != this.ClientRectangle.Height) {
 
                 mCurrentRect = this.ClientRectangle;
@@ -194,10 +193,6 @@ namespace Diwi {   // base class for Diwi Pages.
 
 
                 if (mIsInitialized) {
-                    if(didResize)
-                        foreach (DiwiDrawable d in mDrawableElements) {
-                            d.setGraphics(offScreenGraphics);
-                        }
                     mMenu.resize(this.ClientRectangle);
                     return true;
                 }
