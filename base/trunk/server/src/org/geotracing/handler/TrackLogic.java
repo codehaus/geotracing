@@ -335,7 +335,7 @@ public class TrackLogic {
 	 * Export XML elements from given Track to given format.
 	 *
 	 * @param aTrackId a track id
-	 * @param aFormat  a format e.g. "gpx"
+	 * @param aFormat  a format values: "gtx", "gpx"
 	 * @return theElements one or more JXElements
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
