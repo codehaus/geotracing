@@ -5,7 +5,7 @@
 		{"test2", "testresponse/route2.xml"},
 		{".*heide.*", "testresponse/generateroute1.xml"},
 		{".*bos.*", "testresponse/generateroute2.xml"},
-		{".*request=GetPois.*", "testresponse/pois.xml"},
+		{".*request=GetPois.*", "testresponse/pois_RD.xml"},
 		{".*request=GetPredefinedRouteList.*", "testresponse/routes.xml"},
 		{".*request=GetPredefinedRoute&RouteID=amsterdam", "testresponse/amsterdam-RD.xml"},
 		{".*request=GetPredefinedRoute&RouteID=grebbelinie", "testresponse/grebbelinie-RD.xml"},

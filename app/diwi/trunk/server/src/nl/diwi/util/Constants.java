@@ -29,6 +29,8 @@ public interface Constants {
     public final static String CATEGORY_FIELD = "category";
     public final static String X_FIELD = "x";
     public final static String Y_FIELD = "y";
+    public final static String LAT_FIELD = "lat";
+    public final static String LON_FIELD = "lon";
     public final static String STATE_FIELD = "state";
     public final static String VALUE_FIELD = "value";
     public final static String PATH_FIELD = "path";

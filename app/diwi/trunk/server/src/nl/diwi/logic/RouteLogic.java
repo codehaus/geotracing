@@ -308,8 +308,10 @@ public class RouteLogic implements Constants {
 				outPoints[i] = RD2WGS84(inPoints[i]);
 			}
 
-			return new LineString(outPoints);
-
+			LineString result = new LineString(outPoints);
+			result.setSrid(EPSG_WGS84);
+			
+			return result; 
 		} catch (Throwable t) {
 			throw new UtopiaException("Cannot convert LineString", t);
 		}
