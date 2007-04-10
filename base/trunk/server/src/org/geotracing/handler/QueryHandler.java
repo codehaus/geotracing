@@ -151,6 +151,7 @@ public class QueryHandler extends DefaultHandler {
 		if (aKey.equals("logic")) {
 			try {
 				// Create (possibly derived) QueryLogic
+				log.info("Creating QueryLogic class=" + aValue);
 				queryLogic = QueryLogic.create(aValue);
 			}
 			catch (Exception e) {

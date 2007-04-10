@@ -31,7 +31,7 @@ import java.util.*;
  * @author Just van den Broecke
  * @version $Id$
  */
-public class MapDrawer extends Component {
+public class  MapDrawer extends Component {
 	private static final Color[] COLOR_INDEX = new Color[6];
 	private JXElement properties;
 	private String propertiesFilePath;

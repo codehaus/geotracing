@@ -10,6 +10,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
+import org.geotracing.gis.PostGISUtil;
 
 /**
  * The Location data object
@@ -119,6 +120,16 @@ public class Location extends BaseImpl {
 	 */
 	public Point getPoint() {
 		return getPoint(getRecord());
+	}
+
+	/**
+	 * Set Point value.
+	 *
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
+	 */
+	public void setPoint(double x, double y, double z, long t) throws UtopiaException {
+		setPoint(PostGISUtil.createPoint(x, y, z, t));
 	}
 
 	/**

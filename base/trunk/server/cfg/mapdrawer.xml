@@ -6,13 +6,13 @@ srv/get.jsp?cmd=q-all-tracks</property>
 <property name="getTrack">
 srv/get.jsp?cmd=get-track&amp;mindist=10&amp;attrs=t,lon,lat,rr&amp;id=</property>
 <property name="forceDraw">
-true</property>
+false</property>
 <property name="zoomMin">
 6</property>
 <property name="zoomMax">
 15</property>
 <property name="lastTrackTime">
-1171811397422</property>
+1176044708913</property>
 <property name="java.awt.headless">
 false</property>
 <properties name="tiles">
