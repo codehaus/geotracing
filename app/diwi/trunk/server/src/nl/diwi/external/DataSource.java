@@ -43,8 +43,8 @@ public class DataSource implements Constants {
                         <name><name>
                         <description></description>
                         <category></category>
-                        <x></x>
-                        <y></y>
+                        <lon></lon>
+                        <lat></lat>
                         <media>
                             <kich-uri><kich-uri>
                             <kich-uri><kich-uri>

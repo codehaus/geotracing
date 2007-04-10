@@ -4,6 +4,7 @@ import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.gis.PostGISUtil;
+import org.geotracing.gis.Transform;
 import org.keyworx.amuse.core.Amuse;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
@@ -183,11 +184,8 @@ public class POILogic implements Constants {
 		String desc = aPOIElement.getChildText(DESCRIPTION_FIELD);
 		String type = aPOIElement.getChildText(TYPE_FIELD);
 		String category = aPOIElement.getChildText(CATEGORY_FIELD);
-		String x = aPOIElement.getChildText(X_FIELD);
-		String y = aPOIElement.getChildText(Y_FIELD);
-		if (x == null || x.length() == 0 || y == null || y.length() == 0) {
-			throw new UtopiaException("No valid x and y coordinates found");
-		}
+		String lat = aPOIElement.getChildText(LAT_FIELD);
+		String lon = aPOIElement.getChildText(LON_FIELD);
 
 		if (aKICHID != null && aKICHID.length() > 0) {
 			aPOI.setStringField(KICHID_FIELD, aKICHID);
@@ -206,7 +204,25 @@ public class POILogic implements Constants {
 		}
 
 		// Create and set location: assume default SRID (4326)
-		Point point = new Point(Double.parseDouble(x), Double.parseDouble(y));
+		Point point = null;
+		if (lat == null || lat.length() == 0 || lon == null || lon.length() == 0) {
+			//let's try if we got RD coords
+			String x = aPOIElement.getChildText(X_FIELD);
+			String y = aPOIElement.getChildText(Y_FIELD);
+
+			if (x == null || x.length() == 0 || y == null || y.length() == 0) {
+				throw new UtopiaException("No valid lat and lon coordinates found");
+			}					
+			double xy[];
+			try {
+				xy = Transform.RDtoWGS84(Double.parseDouble(x), Double.parseDouble(y));
+			} catch (Exception e) {
+				throw new UtopiaException("No valid lat and lon coordinates found");
+			}
+			point = new Point(xy[0], xy[1]);
+		} else {
+			point = new Point(Double.parseDouble(lat), Double.parseDouble(lon));			
+		}
 		point.setSrid(DEFAULT_SRID);
 		PGgeometryLW geom = new PGgeometryLW(point);
 		aPOI.setObjectField(POINT_FIELD, geom);

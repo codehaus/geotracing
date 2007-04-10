@@ -129,13 +129,12 @@ KW.DIWI = {
 		var req = KW.createRequest('nav-stop-req');
 
 		KW.utopia(req, callback);		
-	}
+	},
 	
 	gettracks: function(callback, username) {
-		('q-store-req');
-        req.documentElement.setAttribute('cmd', 'q-tracks-by-user');
-        req.documentElement.setAttribute('user', username);
-                
+		SRV.init();
+		SRV.url = '/diwi/srv/get.jsp?';				
+		SRV.get('q-tracks-by-user', TST.onRsp, 'user', username);				               
 	}
 	
 	
