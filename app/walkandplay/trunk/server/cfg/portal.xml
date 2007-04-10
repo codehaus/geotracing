@@ -40,14 +40,20 @@
             </handler>
 
             <handler id="t" class="org.geotracing.handler.TracingHandler"/>
-            <handler id="query" class="org.geotracing.handler.QueryHandler"/>
-            <handler id="profile" class="org.walkandplay.server.control.ProfileHandler">
+
+			<handler id="query" class="org.geotracing.handler.QueryHandler">
+                <property name="logic">org.walkandplay.server.logic.WPQueryLogic</property>
+            </handler>
+
+			<handler id="profile" class="org.walkandplay.server.control.ProfileHandler">
                 <property name="config">content-config.xml</property>
             </handler>
-            <handler id="tour" class="org.walkandplay.server.control.TourHandler">
+
+			<handler id="tour" class="org.walkandplay.server.control.TourHandler">
                 <property name="config">content-config.xml</property>
             </handler>
-            <handler id="tourschedule" class="org.walkandplay.server.control.TourScheduleHandler">
+
+			<handler id="tourschedule" class="org.walkandplay.server.control.TourScheduleHandler">
                 <property name="config">content-config.xml</property>
             </handler>
 

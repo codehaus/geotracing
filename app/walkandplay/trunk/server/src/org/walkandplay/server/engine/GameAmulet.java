@@ -243,7 +243,7 @@ public class GameAmulet extends DefaultAmulet implements GameProtocol, Indicatio
 			String type = xmlMessage.getAttr("type");
 			JXElement data = xmlMessage.getChildByTag("data");
 			if ((type.equals("image") || type.equals("video")) && data.getAttr("encoding").equals("raw")) {
-				byte[] cdata = data.getCDATA();
+				/* byte[] cdata = data.getCDATA();
 				byte[] encodedCDATA = encode(cdata, 0, cdata.length);
 
 				JXElement newXMLMessage = new JXElement("medium-raw-upload-req");
@@ -252,7 +252,7 @@ public class GameAmulet extends DefaultAmulet implements GameProtocol, Indicatio
 				newData.setAttr("encoding", "hexasc");
 				newData.setCDATA(encodedCDATA);
 				newXMLMessage.addChild(newData);
-				aGameMessage = GameMessage.createRequest(newXMLMessage, aGameMessage.from);
+				aGameMessage = GameMessage.createRequest(newXMLMessage, aGameMessage.from); */
 			}
 		}
 

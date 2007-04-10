@@ -34,6 +34,7 @@ import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.utopia.core.util.Core;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.util.Translator;
+import org.keyworx.amuse.core.AmuseException;
 
 /**
  * Performs account actions.
@@ -187,8 +188,10 @@ public class ProfileLogic {
 			return person.getId();
 		} catch (UtopiaException ue) {
 			throw ue;
+		} catch (AmuseException ae) {
+			throw new UtopiaException("Exception in createProfile()", ae);
 		} catch (Throwable t) {
-			throw new UtopiaException("Exception in createProfile()" + t.toString());
+			throw new UtopiaException("Exception in createProfile()", t);
 		}
 	}
 

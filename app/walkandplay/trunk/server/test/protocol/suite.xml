@@ -2,7 +2,7 @@
    <!--   <testset file="profile.xml" />
    testset file="license.xml" /-->
     <testset file="tour.xml"/>
-    <testset file="tourschedule.xml"/>
+    <!-- <testset file="tourschedule.xml"/> -->
     <!--<testset file="content.xml" />-->
     <!--<testset file="assignment.xml" />-->
     <!--<testset file="answer.xml" />

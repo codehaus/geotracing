@@ -1,78 +1,86 @@
-<db context="walkandplay">
-    <table name="game">
-        <record table="game">
-            <owner>unknown</owner>
-            <name>amsterdam</name>
-            <description>the amsterdam game</description>
-            <state>active</state>
-        </record>
-    </table>
-    <table name="team">
-        <record table="team">
-            <owner>unknown</owner>
-            <name>blue</name>
-            <state>enabled</state>
-            <location></location>
-            <score></score>
-            <actions></actions>
-            <zones></zones>
-            <results></results>
-            <extra/>
-        </record>
-        <record table="team">
-            <owner>unknown</owner>
-            <name>red</name>
-            <state>enabled</state>
-            <location></location>
-            <score></score>
-            <actions></actions>
-            <zones></zones>
-            <results></results>
-            <extra/>
-        </record>
-    </table>
-    <table name="player">
-        <record table="player">
-            <owner>unknown</owner>
-            <name>hq-blue</name>
-            <type>hq</type>
-            <lastalive/>
-            <extra/>
-        </record>
-        <record table="player">
-            <owner>unknown</owner>
-            <name>+31613362231</name>
-            <type>gamephone</type>
-            <lastalive/>
-            <extra/>
-        </record>
-        <record table="player">
-            <owner>unknown</owner>
-            <name>volvenster25@imail.nl</name>
-            <type>videophone</type>
-            <lastalive/>
-            <extra/>
-        </record>
-        <record table="player">
-            <owner>unknown</owner>
-            <name>hq-red</name>
-            <type>hq</type>
-            <lastalive/>
-            <extra/>
-        </record>
-        <record table="player">
-            <owner>unknown</owner>
-            <name>+31613362418</name>
-            <type>gamephone</type>
-            <lastalive/>
-            <extra/>
-        </record>
-        <record table="player">
-            <owner>unknown</owner>
-            <name>stenentempo4@imail.nl</name>
-            <type>videophone</type>
-            <lastalive/>
-            <extra/>
-        </record>        
-    </table>    
-</db>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- This is an example initial data file.                                 -->
+<!-- Initial data files allow you to enter a particular set of data into   -->
+<!-- the database at application startup and keep the data in the database -->
+<!-- in sync with the data in the file: when the file changes, the data in -->
+<!-- the database is updated acordingly. Be aware that when the file       -->
+<!-- changes, all changes that the data in the database has undergone will -->
+<!-- be overwritten with the data in the file. Changes in the creation     -->
+<!-- date or last modified date of the file are ignored, only structural   -->
+<!-- changer trigger a synchronization between the file and the database.  -->
+
+<initialdata xmlns="http://www.keyworx.org/initialdata/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.keyworx.org/initialdata/1.0 http://preview.keyworx.org/schemas/initialdata-1.0.xsd">
+
+	<!-- This is where you specify data to be inserted into tables. -->
+	<!-- You can specify any number of table elements, but the      -->
+	<!-- table must already exist in the database.                  -->
+
+	<tables>
+
+		<table name="utopia_item">
+
+			<!-- You MUST specify a symbolic id for every record given.  -->
+			<!-- Also, that id must by unique and you must not change    -->
+			<!-- the id once the initial data has been inserted. Oase    -->
+			<!-- keeps track of the symbolic ids used in this file and   -->
+			<!-- the actual ids in the databse, so that it can update    -->
+			<!-- the actual record in the database when this file        -->
+			<!-- changes.                                                -->
+			<!-- If a table that you are inserting records into contains -->
+			<!-- a foreign key, you can insert references to records     -->
+			<!-- that you've defined in this file by using the symbolic  -->
+			<!-- id. A reference is in this form: ${id}.                 -->
+
+			<record id="item1">
+				<name>Item 1</name>
+				<description>an item inserted as initial data.</description>
+			</record>
+
+			<record id="item2">
+				<name>Item 2</name>
+				<description>an item inserted as initial data.</description>
+			</record>
+
+			<record id="item3">
+				<name>Item 3</name>
+				<description>an item inserted as initial data.</description>
+			</record>
+
+			<record id="item4">
+				<name>Item 4</name>
+				<description>an item inserted as initial data.</description>
+			</record>
+
+			<record id="item5">
+				<name>Item 5</name>
+				<description>an item inserted as initial data.</description>
+			</record>
+
+		</table>
+
+	</tables>
+
+
+	<!-- This is where you specify media to be inserted into the database. -->
+	<!-- This is not currently implemented.                                -->
+
+	<media>
+	</media>
+
+
+	<!-- This is where you specify relations between records that you've   -->
+	<!-- defined in this file. You use the symbolic ids to relate records, -->
+	<!-- but unlike foreign key references, you can use symbolic ids       -->
+	<!-- literally (as id rather then ${id}).                              -->
+	<!-- Media are also records and can also be used in relations.         -->
+
+	<relations>
+		<relation rec1="item1" rec2="item2" tag="some_tag"/>
+		<relation rec1="item3" rec2="item4"/>
+		<relation rec1="item1" rec2="item5"/>
+	</relations>
+
+</initialdata>
