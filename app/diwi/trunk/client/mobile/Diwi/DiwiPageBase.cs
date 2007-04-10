@@ -24,6 +24,7 @@ namespace Diwi {   // base class for Diwi Pages.
         private DiwiUIText mouseText;
 
         DiwiImage mBackImage = null;
+        DiwiScalingImage mForeImage = null;
 
         private string mTitle;
 
@@ -79,9 +80,11 @@ namespace Diwi {   // base class for Diwi Pages.
             mDrawableElements.Add(d);
         }
 
-        protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY){
+        protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY)
+        {
             Stream stream = null;
-            try{
+            try
+            {
                 stream = AppController.sAssembly.GetManifestResourceStream(anImageName);
                 mBackImage = new DiwiImage(this);
                 Size size = new Size(aWidth, aHeight);
@@ -90,12 +93,39 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.y = aY;
                 mBackImage.bitmap = new Bitmap(stream);
                 draw();
-            }catch (System.IO.FileNotFoundException e){
+            }
+            catch (System.IO.FileNotFoundException e)
+            {
                 MessageBox.Show(e.Message);
             }
         }
 
-        public void redrawRect(Rectangle oldR, Rectangle newR) {
+        protected void setForeGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY) {
+            Stream stream = null;
+            if (mForeImage != null) {
+                mForeImage.kill();
+                mForeImage = null;
+            }
+            if (anImageName == null) {
+                draw();
+                return;
+            }
+            try {
+                stream = AppController.sAssembly.GetManifestResourceStream(anImageName);
+                mForeImage = new DiwiScalingImage(this);
+                Size size = new Size(aWidth, aHeight);
+                mForeImage.size = size;
+                mForeImage.x = aX;
+                mForeImage.y = aY;
+                mForeImage.bitmap = new Bitmap(stream);
+                draw();
+            } catch (System.IO.FileNotFoundException e) {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        public void redrawRect(Rectangle oldR, Rectangle newR)
+        {
             if (oldR.Width > newR.Width)
                 onScreenGraphics.DrawImage(offScreenBitmap, newR.X, newR.Y, oldR, GraphicsUnit.Pixel);
             else
