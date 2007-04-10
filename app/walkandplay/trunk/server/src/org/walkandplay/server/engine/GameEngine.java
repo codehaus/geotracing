@@ -1432,7 +1432,7 @@ public class GameEngine implements GameProtocol, AlarmListener {
                     throwOnMissingAttr(data, ATTR_ENCODING);
 
                     // Insert medium in DB and link to team
-                    int id = gameStatus.addMedium(teamName, data.getCDATA(), data.getAttr(ATTR_ENCODING), type, fields);
+                    int id = -1; // gameStatus.addMedium(teamName, data.getCDATA(), data.getAttr(ATTR_ENCODING), type, fields);
 
                     // ASSERT medium inserted and linked to team
 

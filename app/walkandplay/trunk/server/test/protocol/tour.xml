@@ -3,15 +3,37 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="geoapp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
+			<login-req name="geoapp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 
 		<expect id="client1">
 
 			<login-rsp>
-				<!--<portalid>${portalid}</portalid>-->
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
+
+						<portalname>walkandplay
+						</portalname>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
 			</login-rsp>
+
 
 			<select-app-rsp>
 				<!--<applicationid>${applicationid}</applicationid>-->
@@ -20,12 +42,12 @@
 		</expect>
 	</test>
 
-    <test id="tour-create-req">
+	<test id="tour-create-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-create-req>
 					<tour>
-                        <owner>31282</owner>
+						<owner>31282</owner>
 						<name>MyFirstTour</name>
 						<description>Echt een hele mooie tour</description>
 						<intro>prachtige introductie</intro>
@@ -42,81 +64,101 @@
 		</expect>
 	</test>
 
-    <test id="tour-update-req">
+	<test id="tour-update-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-update-req id="${tourid}">
 					<tour>
-                        <name>MySecondTour</name>
+						<name>MySecondTour</name>
 						<description>Echt een echt hele mooie tour</description>
 						<intro>nog prachtigere introductie</intro>
 						<outro>nog prachtigere outro</outro>
 					</tour>
-                    <medium id="22901" type="intro" />
-                    <medium id="22788" type="outro" />
-                    <tag>tag1</tag>
-                    <tag>tag2</tag>
-                    <tag>tag3</tag>
-                </tour-update-req>
+					<medium id="22901" type="intro"/>
+					<medium id="22788" type="outro"/>
+					<tag>tag1</tag>
+					<tag>tag2</tag>
+					<tag>tag3</tag>
+				</tour-update-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-update-rsp />
+				<tour-update-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
-    <test id="tour-additem-req">
+	<test id="medium-insert-req-1">
 		<send id="client1">
 			<utopia-req>
-				<tour-add-item-req id="${tourid}">
-					<medium id="22614" />
-                    <location>
-                        <lon>4.92204666137695</lon>
-                        <lat>52.3764702870686</lat>
-                        <ele>52.3764702870686</ele>
-                    </location>
-                </tour-add-item-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>item1</name>
+						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<size>2758</size>
+					</medium>
+				</medium-insert-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-add-item-rsp />
+				<medium-insert-rsp id="${mediumid1}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
-    <test id="tour-additem-req">
+	<test id="tour-add-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<tour-add-medium-req id="${tourid}">
+					<medium id="${mediumid1}"/>
+					<location>
+						<lon>4.92204666137695</lon>
+						<lat>52.3764702870686</lat>
+						<ele>52.3764702870686</ele>
+					</location>
+				</tour-add-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-add-item-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="tour-additem-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-add-item-req id="${tourid}">
 					<assignment>
-                        <name>opdracht</name>
-                        <description>een prachtige opdracht</description>
-                        <answer>fiets</answer>
-                        <medium id="22389" />
-                    </assignment>
-                    <location>
-                        <lon>4.92204666137695</lon>
-                        <lat>52.3764702870686</lat>
-                        <ele>52.3764702870686</ele>
-                    </location>
-                </tour-add-item-req>
+						<name>opdracht</name>
+						<description>een prachtige opdracht</description>
+						<answer>fiets</answer>
+						<medium id="${mediumid1}"/>
+					</assignment>
+					<location>
+						<lon>4.92204666137695</lon>
+						<lat>52.3764702870686</lat>
+						<ele>52.3764702870686</ele>
+					</location>
+				</tour-add-item-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-add-item-rsp />
+				<tour-add-item-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
 
-    <test id="tour-delete-req">
+	<test id="tour-delete-req">
 		<send id="client1">
 			<utopia-req>
 				<tour-delete-req id="${tourid}"/>
@@ -129,6 +171,6 @@
 			</utopia-rsp>
 		</expect>
 	</test>
-	
+
 </testset>
 

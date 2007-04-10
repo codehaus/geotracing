@@ -4,15 +4,17 @@ ANT Build file for WalkAndPlay.
 
 $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 -->
-<project name="WP Server" default="build" basedir=".">
+<project name="WnP Server" default="build" basedir=".">
 
     <!-- Project global properties; overrule by modifying build.properties -->
  	<property name="home" value="${basedir}"/>
-	<property name="geotracing.external.dir" value="${basedir}/../../../../base/trunk/external"/>
+	<!-- Project global properties; overrule by modifying build.properties -->
+    <property name="geotracing.base.dir" value="${basedir}/../../../../base/trunk"/>
+	<property name="geotracing.server.dir" value="${geotracing.base.dir}/server"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
 
 	<!-- Initialization of properties (dirs, files) -->
- 	<!--<property file="${geotracing.external.dir}/build.properties"/>-->
- 	<property file="${basedir}/../../../../base/trunk/external/build.properties"/>
  	<property file="${home}/../build.properties"/>
     <property file="${home}/build.properties"/>
 
@@ -38,6 +40,15 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="deploy.zip" value="${build.dir}/${project.id}-${version}.zip"/>
 
 	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
+	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
+	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
+	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
+	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
+	<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
+	<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
+	<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
+	<property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
     <property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
     
     <!-- The .jar -->
@@ -46,13 +57,24 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="project.war" value="${build.dir}/${war.name}.war"/>
     <property name="test.project.war" value="${build.dir}/${war.name}test.war"/>
 
-    <path id="compile.classpath">
-        <pathelement location="${build.class.dir}"/>
-        <pathelement location="${keyworx.jar}"/>
-        <pathelement location="${tagging.jar}"/>
-        <pathelement location="${metadata.jar}"/>
-		<pathelement location="${geotracing.jar}"/>
-     </path>
+	<!-- Construct compilation sourcepath -->
+	<path id="compile.sourcepath">
+		<pathelement location="${home.src.dir}"/>
+		<pathelement location="${geotracing.server.dir}/src"/>
+	</path>
+
+	<path id="compile.classpath">
+		<pathelement location="${build.class.dir}"/>
+		<pathelement location="${pushlet.jar}"/>
+		<pathelement location="${postgis-jdbc.jar}"/>
+		<pathelement location="${keyworx.jar}"/>
+		<pathelement location="${kwx-tagging.jar}"/>
+		<pathelement location="${ehcache.jar}"/>
+		<pathelement location="${geoapi.jar}"/>
+		<pathelement location="${gt2-epsg-wkt.jar}"/>
+		<pathelement location="${gt2-referencing.jar}"/>
+		<pathelement location="${metadata.jar}"/>
+    </path>
 
     <!-- Initialize: create dirs and set timestamp.. -->
     <target name="init">
@@ -75,7 +97,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
                 deprecation="${javac.deprecation}"
                 optimize="${javac.optimize}"
                 includes="**/*.java">
-            <src path="${home.src.dir}"/>
+			<src refid="compile.sourcepath"/>
 
             <classpath refid="compile.classpath"/>
         </javac>
@@ -99,7 +121,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
                 <section name="org/walkandplay">
                     <attribute name="Implementation-Title" value="${project.name}"/>
                     <attribute name="Implementation-Version" value="${version}-${DSTAMP}-${TSTAMP}"/>
-                    <attribute name="Implementation-Vendor" value="Just Objects"/>
+                    <attribute name="Implementation-Vendor" value="Waag Society"/>
                 </section>
             </manifest>
         </jar>
@@ -136,6 +158,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
             <fileset dir="${server.cfg.dir}/tables"/>
         </copy>
+
+
 
         <copy file="${server.cfg.dir}/oase-context.xml" todir="${build.war.dir}/WEB-INF/cfg" overwrite="true"/>
 
@@ -276,6 +300,13 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
 
+	<target name="deploy-berlin" depends="build">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="${deploy.test.server}:${deploy.test.dir}"/>
+		</exec>
+	</target>
+
     <target name="deploy-all-local" depends="deploy-local, deploy-test-local" />
 
     <!--<target name="deploy-local++" depends="replace metadata plugin, build">
@@ -290,22 +321,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         </copy>
     </target>
 
-    <target name="deploy-live">
-        <copy file="${project.war}" todir="${deploy.live.dir}" overwrite="true"/>
-    </target>
-
-    <target name="deploy-live-raw">
-        <!--		<copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
-                   <fileset dir="${gt.war.dir}">
-                       <exclude name="WEB-INF/data/**"/>
-                   </fileset>
-               </copy>
-        -->
-        <copy todir="${deploy.live.dir}/${war.name}" overwrite="true">
-            <fileset dir="${home.webapp.dir}"/>
-			<fileset dir="${home.webapp.back.dir}"/>
-         </copy>
-    </target>
 
     <!--<target name="replace metadata plugin">
         --><!-- build it --><!--
