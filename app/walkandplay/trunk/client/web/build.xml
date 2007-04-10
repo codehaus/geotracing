@@ -21,7 +21,7 @@ $Id$
 	<property name="build.dir" value="${home}/build"/>
 
 	<!-- The .jar -->
-	<property name="package.zip" value="${build.dir}/${project.id}-${project.version}.zip"/>
+	<property name="package.zip" value="${build.dir}/${project.id}-${component.id}-${component.version}.zip"/>
 
 	<target name="clean">
 		<delete dir="${build.dir}"/>
@@ -98,11 +98,20 @@ $Id$
 	<target name="build" depends="package"/>
 
 
+	<target name="sync-berlin" depends="assemble">
+		<exec executable="rsync">
+			<arg line="-alzvx  -e ssh "/>
+			<arg line="${home}/"/>
+			<arg line="${deploy.test.server}:${deploy.test.dir}" />
+		</exec>
+	</target>
+
+
 	<target name="copy-test">
 		<exec executable="scp">
 			<arg line="-r"/>
 			<arg line="${home}/"/>
-			<arg line="${deploy.test.dir}"/>
+			<arg line="keyworx@test.walkandplay.com:${deploy.test.dir}"/>
 		</exec>
 	</target>
 
