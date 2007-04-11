@@ -6,29 +6,35 @@ import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
+import org.keyworx.utopia.core.util.Oase;
 
 /**
- * Handles all operations related to Tracks.
+ * Utilities, shorthands to use in Utopia Handlers.
  * <p/>
- * Redirects the requests to TrackLogic methods.
  *
  * @author Just van den Broecke
  * @version $Id$
  */
 public class HandlerUtil {
 
+	/**
+	 * Get Oase session (utopia) from request.
+	 */
+	public static Oase getOase(UtopiaRequest anUtopiaReq) {
+		return anUtopiaReq.getUtopiaSession().getContext().getOase();
+	}
 
 	/**
 	 * Get user (Person) id from request.
 	 */
-	public static int getUserId(UtopiaRequest anUtopiaReq) throws UtopiaException {
+	public static int getUserId(UtopiaRequest anUtopiaReq)  {
 		return Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 	}
 
 	/**
 	 * Get user (Person) name from request.
 	 */
-	public static String getUserName(UtopiaRequest anUtopiaReq) throws UtopiaException {
+	public static String getUserName(UtopiaRequest anUtopiaReq)  {
 		return anUtopiaReq.getUtopiaSession().getContext().getUserName();
 	}
 
