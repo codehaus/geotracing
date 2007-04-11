@@ -33,7 +33,7 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
     public final static String TOUR_SEND_INVITATION_SERVICE = "schedule-send-invitation";
     public final static String TOUR_CONFIRM_INVITATION_SERVICE = "schedule-confirm-invitation";
 	public final static String SCHEDULE_CREATE_SERVICE = "schedule-create";
-     public final static String SCHEDULE_GETLIST_SERVICE = "schedule-getlist";
+    public final static String SCHEDULE_GETLIST_SERVICE = "schedule-getlist";
     public final static String TOUR_CREATE_TEAM_SERVICE = "schedule-create-team";
     public final static String TOUR_UPDATE_TEAM_SERVICE = "schedule-update-team";
 
@@ -74,6 +74,8 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
                 response = createTeam(anUtopiaRequest);
             } else if (service.equals(TOUR_UPDATE_TEAM_SERVICE)) {
                 response = updateTeam(anUtopiaRequest);
+            } else if (service.equals(SCHEDULE_GETLIST_SERVICE)) {
+                response = getList(anUtopiaRequest);
             } else {
                 log.warn("Unknown service " + service);
                 response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -91,6 +93,36 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         }
     }
 
+    public JXElement getList(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+        try {
+            JXElement requestElement = anUtopiaRequest.getRequestCommand();
+            JXElement rsp = createResponse(SCHEDULE_GETLIST_SERVICE);
+            
+            JXElement tourschedule1 = new JXElement("schedule");
+            rsp.addChild(tourschedule1);
+            tourschedule1.setAttr("id", "1");
+            JXElement name = new JXElement("name");
+            name.setText("Nieuwendijk pilot 1");
+            JXElement description = new JXElement("description");
+            description.setText("Media archeology pilot");
+            tourschedule1.addChild(name);
+            tourschedule1.addChild(description);
+
+            JXElement tourschedule2 = new JXElement("schedule");
+            rsp.addChild(tourschedule2);
+            tourschedule2.setAttr("id", "2");
+            name = new JXElement("name");
+            name.setText("Nieuwendijk pilot 2");
+            description = new JXElement("description");
+            description.setText("Oral history pilot");
+            tourschedule2.addChild(name);
+            tourschedule2.addChild(description);
+
+            return rsp;
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
+    }
 
     /**
      * Sends an invitation to known and unkown users to play a tour.
