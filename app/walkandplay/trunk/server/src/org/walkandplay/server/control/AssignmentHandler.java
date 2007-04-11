@@ -80,7 +80,7 @@ public class AssignmentHandler extends DefaultHandler {
     public JXElement createAssignment(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            JXElement contentElement = requestElement.getChildByTag(Constants.ASSIGNMENT_TABLE);
+            JXElement contentElement = requestElement.getChildByTag(Constants.TASK_TABLE);
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
 
             String tourId = requestElement.getAttr("tourid");
@@ -170,7 +170,7 @@ public class AssignmentHandler extends DefaultHandler {
     public JXElement updateAssignment(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            JXElement contentElement = requestElement.getChildByTag(Constants.ASSIGNMENT_TABLE);
+            JXElement contentElement = requestElement.getChildByTag(Constants.TASK_TABLE);
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
 
             String id = requestElement.getAttr(Constants.ID_FIELD);

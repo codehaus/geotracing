@@ -11,14 +11,14 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 		<insert>
 			<field name="name"/>
 			<field name="description"/>
-			<field name="type"/>
+			<field name="score"/>
 			<field name="answer"/>
 		</insert>
 
 		<list>
 			<field name="id"/>
 			<field name="name"/>
-			<field name="type"/>
+			<field name="score"/>
 		</list>
 
 		<query>
@@ -26,6 +26,7 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 			<field name="owner"/>
 			<field name="name"/>
 			<field name="description"/>
+			<field name="score"/>
 			<field name="type"/>
 			<field name="answer"/>
 			<field name="extra"/>
@@ -42,6 +43,9 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 
 		<!-- Meta: what it is about. -->
 		<field name="description" type="TEXT" required="false"/>
+
+		<!-- How many points one can get. -->
+		<field name="score" type="INTEGER" required="true" default="1"/>
 
 		<!-- Type: values are "bewijs" or "poorter" -->
 		<field name="type" type="STRING" size="32" required="false"/>

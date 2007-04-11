@@ -6,7 +6,7 @@ public interface Constants {
     public final static String TOUR_TABLE = "tour";
     public final static String TOUR_SCHEDULE_TABLE = "tourschedule";
     public final static String GAMEPLAY_TABLE = "gameplay";
-    public final static String ASSIGNMENT_TABLE = "assignment";
+    public final static String TASK_TABLE = "task";
     public final static String GAME_TABLE = "game";
     public final static String TEAM_TABLE = "team";
     public final static String POI_TABLE = "g_poi";
