@@ -9,6 +9,7 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.walkandplay.server.util.Constants;
 
 /**
  * RssHandler.
@@ -71,8 +72,23 @@ public class TourPlayHandler extends DefaultHandler {
 
 
 	public JXElement playGetStateReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-		return createResponse(PLAY_GETSTATE_SERVICE);
-	}
+        /*<play-getstate-rsp>
+            <tour id="234" name"sdvsdv" state="scheduled|running|done" />
+        </play=getstate-rsp>*/
+        // TODO: change this later on!!!!
+        JXElement rsp = createResponse(PLAY_GETSTATE_SERVICE);
+        JXElement t1 = new JXElement("tour");
+        t1.setAttr("id", "1");
+        t1.setAttr("name", "Nieuwendijk pilot 1");
+        t1.setAttr("state", "scheduled");
+        rsp.addChild(t1);
+        JXElement t2 = new JXElement("tour");
+        t2.setAttr("id", "2");
+        t2.setAttr("name", "Nieuwendijk pilot 2");
+        t2.setAttr("state", "running");
+        rsp.addChild(t2);
+        return rsp;
+    }
 
 	/**
 	 * Overridden to have a hook to do the initialisation.
