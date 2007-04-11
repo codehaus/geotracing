@@ -1,0 +1,78 @@
+<testset id="tour" clients="1">
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp>
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
+
+						<portalname>walkandplay
+						</portalname>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
+			</login-rsp>
+
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
+		</expect>
+	</test>
+
+	<test id="play-getstate-req">
+		<send id="client1">
+			<utopia-req>
+				<play-getstate-req>
+				</play-getstate-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-getstate-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-start-req">
+		<send id="client1">
+			<utopia-req>
+				<play-start-req>
+				</play-start-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-start-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+
+</testset>
+

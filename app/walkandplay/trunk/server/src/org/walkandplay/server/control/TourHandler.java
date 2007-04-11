@@ -38,9 +38,6 @@ public class TourHandler extends DefaultHandler implements Constants {
 
 	private Log log = Logging.getLog("TourHandler");
 	private ContentHandlerConfig config;
-	private RelateLogic relateLogic;
-	private ContentLogic contentLogic;
-	private Oase oase;
 
 	/**
 	 * Processes the Client Request.
@@ -57,9 +54,6 @@ public class TourHandler extends DefaultHandler implements Constants {
 		String service = anUtopiaRequest.getServiceName();
 		log.info("Handling request for service=" + service);
 		log.info(new String(anUtopiaRequest.getRequestCommand().toBytes(false)));
-		oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
-		relateLogic = new RelateLogic(oase, config);
-		contentLogic = new ContentLogic(oase, config);
 
 		JXElement response;
 		try {
@@ -124,6 +118,7 @@ public class TourHandler extends DefaultHandler implements Constants {
 	public JXElement deleteTour(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		try {
 			JXElement requestElement = anUtopiaRequest.getRequestCommand();
+			ContentLogic contentLogic = createContentLogic(anUtopiaRequest);
 
 			// Id is required
 			HandlerUtil.throwOnNonNumAttr(ID_FIELD, requestElement.getAttr(ID_FIELD));
@@ -153,6 +148,9 @@ public class TourHandler extends DefaultHandler implements Constants {
 	 */
 	public JXElement addItem(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaRequest.getRequestCommand();
+		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+		ContentLogic contentLogic = new ContentLogic(oase, config);
+		RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
 
 		// Id is required
 		String tourId = requestElement.getAttr(ID_FIELD);
@@ -227,7 +225,11 @@ public class TourHandler extends DefaultHandler implements Constants {
 	public JXElement updateTour(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		try {
 			JXElement requestElement = anUtopiaRequest.getRequestCommand();
-			// Id is required
+			Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+			ContentLogic contentLogic = new ContentLogic(oase, config);
+			RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
+
+ 			// Id is required
 			HandlerUtil.throwOnNonNumAttr(ID_FIELD, requestElement.getAttr(ID_FIELD));
 
 			JXElement tourElm = requestElement.getChildByTag(TOUR_TABLE);
@@ -266,7 +268,7 @@ public class TourHandler extends DefaultHandler implements Constants {
 			}
 
 			if (tags.length > 0) {
-				TagLogic tagLogic = new TagLogic(oase.getOaseSession());
+				TagLogic tagLogic = new TagLogic(HandlerUtil.getOase(anUtopiaRequest).getOaseSession());
 				int taggerId = Integer.parseInt(anUtopiaRequest.getUtopiaSession().getContext().getUserId());
 				int[] items = {id};
 				tagLogic.tag(taggerId, items, tags, org.keyworx.plugin.tagging.util.Constants.MODE_REPLACE);
@@ -316,5 +318,25 @@ public class TourHandler extends DefaultHandler implements Constants {
 		super.setProperty(aKey, aValue);
 	}
 
+
+	/**
+	 * Create ContentLogic object from Utopia request.
+	 *
+	 * @param anUtopiaRequest the request object
+	 * @return ContentLogic object
+	 */
+	protected ContentLogic createContentLogic(UtopiaRequest anUtopiaRequest) {
+		return new ContentLogic(HandlerUtil.getOase(anUtopiaRequest), config);
+	}
+
+	/**
+	 * Create RelateLogic object from Utopia request.
+	 *
+	 * @param anUtopiaRequest the request object
+	 * @return RelateLogic object
+	 */
+	protected RelateLogic createRelateLogic(UtopiaRequest anUtopiaRequest) {
+		return new RelateLogic(HandlerUtil.getOase(anUtopiaRequest), config);
+	}
 
 }

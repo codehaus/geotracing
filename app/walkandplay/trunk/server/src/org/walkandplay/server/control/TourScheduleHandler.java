@@ -30,11 +30,12 @@ import java.util.List;
  */
 public class TourScheduleHandler extends DefaultHandler implements Constants {
 
-    public final static String TOUR_SEND_INVITATION_SERVICE = "tourschedule-send-invitation";
-    public final static String TOUR_CONFIRM_INVITATION_SERVICE = "tourschedule-confirm-invitation";
-    public final static String TOUR_SCHEDULE_SERVICE = "tourschedule-schedule";
-    public final static String TOUR_CREATE_TEAM_SERVICE = "tourschedule-create-team";
-    public final static String TOUR_UPDATE_TEAM_SERVICE = "tourschedule-update-team";
+    public final static String TOUR_SEND_INVITATION_SERVICE = "schedule-send-invitation";
+    public final static String TOUR_CONFIRM_INVITATION_SERVICE = "schedule-confirm-invitation";
+	public final static String SCHEDULE_CREATE_SERVICE = "schedule-create";
+     public final static String SCHEDULE_GETLIST_SERVICE = "schedule-getlist";
+    public final static String TOUR_CREATE_TEAM_SERVICE = "schedule-create-team";
+    public final static String TOUR_UPDATE_TEAM_SERVICE = "schedule-update-team";
 
     private Log log = Logging.getLog("TourScheduleHandler");
     private ContentHandlerConfig config;
@@ -67,7 +68,7 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
                 response = sendInvitation(anUtopiaRequest);
             } else if (service.equals(TOUR_CONFIRM_INVITATION_SERVICE)) {
                 response = confirmInvitation(anUtopiaRequest);
-            } else if (service.equals(TOUR_SCHEDULE_SERVICE)) {
+            } else if (service.equals(SCHEDULE_CREATE_SERVICE)) {
                 response = schedule(anUtopiaRequest);
             } else if (service.equals(TOUR_CREATE_TEAM_SERVICE)) {
                 response = createTeam(anUtopiaRequest);
@@ -230,7 +231,7 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
 
             contentLogic.updateContent(tourScheduleId, tourScheduleElm);
 
-            JXElement response = createResponse(TOUR_SCHEDULE_SERVICE);
+            JXElement response = createResponse(SCHEDULE_CREATE_SERVICE);
             response.setAttr("id", tourScheduleId);
 
             return response;

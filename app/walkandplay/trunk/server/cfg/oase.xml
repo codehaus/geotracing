@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<oase>
+	<!-- CVS $Id$ -->
+
+	<!-- Global properties -->
+	<properties>
+		<property name="oase.data.dir">${keyworx.data.dir}/oase</property>
+		<property name="oase.backup.dir">${keyworx.backup.dir}/oase</property>
+		<property name="oase.admin.user">${keyworx.admin.user}</property>
+
+		<!-- md5 string of password -->
+		<property name="oase.admin.password">${keyworx.admin.password}</property>
+	</properties>
+
+	<!-- Template context -->
+	<container>
+
+		<!-- Services. -->
+		<services>
+
+			<service id="mediaFiler" class="org.keyworx.oase.service.MediaFilerImpl">
+
+				<!-- Quota for file uploads -->
+				<property name="fileSizeMaxBytes">100000000</property>
+
+				<!-- MediaTypes definitions -->
+				<property name="mediaTypes">mediatypes.xml</property>
+
+			</service>
+
+			<service id="finder" class="org.keyworx.oase.service.FinderImpl"/>
+			<service id="relater" class="org.keyworx.oase.service.RelaterImpl"/>
+			<service id="notifier" class="org.keyworx.oase.service.NotifierImpl"/>
+			<service id="modifier" class="org.keyworx.oase.service.ModifierImpl"/>
+			<service id="admin" class="org.keyworx.oase.service.AdminImpl"/>
+			<service id="relater" class="org.keyworx.oase.service.RelaterImpl"/>
+
+		</services>
+
+		<!-- Store. -->
+		<store>
+
+			<tables>
+				<table file="tables/oase_tabledef.xml"/>
+				<table file="tables/oase_lastid.xml"/>
+				<table file="tables/oase_index.xml"/>
+				<table file="tables/oase_relation.xml"/>
+				<table file="tables/oase_relationdef.xml"/>
+				<table file="tables/oase_foreignkey.xml"/>
+				<table file="tables/base_medium.xml"/>
+			</tables>
+
+			<interceptors>
+
+				<interceptor id="model" class="org.keyworx.oase.store.interceptor.ModelInterceptor"/>
+
+				<interceptor id="transaction" class="org.keyworx.oase.store.interceptor.TransactionInterceptor"/>
+
+				<interceptor id="notifier" class="org.keyworx.oase.store.interceptor.NotifierInterceptor"/>
+
+				<interceptor id="cache" class="org.geotracing.oase.EHCacheInterceptor"/>   
+
+				<interceptor id="source" class="org.keyworx.oase.store.interceptor.SourceInterceptor"/>
+
+			</interceptors>
+
+			<sources>
+
+
+<!--				<source id="db" class="org.keyworx.oase.store.source.MySQLDBSource">
+				<property name="driver">org.gjt.mm.mysql.Driver</property>
+				<property name="protocol">jdbc:mysql</property>
+				<property name="host">localhost</property>
+				<property name="port">3306</property>
+				<property name="user">oaseuser</property>
+				<property name="password">oase</property>
+				<property name="poolSize">5</property>
+			</source>-->
+
+			<source id="db" class="org.geotracing.oase.PostGISDBSource">
+					<property name="driver">org.postgis.DriverWrapperLW</property>
+					<property name="protocol">jdbc:postgresql_lwgis</property>
+					<property name="host">localhost</property>
+					<property name="port">5432</property>
+					<property name="user">oaseuser</property>
+					<property name="password">oase</property>
+					<property name="poolSize">5</property>
+					<property name="template">postgis</property>
+					<property name="randomfun">RANDOM()</property>
+			</source>
+                
+            <source id="file" class="org.keyworx.oase.store.source.FileSource"/>
+
+			</sources>
+
+		</store>
+
+		<daemons>
+		</daemons>
+
+	</container>
+
+	<!-- This file defines the contexts to be created at startup. -->
+	<contexts>
+		<!-- OPTIONAL Contexts to start
+		<context file="oase/utopia.xml" />
+
+		<context file="context/test-mysql.xml" />
+		<context file="tables/test-mysql.xml" />
+ 		-->
+
+	</contexts>
+
+	<!--
+	CVS log:
+
+	-->
+
+</oase>
+

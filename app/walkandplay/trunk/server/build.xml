@@ -9,7 +9,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <!-- Project global properties; overrule by modifying build.properties -->
  	<property name="home" value="${basedir}"/>
 	<!-- Project global properties; overrule by modifying build.properties -->
-    <property name="geotracing.base.dir" value="${basedir}/../../../../base/trunk"/>
+    <property name="geotracing.base.dir" value="${home}/../../../../base/trunk"/>
 	<property name="geotracing.server.dir" value="${geotracing.base.dir}/server"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
 	<property file="${geotracing.external.dir}/build.properties"/>
@@ -30,9 +30,10 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
     <property name="build.lib.dir" value="${build.dir}/lib"/>
     <property name="build.zip.dir" value="${build.dir}/zip"/>
     <property name="home.src.dir" value="${home}/src"/>
-    <property name="home.data.dir" value="${home}/data"/>
-    <property name="home.webapp.dir" value="${home}/../client/web"/>
-    <property name="home.webapp.back.dir" value="${home}/webapp/${war.name}"/>
+	<property name="home.cfg.dir" value="${home}/cfg"/>
+     <property name="home.data.dir" value="${home}/data"/>
+    <property name="home.client.web.dir" value="${home}/../client/web"/>
+    <property name="home.webapp.dir" value="${home}/webapp/${war.name}"/>
 
     <property name="build.war.dir" value="${build.dir}/war"/>
     <property name="version.dir" value="${home}/version"/>
@@ -130,74 +131,113 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 
     <!-- Build the .wars for the project -->
     <target name="war" depends="jar">
-        <echo message="Building webapp..."/>
-        <echo message="using geoTracing war dir: ${gt.war.dir}"/>
+		<echo message="Building webapp ${project.war}..."/>
 
-        <delete dir="${build.war.dir}"/>
-        <delete file="${project.war}"/>
-        <mkdir dir="${build.war.dir}"/>
+		<delete dir="${build.war.dir}"/>
+		<delete file="${project.war}"/>
+		<mkdir dir="${build.war.dir}"/>
 
-        <copy todir="${build.war.dir}">
-            <fileset dir="${gt.war.dir}">
-                <exclude name="WEB-INF/data/**"/>
-            </fileset>
-        </copy>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg" overwrite="true">
-            <fileset dir="${server.cfg.dir}"/>
-        </copy>
-
-        <!-- Replace users/passwords with local values as not to have them in repository -->
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${home}/security.properties" summary="true"/>
-
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplay" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplay" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6050" token="[PORTNR]"/>
-        <copy todir="${build.war.dir}/WEB-INF/lib" file="${project.jar}"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${server.cfg.dir}/tables"/>
-        </copy>
-
-
-
-        <copy file="${server.cfg.dir}/oase-context.xml" todir="${build.war.dir}/WEB-INF/cfg" overwrite="true"/>
-
-        <!-- copy the jad so it can be send to users later... -->
-        <copy file="${project.jad}" todir="${build.war.dir}/WEB-INF/cfg"/>
-
-        <!-- copy plugins
-        <mkdir dir="${build.war.dir}/WEB-INF/plugins"/>
-        <copydir src="${kwx-tagging.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${kwx-metadata.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/>  -->
-
-        <!-- TODO: change this eventually -->
-        <!-- untill plugins truly work in KeyWorx copy the jars and tables to get things working-->
-
-        <!-- copy data for tracerdaemon -->
-        <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
-          <fileset dir="${home.data.dir}"/>
-        </copy>
-
-        <copy todir="${build.war.dir}" overwrite="true">
-			<fileset dir="${home.webapp.back.dir}"/>
+		<copy todir="${build.war.dir}">
+			<fileset dir="${home.webapp.dir}"/>
 		</copy>
+
+		<!-- First assemble all required files into war directory. -->
+
+		<!-- Keyworx configuration -->
+		<echo message="creating config and kwx webapp..."/>
+		<ant antfile="${keyworx.dir}/build-util.xml" target="config-webapp" inheritall="false">
+			<!-- The base config of KW: utopia, kwlive or minimal -->
+			<property name="kw.base.cfg" value="utopia"/>
+
+			<!-- My server config dir -->
+			<property name="my.cfg.dir" value="${home.cfg.dir}"/>
+
+			<!-- My war dest dir -->
+			<property name="my.war.dir" value="${build.war.dir}"/>
+
+			<!-- My jar file (OPTIONAL) -->
+			<property name="my.jar" value="${project.jar}"/>
+		</ant>
+
+		<copy todir="${build.war.dir}/WEB-INF/" file="${home.cfg.dir}/web.xml" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/3gp2swf.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/image-meta.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+			<fileset dir="${home.data.dir}"/>
+
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true" >
+			<fileset dir="${pushlet.dir}/lib">
+				<include name="pushlet.jar"/>
+			</fileset>
+			<fileset dir="${postgis-jdbc.dir}">
+				<include name="postgis.jar"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/lib">
+				<include name="tagging.jar"/>
+			</fileset>
+			<fileset dir="${kwx-metadata.dir}/lib">
+				<include name="metadata.jar"/>
+			</fileset>
+			<fileset dir="${ehcache.dir}">
+				<include name="ehcache-1.2.4.jar"/>
+			</fileset>
+			<fileset dir="${geotools-referencing.dir}">
+				<include name="geoapi-nogenerics-2.1-M2.jar"/>
+				<include name="gt2-epsg-wkt-2.3.0.jar"/>
+				<include name="gt2-referencing-2.3.0.jar"/>
+				<include name="jsr108-0.01.jar"/>
+				<include name="vecmath-1.3.1.jar"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/classes">
+			<fileset dir="${home.cfg.dir}">
+				<include name="pushlet.properties"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant GeoTracing tables -->
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			 <fileset dir="${geotracing.server.dir}/cfg/tables">
+				 <include name="g_track.xml"/>
+				 <include name="g_location.xml"/>
+				 <include name="g_area.xml"/>
+			 </fileset>
+		 </copy>
+
+		<!-- Copy relevant GeoTracing JSP -->
+		<copy todir="${build.war.dir}/srv/" overwrite="true">
+			 <fileset dir="${geotracing.server.dir}/webapp/gt/srv">
+			 </fileset>
+		 </copy>
+
+		<!-- until kwx plugins truly work in KeyWorx copy the jars and tables to get things working-->
+		 <copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			 <fileset dir="${kwx-metadata.dir}/cfg/tables">
+				 <exclude name="cc_tag.xml"/>
+				 <exclude name="cc_tagrelation.xml"/>
+			 </fileset>
+			 <fileset dir="${kwx-tagging.dir}/cfg/tables"/>
+		 </copy>
 
 		<!-- Set version numbers and build info in version/index.html. -->
 		<concat destfile="${build.war.dir}/version/index.html">
-			<filelist dir="${home.webapp.back.dir}/version" files="index.html"/>
-			<filelist dir="${gt.war.dir}/version" files="index.html"/>
+			<filelist dir="${home.webapp.dir}/version" files="index.html"/>
 			<filterchain>
 				<expandproperties/>
 			</filterchain>
 		</concat>
 
-        <!-- Make war -->
-        <jar jarfile="${project.war}">
-            <fileset dir="${build.war.dir}">
-                <include name="**"/>
-            </fileset>
-        </jar>
+		<!-- Finally make war -->
+		<jar jarfile="${project.war}">
+			<fileset dir="${build.war.dir}">
+				<include name="**"/>
+			</fileset>
+		</jar>
+
     </target>
 
     <!-- Build the .wars for the project -->
@@ -316,8 +356,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 -->
     <target name="deploy-local-raw">
         <copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
-            <fileset dir="${home.webapp.dir}"/>
-			<fileset dir="${home.webapp.back.dir}"/>
+            <fileset dir="${home.client.web.dir}"/>
+			<fileset dir="${home.webapp.dir}"/>
         </copy>
     </target>
 

@@ -1,4 +1,4 @@
-<portal name="[PORTALNAME]">
+<portal name="walkandplay">
 
     <!-- Standard host-dependent container properties -->
     <property name="siteurl" host="ronaldinho.local">http://local.walkandplay.com</property>
@@ -20,7 +20,7 @@
     <connectors>
         <!-- Mainly needed for TracerDaemon and LocEmailUploadDaemon -->
         <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
-            <property name="port">[PORTNR]</property>
+            <property name="port">6050</property>
             <property name="pongTimeoutMillis">30000</property>
         </connector>
     </connectors>
@@ -53,11 +53,14 @@
                 <property name="config">content-config.xml</property>
             </handler>
 
-			<handler id="tourschedule" class="org.walkandplay.server.control.TourScheduleHandler">
+			<handler id="play" class="org.walkandplay.server.control.TourPlayHandler"/>
+
+			 <!--
+			 <handler id="tourschedule" class="org.walkandplay.server.control.TourScheduleHandler">
                 <property name="config">content-config.xml</property>
             </handler>
 
-            <!-- <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
+           <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
             <handler id="content" class="org.keyworx.utopia.core.control.ContentHandler"/>
             <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>  -->
             <!-- plugin handlers -->
