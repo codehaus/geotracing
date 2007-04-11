@@ -113,35 +113,48 @@
 		<send id="client1">
 			<utopia-req>
 				<game-add-medium-req id="${gameid}">
-					<medium id="${mediumid1}"/>
-					<location>
+					<medium>
+						<id>${mediumid1}</id>
 						<lon>4.92204666137695</lon>
 						<lat>52.3764702870686</lat>
-						<ele>52.3764702870686</ele>
-					</location>
+					</medium>
 				</game-add-medium-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<game-add-item-rsp/>
+				<game-add-medium-rsp id="${mediumid1}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
-	<test id="game-addtask-req">
+	<test id="game-del-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<game-delete-medium-req id="${gameid}" mediumid="${mediumid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-delete-medium-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-add-task-req">
 		<send id="client1">
 			<utopia-req>
 				<game-add-task-req id="${gameid}">
 					<task>
-						<name>opdracht</name>
-						<description>een prachtige opdracht</description>
-						<answer>fiets</answer>
-						<medium id="${mediumid1}"/>
+						<name>strikvraag</name>
+						<description>wat wordt het meest in amsterdam gestolen ?</description>
+						<answer>mijn fiets</answer>
+						<mediumid>${mediumid1}</mediumid>
+						<score>10</score>
 						<lon>4.92204666137695</lon>
 						<lat>52.3764702870686</lat>
-						<ele>52.3764702870686</ele>
 					</task>
 				</game-add-task-req>
 			</utopia-req>

@@ -6,6 +6,7 @@ import org.geotracing.handler.HandlerUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
+import org.keyworx.oase.api.Record;
 import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
@@ -68,6 +69,10 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 				response = deleteGame(anUtopiaRequest);
 			} else if (service.equals(GAME_ADD_MEDIUM_SERVICE)) {
 				response = addMediumReq(anUtopiaRequest);
+			} else if (service.equals(GAME_DEL_MEDIUM_SERVICE)) {
+				response = deleteMediumReq(anUtopiaRequest);
+			} else if (service.equals(GAME_ADD_TASK_SERVICE)) {
+				response = addTaskReq(anUtopiaRequest);
 			} else {
 				log.warn("Unknown service " + service);
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -85,7 +90,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 	}
 
 	/**
-	 * Adds an item to the game based on its location. An item can be a medium or assignment object
+	 * Adds an medium to the game based on its location. An item can be a medium or assignment object
 	 *
 	 * @param anUtopiaRequest
 	 * @return
@@ -95,74 +100,32 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 	public JXElement addMediumReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaRequest.getRequestCommand();
 		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
-		ContentLogic contentLogic = new ContentLogic(oase, config);
-		RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
 
 		// Id is required
 		String gameId = requestElement.getAttr(ID_FIELD);
 		HandlerUtil.throwOnNonNumAttr("game id", gameId);
-		// HandlerUtil.throwOnMissingChildElement(requestElement, ASSIGNMENT_TABLE);
+		HandlerUtil.throwOnMissingChildElement(requestElement, Medium.XML_TAG);
 
-		JXElement item = requestElement.getChildByTag(Medium.XML_TAG);
-		if (item == null) {
-			item = requestElement.getChildByTag(ASSIGNMENT_TABLE);
-		}
-		if (item == null) {
-			throw new UtopiaException("No item found to add.", ErrorCode.__7003_missing_XML_element);
-		}
-
-		// get the location element
-		JXElement locationElm = requestElement.getChildByTag(LOCATION_FIELD);
-		if (locationElm == null)
-			throw new UtopiaException("No location found for item to add.", ErrorCode.__7003_missing_XML_element);
+		JXElement mediumElm = requestElement.getChildByTag(Medium.XML_TAG);
+		HandlerUtil.throwOnMissingChildElement(mediumElm, "id");
+		HandlerUtil.throwOnMissingChildElement(mediumElm, Location.FIELD_LON);
+		HandlerUtil.throwOnMissingChildElement(mediumElm, Location.FIELD_LAT);
 
 		Location location = Location.create(oase);
-		String lon = locationElm.getChildText(Location.FIELD_LON);
-		String lat = locationElm.getChildText(Location.FIELD_LAT);
-		String ele = locationElm.getChildText(Location.FIELD_ELE);
-		//String time = locationElm.getChildText(Location.FIELD_TIME);
+		String lon = mediumElm.getChildText(Location.FIELD_LON);
+		String lat = mediumElm.getChildText(Location.FIELD_LAT);
 		long time = System.currentTimeMillis();
-		HandlerUtil.throwOnMissingAttr("lon", lon);
-		HandlerUtil.throwOnMissingAttr("lat", lat);
-		HandlerUtil.throwOnMissingAttr("ele", ele);
-		//throwOnMissingAttr("time", time);
 
-		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), Double.parseDouble(ele), time);
+		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
-		relateLogic.relate(Integer.parseInt(gameId), location.getId(), null);
-		String id = "";
 
-		if (item.getTag().equals(Medium.XML_TAG)) {
-			id = item.getAttr(Medium.ID_FIELD);
-			HandlerUtil.throwOnMissingAttr("medium id", id);
+		int mediumId = Integer.parseInt(mediumElm.getChildText("id"));
 
-			relateLogic.relate(Integer.parseInt(id), location.getId(), null);
-
-		} else if (item.getTag().equals(ASSIGNMENT_TABLE)) {
-			List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
-			// remove media for contentlogic to work
-			log.info(new String(item.toBytes(false)));
-			while (item.getChildByTag(Medium.XML_TAG) != null) {
-				item.removeChildByTag(Medium.XML_TAG);
-			}
-			log.info(new String(item.toBytes(false)));
-
-			id = "" + contentLogic.insertContent(item);
-			if (media != null) {
-				for (int i = 0; i < media.size(); i++) {
-					JXElement mediumElm = (JXElement) media.get(i);
-					String mediumId = mediumElm.getAttr(Medium.ID_FIELD);
-					if (mediumId != null && mediumId.length() > 0) {
-						relateLogic.relate(Integer.parseInt(id), Integer.parseInt(mediumId), null);
-					}
-				}
-			}
-
-			relateLogic.relate(Integer.parseInt(id), location.getId(), null);
-		}
+		location.createRelation(mediumId, "medium");
+		location.createRelation(Integer.parseInt(gameId), "medium");
 
 		JXElement response = createResponse(GAME_ADD_MEDIUM_SERVICE);
-		response.setAttr(ID_FIELD, id);
+		response.setAttr(ID_FIELD, mediumId);
 
 		return response;
 	}
@@ -178,74 +141,45 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 	public JXElement addTaskReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaRequest.getRequestCommand();
 		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
-		ContentLogic contentLogic = new ContentLogic(oase, config);
-		RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
 
 		// Id is required
 		String gameId = requestElement.getAttr(ID_FIELD);
 		HandlerUtil.throwOnNonNumAttr("game id", gameId);
-		// HandlerUtil.throwOnMissingChildElement(requestElement, ASSIGNMENT_TABLE);
+		HandlerUtil.throwOnMissingChildElement(requestElement, "task");
 
-		JXElement item = requestElement.getChildByTag(Medium.XML_TAG);
-		if (item == null) {
-			item = requestElement.getChildByTag(ASSIGNMENT_TABLE);
-		}
-		if (item == null) {
-			throw new UtopiaException("No item found to add.", ErrorCode.__7003_missing_XML_element);
-		}
+		JXElement taskElm = requestElement.getChildByTag("task");
+		HandlerUtil.throwOnMissingChildElement(taskElm, "name");
+		HandlerUtil.throwOnMissingChildElement(taskElm, "description");
+		HandlerUtil.throwOnMissingChildElement(taskElm, "score");
+		HandlerUtil.throwOnMissingChildElement(taskElm, "answer");
+		HandlerUtil.throwOnMissingChildElement(taskElm, "mediumid");
+		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LON);
+		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LAT);
 
-		// get the location element
-		JXElement locationElm = requestElement.getChildByTag(LOCATION_FIELD);
-		if (locationElm == null)
-			throw new UtopiaException("No location found for item to add.", ErrorCode.__7003_missing_XML_element);
+		Record taskRecord = oase.getModifier().create("task");
+		taskRecord.setField("name", taskElm.getChildText("name"));
+		taskRecord.setField("description", taskElm.getChildText("description"));
+		taskRecord.setField("score", taskElm.getChildText("score"));
+		taskRecord.setField("name", taskElm.getChildText("name"));
+		taskRecord.setField("answer", taskElm.getChildText("answer"));
+		oase.getModifier().insert(taskRecord);
 
+		// Couple to location
 		Location location = Location.create(oase);
-		String lon = locationElm.getChildText(Location.FIELD_LON);
-		String lat = locationElm.getChildText(Location.FIELD_LAT);
-		String ele = locationElm.getChildText(Location.FIELD_ELE);
-		//String time = locationElm.getChildText(Location.FIELD_TIME);
+		String lon = taskElm.getChildText(Location.FIELD_LON);
+		String lat = taskElm.getChildText(Location.FIELD_LAT);
 		long time = System.currentTimeMillis();
-		HandlerUtil.throwOnMissingAttr("lon", lon);
-		HandlerUtil.throwOnMissingAttr("lat", lat);
-		HandlerUtil.throwOnMissingAttr("ele", ele);
-		//throwOnMissingAttr("time", time);
 
-		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), Double.parseDouble(ele), time);
+		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
-		relateLogic.relate(Integer.parseInt(gameId), location.getId(), null);
-		String id = "";
 
-		if (item.getTag().equals(Medium.XML_TAG)) {
-			id = item.getAttr(Medium.ID_FIELD);
-			HandlerUtil.throwOnMissingAttr("medium id", id);
+		int mediumId = Integer.parseInt(taskElm.getChildText("mediumid"));
 
-			relateLogic.relate(Integer.parseInt(id), location.getId(), null);
+		location.createRelation(taskRecord.getId(), "task");
+		location.createRelation(Integer.parseInt(gameId), "medium");
 
-		} else if (item.getTag().equals(ASSIGNMENT_TABLE)) {
-			List media = requestElement.getChildrenByTag(Medium.TABLE_NAME);
-			// remove media for contentlogic to work
-			log.info(new String(item.toBytes(false)));
-			while (item.getChildByTag(Medium.XML_TAG) != null) {
-				item.removeChildByTag(Medium.XML_TAG);
-			}
-			log.info(new String(item.toBytes(false)));
-
-			id = "" + contentLogic.insertContent(item);
-			if (media != null) {
-				for (int i = 0; i < media.size(); i++) {
-					JXElement mediumElm = (JXElement) media.get(i);
-					String mediumId = mediumElm.getAttr(Medium.ID_FIELD);
-					if (mediumId != null && mediumId.length() > 0) {
-						relateLogic.relate(Integer.parseInt(id), Integer.parseInt(mediumId), null);
-					}
-				}
-			}
-
-			relateLogic.relate(Integer.parseInt(id), location.getId(), null);
-		}
-
-		JXElement response = createResponse(GAME_ADD_MEDIUM_SERVICE);
-		response.setAttr(ID_FIELD, id);
+		JXElement response = createResponse(GAME_ADD_TASK_SERVICE);
+		response.setAttr(ID_FIELD, taskRecord.getId());
 
 		return response;
 	}
@@ -306,6 +240,35 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		}
 	}
 
+	/**
+	 * Deletes an medium from the game and its location.
+	 *
+	 * @param anUtopiaRequest
+	 * @return
+	 * @throws OaseException
+	 * @throws UtopiaException
+	 */
+	public JXElement deleteMediumReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+		JXElement requestElement = anUtopiaRequest.getRequestCommand();
+		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+
+		// Id is required
+		String gameId = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr("game id", gameId);
+		String mediumStrId = requestElement.getAttr("mediumid");
+		HandlerUtil.throwOnNonNumAttr("medium id", mediumStrId);
+        int mediumId = Integer.parseInt(mediumStrId);
+		Record mediumRecord = oase.getFinder().read(mediumId, Medium.TABLE_NAME);
+
+		Record locationRecord = oase.getRelater().getRelated(mediumRecord, Location.TABLE_NAME, null)[0];
+		oase.getModifier().delete(locationRecord);
+		oase.getModifier().delete(mediumRecord);
+
+		JXElement response = createResponse(GAME_DEL_MEDIUM_SERVICE);
+		response.setAttr(ID_FIELD, mediumId);
+
+		return response;
+	}
 
 	public JXElement updateGame(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		try {
