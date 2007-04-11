@@ -12,14 +12,14 @@
 	}
 		
 	function maakStartpuntForm(elm) {
-		var start_punt_string = '<p>Startpunt</p><form><select id="startpunt" ><option value="0" selected="selected">geen voorkeur</option>';
+		var start_punt_string = '<p>Startpunt</p><form><select id="startpunt" ><option value="0" STYLE="width: 100px" selected="selected">geen voorkeur</option>';
 
 		var start_punt_list = elm.getElementsByTagName('name');
 		var n_start_punt = start_punt_list.length;
 		var j;
 		for (i = 0; i < n_start_punt; i++){ 
 			j = i+1;
-			start_punt_string += '<option value=' + j + '>';
+			start_punt_string += '<option value=' + j + ' STYLE="width: 100px;">';
 			start_punt_string += start_punt_list.item(i).firstChild.nodeValue;
 			start_punt_string += '</option>';
 		}

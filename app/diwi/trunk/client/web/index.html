@@ -10,8 +10,10 @@
 	<script type="text/javascript" src="lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClientExt.js"></script>
+	<script type="text/javascript" src="lib/gt/Server.js"></script>
 	<script type="text/javascript" src="js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="js/selectstartpage.js"></script>
+	<script type="text/javascript" src="js/selectvasteroute.js"></script>
 
 	<script language="JavaScript" type="text/JavaScript">
 		var TST = {
@@ -25,7 +27,7 @@
 				// server root path /diwi
 				KW.init(TST.onRsp, TST.onNegRsp, 1, '/diwi');
 				TST.pr('init done');
-			},
+		},
 
 				// called from form submit
 			login: function() {
@@ -40,7 +42,14 @@
 				TST.pr('login sent');
 				return false;
 			},
-
+			login_neutral: function() {
+				TST.pr('login start');
+				var name = 'diwi-web';
+				var password = 'diwi';
+				// Call KWClient
+				KW.login(name, password);
+			return false;
+			},
 			logout: function() {
 				TST.pr('logout start');
 				// KeyWorx client
@@ -48,9 +57,19 @@
 				TST.pr('logout sent');
 				return false;
 			},
+			restoreSession: function() {
+				KW.restoreSession();
+//				KW.DIWI.getfixedroutes(TST.onRsp);
+			},
 			getFixedRoutes: function() {
 				KW.DIWI.getfixedroutes(TST.onRsp);
+//				SRV.get('q-fixed-routes', 'onFixedRoute');
 			},
+			
+			onFixedRoute: function(elm) {
+					maakVasteRoutesForm(elm);				
+			},
+
 
 			onRsp: function(elm) {
 				if (!elm) {
@@ -62,10 +81,10 @@
 				if (elm.tagName == 'login-rsp') {
 					KW.selectApp('geoapp', 'user');
 				} else if (elm.tagName == 'select-app-rsp') {
-					TST.pr('login OK');
-
+	
 					KW.storeSession();
-					// Show new content, here logout form
+//					KW.DIWI.getfixedroutes(TST.onFixedRoute);					
+						// Show new content, here logout form
 					DH.toggleDisplay(document.getElementById('butmaakroute'));
 					DH.toggleDisplay(document.getElementById('butmijnpagina'));
 					DH.hide('loginform');
@@ -76,6 +95,8 @@
 					DH.toggleDisplay(document.getElementById('butmaakroute'));
 					DH.toggleDisplay(document.getElementById('butmijnpagina'));
 					DH.show('loginform');
+				} else if (elm.tagName == 'route-getlist-rsp') {
+					maakVasteRoutesForm(elm);
 				} else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
 				}
@@ -105,13 +126,13 @@ var currentSelection = 1;
 var toolbarData = new Array();
 toolbarData[1] = new Array('home/buttons/welkom.gif', 'home/buttons/welkomH.gif', 'home/buttons/welkomH.gif');
 toolbarData[2] = new Array('home/buttons/route.gif', 'home/buttons/routeH.gif', 'home/buttons/routeH.gif');
-toolbarData[3] = new Array('home/buttons/aanmelden.gif', 'home/buttons/aanmeldenH.gif', 'home/buttons/aanmeldenH.gif');
+toolbarData[3] = new Array('home/buttons/aanmelden.gif', 'home/buttons/aanmelden.gif', 'home/buttons/aanmelden.gif');
 toolbarData[4] = new Array('home/buttons/faq.gif', 'home/buttons/faqH.gif', 'home/buttons/faqH.gif');
 
 var buttons=4;
 
-var texten = new Array("Welkom","faq");
-var aantaltexten =2;
+var texten = new Array("Welkom","faq", "routespagina");
+var aantaltexten =3;
 
 function highlightItem(obj, state) {
  i = obj.getAttribute('id');
@@ -119,8 +140,8 @@ function highlightItem(obj, state) {
 		obj.setAttribute('src', toolbarData[i][state]);
 }
 }
-function selectItem(obj) {
- i = obj.getAttribute('id');
+function selectButton(obj) {
+ 	i = obj.getAttribute('id');
 	var tbar = new Array();
 	for (j=1; j<buttons+1;j++) {
   	tbar[j] = document.getElementById(j);
@@ -211,6 +232,8 @@ function show(d){
 			hideText(i);
 		}
 	}
+	if (d==2)
+	 	toonSelectedVasteRoute();
 }
 
 function restoreLoggedIn() {
@@ -221,13 +244,29 @@ function restoreLoggedIn() {
 	}
 }
 
-//	DH.addEvent(window, 'load', initLightbox(), false);
+function submitenter(myfield,e){
+	var keycode;
+	if (window.event) 
+		keycode = window.event.keyCode;
+	else if (e) 
+		keycode = e.which;
+	else 
+		return true;
 
+	if (keycode == 13){
+   		TST.login();
+   		return false;
+   	} else
+   		return true;
+	}
+	
 </script>
 
 <body  background="home/images/back.gif">
 
 <script type="text/javascript" src="js/lightbox.js"></script>
+
+
 	<!--
 <div id="back">  <img src="home/images/backS.jpg" border="0"> </div>
 -->
@@ -256,30 +295,35 @@ function restoreLoggedIn() {
 	</div>
 	<div id="onderbutlijn"> <img  src="home/images/onderbuttons2.gif" border="0"> </div>
 	<div id="inlogbox" style="display:none;"> <img src="home/images/videobox.gif" border="0"> </div>
-	<div id="inlogform" style="display:none;"> 
-		<form id="loginform" action="#">
-			<p>ENTER USER NAME :<br>
-				<input type="text" name="name">
+	<div id="inlogform"  class="logform" style="display:none;" > 
+		<form id="loginform"   class="logform" action="javascript:TST.login()">
+			<p>Loginnaam :<br>
+				<input type="text" name="name" >
 			</p>
 	
-			<p> ENTER PASSWORD :<br>
-				<input type="password" name="password"><br>
-				<input type="button" value="Check In" name="Submit" onClick="javascript:TST.login()">
+			<p> Wachtwoord :<br>
+				<input type="password" name="password" onKeyPress="return submitenter(this,event)"><br>
+				<div id="logforminlogbut" style="display:inherit">
+				<a><img src="home/buttons/login.gif" onClick="javascript:TST.login()"></a>
+				</div>
+<!--				<input type="button" value="Login" name="Submit" onClick="javascript:TST.login()" > -->
 			</p>
 		</form>
 	</div>
 
 
 	<div id="videobox"> <img src="home/images/videobox.gif" border="0"> </div>
-	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" border="0"></a> </div>
+<!--	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" border="0"></a> </div> -->
+	<div id="fotovideobox"><img src="home/images/fotovideobox.gif" border="0"></div>
 	<div id="spotmetbox"> <img src="home/images/spotmetbox.gif" border="0"> </div>
 
 	<div id="butintrovideo">
-		<a><img id="8" src="home/buttons/introvideo.gif"onMouseOver="" onMouseOut="" onClick=""  border="0"></a>
+		<img id="8" src="home/buttons/introvideo.gif"onMouseOver="" onMouseOut="" onClick=""  border="0">
 	</div>
 	<div id="watistext">
 	
-	<font size="-2">Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.</font>
+<!--	<font size="-2">Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.</font> -->
+	<font size="-2">Helaas is er nog geen introductie video te bekijken.</font>
 	
 	</div>
 	
@@ -288,7 +332,7 @@ function restoreLoggedIn() {
 
 <div id="line"><img src="home/images/lijn.gif" border="0"></div>
 <div id="fototekst">
-	<center>
+<!--	<center>
 	<fn>Route Scherpenzeel</fn> <br>
 	</center>
 	<center>
@@ -298,29 +342,30 @@ function restoreLoggedIn() {
 	<a  onClick="nextImage()"><strong>volgende</strong> </a>
 	</font>
 	</center>
+-->
 
 </div>
 
 <div id="butwelkom">
 		<a><img id="1" src="home/buttons/welkomH.gif"onMouseOver="highlightItem(this, 1)"
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); show(0)" border="0"></a>
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); show(0)" border="0"></a>
 </div>
 <div id="butroutes">
 		<a><img id="2" src="home/buttons/route.gif"onMouseOver="highlightItem(this, 1)"
-		onMouseOut="highlightItem(this, 0)" onClick="" border="0"></a>
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); show(2)" border="0"></a>
 </div>
 <div id="butaanmelden">
-		<a><img id="3" src="home/buttons/aanmelden.gif"onMouseOver="highlightItem(this, 1)"
-		onMouseOut="highlightItem(this, 0)" onClick="" border="0"></a>
+		<img id="3" src="home/buttons/aanmelden.gif"onMouseOver="highlightItem(this, 1)"
+		onMouseOut="highlightItem(this, 0)" onClick="" border="0">
 </div>
 <div id="butfaq">
 		<a><img id="4" src="home/buttons/faq.gif" onMouseOver="highlightItem(this, 1)"
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); show(1)" border="0"></a>
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); show(1)" border="0"></a>
 </div>
 
 
 
-<div id="Welkom" style="display:block;">
+<div id="Welkom" class="pagina" style="display:block;">
 
 		<H1><strong>Welkom bij de Digitale Wichelroede</strong><br></H1>
 
@@ -332,8 +377,10 @@ Struinen door het landschap, met een persoonlijke 'Digitale Wichelroede' die int
 <p>
 	Met een consortium waarin partners van uiteenlopende achtergrond zitting hebben wordt met project de Digitale Wichelroede onderzoek gedaan naar de kansen van zo&acute;n moderne 'wichelroede'. Immers, alvorens een product te ontwikkelen moet onderzocht worden hoe zo&acute;n Digitale Wichelroede er het best uit kan zien en wat zijn technische en inhoudelijke mogelijkheden zijn. Er wordt dan ook hard gewerkt aan een pilotversie en deze wordt in de zomer van 2007 getest. Hoe en waarom we dat doen lees je hieronder.
 </p>
+<p>
 <img src="home/images/pda.gif" border="0" align="left">
 <strong>Een slim apparaat</strong><br>
+</p>
 <p>
 	De Digitale Wichelroede is een slim apparaat dat een heleboel weet, zodat jij als gebruiker d&iacute;e cultuurhistorische kennis eruit kan halen waarover je graag wat meer te weten wilt komen. Bij het ontwikkelen van het apparaat moet daarom eerst een heleboel kennis verzameld en gedigitaliseerd worden. Deze informatie halen we overal vandaan. Uit boeken, databases, maar ook van historische verenigingen en van mensen die in een bepaald gebied wonen. Al deze verhalen worden gekoppeld aan specifieke plekken in een bepaald gebied en vastgepind op een digitale geografische kaart. Nadat wetenswaardigheden en mogelijke routes en locaties zijn samengebracht worden ze in een speciaal voor het project ontworpen en gebouwd mobiel systeem geladen. Dit systeem beschikt ook over een GPS waardoor de struiner niet kan verdwalen.
 </p>
@@ -372,7 +419,7 @@ In deze nieuwbouwwijk in de Vinexwijk Leidsche Rijn in Utrecht bevindt de geschi
 </div>
 
 
-<div id="faq" style="display:none;">
+<div id="faq" class="pagina" style="display:none;">
 		<H1><strong>Veel gestelde vragen</strong><br></H1>
 <p></p>
 <H3><strong>Wat is de Digitale Wichelroede?</strong><br></H3>
@@ -414,7 +461,30 @@ Het project gebruikt met toestemming van Paul Roncken (WUR-KGR-LAR) de titel De 
 </p>
 <br><br>
 </div>
+<!-----------------------------------------------------------------------------------------------------------
+ Het routeform, ook wel fixed routes of predefined routes genoemd, worden in selectvasteroute.js gemaakt. 
+------------------------------------------------------------------------------------------------------------>
+<div id="routespagina" class="pagina" style="display:none;">
+	<div id="vasteroutes-lb"> 
+<!--		<form action="dummyvalue">
+		<select>
+			<option value="0" selected="selected">kies een van de routes</option>
+			<option value="1" >bunkerholen</option>
+			<option value="2" >heeel lang</option>
+			<option value="4" >snert route</option>
+		</select>
+		</form> 
+		-->
+	</div>
+	<div id="vaste_routes_content">
+	</div>
+</div>
 
 </font> 
 </body>
+<script type="text/javascript">
+	DH.addEvent(window, 'load', isLoggedIn(), false);
+	DH.addEvent(window, 'load', TST.getFixedRoutes(), false);
+</script>
+
 </html>

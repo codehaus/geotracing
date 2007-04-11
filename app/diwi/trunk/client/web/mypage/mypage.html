@@ -14,7 +14,6 @@
 	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="../js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="../js/KWClientCMS.js"></script>
-	<script type="text/javascript" src="../js/selectstartpage.js"></script>
 	<script type="text/javascript" src="../lib/openlayers/lib/OpenLayers.js"></script>
 		<!--- slider js --->
 	<script src="../js/range.js" type="text/javascript"></script>
@@ -118,6 +117,7 @@
 				}
 				verwerkPlaatje(elm);
 				document.getElementById("maakroutebox").style.display='block';
+				document.getElementById("bewaarroutebutton").style.display='block';
 			},
 
 			onRsp: function(elm) {
@@ -148,7 +148,7 @@
 				}
 				if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
-					document.location.href='../index.html' ;
+					document.location.href='../index.html?logged=false' ;
 				} 
 				else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
@@ -175,7 +175,7 @@
 	var currentGeneratedRouteId = 0;
 	var currentSelection = 1;
 	var toolbarData = new Array();
-	toolbarData[1] = new Array('buttons/routes.jpg', 'buttons/routes.jpg', 'buttons/routes.jpg');
+	toolbarData[1] = new Array('buttons/routes.jpg', 'buttons/routesH.jpg', 'buttons/routesH.jpg');
 	toolbarData[2] = new Array('buttons/home.jpg', 'buttons/homeH.jpg', 'buttons/homeH.jpg');
 	toolbarData[3] = new Array('buttons/mijnpagina.jpg', 'buttons/mijnpaginaH.jpg', 'buttons/mijnpaginaH.jpg');
 	toolbarData[4] = new Array('buttons/maakroute.jpg', 'buttons/maakrouteH.jpg', 'buttons/maakrouteH.jpg');
@@ -192,7 +192,7 @@
 	 }
 	}
 	
-	function selectItem(obj) {
+	function selectButton(obj) {
 	 i = obj.getAttribute('id');
 		var tbar = new Array();
 		for (j=1; j<buttons+1;j++) {
@@ -265,7 +265,7 @@
 
 <div id="butroutes"> 
 	<a><img id="1" src="buttons/routes.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);location.href='../index.html?routes=true';" border="0"></a> 
 </div>
 <div id="buthome"> 
 	<a><img id="2" src="buttons/home.jpg"onMouseOver="highlightItem(this, 1)" 
@@ -273,23 +273,41 @@
 
 <div id="butmijnpagina"> 
 	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);toonMijnPagina();" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);toonMijnPagina();" border="0"></a> 
 </div>
 <div id="butmaakroute"> 
 	<a><img id="4" src="buttons/maakroute.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this);toonMaakRoutePagina();" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);toonMaakRoutePagina();" border="0"></a> 
 </div>
 <div id="butuitloggen"> 
 	<a><img id="5" src="buttons/uitloggen.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectItem(this); javascript:TST.logout();" border="0"></a> 
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); javascript:TST.logout();" border="0"></a> 
 </div>
 
 <!-- Alles wat op mijnpagina getoond moet worden. ---------------------------------------------------->
 <div id="mijnpaginacontainer" style="display:block;">
 <!--	<div id="kaart"><img src="images/kaart.jpg" border="0"></div> -->
 	<div id="personaliabox"><img src="../home/images/videobox.gif" border="0"></div>
+<!--
 	<div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
+			
+	<div id="commentaartekst">
+		<H10>Commentaar</H10>
+		<br><br>
+		<p> 
+		- Wat een te gekke muziek! <br>
+		- Meer van dit alles man!!! <br>
+		- Nog harder!!!!!!!!!!! <br>
+		</p>
+	</div>
+	
+	<div id="commentaarnavigatie">	
+		<p>
+			<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>		
+		</p>
+	</div>
 
+-->
 	<div id="map">
 	</div>
 
@@ -341,7 +359,7 @@
 	</div>
 	
 	<div id="butwijzigprofiel"> 
-		<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a>		
+<!--		<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> -->		
 	</div>
 	
 	
@@ -391,7 +409,8 @@
 	
 	<div id="ookgelopen"> 
 		<p>
-			Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.			</p>
+			Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.			
+		</p>
 	</div>
 	
 	<div id="personaliatekst">
@@ -400,22 +419,7 @@
 		</h11>
 		<p>
 		<img  src="images/self.jpg" border="0" align="left">
-		Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!						            </p>
-	</div>
-		
-	<div id="commentaartekst">
-		<H10>Commentaar</H10>
-		<br><br>
-		<p> 
-		- Wat een te gekke muziek! <br>
-		- Meer van dit alles man!!! <br>
-		- Nog harder!!!!!!!!!!! <br>
-		</p>
-	</div>
-	
-	<div id="commentaarnavigatie">	
-		<p>
-			<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>		
+		Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!						            
 		</p>
 	</div>
 </div>
@@ -553,22 +557,17 @@
 		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a> 
 	</div>
 	<div id="maakroutebox" style="display:none"><img src="buttons/maakroute_blokken.gif" border="0"></div>
-
-	<div id="generated-routes" class="genroutetekst">
-	</div>
-	
-	<div id="generated-routes-image">
-<!--	<a href="../home/images/fotovideobox.gif" rel="lightbox"><img src="../home/images/fotovideobox.gif" border="0"></a> -->
-	</div>	
-	
-	<div id="generated-routes-image-big">	
-	</div>	
+	<div id="generated-routes" class="genroutetekst"></div>
+	<div id="generated-routes-image"></div>
+	<div id="generated-routes-image-big"></div>	
 </div>
 
 <!-- slcr.js maakt de sliders... -->	
 <script type="text/javascript" src="../js/maakroute.js"></script>
 	
 <!-- Einde van alles wat op maakroutepagina getoond moet worden. ------------------------------------------>
+<script type="text/javascript" src="../js/selectstartpage.js"></script>
+
 <script type="text/javascript">
 	DH.addEvent(window, 'load', beginPagina(), false);
 </script>
