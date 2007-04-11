@@ -34,6 +34,7 @@ a {
  font-family: verdana, arial, helvetica, sans-serif;
 /* font-weight: 600;*/
  text-decoration: underline;
+ cursor:hand;
 }
 a:link {
 }
@@ -81,7 +82,7 @@ H4 {
  z-index: 1;
  }
 
-#Welkom {
+.pagina {
  position: absolute;
  width: 597px;
  top: 270px;
@@ -89,16 +90,28 @@ H4 {
  z-index: 10;
  background-color:#F6F8F5;
 }
+#Welkom {
+}
 
 #faq {
+ }
+#routespagina {
+ }
+#vasteroutes-lb{
+ position: absolute;
+ width: auto;
+ top: 20px;
+ left: 356;
+ z-index: 100;
+ }
+#vaste_routes_content{
  position: absolute;
  width: 597px;
- top: 270px;
- left: 0px;
- z-index: 10;
-/* background-color:#FFFFFF;*/
+ top: 0px;
+ left: 0;
+ z-index: 70;
  background-color:#F6F8F5;
- }
+}
 #back{
  position: absolute;
  width: 800px;
@@ -180,9 +193,16 @@ H4 {
 #inlogform {
  position: relative;
  width: auto;
- top: -185px;
+ top: -190px;
  left: 20px;
  z-index: 100;
+}
+#logforminlogbut{
+ position: relative;
+ width: auto;
+ top: -7px;
+ left: 20px;
+ z-index: 200;
 }
 #videobox {
  position: relative;

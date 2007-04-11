@@ -39,17 +39,33 @@
 			toonMaakRoutePagina();
 		}	
 	}
-	
+
 	function toonMijnPagina() {	
 		document.getElementById("mijnpaginacontainer").style.display = "block";
 		document.getElementById("maakroutecontainer").style.display = "none";
-		var button = document.getElementById("3");
-		selectItem(button);
+		selectButton(document.getElementById("3"));
 	}
 	
 	function toonMaakRoutePagina() {
 		document.getElementById("mijnpaginacontainer").style.display = "none";
 		document.getElementById("maakroutecontainer").style.display = "block";
-		var button = document.getElementById("4");
-		selectItem(button);
+		selectButton(document.getElementById("4"));
 	}
+	
+	function isLoggedIn() {
+		if (queryString('logged')=='true') { 
+			TST.restoreSession();
+			document.getElementById('butmaakroute').style.display = 'block';
+			document.getElementById('butmijnpagina').style.display = 'block';
+			toggleLogButton()
+		}
+		if (queryString('routes')=='true') { 
+			TST.restoreSession();
+			document.getElementById('butmaakroute').style.display = 'block';
+			document.getElementById('butmijnpagina').style.display = 'block';
+			show(2);
+			selectButton(document.getElementById('2'));
+			toggleLogButton();
+		}
+	}
+	
