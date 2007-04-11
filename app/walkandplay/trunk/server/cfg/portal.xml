@@ -55,7 +55,7 @@
 
 			<handler id="play" class="org.walkandplay.server.control.TourPlayHandler"/>
 
-			<handler id="tourschedule" class="org.walkandplay.server.control.TourScheduleHandler">
+			<handler id="schedule" class="org.walkandplay.server.control.TourScheduleHandler">
                 <property name="config">content-config.xml</property>
             </handler>
             <!--
