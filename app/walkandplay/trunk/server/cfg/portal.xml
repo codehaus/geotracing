@@ -55,10 +55,10 @@
 
 			<handler id="play" class="org.walkandplay.server.control.TourPlayHandler"/>
 
-			<handler id="schedule" class="org.walkandplay.server.control.TourScheduleHandler">
+			<handler id="tourschedule" class="org.walkandplay.server.control.TourScheduleHandler">
                 <property name="config">content-config.xml</property>
             </handler>
-
+            <!--
            <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
             <handler id="content" class="org.keyworx.utopia.core.control.ContentHandler"/>
             <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>  -->
