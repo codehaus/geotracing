@@ -49,7 +49,7 @@
                 <property name="config">content-config.xml</property>
             </handler>
 
-			<handler id="tour" class="org.walkandplay.server.control.GameCreateHandler">
+			<handler id="game" class="org.walkandplay.server.control.GameCreateHandler">
                 <property name="config">content-config.xml</property>
             </handler>
 

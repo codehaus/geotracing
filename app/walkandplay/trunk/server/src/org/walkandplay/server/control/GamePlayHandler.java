@@ -9,7 +9,6 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.walkandplay.server.util.Constants;
 
 /**
  * RssHandler.
@@ -17,14 +16,14 @@ import org.walkandplay.server.util.Constants;
  * Redirects the requests to the right logic method
  *
  * @author Ronald Lenz
- * @version $Id: TourScheduleHandler.java 327 2007-01-25 16:54:39Z just $
+ * @version $Id: GameScheduleHandler.java 327 2007-01-25 16:54:39Z just $
  */
-public class TourPlayHandler extends DefaultHandler {
+public class GamePlayHandler extends DefaultHandler {
 
 	public final static String PLAY_START_SERVICE = "play-start";
 	public final static String PLAY_GETSTATE_SERVICE = "play-getstate";
 
-	private Log log = Logging.getLog("TourPlayHandler");
+	private Log log = Logging.getLog("GamePlayHandler");
 	private ContentHandlerConfig config;
 
 	/**
@@ -72,23 +71,23 @@ public class TourPlayHandler extends DefaultHandler {
 
 
 	public JXElement playGetStateReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-        /*<play-getstate-rsp>
-            <tour id="234" name"sdvsdv" state="scheduled|running|done" />
-        </play=getstate-rsp>*/
-        // TODO: change this later on!!!!
-        JXElement rsp = createResponse(PLAY_GETSTATE_SERVICE);
-        JXElement t1 = new JXElement("game");
-        t1.setAttr("id", "1");
-        t1.setAttr("name", "Nieuwendijk pilot 1");
-        t1.setAttr("state", "scheduled");
-        rsp.addChild(t1);
-        JXElement t2 = new JXElement("game");
-        t2.setAttr("id", "2");
-        t2.setAttr("name", "Nieuwendijk pilot 2");
-        t2.setAttr("state", "running");
-        rsp.addChild(t2);
-        return rsp;
-    }
+		/*<play-getstate-rsp>
+					<tour id="234" name"sdvsdv" state="scheduled|running|done" />
+				</play=getstate-rsp>*/
+		// TODO: change this later on!!!!
+		JXElement rsp = createResponse(PLAY_GETSTATE_SERVICE);
+		JXElement t1 = new JXElement("game");
+		t1.setAttr("id", "1");
+		t1.setAttr("name", "Nieuwendijk pilot 1");
+		t1.setAttr("state", "scheduled");
+		rsp.addChild(t1);
+		JXElement t2 = new JXElement("game");
+		t2.setAttr("id", "2");
+		t2.setAttr("name", "Nieuwendijk pilot 2");
+		t2.setAttr("state", "running");
+		rsp.addChild(t2);
+		return rsp;
+	}
 
 	/**
 	 * Overridden to have a hook to do the initialisation.
