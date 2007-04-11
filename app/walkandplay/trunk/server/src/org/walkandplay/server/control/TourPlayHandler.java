@@ -77,12 +77,12 @@ public class TourPlayHandler extends DefaultHandler {
         </play=getstate-rsp>*/
         // TODO: change this later on!!!!
         JXElement rsp = createResponse(PLAY_GETSTATE_SERVICE);
-        JXElement t1 = new JXElement("tour");
+        JXElement t1 = new JXElement("game");
         t1.setAttr("id", "1");
         t1.setAttr("name", "Nieuwendijk pilot 1");
         t1.setAttr("state", "scheduled");
         rsp.addChild(t1);
-        JXElement t2 = new JXElement("tour");
+        JXElement t2 = new JXElement("game");
         t2.setAttr("id", "2");
         t2.setAttr("name", "Nieuwendijk pilot 2");
         t2.setAttr("state", "running");
