@@ -28,7 +28,7 @@
 		<field name="state" listed="false" searchable="false"/>
 	</type>
 
-    <type name="tour" table="tour">
+    <type name="game" table="game">
 		<field name="name" listed="true" searchable="true"/>
 		<field name="description" listed="true" searchable="true"/>
 	</type>
