@@ -5,6 +5,9 @@ import org.geotracing.client.*;
 import javax.microedition.midlet.MIDlet;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.Vector;
+
+import nl.justobjects.mjox.JXElement;
 
 /**
  * Integrates GPS, Screen and Network interaction.
@@ -26,8 +29,13 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 	private int VOLUME = 70;
 	public TraceDisplay traceDisplay;
 	private int roadRating = -1;
+    private Vector points = new Vector(3);
+    public static final long DEFAULT_LOC_SEND_INTERVAL_MILLIS = 25000;
+    private long locSendIntervalMillis = DEFAULT_LOC_SEND_INTERVAL_MILLIS;
+    private long lastTimeLocSent;
 
-	/**
+
+    /**
 	 * Starts GPS fetching and KW client.
 	 */
 	public TracerEngine(MIDlet aMIDlet, TraceDisplay aTraceDisplay) {
@@ -117,7 +125,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
 	/** From GPSFetcher: GPS NMEA sample received. */
 	synchronized public void onGPSLocation(GPSLocation aLocation) {
-		Util.playTone(84, 50, VOLUME);
+		/*Util.playTone(84, 50, VOLUME);
 
 		traceDisplay.onGPSStatus("sample #" + (++sampleCount));
 		if (paused) {
@@ -125,8 +133,37 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 			traceDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
 			return;
 		}
-		net.sendSample(aLocation.data, roadRating, aLocation.time, sampleCount);
-	}
+		net.sendSample(aLocation.data, roadRating, aLocation.time, sampleCount);*/
+
+        Util.playTone(84, 50, VOLUME);
+
+		onGPSStatus("sample #" + (++sampleCount));
+		if (paused) {
+			traceDisplay.onNetStatus("paused");
+			traceDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
+			return;
+		}
+
+
+		JXElement pt = new JXElement("pt");
+		pt.setAttr("nmea", aLocation.data);
+
+		pt.setAttr("t", aLocation.time);
+
+		if (roadRating != -1) {
+			pt.setAttr("rr", roadRating);
+		}
+
+		points.addElement(pt);
+
+		// Send collected points to server if interval passed
+		long now = Util.getTime();
+		if (now - lastTimeLocSent > locSendIntervalMillis) {
+			lastTimeLocSent = now;
+			net.sendPoints(points, sampleCount);
+			points.removeAllElements();
+		}
+    }
 
 	/** From GPSFetcher: disconnect */
 	public void onGPSDisconnect() {
@@ -191,7 +228,6 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
 	private void startGPSFetcher() {
 		try {
-
 			String gpsURL = GPSSelector.getGPSURL();
 			if (gpsURL == null) {
 				traceDisplay.onGPSStatus("NO GPS");

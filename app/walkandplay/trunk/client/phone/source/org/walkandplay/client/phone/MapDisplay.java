@@ -6,9 +6,7 @@ import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 
-import org.geotracing.client.MFloat;
-import org.geotracing.client.Net;
-import org.geotracing.client.Util;
+import org.geotracing.client.*;
 
 /**
  * SHows moving dot on map.
@@ -16,8 +14,10 @@ import org.geotracing.client.Util;
 public class MapDisplay extends GameCanvas implements CommandListener {
 	private Displayable prevScreen;
 	private String tileBaseURL;
-	private JXElement tileInfo;
-	private Image tileImage;
+	private JXElement tileInfo, prevTileInfo;
+    private static final long REFRESH_INTERVAL_MILLIS=10000L;
+	private long lastRefreshMillis;
+    private Image tileImage;
 	private MFloat tileScale;
 	private int zoom = 12;
 	private Command zoomIn;
@@ -105,71 +105,97 @@ public class MapDisplay extends GameCanvas implements CommandListener {
 					String tileSize = w + "x" + w;
 					String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
 					g.drawString("fetching tileImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
-					tileImage = Util.getImage(tileURL);
-				} catch (Throwable t) {
+					Image mapImage = Util.getImage(tileURL);
+                    tileImage = Image.createImage(mapImage.getWidth(), mapImage.getHeight());
+					tileImage.getGraphics().drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);                    
+                } catch (Throwable t) {
 					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
 					return;
 				}
 			}
 
-			if (tileImage != null) {
-
-				g.drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-
-				// x,y offset of our location in tile tileImage
-				String myX = tileInfo.getAttr("x");
-				String myY = tileInfo.getAttr("y");
+            if (tileImage != null) {
 
 				// Correct pixel offset with tile scale
 				if (tileScale == null) {
 					tileScale = new MFloat(w).Div(256L);
 				}
 
-				if (redDot == null) {
-					redDot = Image.createImage("/red_dot.png");
-				}
-
+				// x,y offset of our location in tile tileImage
+				String myX = tileInfo.getAttr("x");
+				String myY = tileInfo.getAttr("y");
 				int x = (int) new MFloat(Integer.parseInt(myX)).Mul(tileScale).toLong();
 				int y = (int) new MFloat(Integer.parseInt(myY)).Mul(tileScale).toLong();
 
+
+				if (prevTileInfo != null) {
+					String lmyX = prevTileInfo.getAttr("x");
+					String lmyY = prevTileInfo.getAttr("y");
+					int lx = (int) new MFloat(Integer.parseInt(lmyX)).Mul(tileScale).toLong();
+					int ly = (int) new MFloat(Integer.parseInt(lmyY)).Mul(tileScale).toLong();
+					Graphics tg = tileImage.getGraphics();
+					tg.setColor(0,0,255);
+					tg.drawLine(lx, ly, x, y);
+				}
+
+				// Draw map
+				g.drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+
+				// Draw current location
+				if (redDot == null) {
+					redDot = Image.createImage("/red_dot.png");
+				}
 				g.drawImage(redDot, x, y, Graphics.TOP | Graphics.LEFT);
 			} else {
 				g.setColor(100, 100, 100);
 				g.drawString("No location", 10, 10, Graphics.TOP | Graphics.LEFT);
 			}
-		} catch (Throwable t) {
+        } catch (Throwable t) {
 			g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
 			g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
 		}
 	}
 
-	public void setLocation(String aLon, String aLat) {
-		lon = aLon;
-		lat = aLat;
-		fetchTileInfo();
-		show();
-	}
+    public void setLocation(String aLon, String aLat) {
+        // Don't refresh too often (save network overhead)
+        long now = Util.getTime();
+        if (now - lastRefreshMillis < REFRESH_INTERVAL_MILLIS) {
+            return;
+        }
 
-	protected void fetchTileInfo() {
-		if (!hasLocation() || !active) {
-			return;
-		}
+        lon = aLon;
+        lat = aLat;
+        lastRefreshMillis = now;
+        fetchTileInfo();
+        show();
+    }
 
-		try {
-			// Get information on tile
-			String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
-			JXElement newTileInfo = Util.getXML(tileInfoURL);
+    protected void fetchTileInfo() {
+        if (!hasLocation() || !active) {
+            return;
+        }
 
-			// Reset tileImage if first tile info or if keyhole ref changed (we moved to new tile).
-			if (tileInfo == null || !tileInfo.getAttr("khref").equals(newTileInfo.getAttr("khref"))) {
-				tileImage = null;
-			}
-			tileInfo = newTileInfo;
-			// System.out.println("khref=" + tileInfo.getAttr("khref"));
-		} catch (Throwable t) {
-			Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
-		}
-	}
+        try {
+            // Get information on tile
+            String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
+            JXElement newTileInfo = Util.getXML(tileInfoURL);
+
+            // Reset tileImage if first tile info or if keyhole ref changed (we moved to new tile).
+            if (tileInfo == null || !tileInfo.getAttr("khref").equals(newTileInfo.getAttr("khref"))) {
+                tileImage = null;
+                prevTileInfo = null;
+            }
+
+            // Remember last point/tile if still on same tile
+            if (tileImage != null) {
+                prevTileInfo = tileInfo;
+            }
+            tileInfo = newTileInfo;
+            // System.out.println("khref=" + tileInfo.getAttr("khref"));
+        } catch (Throwable t) {
+            Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
+        }
+    }
 
 	private void show() {
 		if (active) {

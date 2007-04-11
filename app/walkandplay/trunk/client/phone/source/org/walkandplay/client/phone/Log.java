@@ -19,7 +19,8 @@ public class Log {
 	}
 
 	public static void log(String aMsg) {
-		synchronized (logMsgs) {
+        System.out.println(aMsg);
+        synchronized (logMsgs) {
 			logMsgs[logIndex++] = aMsg;
 
 			// Rotate if full

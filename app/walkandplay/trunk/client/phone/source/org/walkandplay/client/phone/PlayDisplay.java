@@ -12,6 +12,10 @@ import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
 import org.geotracing.client.Preferences;
+import org.geotracing.client.NetListener;
+
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * MobiTracer main GUI.
@@ -19,122 +23,65 @@ import org.geotracing.client.Preferences;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-public class PlayDisplay extends DefaultDisplay implements XMLChannelListener, Runnable {
-    MIDlet midlet;
-    List menuScreen;
-    private XMLChannel xmlChannel;
-    public String space, url, port;
-    private String loginReq, enterSpaceReq;
+public class PlayDisplay extends DefaultDisplay implements NetListener {
+    private ChoiceGroup toursGroup = new ChoiceGroup("Select a game and press PLAY in the menu", ChoiceGroup.EXCLUSIVE);
+    private Hashtable tours = new Hashtable(2);
+    private String tourName;
+    private JXElement tourElm;
+    private WPMidlet midlet;
+    private Net net;
 
     Command PLAY_CMD = new Command(Locale.get("play.Play"), Command.ITEM, 2);
 
-    StringItem text = new StringItem("", "Press 'Play' to start your tour");
-        
-    public PlayDisplay(MIDlet aMIDlet) {
+    public PlayDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Play");
 
-        //#style formbox
-        append(text);
-        addCommand(PLAY_CMD);
-
-        try{
-            Preferences prefs = new Preferences(Net.RMS_STORE_NAME);
-
-            String user = prefs.get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
-            String password = prefs.get(Net.PROP_PASSWORD, midlet.getAppProperty(Net.PROP_PASSWORD));
-            url = prefs.get(Net.PROP_URL, midlet.getAppProperty(Net.PROP_URL));
-            port = midlet.getAppProperty("kw-port");
-            String app = midlet.getAppProperty("kw-app");
-            String amulet = midlet.getAppProperty("kw-amulet");
-            String role = midlet.getAppProperty("kw-role");
-
-            loginReq = "<login-req protocolversion=\"4.0\" name=\"" + user + "\" password=\"" + password + "\" />";
-            loginReq += "<select-app-req appname=\"" + app + "\"" + role + "=\"user\" />";
-            enterSpaceReq += "<enter-space-req spacename=\"" + space + "\" />";
-            enterSpaceReq += "<join-amulet-req id=\"" + amulet + "\" ></join-amulet-req>";
-
-        }catch(Throwable t){
-
+        net = Net.getInstance();
+        if(!net.isConnected()){
+            net.setProperties(aMIDlet);
+            net.setListener(this);
+            net.start();
         }
-    }
 
-    /**
-     * Sets up a XML channel and logs in.
-     * login-req, select-app, enter-space and join-amulet all in one go.
-     */
-    void connect() {
-        try {
-            //log("connecting to " + server + ":" + port);
-            xmlChannel = new SocketXMLChannel(url, Integer.parseInt(port));
-            xmlChannel.setListener(this);
-            xmlChannel.start();
-
-            sendXMLRequest(loginReq);
-
-        } catch (Throwable t) {
-            Log.log("Connect exception : " + t.toString());
-        }
-    }
-
-    /**
-     * Notifies if the XML channel has stopped. Now we automaticallt reconnect.
-     * @param anXMLChannel
-     * @param aReason
-     */
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        connect();
-    }
-    /**
-     * Handles incoming xml messages from the xml channel.
-     * @param anXMLChannel The xml socket connection.
-     * @param element The xml message.
-     */
-    public void accept(XMLChannel anXMLChannel, JXElement element) {
-        //log("received:" + new String(element.toBytes(false)));
-        if (element != null) {
-            String tag = element.getTag();
-            if (tag.equals("game-getspace-rsp")) {
-                space = element.getAttr("name");
-                sendXMLRequest(enterSpaceReq);
+        // get the play state
+        JXElement req = new JXElement("play-getstate-req");
+        JXElement rsp = net.utopiaReq(req);
+        if(rsp!=null) {
+            Vector toursElms = rsp.getChildrenByTag("tour");
+            for(int i=0;i<toursElms.size();i++){
+                JXElement t = (JXElement)toursElms.elementAt(i);
+                String id = t.getAttr("id");
+                String name = t.getAttr("name");
+                String state = t.getAttr("state");
+                String displayName = name + " | " + state;
+                toursGroup.append(displayName, null);
+                tours.put(displayName, t);
             }
         }
+
+        //#style formbox
+        append(toursGroup);
+        addCommand(PLAY_CMD);
     }
 
-    /**
-     * Sends a XML request to the server.
-     * @param aRequest The request element.
-     */
-    public void sendXMLRequest(JXElement aRequest) {
-        try {
-            Log.log("send:" + new String(aRequest.toBytes(false)));
-            xmlChannel.push(aRequest);
-        } catch (Throwable t) {
-            Log.log("sendXMLRequest exception : " + t.toString());
-            connect();
-        }
+    private void startTour(){
+        JXElement req = new JXElement("play-start-req");
+        req.setAttr("id", midlet.getCurrentTour().getAttr("id"));
+        JXElement rsp = net.utopiaReq(req);
+        Log.log(new String(rsp.toBytes(false)));
     }
 
-    /**
-     * Sends a XML request to the server.
-     * @param aRequest The request string.
-     */
-    public void sendXMLRequest(String aRequest) {
-        try {
-            xmlChannel.push(aRequest.getBytes());
-        } catch (Throwable t) {
-            Log.log("sendXMLRequest exception : " + t.toString());
-            connect();
-        }
+    public void onNetInfo(String theInfo){
+        Log.log(theInfo);
     }
 
-    /**
-     * The midlet run method. Not implemented.
-     */
-    public void run() {
-
+	public void onNetError(String aReason, Throwable anException){
+        Log.log(aReason);
     }
 
-
+	public void onNetStatus(String aStatusMsg){
+        Log.log(aStatusMsg);
+    }
 
     /*
        * The commandAction method is implemented by this midlet to
@@ -144,7 +91,13 @@ public class PlayDisplay extends DefaultDisplay implements XMLChannelListener, R
         if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == PLAY_CMD) {
-
+            tourName = toursGroup.getString(toursGroup.getSelectedIndex());
+            midlet.setCurrentTour((JXElement) tours.get(tourName));
+            // now start the tour
+            startTour();
+            // now go to the MapRadarDisplay
+            MapRadarDisplay d = new MapRadarDisplay(midlet);
+            Display.getDisplay(midlet).setCurrent(d);
         }
     }
 

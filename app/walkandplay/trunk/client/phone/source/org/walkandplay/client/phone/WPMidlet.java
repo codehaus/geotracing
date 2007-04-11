@@ -33,6 +33,7 @@ import de.enough.polish.util.Locale;
 
 //#ifdef polish.debugEnabled
 import de.enough.polish.util.Debug;
+import nl.justobjects.mjox.JXElement;
 //#endif
 
 /**
@@ -51,6 +52,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     List menuScreen;
     TraceDisplay traceDisplay;
+
+    public JXElement currentTour;
 
     public WPMidlet() {
         super();
@@ -96,7 +99,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Log"), null);
         /*//#endif*/
         menuScreen.setCommandListener(this);
+        
+    }
 
+    public void setCurrentTour(JXElement aTour){
+        currentTour = aTour;
+    }
+
+    public JXElement getCurrentTour(){
+        return currentTour;
     }
 
     protected void startApp() throws MIDletStateChangeException {

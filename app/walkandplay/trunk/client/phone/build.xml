@@ -49,10 +49,10 @@
 	<property name="wtk.home" location="%{WTK_HOME}" />
 
 	<!-- The polish.home property should point to the directory   -->
-	<!-- containing the J2ME Polish installation.                
-	<property name="polish.home" location="/opt/j2mepolish.org" />  -->
+	<!-- containing the J2ME Polish installation.-->
+	<property name="polish.home" location="/opt/j2me-polish" />    
 
-	<!-- the device for the test mode - you can define it on the command-line
+    <!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Generic/midp1"/>	
 
@@ -107,7 +107,7 @@
     <!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish"
 		classname="de.enough.polish.ant.PolishTask"
-		classpath="${polish.home}/import/enough-j2mepolish-build.jar:${polish.home}/import/jdom.jar"
+		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/enough-j2mepolish-extensions.jar:${polish.home}/lib/jdom.jar"
 	/>
 
 
@@ -259,10 +259,10 @@
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
 					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />					
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="jan@waag.org" />
-					<!--<attribute name="kw-user" value="geoapp-user" />-->
-					<attribute name="kw-password" value="johan" />
-					<!--<attribute name="kw-password" value="user" />-->
+					<!--<attribute name="kw-user" value="jan@waag.org" />-->
+					<attribute name="kw-user" value="geoapp-user" />
+					<!--<attribute name="kw-password" value="johan" />-->
+					<attribute name="kw-password" value="user" />
 					<attribute name="kw-amulet" value="wnpamulet" />
 					<attribute name="kw-port" value="6000" />
 					<attribute name="kw-app" value="geoapp" />

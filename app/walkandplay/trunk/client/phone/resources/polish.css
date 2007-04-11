@@ -161,15 +161,13 @@ focused {
     padding: 5;
     padding-left: 5;
     padding-right: 5;
-    background {
-        color: BLACK;
-    }
+    background-color: BLACK;   
     /*layout: horizontal-expand | horizontal-center | vertical-center;*/
     layout: horizontal-expand | top | horizontal-center;
     columns:3;
     columns-width: equal;
-    /*background-image:url(bg-stripe.png);*/
-    /*background-repeat:repeat;*/
+    background-image:url(bg-stripe.png);
+    background-repeat:repeat;
     font-size: small;
     /*show-text-in-title: true;*/
 }

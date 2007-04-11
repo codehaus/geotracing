@@ -9,7 +9,7 @@ import javax.microedition.lcdui.Displayable;
 
 import de.enough.polish.ui.StringItem;
 
-import de.enough.polish.ui.DigitalClockItem;
+/*import de.enough.polish.ui.DigitalClockItem;*/
 import de.enough.polish.ui.List;
 
 import org.geotracing.client.Util;
@@ -44,8 +44,8 @@ public class SettingsDisplay extends DefaultDisplay{
         //#style formbox
         append(text);
 
-        DigitalClockItem clock = new DigitalClockItem("");
-        append(clock);
+        /*DigitalClockItem clock = new DigitalClockItem("");
+        append(clock);*/
         addCommand(SOUND_CMD);
         addCommand(ACCOUNT_CMD);
 
