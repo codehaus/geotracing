@@ -1,8 +1,8 @@
 <testsuite>
    <!--   <testset file="profile.xml" />
    testset file="license.xml" /-->
-    <testset file="tour.xml"/>
-	<testset file="play.xml"/>
+    <testset file="game-create.xml"/>
+	<testset file="game-play.xml"/>
     <!-- <testset file="tourschedule.xml"/> -->
     <!--<testset file="content.xml" />-->
     <!--<testset file="assignment.xml" />-->

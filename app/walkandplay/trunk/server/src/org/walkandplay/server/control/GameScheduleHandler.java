@@ -28,7 +28,7 @@ import java.util.List;
  * @author Ronald Lenz
  * @version $Id$
  */
-public class TourScheduleHandler extends DefaultHandler implements Constants {
+public class GameScheduleHandler extends DefaultHandler implements Constants {
 
     public final static String TOUR_SEND_INVITATION_SERVICE = "schedule-send-invitation";
     public final static String TOUR_CONFIRM_INVITATION_SERVICE = "schedule-confirm-invitation";
@@ -37,7 +37,7 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
     public final static String TOUR_CREATE_TEAM_SERVICE = "schedule-create-team";
     public final static String TOUR_UPDATE_TEAM_SERVICE = "schedule-update-team";
 
-    private Log log = Logging.getLog("TourScheduleHandler");
+    private Log log = Logging.getLog("GameScheduleHandler");
     private ContentHandlerConfig config;
     private Oase oase;
     private RelateLogic relateLogic;
@@ -97,7 +97,7 @@ public class TourScheduleHandler extends DefaultHandler implements Constants {
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             JXElement rsp = createResponse(SCHEDULE_GETLIST_SERVICE);
-            
+
             JXElement tourschedule1 = new JXElement("schedule");
             rsp.addChild(tourschedule1);
             tourschedule1.setAttr("id", "1");

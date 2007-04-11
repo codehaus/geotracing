@@ -1,4 +1,4 @@
-<testset id="tour" clients="1">
+<testset id="game" clients="1">
 
 	<test id="login-selapp">
 
@@ -42,50 +42,49 @@
 		</expect>
 	</test>
 
-	<test id="tour-create-req">
+	<test id="game-create-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-create-req>
-					<tour>
-						<owner>31282</owner>
+				<game-create-req>
+					<game>
 						<name>MyFirstTour</name>
-						<description>Echt een hele mooie tour</description>
+						<description>Echt een hele mooie game</description>
 						<intro>prachtige introductie</intro>
 						<outro>prachtige outro</outro>
-					</tour>
-				</tour-create-req>
+					</game>
+				</game-create-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-create-rsp id="${tourid}"/>
+				<game-create-rsp id="${gameid}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
-	<test id="tour-update-req">
+	<test id="game-update-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-update-req id="${tourid}">
-					<tour>
+				<game-update-req id="${gameid}">
+					<game>
 						<name>MySecondTour</name>
-						<description>Echt een echt hele mooie tour</description>
+						<description>Echt een echt hele mooie game</description>
 						<intro>nog prachtigere introductie</intro>
 						<outro>nog prachtigere outro</outro>
-					</tour>
+					</game>
 					<medium id="22901" type="intro"/>
 					<medium id="22788" type="outro"/>
 					<tag>tag1</tag>
 					<tag>tag2</tag>
 					<tag>tag3</tag>
-				</tour-update-req>
+				</game-update-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-update-rsp/>
+				<game-update-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -110,64 +109,62 @@
 		</expect>
 	</test>
 
-	<test id="tour-add-medium-req">
+	<test id="game-add-medium-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-add-medium-req id="${tourid}">
+				<game-add-medium-req id="${gameid}">
 					<medium id="${mediumid1}"/>
 					<location>
 						<lon>4.92204666137695</lon>
 						<lat>52.3764702870686</lat>
 						<ele>52.3764702870686</ele>
 					</location>
-				</tour-add-medium-req>
+				</game-add-medium-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-add-item-rsp/>
+				<game-add-item-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
-	<test id="tour-additem-req">
+	<test id="game-addtask-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-add-item-req id="${tourid}">
-					<assignment>
+				<game-add-task-req id="${gameid}">
+					<task>
 						<name>opdracht</name>
 						<description>een prachtige opdracht</description>
 						<answer>fiets</answer>
 						<medium id="${mediumid1}"/>
-					</assignment>
-					<location>
 						<lon>4.92204666137695</lon>
 						<lat>52.3764702870686</lat>
 						<ele>52.3764702870686</ele>
-					</location>
-				</tour-add-item-req>
+					</task>
+				</game-add-task-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-add-item-rsp/>
+				<game-add-task-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
 
-	<test id="tour-delete-req">
+	<test id="game-delete-req">
 		<send id="client1">
 			<utopia-req>
-				<tour-delete-req id="${tourid}"/>
+				<game-delete-req id="${gameid}"/>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<tour-delete-rsp id="${tourid}"/>
+				<game-delete-rsp id="${gameid}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
