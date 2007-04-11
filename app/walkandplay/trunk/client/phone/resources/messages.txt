@@ -46,7 +46,7 @@ trace.AddAudio=Add audio
 trace.ShowMap=Map
 trace.Radar=Radar
 
-find.Search=Search
+find.Ok=Ok
 
 play.Play=Play
 

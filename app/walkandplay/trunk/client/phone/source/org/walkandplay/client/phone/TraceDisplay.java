@@ -14,6 +14,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.ImageItem;
 
 import de.enough.polish.util.Locale;
+import nl.justobjects.mjox.JXElement;
 
 /**
  * MobiTracer main GUI.
@@ -138,7 +139,8 @@ public class TraceDisplay extends DefaultDisplay   {
     public void log(String message) {
         cls();
         //#style formbox
-        msgNum = append(new StringItem("", message + "\n"));
+        msgNum = append(message + "\n");
+        //msgNum = append(new StringItem("", message + "\n"));
 		System.out.println(msgNum + ":" + message);
 	}
 

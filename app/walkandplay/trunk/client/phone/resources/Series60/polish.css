@@ -13,10 +13,7 @@ menu {
 }
 
 .mainScreen {
-	/*background {
-		type: image;
-		color: transparent;
-		image: url( bg.png );
-	}*/
+	/*background-color: transparent;*/
+	/*background-image: url( bg.png );*/	
 }
 
