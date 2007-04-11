@@ -49,13 +49,13 @@
                 <property name="config">content-config.xml</property>
             </handler>
 
-			<handler id="tour" class="org.walkandplay.server.control.TourHandler">
+			<handler id="tour" class="org.walkandplay.server.control.GameCreateHandler">
                 <property name="config">content-config.xml</property>
             </handler>
 
-			<handler id="play" class="org.walkandplay.server.control.TourPlayHandler"/>
+			<handler id="play" class="org.walkandplay.server.control.GamePlayHandler"/>
 
-			<handler id="schedule" class="org.walkandplay.server.control.TourScheduleHandler">
+			<handler id="schedule" class="org.walkandplay.server.control.GameScheduleHandler">
                 <property name="config">content-config.xml</property>
             </handler>
             <!--
