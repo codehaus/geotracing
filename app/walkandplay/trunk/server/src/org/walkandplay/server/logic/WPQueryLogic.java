@@ -32,7 +32,40 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				for (int i = 0; i < records.length; i++) {
 					result.addChild(records[i].toXML());
 				}
-			} else if ("q-game-locations".equals(aQueryName)) {
+			}else if("q-task".equals(aQueryName)) {
+                String taskId = (String)theParms.get("id");
+                JXElement rsp = new JXElement("query-store-rsp");
+
+                JXElement task = new JXElement("task");
+                rsp.addChild(task);
+                task.setAttr("id", taskId);
+                JXElement name = new JXElement("name");
+                name.setText("Fiets opdracht");
+                JXElement description = new JXElement("description");
+                description.setText("Haal een fiets uit de sloot");
+                JXElement mediumid = new JXElement("mediumid");
+                mediumid.setText("10");
+                task.addChild(name);
+                task.addChild(description);
+                task.addChild(mediumid);
+
+                return rsp;
+            }else if("q-medium".equals(aQueryName)) {
+                String mediumId = (String)theParms.get("id");
+                JXElement rsp = new JXElement("query-store-rsp");
+
+                JXElement task = new JXElement("medium");
+                rsp.addChild(task);
+                task.setAttr("id", mediumId);
+                JXElement name = new JXElement("name");
+                name.setText("Fiets plaatje");
+                JXElement type = new JXElement("type");
+                type.setText("image");
+                task.addChild(name);
+                task.addChild(type);
+
+                return rsp;
+		    } else if ("q-game-locations".equals(aQueryName)) {
 				String idStr = getParameter(theParms, PAR_ID, null);
 				throwOnMissingParm(PAR_ID, idStr);
 				int id = Integer.parseInt(idStr);
