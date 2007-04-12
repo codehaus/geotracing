@@ -16,19 +16,50 @@
 				SRV.url = '/diwi/srv/get.jsp?';
 				TST.pr('init done');
 				
-				SRV.get('q-tracks-by-user', TST.onRsp, 'user', 'geoapp-user');				
-				SRV.get('q-diwi-user', TST.onRsp, 'user', 'geoapp-user');	
 			},
-
 
 			onRsp: function(records) {
-				TST.pr('response ' + records[0].getField('id'));
+				for(var i = 0; i < records.length; i++) {
+				   TST.pr('' + i + ": " + records[i].toHTML());
+				}
 			},
+
+			onTrkRsp: function(records) {
+				TST.pr('xml content:<pre>' + DH.escape(records.xml) + '</pre>');	
+			},
+
+			onRsp2: function(records) {
+				for(var i = 0; i < records.length; i++) {
+					result = "";
+				   for (var j in records[i]) {
+				      result += j + " = " + records[i][j] + " ";
+				   }	
+				   TST.pr('' + i + ": " + result);
+				   TST.pr(records[i].toHTML());									   
+				}
+			},
+			
+            getFixedRoutes: function(form) {
+				SRV.get('q-diwi-routes', TST.onRsp, 'type', '0');	
+			},			
+
+            getTracks: function(form) {
+            	var user = form.user.value
+ 				SRV.get('q-tracks-by-user', TST.onRsp, 'user', user);	
+			},			
+
+            getTrack: function(form) {
+            	var id = form.id.value
+            	var format = 'gtx';
+            	var attrs = 'lon,lat,t';            	
+ 				SRV.get('get-track', TST.onTrkRsp, 'id', id, 'format', format, 'attrs', attrs);	
+			},			
 
 		// Util for printing/displaying debug output
 			pr: function (s) {
 				DH.addHTML('result', '<br/>' + s);
 			}
+			
 		}
 
 		// Call TST.init() when page is fully loaded
@@ -39,6 +70,24 @@
 
 <body>
 <div id="services" style="height: 470px; overflow:  scroll">
+<form>
+	<h2>Get Fixed Routes</h2>
+	<input type="button" name="button" value="Get Fixed Routes" onClick="TST.getFixedRoutes(this.form)"/>
+</form>
+<form>
+	<h2>Get Track</h2>
+	<table>
+	<tr><td><b>ID:</b> </td><td><input type="text" name="id" value=""/></td></tr>
+	<tr><td><input type="button" name="button" value="Get Track" onClick="TST.getTrack(this.form)"/></td></tr>		
+	</table>
+</form>
+<form>
+	<h2>Tracks By User</h2>
+	<table>
+	<tr><td><b>User:</b> </td><td><input type="text" name="user" value=""/></td></tr>
+	<tr><td><input type="button" name="button" value="Get Tracks" onClick="TST.getTracks(this.form)"/></td></tr>		
+	</table>
+</form>
 </div>
 <div id="result"><b>DEBUG INFO</b></div>
 

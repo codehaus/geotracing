@@ -283,16 +283,45 @@ public class POILogic implements Constants {
 	public Vector getList() throws UtopiaException {
 		try {
 			Record[] pois = oase.getFinder().queryTable(POI_TABLE, null);
-			Vector results = new Vector(pois.length);
-			for (int i = 0; i < pois.length; i++) {
-				JXElement poiElm = pois[i].toXML();
-				poiElm.setTag(POI_ELM);
-				results.add(poiElm);
-			}
-			return results;
+			return getPOIList(pois);
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
 		}
+	}
+
+
+	private Vector getPOIList(Record[] pois) throws UtopiaException {
+		Vector results = new Vector(pois.length);
+		for (int i = 0; i < pois.length; i++) {
+			JXElement poiElm = new JXElement();
+			poiElm.setTag(POI_ELM);
+						
+			//name + description
+			poiElm.addTextChild(ID_FIELD, pois[i].getIdString());
+			poiElm.addTextChild(NAME_FIELD, pois[i].getStringField(NAME_FIELD));
+			poiElm.addTextChild(DESCRIPTION_FIELD, pois[i].getStringField(DESCRIPTION_FIELD));
+			poiElm.addTextChild(TYPE_FIELD,"" + pois[i].getIntField(TYPE_FIELD));
+			poiElm.addTextChild(CATEGORY_FIELD, pois[i].getStringField(CATEGORY_FIELD));
+
+			poiElm.addText(pois[i].getStringField(MEDIA_FIELD));
+			
+			//Insert lat/lon fields
+			Point point = (Point)((PGgeometryLW)pois[i].getObjectField(POINT_FIELD)).getGeometry();;
+			poiElm.addTextChild(LAT_FIELD, "" + point.x);
+			poiElm.addTextChild(LON_FIELD, "" + point.y);
+			
+			double xy[];
+			try {
+				xy = Transform.WGS84toRD(point.x, point.y);
+			} catch (Exception e) {
+				throw new UtopiaException("No valid lat and lon coordinates found");
+			}
+			poiElm.addTextChild(X_FIELD, "" + xy[0]);
+			poiElm.addTextChild(Y_FIELD, "" + xy[1]);
+			
+			results.add(poiElm);
+		}
+		return results;
 	}
 
 	/**
@@ -303,13 +332,7 @@ public class POILogic implements Constants {
 	public Vector getStartPoints() throws UtopiaException {
 		try {
 			Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + POI_STARTPOINT + "'", null, null);
-			Vector results = new Vector(pois.length);
-			for (int i = 0; i < pois.length; i++) {
-				JXElement poiElm = pois[i].toXML();
-				poiElm.setTag(POI_ELM);
-				results.add(poiElm);
-			}
-			return results;
+			return getPOIList(pois);
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
 		}
@@ -323,13 +346,7 @@ public class POILogic implements Constants {
 	public Vector getEndPoints() throws UtopiaException {
 		try {
 			Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + POI_ENDPOINT + "'", null, null);
-			Vector results = new Vector(pois.length);
-			for (int i = 0; i < pois.length; i++) {
-				JXElement poiElm = pois[i].toXML();
-				poiElm.setTag(POI_ELM);
-				results.add(poiElm);
-			}
-			return results;
+			return getPOIList(pois);
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
 		}

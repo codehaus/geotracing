@@ -2,6 +2,7 @@ package nl.diwi.control;
 
 import java.util.Vector;
 
+import nl.diwi.logic.NavigationLogic;
 import nl.diwi.logic.RouteLogic;
 import nl.diwi.logic.TrafficLogic;
 import nl.diwi.util.Constants;
@@ -53,7 +54,12 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 				response = stopNavigation(anUtopiaReq);
 			} else if (service.equals(NAV_POINT)) {
 				response = handlePoint(anUtopiaReq);
-			} else {
+			} else if (service.equals(NAV_ACTIVATE_ROUTE)) {
+				response = activateRoute(anUtopiaReq);
+			} else if (service.equals(NAV_DEACTIVATE_ROUTE)) {
+				response = deactivateRoute(anUtopiaReq);
+			}
+			else {
 				// May be overridden in subclass
 				response = unknownReq(anUtopiaReq);
 			}
@@ -75,6 +81,28 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		log.trace("Handled service=" + service + " response=" + response.getTag());
 		return new UtopiaResponse(response);		
 	}
+
+	private JXElement deactivateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        NavigationLogic logic = createLogic(anUtopiaReq);
+        int personId  = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        	
+        logic.deactivateRoute(personId);        
+        JXElement response = createResponse(NAV_DEACTIVATE_ROUTE);
+
+        return response;	
+	}
+
+	private JXElement activateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        NavigationLogic logic = createLogic(anUtopiaReq);
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+        int personId  = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)); 
+        	
+        logic.activateRoute(routeId, personId);        
+        JXElement response = createResponse(NAV_ACTIVATE_ROUTE);
+
+        return response;	
+    }
 
 	private JXElement handlePoint(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
@@ -108,10 +136,21 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		return createResponse(NAV_START);
 	}
 
-	private JXElement getMap(UtopiaRequest anUtopiaReq) {
-		// TODO Auto-generated method stub
-		return null;
+	protected NavigationLogic createLogic(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		return new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 	}
+	
+	private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        NavigationLogic logic = createLogic(anUtopiaReq);
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+        int personId  = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        	
+        String mapURL = logic.getActiveMap(personId);        
+        JXElement response = createResponse(NAV_ACTIVATE_ROUTE);
+
+        return response;	
+	}
+
 
 	protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		String service = anUtopiaReq.getServiceName();
