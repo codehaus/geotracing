@@ -1242,13 +1242,13 @@ public class QueryLogic {
 		}
 	}
 
-	Record getAccount(Oase oase, String aLoginName) throws Exception {
+	protected Record getAccount(Oase oase, String aLoginName) throws Exception {
 		Finder finder = oase.getFinder();
 		Record[] result = finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'");
 		return result.length == 0 ? null : result[0];
 	}
 
-	Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception {
+	protected Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception {
 		Record account = getAccount(oase, aLoginName);
 		if (account == null) {
 			return null;
@@ -1257,7 +1257,7 @@ public class QueryLogic {
 		return result.length == 0 ? null : result[0];
 	}
 
-	String getLoginNameForPerson(Oase oase, Record aPerson) throws Exception {
+	protected String getLoginNameForPerson(Oase oase, Record aPerson) throws Exception {
 		Record[] result = oase.getRelater().getRelated(aPerson, "utopia_account", null);
 		return result.length == 0 ? null : result[0].getStringField("loginname");
 	}
