@@ -6,6 +6,7 @@
 	<views>
 
 		<insert>
+			<field name="owner"/>
 			<field name="name"/>
 			<field name="description"/>
             <field name="intro"/>
@@ -15,13 +16,12 @@
 		<list>
 			<field name="id"/>
 			<field name="name"/>
-			<field name="description"/>
-            <field name="intro"/>
-            <field name="outro"/>
+			<field name="owner"/>
         </list>
 
 		<query>
 			<field name="id"/>
+			<field name="owner"/>
 			<field name="name"/>
 			<field name="description"/>
             <field name="intro"/>
@@ -32,16 +32,21 @@
 	<!--{data -->
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true"/>
+
 		<!-- Owner is person id -->
-		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" />
+		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" default="-1"/>
 
 		<field name="name" type="STRING" size="64" required="true"/>
         <field name="description" type="TEXT" required="true" />
-        <field name="intro" type="TEXT" />
-        <field name="outro" type="TEXT" />
+        <field name="intro" type="TEXT" required="false" default="intro text"/>
+        <field name="outro" type="TEXT" required="false" default="outro text"/>
+
+		<!-- 1=draft 2=published -->
+        <field name="state" type="INTEGER" default="1" required="true" />
 
 		<field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML"/>
 	</data>
 	<!--}data -->
 

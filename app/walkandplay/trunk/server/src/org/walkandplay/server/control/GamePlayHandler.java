@@ -3,25 +3,29 @@ package org.walkandplay.server.control;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
+import org.keyworx.common.util.Sys;
+import org.keyworx.common.util.Rand;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.walkandplay.server.util.Constants;
 
 /**
- * RssHandler.
+ * GamePlayHandler.
  * <p/>
  * Redirects the requests to the right logic method
  *
  * @author Ronald Lenz
  * @version $Id: GameScheduleHandler.java 327 2007-01-25 16:54:39Z just $
  */
-public class GamePlayHandler extends DefaultHandler {
+public class GamePlayHandler extends DefaultHandler implements Constants {
 
 	public final static String PLAY_START_SERVICE = "play-start";
 	public final static String PLAY_GETSTATE_SERVICE = "play-getstate";
+	public final static String PLAY_LOCATION_SERVICE = "play-location";
 
 	private Log log = Logging.getLog("GamePlayHandler");
 	private ContentHandlerConfig config;
@@ -48,6 +52,8 @@ public class GamePlayHandler extends DefaultHandler {
 				response = playStartReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_GETSTATE_SERVICE)) {
 				response = playGetStateReq(anUtopiaRequest);
+			} else if (service.equals(PLAY_LOCATION_SERVICE)) {
+				response = playLocationReq(anUtopiaRequest);
 			} else {
 				log.warn("Unknown service " + service);
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -63,6 +69,25 @@ public class GamePlayHandler extends DefaultHandler {
 			log.error("Unexpected error in service : " + service, t);
 			return new UtopiaResponse(createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request"));
 		}
+	}
+
+
+	public JXElement playLocationReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+		JXElement response = createResponse(PLAY_LOCATION_SERVICE);
+
+		if (Rand.randomInt(0, 2) == 1) {
+			JXElement hit = new JXElement(TAG_TASK_HIT);
+			hit.setAttr(ID_FIELD, 1234);
+			response.addChild(hit);
+		}
+		
+		if (Rand.randomInt(0, 2) == 1 && !response.hasChildren()) {
+			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
+			hit.setAttr(ID_FIELD, 5679);
+			response.addChild(hit);
+		}
+
+		return response;
 	}
 
 	public JXElement playStartReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {

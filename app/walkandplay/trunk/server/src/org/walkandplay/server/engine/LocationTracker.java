@@ -5,10 +5,8 @@
 package org.walkandplay.server.engine;
 
 import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXBuilder;
 import org.keyworx.common.util.Sys;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

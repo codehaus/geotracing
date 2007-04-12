@@ -8,13 +8,13 @@
 
 package org.walkandplay.server.logic;
 
+import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
-import nl.justobjects.jox.dom.JXElement;
 
 /**
  *

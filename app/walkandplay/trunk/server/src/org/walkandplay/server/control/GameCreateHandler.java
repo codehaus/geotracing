@@ -1,13 +1,12 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.handler.Location;
 import org.geotracing.handler.HandlerUtil;
+import org.geotracing.handler.Location;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
-import org.keyworx.plugin.tagging.logic.TagLogic;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
@@ -19,8 +18,6 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
-
-import java.util.List;
 
 /**
  * Manage Game content.
@@ -73,6 +70,8 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 				response = deleteMediumReq(anUtopiaRequest);
 			} else if (service.equals(GAME_ADD_TASK_SERVICE)) {
 				response = addTaskReq(anUtopiaRequest);
+			} else if (service.equals(GAME_DEL_TASK_SERVICE)) {
+				response = deleteTaskReq(anUtopiaRequest);
 			} else {
 				log.warn("Unknown service " + service);
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -85,7 +84,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 			return new UtopiaResponse(createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage()));
 		} catch (Throwable t) {
 			log.error("Unexpected error in service : " + service, t);
-			return new UtopiaResponse(createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request"));
+			return new UtopiaResponse(createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request " + t));
 		}
 	}
 
@@ -103,11 +102,11 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 
 		// Id is required
 		String gameId = requestElement.getAttr(ID_FIELD);
-		HandlerUtil.throwOnNonNumAttr("game id", gameId);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, gameId);
 		HandlerUtil.throwOnMissingChildElement(requestElement, Medium.XML_TAG);
 
 		JXElement mediumElm = requestElement.getChildByTag(Medium.XML_TAG);
-		HandlerUtil.throwOnMissingChildElement(mediumElm, "id");
+		HandlerUtil.throwOnMissingChildElement(mediumElm, ID_FIELD);
 		HandlerUtil.throwOnMissingChildElement(mediumElm, Location.FIELD_LON);
 		HandlerUtil.throwOnMissingChildElement(mediumElm, Location.FIELD_LAT);
 
@@ -119,10 +118,12 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
 
-		int mediumId = Integer.parseInt(mediumElm.getChildText("id"));
+		int mediumId = Integer.parseInt(mediumElm.getChildText(ID_FIELD));
 
-		location.createRelation(mediumId, "medium");
-		location.createRelation(Integer.parseInt(gameId), "medium");
+		location.setIntValue(Location.FIELD_TYPE, LOC_TYPE_GAME_MEDIUM);
+
+		location.createRelation(mediumId, RELTAG_MEDIUM);
+		location.createRelation(Integer.parseInt(gameId), RELTAG_MEDIUM);
 
 		JXElement response = createResponse(GAME_ADD_MEDIUM_SERVICE);
 		response.setAttr(ID_FIELD, mediumId);
@@ -145,23 +146,23 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		// Id is required
 		String gameId = requestElement.getAttr(ID_FIELD);
 		HandlerUtil.throwOnNonNumAttr("game id", gameId);
-		HandlerUtil.throwOnMissingChildElement(requestElement, "task");
+		HandlerUtil.throwOnMissingChildElement(requestElement, TAG_TASK);
 
-		JXElement taskElm = requestElement.getChildByTag("task");
-		HandlerUtil.throwOnMissingChildElement(taskElm, "name");
-		HandlerUtil.throwOnMissingChildElement(taskElm, "description");
-		HandlerUtil.throwOnMissingChildElement(taskElm, "score");
-		HandlerUtil.throwOnMissingChildElement(taskElm, "answer");
-		HandlerUtil.throwOnMissingChildElement(taskElm, "mediumid");
+		JXElement taskElm = requestElement.getChildByTag(TAG_TASK);
+		HandlerUtil.throwOnMissingChildElement(taskElm, NAME_FIELD);
+		HandlerUtil.throwOnMissingChildElement(taskElm, DESCRIPTION_FIELD);
+		HandlerUtil.throwOnMissingChildElement(taskElm, SCORE_FIELD);
+		HandlerUtil.throwOnMissingChildElement(taskElm, ANSWER_FIELD);
+		HandlerUtil.throwOnMissingChildElement(taskElm, MEDIUMID_FIELD);
 		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LON);
 		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LAT);
 
 		Record taskRecord = oase.getModifier().create(TASK_TABLE);
-		taskRecord.setField("name", taskElm.getChildText("name"));
-		taskRecord.setField("description", taskElm.getChildText("description"));
-		taskRecord.setField("score", taskElm.getChildText("score"));
-		taskRecord.setField("name", taskElm.getChildText("name"));
-		taskRecord.setField("answer", taskElm.getChildText("answer"));
+		taskRecord.setField(NAME_FIELD, taskElm.getChildText(NAME_FIELD));
+		taskRecord.setField(DESCRIPTION_FIELD, taskElm.getChildText(DESCRIPTION_FIELD));
+		taskRecord.setField(SCORE_FIELD, taskElm.getChildText(SCORE_FIELD));
+		taskRecord.setField(ANSWER_FIELD, taskElm.getChildText(ANSWER_FIELD));
+
 		oase.getModifier().insert(taskRecord);
 
 		// Couple to location
@@ -173,10 +174,13 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
 
-		int mediumId = Integer.parseInt(taskElm.getChildText("mediumid"));
+		int mediumId = Integer.parseInt(taskElm.getChildText(MEDIUMID_FIELD));
+		Record mediumRecord = oase.getFinder().read(mediumId, MEDIUM_TABLE);
 
-		location.createRelation(taskRecord.getId(), "task");
-		location.createRelation(Integer.parseInt(gameId), "medium");
+		// Create relations
+		oase.getRelater().relate(taskRecord, mediumRecord, RELTAG_MEDIUM);
+		location.createRelation(taskRecord.getId(), RELTAG_TASK);
+		location.createRelation(Integer.parseInt(gameId), RELTAG_TASK);
 
 		JXElement response = createResponse(GAME_ADD_TASK_SERVICE);
 		response.setAttr(ID_FIELD, taskRecord.getId());
@@ -188,14 +192,13 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		try {
 			JXElement requestElement = anUtopiaRequest.getRequestCommand();
 			JXElement contentElement = requestElement.getChildAt(0);
-
+			contentElement.setTag(GAME_TABLE);
 			ContentLogic contentLogic = createContentLogic(anUtopiaRequest);
 			RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
 
-
 			// Inserts core game fields like name, description
 			int personId = HandlerUtil.getUserId(anUtopiaRequest);
-			contentElement.setChildText(OWNER_FIELD, personId+"");
+			contentElement.setChildText(OWNER_FIELD, personId + "");
 			int gameId = contentLogic.insertContent(contentElement);
 
 			// Set owner to person creating the game
@@ -215,17 +218,23 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 	public JXElement deleteGame(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		try {
 			JXElement requestElement = anUtopiaRequest.getRequestCommand();
-			ContentLogic contentLogic = createContentLogic(anUtopiaRequest);
-
-			// Id is required
+			Oase oase = HandlerUtil.getOase(anUtopiaRequest);
 			HandlerUtil.throwOnNonNumAttr(ID_FIELD, requestElement.getAttr(ID_FIELD));
 			int gameId = requestElement.getIntAttr(ID_FIELD);
 
-			/* JXElement[] gameScheduleElms = relateLogic.getRelated(gameId, GAME_SCHEDULE_TABLE, null, null);
-						for(int i=0;i<gameScheduleElms.length;i++){
-							contentLogic.deleteContent(gameScheduleElms[i].getIntAttr(ID_FIELD));
-						} */
-			contentLogic.deleteContent(gameId);
+			Record gameRecord = oase.getFinder().read(gameId, GAME_TABLE);
+			Record[] related = oase.getRelater().getRelated(gameRecord);
+			String relTableName;
+			for (int i=0; i < related.length; i++) {
+				relTableName = related[i].getTableName();
+
+				// Delete only related media. tasks, locations
+				if (relTableName.equals(MEDIUM_TABLE) || relTableName.equals(TASK_TABLE) || relTableName.equals(LOCATION_TABLE)) {
+					oase.getModifier().delete(related[i]);
+				}
+			}
+
+			oase.getModifier().delete(gameRecord);
 
 			JXElement response = createResponse(GAME_DELETE_SERVICE);
 			response.setAttr(ID_FIELD, gameId);
@@ -248,14 +257,14 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
 
 		// Id is required
-		String gameId = requestElement.getAttr(ID_FIELD);
-		HandlerUtil.throwOnNonNumAttr("game id", gameId);
-		String mediumStrId = requestElement.getAttr("mediumid");
-		HandlerUtil.throwOnNonNumAttr("medium id", mediumStrId);
-        int mediumId = Integer.parseInt(mediumStrId);
+		String mediumStrId = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, mediumStrId);
+		int mediumId = Integer.parseInt(mediumStrId);
 		Record mediumRecord = oase.getFinder().read(mediumId, Medium.TABLE_NAME);
 
 		Record locationRecord = oase.getRelater().getRelated(mediumRecord, Location.TABLE_NAME, null)[0];
+
+		// Delete both medium an location records
 		oase.getModifier().delete(locationRecord);
 		oase.getModifier().delete(mediumRecord);
 
@@ -265,25 +274,53 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		return response;
 	}
 
+	/**
+	 * Deletes an medium from the game and its location.
+	 *
+	 * @param anUtopiaRequest
+	 * @return
+	 * @throws OaseException
+	 * @throws UtopiaException
+	 */
+	public JXElement deleteTaskReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+		JXElement requestElement = anUtopiaRequest.getRequestCommand();
+		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+
+		// Id is required
+		String idStr = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, idStr);
+		int id = Integer.parseInt(idStr);
+		Record taskRecord = oase.getFinder().read(id, TASK_TABLE);
+
+		Record locationRecord = oase.getRelater().getRelated(taskRecord, Location.TABLE_NAME, null)[0];
+		Record mediumRecord = oase.getRelater().getRelated(taskRecord, MEDIUM_TABLE, null)[0];
+		oase.getModifier().delete(taskRecord);
+		oase.getModifier().delete(locationRecord);
+		oase.getModifier().delete(mediumRecord);
+
+		JXElement response = createResponse(GAME_DEL_TASK_SERVICE);
+		response.setAttr(ID_FIELD, id);
+
+		return response;
+	}
+
 	public JXElement updateGame(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		try {
 			JXElement requestElement = anUtopiaRequest.getRequestCommand();
-			Oase oase = HandlerUtil.getOase(anUtopiaRequest);
-			ContentLogic contentLogic = new ContentLogic(oase, config);
-			RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
+			ContentLogic contentLogic = createContentLogic(anUtopiaRequest);
 
- 			// Id is required
+			// Id and game elm is required
 			HandlerUtil.throwOnNonNumAttr(ID_FIELD, requestElement.getAttr(ID_FIELD));
+			HandlerUtil.throwOnMissingChildElement(requestElement, TAG_GAME);
 
-			JXElement gameElm = requestElement.getChildByTag(GAME_TABLE);
-			if (gameElm == null)
-				throw new UtopiaException("No game content found to update", ErrorCode.__7003_missing_XML_element);
+			JXElement gameElm = requestElement.getChildByTag(TAG_GAME);
+			gameElm.setTag(GAME_TABLE);
 
 			int id = requestElement.getIntAttr(ID_FIELD);
 			contentLogic.updateContent(id, gameElm);
 
 			// add intro and outro
-			List mediumElms = requestElement.getChildrenByTag(Medium.TABLE_NAME);
+			/* List mediumElms = requestElement.getChildrenByTag(Medium.TABLE_NAME);
 			if (mediumElms != null) {
 				for (int i = 0; i < mediumElms.size(); i++) {
 					JXElement mediumElm = (JXElement) mediumElms.get(i);
@@ -315,7 +352,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 				int taggerId = Integer.parseInt(anUtopiaRequest.getUtopiaSession().getContext().getUserId());
 				int[] items = {id};
 				tagLogic.tag(taggerId, items, tags, org.keyworx.plugin.tagging.util.Constants.MODE_REPLACE);
-			}
+			} */
 
 			// add gameplay
 			/*List gameplayElms = requestElement.getChildrenByTag(GAMEPLAY_TABLE);
