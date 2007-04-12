@@ -36,7 +36,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	private int rate, bits;
 	final int kbPerSec;
 
-	public AudioCaptureDisplay(MIDlet aMidlet) {
+	public AudioCaptureDisplay(WPMidlet aMidlet) {
         super(aMidlet, "Audio Recorder");
 
 		rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
@@ -56,7 +56,8 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			output = new ByteArrayOutputStream();
 			recordcontrol.setRecordStream(output);
 			addCommand(start);
-			append("AUDIO RECORDER", " Use the Start menu to start recording");
+            
+            append("AUDIO RECORDER", " Use the menu to start recording");
 			append("Use Stop in menu to stop recording");
 			append("\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
 		} catch (Exception e) {
@@ -91,13 +92,17 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			stop();
 			addCommand(play);
 			addCommand(submit);
-			append("OK Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb\n");
-			append(name);
-			append("press Play to hear recording or Submit to upload");
+            //#style smallstring
+            append("OK Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb\n");
+            //#style formbox
+            append(name);
+            //#style smallstring
+            append("press Play to hear recording or Submit to upload");
 		} else if (c == submit) {
 
 			if (audioData == null) {
-				append("no audio data recorded");
+                //#style smallstring
+                append("no audio data recorded");
 				return;
 			}
 			append("SUBMITTING AUDIO...", " (takes a while)");

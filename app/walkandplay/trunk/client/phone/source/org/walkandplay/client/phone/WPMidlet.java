@@ -32,7 +32,6 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import de.enough.polish.util.Locale;
 
 //#ifdef polish.debugEnabled
-import de.enough.polish.util.Debug;
 import nl.justobjects.mjox.JXElement;
 //#endif
 
@@ -52,15 +51,16 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     List menuScreen;
     TraceDisplay traceDisplay;
+    private boolean playMode;
 
-    public JXElement currentTour;
+    public JXElement currentGame;
 
     public WPMidlet() {
         super();
         //#ifdef title:defined
 			//#= String title = "{title}";
 		//#else
-			String title = "Walk & Play";
+			String title = "Mobile Learning Game Kit";
 		//#endif
 
         Image logo;
@@ -79,7 +79,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         }
 
         //#style mainScreen
-        menuScreen = new List("Walk & Play", List.IMPLICIT);
+        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
         //#style mainTraceCommand
         menuScreen.append(Locale.get("menu.Trace"), null);
         //#style mainFindCommand
@@ -102,12 +102,20 @@ public class WPMidlet extends MIDlet implements CommandListener {
         
     }
 
-    public void setCurrentTour(JXElement aTour){
-        currentTour = aTour;
+    public void setPlayMode(boolean aMode){
+        playMode = aMode;
     }
 
-    public JXElement getCurrentTour(){
-        return currentTour;
+    public boolean getPlayMode(){
+        return playMode;
+    }
+
+    public void setCurrentGame(JXElement aGame){
+        currentGame = aGame;
+    }
+
+    public JXElement getCurrentGame(){
+        return currentGame;
     }
 
     protected void startApp() throws MIDletStateChangeException {
@@ -145,7 +153,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 2:
                 // Play
-                Display.getDisplay(this).setCurrent(new PlayDisplay(this));
+                Display.getDisplay(this).setCurrent(new SelectGameDisplay(this));
                 break;
             case 3:
                 // GPS

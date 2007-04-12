@@ -26,12 +26,12 @@ import javax.microedition.lcdui.Display;
  */
 public class DefaultDisplay extends Form implements CommandListener {
 	protected Command BACK_CMD = new Command("Back", Command.BACK, 1);
-	protected MIDlet midlet;
+	protected WPMidlet midlet;
 	protected Displayable prevScreen;
     protected int logoNum;
     private Image logo;
 
-    public DefaultDisplay(MIDlet aMIDlet, String aDisplayTitle) {
+    public DefaultDisplay(WPMidlet aMIDlet, String aDisplayTitle) {
         //#style defaultscreen
         super(aDisplayTitle);
         midlet = aMIDlet;

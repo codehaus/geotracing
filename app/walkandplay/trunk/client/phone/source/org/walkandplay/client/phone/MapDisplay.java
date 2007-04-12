@@ -12,149 +12,152 @@ import org.geotracing.client.*;
  * SHows moving dot on map.
  */
 public class MapDisplay extends GameCanvas implements CommandListener {
-	private Displayable prevScreen;
-	private String tileBaseURL;
-	private JXElement tileInfo, prevTileInfo;
-    private static final long REFRESH_INTERVAL_MILLIS=10000L;
-	private long lastRefreshMillis;
+
+    private Displayable prevScreen;
+    private String tileBaseURL;
+    private JXElement tileInfo, prevTileInfo;
+    private static final long REFRESH_INTERVAL_MILLIS = 10000L;
+    private long lastRefreshMillis;
     private Image tileImage;
-	private MFloat tileScale;
-	private int zoom = 12;
-	private Command zoomIn;
-	private Command zoomOut;
-	private Command back;
-	private Command toggleMapType;
-	private MIDlet midlet;
-	private Image redDot;
-	private String mapType = "map";
-	private String lon = "0", lat = "0";
-	private boolean active;
+    private MFloat tileScale;
+    private int zoom = 12;
+    private Command zoomIn;
+    private Command zoomOut;
+    private Command back;
+    private Command toggleMapType;
+    private MIDlet midlet;
+    private Image redDot;
+    private String mapType = "map";
+    private String lon = "0", lat = "0";
+    private boolean active;
 
-	public MapDisplay() {
-		super(false);
-		setFullScreenMode(true);
+    public MapDisplay() {
+        super(false);
+        setFullScreenMode(true);
 
-		zoomIn = new Command("Zoom In", Command.OK, 1);
-		zoomOut = new Command("Zoom Out", Command.OK, 1);
-		back = new Command("Back", Command.OK, 1);
-		toggleMapType = new Command("Toggle Map Type", Command.OK, 1);
-		addCommand(zoomIn);
-		addCommand(zoomOut);
-		addCommand(toggleMapType);
-		addCommand(back);
-		setCommandListener(this);
-	}
+        zoomIn = new Command("Zoom In", Command.OK, 1);
+        zoomOut = new Command("Zoom Out", Command.OK, 1);
+        back = new Command("Back", Command.OK, 1);
+        toggleMapType = new Command("Toggle Map Type", Command.OK, 1);
+        addCommand(zoomIn);
+        addCommand(zoomOut);
+        addCommand(toggleMapType);
+        addCommand(back);
+        setCommandListener(this);
+    }
 
-	public void activate(MIDlet aMidlet) {
-		midlet = aMidlet;
-		tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
-		prevScreen = Display.getDisplay(aMidlet).getCurrent();
-		Display.getDisplay(midlet).setCurrent(this);
-		active = true;
-		fetchTileInfo();
-		show();
-	}
+    public void activate(WPMidlet aMidlet) {
+        midlet = aMidlet;
+        tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
+        prevScreen = Display.getDisplay(aMidlet).getCurrent();
 
-	public void commandAction(Command c, Displayable d) {
-		if (c == back) {
-			active = false;
-			Display.getDisplay(midlet).setCurrent(prevScreen);
-		} else if (c == zoomIn) {
-			zoom++;
-			fetchTileInfo();
-			show();
-		} else if (c == zoomOut) {
-			zoom--;
-			fetchTileInfo();
-			show();
-		} else if (c == toggleMapType) {
-			mapType = mapType.equals("sat") ? "map" : "sat";
-			fetchTileInfo();
-			tileImage = null;
-			show();
-		}
-	}
+        Display.getDisplay(midlet).setCurrent(this);
+        active = true;
+        fetchTileInfo();
+        show();
+    }
 
-	public boolean hasLocation() {
-		return !lon.equals(("0")) && !lat.equals("0");
-	}
+    public void commandAction(Command c, Displayable d) {
+        if (c == back) {
+            active = false;
+            Display.getDisplay(midlet).setCurrent(prevScreen);
+        } else if (c == zoomIn) {
+            zoom++;
+            fetchTileInfo();
+            show();
+        } else if (c == zoomOut) {
+            zoom--;
+            fetchTileInfo();
+            show();
+        } else if (c == toggleMapType) {
+            mapType = mapType.equals("sat") ? "map" : "sat";
+            fetchTileInfo();
+            tileImage = null;
+            show();
+        }
+    }
 
-	/**
-	 * Draws the map.
-	 *
-	 * @param g The graphics object.
-	 */
-	public void paint(Graphics g) {
-		int w = getWidth();
-		// Defeat Nokia bug ?
-		if (w == 0) {
-			w = 176;
-		}
-		int h = getHeight();
-		// Defeat Nokia bug ?
-		if (h == 0) {
-			h = 208;
-		}
+    public boolean hasLocation() {
+        return !lon.equals(("0")) && !lat.equals("0");
+    }
 
-		try {
-			g.setColor(255, 255, 255);
-			g.fillRect(0, 0, w, h);
+    /**
+     * Draws the map.
+     *
+     * @param g The graphics object.
+     */
+    public void paint(Graphics g) {
+        int w = getWidth();
+        // Defeat Nokia bug ?
+        if (w == 0) {
+            w = 176;
+        }
+        int h = getHeight();
+        // Defeat Nokia bug ?
+        if (h == 0) {
+            h = 208;
+        }
 
-			if (tileInfo != null && tileImage == null) {
-				try {
-					String tileSize = w + "x" + w;
-					String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
-					g.drawString("fetching tileImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
-					Image mapImage = Util.getImage(tileURL);
+        try {
+            g.setColor(255, 255, 255);
+            g.fillRect(0, 0, w, h);
+
+            if (tileInfo != null && tileImage == null) {
+                try {
+                    String tileSize = w + "x" + w;
+                    String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
+                    //String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize + "&width=240&height=320";
+                    g.drawString("fetching tileImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
+                    Image mapImage = Util.getImage(tileURL);
                     tileImage = Image.createImage(mapImage.getWidth(), mapImage.getHeight());
-					tileImage.getGraphics().drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);                    
+                    tileImage.getGraphics().drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
                 } catch (Throwable t) {
-					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
-					return;
-				}
-			}
+                    g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+                    return;
+                }
+            }
 
             if (tileImage != null) {
 
-				// Correct pixel offset with tile scale
-				if (tileScale == null) {
-					tileScale = new MFloat(w).Div(256L);
-				}
+                // Correct pixel offset with tile scale
+                if (tileScale == null) {
+                    tileScale = new MFloat(w).Div(256L);
+                }
 
-				// x,y offset of our location in tile tileImage
-				String myX = tileInfo.getAttr("x");
-				String myY = tileInfo.getAttr("y");
-				int x = (int) new MFloat(Integer.parseInt(myX)).Mul(tileScale).toLong();
-				int y = (int) new MFloat(Integer.parseInt(myY)).Mul(tileScale).toLong();
+                // x,y offset of our location in tile tileImage
+                String myX = tileInfo.getAttr("x");
+                String myY = tileInfo.getAttr("y");
+                int x = (int) new MFloat(Integer.parseInt(myX)).Mul(tileScale).toLong();
+                int y = (int) new MFloat(Integer.parseInt(myY)).Mul(tileScale).toLong();
 
 
-				if (prevTileInfo != null) {
-					String lmyX = prevTileInfo.getAttr("x");
-					String lmyY = prevTileInfo.getAttr("y");
-					int lx = (int) new MFloat(Integer.parseInt(lmyX)).Mul(tileScale).toLong();
-					int ly = (int) new MFloat(Integer.parseInt(lmyY)).Mul(tileScale).toLong();
-					Graphics tg = tileImage.getGraphics();
-					tg.setColor(0,0,255);
-					tg.drawLine(lx, ly, x, y);
-				}
+                if (prevTileInfo != null) {
+                    String lmyX = prevTileInfo.getAttr("x");
+                    String lmyY = prevTileInfo.getAttr("y");
+                    int lx = (int) new MFloat(Integer.parseInt(lmyX)).Mul(tileScale).toLong();
+                    int ly = (int) new MFloat(Integer.parseInt(lmyY)).Mul(tileScale).toLong();
+                    Graphics tg = tileImage.getGraphics();
+                    tg.setColor(0, 0, 255);
+                    tg.drawLine(lx, ly, x, y);
+                }
 
-				// Draw map
-				g.drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+                // Draw map
+                g.drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-				// Draw current location
-				if (redDot == null) {
-					redDot = Image.createImage("/red_dot.png");
-				}
-				g.drawImage(redDot, x, y, Graphics.TOP | Graphics.LEFT);
-			} else {
-				g.setColor(100, 100, 100);
-				g.drawString("No location", 10, 10, Graphics.TOP | Graphics.LEFT);
-			}
+                // Draw current location
+                if (redDot == null) {
+                    redDot = Image.createImage("/red_dot.png");
+                }
+                g.drawImage(redDot, x, y, Graphics.TOP | Graphics.LEFT);
+            } else {
+                g.setColor(100, 100, 100);
+                g.drawString("No location", 10, 10, Graphics.TOP | Graphics.LEFT);
+            }
         } catch (Throwable t) {
-			g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
-			g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
-		}
-	}
+            g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
+            g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
+        }
+    }
 
     public void setLocation(String aLon, String aLat) {
         // Don't refresh too often (save network overhead)
@@ -197,9 +200,10 @@ public class MapDisplay extends GameCanvas implements CommandListener {
         }
     }
 
-	private void show() {
-		if (active) {
-			repaint();
-		}
-	}
+    private void show() {
+        if (active) {
+            repaint();
+        }
+    }
+
 }

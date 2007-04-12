@@ -19,7 +19,7 @@ var:MyExampleVariable=Hello World
 # Again MIDlet-attributes defined override the one defined in the <info>-
 # and <jad>-sections of your build.xml
 
-MIDlet-Description=Walk & Play
+MIDlet-Description=Mobile Learning Game Kit
 
 menu.Trace=Trace
 menu.GPS=GPS
@@ -49,6 +49,15 @@ trace.Radar=Radar
 find.Ok=Ok
 
 play.Play=Play
+play.Start=Start
+play.Stop=Stop
+play.AddPhoto=Add photo
+play.AddText=Add text
+play.AddAudio=Add audio
+play.ZoomIn=Zoom in
+play.ZoomOut=Zoom out
+play.ToggleMap=Toggle Map
+play.Back=Back
 
 settings.SoundOn=Sound ON
 settings.SoundOff=Sound OFF
