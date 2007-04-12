@@ -11,6 +11,8 @@ import javax.microedition.midlet.MIDlet;
 import org.geotracing.client.*;
 import nl.justobjects.mjox.JXElement;
 
+import java.util.Vector;
+
 /**
  * MobiTracer main GUI.
  *
@@ -37,6 +39,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private WPMidlet midlet;
     private int taskId = -1;
     private int mediumId = -1;
+    private Vector gameLocations = new Vector(3);
 
     String gpsStatus = "disconnected";
 	String netStatus = "disconnected";
@@ -45,6 +48,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private boolean showGPSInfo = true;
 	private TracerEngine tracerEngine;
 	private PlayDisplay playDisplay;
+    private String mediumBaseURL = Net.getInstance().getURL() + "/media.srv?id=";
 
     private Command START_GAME_CMD = new Command(Locale.get("play.Start"), Command.ITEM, 2);
     private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITEM, 2);
@@ -81,6 +85,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         tracerEngine = new TracerEngine(midlet, this);
         tracerEngine.start();
 
+        getGameLocations();
+
         tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
         prevScreen = Display.getDisplay(midlet).getCurrent();
         Display.getDisplay(midlet).setCurrent(this);
@@ -88,6 +94,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
         fetchTileInfo();
         show();
+    }
+
+    private void getGameLocations(){
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-game-locations");
+        JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+        gameLocations = rsp.getChildrenByTag("record");
+        log(new String(rsp.toBytes(false)));
     }
 
     public void setLocation(String aLon, String aLat) {
@@ -336,12 +350,31 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		* the exit command and listener.
 		*/
 		public void showTask() {
+            // retrieve the task
+            JXElement req = new JXElement("query-store-req");
+            req.setAttr("cmd", "q-task");
+            req.setAttr("id", taskId);
+            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+            JXElement task = rsp.getChildByTag("record");
+            String name = task.getChildText("name");
+            String description = task.getChildText("description");
+            String mediumId = task.getChildText("mediumid");
+
             //#style defaultscreen
             Form form = new Form("Task");
             //#style formbox
-            form.append("all the task info");
-			// Add the Exit Command to the TextBox
-			form.addCommand(okCmd);
+            form.append(name);
+            form.append(description);
+            try{
+                form.append(Util.getImage(mediumBaseURL + mediumId + "&resize=120"));
+            }catch(Throwable t){
+                System.out.println("Exception showing task image:" + t.getMessage());
+            }
+            //#style textbox
+            textField = new TextField("Enter Answer", "", 1024, TextField.ANY);
+            form.append(textField);
+
+            form.addCommand(okCmd);
 			form.addCommand(cancelCmd);
 
 			// Set the command listener for the textbox to the current midlet
@@ -376,8 +409,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		* the exit command and listener.
 		*/
 		public void showMedium() {
-            //retrieve the medium
-            
+            // retrieve the task
+            JXElement req = new JXElement("query-store-req");
+            req.setAttr("cmd", "q-medium");
+            req.setAttr("id", mediumId);
+            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+            JXElement task = rsp.getChildByTag("record");
+            String name = task.getChildText("name");
+            String type = task.getChildText("type");
+
             //#style defaultscreen
             Form form = new Form("Medium");
             //#style formbox
@@ -397,13 +437,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		* satisfy the CommandListener interface and handle the Exit action.
 		*/
 		public void commandAction(Command command, Displayable screen) {
-			if (command == okCmd) {
-
-			} else {
-				onNetStatus("Create cancel");
-			}
-
-
 			// Set the current display of the midlet to the textBox screen
 			Display.getDisplay(midlet).setCurrent(playDisplay);
 		}
