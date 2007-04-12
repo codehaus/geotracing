@@ -3,10 +3,10 @@
 # for symbolic values of credential setting during the build
 # you should provide your own security.properties file
 # matching properties of your settings
-email.upload.host=<the pop3 host e.g. pop3.foo.com>
-email.upload.email.test=<the email address for uploads e.g mymedia@foo.com>
-email.upload.user.test=<the pop3 user name>
-email.upload.password.test=<the pop3 password>
+email.upload.host=the_pop3_host_like_pop3.foo.com
+email.upload.email.test=the_email_address_for_uploads_mymedia@foo.com
+email.upload.user.test=the_pop3_user_name
+email.upload.password.test=the_pop3_password
 
 
 
