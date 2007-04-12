@@ -20,7 +20,7 @@
 
 	<tables>
 
-		<table name="utopia_item">
+		<table name="wp_task">
 
 			<!-- You MUST specify a symbolic id for every record given.  -->
 			<!-- Also, that id must by unique and you must not change    -->
@@ -34,29 +34,29 @@
 			<!-- that you've defined in this file by using the symbolic  -->
 			<!-- id. A reference is in this form: ${id}.                 -->
 
-			<record id="item1">
+			<record id="task1">
 				<name>Item 1</name>
-				<description>an item inserted as initial data.</description>
+				<description>an task inserted as initial data.</description>
 			</record>
 
-			<record id="item2">
+			<record id="task2">
 				<name>Item 2</name>
-				<description>an item inserted as initial data.</description>
+				<description>an task inserted as initial data.</description>
 			</record>
 
-			<record id="item3">
+			<record id="task3">
 				<name>Item 3</name>
-				<description>an item inserted as initial data.</description>
+				<description>an task inserted as initial data.</description>
 			</record>
 
-			<record id="item4">
+			<record id="task4">
 				<name>Item 4</name>
-				<description>an item inserted as initial data.</description>
+				<description>an task inserted as initial data.</description>
 			</record>
 
-			<record id="item5">
+			<record id="task5">
 				<name>Item 5</name>
-				<description>an item inserted as initial data.</description>
+				<description>an task inserted as initial data.</description>
 			</record>
 
 		</table>
@@ -78,9 +78,9 @@
 	<!-- Media are also records and can also be used in relations.         -->
 
 	<relations>
-		<relation rec1="item1" rec2="item2" tag="some_tag"/>
-		<relation rec1="item3" rec2="item4"/>
-		<relation rec1="item1" rec2="item5"/>
+		<relation rec1="task1" rec2="task2" tag="some_tag"/>
+		<relation rec1="task3" rec2="task4"/>
+		<relation rec1="task1" rec2="task5"/>
 	</relations>
 
 </initialdata>

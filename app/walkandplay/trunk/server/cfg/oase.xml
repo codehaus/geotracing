@@ -49,6 +49,7 @@
 				<table file="tables/oase_relationdef.xml"/>
 				<table file="tables/oase_foreignkey.xml"/>
 				<table file="tables/base_medium.xml"/>
+				<table file="tables/oase_initialdata.xml"/>
 			</tables>
 
 			<interceptors>

@@ -23,7 +23,6 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 
 		<query>
 			<field name="id"/>
-			<field name="owner"/>
 			<field name="name"/>
 			<field name="description"/>
 			<field name="score"/>
@@ -36,7 +35,6 @@ $Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
 
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true"/>
-		<field name="owner" type="STRING" size="12" required="true" default="unknown"/>
 
 		<!-- Unique name: zone1-bewijs, zone3-1 -->
 		<field name="name" type="STRING" size="64" required="true"/>

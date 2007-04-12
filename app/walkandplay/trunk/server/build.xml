@@ -205,6 +205,9 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 				 <include name="g_location.xml"/>
 				 <include name="g_area.xml"/>
 			 </fileset>
+			<fileset dir="${keyworx.dir}/server/cfg/utopia/tables">
+				<include name="oase_initialdata.xml"/>
+			</fileset>
 		 </copy>
 
 		<!-- Copy relevant GeoTracing JSP -->
@@ -214,6 +217,13 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 				 <include name="map/**" />
 				 <include name="my/**" />
 				 <include name="srv/**" />
+			 </fileset>
+		 </copy>
+
+		<!-- Copy relevant GeoTracing shell-scripts -->
+		<copy todir="${build.war.dir}/WEB-INF/bin" overwrite="true">
+			 <fileset dir="${geotracing.server.dir}/bin">
+				 <include name="drawloc.sh"/>
 			 </fileset>
 		 </copy>
 
@@ -250,66 +260,10 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 
     </target>
 
-    <!-- Build the .wars for the project -->
-    <target name="wartest" depends="jar">
-        <echo message="Building webapp..."/>
-        <echo message="using geoTracing war dir: ${gt.war.dir}"/>
 
-        <delete dir="${build.war.dir}"/>
-        <delete file="${test.project.war}"/>
-        <mkdir dir="${build.war.dir}"/>
-
-        <copy todir="${build.war.dir}">
-            <fileset dir="${gt.war.dir}">
-                <exclude name="WEB-INF/data/**"/>
-            </fileset>
-        </copy>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg" overwrite="true">
-            <fileset dir="${server.cfg.dir}"/>
-        </copy>
-
-       <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="walkandplaytest" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/content-config.xml" value="walkandplaytest" token="[PORTALNAME]"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" value="6051" token="[PORTNR]"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/lib" file="${project.jar}"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables">
-            <fileset dir="${server.cfg.dir}/tables"/>
-        </copy>
-
-        <copy file="${server.cfg.dir}/oase-context.xml" todir="${build.war.dir}/WEB-INF/cfg" overwrite="true"/>
-
-        <!-- copy the jad so it can be send to users later... -->
-        <copy file="${project.jad}" todir="${build.war.dir}/WEB-INF/cfg"/>
-
-        <!-- copy plugins
-        <mkdir dir="${build.war.dir}/WEB-INF/plugins"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/tagging"/>
-        <copydir src="${tagging.plugin.dir}" dest="${build.war.dir}/WEB-INF/plugins/metadata"/> -->
-
-        <!-- just to be on the safe side -->
-        <copy file="${keyworx.jar}" todir="${build.war.dir}/WEB-INF/lib" overwrite="true"/>
-
-		<!-- copy data for tracerdaemon -->
-		 <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
-		   <fileset dir="${home.data.dir}"/>
-		 </copy>
-
-        <!-- Make war -->
-        <jar jarfile="${test.project.war}">
-            <fileset dir="${build.war.dir}">
-                <include name="**"/>
-            </fileset>
-        </jar>
-
-    </target>
 
     <!-- Build all clean. -->
     <target name="build" depends="clean,war"/>
-
-    <target name="buildtest" depends="clean,wartest"/>
 
     <!-- Package into archive files -->
     <target name="package" depends="build">
@@ -342,10 +296,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
         <copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
     </target>
 
-    <target name="deploy-test-local" depends="buildtest">
-        <copy file="${test.project.war}" todir="${deploy.local.dir}" overwrite="true"/>
-    </target>
-
     <target name="deploy-test.waag.org" depends="build">
         <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
     </target>
@@ -357,7 +307,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		</exec>
 	</target>
 
-    <target name="deploy-all-local" depends="deploy-local, deploy-test-local" />
 
     <!--<target name="deploy-local++" depends="replace metadata plugin, build">
         <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
