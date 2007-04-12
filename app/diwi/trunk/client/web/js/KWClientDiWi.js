@@ -134,9 +134,6 @@ KW.DIWI = {
 	gettracks: function(callback, username) {
 		SRV.init();
 		SRV.url = '/diwi/srv/get.jsp?';				
-		SRV.get('q-tracks-by-user', TST.onRsp, 'user', username);				               
-	}
-	
-	
-			
+		SRV.get('q-tracks-by-user', callback, 'user', username);				               
+	}			
 }
