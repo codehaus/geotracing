@@ -18,7 +18,7 @@ import org.geotracing.client.Preferences;
  */
 public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	private Command SEARCH_CMD, OK_CMD;
-	private ChoiceGroup deviceCG = new ChoiceGroup("Select a device and press Ok in menu", ChoiceGroup.EXCLUSIVE);
+	private ChoiceGroup deviceCG = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
 	private Hashtable devices = new Hashtable(2);
 	static private Preferences preferences;
 	private LocalDevice device;
@@ -33,7 +33,7 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
     private int msgNum;
     private int choiceNum;
 
-    public GPSDisplay(MIDlet theMIDlet) {
+    public GPSDisplay(WPMidlet theMIDlet) {
         super(theMIDlet, "GPS Device Selector");
         SEARCH_CMD = new Command("Search", Command.SCREEN, 1);
 		OK_CMD = new Command("OK", Command.OK, 1);
@@ -135,7 +135,8 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	public synchronized void inquiryCompleted(int complete) {
 		//log("Device search complete");
 		cls();        
-        //#style formbox
+        //#style smallstring
+        append("Select a device and press Ok in menu");
         choiceNum = append(deviceCG);
 	}
 

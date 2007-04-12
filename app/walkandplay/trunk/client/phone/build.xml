@@ -41,6 +41,9 @@
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
 	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
 
+    <property name="project.etc.dir" value="${basedir}/etc"/>
+    <property name="btsend" value="${project.etc.dir}/btsend.sh"/>
+
     <!-- import user specific properties -->
 	<property file="${user.name}.properties" />
 
@@ -159,13 +162,13 @@
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
 				license="GPL"
-				name="WalkAndPlay"
+				name="MLGK"
 				version="1.0.0"
-				description="Mobile client for WnP project"
+				description="Mobile client for MLGK project"
 				vendorName="GeoWorX"
 				infoUrl="http://www.j2mepolish.org"
 				icon="app.png"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-wnp.jar"
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-mlgk.jar"
 				jarUrl="${polish.jarName}"
 				copyright="Copyright 2005 Enough Software. All rights reserved."
 				deleteConfirm="Do you really want to kill me?"
@@ -205,7 +208,7 @@
                     <classpath refid="compile.classpath"/>
                 </compiler>
                 <!-- midlets definition -->
-				<midlet class="org.walkandplay.client.phone.WPMidlet" name="WnP" />
+				<midlet class="org.walkandplay.client.phone.WPMidlet" name="MLGK" />
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
@@ -215,7 +218,7 @@
 					You can change the title of the sample application with the "title"-var.
 					-->
 					<variable name="update-url" value="http://test.walkandplay.com/update" />
-					<variable name="title" value="WalkAndPlay" />
+					<variable name="title" value="MLGK" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
@@ -263,7 +266,7 @@
 					<attribute name="kw-user" value="geoapp-user" />
 					<!--<attribute name="kw-password" value="johan" />-->
 					<attribute name="kw-password" value="user" />
-					<attribute name="kw-amulet" value="wnpamulet" />
+					<attribute name="kw-amulet" value="mlgkamulet" />
 					<attribute name="kw-port" value="6000" />
 					<attribute name="kw-app" value="geoapp" />
 					<attribute name="kw-role" value="user" />
@@ -337,7 +340,7 @@
 		<java classname="${emulator.class}" fork="true">
 			<classpath refid="emulator.classpath"/>
 			<!-- <arg value="-clearRecordStores"/> -->
-			<arg value="dist/Nokia-N73-en_US-wnp.jar"/>
+			<arg value="dist/Nokia-N73-en_US-mlgk.jar"/>
 		</java>
 	</target>
 
@@ -357,6 +360,15 @@
 	<target name="enableN73" >
 		<property name="resource.dir" value="resources/Nokia/N73" />
 		<property name="dir.work" value="build/N73" />
+	</target>
+
+    <target name="install" depends="init">
+
+		<chmod file="${btsend}" perm="ugo+x"/>
+
+		<exec executable="${btsend}">
+			<arg line="dist/Nokia-N73-en_US-mlgk.jar"/>
+		</exec>
 	</target>
 
     <target name="N73" description="launches the application with the N73 design" depends="enableN73, test, build" />

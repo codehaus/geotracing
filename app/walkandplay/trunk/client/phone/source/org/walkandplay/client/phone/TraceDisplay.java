@@ -23,7 +23,7 @@ import nl.justobjects.mjox.JXElement;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 /*public class TraceDisplay extends DefaultDisplay  {*/
-public class TraceDisplay extends DefaultDisplay   {
+public class TraceDisplay extends DefaultTraceDisplay   {
     String gpsStatus = "disconnected";
 	String netStatus = "disconnected";
 	String status = "OK";
@@ -36,7 +36,7 @@ public class TraceDisplay extends DefaultDisplay   {
 
     private boolean showGPSInfo = true;
 	private MapDisplay mapViewer;
-	private TracerEngine tracerEngine;
+	//private TracerEngine tracerEngine;
 	private TraceDisplay traceDisplay;
 
     private Command NEW_TRK_CMD = new Command(Locale.get("trace.New"), Command.ITEM, 2);
@@ -48,7 +48,7 @@ public class TraceDisplay extends DefaultDisplay   {
     private Command SHOW_MAP_CMD = new Command(Locale.get("trace.ShowMap"), Command.ITEM, 2);
     private Command RADAR_CMD = new Command(Locale.get("trace.Radar"), Command.ITEM, 2);
 
-    public TraceDisplay(MIDlet aMidlet) {
+    public TraceDisplay(WPMidlet aMidlet) {
         super(aMidlet, "Trace");
         
         tracerEngine = new TracerEngine(aMidlet, this);
@@ -90,7 +90,11 @@ public class TraceDisplay extends DefaultDisplay   {
 	void start() {
 		mapViewer = new MapDisplay();
 		tracerEngine.start();
-	}
+        // directly go to the map if in play mode.
+        if(midlet.getPlayMode() == true){
+            mapViewer.activate(midlet);
+        }
+    }
 
     void stop() {
 		tracerEngine.stop();
@@ -285,7 +289,7 @@ public class TraceDisplay extends DefaultDisplay   {
     * satisfy the CommandListener interface and handle the Exit action.
     */
     public void commandAction(Command cmd, Displayable screen) {
-        if (cmd == BACK_CMD) {
+        if (cmd == BACK_CMD) {            
             System.out.println(midlet);
             System.out.println(prevScreen);
             Display.getDisplay(midlet).setCurrent(prevScreen);

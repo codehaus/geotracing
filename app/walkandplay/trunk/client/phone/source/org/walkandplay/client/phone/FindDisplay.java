@@ -20,13 +20,13 @@ import java.util.Hashtable;
  */
 public class FindDisplay extends DefaultDisplay implements NetListener {
     private Command OK_CMD = new Command(Locale.get("find.Ok"), Command.ITEM, 2);
-    private ChoiceGroup toursGroup = new ChoiceGroup("Select a tour and press Ok in menu", ChoiceGroup.EXCLUSIVE);
-    private Hashtable tours = new Hashtable(2);
-    private String tourName;
-    private JXElement tourElm;
+    private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
+    private Hashtable games = new Hashtable(2);
+    private String gameName;
+    private JXElement gameElm;
     private MIDlet midlet;
 
-    public FindDisplay(MIDlet aMIDlet) {
+    public FindDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Find a game!!");
         midlet = aMIDlet;
 
@@ -37,21 +37,26 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
             net.start();
         }
 
-        // get the tours
-        JXElement getMyToursReq = new JXElement("schedule-getlist-req");
-        JXElement getMyToursRsp = net.utopiaReq(getMyToursReq);
-        if(getMyToursRsp!=null) {
-            Vector toursElms = getMyToursRsp.getChildrenByTag("schedule");
-            for(int i=0;i<toursElms.size();i++){
-                JXElement t = (JXElement)toursElms.elementAt(i);
+        // get the games
+        JXElement getMyGamesReq = new JXElement("schedule-getlist-req");
+        System.out.println(new String(getMyGamesReq.toBytes(false)));
+        JXElement getMyGamesRsp = net.utopiaReq(getMyGamesReq);
+        System.out.println(new String(getMyGamesRsp.toBytes(false)));
+        if(getMyGamesRsp!=null) {
+            Vector gamesElms = getMyGamesRsp.getChildrenByTag("schedule");
+            for(int i=0;i<gamesElms.size();i++){
+                JXElement t = (JXElement)gamesElms.elementAt(i);
                 String name = t.getChildText("name");
-                toursGroup.append(name, null);
-                tours.put(name, t);
+                //#style formbox
+                gamesGroup.append(name, null);
+                games.put(name, t);
             }
         }
 
+        //#style smallstring
+        append("Select a game and press Ok in menu");
         //#style formbox
-        append(toursGroup);
+        append(gamesGroup);
         addCommand(OK_CMD);
     }
 
@@ -75,8 +80,8 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
         if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == OK_CMD) {
-            tourName = toursGroup.getString(toursGroup.getSelectedIndex());
-            tourElm = (JXElement) tours.get(tourName);
+            gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
+            gameElm = (JXElement) games.get(gameName);
 		}
     }
 

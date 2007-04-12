@@ -30,7 +30,7 @@ public class SettingsDisplay extends DefaultDisplay{
     //StringItem label = new StringItem("", "Settings");
     StringItem text = new StringItem("", "Choose settings from the menu to change");
 
-    public SettingsDisplay(MIDlet aMIDlet) {
+    public SettingsDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Settings");
 
         if(Util.hasSound()){

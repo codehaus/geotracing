@@ -29,7 +29,7 @@ public class AccountDisplay extends DefaultDisplay {
 	private Command OK_CMD = new Command("OK", Command.OK, 1);
 	private static Preferences preferences;
 
-	public AccountDisplay(MIDlet aMIDlet) {
+	public AccountDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Account");
 
 		addCommand(OK_CMD);
@@ -41,15 +41,21 @@ public class AccountDisplay extends DefaultDisplay {
 		String url = getPreferences().get(Net.PROP_URL, midlet.getAppProperty(Net.PROP_URL));
 
 		// Create input fields for user/password/url
-        //#style formbox
-        userField = new TextField("User", user, 16, TextField.ANY);
+        userField = new TextField("", user, 16, TextField.ANY);
+        passwordField = new TextField("", password, 16, TextField.ANY);
+        urlField = new TextField("", url, 512, TextField.ANY);
+        //#style smallstring
+        append("user");
         //#style textbox
-        passwordField = new TextField("Password", password, 16, TextField.ANY);
+        append(userField);
+        //#style smallstring
+        append("password");
         //#style textbox
-        urlField = new TextField("Server", url, 512, TextField.ANY);
-		append(userField);
-		append(passwordField);
-		append(urlField);
+        append(passwordField);
+        //#style smallstring
+        append("server");
+        //#style textbox
+        append(urlField);
 
 		// OK/cancel midlet menu
 		addCommand(OK_CMD);

@@ -112,7 +112,7 @@ title {
 	margin-left: 0;
 	margin-right: 0;
 	font-face: system;
-	font-size: medium;
+	font-size: small;
 	font-style: bold;
 	font-color: BLACK;
 	background-color: WHITE;
@@ -284,6 +284,12 @@ focused {
     layout: left | top;
 }
 
+.smallstring{
+    margin:2;
+    padding:2;
+    font-color: GREY;
+    font-size: small;
+}
 
 .formbox {
     margin:2;

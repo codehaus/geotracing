@@ -36,7 +36,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
     private StringItem status = new StringItem("", "Photo Capture");
 	private GPSLocation location;
 
-	public ImageCaptureDisplay(MIDlet aMIDlet) {
+	public ImageCaptureDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Take a picture");
 		showCamera();
 

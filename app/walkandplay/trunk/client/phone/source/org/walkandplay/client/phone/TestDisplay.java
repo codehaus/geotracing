@@ -21,7 +21,7 @@ public class TestDisplay extends DefaultDisplay {
     Image logo;
     private int w = -1, h = -1;
 	private Font f, fb;
-    public TestDisplay(MIDlet aMIDlet) {
+    public TestDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
         try{
 

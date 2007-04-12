@@ -51,7 +51,7 @@ public class RadarDisplay extends GameCanvas {
 	private boolean cheating;
 	private JXElement nearestObject;
 
-	public RadarDisplay(MIDlet aMidlet) {
+	public RadarDisplay(WPMidlet aMidlet) {
         
         super(false);
 		setFullScreenMode(true);
