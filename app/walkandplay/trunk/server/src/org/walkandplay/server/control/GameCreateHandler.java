@@ -156,7 +156,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LON);
 		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LAT);
 
-		Record taskRecord = oase.getModifier().create("task");
+		Record taskRecord = oase.getModifier().create(TASK_TABLE);
 		taskRecord.setField("name", taskElm.getChildText("name"));
 		taskRecord.setField("description", taskElm.getChildText("description"));
 		taskRecord.setField("score", taskElm.getChildText("score"));
@@ -188,26 +188,21 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		try {
 			JXElement requestElement = anUtopiaRequest.getRequestCommand();
 			JXElement contentElement = requestElement.getChildAt(0);
-			Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
 
-			ContentLogic contentLogic = new ContentLogic(oase, config);
+			ContentLogic contentLogic = createContentLogic(anUtopiaRequest);
+			RelateLogic relateLogic = createRelateLogic(anUtopiaRequest);
 
-			// Set owner to person creating the game
-			int personId = Integer.parseInt(anUtopiaRequest.getUtopiaSession().getContext().getUserId());
-			contentElement.addTextChild(OWNER_FIELD, personId + "");
 
 			// Inserts core game fields like name, description
+			int personId = HandlerUtil.getUserId(anUtopiaRequest);
+			contentElement.setChildText(OWNER_FIELD, personId+"");
 			int gameId = contentLogic.insertContent(contentElement);
 
-			// automagically create a game schedule for later
-			/* JXElement gameScheduleElm = new JXElement(GAME_SCHEDULE_TABLE);
-						gameScheduleElm.addTextChild(OWNER_FIELD, personId + "");
-						int gameScheduleId = contentLogic.insertContent(gameScheduleElm);
-						relateLogic.relate(gameId, gameScheduleId, null);  */
+			// Set owner to person creating the game
+			relateLogic.relate(gameId, personId, RELTAG_CREATOR);
 
 			JXElement response = createResponse(GAME_CREATE_SERVICE);
 			response.setAttr(ID_FIELD, gameId);
-			// response.setAttr("gamescheduleid", gameScheduleId);
 
 			return response;
 		} catch (UtopiaException ue) {

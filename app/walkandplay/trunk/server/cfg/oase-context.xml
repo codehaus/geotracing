@@ -19,8 +19,8 @@
         <table file="tables/g_area.xml"/>
 
 		<!-- walkandplay tables -->
-		<table file="tables/game.xml"/>
-		<table file="tables/task.xml"/>
+		<table file="tables/wp_game.xml"/>
+		<table file="tables/wp_task.xml"/>
 
         <!-- plugin tables -->
         <table file="tables/cc_agent.xml"/>

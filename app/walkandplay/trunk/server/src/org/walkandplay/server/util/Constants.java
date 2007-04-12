@@ -2,12 +2,11 @@ package org.walkandplay.server.util;
 
 public interface Constants {
     // tablenames
-    public final static String VERSION_TABLE = "version";
-    public final static String TOUR_TABLE = "tour";
-    public final static String TOUR_SCHEDULE_TABLE = "tourschedule";
-    public final static String GAMEPLAY_TABLE = "gameplay";
-    public final static String TASK_TABLE = "task";
-    public final static String GAME_TABLE = "game";
+    public final static String VERSION_TABLE = "wp_version";
+    public final static String SCHEDULE_TABLE = "wp_schedule";
+    public final static String GAMEPLAY_TABLE = "wp_gameplay";
+    public final static String TASK_TABLE = "wp_task";
+    public final static String GAME_TABLE = "wp_game";
     public final static String TEAM_TABLE = "team";
     public final static String POI_TABLE = "g_poi";
 
@@ -34,5 +33,6 @@ public interface Constants {
     public final static String RELTAG_INTRO = "intro";
     public final static String RELTAG_OUTRO = "outro";
 	public final static String RELTAG_MEDIUM = "medium";
+	public final static String RELTAG_CREATOR = "creator";
 
 }

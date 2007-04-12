@@ -24,7 +24,7 @@ public class WPQueryLogic extends QueryLogic {
 				e.printStackTrace();
 			}
 		}else if("q-tourschedules-by-user".equals(aQueryName)) {
-			String tables = "tourschedule";
+			String tables = "";
 			String fields = "tourschedule.id,tourschedule.name,tourschedule.description";
 			String where = "tourschedule.type=" + getParameter(theParms,"type", "0");
 			where = null;

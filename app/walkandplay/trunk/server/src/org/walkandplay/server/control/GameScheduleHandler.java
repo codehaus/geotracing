@@ -138,14 +138,14 @@ public class GameScheduleHandler extends DefaultHandler implements Constants {
             throwOnNonNumAttr("schedule id", requestElement.getAttr(ID_FIELD));
             int tourScheduleId = requestElement.getIntAttr(ID_FIELD);
 
-            JXElement[] tourElms = relateLogic.getRelated(tourScheduleId, TOUR_TABLE, null, null);
+            JXElement[] tourElms = relateLogic.getRelated(tourScheduleId, SCHEDULE_TABLE, null, null);
             if(tourElms.length == 0) throw new UtopiaException("No related tour found", ErrorCode.__6006_database_irregularity_error);
 
             JXElement tourElm = contentLogic.getContent(tourElms[0].getIntAttr(ID_FIELD));
             String tourName = tourElm.getChildText(NAME_FIELD);
             String tourDesc = tourElm.getChildText(DESCRIPTION_FIELD);
 
-            JXElement tourScheduleElm = requestElement.getChildByTag(TOUR_SCHEDULE_TABLE);
+            JXElement tourScheduleElm = requestElement.getChildByTag(SCHEDULE_TABLE);
             throwOnMissingElement("tourschedule", tourScheduleElm);
 
             String invitation = tourScheduleElm.getChildText(INVITATION_FIELD);
@@ -253,7 +253,7 @@ public class GameScheduleHandler extends DefaultHandler implements Constants {
             throwOnNonNumAttr("schedule id", requestElement.getAttr(ID_FIELD));
             int tourScheduleId = requestElement.getIntAttr(ID_FIELD);
 
-            JXElement tourScheduleElm = requestElement.getChildByTag(TOUR_SCHEDULE_TABLE);
+            JXElement tourScheduleElm = requestElement.getChildByTag(SCHEDULE_TABLE);
             throwOnMissingElement("tourschedule", tourScheduleElm);
 
             String startDate = tourScheduleElm.getChildText(STARTDATE_FIELD);
