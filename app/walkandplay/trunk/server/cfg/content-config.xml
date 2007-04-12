@@ -28,7 +28,7 @@
 		<field name="state" listed="false" searchable="false"/>
 	</type>
 
-    <type name="game" table="game">
+    <type name="game" table="wp_game">
 		<field name="name" listed="true" searchable="true"/>
 		<field name="description" listed="true" searchable="true"/>
 	</type>
