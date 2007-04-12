@@ -59,6 +59,24 @@ public class WPQueryLogic extends QueryLogic {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
+		}else if("q-task".equals(aQueryName)) {
+            String taskId = (String)theParms.get("id");
+            JXElement rsp = new JXElement("query-store-rsp");
+
+            JXElement task = new JXElement("task");
+            rsp.addChild(task);
+            task.setAttr("id", taskId);
+            JXElement name = new JXElement("name");
+            name.setText("Fiets opdracht");
+            JXElement description = new JXElement("description");
+            description.setText("Haal een fiets uit de sloot");
+            JXElement mediumid = new JXElement("mediumid");
+            mediumid.setText("10");
+            task.addChild(name);
+            task.addChild(description);
+            task.addChild(mediumid);
+
+            return rsp;
 		}
 		return super.doQuery(aQueryName, theParms);
 	}
