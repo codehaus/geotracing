@@ -166,8 +166,9 @@ focused {
     layout: horizontal-expand | top | horizontal-center;
     columns:3;
     columns-width: equal;
-    background-image:url(bg-stripe.png);
-    background-repeat:repeat;
+    background-color: WHITE;
+    /*background-image:url(bg-stripe.png);
+    background-repeat:repeat;*/
     font-size: small;
     /*show-text-in-title: true;*/
 }
