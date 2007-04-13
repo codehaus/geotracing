@@ -30,17 +30,14 @@ import java.util.Vector;
 public class Util {
 	private static boolean soundOn = true;
 	private static long timeOffset = 0;
-	/** Constant representing earth radius: 60 * 1.1515 * 1609.344 */
+	/**
+	 * Constant representing earth radius: 60 * 1.1515 * 1609.344
+	 */
 	private static MFloat DIST_CONST = new MFloat(111189, 5769);
 
-	/** Constant for Google Map tile size */
-	private static MFloat GMAP_TILE_SIZE = new MFloat(256L);
-	final static public MFloat MINUS_ONE = new MFloat(-1L);
-	final static public MFloat ONE = new MFloat(1L);
-	final static public MFloat TWO = new MFloat(2L);
-	final static public MFloat TWO_TIMES_PI = TWO.Mul(MFloat.PI);
-
-	/** Great circle distance in meters between two lon/lat points. */
+	/**
+	 * Great circle distance in meters between two lon/lat points.
+	 */
 	public static MFloat distanceMeters(MFloat lon1, MFloat lat1, MFloat lon2, MFloat lat2) {
 		// Same points: zero distance
 		if (lat1.Sub(lat2).Equal(MFloat.ZERO) && lon1.Sub(lon2).Equal(MFloat.ZERO)) {
@@ -59,66 +56,6 @@ public class Util {
 		return dist;
 	}
 
-	public static class XY {
-		public int x;
-		public int y;
-	}
-
-	/**
-	 * Returns pixel offset in tile for given lon,lat,zoom.
-	 * see http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
-	 */
-	public static Util.XY getGMapPixelXY(String aLon, String aLat, String aZoom) {
-		MFloat lon = MFloat.parse(aLon, 10);
-		MFloat lat = MFloat.parse(aLat, 10);
-		MFloat zoom = MFloat.parse(aZoom, 10);
-
-		// Number of tiles in each axis at zoom level
-		MFloat tiles = MFloat.pow(TWO, new MFloat(zoom));
-
-		// Circumference in pixels
-		MFloat circumference = GMAP_TILE_SIZE.Mul(tiles);
-		MFloat radius = circumference.Div(TWO_TIMES_PI);
-
-		// Use radians
-		MFloat longitude = MFloat.toRadians(lon);
-		MFloat latitude = MFloat.toRadians(lat);
-
-		// To correct for origin in top left but calculated values from center
-		MFloat falseEasting = circumference.Div(TWO);
-		MFloat falseNorthing = falseEasting; // circumference / 2.0D;
-
-		// Do x
-		MFloat xf = radius.Mul(longitude);
-		// System.out.println("x1=" + x);
-
-		// Correct for false easting
-		int x = (int) falseEasting.Add(xf).toLong();
-		// System.out.println("x2=" + x);
-
-		MFloat tilesXOffset = xf.Div(GMAP_TILE_SIZE);
-		xf = xf.Sub((tilesXOffset.Mul(GMAP_TILE_SIZE)));
-		// System.out.println("x3=" + x + " tilesXOffset =" + tilesXOffset);
-
-		// Do yf
-		MFloat yf = radius.Div(TWO.Mul(MFloat.log((ONE.Add(MFloat.sin(latitude)).Div(ONE.Sub(MFloat.sin(latitude)))))));
-		// System.out.println("y1=" + yf);
-
-		// Correct for false northing
-		yf = (yf.Sub(falseNorthing).Mul(MINUS_ONE));
-		// System.out.println("y2=" + yf);
-
-		// Number of pixels to subtract for tiles skipped (offset)
-		MFloat tilesYOffset = yf.Div(GMAP_TILE_SIZE);
-		yf = yf.Sub(tilesYOffset.Mul(GMAP_TILE_SIZE));
-		// System.out.println("y3=" + yf + " tilesYOffset =" + tilesYOffset);
-
-		Util.XY xy = new Util.XY();
-		xy.x = (int) xf.toLong();
-		xy.y = (int) yf.toLong();
-		return xy;
-	}
-
 	/**
 	 * Create a string from the TimeOfDay portion of a time/date as
 	 * yyyy-mm-dd hh::mm::ss TZ
@@ -134,8 +71,8 @@ public class Util {
 		int year = c.get(Calendar.YEAR);
 		int mon = c.get(Calendar.MONTH) + 1;
 		int day = c.get(Calendar.DATE);
-		return (year < 10 ? "0" : "") + year + "-" + (mon < 10 ? "0" : "") + mon+ "-" + (day < 10 ? "0" : "") + day
-		+ " " + (hour < 10 ? "0" : "") + hour + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ?"0" : "") + sec;
+		return (year < 10 ? "0" : "") + year + "-" + (mon < 10 ? "0" : "") + mon + "-" + (day < 10 ? "0" : "") + day
+				+ " " + (hour < 10 ? "0" : "") + hour + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "") + sec;
 	}
 
 	static public String format(MFloat aFloat, int maxLen) {
