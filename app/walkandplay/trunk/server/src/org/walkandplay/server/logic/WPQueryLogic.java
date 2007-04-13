@@ -34,28 +34,40 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				}
 			}else if("q-task".equals(aQueryName)) {
                 String taskId = (String)theParms.get("id");
-                JXElement rsp = new JXElement("query-store-rsp");
+                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
 
-                JXElement task = new JXElement("task");
-                rsp.addChild(task);
+                /*Record task = getOase().getFinder().read(Integer.parseInt(taskId));
+                if (task == null) {
+                    throw new IllegalArgumentException("No task found for id=" + taskId);
+                }
+                JXElement e = task.toXML();
+
+                Record[] records = getOase().getRelater().getRelated(task, MEDIUM_TABLE, null);
+                for (int i = 0; i < records.length; i++) {
+					e.addTextChild("mediumid", "" + records[i].getId());
+				}
+                result.addChild(e);*/
+
+                JXElement task = new JXElement("record");
+                result.addChild(task);
                 task.setAttr("id", taskId);
                 JXElement name = new JXElement("name");
                 name.setText("Fiets opdracht");
                 JXElement description = new JXElement("description");
-                description.setText("Haal een fiets uit de sloot");
+                description.setText("Haal een fiets uit de sloot, draai een rondje rond je as. " +
+                        "Maak hier een foto van en stuur deze op");
                 JXElement mediumid = new JXElement("mediumid");
-                mediumid.setText("10");
+                mediumid.setText("575");
                 task.addChild(name);
                 task.addChild(description);
                 task.addChild(mediumid);
 
-                return rsp;
             }else if("q-medium".equals(aQueryName)) {
                 String mediumId = (String)theParms.get("id");
-                JXElement rsp = new JXElement("query-store-rsp");
+                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
 
-                JXElement task = new JXElement("medium");
-                rsp.addChild(task);
+                JXElement task = new JXElement("record");
+                result.addChild(task);
                 task.setAttr("id", mediumId);
                 JXElement name = new JXElement("name");
                 name.setText("Fiets plaatje");
@@ -64,9 +76,28 @@ public class WPQueryLogic extends QueryLogic implements Constants {
                 task.addChild(name);
                 task.addChild(type);
 
-                return rsp;
 		    } else if ("q-game-locations".equals(aQueryName)) {
-				String idStr = getParameter(theParms, PAR_ID, null);
+                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
+
+                JXElement r1 = new JXElement("record");
+                r1.setChildText(ID_FIELD, "1");
+                r1.setChildText(NAME_FIELD, "task # 1");
+                r1.setChildText(TYPE_FIELD, "task");
+                r1.setChildText(LAT_FIELD, "454545645");
+                r1.setChildText(LON_FIELD, "34534343");
+                result.addChild(r1);
+
+                JXElement r2 = new JXElement("record");
+                r2.setChildText(ID_FIELD, "10");
+                r2.setChildText(NAME_FIELD, "medium # 1");
+                r2.setChildText(TYPE_FIELD, "medium");
+                r2.setChildText(LAT_FIELD, "454545645");
+                r2.setChildText(LON_FIELD, "34534343");
+                result.addChild(r2);
+
+                return result;
+
+                /*String idStr = getParameter(theParms, PAR_ID, null);
 				throwOnMissingParm(PAR_ID, idStr);
 				int id = Integer.parseInt(idStr);
 				Record game = getOase().getFinder().read(id, GAME_TABLE);
@@ -107,7 +138,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 					result.addChild(record);
 				}
-
+*/
 
 			} else {
 				// Query not handled by us: let superclass do query and any errors if query non-existing
