@@ -39,6 +39,13 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             net.start();
         }
 
+        /*JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-games-by-user");
+        req.setAttr("user", net.getUserName());
+        JXElement rsp = net.utopiaReq(req);
+        //Vector gameLocations = rsp.getChildrenByTag("record");
+        System.out.println(new String(rsp.toBytes(false)));*/
+
         // get the play state
         JXElement req = new JXElement("play-getstate-req");
         JXElement rsp = net.utopiaReq(req);
@@ -64,10 +71,8 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
 
     private void startGame(){
         JXElement req = new JXElement("play-start-req");
-        System.out.println(new String(req.toBytes(false)));
         req.setAttr("id", midlet.getCurrentGame().getAttr("id"));
-        JXElement rsp = net.utopiaReq(req);
-        System.out.println(new String(rsp.toBytes(false)));        
+        JXElement rsp = net.utopiaReq(req);                
     }
 
     public void onNetInfo(String theInfo){
@@ -91,16 +96,11 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == PLAY_CMD) {
             gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
-            System.out.println("set current game");
             gameElm = (JXElement) games.get(gameName);
-            System.out.println("gameElm:" + new String(gameElm.toBytes(false)));
             midlet.setCurrentGame(gameElm);
             // now start the game
-            System.out.println("start the game");
             startGame();
-            // now go to the MapRadarDisplay
-            System.out.println("go to PlayDisplay");
-
+            
             midlet.setPlayMode(true);
             PlayDisplay d = new PlayDisplay(midlet);
             d.start();

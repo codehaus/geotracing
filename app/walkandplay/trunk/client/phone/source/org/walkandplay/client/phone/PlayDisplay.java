@@ -38,8 +38,21 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
     private WPMidlet midlet;
     private int taskId = -1;
+    private JXElement task;
+    private Image taskImage;
     private int mediumId = -1;
+    private JXElement medium;
+    private Image mediumImage;
+
     private Vector gameLocations = new Vector(3);
+
+    private final static int RETRIEVING_MEDIUM = 1;
+    private final static int RETRIEVING_TASK = 2;
+    private final static int SHOW_MEDIUM = 3;
+    private final static int SHOW_TASK = 4;
+    private int SHOW_STATE = 0;
+
+    int w, h;
 
     String gpsStatus = "disconnected";
 	String netStatus = "disconnected";
@@ -70,12 +83,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
 		playDisplay = this;
 
-        addCommand(ADD_TEXT_CMD);
-        addCommand(ADD_PHOTO_CMD);
-        addCommand(ADD_AUDIO_CMD);
-        addCommand(ZOOM_IN_CMD);
-        addCommand(ZOOM_OUT_CMD);
-        addCommand(TOGGLE_MAP_CMD);
         addCommand(START_GAME_CMD);
         addCommand(BACK_CMD);
         setCommandListener(this);
@@ -99,6 +106,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private void getGameLocations(){
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-game-locations");
+        req.setAttr("id", midlet.getCurrentGame().getAttr("id"));
         JXElement rsp = tracerEngine.getNet().utopiaReq(req);
         gameLocations = rsp.getChildrenByTag("record");
         log(new String(rsp.toBytes(false)));
@@ -182,18 +190,95 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         show();
     }
 
-
-	public void onNetStatus(String s) {
-        if(s.indexOf("task")!=-1){
-            taskId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
-            new TaskHandler().showTask();
-        }else if(s.indexOf("medium")!=-1){
-            mediumId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
-            new MediumHandler().showMedium();
+    public void onNetStatus(String s) {
+        try{
+            if(s.indexOf("task")!=-1 && SHOW_STATE!=SHOW_TASK){
+                log("we found a task!!");
+                taskId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
+                log("taskid:" + taskId);
+                SHOW_STATE = RETRIEVING_TASK;
+            }else if(s.indexOf("medium")!=-1 && SHOW_STATE!=SHOW_MEDIUM){
+                log("we found a medium!!");
+                mediumId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
+                // TODO :  change this later
+                mediumId = 575;
+                log("mediumid:" + mediumId);
+                SHOW_STATE = RETRIEVING_MEDIUM;
+            }
+        }catch(Throwable t){
+            log("OnNetStatus exception:" + t.getMessage());
         }
         netStatus = s;
         show();
     }
+
+    private void retrieveTask(){
+        // retrieve the task
+        new Thread(new Runnable() {
+            public void run() {
+                log("retrieving the task: " + taskId);
+                JXElement req = new JXElement("query-store-req");
+                req.setAttr("cmd", "q-task");
+                req.setAttr("id", taskId);
+                log(new String(req.toBytes(false)));
+                JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+                log(new String(rsp.toBytes(false)));
+                task = rsp.getChildByTag("record");
+                String mediumId = task.getChildText("mediumid");
+                String url = mediumBaseURL + mediumId + "&resize=120";
+                try {
+                    taskImage = Util.getImage(url);
+                } catch (Throwable t) {
+                    log("Error fetching task image url: " + url);
+                }
+
+                SHOW_STATE = SHOW_TASK;
+            }
+        }).start();
+    }
+
+    private void retrieveMedium(){
+        // retrieve the medium
+        new Thread(new Runnable() {
+            public void run() {
+                log("retrieving the medium: " + mediumId);
+                JXElement req = new JXElement("query-store-req");
+                req.setAttr("cmd", "q-medium");
+                req.setAttr("id", mediumId);
+                JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+                medium = rsp.getChildByTag("record");
+                String type = medium.getChildText("type");
+                String url = mediumBaseURL + mediumId;
+                if (type.equals("image")) {
+                    try {
+                        url += "&resize=" + w;
+                        mediumImage = Util.getImage(url);
+                    } catch (Throwable t) {
+                        log("Error fetching image url");
+                    }
+                } else if (type.equals("audio")) {
+                    try {
+                        Util.playStream(url);
+                    } catch (Throwable t) {
+                        log("Error playing audio url");
+                    }
+                } else if (type.equals("text")) {
+                    try {
+                        medium.setChildText("description", Util.getPage(url));
+                    } catch (Throwable t) {
+                        log("Error fetching text url=");
+                    }
+                } else if (type.equals("user")) {
+                    //showObject.setChildText("text", "last location of " + showObject.getChildText("name"));
+                } else {
+                    //showObject.setChildText("text", type + " is not supported (yet)");
+                }
+
+                SHOW_STATE = SHOW_MEDIUM;
+            }
+        }).start();
+    }
+
 
     private void log(String aMsg){
         System.out.println(aMsg);
@@ -205,12 +290,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        int w = getWidth();
+        w = getWidth();
         // Defeat Nokia bug ?
         if (w == 0) {
             w = 176;
         }
-        int h = getHeight();
+        h = getHeight();
         // Defeat Nokia bug ?
         if (h == 0) {
             h = 208;
@@ -280,13 +365,33 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 
             } else {
                 g.setColor(0, 0, 0);
-                g.drawString("No location", w/2, h/2, Graphics.TOP | Graphics.LEFT);
+                String s = "Retrieving location...";
+                g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);
             }
 
             // draw the gps & net status
             g.setColor(0, 0, 0);
             g.drawString(netStatus, 5, 5, Graphics.TOP | Graphics.LEFT);
             g.drawString(gpsStatus, 50, 5, Graphics.TOP | Graphics.LEFT);
+
+            switch(SHOW_STATE){
+                case RETRIEVING_MEDIUM:
+                    String s1 = "Hit media - retrieving...";
+                    g.drawString(s1, w/2 - (g.getFont().stringWidth(s1))/2, h/2, Graphics.TOP | Graphics.LEFT);
+                    retrieveMedium();
+                    break;
+                case RETRIEVING_TASK:
+                    String s2 = "Hit a task - retrieving...";
+                    g.drawString(s2, w/2 - (g.getFont().stringWidth(s2))/2, h/2, Graphics.TOP | Graphics.LEFT);
+                    retrieveTask();
+                    break;
+                case SHOW_MEDIUM:
+                    new MediumHandler().showMedium();
+                    break;
+                case SHOW_TASK:
+                    new TaskHandler().showTask();
+                    break;
+            }
 
         } catch (Throwable t) {
             g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
@@ -305,11 +410,23 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             log("resuming track");
             tracerEngine.suspendResume();
             removeCommand(START_GAME_CMD);
+            addCommand(ADD_TEXT_CMD);
+            addCommand(ADD_PHOTO_CMD);
+            addCommand(ADD_AUDIO_CMD);
+            addCommand(ZOOM_IN_CMD);
+            addCommand(ZOOM_OUT_CMD);
+            addCommand(TOGGLE_MAP_CMD);
             addCommand(STOP_GAME_CMD);
         } else if (cmd == STOP_GAME_CMD) {
             log("suspending track");
             tracerEngine.suspendResume();
             removeCommand(STOP_GAME_CMD);
+            removeCommand(ADD_TEXT_CMD);
+            removeCommand(ADD_PHOTO_CMD);
+            removeCommand(ADD_AUDIO_CMD);
+            removeCommand(ZOOM_IN_CMD);
+            removeCommand(ZOOM_OUT_CMD);
+            removeCommand(TOGGLE_MAP_CMD);
             this.addCommand(START_GAME_CMD);
         } else if (cmd == ADD_PHOTO_CMD) {
             log("adding photo");
@@ -350,28 +467,21 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		* the exit command and listener.
 		*/
 		public void showTask() {
-            // retrieve the task
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-task");
-            req.setAttr("id", taskId);
-            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-            JXElement task = rsp.getChildByTag("record");
-            String name = task.getChildText("name");
-            String description = task.getChildText("description");
-            String mediumId = task.getChildText("mediumid");
+            log("now get the task!");
 
             //#style defaultscreen
             Form form = new Form("Task");
             //#style formbox
-            form.append(name);
-            form.append(description);
-            try{
-                form.append(Util.getImage(mediumBaseURL + mediumId + "&resize=120"));
-            }catch(Throwable t){
-                System.out.println("Exception showing task image:" + t.getMessage());
-            }
+            form.append(task.getChildText("name"));
+            //#style formbox
+            form.append(task.getChildText("description"));
+
+            form.append(taskImage);
+
+            //#style smallstring
+            form.append("answer");
             //#style textbox
-            textField = new TextField("Enter Answer", "", 1024, TextField.ANY);
+            textField = new TextField("", "", 1024, TextField.ANY);
             form.append(textField);
 
             form.addCommand(okCmd);
@@ -390,39 +500,39 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		*/
 		public void commandAction(Command command, Displayable screen) {
 			if (command == okCmd) {
-
+                // send the answer!!
 			} else {
 				onNetStatus("Create cancel");
-			}
-
-
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(playDisplay);
+                task = null;
+                taskId = -1;
+                SHOW_STATE = 0;
+                // Set the current display of the midlet to the textBox screen
+			    Display.getDisplay(midlet).setCurrent(playDisplay);
+            }
 		}
 	}
 
     private class MediumHandler implements CommandListener {
 		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-		/*
+        /*
 		* Create the first TextBox and associate
 		* the exit command and listener.
 		*/
 		public void showMedium() {
-            // retrieve the task
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-medium");
-            req.setAttr("id", mediumId);
-            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-            JXElement task = rsp.getChildByTag("record");
-            String name = task.getChildText("name");
-            String type = task.getChildText("type");
-
             //#style defaultscreen
             Form form = new Form("Medium");
+            String type = medium.getChildText("type");
             //#style formbox
-            form.append("all the task info");
-			// Add the Exit Command to the TextBox
+            form.append(medium.getChildText("name"));
+            //#style formbox
+            form.append(medium.getChildText("description"));
+
+            if (type.equals("image")) {
+                form.append(mediumImage);
+            }
+
+            // Add the Exit Command to the TextBox
 			form.addCommand(cancelCmd);
 
 			// Set the command listener for the textbox to the current midlet
@@ -438,7 +548,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		*/
 		public void commandAction(Command command, Displayable screen) {
 			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(playDisplay);
+            medium = null;
+            mediumId = -1;
+            SHOW_STATE = 0;
+            Display.getDisplay(midlet).setCurrent(playDisplay);
 		}
 	}
 
