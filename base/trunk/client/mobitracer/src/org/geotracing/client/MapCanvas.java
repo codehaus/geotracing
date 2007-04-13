@@ -1,7 +1,5 @@
 package org.geotracing.client;
 
-import nl.justobjects.mjox.JXElement;
-
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
@@ -13,10 +11,8 @@ import java.io.IOException;
 public class MapCanvas extends GameCanvas implements CommandListener {
 	private Displayable prevScreen;
 	private String tileBaseURL;
-	private JXElement tileInfo, prevTileInfo;
-	private Image tileImage;
-	private static final long REFRESH_INTERVAL_MILLIS=10000L;
-	private long lastRefreshMillis;
+	private GoogleMap.XY xy, prevXY;
+	private Image mapImage;
 	private MFloat tileScale;
 	private int zoom = 12;
 	private Command zoomIn;
@@ -60,16 +56,18 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (c == zoomIn) {
 			zoom++;
+			xy = prevXY = null;
 			fetchTileInfo();
 			show();
 		} else if (c == zoomOut) {
 			zoom--;
+			xy = prevXY = null;
 			fetchTileInfo();
 			show();
 		} else if (c == toggleMapType) {
 			mapType = mapType.equals("sat") ? "map" : "sat";
 			fetchTileInfo();
-			tileImage = null;
+			mapImage = null;
 			show();
 		}
 	}
@@ -97,57 +95,55 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 
 		g.setColor(4, 4, 4);
 		g.fillRect(0, 0, w, h);
-		g.setColor(255,255,255);
+		g.setColor(255, 255, 255);
 
 		try {
 
-			if (tileInfo != null && tileImage == null) {
+			if (tileScale == null) {
+				tileScale = new MFloat(w).Div(GoogleMap.I_GMAP_TILE_SIZE);
+			}
+
+			if (hasLocation() && mapImage == null) {
 				try {
 					String tileSize = w + "x" + w;
 					String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
-					g.drawString("fetching tileImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
+					g.drawString("fetching mapImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
 
-					Image mapImage = Util.getImage(tileURL);
-					tileImage = Image.createImage(mapImage.getWidth(), mapImage.getHeight());
-					tileImage.getGraphics().drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+
+					// Get Google Tile image and draw on mapImage
+					Image tileImage = Util.getImage(tileURL);
+					mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
+					mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+					fetchTileInfo();
+					repaint();
 				} catch (Throwable t) {
 					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
 					return;
 				}
 			}
 
-			if (tileImage != null) {
+			if (xy != null) {
 
-				// Correct pixel offset with tile scale
-				if (tileScale == null) {
-					tileScale = new MFloat(w).Div(256L);
+				// If we have previous point: draw line from there to current
+				if (prevXY != null) {
+					Graphics mapGraphics = mapImage.getGraphics();
+					mapGraphics.setColor(0, 0, 255);
+					mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
+					mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
 				}
 
-				// x,y offset of our location in tile tileImage
-				String myX = tileInfo.getAttr("x");
-				String myY = tileInfo.getAttr("y");
-				int x = (int) new MFloat(Integer.parseInt(myX)).Mul(tileScale).toLong();
-				int y = (int) new MFloat(Integer.parseInt(myY)).Mul(tileScale).toLong();
-
-
-				if (prevTileInfo != null) {
-					String lmyX = prevTileInfo.getAttr("x");
-					String lmyY = prevTileInfo.getAttr("y");
-					int lx = (int) new MFloat(Integer.parseInt(lmyX)).Mul(tileScale).toLong();
-					int ly = (int) new MFloat(Integer.parseInt(lmyY)).Mul(tileScale).toLong();
-					Graphics tg = tileImage.getGraphics();
-					tg.setColor(0,0,255);
-					tg.drawLine(lx, ly, x, y);
-				}
-
-				// Draw map
-				g.drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+				// Draw background map
+				g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
 				// Draw current location
 				if (redDot == null) {
 					redDot = Image.createImage("/red_dot.png");
 				}
-				g.drawImage(redDot, x, y, Graphics.TOP | Graphics.LEFT);
+
+				g.drawImage(redDot, xy.x, xy.y, Graphics.TOP | Graphics.LEFT);
+			} else if (hasLocation()) {
+				fetchTileInfo();
+				repaint();
 			} else {
 				g.setColor(100, 100, 100);
 				g.drawString("No location", 10, 10, Graphics.TOP | Graphics.LEFT);
@@ -157,20 +153,13 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 			g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
 		} catch (Throwable t) {
 			g.drawString("ERROR", 10, 10, Graphics.TOP | Graphics.LEFT);
-			g.drawString(t+"", 10, 30, Graphics.TOP | Graphics.LEFT);
+			g.drawString(t + "", 10, 30, Graphics.TOP | Graphics.LEFT);
 		}
 	}
 
 	public void setLocation(String aLon, String aLat) {
-		// Don't refresh too often (save network overhead)
-		long now = Util.getTime();
-		if (now - lastRefreshMillis < REFRESH_INTERVAL_MILLIS) {
-			return;
-		}
-
 		lon = aLon;
 		lat = aLat;
-		lastRefreshMillis = now;
 		fetchTileInfo();
 		show();
 	}
@@ -181,22 +170,31 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 		}
 
 		try {
-			// Get information on tile
-			String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
-			JXElement newTileInfo = Util.getXML(tileInfoURL);
+			GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
+			// System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
 
-			// Reset tileImage if first tile info or if keyhole ref changed (we moved to new tile).
-			if (tileInfo == null || !tileInfo.getAttr("khref").equals(newTileInfo.getAttr("khref"))) {
-				tileImage = null;
-				prevTileInfo = null;
+			// Reset mapImage when
+			// no tile info (init)
+			// OR zoom changed
+			// OR we moved off screen
+			if (xy == null || newTileXY.x < 0 || newTileXY.y < 0 || newTileXY.x > GoogleMap.I_GMAP_TILE_SIZE || newTileXY.y > GoogleMap.I_GMAP_TILE_SIZE)
+			{
+				// System.out.println("refresh");
+				mapImage = null;
+				prevXY = null;
 			}
 
 			// Remember last point/tile if still on same tile
-			if (tileImage != null) {
-				prevTileInfo = tileInfo;
+			if (tileScale != null) {
+				// Correct pixel offset with tile scale
+				// Scale x,y offset of our location in mapImage
+				newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
+				newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
+
+				prevXY = xy;
+				xy = newTileXY;
 			}
-			tileInfo = newTileInfo;
-			// System.out.println("khref=" + tileInfo.getAttr("khref"));
+
 		} catch (Throwable t) {
 			Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
 		}
