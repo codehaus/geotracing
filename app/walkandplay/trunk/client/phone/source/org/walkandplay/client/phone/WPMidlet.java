@@ -57,27 +57,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public WPMidlet() {
         super();
-        //#ifdef title:defined
-			//#= String title = "{title}";
-		//#else
-			String title = "Mobile Learning Game Kit";
-		//#endif
+        Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));        
+    }
 
-        Image logo;
-        try {
-
-            //#ifdef polish.images.directLoad
-            logo = Image.createImage("/gt_logo.png");
-            //#else
-            logo = scheduleImage("/gt_logo.png");
-            //#endif
-
-            //#style logo
-            ImageItem logoItem = new ImageItem("", logo, ImageItem.LAYOUT_DEFAULT, "logo");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    public void setHome(){
         //#style mainScreen
         menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
         //#style mainTraceCommand
@@ -99,7 +82,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Log"), null);
         /*//#endif*/
         menuScreen.setCommandListener(this);
-        
+        Display.getDisplay(this).setCurrent(menuScreen);
+
     }
 
     public void setPlayMode(boolean aMode){
@@ -170,7 +154,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 6:
                 // Quit
-                notifyDestroyed();
+                Display.getDisplay(this).setCurrent(new SplashCanvas(this, -1));
+                //notifyDestroyed();
                 break;
             /*//#ifdef polish.debugEnabled*/
             case 7:

@@ -200,8 +200,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             }else if(s.indexOf("medium")!=-1 && SHOW_STATE!=SHOW_MEDIUM){
                 log("we found a medium!!");
                 mediumId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
-                // TODO :  change this later
-                mediumId = 575;
+                // TODO :  change this
+                mediumId = 4497;
                 log("mediumid:" + mediumId);
                 SHOW_STATE = RETRIEVING_MEDIUM;
             }
@@ -225,7 +225,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 log(new String(rsp.toBytes(false)));
                 task = rsp.getChildByTag("record");
                 String mediumId = task.getChildText("mediumid");
-                String url = mediumBaseURL + mediumId + "&resize=120";
+                //String url = mediumBaseURL + mediumId + "&resize=120";
+                //TODO: change this
+                String url = mediumBaseURL + "4497&resize=120";
+                log(url);
                 try {
                     taskImage = Util.getImage(url);
                 } catch (Throwable t) {
@@ -249,6 +252,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 medium = rsp.getChildByTag("record");
                 String type = medium.getChildText("type");
                 String url = mediumBaseURL + mediumId;
+                log(url);
                 if (type.equals("image")) {
                     try {
                         url += "&resize=" + w;
