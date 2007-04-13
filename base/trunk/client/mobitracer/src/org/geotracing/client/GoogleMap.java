@@ -38,6 +38,8 @@ public class GoogleMap {
 	final static public MFloat TWO = new MFloat(2L);
 	final static public MFloat FOUR = new MFloat(4L);
 	final static public MFloat TWO_PI = TWO.Mul(MFloat.PI);
+	final static public MFloat HALF_PI = MFloat.PI.Div(TWO);
+	final static public MFloat QUART_PI = MFloat.PI.Div(FOUR);
 	final static public MFloat DEG_180 = new MFloat(180L);
 	final static public MFloat DEG_360 = new MFloat(360L);
 	final static public MFloat HALF = new MFloat(2L, -1L);
@@ -145,9 +147,9 @@ public class GoogleMap {
 		aLon = aLon.Div(DEG_180);
 
 		// convert latitude to a range -1..+1
-		// lat = Math.log(Math.tan((Math.PI / 4) + ((0.5 * Math.PI * lat) / 180))) / Math.PI;
-		aLat = MFloat.log(MFloat.tan((MFloat.PI.Div(FOUR)).Add((HALF.Mul(MFloat.PI.Mul(aLat).Div(DEG_180))).Div(MFloat.PI))));
-
+		// lat = Math.log(Math.tan((Math.PI / 4) + ((0.5 * Math.PI * lat) / 180)) ) / Math.PI;
+		aLat = MFloat.log(  MFloat.tan((QUART_PI).Add((HALF_PI.Mul(aLat).Div(DEG_180))))).Div(MFloat.PI);
+		// System.out.println("lat=" + aLat);
 		MFloat tLat = MINUS_ONE;
 		MFloat tLon = MINUS_ONE;
 		MFloat lonWidth = TWO;
@@ -160,24 +162,6 @@ public class GoogleMap {
 			lonWidth = lonWidth.Div(TWO);
 			// latHeight /= 2;
 			latHeight = latHeight.Div(TWO);
-
-			/* if ((tLat + latHeight) > lat) {
-				if ((tLon + lonWidth) > lon) {
-					keyholeString.append('t');
-				} else {
-					tLon += lonWidth;
-					keyholeString.append('s');
-				}
-			} else {
-				tLat += latHeight;
-
-				if ((tLon + lonWidth) > lon) {
-					keyholeString.append('q');
-				} else {
-					tLon += lonWidth;
-					keyholeString.append('r');
-				}
-			}   */
 
 			if (tLat.Add(latHeight).Great(aLat)) {
 				if (tLon.Add(lonWidth).Great(aLon)) {
