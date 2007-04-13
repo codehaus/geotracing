@@ -1,5 +1,7 @@
 package org.geotracing.client;
 
+import nl.justobjects.mjox.JXElement;
+
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.midlet.MIDlet;
@@ -12,6 +14,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 	private Displayable prevScreen;
 	private String tileBaseURL;
 	private GoogleMap.XY xy, prevXY;
+	private String tileRef="";
 	private Image mapImage;
 	private MFloat tileScale;
 	private int zoom = 12;
@@ -56,12 +59,10 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (c == zoomIn) {
 			zoom++;
-			xy = prevXY = null;
 			fetchTileInfo();
 			show();
 		} else if (c == zoomOut) {
 			zoom--;
-			xy = prevXY = null;
 			fetchTileInfo();
 			show();
 		} else if (c == toggleMapType) {
@@ -116,6 +117,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 					mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 					fetchTileInfo();
 					repaint();
+					return;
 				} catch (Throwable t) {
 					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
 					return;
@@ -141,9 +143,6 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 				}
 
 				g.drawImage(redDot, xy.x, xy.y, Graphics.TOP | Graphics.LEFT);
-			} else if (hasLocation()) {
-				fetchTileInfo();
-				repaint();
 			} else {
 				g.setColor(100, 100, 100);
 				g.drawString("No location", 10, 10, Graphics.TOP | Graphics.LEFT);
@@ -170,18 +169,25 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 		}
 
 		try {
+			//String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
+			//JXElement sTile = Util.getXML(tileInfoURL);
+			//String serverKHRef = sTile.getAttr("khref");
+			//System.out.println("svKHRef=" + serverKHRef);
+			//System.out.println("mtKHRef=" + );
+
 			GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
+			String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
+
 			// System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
 
 			// Reset mapImage when
 			// no tile info (init)
-			// OR zoom changed
-			// OR we moved off screen
-			if (xy == null || newTileXY.x < 0 || newTileXY.y < 0 || newTileXY.x > GoogleMap.I_GMAP_TILE_SIZE || newTileXY.y > GoogleMap.I_GMAP_TILE_SIZE)
-			{
+			// OR map keyhole ref (zoom or off map)  changed
+			if (!tileRef.equals(newTileRef)) {
 				// System.out.println("refresh");
 				mapImage = null;
-				prevXY = null;
+				xy = prevXY = null;
+				tileRef = newTileRef;
 			}
 
 			// Remember last point/tile if still on same tile
