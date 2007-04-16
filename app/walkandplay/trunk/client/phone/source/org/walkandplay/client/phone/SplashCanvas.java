@@ -11,7 +11,7 @@ public class SplashCanvas extends Canvas {
     int w=-1, h=-1;
 	private Delayer delayer;
     // image objects
-    private Image bg, gtLogo, kwxLogo;
+    private Image bg, logoBanner, kwxLogo;
 
     // screenstates
     private int screenName;
@@ -21,7 +21,14 @@ public class SplashCanvas extends Canvas {
         try {
             midlet = aMidlet;
             // load all images
+            //#ifdef polish.images.directLoad
             bg = Image.createImage("/bg.png");
+            logoBanner = Image.createImage("/logo-banner.png");
+            //#else
+            bg = scheduleImage("/bg.png");
+            logoBanner = scheduleImage("/logo-banner.png");
+            //#endif
+
             //gtLogo = Image.createImage("/gt_logo.png");
             //kwxLogo = Image.createImage("/kwx_logo.png");
             screenName = aScreenName;
@@ -44,7 +51,7 @@ public class SplashCanvas extends Canvas {
         g.setColor(255, 255, 255);
         g.fillRect(0, 0, w, h);
         g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);
-        //g.drawImage(gtLogo, (w - gtLogo.getWidth()) / 2, (h - gtLogo.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(logoBanner, 0, (h - logoBanner.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         //g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
         if (delayer == null) {
 			delayer = new Delayer(2);

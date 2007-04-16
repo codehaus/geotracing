@@ -6,6 +6,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.StringItem;
 
@@ -29,9 +30,21 @@ public class SettingsDisplay extends DefaultDisplay{
 
     //StringItem label = new StringItem("", "Settings");
     StringItem text = new StringItem("", "Choose settings from the menu to change");
+    private Image logo;
 
     public SettingsDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "Settings");
+        super(aMIDlet, "");
+
+        try{
+            //#ifdef polish.images.directLoad
+            logo = Image.createImage("/settings_icon_small.png");
+            //#else
+            logo = scheduleImage("/settings_icon_small.png");
+            //#endif
+        }catch(Throwable t){
+            Log.log("Could not load the images on SettingsDisplay");
+        }
+        append(logo);
 
         if(Util.hasSound()){
             SOUND_CMD =  new Command(Locale.get("settings.SoundOff"), Command.ITEM, 2);

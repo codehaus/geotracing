@@ -62,7 +62,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public void setHome(){
         //#style mainScreen
-        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
+        //menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
+        menuScreen = new List("", List.IMPLICIT);
         //#style mainTraceCommand
         menuScreen.append(Locale.get("menu.Trace"), null);
         //#style mainFindCommand

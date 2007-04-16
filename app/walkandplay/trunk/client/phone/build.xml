@@ -160,11 +160,12 @@
 		    <!-- general settings, these settings basically form the JAD-attributes. -->
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
-			<info
+            <!--description="Mobile client for MLGK project"-->
+            <info
 				license="GPL"
 				name="MLGK"
 				version="1.0.0"
-				description="Mobile client for MLGK project"
+				description=""
 				vendorName="GeoWorX"
 				infoUrl="http://www.j2mepolish.org"
 				icon="app.png"

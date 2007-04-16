@@ -48,8 +48,19 @@ public class TraceDisplay extends DefaultTraceDisplay   {
     private Command SHOW_MAP_CMD = new Command(Locale.get("trace.ShowMap"), Command.ITEM, 2);
     private Command RADAR_CMD = new Command(Locale.get("trace.Radar"), Command.ITEM, 2);
 
+    private Image logo;
+
     public TraceDisplay(WPMidlet aMidlet) {
-        super(aMidlet, "Trace");
+        super(aMidlet, "");
+        try{
+            //#ifdef polish.images.directLoad
+            logo = Image.createImage("/trace_icon_small.png");
+            //#else
+            logo = scheduleImage("/trace_icon_small.png");
+            //#endif
+        }catch(Throwable t){
+            Log.log("Could not load the images on TraceDisplay");
+        }
         
         tracerEngine = new TracerEngine(aMidlet, this);
 		traceDisplay = this;
@@ -65,19 +76,8 @@ public class TraceDisplay extends DefaultTraceDisplay   {
         }else{
             addCommand(SUSPEND_TRK_CMD);
         }
-        try{
-            //#ifdef polish.images.directLoad
-            Image l = Image.createImage("/gt_logo.png");
-            //#else
-            l = scheduleImage("/gt_logo.png");
-            //#endif
 
-            //#style logo
-            ImageItem li = new ImageItem("", l, ImageItem.LAYOUT_DEFAULT, "logo");
-            logoNum = append(li);
-        }catch(Throwable t){
-            
-        }
+        append(logo);
 
         //#style gpsstat
         gpsStatusBT = new StringItem("gps", gpsStatus, Item.BUTTON);

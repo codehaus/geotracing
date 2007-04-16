@@ -34,8 +34,8 @@ colors {
     GREY: rgb( 77, 84, 90 );*/
 
     WHITE: rgb(255,255,255);
-    LIGHTBLUE: argb(130,235,246,255);
-    LIGHTBLUE: argb(130,235,246,255);
+    LIGHTBLUE: argb(130,197,219,237);
+    /*LIGHTBLUE: argb(130,153,179,204);*/
     BLACK: rgb(0,0,0);
     RED: rgb(255,0,0);
     GREY: rgb(60,60,60);
@@ -167,8 +167,9 @@ focused {
     columns:3;
     columns-width: equal;
     background-color: WHITE;
-    /*background-image:url(bg-stripe.png);
-    background-repeat:repeat;*/
+    background-image:url(bg.png);
+    /*background-image:url(bg-stripe.png);*/
+    /*background-repeat:repeat;*/
     font-size: small;
     /*show-text-in-title: true;*/
 }
@@ -186,6 +187,7 @@ focused {
 
     layout: horizontal-expand | top | left;
     columns:1;
+    background-image:url(bg.png);
     background{
         /*image:url(bg-stripe.png);
         border-width:2;

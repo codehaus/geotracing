@@ -86,6 +86,9 @@
       </library>
     </orderEntry>
     <orderEntryProperties />
+    <javadoc-paths>
+      <root url="file://$MODULE_DIR$/../../../../../../../mobstuff/projects/external/sun/wtk20/docs/api" />
+    </javadoc-paths>
   </component>
 </module>
 
