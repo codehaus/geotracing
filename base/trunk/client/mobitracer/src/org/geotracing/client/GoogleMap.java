@@ -2,27 +2,18 @@
 // Distributable under LGPL license. See terms of license at gnu.org.$
 package org.geotracing.client;
 
-import nl.justobjects.mjox.JXBuilder;
-import nl.justobjects.mjox.JXElement;
-
-import javax.microedition.io.Connector;
-import javax.microedition.io.ContentConnection;
-import javax.microedition.io.HttpConnection;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Image;
-import javax.microedition.media.Manager;
-import javax.microedition.media.Player;
-import javax.microedition.midlet.MIDlet;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Vector;
-
 /**
  * Google Maps utilities.
+ * <p/>
+ * Original code from multiple sources:
+ * by Andrew Rowbottom.
+ * Released freely into the public domain, use it how you want, don't blame me.
+ * No warranty for this code is taken in any way.
+ * original : http://www.ponies.me.uk/maps/GoogleTileUtils.java
+ * <p/>
+ * Other sources:
+ * http://www.cse.buffalo.edu/~ajay/googlemaps.html (for map ref)
+ * http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
  *
  * @author Just van den Broecke
  * @version $Id$
@@ -31,9 +22,11 @@ public class GoogleMap {
 	/**
 	 * Constants for Google Map tile calcs
 	 */
-	public static MFloat F_GMAP_TILE_SIZE = new MFloat(256L);
-	public static int I_GMAP_TILE_SIZE = 256;
+	final public static int I_GMAP_TILE_SIZE = 256;
+	final public static MFloat F_GMAP_TILE_SIZE = new MFloat(256L);
 	final static public MFloat MINUS_ONE = new MFloat(-1L);
+	final static public MFloat ZERO = MFloat.ZERO;
+	final static public MFloat HALF = new MFloat(2L, -1L);
 	final static public MFloat ONE = MFloat.ONE;
 	final static public MFloat TWO = new MFloat(2L);
 	final static public MFloat FOUR = new MFloat(4L);
@@ -41,12 +34,108 @@ public class GoogleMap {
 	final static public MFloat HALF_PI = MFloat.PI.Div(TWO);
 	final static public MFloat QUART_PI = MFloat.PI.Div(FOUR);
 	final static public MFloat DEG_180 = new MFloat(180L);
+	final static public MFloat DEG_MIN_180 = new MFloat(-180L);
 	final static public MFloat DEG_360 = new MFloat(360L);
-	final static public MFloat HALF = new MFloat(2L, -1L);
+	final static public MFloat DEG_PER_RAD = DEG_180.Div(MFloat.PI);
 
 	public static class XY {
 		public int x;
 		public int y;
+	}
+
+
+	public static class BoundingBox {
+		public String keyholeRef;
+		public MFloat lonSW;
+		public MFloat latSW;
+		public MFloat lonNE;
+		public MFloat latNE;
+	}
+
+	/**
+	 * Get Tile with x = lon, y = lat, width=lonSpan, height=latSpan for a keyhole string.
+	 */
+	public static BoundingBox getBoundingBox(String keyholeStr) {
+		// must start with "t"
+		if ((keyholeStr == null) || (keyholeStr.length() == 0) || (keyholeStr.charAt(0) != 't')) {
+			throw new RuntimeException("Keyhole string must start with 't'");
+		}
+
+		MFloat lon = DEG_MIN_180; // x
+		MFloat lonWidth = DEG_360; // width 360
+
+		//double lat = -90;  // y
+		//double latHeight = 180; // height 180
+		MFloat lat = MINUS_ONE;
+		MFloat latHeight = TWO;
+
+		for (int i = 1; i < keyholeStr.length(); i++) {
+			lonWidth = lonWidth.Div(TWO);
+			latHeight = latHeight.Div(TWO);
+
+			char c = keyholeStr.charAt(i);
+
+			switch (c) {
+				case 's':
+
+					// lat += latHeight;
+					lon = lon.Add(lonWidth);
+
+					break;
+
+				case 'r':
+					lat = lat.Add(latHeight);
+					lon = lon.Add(lonWidth);
+
+					break;
+
+				case 'q':
+					lat = lat.Add(latHeight);
+
+					// lon += lonWidth;
+					break;
+
+				case 't':
+
+					//lat += latHeight;
+					//lon += lonWidth;
+					break;
+
+				default:
+					throw new RuntimeException("unknown char '" + c + "' when decoding keyhole string.");
+			}
+		}
+
+		// convert lat and latHeight to degrees in a transverse mercator projection
+		// note that in fact the coordinates go from about -85 to +85 not -90 to 90!
+		latHeight = latHeight.Add(lat);
+		// latHeight = (2 * Math.atan(Math.exp(Math.PI * latHeight))) - (Math.PI / 2);
+		latHeight = TWO.Mul(MFloat.atan(MFloat.exp(MFloat.PI.Mul(latHeight)))).Sub(HALF_PI);
+
+		latHeight = latHeight.Mul(DEG_PER_RAD);
+
+		// lat = (2 * Math.atan(Math.exp(Math.PI * lat))) - (Math.PI / 2);
+		lat = TWO.Mul(MFloat.atan(MFloat.exp(MFloat.PI.Mul(lat)))).Sub(HALF_PI);
+		lat = lat.Mul(DEG_PER_RAD);
+
+		latHeight = latHeight.Sub(lat);
+
+		if (lonWidth.Less(ZERO)) {
+			lon = lon .Add(lonWidth);
+			lonWidth = lonWidth.Neg();
+		}
+
+		if (latHeight.Less(ZERO)) {
+			lat = lat.Add(latHeight);
+			latHeight = latHeight.Neg();
+		}
+
+		BoundingBox bbox = new BoundingBox();
+		bbox.lonSW = lon;
+		bbox.latSW = lat;
+		bbox.lonNE = lon.Add(lonWidth);
+		bbox.latNE = lat.Add(latHeight);
+		return bbox;
 	}
 
 	/**
@@ -148,7 +237,7 @@ public class GoogleMap {
 
 		// convert latitude to a range -1..+1
 		// lat = Math.log(Math.tan((Math.PI / 4) + ((0.5 * Math.PI * lat) / 180)) ) / Math.PI;
-		aLat = MFloat.log(  MFloat.tan((QUART_PI).Add((HALF_PI.Mul(aLat).Div(DEG_180))))).Div(MFloat.PI);
+		aLat = MFloat.log(MFloat.tan((QUART_PI).Add((HALF_PI.Mul(aLat).Div(DEG_180))))).Div(MFloat.PI);
 		// System.out.println("lat=" + aLat);
 		MFloat tLat = MINUS_ONE;
 		MFloat tLon = MINUS_ONE;

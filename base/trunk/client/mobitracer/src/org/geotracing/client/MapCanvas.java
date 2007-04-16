@@ -175,14 +175,17 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 			//System.out.println("svKHRef=" + serverKHRef);
 			//System.out.println("mtKHRef=" + );
 
+			// Get pixel offset into GMap 256x256 tile
 			GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
+
+			// Get unique tile ref (keyhole string)
 			String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
 
 			// System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
 
-			// Reset mapImage when
-			// no tile info (init)
-			// OR map keyhole ref (zoom or off map)  changed
+			// Force refresh of mapImage when
+			// no tile info (initial)
+			// OR map keyhole ref changed (when zoom or moving off tile)
 			if (!tileRef.equals(newTileRef)) {
 				// System.out.println("refresh");
 				mapImage = null;
@@ -190,14 +193,17 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 				tileRef = newTileRef;
 			}
 
-			// Remember last point/tile if still on same tile
-			if (tileScale != null) {
+			// Scale x,y to scaled tile image
+ 			if (tileScale != null) {
 				// Correct pixel offset with tile scale
 				// Scale x,y offset of our location in mapImage
 				newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
 				newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
 
+				// Remember previous (scaled) location
 				prevXY = xy;
+
+				// Set current location
 				xy = newTileXY;
 			}
 
