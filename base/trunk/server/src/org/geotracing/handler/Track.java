@@ -280,7 +280,7 @@ public class Track extends BaseImpl {
 						distance += PostGISUtil.distance(lastPoint, newPoint);
 
 						// Set formatted distance
-						setRealValue(FIELD_DISTANCE, Double.parseDouble(DISTANCE_FORMAT.format(distance)));
+						setRealValue(FIELD_DISTANCE, distance);
 					}
 
 
