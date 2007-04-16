@@ -5,30 +5,30 @@
     <views>
 
 		<insert>
-			<field name="lon" />
-            <field name="lat" />
 			<field name="name" />
-             <field name="type" />
+			<field name="point" />
+            <field name="type" />
+			<field name="subtype" />
 		</insert>
 
 		<list>
 			<field name="id" />
-			<field name="lon" />
-			<field name="lat" />
-			<field name="time" />
+			<field name="name" />
+ 			<field name="time" />
 			<field name="point" />
- 			<field name="name" />
             <field name="type" />
+			<field name="subtype" />
 			<field name="state" />
   		</list>
 
 		<query>
 			<field name="id" />
-			<field name="lon" />
-			<field name="lat" />
+			<field name="name" />
 			<field name="type" />
+			<field name="subtype" />
             <field name="state" />
-            <field name="extra" />
+            <field name="point" />
+			<field name="extra" />
    		</query>
  	</views>
 
@@ -50,6 +50,7 @@
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="extra" type="XML" required="false"/>
 		<field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,4,4326,INDEX_GIST" />
+		<field name="subtype" type="INTEGER" default="1" required="false" />
 
 <!--
 <field name="owner" type="INTEGER" required="true" index="true" foreignkey="cascade" default="-1"/>

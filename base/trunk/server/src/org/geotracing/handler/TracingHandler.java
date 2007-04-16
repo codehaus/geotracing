@@ -169,7 +169,7 @@ public class TracingHandler extends DefaultHandler {
 
 		// Add optional tags
 		if (reqElm.hasAttr(ATTR_TAGS)) {
-			addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumId+"");
+			HandlerUtil.addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumId+"");
 		}
 
 
@@ -592,7 +592,7 @@ public class TracingHandler extends DefaultHandler {
 
 		// Add optional tags
 		if (reqElm.hasAttr(ATTR_TAGS)) {
-			addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumRecord.getIdString());
+			HandlerUtil.addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumRecord.getIdString());
 		}
 
 		// Create and return response with open track id.
@@ -699,7 +699,7 @@ public class TracingHandler extends DefaultHandler {
 
 		// Add optional tags
 		if (reqElm.hasAttr(ATTR_TAGS)) {
-			addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumRecord.getIdString());
+			HandlerUtil.addTags(anUtopiaReq.getUtopiaSession(), reqElm.getAttr(ATTR_TAGS),  mediumRecord.getIdString());
 		}
 
 		// Create and return response with open track id.
@@ -739,30 +739,7 @@ public class TracingHandler extends DefaultHandler {
 		return createResponse(T_TRK_WRITE_SERVICE);
 	}
 
-	/**
-	 * Add tags to item(s).
-	 */
-	protected void addTags(UtopiaSession anUtopiaSession, String theTags, String theIds) {
-		UtopiaRequest tagRequest = null;
 
-		try {
-			JXElement tagRequestElm = new JXElement("tagging-tag-req");
-			tagRequestElm.setAttr("tags", theTags.trim().toLowerCase());
-			tagRequestElm.setAttr("mode", "add");
-			tagRequestElm.setAttr("items",theIds);
-
-
-			// Create Utopia request
-			tagRequest = new UtopiaRequest(anUtopiaSession, tagRequestElm);
-
-			// Perform Utopia request
-			UtopiaApplication utopiaApplication = anUtopiaSession.getContext().getUtopiaApplication();
-			UtopiaResponse tagReqResponse = utopiaApplication.performRequest(tagRequest);
-			Logging.getLog(tagRequest).info("Added tags to ids=" + theIds + " rsp=" + tagReqResponse.getResponseCommand().getTag());
-		} catch (Throwable t) {
-			Logging.getLog(tagRequest).warn("Cannot add tags to ids=" + theIds, t);
-		}
-	}
 
 	/**
 	 * Get user Account from request.
