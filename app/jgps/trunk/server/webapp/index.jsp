@@ -1,9 +1,7 @@
 <%@ include file="static-layout-header.html" %>
 
 	<tr>
-		<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="images/logo170.gif"
-																				alt="logo brainport" width="170"
-																				height="133"/></td>
+		<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">&nbsp;</td>
 		<td colspan="2" valign="top"><div class="nieuwsbericht">
 			<div class="nieuwsberichttitel">Welkom bij Jeugd GePoSitioneerd</div><br/>
 Jeugd GePoSitioneerd geeft u een kijkje in de wereld van ....
@@ -40,7 +38,6 @@ Jeugd GePoSitioneerd geeft u een kijkje in de wereld van ....
 
 				</td>
 		<td width="320" valign="top" bgcolor="#EFEFEF" class="borderboven">
-			<img src="images/luchtfoto.jpg" alt="luchtfoto" width="320" height="240" hspace="0" vspace="0"
-				 class="fotolijn"/></td>
+			&nbsp;</td>
 	</tr>
 <%@ include file="static-layout-footer.html" %>

@@ -5,9 +5,7 @@
 <%@ include file="static-layout-header.html" %>
 <!-- $Id:$ -->
 <tr>
-	<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="images/logo170.gif"
-																			alt="logo brainport" width="170"
-																			height="133" hspace="0" vspace="0"/>
+	<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">
 <!--		<table width="100%" border="0" cellspacing="0" cellpadding="0">
 			<tr>
 				<td height="20" bgcolor="#B8BEBE"><div class="fragmenttekstwitbold">bekijk de routes van:</div></td>
@@ -52,7 +50,7 @@
 	   </tr>
 	<%
 		Record[] accountRecords =  model.query(/* tables: */ "utopia_account,utopia_role",
-						 /* fields: */ "utopia_account.id,utopia_account.loginname",
+						 /* fields: */ "utopia_account.id,utopia_account.loginname,utopia_account.sessionkey",
 						 /* where:  */ "utopia_role.name = 'user' AND utopia_account.state = 1",
 						 /* relations: */ "utopia_account,utopia_role",
 						 /* postCond: */ "ORDER BY utopia_account.loginname");
@@ -65,7 +63,7 @@
 			// User function name (=account.loginname)
 			accountRecord = finder.read(accountRecords[i].getId(), "utopia_account");
 			String loginName = accountRecord.getStringField("loginname");
-
+			String punt=accountRecord.getStringField("sessionkey");
 			// User image
 			personRecord = relater.getRelated(accountRecord, "utopia_person", null)[0];
 			String imageURL = "img/default-user-thumb.jpg";
@@ -103,7 +101,7 @@
 					  </tr>
 					  <tr>
 						  <td width="60" height="60" align="left" valign="top" rowspan="2">
-							  <a href="map.jsp?cmd=archive&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
+							  <a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
 						  </td>
 						  <td align="left" valign="top" bgcolor="#eeeeee">
 							  <div class="voorsteltekst"><%= toelichting %></div>
@@ -113,7 +111,8 @@
 						  <td height="20" valign="bottom" bgcolor="#eeeeee">
 							  <div class="voorsteltekst">
 								  <div align="right">
-									  <a href="map.jsp?cmd=archive&user=<%= loginName %>">Bekijk mijn routes</a>
+									 <!-- <a href="locatie-map.jsp?punt=<%=punt%>&cmd=archive&user=<%= loginName %>">Bekijk mijn routes</a>-->
+									  <a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>">Bekijk mijn routes</a>
 							  </div>
 							  </div>
 						   </td>

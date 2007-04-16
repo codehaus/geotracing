@@ -29,6 +29,7 @@ Tools
 - PostgreSQL (v8.2)
 - PostGIS (v1.2.1)
 - SVN (?)
+- ImageMagick
 
 Configureren
 Dir aanmaken: 

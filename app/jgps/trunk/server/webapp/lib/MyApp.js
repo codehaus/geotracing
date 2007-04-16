@@ -86,7 +86,8 @@ var MYAPP = {
 		if (DH.isIE == true) {
 			DH.setObjectXY('mainmenu', DH.getObjectX('mainmenuanchor'), DH.getObjectY('mainmenuanchor'));
 		}
-		var cmd = DH.getPageParameter('cmd', 'archive');
+		//var cmd = DH.getPageParameter('cmd', 'archive');
+		var cmd = DH.getPageParameter('cmd', null);
 		if (cmd == 'archive') {
 			var tracerName = DH.getPageParameter('user', null);
 			if (tracerName == null) {

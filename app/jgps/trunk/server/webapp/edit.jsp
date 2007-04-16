@@ -15,9 +15,7 @@
 %>
 <%@ include file="static-layout-header.html" %>
   <tr>
-	  <td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="images/logo170.gif"
-																			  alt="logo brainport" width="170"
-																			  height="133" hspace="0" vspace="0"/>
+	  <td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">&nbsp;
 	  </td>
     <td colspan="3" valign="top" >
     	<div class="right">
