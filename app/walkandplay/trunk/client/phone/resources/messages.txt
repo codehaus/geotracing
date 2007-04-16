@@ -57,6 +57,9 @@ play.AddAudio=Add audio
 play.ZoomIn=Zoom in
 play.ZoomOut=Zoom out
 play.ToggleMap=Toggle Map
+play.Scores=Scores
+play.ShowLog=Show Log
+play.HideLog=Hide Log
 play.Back=Back
 
 settings.SoundOn=Sound ON

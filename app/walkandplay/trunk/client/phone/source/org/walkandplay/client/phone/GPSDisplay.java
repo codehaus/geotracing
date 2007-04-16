@@ -32,9 +32,22 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 
     private int msgNum;
     private int choiceNum;
+    private Image logo;
 
     public GPSDisplay(WPMidlet theMIDlet) {
-        super(theMIDlet, "GPS Device Selector");
+        super(theMIDlet, "");
+        try{
+            //#ifdef polish.images.directLoad
+            logo = Image.createImage("/gps_icon_small.png");
+            //#else
+            logo = scheduleImage("/gps_icon_small.png");
+            //#endif
+        }catch(Throwable t){
+            Log.log("Could not load the images on GPSDisplay");
+        }
+
+        append(logo);
+        
         SEARCH_CMD = new Command("Search", Command.SCREEN, 1);
 		OK_CMD = new Command("OK", Command.OK, 1);
 

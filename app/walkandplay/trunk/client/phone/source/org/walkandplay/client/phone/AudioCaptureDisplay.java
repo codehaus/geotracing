@@ -30,7 +30,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	private ByteArrayOutputStream output;
 	private Displayable prevScreen;
 	private byte[] audioData;
-	private TextField name = new TextField("Enter Recording Name", null, 24, TextField.ANY);
+	private TextField name = new TextField("", null, 24, TextField.ANY);
 	private static final String MIME = "audio/x-wav";
 	private long startTime;
 	private int rate, bits;
@@ -56,10 +56,9 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			output = new ByteArrayOutputStream();
 			recordcontrol.setRecordStream(output);
 			addCommand(start);
-            
-            append("AUDIO RECORDER", " Use the menu to start recording");
-			append("Use Stop in menu to stop recording");
-			append("\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
+
+            append("AUDIO RECORDER", " Use the menu to start and stop recording");
+            append("\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
 		} catch (Exception e) {
 			Util.showAlert(midlet, "Error", "Cannot create player. Maybe audio (MMAPI) is not supported.");
 			back();
@@ -67,13 +66,16 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	}
 
 	public int append(String s) {
-		return append(null, s);
+        //#style smallstring
+        return append(s);
+        //return append(null, s);
 	}
 
 	public int append(String label, String s) {
 		StringItem si = new StringItem(label, s);
 		si.setLayout(Item.LAYOUT_NEWLINE_BEFORE);
-		return super.append(si);
+        //#style smallstring
+        return super.append(si);
 	}
 
 	public void commandAction(Command c, Displayable d) {
@@ -92,28 +94,28 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			stop();
 			addCommand(play);
 			addCommand(submit);
-            //#style smallstring
+
             append("OK Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb\n");
-            //#style formbox
+            append("Enter Recording Name");
+            //#style textbox
             append(name);
-            //#style smallstring
             append("press Play to hear recording or Submit to upload");
 		} else if (c == submit) {
 
 			if (audioData == null) {
-                //#style smallstring
                 append("no audio data recorded");
 				return;
 			}
-			append("SUBMITTING AUDIO...", " (takes a while)");
+
+            append("SUBMITTING AUDIO...", " (takes a while)");
 
 			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, false);
 			if (rsp == null) {
-				append("cannot submit audio !");
+                append("cannot submit audio !");
 			} else if (Protocol.isPositiveResponse(rsp)) {
-				append("submit audio OK, press Back");
+                append("submit audio OK, press Back");
 			} else {
-				append("submit audio failed: error is " + rsp.getAttr("error") + " press Back");
+                append("submit audio failed: error is " + rsp.getAttr("error") + " press Back");
 			}
 
 			removeCommand(submit);
@@ -130,11 +132,11 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
 	private void play() {
 		if (audioData == null) {
-			append("no audio data recorded");
+            append("no audio data recorded");
 			return;
 		}
 
-		append("PLAYING AUDIO...", "");
+        append("PLAYING AUDIO...", "");
 
 		try {
 			Manager.createPlayer(new ByteArrayInputStream(audioData), MIME).start();
@@ -149,13 +151,13 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			recordcontrol.startRecord();
 			player.start();
 			startTime = Util.getTime();
-			append("RECORDING AUDIO...", " press Stop to stop recording\n");
+            append("RECORDING AUDIO...", " press Stop to stop recording\n");
 
 			new Thread(new Runnable() {
 				public void run() {
 					int seconds = 0;
 
-					StringItem status = new StringItem("STATUS", "0 secs 0 kb");
+                    StringItem status = new StringItem("STATUS", "0 secs 0 kb");
 					status.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_VCENTER);
 					append(status);
 					try {
@@ -176,8 +178,8 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 		}
 	}
 
-	private void stop() {
-		append("Stopping recording...");
+	private void stop() {        
+        append("Stopping recording...");
 		try {
 			recordcontrol.commit();
 			player.close();

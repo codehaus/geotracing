@@ -24,12 +24,25 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     private JXElement gameElm;
     private WPMidlet midlet;
     private Net net;
+    private Image logo;
 
     Command PLAY_CMD = new Command(Locale.get("play.Play"), Command.OK, 1
     );
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "Play");
+        super(aMIDlet, "");
+        try{
+            //#ifdef polish.images.directLoad
+            logo = Image.createImage("/play_icon_small.png");
+            //#else
+            logo = scheduleImage("/play_icon_small.png");
+            //#endif
+        }catch(Throwable t){
+            Log.log("Could not load the images on PlayDisplay");
+        }
+        
+        append(logo);
+
         midlet = aMIDlet;
         
         net = Net.getInstance();
@@ -62,9 +75,8 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
                 games.put(displayName, t);
             }
         }
-        //#style smallstring
-        append("Select a game and press PLAY in the menu");
         //#style formbox
+        append("Select a game and press PLAY in the menu");        
         append(gamesGroup);
         addCommand(PLAY_CMD);
     }

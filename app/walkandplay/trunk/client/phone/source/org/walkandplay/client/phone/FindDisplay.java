@@ -25,9 +25,22 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
     private String gameName;
     private JXElement gameElm;
     private MIDlet midlet;
+    private Image logo;
 
     public FindDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "Find a game!!");
+        super(aMIDlet, "");
+        try{
+            //#ifdef polish.images.directLoad
+            logo = Image.createImage("/find_icon_small.png");
+            //#else
+            logo = scheduleImage("/find_icon_small.png");
+            //#endif
+        }catch(Throwable t){
+            Log.log("Could not load the images on FindDisplay");
+        }
+
+        append(logo);
+
         midlet = aMIDlet;
 
         Net net = Net.getInstance();
