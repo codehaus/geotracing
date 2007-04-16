@@ -6,7 +6,11 @@ import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
+import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.session.UtopiaSession;
+import org.keyworx.utopia.core.session.UtopiaApplication;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.common.log.Logging;
 
 /**
  * Utilities, shorthands to use in Utopia Handlers.
@@ -16,7 +20,32 @@ import org.keyworx.utopia.core.util.Oase;
  * @version $Id$
  */
 public class HandlerUtil {
+	/**
+	 * Add tags to item(s).
+	 */
+	public static UtopiaResponse addTags(UtopiaSession anUtopiaSession, String theTags, String theIds) {
+		UtopiaRequest tagRequest = null;
+		UtopiaResponse tagResponse = null;
+		try {
+			JXElement tagRequestElm = new JXElement("tagging-tag-req");
+			tagRequestElm.setAttr("tags", theTags.trim().toLowerCase());
+			tagRequestElm.setAttr("mode", "add");
+			tagRequestElm.setAttr("items",theIds);
 
+
+			// Create Utopia request
+			tagRequest = new UtopiaRequest(anUtopiaSession, tagRequestElm);
+
+			// Perform Utopia request
+			UtopiaApplication utopiaApplication = anUtopiaSession.getContext().getUtopiaApplication();
+			tagResponse = utopiaApplication.performRequest(tagRequest);
+			Logging.getLog(tagRequest).info("Added tags to ids=" + theIds + " rsp=" + tagResponse.getResponseCommand().getTag());
+		} catch (Throwable t) {
+			Logging.getLog(tagRequest).warn("Cannot add tags to ids=" + theIds, t);
+		}
+		return tagResponse;
+	}
+	
 	/**
 	 * Get Oase session (utopia) from request.
 	 */

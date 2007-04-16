@@ -47,6 +47,7 @@ public class Location extends BaseImpl {
 	public static final String FIELD_ELE = "ele";
 	public static final String FIELD_LON = "lon";
 	public static final String FIELD_LAT = "lat";
+	public static final String FIELD_SUBTYPE = "subtype";
 	public static final String FIELD_TIME = "time";
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_EXTRA = "extra";

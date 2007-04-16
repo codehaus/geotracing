@@ -120,11 +120,13 @@ public class QueryLogic {
 	private static Oase oase;
 	public static Log log = Logging.getLog("QueryLogic");
 
+	/** Singleton. */
 	private static QueryLogic instance;
 
 	protected QueryLogic() {
 	}
 
+	/** Singleton. */
 	public static QueryLogic create(String aClassName) throws Exception {
 		// Get global Oase (DB) session.
 		try {
@@ -144,6 +146,7 @@ public class QueryLogic {
 		return instance;
 	}
 
+	/** Singleton. */
 	public static QueryLogic getInstance() {
 		return instance;
 	}
@@ -154,11 +157,12 @@ public class QueryLogic {
 	}
 
 	/**
-	 * Performs command and returns XML query-store-rsp.
+	 * Performs query and returns XML query-store-rsp.
 	 */
 	public JXElement doQuery(String aQueryName, Map theParms) {
 		JXElement result;
 		long t1, t2;
+
 		try {
 
 			/*		if (command.equals(CMD_QUERY_STORE)) {
@@ -1242,13 +1246,13 @@ public class QueryLogic {
 		}
 	}
 
-	protected Record getAccount(Oase oase, String aLoginName) throws Exception {
+	public static Record getAccount(Oase oase, String aLoginName) throws Exception {
 		Finder finder = oase.getFinder();
 		Record[] result = finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'");
 		return result.length == 0 ? null : result[0];
 	}
 
-	protected Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception {
+	public static Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception {
 		Record account = getAccount(oase, aLoginName);
 		if (account == null) {
 			return null;
@@ -1265,7 +1269,7 @@ public class QueryLogic {
 	/**
 	 * Convert string like "22,34,56" to int array.
 	 */
-	int[] string2IntArray(String anIntList) throws NumberFormatException {
+	protected int[] string2IntArray(String anIntList) throws NumberFormatException {
 		String[] ids = anIntList.split(",");
 		int[] values = new int[ids.length];
 		for (int i = 0; i < ids.length; i++) {

@@ -35,7 +35,10 @@ public class LocationHandler extends DefaultHandler {
 	public final static String ATTR_LAT = "lat";
 	public final static String ATTR_RELATE_IDS = "relateids";
 	public final static String ATTR_ID = "id";
+	public final static String ATTR_TAGS = "tags";
 	public final static String ATTR_STATE = "state";
+	public final static String ATTR_TYPE = "type";
+	public final static String ATTR_SUBTYPE = "subtype";
 
 	protected TrackLogic trackLogic;
 
@@ -111,11 +114,23 @@ public class LocationHandler extends DefaultHandler {
 		Location location = Location.create(anUtopiaReq.getUtopiaSession().getContext().getOase());
 		location.setPoint(PostGISUtil.createPoint(lon, lat, 0.0d, time));
 		location.setStringValue(Location.FIELD_NAME, name);
+
+		// Add optional type to location
+		if (reqElm.hasAttr(ATTR_TYPE)) {
+			location.setIntValue(Location.FIELD_TYPE, reqElm.getIntAttr(ATTR_TYPE));
+		}
+
+		// Add optional subtype to location
+		if (reqElm.hasAttr(ATTR_SUBTYPE)) {
+			location.setIntValue(Location.FIELD_SUBTYPE, reqElm.getIntAttr(ATTR_SUBTYPE));
+		}
+
 		location.saveInsert();
 
 		// Create relation with Person
 		location.createRelation(HandlerUtil.getUserId(anUtopiaReq), "location");
-		
+
+		// Optional: relate medium to other records
 		if (reqElm.hasAttr(ATTR_RELATE_IDS)) {
 			String relateIds[] = reqElm.getAttr(ATTR_RELATE_IDS).split(",");
 			for (int i=0; i < relateIds.length; i++) {

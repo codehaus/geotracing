@@ -314,7 +314,7 @@ public class GoogleTiles {
 
 		// convert latitude to a range -1..+1
 		lat = Math.log(Math.tan((Math.PI / 4) + ((0.5 * Math.PI * lat) / 180))) / Math.PI;
-
+		// System.out.println("lat=" + lat);
 		double tLat = -1;
 		double tLon = -1;
 		double lonWidth = 2;
@@ -436,17 +436,22 @@ public class GoogleTiles {
 		// System.out.println("x3=" + x + " tilesXOffset =" + tilesXOffset);
 
 		// Do y
-		int y = (int) (radius / 2.0 * Math.log((1.0 + Math.sin(latitude)) / (1.0 - Math.sin(latitude))));
-		// System.out.println("y1=" + y);
+		double sinLat = Math.sin(latitude);
+		double onePlusSinLat = 1.0D + sinLat;
+		double oneMinSinLat = 1.0D - sinLat;
+		double log = Math.log( onePlusSinLat / oneMinSinLat);
+		//System.out.println(" radius=" + radius + " sinLat=" + sinLat + " onePlusSinLat=" + onePlusSinLat + " oneMinSinLat=" + oneMinSinLat + " log=" + log);
+		int y = (int) (radius / 2.0 * log );
+		//System.out.println("y1=" + y);
 
 		// Correct for false northing
 		y = (y - (int) falseNorthing) * -1;
-		// System.out.println("y2=" + y);
+		//System.out.println("y2=" + y);
 
 		// Number of pixels to subtract for tiles skipped (offset)
 		int tilesYOffset = y / (int) TILE_SIZE;
 		y = y - (int) (tilesYOffset * TILE_SIZE);
-		// System.out.println("y3=" + y + " tilesYOffset =" + tilesYOffset);
+		//System.out.println("y3=" + y + " tilesYOffset =" + tilesYOffset);
 
 		GoogleTiles.XY xy = new GoogleTiles.XY();
 		xy.x = x;
