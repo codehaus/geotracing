@@ -20,7 +20,7 @@
 			font-size: 12px;
 			font-style: normal;
 			font-weight: bold;
-			background-color: #EE3224;
+			background-color: #004b7d;
 			border: none;
 		}
 
@@ -30,7 +30,7 @@
 			font-style: normal;
 			font-weight: bold;
 			color: white;
-			background-color: #EE3224;
+			background-color: #004b7d;
 		}
 
 		.mn-content ul {
@@ -43,7 +43,7 @@
 
 		.mn-content li a {
 			color: white;
-			background: #EE3224;
+			background: #004b7d;
 			text-decoration: none;
 			border: none;
 		}
@@ -79,7 +79,7 @@
 
 		-->
 	</style>
-	<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>
+	<!--<script type="text/javascript" src="lib/ajax-pushlet-client.js"></script>-->
 	<script type="text/javascript" src="lib/DHTML.js"></script>
 	<script type="text/javascript" src="lib/GMap.js"></script>
 	<script type="text/javascript" src="lib/GMapKeys.js"></script>
@@ -99,15 +99,15 @@
 
 <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
 <tr >
-	<td height="25" bgcolor="#ffffff" align="right">
-		&nbsp;
+	<td height="25" bgcolor="#ffffff" align="right">&nbsp;
+		
 	</td>
 	<td height="25" width="320" bgcolor="#ffffff">
-		<span id="title" class="logotekst">Jeugd GePoSitioneerd</span>
+		<span class="logotekst">Jeugd GePoSitioneerd</span>
 	</td>
 </tr>
 <tr>
-	<td height="23" bgcolor="#EE3224">
+	<td height="23" bgcolor="#004b7d">
 		<table width="100%"  border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="25%" align="left">
@@ -123,10 +123,10 @@
 		</table>
 
 	</td>
-	<td height="23" width="320" bgcolor="#333333" class="sitewide">
+	<td height="23" width="320" bgcolor="#004b7d" class="sitewide">
 		<a href="index.jsp">home</a>
-		| <a href="map.jsp">kaarten</a> | <a href="deelnemers.jsp">deelnemers</a>
-		| <a href="help.jsp">help</a> | <a href="colofon.jsp">colofon</a>
+		| <a href="locatie-map.jsp?punt=4.203817,50.795272&zoom=9">kaart</a> | <a href="deelnemers.jsp">deelnemers</a>
+		| <a href="help.jsp">help</a> | <a href="colofon.jsp">partners</a>
 	</td>
 </tr>
 <tr>
@@ -150,7 +150,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td height="20" valign="middle" align="center" bgcolor="#EE3224">
+			<td height="20" valign="middle" align="center" bgcolor="#004b7d">
 				<div id="debug" class="fragmenttitel"></div>
 			</td>
 		</tr>
@@ -160,7 +160,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td valign="middle" height="18" bgcolor="#333333">
+			<td valign="middle" height="18" bgcolor="#004b7d">
 				<div id="trackcontrols" class="controls">
 						<span class="control" id="trackprev"><img title="vorige GPS punt (niet beshikbaar)" src="img/media-seek-backward.png"
 																  border="0 " alt="ctrl"onload="DH.fixPNG(this)" /></span>
@@ -176,7 +176,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td height="20" bgcolor="#EE3224">
+			<td height="20" bgcolor="#004b7d">
 				<div id="featuretitle" class="fragmenttitel">foto titel</div>
 			</td>
 		</tr>
@@ -191,7 +191,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td height="18" bgcolor="#333333">
+			<td height="18" bgcolor="#004b7d">
 				<div id="featurecontrols" class="controls">
 						<span class="control" id="featfirst"><img title="eerste foto"
 																  src="img/media-skip-backward.png" border="0 "

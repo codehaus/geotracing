@@ -1,5 +1,4 @@
-
-<form id="addlocationform" name="addlocationform" enctype="multipart/form-data"  method="post" action="media.srv">
+<form id="addlocationform" name="addlocationform" enctype="multipart/form-data" method="post" action="media.srv">
 	<table>
 		<tr>
 			<td>name *</td><td><input name="name" id="name" type="text"/></td>
@@ -19,8 +18,32 @@
 			<td>latitude</td><td><input name="lat" id="lat" type="text"/></td>
 		</tr>
 		<tr>
+			<td>categorie</td><td><select name="categories" id="categories" class="icon-menu">
+			<option value="1">knelpunt</option>
+			<option value="2">veilig</option>
+			<option value="3">specifieke locatie</option>
+		</select>
+
+		</td>
+		</tr>
+		<!-- See http://binnyva.blogspot.com/search/label/xhtml for placing images in SELECT form item -->
+
+
+		<!--		<tr align="left">
+					<td><input type="radio" name="categorie" value="knelpunt"/>Knelpunten</td>
+					<td><img src="images/rood.png"/></td>
+				</tr>
+				<tr align="left">
+					<td><input type="radio" name="categorie" value="specifiek"/>specifieke&nbsp;locatie</td>
+					<td><img src="images/oranje.png"/></td>
+				</tr>
+				<tr align="left">
+					<td><input type="radio" name="categorie" value="veilig"/>Veilig punt</td>
+					<td><img src="images/groen.png"/></td>
+				</tr>       -->
+		<tr>
 			<td colspan="2">
-				<a href="#" onclick="return LOCAPP.addLocation();">[Add Location]</a>
+				<a href="#" onclick="return LOCAPP.addLocation();" style="color:blue">[Add Location]</a>
 			</td>
 		</tr>
 	</table>

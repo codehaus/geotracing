@@ -2,7 +2,7 @@
 
 <tr>
 <td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">
-	<img src="images/logo170.gif" alt="logo brainport" width="170" height="133" class="imageborderonder"/>
+	&nbsp;
 </td>
 <td colspan="3" valign="top">
 
@@ -10,27 +10,24 @@
 <tr>
 <td valign="top" width="560">
 	<div class="fragmenttekst">
-	<div class="nieuwsberichttitel"><strong>Colofon</strong>
+	<div class="nieuwsberichttitel"><strong>Partners</strong>
 
 	</div>
 
 	</div>
 
 	<div align="right"></div>
-    <span class="subkop">CityWorks</span>
+    <span class="subkop">Mobiel21</span>
 <div class="fragmenttekst">
-	<p align="left"><a href="http://www.cityworks.nl"><img src="images/colofon/cityworks.gif"
-														   alt="City Works" width="100" hspace="10"
+	<p align="left"><a href="http://www.mobiel21.be"><img src="images/colofon/mobiel21.gif"
+														   alt="Mobiel21" width="100" hspace="10"
 														   vspace="0" border="0" align="right"
 														   class="logo"/></a>
-CityWorks ontwikkelde <a href="http://www.senseofthecity.nl">Sense of the City</a>,
-	een geografisch onderzoeksgereedschap naar de beleving van de stad.
-		CityWorks werkt aan ruimtelijke transformaties in het stedelijk gebied.
-		De beleving van de publieke ruimte in de stad door de gebruikers biedt
-		belangrijke informatie bij die transformaties. Voor de Dienst Maatschappelijke
-		Ontwikkeling van de Gemeente Eindhoven voerde CityWorks in april 2006 Sense of the City Eindhoven uit.
-		Voor de stichting Brainport voert CityWorks <a href="http://www.senseofbrainport.nl">Sense of Brainport</a> uit. <br/>
-		Info: <a href="http://www.cityworks.nl">www.cityworks.nl</a></p>
+Mobiel 21 vzw is een centrum voor kennisontwikkeling, educatie en gedragsbeïnvloeding op het gebied van duurzame en veilige mobiliteit. Mobiel 21 stelt ‘duurzaamheid’ centraal. Duurzaamheid vertaalt zich in drie
+pijlers: het economische, het ecologische en het sociale belang. 
+Economische afwegingen van kosten en baten, de ecologische effecten van mobiliteit en de sociale gelijkwaardigheid van personen en vervoerswijzen worden op een evenwichtige wijze samen bekeken.
+ <br/>
+		Info: <a href="http://www.mobiel21.be">www.mobiel21.be</a></p>
 
 </div>
 <div align="right"></div>
@@ -39,9 +36,8 @@ CityWorks ontwikkelde <a href="http://www.senseofthecity.nl">Sense of the City</
 <div class="fragmenttekst">
 	<p><a href="http://www.geotracing.com"><img src="images/colofon/geotracing.gif" alt="GeoTracing"
 												width="150" hspace="10" vspace="0" border="0"
-												align="right" class="logo"/></a>De Sense of the City
-		projecten zoals Sense of Brainport
-		zijn ontwikkeld met behulp van <a href="http://www.geotracing.com">GeoTracing</a>.
+												align="right" class="logo"/></a>JeugdGepositioneerd 
+		is ontwikkeld met behulp van <a href="http://www.geotracing.com">GeoTracing</a>.
 		Deze op <a href="http://www.keyworx.org">KeyWorx</a> gebaseerde software kan met een
 		mobiele telefoon en een GPS (Global Positioning System) routes en beeld
 		opnemen en weergeven op een kaart. Andere GeoTracing-toepassingen zijn <a
@@ -52,41 +48,28 @@ CityWorks ontwikkelde <a href="http://www.senseofthecity.nl">Sense of the City</
 		van Just Objects.<br/>
 		Info: <a href="http://www.justobjects.nl">www.justobjects.nl</a></p>
 </div>
-<span class="subkop">TU/e</span>
+<span class="subkop">Vereniging van Vlaamse Jeugddiensten en -consulenten</span>
 
 <div class="fragmenttekst">
-	<p><a href="http://www.ds.arch.tue.nl"><img src="images/colofon/tue.gif" alt="TU/e" width="100"
-												hspace="10" border="0" align="right" class="logo"/></a>De
-		groep OntwerpSystemen aan de TU Eindhoven faculteit Bouwkunde,
-		onderzoekt en ontwikkelt innovatieve computertoepassingen en
-		beslissingsondersteunende systemen voor ontwerpers en planners.<br/>
-		Info: <a href="http://www.ds.arch.tue.nl">www.ds.arch.tue.nl</a></p>
+	<p><a href="http://www.vvj.be"><img src="images/colofon/vvj.gif" alt="Vereniging van Vlaamse Jeugddiensten en -consulenten" width="100" hspace="10" border="0" align="right" class="logo"/></a>De Vereniging van Vlaamse Jeugddiensten en -consulenten vzw (VVJ) is een ledenorganisatie waarbij nagenoeg alle Vlaamse gemeentebesturen zijn aangesloten via hun jeugddienst of jeugdambtenaar. De VVJ is erkend door de afdeling Jeugd en Sport van het ministerie van de Vlaamse Gemeenschap als 'koepelorganisatie met een algemene opdracht' en is gespecialiseerd in het jeugdbeleid van de verschillend overheden met bijzondere aandacht voor het lokale jeugd(werk)beleid. Ze levert hiervoor een uitgebreid pakket diensten met ondermeer vorming, infotheek, onderzoek, begeleiding, advies en publicaties. Verder realiseert zij ook ondersteuning voor gemeentelijke animatieprogramma's, ondermeer als nationale coördinator van de Grabbelpas en SWAP. VVJ is actief partner van Delta vzw, het netwerk van jongereninformtiepunten (JIP's). De VVJ is vertegenwoordigd in tal van adviesraden, commissies en samenwerkingsverbanden.
+   <br/>
+		Info: <a href="http://www.vvj.be">www.vvj.be</a></p>
 </div>
 
 <div align="right"></div>
-<span class="subkop">PHC Telecom	</span>
+<span class="subkop">Instituut voor mobiliteit</span>
 
 <div class="fragmenttekst">
-	<p><a href="http://www.phc-telecom.com/"><img src="images/colofon/phc.jpg" alt="PHC Telecom "
+	<p><a href="http://www.imob.uhasselt.be/"><img src="images/colofon/imob.gif" alt="Instituut voor mobiliteit"
 												  width="111" hspace="10" vspace="0" border="0"
-												  align="right" class="logo"/></a>PHC Telecom
-		leverde de UMTS telefoons en GPS apparatuur. Als hofleverancier van de gemeente Eindhoven,
-		de TU/e en PSV,
-		vindt PHC het een leuke uitdaging om dit technisch hoogstandje mogelijk te maken.<br/>
-		Info: <a href="http://www.phc-telecom.com">www.phc-telecom.com</a></p>
+												  align="right" class="logo"/></a>IMOB is een onafhankelijk, wetenschappelijk onderzoeksinstituut dat fundamenteel en toegepast onderzoek uitvoert en dat onderwijsprogramma's ondersteunt in de domeinen van mobiliteit en verkeersveiligheid. <br/>
+		Info: <a href="http://www.imob.uhasselt.be">http://www.imob.uhasselt.be</a></p>
 </div>
 
 <div align="right"></div>
 
 </td>
-<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts"><img src="images/tongelreep.jpg"
-																		alt="tongelreep" width="170"
-																		height="100" hspace="0"
-																		vspace="0"
-																		class="imageborderonder"/><br/>
-	<img src="images/kenniswijk.jpg" alt="bosco tondo" width="170" height="100"
-		 class="imageborderonder"/><br/>
-	<img src="images/heempark.jpg" alt="flight forum" width="170" height="100" class="imageborderonder"/>
+<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts">&nbsp;
 </td>
 </tr>
 </table>

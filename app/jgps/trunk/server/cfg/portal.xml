@@ -45,6 +45,9 @@
 				<property name="max-commments-per-target">256</property>
 				<property name="max-content-chars">1024</property>
 			</handler>
+			
+			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
+			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
 		</handlers>
 
 
