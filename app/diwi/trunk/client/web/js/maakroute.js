@@ -12,14 +12,14 @@
 	}
 		
 	function maakStartpuntForm(elm) {
-		var start_punt_string = '<p>Startpunt</p><form><select id="startpunt" ><option value="0" STYLE="width: 100px" selected="selected">geen voorkeur</option>';
+		var start_punt_string = '<p>Startpunt</p><form ><select style="width:120px;" id="startpunt"><option value="0" selected="selected">geen voorkeur</option>';
 
 		var start_punt_list = elm.getElementsByTagName('name');
 		var n_start_punt = start_punt_list.length;
 		var j;
 		for (i = 0; i < n_start_punt; i++){ 
 			j = i+1;
-			start_punt_string += '<option value=' + j + ' STYLE="width: 100px;">';
+			start_punt_string += '<option value=' + j + 'style="width:120px;">';
 			start_punt_string += start_punt_list.item(i).firstChild.nodeValue;
 			start_punt_string += '</option>';
 		}
@@ -30,7 +30,7 @@
 	
 	}
 	function maakEindpuntForm(elm) {
-		var eind_punt_string = '<p>Eindpunt</p><form><select id="eindpunt" ><option value="0" selected="selected">geen voorkeur</option>';
+		var eind_punt_string = '<p>Eindpunt</p><form><select style="width:120px;" id="eindpunt" ><option value="0" selected="selected">geen voorkeur</option>';
 
 		var eind_punt_list = elm.getElementsByTagName('name');
 		var n_eind_punt = eind_punt_list.length;
@@ -50,7 +50,7 @@
 
 	
 	function maakThemasForm(elm) {
-		var themesString = '<p>Thema\'s</p><form><select id="thema" ><option value="0" selected="selected">geen voorkeur</option>';
+		var themesString = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="0" selected="selected">geen voorkeur</option>';
 		var themes_list = elm.getElementsByTagName('theme');
 		var n_themes = themes_list.length;
 		var j;

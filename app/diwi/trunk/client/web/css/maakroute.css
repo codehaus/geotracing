@@ -223,9 +223,31 @@
 #maakroutebox {
  position: absolute;
  width: auto;
- top: 50px;
+ top: 30px;
  left: 565px;
  z-index: 50;
+}
+#leguitbox {
+position: absolute;
+ width: auto;
+ top: 125px;
+ left: 585px;
+ z-index: 30;
+}
+#leguitbullet {
+ position: absolute;
+ width: auto;
+ top: 290px;
+ left: 578px;
+ z-index: 20;
+}
+
+#leguittext {
+position: absolute;
+ width: 200px;
+ top: 150px;
+ left: 605px;
+ z-index: 35;
 }
 
 .genroutetekst{
