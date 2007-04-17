@@ -86,7 +86,13 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		
 		if (Rand.randomInt(0, 2) == 1 && !response.hasChildren()) {
 			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
-			hit.setAttr(ID_FIELD, 5679);
+			hit.setAttr(ID_FIELD, 23074);
+			response.addChild(hit);
+		}
+
+		if (Rand.randomInt(0, 2) == 1 && !response.hasChildren()) {
+			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
+			hit.setAttr(ID_FIELD, 4497);
 			response.addChild(hit);
 		}
 
