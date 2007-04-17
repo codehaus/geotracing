@@ -27,7 +27,6 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	public final static String PLAY_GETSTATE_SERVICE = "play-getstate";
 	public final static String PLAY_LOCATION_SERVICE = "play-location";
 	public final static String PLAY_ANSWERTASK_SERVICE = "play-answertask";
-	public final static String PLAY_GETSCORES_SERVICE = "play-getscores";
 
 	private Log log = Logging.getLog("GamePlayHandler");
 	private ContentHandlerConfig config;
@@ -58,8 +57,6 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 				response = playLocationReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_ANSWERTASK_SERVICE)) {
 				response = playAnswerTaskReq(anUtopiaRequest);
-			} else if (service.equals(PLAY_GETSCORES_SERVICE)) {
-				response = playGetScoresReq(anUtopiaRequest);
 			} else {
 				log.warn("Unknown service " + service);
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -111,21 +108,6 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
         rsp.setAttr("score", "10");
         return rsp;
     }
-
-    public JXElement playGetScoresReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-		/*<play-getscores-req />
-        <play-getscores-rsp>
-            <score team="[teamname]>[scorecount]</score>
-        </play-getscores-rsp>*/
-        
-        JXElement rsp = createResponse(PLAY_GETSCORES_SERVICE);
-        JXElement score = new JXElement("score");
-        score.setAttr("team", "red2");
-        score.setText("60");
-        rsp.addChild(score);
-        return rsp;
-    }
-
 
     public JXElement playGetStateReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		/*<play-getstate-rsp>

@@ -76,7 +76,21 @@ public class WPQueryLogic extends QueryLogic implements Constants {
                 task.addChild(name);
                 task.addChild(type);
 
-		    } else if ("q-game-locations".equals(aQueryName)) {
+		    } else if("q-scores".equals(aQueryName)) {
+                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
+                // gameplay id
+                String gameId = (String)theParms.get("gameid");
+
+                JXElement s1 = new JXElement("record");
+                s1.setAttr("team", "red1");
+                s1.setText("60");
+                result.addChild(s1);
+                JXElement s2 = new JXElement("record");
+                s2.setAttr("team", "blue1");
+                s2.setText("80");
+                result.addChild(s2);
+
+            } else if ("q-game-locations".equals(aQueryName)) {
                 result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
 
                 JXElement r1 = new JXElement("record");
