@@ -8,19 +8,14 @@ import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
 import org.keyworx.utopia.core.control.DefaultHandler;
-import org.keyworx.utopia.core.data.Account;
 import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.session.UtopiaSessionContext;
-import org.keyworx.utopia.core.util.Oase;
 
 /**
- * Handles all operations related to Tracks.
+ * Handles services related to Locations.
  * <p/>
- * Redirects the requests to TrackLogic methods.
  *
  * @author Just van den Broecke
  * @version $Id$
@@ -40,8 +35,6 @@ public class LocationHandler extends DefaultHandler {
 	public final static String ATTR_TYPE = "type";
 	public final static String ATTR_SUBTYPE = "subtype";
 
-	protected TrackLogic trackLogic;
-
 	/**
 	 * Processes the Client Request.
 	 *
@@ -57,15 +50,15 @@ public class LocationHandler extends DefaultHandler {
 		String service = anUtopiaReq.getServiceName();
 		log.trace("Handling request for service=" + service);
 
-		JXElement response = null;
+		JXElement response;
 		try {
 			if (service.equals(LOC_CREATE_SERVICE)) {
 				response = createReq(anUtopiaReq);
 			} else if (service.equals(LOC_DELETE_SERVICE)) {
 				response = deleteReq(anUtopiaReq);
 			} else {
-				// To be overridden in subclass
-				response = unknownReq(anUtopiaReq);
+				// Unknown request
+				response = HandlerUtil.unknownReq(anUtopiaReq);
 			}
 		} catch (UtopiaException ue) {
 			log.warn("Negative response service=" + service, ue);
@@ -77,7 +70,6 @@ public class LocationHandler extends DefaultHandler {
 
 		// Always return a response
 		log.trace("Handled service=" + service + " response=" + response.getTag());
-		trackLogic = null;
 		return new UtopiaResponse(response);
 	}
 
@@ -162,36 +154,6 @@ public class LocationHandler extends DefaultHandler {
 
 		return response;
 	}
-
-/**
-	 * Default implementation for unknown service request.
-	 * <p/>
-	 * Override this method in extended class for handling additional
-	 * requests.
-	 *
-	 * @param anUtopiaReq A UtopiaRequest
-	 * @return A negative UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
-	 */
-	public JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		String service = anUtopiaReq.getServiceName();
-		Logging.getLog(anUtopiaReq).warn("Unknown service " + service);
-		return createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
-	}
-	/**
-	 * Get user Account from request.
-	 */
-	protected Account getAccount(UtopiaRequest anUtopiaReq) throws UtopiaException {
-
-		// Get account name for event subject
-		// Expensive but we have to
-		UtopiaSessionContext sc = anUtopiaReq.getUtopiaSession().getContext();
-		Oase oase = sc.getOase();
-		Person person = (Person) oase.get(Person.class, HandlerUtil.getUserId(anUtopiaReq) + "");
-		return person.getAccount();
-	}
-
 
 }
 

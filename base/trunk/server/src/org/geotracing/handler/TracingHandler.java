@@ -110,7 +110,7 @@ public class TracingHandler extends DefaultHandler {
 				response = deleteMediumReq(anUtopiaReq);
 			} else {
 				// To be overridden in subclass
-				response = unknownReq(anUtopiaReq);
+				response = HandlerUtil.unknownReq(anUtopiaReq);
 			}
 		} catch (UtopiaException ue) {
 			log.warn("Negative response service=" + service, ue);
@@ -479,24 +479,6 @@ public class TracingHandler extends DefaultHandler {
 		response.setAttr(ATTR_ID, track.getId());
 		EventPublisher.trackSuspend(track.getId(), anUtopiaReq);
 		return response;
-	}
-
-
-	/**
-	 * Default implementation for unknown service request.
-	 * <p/>
-	 * Override this method in extended class for handling additional
-	 * requests.
-	 *
-	 * @param anUtopiaReq A UtopiaRequest
-	 * @return A negative UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
-	 */
-	public JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		String service = anUtopiaReq.getServiceName();
-		Logging.getLog(anUtopiaReq).warn("Unknown service " + service);
-		return createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
 	}
 
 	/**

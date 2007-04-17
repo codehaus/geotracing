@@ -920,6 +920,7 @@ public class QueryLogic {
 
 				// Optional WHERE e.g. "type = 13"
 				if (where != null) {
+					queryBuf.append("WHERE ");
 					queryBuf.append(where);
 				}
 
