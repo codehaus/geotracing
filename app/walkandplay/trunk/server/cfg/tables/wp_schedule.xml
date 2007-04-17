@@ -6,40 +6,35 @@
 	<views>
 
 		<insert>
-			<field name="invitation"/>
-            <field name="startdate"/>
-			<field name="enddate"/>
-            <field name="players" />
-        </insert>
+			<field name="name"/>
+       </insert>
 
 		<list>
 			<field name="id"/>
-			<field name="invitation"/>
-			<field name="startdate"/>
-            <field name="enddate"/>
-            <field name="players" />
-        </list>
+			<field name="name"/>
+       </list>
 
 		<query>
 			<field name="id"/>
-			<field name="invitation"/>
-            <field name="startdate"/>
-			<field name="enddate"/>
-            <field name="players" />
+			<field name="name"/>
         </query>
 	</views>
 
 	<!--{data -->
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true"/>
-		<field name="owner" type="STRING" size="12" required="true" default="unknown"/>
-		<field name="invitation" type="TEXT" required="false" />
+		<field name="name" type="STRING" size="64" required="true" default="schedule for game"/>
+
+		<!-- Related game record id
+		<field name="gameid" type="INTEGER" required="true" foreignkey="cascade" default="-1"/> -->
+
+	<!--
+	      Not required right now....
+		<field name="invitation" type="TEXT" required="false" default="You are invited"/>
 		<field name="startdate" type="TIMESTAMP"/>
-		<field name="enddate" type="TIMESTAMP"/>
+		<field name="enddate" type="TIMESTAMP"/>  -->
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
-        <field name="players" type="XML" />
-        <field name="extra" type="XML" />
 	</data>
 	<!--}data -->
 

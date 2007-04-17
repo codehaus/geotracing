@@ -21,6 +21,7 @@
 		<!-- walkandplay tables -->
 		<table file="tables/wp_game.xml"/>
 		<table file="tables/wp_task.xml"/>
+		<table file="tables/wp_schedule.xml"/>
 
         <!-- plugin tables -->
         <table file="tables/cc_agent.xml"/>

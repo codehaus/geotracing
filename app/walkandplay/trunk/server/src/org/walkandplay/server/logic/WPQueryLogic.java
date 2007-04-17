@@ -3,8 +3,11 @@ package org.walkandplay.server.logic;
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.handler.QueryLogic;
 import org.geotracing.handler.Location;
+import org.geotracing.gis.PostGISUtil;
 import org.keyworx.amuse.core.Protocol;
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.Relater;
+import org.keyworx.oase.api.Finder;
 import org.walkandplay.server.util.Constants;
 import org.postgis.Point;
 
@@ -16,8 +19,11 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		JXElement result;
 		long t1, t2;
 
+		// WnP specific queries: alphabetalically
 		try {
+
 			if ("q-games-by-user".equals(aQueryName)) {
+				// Games created by user
 				String loginName = getParameter(theParms, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
@@ -32,135 +38,91 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				for (int i = 0; i < records.length; i++) {
 					result.addChild(records[i].toXML());
 				}
-			}else if("q-task".equals(aQueryName)) {
-                String taskId = (String)theParms.get("id");
-                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
+			} else if ("q-game-locations".equals(aQueryName)) {
+				// All locations within game
+				// Game id
+				String id = getParameter(theParms, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
 
-                /*Record task = getOase().getFinder().read(Integer.parseInt(taskId));
-                if (task == null) {
-                    throw new IllegalArgumentException("No task found for id=" + taskId);
-                }
-                JXElement e = task.toXML();
+				Finder finder = getOase().getFinder();
+				Relater relater = getOase().getRelater();
 
-                Record[] records = getOase().getRelater().getRelated(task, MEDIUM_TABLE, null);
-                for (int i = 0; i < records.length; i++) {
-					e.addTextChild("mediumid", "" + records[i].getId());
-				}
-                result.addChild(e);*/
-
-                JXElement task = new JXElement("record");
-                result.addChild(task);
-                task.setAttr("id", taskId);
-                JXElement name = new JXElement("name");
-                name.setText("Fiets opdracht");
-                JXElement description = new JXElement("description");
-                description.setText("Haal een fiets uit de sloot, draai een rondje rond je as. " +
-                        "Maak hier een foto van en stuur deze op");
-                JXElement mediumid = new JXElement("mediumid");
-                mediumid.setText("4497");
-                task.addChild(name);
-                task.addChild(description);
-                task.addChild(mediumid);
-
-            }else if("q-medium".equals(aQueryName)) {
-                String mediumId = (String)theParms.get("id");
-                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-                JXElement task = new JXElement("record");
-                result.addChild(task);
-                task.setAttr("id", mediumId);
-                if(mediumId.equals("4497")){
-                    JXElement name = new JXElement("name");
-                    name.setText("Fiets plaatje");
-                    JXElement type = new JXElement("type");
-                    type.setText("image");
-                    task.addChild(name);
-                    task.addChild(type);
-                }else if(mediumId.equals("23074")){
-                    JXElement name = new JXElement("name");
-                    name.setText("Johnnie Walker");
-                    JXElement type = new JXElement("type");
-                    type.setText("video");
-                    task.addChild(name);
-                    task.addChild(type);
-                }                
-		    } else if("q-scores".equals(aQueryName)) {
-                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-                // gameplay id
-                String gameId = (String)theParms.get("gameid");
-
-                JXElement s1 = new JXElement("record");
-                s1.setChildText("team", "red1");
-                s1.setChildText("points", "60");
-                result.addChild(s1);
-                JXElement s2 = new JXElement("record");
-                s2.setChildText("team", "blue1");
-                s2.setChildText("points", "80");
-                result.addChild(s2);
-
-            } else if ("q-game-locations".equals(aQueryName)) {
-                result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-
-                JXElement r1 = new JXElement("record");
-                r1.setChildText(ID_FIELD, "1");
-                r1.setChildText(NAME_FIELD, "task # 1");
-                r1.setChildText(TYPE_FIELD, "task");
-                r1.setChildText(LAT_FIELD, "454545645");
-                r1.setChildText(LON_FIELD, "34534343");
-                result.addChild(r1);
-
-                JXElement r2 = new JXElement("record");
-                r2.setChildText(ID_FIELD, "10");
-                r2.setChildText(NAME_FIELD, "medium # 1");
-                r2.setChildText(TYPE_FIELD, "medium");
-                r2.setChildText(LAT_FIELD, "454545645");
-                r2.setChildText(LON_FIELD, "34534343");
-                result.addChild(r2);
-
-                return result;
-
-                /*String idStr = getParameter(theParms, PAR_ID, null);
-				throwOnMissingParm(PAR_ID, idStr);
-				int id = Integer.parseInt(idStr);
-				Record game = getOase().getFinder().read(id, GAME_TABLE);
-				if (game == null) {
-					throw new IllegalArgumentException("Cannot find game for id=" + id);
-				}
-				
-				Record[] locations = getOase().getRelater().getRelated(game, LOCATION_TABLE, null);
-
+				Record game = finder.read(Integer.parseInt(id), GAME_TABLE);
+				Record[] locations = relater.getRelated(game, LOCATION_TABLE, null);
 				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-				JXElement record;
+				Record locationItem;
 				for (int i = 0; i < locations.length; i++) {
-					record = new JXElement("record");
-					int locType = locations[i].getIntField(Location.FIELD_TYPE);
-					String itemTable;
-					String itemType;
-					Record item;
-					switch (locType) {
+					JXElement rec = new JXElement("record");
+					switch (locations[i].getIntField(TYPE_FIELD)) {
+
 						case LOC_TYPE_GAME_TASK:
-							itemType = "task";
-							itemTable = GAME_TABLE;
+							locationItem = relater.getRelated(locations[i], TASK_TABLE, null)[0];
+							rec.setChildText(TYPE_FIELD, "task");
 							break;
+
 						case LOC_TYPE_GAME_MEDIUM:
-							itemType = "medium";
-							itemTable = MEDIUM_TABLE;
+							locationItem = relater.getRelated(locations[i], MEDIUM_TABLE, null)[0];
+							rec.setChildText(TYPE_FIELD, "medium");
 							break;
 						default:
-							throw new IllegalArgumentException("Illegal location type " + locType);
+							continue;
 					}
+					rec.setChildText(ID_FIELD, locationItem.getId() + "");
+					rec.setChildText(NAME_FIELD, locationItem.getStringField(NAME_FIELD));
+					Point point = new Point(locations[i].getObjectField(POINT_FIELD).toString());
+					rec.setChildText(LAT_FIELD, point.x + "");
+					rec.setChildText(LON_FIELD, point.y + "");
+					result.addChild(rec);
 
-					// Set id/name of related record (medium or task)
-					item = getOase().getRelater().getRelated(locations[i], itemTable, null)[0];
-					record.setChildText(ID_FIELD, item.getId()+"");
-					record.setChildText(TYPE_FIELD, itemType);
-					record.setChildText(NAME_FIELD, item.getStringField(NAME_FIELD));
-					record.setChildText(LON_FIELD, locations[i].getRealField(LON_FIELD) + "");
-					record.setChildText(LAT_FIELD, locations[i].getRealField(LAT_FIELD) + "");
-
-					result.addChild(record);
 				}
-*/
 
+			} else if ("q-medium".equals(aQueryName)) {
+				String id = getParameter(theParms, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
+
+				String tables = "base_medium";
+				String fields = "id,name,description,kind AS type";
+				String where = "id = " + id;
+				String relations = null;
+				String postCond = null;
+				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
+
+			} else if ("q-schedule-by-user".equals(aQueryName)) {
+				String loginName = getParameter(theParms, PAR_USER_NAME, null);
+				throwOnMissingParm(PAR_USER_NAME, loginName);
+
+				Record person = getPersonForLoginName(getOase(), loginName);
+				String tables = "utopia_person,wp_schedule,wp_game";
+				String fields = "wp_schedule.id,wp_game.id AS gameid,wp_game.name,wp_game.description";
+				String where = "utopia_person.id = " + person.getId();
+				String relations = "utopia_person,wp_schedule,player;wp_schedule,wp_game";
+				String postCond = null;
+				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
+
+			} else if ("q-scores".equals(aQueryName)) {
+				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
+				// gameplay id
+				String gameId = (String) theParms.get("gameid");
+
+				JXElement s1 = new JXElement("record");
+				s1.setChildText("team", "red1");
+				s1.setChildText("points", "60");
+				result.addChild(s1);
+				JXElement s2 = new JXElement("record");
+				s2.setChildText("team", "blue1");
+				s2.setChildText("points", "80");
+				result.addChild(s2);
+
+			} else if ("q-task".equals(aQueryName)) {
+				String id = getParameter(theParms, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
+
+				String tables = "wp_task,base_medium";
+				String fields = "wp_task.id,base_medium.id AS mediumid,wp_task.name,wp_task.description";
+				String where = "wp_task.id = " + id;
+				String relations = "wp_task,base_medium";
+				String postCond = null;
+				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
 			} else {
 				// Query not handled by us: let superclass do query and any errors if query non-existing
 				result = super.doQuery(aQueryName, theParms);
