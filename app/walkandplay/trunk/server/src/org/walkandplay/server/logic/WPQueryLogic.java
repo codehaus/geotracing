@@ -57,7 +57,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
                 description.setText("Haal een fiets uit de sloot, draai een rondje rond je as. " +
                         "Maak hier een foto van en stuur deze op");
                 JXElement mediumid = new JXElement("mediumid");
-                mediumid.setText("575");
+                mediumid.setText("4497");
                 task.addChild(name);
                 task.addChild(description);
                 task.addChild(mediumid);
@@ -65,17 +65,24 @@ public class WPQueryLogic extends QueryLogic implements Constants {
             }else if("q-medium".equals(aQueryName)) {
                 String mediumId = (String)theParms.get("id");
                 result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-
                 JXElement task = new JXElement("record");
                 result.addChild(task);
                 task.setAttr("id", mediumId);
-                JXElement name = new JXElement("name");
-                name.setText("Fiets plaatje");
-                JXElement type = new JXElement("type");
-                type.setText("image");
-                task.addChild(name);
-                task.addChild(type);
-
+                if(mediumId.equals("4497")){
+                    JXElement name = new JXElement("name");
+                    name.setText("Fiets plaatje");
+                    JXElement type = new JXElement("type");
+                    type.setText("image");
+                    task.addChild(name);
+                    task.addChild(type);
+                }else if(mediumId.equals("23074")){
+                    JXElement name = new JXElement("name");
+                    name.setText("Johnnie Walker");
+                    JXElement type = new JXElement("type");
+                    type.setText("video");
+                    task.addChild(name);
+                    task.addChild(type);
+                }                
 		    } else if("q-scores".equals(aQueryName)) {
                 result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
                 // gameplay id
