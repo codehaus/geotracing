@@ -27,6 +27,8 @@
 			// Initialization of KWClient library
 			init: function() {
 				TST.pr('init...');
+				SRV.init();
+				SRV.url = '/diwi/srv/get.jsp?';
 
 				// KeyWorx client with
 				// callbacks (2x)
@@ -61,6 +63,14 @@
 				KW.logout();
 				TST.pr('logout sent');
 				return false;
+			},
+			getTracks function() {
+            	var user = '';
+ 				SRV.get('q-tracks-by-user', TST.onTrackRsp, 'user', user);	
+			},
+			getSelectedTrack function() {
+			    var id = 109;
+ 				SRV.get('get-track', TST.onSelectedTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t');	
 			},
 			
 			maakroutes: function() {
@@ -117,9 +127,19 @@
 				}
 				verwerkPlaatje(elm);
 				document.getElementById("maakroutebox").style.display='block';
-				document.getElementById("bewaarroutebutton").style.display='block';
+				document.getElementById("leguitbox").style.display='none';
+				document.getElementById("leguittext").style.display='none';
+				document.getElementById("leguitbullet").style.display='none';
 			},
 
+			onTrackRsp: function(elm) {
+	//			TST.pr('xml content:<pre>' + DH.escape(records.xml) + '</pre>');	
+			},
+			onSelectedTrackRsp: function(elm) {
+	//			TST.pr('xml content:<pre>' + DH.escape(records.xml) + '</pre>');	
+			},
+
+	
 			onRsp: function(elm) {
 				if (!elm) {
 					TST.pr('empty response');
@@ -259,7 +279,7 @@
 <div id="back">  <img src="../images/back.gif" border="0"> </div>
 
 
-<div id="logo"> <img src="images/logot.jpg" border="0"> </div>
+<div id="logo"> <a><img src="images/logot.jpg" border="0" onClick="location.href='../index.html?logged=true';"> </a></div>
 <div id="line"><img src="images/line.jpg" border="0"></div>
 <div id="copyright"><img src="images/copyright.jpg" border="0"></div>
 
@@ -288,6 +308,7 @@
 <div id="mijnpaginacontainer" style="display:block;">
 <!--	<div id="kaart"><img src="images/kaart.jpg" border="0"></div> -->
 	<div id="personaliabox"><img src="../home/images/videobox.gif" border="0"></div>
+	<div id="bullet"><img src="buttons/bullet.gif" border="0"></div>
 <!--
 	<div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
 			
@@ -556,7 +577,14 @@
 	<div id="butmaakeigenroute">
 		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a> 
 	</div>
-	<div id="maakroutebox" style="display:none"><img src="buttons/maakroute_blokken.gif" border="0"></div>
+	<div id="maakroutebox" style="display:none"><img src="buttons/maakrouteblokken.gif" border="0"></div>
+	<div id="leguitbox" style="display:block"><img src="../home/images/videobox.gif" border="0"></div>
+	<div id="leguitbullet"style="display:block"><img src="buttons/bullet.gif" border="0"></div>
+	<div id="leguittext" class="slidercaption" style="display:block">
+	Stel uw eigen route samen naar uw eigen voorkeuren!
+	Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen.
+	Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.
+	</div>
 	<div id="generated-routes" class="genroutetekst"></div>
 	<div id="generated-routes-image"></div>
 	<div id="generated-routes-image-big"></div>	

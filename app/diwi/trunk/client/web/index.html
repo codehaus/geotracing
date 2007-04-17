@@ -11,6 +11,8 @@
 	<script type="text/javascript" src="lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClientExt.js"></script>
 	<script type="text/javascript" src="lib/gt/Server.js"></script>
+	<script type="text/javascript" src="lib/gt/Record.js"></script>
+
 	<script type="text/javascript" src="js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="js/selectstartpage.js"></script>
 	<script type="text/javascript" src="js/selectvasteroute.js"></script>
@@ -19,15 +21,16 @@
 		var TST = {
 			// Initialization of KWClient library
 			init: function() {
-			TST.pr('init...');
-
+				TST.pr('init...');
+				SRV.init();
+				SRV.url = '/diwi/srv/get.jsp?';
 				// KeyWorx client with
 				// callbacks (2x)
 				// server timeout in minutes
 				// server root path /diwi
 				KW.init(TST.onRsp, TST.onNegRsp, 1, '/diwi');
 				TST.pr('init done');
-		},
+			},
 
 				// called from form submit
 			login: function() {
@@ -58,12 +61,15 @@
 				return false;
 			},
 			restoreSession: function() {
+				SRV.init();
+				SRV.url = '/diwi/srv/get.jsp?';
 				KW.restoreSession();
 //				KW.DIWI.getfixedroutes(TST.onRsp);
 			},
 			getFixedRoutes: function() {
-				KW.DIWI.getfixedroutes(TST.onRsp);
-//				SRV.get('q-fixed-routes', 'onFixedRoute');
+//				KW.DIWI.getfixedroutes(TST.onRsp);
+				SRV.get('q-diwi-routes', TST.onFixedRoute, 'type', '0');	
+
 			},
 			
 			onFixedRoute: function(elm) {
@@ -90,6 +96,9 @@
 					DH.hide('loginform');
 					toggleLogButton();
 					toggleInlogBox();
+//					SRV.init();
+//					SRV.url = '/diwi/srv/get.jsp?';
+
 				} else if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
 					DH.toggleDisplay(document.getElementById('butmaakroute'));
@@ -138,17 +147,17 @@ function highlightItem(obj, state) {
  i = obj.getAttribute('id');
  if (i != currentSelection) {
 		obj.setAttribute('src', toolbarData[i][state]);
-}
+	}
 }
 function selectButton(obj) {
  	i = obj.getAttribute('id');
 	var tbar = new Array();
 	for (j=1; j<buttons+1;j++) {
-  	tbar[j] = document.getElementById(j);
+  		tbar[j] = document.getElementById(j);
 		tbar[j].setAttribute('src', toolbarData[(j)][0]);
 	}
- obj.setAttribute('src', toolbarData[i][2]);
- currentSelection = i;
+ 	obj.setAttribute('src', toolbarData[i][2]);
+ 	currentSelection = i;
 }
 
 var imageCounter = 0;
@@ -177,7 +186,7 @@ function veranderFotoNaam() {
 
 function toonPlaatje() {
 	im = document.getElementById("plaatje");
- im.src = imageNames[imageCounter];
+ 	im.src = imageNames[imageCounter];
 }
 
 function laadtPlaatjes() {
@@ -323,7 +332,7 @@ function submitenter(myfield,e){
 	<div id="watistext">
 	
 <!--	<font size="-2">Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.</font> -->
-	<font size="-2">Helaas is er nog geen introductie video te bekijken.</font>
+	<font size="-2">Helaas is er in de huidige versie nog geen introductie video te bekijken.</font>
 	
 	</div>
 	
