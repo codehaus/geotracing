@@ -10,6 +10,7 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.session.UtopiaSession;
 import org.keyworx.utopia.core.session.UtopiaApplication;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.common.log.Logging;
 
 /**
@@ -45,7 +46,21 @@ public class HandlerUtil {
 		}
 		return tagResponse;
 	}
-	
+
+
+/**
+	 * Default implementation for unknown service request.
+	 * <p/>
+	 *
+	 * @param anUtopiaReq A UtopiaRequest
+	 * @return A negative UtopiaResponse.
+	 */
+	public static JXElement unknownReq(UtopiaRequest anUtopiaReq) {
+		String service = anUtopiaReq.getServiceName();
+		Logging.getLog(anUtopiaReq).warn("Unknown service " + service);
+		return DefaultHandler.createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
+	}
+
 	/**
 	 * Get Oase session (utopia) from request.
 	 */
