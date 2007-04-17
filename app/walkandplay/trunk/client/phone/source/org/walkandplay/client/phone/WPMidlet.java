@@ -53,7 +53,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
     TraceDisplay traceDisplay;
     private boolean playMode;
 
-    public JXElement currentGame;
+    private JXElement gameSchedule;
+    private int gamePlayId;
 
     public WPMidlet() {
         super();
@@ -95,12 +96,20 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return playMode;
     }
 
-    public void setCurrentGame(JXElement aGame){
-        currentGame = aGame;
+    public void setGameSchedule(JXElement aGame){
+        gameSchedule = aGame;
     }
 
-    public JXElement getCurrentGame(){
-        return currentGame;
+    public JXElement getGameSchedule(){
+        return gameSchedule;
+    }
+
+    public void setGamePlayId(int anId){
+        gamePlayId = anId;
+    }
+
+    public int getGamePlayId(){
+        return gamePlayId;
     }
 
     protected void startApp() throws MIDletStateChangeException {
