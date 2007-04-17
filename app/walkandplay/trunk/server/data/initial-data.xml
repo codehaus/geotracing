@@ -19,6 +19,13 @@
 	<!-- table must already exist in the database.                  -->
 
 	<tables>
+		<table name="wp_game">
+
+			<record id="game1">
+				<name>GameNo1</name>
+				<description>a game description</description>
+			</record>
+		</table>
 
 		<table name="wp_task">
 
@@ -78,7 +85,7 @@
 	<!-- Media are also records and can also be used in relations.         -->
 
 	<relations>
-		<relation rec1="task1" rec2="task2" tag="some_tag"/>
+		<relation rec1="game1" rec2="task2" tag="some_tag"/>
 		<relation rec1="task3" rec2="task4"/>
 		<relation rec1="task1" rec2="task5"/>
 	</relations>

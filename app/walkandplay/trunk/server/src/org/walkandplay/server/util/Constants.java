@@ -33,6 +33,7 @@ public interface Constants {
 	public final static String SCHEDULE_ID_FIELD = "scheduleid";
 	public final static String STARTDATE_FIELD = "startdate";
 	public final static String ENDDATE_FIELD = "enddate";
+	public final static String POINT_FIELD = "point";
 	public final static String PLAYERS_FIELD = "players";
 	public final static String MEDIUMID_FIELD = "mediumid";
 	public final static String SCORE_FIELD = "score";

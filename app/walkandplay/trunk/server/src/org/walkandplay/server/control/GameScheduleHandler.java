@@ -16,7 +16,9 @@ import org.keyworx.utopia.core.logic.RelateLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.oase.api.Record;
 import org.walkandplay.server.util.Constants;
+import org.geotracing.handler.HandlerUtil;
 
 import java.util.List;
 
@@ -42,7 +44,8 @@ public class GameScheduleHandler extends DefaultHandler implements Constants {
     private Oase oase;
     private RelateLogic relateLogic;
     private ContentLogic contentLogic;
-    /**
+
+	/**
      * Processes the Client Request.
      *
      * @param anUtopiaRequest A UtopiaRequest
@@ -95,8 +98,12 @@ public class GameScheduleHandler extends DefaultHandler implements Constants {
 
     public JXElement getList(UtopiaRequest anUtopiaRequest) throws UtopiaException {
         try {
-            JXElement requestElement = anUtopiaRequest.getRequestCommand();
-            JXElement rsp = createResponse(SCHEDULE_GETLIST_SERVICE);
+			JXElement requestElement = anUtopiaRequest.getRequestCommand();
+			Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+			int personId = HandlerUtil.getUserId(anUtopiaRequest);
+			// Record[] scheduleList = oase.getRelater().getRelated();
+
+			JXElement rsp = createResponse(SCHEDULE_GETLIST_SERVICE);
 
             JXElement tourschedule1 = new JXElement("schedule");
             rsp.addChild(tourschedule1);
