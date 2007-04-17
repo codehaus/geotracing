@@ -82,12 +82,12 @@ public class WPQueryLogic extends QueryLogic implements Constants {
                 String gameId = (String)theParms.get("gameid");
 
                 JXElement s1 = new JXElement("record");
-                s1.setAttr("team", "red1");
-                s1.setText("60");
+                s1.setChildText("team", "red1");
+                s1.setChildText("points", "60");
                 result.addChild(s1);
                 JXElement s2 = new JXElement("record");
-                s2.setAttr("team", "blue1");
-                s2.setText("80");
+                s2.setChildText("team", "blue1");
+                s2.setChildText("points", "80");
                 result.addChild(s2);
 
             } else if ("q-game-locations".equals(aQueryName)) {
