@@ -83,8 +83,11 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
 
     private void startGame(){
         JXElement req = new JXElement("play-start-req");
-        req.setAttr("id", midlet.getCurrentGame().getAttr("id"));
-        JXElement rsp = net.utopiaReq(req);                
+        req.setAttr("id", midlet.getGameSchedule().getAttr("id"));
+        JXElement rsp = net.utopiaReq(req);
+        // store the gameplay id
+        midlet.setGamePlayId(Integer.parseInt(rsp.getAttr("id")));
+
     }
 
     public void onNetInfo(String theInfo){
@@ -109,7 +112,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
         } else if (cmd == PLAY_CMD) {
             gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
             gameElm = (JXElement) games.get(gameName);
-            midlet.setCurrentGame(gameElm);
+            midlet.setGameSchedule(gameElm);
             // now start the game
             startGame();
             

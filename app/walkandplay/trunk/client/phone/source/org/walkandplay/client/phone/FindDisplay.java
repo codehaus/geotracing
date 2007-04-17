@@ -8,6 +8,7 @@ import javax.microedition.midlet.MIDlet;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
 import org.geotracing.client.NetListener;
+import org.geotracing.client.Preferences;
 
 import java.util.Vector;
 import java.util.Hashtable;
@@ -51,20 +52,26 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
         }
 
         // get the games
-        JXElement getMyGamesReq = new JXElement("schedule-getlist-req");
-        System.out.println(new String(getMyGamesReq.toBytes(false)));
-        JXElement getMyGamesRsp = net.utopiaReq(getMyGamesReq);
-        System.out.println(new String(getMyGamesRsp.toBytes(false)));
-        if(getMyGamesRsp!=null) {
-            Vector gamesElms = getMyGamesRsp.getChildrenByTag("schedule");
-            for(int i=0;i<gamesElms.size();i++){
-                JXElement t = (JXElement)gamesElms.elementAt(i);
-                String name = t.getChildText("name");
-                //#style formbox
-                gamesGroup.append(name, null);
-                games.put(name, t);
+        try{
+            JXElement req = new JXElement("query-store-req");
+            req.setAttr("cmd", "q-game-by-user");
+            req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
+            JXElement rsp = net.utopiaReq(req);
+            System.out.println(new String(rsp.toBytes(false)));
+            if(rsp!=null) {
+                Vector elms = rsp.getChildrenByTag("record");
+                for(int i=0;i<elms.size();i++){
+                    JXElement elm = (JXElement)elms.elementAt(i);
+                    String name = elm.getChildText("name");
+                    //#style formbox
+                    gamesGroup.append(name, null);
+                    games.put(name, elm);
+                }
             }
+        }catch(Throwable t){
+            System.out.println(t.getMessage());
         }
+
 
         //#style smallstring
         append("Select a game and press Ok in menu");
