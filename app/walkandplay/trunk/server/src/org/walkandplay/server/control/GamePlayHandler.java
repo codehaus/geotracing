@@ -94,8 +94,11 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	}
 
 	public JXElement playStartReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-		return createResponse(PLAY_START_SERVICE);
-	}
+		JXElement rsp = createResponse(PLAY_START_SERVICE);
+        // TODO: change this - dummy data
+        rsp.setAttr("id", "1");
+        return rsp;
+    }
 
     public JXElement playAnswerTaskReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 /*
