@@ -3,56 +3,36 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="geoapp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+			<login-req name="blue2" password="user" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 
 		<expect id="client1">
 
-			<login-rsp>
-				<agent>
-					<portal-context>
-						<portalid>26
-						</portalid>
-
-						<portalname>walkandplay
-						</portalname>
-
-						<personid>${personid}
-						</personid>
-
-						<personname>geoapp user
-						</personname>
-
-						<accesslist>
-							<access applicationname="geoapp" rolename="user"/>
-						</accesslist>
-
-					</portal-context>
-
-				</agent>
-
-			</login-rsp>
-
-
-			<select-app-rsp>
-				<!--<applicationid>${applicationid}</applicationid>-->
-			</select-app-rsp>
-
+			<login-rsp/>
+			<select-app-rsp/>
 		</expect>
-	</test>
 
-	<test id="play-getstate-req">
+	</test>
+	
+	<test id="q-play-status">
 		<send id="client1">
 			<utopia-req>
-				<play-getstate-req>
-				</play-getstate-req>
+				<query-store-req cmd="q-play-status-by-user" user="blue2"/>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<play-getstate-rsp/>
+				<query-store-rsp>
+					<record>
+						<name/>
+						<description/>
+						<gameid>${gameid}</gameid>
+						<gemeplayid>${gameplayid}</gemeplayid>
+						<gameplaystate/>
+					</record>
+				</query-store-rsp>
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -60,8 +40,7 @@
 	<test id="play-start-req">
 		<send id="client1">
 			<utopia-req>
-				<play-start-req>
-				</play-start-req>
+				<play-start-req id="26858" />
 			</utopia-req>
 		</send>
 
@@ -72,7 +51,14 @@
 		</expect>
 	</test>
 
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
 
-
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
 </testset>
 

@@ -11,8 +11,12 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.oase.api.*;
 import org.walkandplay.server.util.Constants;
 import org.geotracing.handler.HandlerUtil;
+import org.geotracing.handler.QueryLogic;
+import org.geotracing.handler.TrackLogic;
+import org.geotracing.handler.Track;
 
 /**
  * GamePlayHandler.
@@ -25,7 +29,6 @@ import org.geotracing.handler.HandlerUtil;
 public class GamePlayHandler extends DefaultHandler implements Constants {
 
 	public final static String PLAY_START_SERVICE = "play-start";
-	public final static String PLAY_GETSTATE_SERVICE = "play-getstate";
 	public final static String PLAY_LOCATION_SERVICE = "play-location";
 	public final static String PLAY_ANSWERTASK_SERVICE = "play-answertask";
 
@@ -52,8 +55,6 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		try {
 			if (service.equals(PLAY_START_SERVICE)) {
 				response = playStartReq(anUtopiaRequest);
-			} else if (service.equals(PLAY_GETSTATE_SERVICE)) {
-				response = playGetStateReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_LOCATION_SERVICE)) {
 				response = playLocationReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_ANSWERTASK_SERVICE)) {
@@ -76,7 +77,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	}
 
 
-	public JXElement playLocationReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+	public JXElement playLocationReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement response = createResponse(PLAY_LOCATION_SERVICE);
 
 		if (Rand.randomInt(0, 2) == 1) {
@@ -87,7 +88,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
 			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
-			hit.setAttr(ID_FIELD, 23074);
+			hit.setAttr(ID_FIELD, 22629);
 			response.addChild(hit);
 		}
 
@@ -106,11 +107,37 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return response;
 	}
 
-	public JXElement playStartReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-		JXElement rsp = createResponse(PLAY_START_SERVICE);
-		// TODO: change this - dummy data
-		rsp.setAttr("id", "1");
-		return rsp;
+	public JXElement playStartReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+		JXElement requestElement = anUtopiaRequest.getRequestCommand();
+		String gamePlayId = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr("id", gamePlayId);
+
+		int personId = HandlerUtil.getUserId(anUtopiaRequest);
+
+		Finder finder = HandlerUtil.getOase(anUtopiaRequest).getFinder();
+		Modifier modifier = HandlerUtil.getOase(anUtopiaRequest).getModifier();
+		Relater relater = HandlerUtil.getOase(anUtopiaRequest).getRelater();
+
+		Record gamePlay =  finder.read(Integer.parseInt(gamePlayId), GAMEPLAY_TABLE);
+		String gamePlayState = gamePlay.getStringField(STATE_FIELD);
+		if (gamePlayState.equals(PLAY_STATE_DONE)) {
+			throw new UtopiaException("Cannot play game that is already done");
+		}
+
+		// TODO Suspend any running games
+		Record person = finder.read(personId, PERSON_TABLE);
+
+		// Game state is scheduled or running
+		gamePlay.setStringField(STATE_FIELD, PLAY_STATE_RUNNING);
+		modifier.update(gamePlay);
+
+		// Start any track if not already active
+		//TrackLogic trackLogic = new TrackLogic(anUtopiaRequest.getUtopiaSession().getContext().getOase());
+
+		// Resume current Track for this user
+		//trackLogic.resume(HandlerUtil.getUserId(anUtopiaRequest), Track.VAL_DAY_TRACK, System.currentTimeMillis());
+
+		return createResponse(PLAY_START_SERVICE);
 	}
 
 	public JXElement playAnswerTaskReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
@@ -123,50 +150,6 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		rsp.setAttr("answer", "true");
 		rsp.setAttr("score", "10");
 		return rsp;
-	}
-
-	public JXElement playGetStateReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-		/*<play-getstate-rsp>
-					<tour id="234" name"sdvsdv" state="scheduled|running|done" />
-				</play=getstate-rsp>*/
-		// TODO: change this later on!!!!
-
-		// Get game(s) for this user
-		int personId = HandlerUtil.getUserId(anUtopiaRequest);
-
-		JXElement rsp = createResponse(PLAY_GETSTATE_SERVICE);
-		JXElement t1 = new JXElement("game");
-		t1.setAttr("id", "1");
-		t1.setAttr("name", "Nieuwendijk pilot 1");
-		t1.setAttr("state", "scheduled");
-		rsp.addChild(t1);
-		JXElement t2 = new JXElement("game");
-		t2.setAttr("id", "2");
-		t2.setAttr("name", "Nieuwendijk pilot 2");
-		t2.setAttr("state", "running");
-		rsp.addChild(t2);
-		return rsp;
-	}
-
-	/**
-	 * Overridden to have a hook to do the initialisation.
-	 *
-	 * @param aKey
-	 * @param aValue
-	 * @see org.keyworx.utopia.core.control.Handler#setProperty(String,String)
-	 */
-	public void setProperty(String aKey, String aValue) {
-		if (aKey.equals("config")) {
-			try {
-				config = ContentHandlerConfig.getConfiguration(aValue);
-			}
-			catch (Exception e) {
-				log.error("Exception while processing content handler configuration.", e);
-				throw new RuntimeException("Exception while processing content handler configuration.", e);
-			}
-
-		}
-		super.setProperty(aKey, aValue);
 	}
 
 }

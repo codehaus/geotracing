@@ -9,6 +9,7 @@ public interface Constants {
 	public final static String GAMEPLAY_TABLE = "wp_gameplay";
 	public final static String TASK_TABLE = "wp_task";
 	public final static String GAME_TABLE = "wp_game";
+	public final static String PERSON_TABLE = "utopia_person";
 	public final static String TEAM_TABLE = "wp_team";
 	public final static String MEDIUM_TABLE = "base_medium";
 	public final static String LOCATION_TABLE = Location.TABLE_NAME;
@@ -58,5 +59,12 @@ public interface Constants {
 	public static final int LOC_TYPE_USER_LOC = Location.VAL_TYPE_USER_LOC;
 	public static final int LOC_TYPE_GAME_TASK = 100;
 	public static final int LOC_TYPE_GAME_MEDIUM = 101;
+
+	// Game play states
+	public final static String PLAY_STATE_SCHEDULED = "scheduled";
+	public final static String PLAY_STATE_RUNNING = "running";
+	public final static String PLAY_STATE_SUSPENDED = "suspended";
+	public final static String PLAY_STATE_DONE = "done";
+
 
 }
