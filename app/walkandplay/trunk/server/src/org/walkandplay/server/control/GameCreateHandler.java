@@ -114,13 +114,12 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		String lon = mediumElm.getChildText(Location.FIELD_LON);
 		String lat = mediumElm.getChildText(Location.FIELD_LAT);
 		long time = System.currentTimeMillis();
+		location.setIntValue(Location.FIELD_TYPE, LOC_TYPE_GAME_MEDIUM);
 
 		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
 
 		int mediumId = Integer.parseInt(mediumElm.getChildText(ID_FIELD));
-
-		location.setIntValue(Location.FIELD_TYPE, LOC_TYPE_GAME_MEDIUM);
 
 		location.createRelation(mediumId, RELTAG_MEDIUM);
 		location.createRelation(Integer.parseInt(gameId), RELTAG_MEDIUM);
@@ -170,6 +169,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		String lon = taskElm.getChildText(Location.FIELD_LON);
 		String lat = taskElm.getChildText(Location.FIELD_LAT);
 		long time = System.currentTimeMillis();
+		location.setIntValue(Location.FIELD_TYPE, LOC_TYPE_GAME_TASK);
 
 		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();

@@ -12,6 +12,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.walkandplay.server.util.Constants;
+import org.geotracing.handler.HandlerUtil;
 
 /**
  * GamePlayHandler.
@@ -80,19 +81,25 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		if (Rand.randomInt(0, 2) == 1) {
 			JXElement hit = new JXElement(TAG_TASK_HIT);
-			hit.setAttr(ID_FIELD, 1234);
+			hit.setAttr(ID_FIELD, 22560);
 			response.addChild(hit);
 		}
-		
-		if (Rand.randomInt(0, 2) == 1 && !response.hasChildren()) {
+
+		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
 			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
 			hit.setAttr(ID_FIELD, 23074);
 			response.addChild(hit);
 		}
 
-		if (Rand.randomInt(0, 2) == 1 && !response.hasChildren()) {
+		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
 			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
 			hit.setAttr(ID_FIELD, 4497);
+			response.addChild(hit);
+		}
+
+		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
+			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
+			hit.setAttr(ID_FIELD, 26527);
 			response.addChild(hit);
 		}
 
@@ -101,28 +108,32 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 	public JXElement playStartReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		JXElement rsp = createResponse(PLAY_START_SERVICE);
-        // TODO: change this - dummy data
-        rsp.setAttr("id", "1");
-        return rsp;
-    }
+		// TODO: change this - dummy data
+		rsp.setAttr("id", "1");
+		return rsp;
+	}
 
-    public JXElement playAnswerTaskReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+	public JXElement playAnswerTaskReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 /*
         <play-answertask-req id="[taskid]" answer="blabla" />
         <play-answertask-rsp answer="[boolean]" score="[nrofpoints] />
 */
 
-        JXElement rsp = createResponse(PLAY_ANSWERTASK_SERVICE);
-        rsp.setAttr("answer", "true");
-        rsp.setAttr("score", "10");
-        return rsp;
-    }
+		JXElement rsp = createResponse(PLAY_ANSWERTASK_SERVICE);
+		rsp.setAttr("answer", "true");
+		rsp.setAttr("score", "10");
+		return rsp;
+	}
 
-    public JXElement playGetStateReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+	public JXElement playGetStateReq(UtopiaRequest anUtopiaRequest) throws UtopiaException {
 		/*<play-getstate-rsp>
 					<tour id="234" name"sdvsdv" state="scheduled|running|done" />
 				</play=getstate-rsp>*/
 		// TODO: change this later on!!!!
+
+		// Get game(s) for this user
+		int personId = HandlerUtil.getUserId(anUtopiaRequest);
+
 		JXElement rsp = createResponse(PLAY_GETSTATE_SERVICE);
 		JXElement t1 = new JXElement("game");
 		t1.setAttr("id", "1");

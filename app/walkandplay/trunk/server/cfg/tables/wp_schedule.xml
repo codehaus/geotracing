@@ -12,12 +12,14 @@
 		<list>
 			<field name="id"/>
 			<field name="name"/>
-       </list>
+			<field name="state"/>
+        </list>
 
 		<query>
 			<field name="id"/>
 			<field name="name"/>
-        </query>
+			<field name="state"/>
+         </query>
 	</views>
 
 	<!--{data -->
@@ -35,6 +37,8 @@
 		<field name="enddate" type="TIMESTAMP"/>  -->
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
+		<!-- 1=open 2=running 3=done  -->
+        <field name="state" type="INTEGER" default="1" required="true" />
 	</data>
 	<!--}data -->
 

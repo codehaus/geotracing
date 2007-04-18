@@ -13,7 +13,7 @@
     <config>
         <!-- Oase context file. Context id becomes portal name -->
         <context file="oase-context.xml"/>
-		<data file="../data/initial-data.xml" label="gameinit"/>
+		<!-- NOT YET <data file="../data/initial-data.xml" label="gameinit"/> -->
     </config>
 
 
