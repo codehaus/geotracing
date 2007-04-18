@@ -98,7 +98,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				Record person = getPersonForLoginName(getOase(), loginName);
 				String tables = "utopia_person,wp_gameplay,wp_schedule,wp_game";
-				String fields = "wp_game.name AS name,wp_game.id AS gameid,wp_gameplay.id AS gemeplayid,wp_gameplay.state AS gameplaystate";
+				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_schedule.id AS scheduleid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
 				String where = "utopia_person.id = " + person.getId();
 				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_schedule;wp_schedule,wp_game";
 				String postCond = null;
@@ -111,11 +111,12 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				JXElement s1 = new JXElement("record");
 				s1.setChildText("team", "red1");
-				s1.setChildText("points", "60");
+				s1.setChildText("points", "5");
 				result.addChild(s1);
+				
 				JXElement s2 = new JXElement("record");
 				s2.setChildText("team", "blue1");
-				s2.setChildText("points", "80");
+				s2.setChildText("points", "10");
 				result.addChild(s2);
 
 			} else if ("q-task".equals(aQueryName)) {

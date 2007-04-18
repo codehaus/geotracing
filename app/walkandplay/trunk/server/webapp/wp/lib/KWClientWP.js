@@ -64,13 +64,13 @@ KW.WP = {
 
 		// Add medium element
 		var task = req.createElement('task');
-		KW.UTIL.addTextElement(medium, 'name', name);
-		KW.UTIL.addTextElement(medium, 'desc', desc);
-		KW.UTIL.addTextElement(medium, 'score', score);
-		KW.UTIL.addTextElement(medium, 'answer', answer);
-		KW.UTIL.addTextElement(medium, 'mediumid', mediumId);
-		KW.UTIL.addTextElement(medium, 'lon', lon);
-		KW.UTIL.addTextElement(medium, 'lat', lat);
+		KW.UTIL.addTextElement(task, 'name', name);
+		KW.UTIL.addTextElement(task, 'description', desc);
+		KW.UTIL.addTextElement(task, 'score', score);
+		KW.UTIL.addTextElement(task, 'answer', answer);
+		KW.UTIL.addTextElement(task, 'mediumid', mediumId);
+		KW.UTIL.addTextElement(task, 'lon', lon);
+		KW.UTIL.addTextElement(task, 'lat', lat);
 
 		req.documentElement.appendChild(task);
 		KW.utopia(req, callback);
