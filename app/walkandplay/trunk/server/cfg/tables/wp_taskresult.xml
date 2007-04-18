@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Game task state/result definition -->
+<table>
+
+    <views>
+
+		<insert>
+			<field name="answer" />
+            <field name="score" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="answer" />
+            <field name="score" />
+			<field name="state" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="state" />
+			<field name="mediastate" />
+            <field name="answerstate" />
+ 		</query>
+ 	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<!-- Answer string e.g. "waag" -->
+		<field name="answer" type="STRING" size="64" required="false"/>
+
+		<!-- Points scored for related task -->
+		<field name="score" type="INTEGER" required="true" default="0"/>
+
+		<!-- 1=open 2=done  -->
+        <field name="state" type="STRING" size="12" default="open" required="true" />
+
+		<!-- 1=open 2=done  -->
+        <field name="mediastate" type="STRING" size="12"  default="open" required="true" />
+
+		<!-- 1=open 2=ok 3=notok  -->
+        <field name="answerstate" type="STRING" size="12"  default="open" required="true" />
+
+		<field name="extra" type="XML" />
+	</data>
+	<!--}data -->
+</table>

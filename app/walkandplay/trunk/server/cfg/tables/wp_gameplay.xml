@@ -7,33 +7,38 @@
 
 		<insert>
 			<field name="name" />
-            <field name="description" />
-            <field name="extra" />
 		</insert>
 
 		<list>
 			<field name="id" />
 			<field name="name" />
-            <field name="description" />
+			<field name="state" />
+            <field name="startdate" />
+			<field name="enddate" />
 		</list>
 
 		<query>
 			<field name="id" />
-			<field name="owner" />
 			<field name="name" />
-            <field name="description" />
-            <field name="extra" />
-		</query>
+			<field name="state" />
+ 		</query>
  	</views>
 
 	<!--{data -->
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true" />
-		<field name="owner" type="STRING" size="12" required="true" default="unknown" />
 
 		<!-- Gameplay name -->
-		<field name="name" type="STRING" size="64" required="true" default="mobgame" />
-		<field name="description" type="TEXT" required="false" />
+		<field name="name" type="STRING" size="64" required="true" default="gameplay" />
+
+		<field name="startdate" type="TIMESTAMP"/>
+		<field name="enddate" type="TIMESTAMP"/>
+
+		<!-- totalscore -->
+		<field name="score" type="INTEGER" required="true" default="0"/>
+
+		<!-- 1=scheduled 2=running 3=done -->
+        <field name="state" type="STRING" size="12" default="scheduled" required="true" />
 
 		<field name="extra" type="XML" />
 	</data>

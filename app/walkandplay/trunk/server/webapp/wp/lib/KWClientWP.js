@@ -27,7 +27,7 @@ KW.WP = {
 
 		// Add medium element
 		var medium = req.createElement('medium');
-		KW.UTIL.addTextElement(medium, 'id', id);
+		KW.UTIL.addTextElement(medium, 'id', mediumId);
 		KW.UTIL.addTextElement(medium, 'lon', lon);
 		KW.UTIL.addTextElement(medium, 'lat', lat);
 
