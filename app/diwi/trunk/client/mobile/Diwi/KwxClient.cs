@@ -77,6 +77,9 @@ namespace Diwi {
                     messageCallback("select-app: succesful!");
                 }
             }
+
+            x = doNavStart();
+
         }
 
 
@@ -119,6 +122,15 @@ namespace Diwi {
         }
 
 
+        public XMLement doNavStart() {
+            XMLement xml = new XMLement(Protocol.TAG_NAV_START_REQ);
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            return xml;
+        }
+
+
         public XMLement doLogin() {
             XMLement xml = new XMLement(Protocol.TAG_LOGIN_REQ);
             xml.addAttribute(Protocol.ATTR_NAME, mUser);
@@ -151,7 +163,7 @@ namespace Diwi {
         public XMLement getRouteList() {
             if (mAgentKey != null) {
                 XMLement req = new XMLement("route-getlist-req");
-                req.addAttribute("type", "2");
+                req.addAttribute("type", "fixed");
 
                 req = utopiaRequest(req);
                 return req;
@@ -200,15 +212,16 @@ namespace Diwi {
         /// </summary>
         public void sendSample() {
             if (mAgentKey != null) {
-                XMLement xml = new XMLement("t-trk-write-req");
-
+                XMLement xml = new XMLement("nav-point-req");
                 XMLement pt = new XMLement("pt");
+                
+               // pt.addAttribute("lon", GpsReader.lon.ToString());
+               // pt.addAttribute("lat", GpsReader.lat.ToString());
 
                 pt.addAttribute("nmea", GpsReader.nmea);
 
-                //pt.addAttribute("lon", GpsReader.lon.ToString());
-                //pt.addAttribute("lat", GpsReader.lat.ToString());
                 xml.addChild(pt);
+
                 xml = utopiaRequest(xml);
                 string s = xml.toString();
             }
