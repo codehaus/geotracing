@@ -16,13 +16,14 @@ namespace Diwi
         public static string SERVICE_LOGOUT = "logout";
         public static string SERVICE_UTOPIA = "utopia";
         public static string SERVICE_SELECT_APP = "select-app";
+        public static string SERVICE_NAV_START = "nav-start";
 
 
         public static string TAG_LOGIN_REQ = SERVICE_LOGIN + POSTFIX_REQ;
         public static string TAG_LOGOUT_REQ = SERVICE_LOGOUT + POSTFIX_REQ;
         public static string TAG_UTOPIA_REQ = SERVICE_UTOPIA + POSTFIX_REQ;
         public static string TAG_SELECT_APP_REQ = SERVICE_SELECT_APP + POSTFIX_REQ;
-
+        public static string TAG_NAV_START_REQ = SERVICE_NAV_START + POSTFIX_REQ;
 
         public static string ATTR_AGENTKEY = "agentkey";
         public static string ATTR_APPNAME = "appname";

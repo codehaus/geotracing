@@ -35,7 +35,7 @@ namespace Diwi {
         }
 
         private void doGR() {
-            XMLement getRoutesReq = AppController.sKwxClient.getRoute(107);
+            XMLement getRoutesReq = AppController.sKwxClient.getRoute(109);
             string s = getRoutesReq.toString();
         }
 
@@ -48,17 +48,6 @@ namespace Diwi {
             process.Start();
         }
 
-        private void getRoutes(){
-            // first get the fixed routes
-            XMLement getRoutesReq = new XMLement("route-getfixed-req");
-            XMLement getRoutesRsp = AppController.sKwxClient.utopiaRequest(getRoutesReq);
-
-            // now get the personal active route
-            XMLement getMyRouteReq = new XMLement("route-get-req");
-            getMyRouteReq.addAttribute("personid", "73");
-            XMLement getMyRouteRsp = AppController.sKwxClient.utopiaRequest(getMyRouteReq);
-            
-        }
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);

@@ -210,7 +210,7 @@ namespace Diwi {
                                 callback((int)sMess.M_DEMO);
                             }
                             // read from file
-                            for (int i = 0; i < 6; i++) {
+                            for (int i = 0; i < 3; i++) {
                                 string s = nmeaDemoFile.ReadLine();
                                 if (s != null) {
                                     parse(s);
