@@ -54,8 +54,9 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
         // get the games
         try{
             JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-game-by-user");
-            req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
+            req.setAttr("cmd", "q-schedule-by-user");
+            //req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
+            req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, "red2"));
             JXElement rsp = net.utopiaReq(req);
             System.out.println(new String(rsp.toBytes(false)));
             if(rsp!=null) {

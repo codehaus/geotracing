@@ -363,7 +363,7 @@
 		<property name="dir.work" value="build/N73" />
 	</target>
 
-    <target name="install" depends="init">
+    <target name="install" depends="init,clean,build">
 
 		<chmod file="${btsend}" perm="ugo+x"/>
 

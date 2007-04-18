@@ -297,6 +297,9 @@ focused {
 .formbox {
     margin:2;
     padding:2;
+    label{
+        font-size: small;
+    }
     border{
         width:1;
         color:BLACK;
@@ -309,7 +312,7 @@ focused {
     font-color: GREY;
     font-size: small;
     layout: horizontal-expand | horizontal-center | top;
-    textfield-direct-input: true;
+    /*textfield-direct-input: true;*/
 }
 
 .titlebox {

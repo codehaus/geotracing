@@ -4,18 +4,20 @@ import de.enough.polish.util.Locale;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.ItemCommandListener;
 
 
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.media.control.VideoControl;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.MediaException;
-import javax.microedition.media.PlayerListener;
 
 import org.geotracing.client.*;
+import org.geotracing.client.Log;
 import nl.justobjects.mjox.JXElement;
 
 import java.util.Vector;
@@ -30,6 +32,9 @@ import java.io.IOException;
 /*public class TraceDisplay extends DefaultDisplay  {*/
 public class PlayDisplay extends GameCanvas implements CommandListener {
     // =====
+    private GoogleMap.XY xy, prevXY;
+    private String tileRef="";
+    private Image mapImage;
     private Displayable prevScreen;
     private String tileBaseURL;
     private JXElement tileInfo, prevTileInfo;
@@ -37,8 +42,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private long lastRefreshMillis;
     private Image tileImage;
     private MFloat tileScale;
+
     private int zoom = 12;
-    private Image redDot;
+    private Image textDot, movieDot, photoDot, redDot, traceDot, taskDot, bg;
     private String mapType = "map";
     private String lon = "0", lat = "0";
     private boolean active;
@@ -52,6 +58,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private JXElement medium;
     private Image mediumImage;
     private Image transBar;
+    private int maxScore;
     private Vector scores;
 
     private Vector gameLocations = new Vector(3);
@@ -91,15 +98,29 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     public PlayDisplay(WPMidlet aMidlet) {
         super(false);
         setFullScreenMode(true);
-        
+
         midlet = aMidlet;
         // make sure we stop tracing when we go into play mode
         if(midlet.traceDisplay!=null) midlet.traceDisplay.stop();
-          try{
+        try{
             //#ifdef polish.images.directLoad
             transBar = Image.createImage("/trans_bar.png");
+            redDot = Image.createImage("/red_dot.png");
+            taskDot = Image.createImage("/task_dot.png");
+            textDot = Image.createImage("/text_dot.png");
+            movieDot = Image.createImage("/movie_dot.png");
+            photoDot = Image.createImage("/photo_dot.png");
+            traceDot = Image.createImage("/trace_dot.png");
+            bg = Image.createImage("/bg.png");
             //#else
+            taskDot = scheduleImage("/task_dot.png");
+            redDot = scheduleImage("/red_dot.png");
             transBar = scheduleImage("/trans_bar.png");
+            textDot = scheduleImage("/text_dot.png");
+            movieDot = scheduleImage("/movie_dot.png");
+            photoDot = scheduleImage("/photo_dot.png");
+            traceDot = scheduleImage("/trace_dot.png");
+            bg = scheduleImage("/bg.png");
             //#endif
         }catch(Throwable t){
             Log.log("Could not load the images on PlayDisplay");
@@ -130,52 +151,72 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private void getGameLocations(){
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-game-locations");
-        req.setAttr("id", midlet.getGameSchedule().getAttr("id"));
+        req.setAttr("id", midlet.getGameSchedule().getChildText("gameid"));
+        log(new String(req.toBytes(false)));
         JXElement rsp = tracerEngine.getNet().utopiaReq(req);
         gameLocations = rsp.getChildrenByTag("record");
+
+        // now determine the maximum attainable score
+        for(int i=0;i<gameLocations.size();i++){
+            JXElement r = (JXElement)gameLocations.elementAt(i);
+            if(r.getChildText("type").equals("task")){
+                maxScore += Integer.parseInt(r.getChildText("score"));
+            }
+        }
+        log("maxscore: " + maxScore);
+
         log(new String(rsp.toBytes(false)));
     }
 
     public void setLocation(String aLon, String aLat) {
-        // Don't refresh too often (save network overhead)
-        long now = Util.getTime();
-        if (now - lastRefreshMillis < REFRESH_INTERVAL_MILLIS) {
-            return;
-        }
-
-        lon = aLon;
-        lat = aLat;
-        lastRefreshMillis = now;
-        fetchTileInfo();
-        show();
-    }
+		lon = aLon;
+		lat = aLat;
+		fetchTileInfo();
+		show();
+	}
 
     protected void fetchTileInfo() {
-        if (!hasLocation() || !active) {
-            return;
-        }
+		if (!hasLocation() || !active) {
+			return;
+		}
 
-        try {
-            // Get information on tile
-            String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
-            JXElement newTileInfo = Util.getXML(tileInfoURL);
+		try {
+			// Get pixel offset into GMap 256x256 tile
+			GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
 
-            // Reset tileImage if first tile info or if keyhole ref changed (we moved to new tile).
-            if (tileInfo == null || !tileInfo.getAttr("khref").equals(newTileInfo.getAttr("khref"))) {
-                tileImage = null;
-                prevTileInfo = null;
-            }
+			// Get unique tile ref (keyhole string)
+			String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
 
-            // Remember last point/tile if still on same tile
-            if (tileImage != null) {
-                prevTileInfo = tileInfo;
-            }
-            tileInfo = newTileInfo;
-            // System.out.println("khref=" + tileInfo.getAttr("khref"));
-        } catch (Throwable t) {
-            Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
-        }
-    }
+			// System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
+
+			// Force refresh of mapImage when
+			// no tile info (initial)
+			// OR map keyhole ref changed (when zoom or moving off tile)
+			if (!tileRef.equals(newTileRef)) {
+				// System.out.println("refresh");
+				mapImage = null;
+				xy = prevXY = null;
+				tileRef = newTileRef;
+			}
+
+			// Scale x,y to scaled tile image
+ 			if (tileScale != null) {
+				// Correct pixel offset with tile scale
+				// Scale x,y offset of our location in mapImage
+				newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
+				newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
+
+				// Remember previous (scaled) location
+				prevXY = xy;
+
+				// Set current location
+				xy = newTileXY;
+			}
+
+		} catch (Throwable t) {
+			Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
+		}
+	}
 
     private void show() {
         if (active) {
@@ -255,16 +296,20 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 JXElement rsp = tracerEngine.getNet().utopiaReq(req);
                 log(new String(rsp.toBytes(false)));
                 task = rsp.getChildByTag("record");
-                String mediumId = task.getChildText("mediumid");
-                String url = mediumBaseURL + mediumId + "&resize=" + (w - 10);
-                log(url);
-                try {
-                    taskImage = Util.getImage(url);
-                } catch (Throwable t) {
-                    log("Error fetching task image url: " + url);
-                }
+                if(task!=null){
+                    String mediumId = task.getChildText("mediumid");
+                    String url = mediumBaseURL + mediumId + "&resize=" + (w - 10);
+                    log(url);
+                    try {
+                        taskImage = Util.getImage(url);
+                    } catch (Throwable t) {
+                        log("Error fetching task image url: " + url);
+                    }
 
-                SHOW_STATE = SHOW_TASK;
+                    SHOW_STATE = SHOW_TASK;
+                }else{
+                    log("No task found with id " + taskId);
+                }
             }
         }).start();
     }
@@ -285,7 +330,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 JXElement rsp = tracerEngine.getNet().utopiaReq(req);
                 scores = rsp.getChildrenByTag("record");
                 log(new String(rsp.toBytes(false)));
-                
+
                 SHOW_STATE = SHOW_SCORES;
             }
         }).start();
@@ -314,12 +359,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 } else if (type.equals("audio")) {
                     try {
                         Util.playStream(url);
+                        // open up real player!!!
+                        //midlet.platformRequest(url);
                     } catch (Throwable t) {
                         log("Error playing audio url");
                     }
                 } else if (type.equals("video")) {
                     try {
-                        
+                        // open up real player!!!
+                        midlet.platformRequest(url);
                     } catch (Throwable t) {
                         log("Error fetching text url=");
                     }
@@ -361,79 +409,100 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         if (h == 0) {
             h = 208;
         }
-            
+
         //log("dbg 1");
         Font f = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         int fh = f.getHeight();
         g.setFont(f);
-            
+        g.setColor(0, 0, 0);
+
         try {
-            //log("dbg 2");
             g.setColor(255, 255, 255);
             g.fillRect(0, 0, w, h);
             g.setColor(0, 0, 0);
-            if (tileInfo != null && tileImage == null) {
+
+            if (tileScale == null) {
+                tileScale = new MFloat(h).Div(GoogleMap.I_GMAP_TILE_SIZE);
+            }
+
+            if (hasLocation() && mapImage == null) {
                 try {
                     String tileSize = w + "x" + w;
                     //String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
                     String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=320x320";
-                    g.drawString("fetching tileImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
-                    Image mapImage = Util.getImage(tileURL);
-                    tileImage = Image.createImage(mapImage.getWidth(), mapImage.getHeight());
-                    tileImage.getGraphics().drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-                } catch (Throwable t) {
-                    g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
+                    String s1 = "Fetching map image...";
+                    g.drawString(s1, w/2 - (g.getFont().stringWidth(s1))/2, h/2 - fh, Graphics.TOP | Graphics.LEFT);
+
+                    // Get Google Tile image and draw on mapImage
+                    Image tileImage = Util.getImage(tileURL);
+                    mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
+                    mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    fetchTileInfo();
+                    repaint();
                     return;
+                } catch (Throwable t) {
+                    //g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+                    throw new IOException(t.getMessage());
                 }
             }
 
-            //log("dbg 3");
-            if (tileImage != null) {
+            if (xy != null) {
 
-                // Correct pixel offset with tile scale
-                if (tileScale == null) {
-                    tileScale = new MFloat(320).Div(256L);
+                // If we have previous point: draw line from there to current
+                if (prevXY != null) {
+                    Graphics mapGraphics = mapImage.getGraphics();
+                    mapGraphics.setColor(0, 0, 255);
+                    mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
+                    mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
                 }
 
-                // x,y offset of our location in tile tileImage
-                String myX = tileInfo.getAttr("x");
-                String myY = tileInfo.getAttr("y");
-                int x = (int) new MFloat(Integer.parseInt(myX)).Mul(tileScale).toLong();
-                int y = (int) new MFloat(Integer.parseInt(myY)).Mul(tileScale).toLong();
+                // Draw background map
 
-
-                if (prevTileInfo != null) {
-                    String lmyX = prevTileInfo.getAttr("x");
-                    String lmyY = prevTileInfo.getAttr("y");
-                    int lx = (int) new MFloat(Integer.parseInt(lmyX)).Mul(tileScale).toLong();
-                    int ly = (int) new MFloat(Integer.parseInt(lmyY)).Mul(tileScale).toLong();
-                    Graphics tg = tileImage.getGraphics();
-                    tg.setColor(0, 0, 255);
-                    tg.drawLine(lx, ly, x, y);
-                }
-
-                System.out.println("x:"+x);
-                System.out.println("y:"+y);
-                // Draw map
-                if(x < 40){
-                    g.drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-                }else if (x > 280){
-                    g.drawImage(tileImage, 40, 0, Graphics.TOP | Graphics.LEFT);
+                if(xy.x < 40){
+                    g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(redDot, xy.x, xy.y, Graphics.HCENTER | Graphics.VCENTER);
+                }else if (xy.x > 280){
+                    g.drawImage(mapImage, - 80, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(redDot, xy.x - 80, xy.y, Graphics.HCENTER | Graphics.VCENTER);
                 }else{
-                    g.drawImage(tileImage, -40, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(mapImage, -40, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(redDot, xy.x - 40, xy.y, Graphics.HCENTER | Graphics.VCENTER);
                 }
 
-                // Draw current location
-                if (redDot == null) {
-                    redDot = Image.createImage("/red_dot.png");
-                }
-                g.drawImage(redDot, x, y, Graphics.TOP | Graphics.LEFT);
-                
             } else {
+                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
                 String s = "Retrieving location...";
                 g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);
             }
-            //log("dbg 4");
+
+            // now draw the gamelocations
+            if(gameLocations!=null){
+                for(int i=0;i<gameLocations.size();i++){
+                    JXElement loc = (JXElement)gameLocations.elementAt(i);
+                    String khref = GoogleMap.getKeyholeRef(loc.getChildText("lon"),loc.getChildText("lat"), zoom);
+                    Image img;
+                    String type = loc.getChildText("type");
+                    if(type.equals("task")){
+                        img = taskDot;
+                    }else if(type.equals("medium")){
+                        img = textDot;
+                    }else{
+                        img = textDot;
+                    }
+                    if(tileRef!=null && khref.equals(tileRef)){
+                        GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"),loc.getChildText("lat"), zoom);
+                        if(Gxy.x < 40){
+                            g.drawImage(img, Gxy.x, Gxy.y, Graphics.HCENTER | Graphics.VCENTER);
+                        }else if (Gxy.x > 280){
+                            g.drawImage(img, Gxy.x - 80, Gxy.y, Graphics.HCENTER | Graphics.VCENTER);
+                        }else{
+                            g.drawImage(img, Gxy.x - 40, Gxy.y, Graphics.HCENTER | Graphics.VCENTER);
+                        }
+                    }
+                }
+            }
 
             switch(SHOW_STATE){
                 case RETRIEVING_MEDIUM:
@@ -463,13 +532,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     g.drawString(gpsStatus, w/2 - (g.getFont().stringWidth(gpsStatus))/2, h/2, Graphics.TOP | Graphics.LEFT);
                     break;
             }
-            //g.drawString(netStatus, 5, 5, Graphics.TOP | Graphics.LEFT);
-            //g.drawString(gpsStatus, 50, 5, Graphics.TOP | Graphics.LEFT);
-
-        } catch (Throwable t) {
-            g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
-            g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
-        }
+        } catch (IOException ioe) {
+            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+            String s = "Error\n" + ioe.getMessage() + "\nCannot get image. Try zooming out";
+            g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);
+		} catch (Throwable t) {
+            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+            String s = "Error\n" + t.getMessage();
+            g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);            
+		}
     }
 
     /*
@@ -643,7 +714,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             String type = medium.getChildText("type");
             //#style formbox
             form.append(medium.getChildText("name"));
-            //#style formbox
+            /*//#style formbox*/
             //form.append(medium.getChildText("description"));
 
             if (type.equals("image")) {
@@ -661,7 +732,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     form.append(si);
                 }
             }
-            
+
             // Add the Exit Command to the TextBox
 			form.addCommand(cancelCmd);
 
@@ -797,7 +868,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 			if (command == submitCmd) {
                 if (textField.getString() == null) {
                     alert  = "No text typed";
-                }else{                    
+                }else{
                     String name = nameField.getString();
                     String text = textField.getString();
                     String tags = tagsField.getString();
@@ -823,29 +894,31 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             //#style defaultscreen
             Form form = new Form("");
             // Create the TextBox containing the "Hello,World!" message
-            form.append("score overview");
             for(int i=0;i<scores.size();i++){
-                String team = ((JXElement)scores.elementAt(i)).getChildText("team");
-                String points = ((JXElement)scores.elementAt(i)).getChildText("points");
+                JXElement r = (JXElement)scores.elementAt(i);
+                String team = r.getChildText("team");
+                String points = r.getChildText("points");
+
                 //#style formbox
-                form.append("team " + team + " scored " + points + " points");
+                form.append(new Gauge(team, false, maxScore, Integer.parseInt(points)));
             }
 
             /*int[][] dataSequences = new int[][] {
-				new int[]{ 12, 0, 5, 20, 25, 40 },
-				new int[]{ 0, 2, 4, 8, 16, 32 },
-				new int[]{ 1, 42, 7, 12, 16, 1 }
+                    new int[]{ 12, 0, 5, 20, 25, 40 },
+                    new int[]{ 0, 2, 4, 8, 16, 32 },
+                    new int[]{ 1, 42, 7, 12, 16, 1 }
             };
 
             int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF };
 
             //#style formbox
             ChartItem ci = new ChartItem("scores", dataSequences, colors);
-            form.append(ci);*/
-            
+            form.append(ci);
+            */
+
             form.addCommand(cancelCmd);
 
-            form.setCommandListener(this);                                
+            form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
 		}
 
