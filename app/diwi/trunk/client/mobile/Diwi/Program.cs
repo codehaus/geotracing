@@ -11,7 +11,7 @@ namespace Diwi {
 
         [MTAThread]
         static void Main() {
-            Application.Run(new MainPage(null));
+            Application.Run(new StartPage(null));
         }
     }
 }

@@ -11,6 +11,12 @@ namespace Diwi {
         Hashtable mAttribs;
         ArrayList mChildren;
 
+        public ArrayList children {
+            get {
+                return mChildren;
+            }
+        }
+        
         public string tag {
             get {
                 return mTag;
@@ -53,6 +59,24 @@ namespace Diwi {
             mAttribs[key] = val;
         }
 
+        public string getChildValue(string childTag) {
+            XMLement child = getChildByName(childTag);
+            if (child != null) return child.mNodeText;
+            return null;
+        }
+
+        public XMLement getChildByName(string key) {
+            foreach (XMLement xml in mChildren) {
+                if (xml.mTag == key)
+                    return xml;
+            }
+            return null;
+        }
+
+        public XMLement getChild(int i) {
+            if (i < mChildren.Count) return (XMLement)mChildren[i];
+            return null;
+        }
 
         public string getAttributeValue(string key) {
             if (mAttribs.Contains(key))
@@ -60,7 +84,9 @@ namespace Diwi {
             return null;
         }
 
-
+        public XMLement firstChild() {
+            return (XMLement)mChildren[0];
+        }
 
         public string toString() {
             StringBuilder sb = new StringBuilder("<");
@@ -75,7 +101,7 @@ namespace Diwi {
             sb.Append(">");
 
             if (mNodeText != null) {
-                sb.Append("\r" + mNodeText + "\r");
+                sb.Append(mNodeText);
             }
 
             foreach (XMLement xml in mChildren) {

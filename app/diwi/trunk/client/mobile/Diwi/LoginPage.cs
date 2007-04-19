@@ -30,7 +30,7 @@ namespace Diwi {
         private delegate void updateKwxMessageDelegate(string m);
         void updateKwxMessage(string m) {
             Rectangle oldRect = mServerMess.rect;
-            mServerMess.erase(mBackgroundColor);
+            mServerMess.erase(sBackgroundColor);
             mServerMess.draw(m);
             redrawRect(oldRect, mServerMess.rect);
         }
@@ -73,11 +73,14 @@ namespace Diwi {
         public void buttonOK() {
             AppController.sKwxClient.stop();
             AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
+            if (AppController.sKwxClient.agentKey != null)
+                doTerug(0,null);
         }
         
         
         protected override void OnResize(EventArgs e) {
             // change location of stuff
+            if (mInitializing) return;
             if (base.doResize(e)) {
                 int y = this.ClientRectangle.Height - 4;
                 mServerMess.x = 4; mServerMess.y = y -= 20;

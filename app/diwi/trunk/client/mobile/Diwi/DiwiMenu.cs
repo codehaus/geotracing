@@ -10,7 +10,7 @@ namespace Diwi {
     /// </summary>
     class DiwiUIMenu : DiwiDrawable
     {
-        public delegate void DiwiMenuCallbackHandler();
+        public delegate void DiwiMenuCallbackHandler(int item,string name);
 
         public static Color sBackColor = Color.FromArgb(180, 250, 0);
         public static Color sBarColor = Color.FromArgb(220, 250, 0);
@@ -49,7 +49,7 @@ namespace Diwi {
                     DiwiMenuCallbackHandler cb = (DiwiMenuCallbackHandler)mCallbacks[i];
                     if (cb != null) {
                         mCurrentMenuIndex = -1;
-                        cb();
+                        cb(i,(string)mItems[i]);
                         return;
                     }
                 }
@@ -61,8 +61,9 @@ namespace Diwi {
             if (mCurrentMenuIndex != -1) {
                 DiwiMenuCallbackHandler cb = (DiwiMenuCallbackHandler)mCallbacks[mCurrentMenuIndex];
                 if (cb != null) {
+                    int i = mCurrentMenuIndex;
                     mCurrentMenuIndex = -1;
-                    cb();
+                    cb(i, (string)mItems[i]);
                 }
             }
         }

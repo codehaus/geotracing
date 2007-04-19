@@ -13,6 +13,9 @@ namespace Diwi {
     /// </summary>
     class AppController
     {
+        public static XMLement sActiveRoute = null;
+        public static string sActiveRouteMapPath = null;
+        public static XMLement sFixedRoutes;
         public static StreamWriter sLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;

@@ -54,7 +54,8 @@ namespace Diwi {
         }
 
        protected override void OnResize(EventArgs e) {
-            if (base.doResize(e)) {
+           if (mInitializing) return;
+           if (base.doResize(e)) {
                 int y = this.ClientRectangle.Height - 4;
                 latLonText.x = 8; latLonText.y = y -= 20;
                 numSatText.x = 8; numSatText.y = y -= 20;
@@ -73,14 +74,14 @@ namespace Diwi {
 
         void updatePrecision() {
             Rectangle oldRect = hDopText.rect;
-            hDopText.erase(mBackgroundColor);
+            hDopText.erase(sBackgroundColor);
             hDopText.draw("HDOP: " + GpsReader.precision.ToString());
             redrawRect(oldRect, hDopText.rect);
         }
 
         void updatePosition() {
             Rectangle oldRect = latLonText.rect;
-            latLonText.erase(mBackgroundColor);
+            latLonText.erase(sBackgroundColor);
             latLonText.draw(GpsReader.latitude + "; " + GpsReader.longtitude);
             redrawRect(oldRect, latLonText.rect);
         }
@@ -88,7 +89,7 @@ namespace Diwi {
 
         void updateNumSats() {
             Rectangle oldRect = numSatText.rect;
-            numSatText.erase(mBackgroundColor);
+            numSatText.erase(sBackgroundColor);
             numSatText.draw("sattelites in view: " + GpsReader.numSats.ToString());
             redrawRect(oldRect, numSatText.rect);
         }
@@ -96,7 +97,7 @@ namespace Diwi {
 
         void updateFix() {
             Rectangle oldRect = fixText.rect;
-            fixText.erase(mBackgroundColor);
+            fixText.erase(sBackgroundColor);
             fixText.draw(GpsReader.fix ? "found fix" : "no fix");
             redrawRect(oldRect, fixText.rect);
         }
@@ -104,7 +105,7 @@ namespace Diwi {
 
         void updateSpeed() {
             Rectangle oldRect = speedText.rect;
-            speedText.erase(mBackgroundColor);
+            speedText.erase(sBackgroundColor);
             speedText.draw("speed: " + GpsReader.speed.ToString() + " kph.");
             redrawRect(oldRect, speedText.rect);
         }
@@ -112,7 +113,7 @@ namespace Diwi {
 
         void updateDemo() {
             Rectangle oldRect = demoText.rect;
-            demoText.erase(mBackgroundColor);
+            demoText.erase(sBackgroundColor);
             demoText.draw(GpsReader.demo ? "GPS Demo Mode!" : "");
             redrawRect(oldRect, demoText.rect);
         }
