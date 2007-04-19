@@ -38,6 +38,20 @@
 		</expect>
 	</test>
 
+	<test id="play-reset-req1">
+		<send id="client1">
+			<utopia-req>
+				<play-reset-req id="${gameplayid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-reset-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
 	<test id="play-start-req">
 		<send id="client1">
 			<utopia-req>
@@ -128,8 +142,129 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<play-location-rsp>
-					
+					<medium-hit id="${mediumhitid1}"/>
 				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="get-medium-1">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-medium" id="${mediumhitid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp>
+					<record id="${mediumhitid1}">
+						<name/>
+						<description/>
+						<type/>
+					</record>
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-multi-sample">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<trkpt lon="4.922604560852051" lat="52.37793083212911"/>
+					<trkpt lon="4.922733306884766" lat="52.37824520322338"/>
+					<trkpt lon="4.9228620529174805" lat="52.37855957207963"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-task-1">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.922990798950195" lat="52.37879534725308"/>
+					<pt lon="4.923076629638672" lat="52.37955505869286" label="javakade-sumatrakade"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<task-hit id="${taskhitid1}"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+ 	<test id="get-task-1">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-task" id="${taskhitid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp>
+					<record>
+						<id/>
+						<mediumid/>
+						<name/>
+						<description/>
+					</record>
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="play-answer-task-1-wrong">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid1}" answer="wrong"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp result="false" score="0" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-answer-task-1-right">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid1}" answer="waag"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp result="true" score="10" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-reset-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-reset-req id="${gameplayid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-reset-rsp/>
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -143,5 +278,6 @@
 			<logout-rsp/>
 		</expect>
 	</test>
+	 
 </testset>
 

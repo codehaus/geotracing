@@ -1,6 +1,7 @@
 package org.walkandplay.server.util;
 
 import org.geotracing.handler.Location;
+import org.geotracing.handler.Track;
 
 public interface Constants {
 	// tablenames
@@ -13,6 +14,8 @@ public interface Constants {
 	public final static String TEAM_TABLE = "wp_team";
 	public final static String MEDIUM_TABLE = "base_medium";
 	public final static String LOCATION_TABLE = Location.TABLE_NAME;
+	public final static String TRACK_TABLE = Track.TABLE_NAME;
+	public final static String TASKRESULT_TABLE = "wp_taskresult";
 
 	// tag names
 	public final static String TAG_GAME = "game";
@@ -41,6 +44,7 @@ public interface Constants {
 	public final static String ANSWER_FIELD = "answer";
 	public final static String LON_FIELD = "lon";
 	public final static String LAT_FIELD = "lat";
+	public final static String RESULT_FIELD = "result";
 
 	public final static String INVITATION_FIELD = "invitation";
 	public final static String INVITATION_SEND = "invitation-send";
@@ -66,5 +70,7 @@ public interface Constants {
 	public final static String PLAY_STATE_SUSPENDED = "suspended";
 	public final static String PLAY_STATE_DONE = "done";
 
+	// Radius in meters to hit locations
+	public final static int HIT_RADIUS_METERS = 15;
 
 }
