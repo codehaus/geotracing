@@ -40,8 +40,6 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
             Log.log("Could not load the images on FindDisplay");
         }
 
-        append(logo);
-
         midlet = aMIDlet;
 
         Net net = Net.getInstance();
@@ -51,34 +49,40 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
             net.start();
         }
 
-        // get the games
-        try{
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-schedule-by-user");
-            //req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
-            req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, "red2"));
-            JXElement rsp = net.utopiaReq(req);
-            System.out.println(new String(rsp.toBytes(false)));
-            if(rsp!=null) {
-                Vector elms = rsp.getChildrenByTag("record");
-                for(int i=0;i<elms.size();i++){
-                    JXElement elm = (JXElement)elms.elementAt(i);
-                    String name = elm.getChildText("name");
-                    //#style formbox
-                    gamesGroup.append(name, null);
-                    games.put(name, elm);
+        if(!net.isConnected()){
+            // login must have failed!!!!
+            //#style formbox
+            append("Logging in has failed!! Please check your username and password under Settings/Account and try again.");
+        }else{            
+            // get the games
+            try{
+                JXElement req = new JXElement("query-store-req");
+                req.setAttr("cmd", "q-schedule-by-user");
+                req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
+                JXElement rsp = net.utopiaReq(req);
+                System.out.println(new String(rsp.toBytes(false)));
+                if(rsp!=null) {
+                    Vector elms = rsp.getChildrenByTag("record");
+                    for(int i=0;i<elms.size();i++){
+                        JXElement elm = (JXElement)elms.elementAt(i);
+                        String name = elm.getChildText("name");
+                        //#style formbox
+                        gamesGroup.append(name, null);
+                        games.put(name, elm);
+                    }
                 }
+            }catch(Throwable t){
+                System.out.println(t.getMessage());
             }
-        }catch(Throwable t){
-            System.out.println(t.getMessage());
+
+            append(logo);
+
+            //#style smallstring
+            append("Select a game and press Ok in menu");
+            //#style formbox
+            append(gamesGroup);
+            addCommand(OK_CMD);
         }
-
-
-        //#style smallstring
-        append("Select a game and press Ok in menu");
-        //#style formbox
-        append(gamesGroup);
-        addCommand(OK_CMD);
     }
 
     public void onNetInfo(String theInfo){
