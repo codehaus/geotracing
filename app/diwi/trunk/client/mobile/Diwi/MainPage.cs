@@ -24,7 +24,7 @@ namespace Diwi {
             mMenu.addItem("Route maken", new DiwiUIMenu.DiwiMenuCallbackHandler(doMaakRoute));
             mMenu.addItem("Inloggen", new DiwiUIMenu.DiwiMenuCallbackHandler(doLogin));
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS));
- //           mMenu.addItem("Test", new DiwiUIMenu.DiwiMenuCallbackHandler(doTest));
+            mMenu.addItem("Test", new DiwiUIMenu.DiwiMenuCallbackHandler(doTest));
             mMenu.addItem("Quit", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Hoofdmenu";
