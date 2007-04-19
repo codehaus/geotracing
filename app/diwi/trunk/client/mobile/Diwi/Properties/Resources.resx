@@ -126,6 +126,9 @@
   <data name="KwRole" xml:space="preserve">
     <value>user</value>
   </data>
+  <data name="KwxMediaServerUrl" xml:space="preserve">
+    <value>http://test.digitalewichelroede.nl/diwi/media.srv</value>
+  </data>
   <data name="KwxServerPassword" xml:space="preserve">
     <value>diwitom</value>
   </data>
