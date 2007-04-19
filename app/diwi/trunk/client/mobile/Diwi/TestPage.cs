@@ -29,14 +29,14 @@ namespace Diwi {
             
         }
 
-        private void doGRL() {
+        private void doGRL(int i, string s) {
             XMLement getRoutesReq = AppController.sKwxClient.getRouteList();
-            string s = getRoutesReq.toString();
+            
         }
 
-        private void doGR() {
-            XMLement getRoutesReq = AppController.sKwxClient.getRoute(109);
-            string s = getRoutesReq.toString();
+        private void doGR(int i, string s) {
+            XMLement getRoutesReq = AppController.sKwxClient.getRoute("109");
+            string s1 = getRoutesReq.toString();
         }
 
         private void viewVideoFileInWMP(string fn)

@@ -44,7 +44,7 @@ namespace Diwi {
         }
 
 
-        void doVideo() {
+        void doVideo(int i, string s) {
             CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
             cameraCaptureDialog.Owner = this;
             cameraCaptureDialog.Title = "Neem een video";
@@ -55,23 +55,24 @@ namespace Diwi {
         }
 
 
-        void doFoto() {
+        void doFoto(int i, string s) {
             CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
             cameraCaptureDialog.Owner = this;
             cameraCaptureDialog.Title = "Neem een foto";
             cameraCaptureDialog.Mode = CameraCaptureMode.Still;
             if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
+                string s1 = cameraCaptureDialog.FileName;
                 mFoto.bitmap = new Bitmap(cameraCaptureDialog.FileName);
                 draw();
             }
         }
 
 
-        
-        void doOver() {
+
+        void doOver(int i, string s) {
         }
 
-        void doFaq() {
+        void doFaq(int i, string s) {
         }
 
         protected override void OnLoad(EventArgs e) {

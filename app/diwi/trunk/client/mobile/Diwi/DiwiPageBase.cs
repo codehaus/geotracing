@@ -17,10 +17,11 @@ namespace Diwi {   // base class for Diwi Pages.
         protected Graphics onScreenGraphics;
         protected DiwiPageBase mParent;
         protected bool mIsInitialized = false;
-        private ArrayList mDrawableElements;
+        protected ArrayList mDrawableElements;
         private Rectangle mCurrentRect;
         protected DiwiUIMenu mMenu;
-        protected Color mBackgroundColor;
+        public static Color sBackgroundColor;
+        protected bool mInitializing = true;
         private DiwiUIText mouseText;
 
         DiwiImage mBackImage = null;
@@ -32,7 +33,7 @@ namespace Diwi {   // base class for Diwi Pages.
 
 
             mParent = parent;
-            mBackgroundColor = Color.FromArgb(180, 250, 0);
+            sBackgroundColor = Color.FromArgb(180, 250, 0);
 
             mCurrentRect = this.ClientRectangle;
 
@@ -40,11 +41,12 @@ namespace Diwi {   // base class for Diwi Pages.
 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = false;
-            this.BackColor = mBackgroundColor;
+            this.BackColor = sBackgroundColor;
             this.ClientSize = new System.Drawing.Size(240, 320);
             this.Name = "";
             this.Text = "";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.BackColor = sBackgroundColor;
             this.ResumeLayout(false);
 
 
@@ -56,12 +58,14 @@ namespace Diwi {   // base class for Diwi Pages.
             mMenu = new DiwiUIMenu(this);
             addDrawable(mMenu);
             mouseText = new DiwiUIText(offScreenGraphics);
+
+            mInitializing = false;
         
         }
 
         protected override void OnMouseMove(MouseEventArgs e) {
             Rectangle oldRect = mouseText.rect;
-            mouseText.erase(mBackgroundColor);
+            mouseText.erase(sBackgroundColor);
 
             mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
             mouseText.x = 4;
@@ -99,6 +103,23 @@ namespace Diwi {   // base class for Diwi Pages.
                 MessageBox.Show(e.Message);
             }
         }
+
+        protected void setBackGroundFromFile(string path, int aWidth, int aHeight, int aX, int aY) {
+            Stream stream = null;
+            try {
+                stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+                mBackImage = new DiwiImage(this);
+                Size size = new Size(aWidth, aHeight);
+                mBackImage.size = size;
+                mBackImage.x = aX;
+                mBackImage.y = aY;
+                mBackImage.bitmap = new Bitmap(stream);
+                draw();
+            } catch (System.IO.FileNotFoundException e) {
+                MessageBox.Show(e.Message);
+            }
+        }
+
 
         protected void setForeGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY) {
             Stream stream = null;
@@ -172,7 +193,7 @@ namespace Diwi {   // base class for Diwi Pages.
             draw();
         }
 
-        protected virtual void doTerug() {
+        protected virtual void doTerug(int i, string s) {
             //this.Visible = false;
             if (mParent != null)
                 mParent.Show();
@@ -185,13 +206,14 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public void draw() {
-            offScreenGraphics.Clear(mBackgroundColor);
+            offScreenGraphics.Clear(sBackgroundColor);
             if (mBackImage != null) {
                 mBackImage.draw();
             }
             foreach (DiwiDrawable d in mDrawableElements) {
                 d.draw();
             }
+            if (onScreenGraphics == null) onScreenGraphics = this.CreateGraphics();
             onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
 

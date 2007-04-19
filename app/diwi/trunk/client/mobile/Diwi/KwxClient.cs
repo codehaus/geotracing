@@ -22,7 +22,6 @@ namespace Diwi {
         private string mPass = Diwi.Properties.Resources.KwxServerPassword;
         private string mServer;
         private string mAgentKey;
-        private Thread mHbThread;
         private XMLement selectAppRequest;
         string trackId;
 
@@ -89,27 +88,6 @@ namespace Diwi {
             }
         }
 
-        /// <summary>
-        /// While connected, send heartbeat every 5 seconds.
-        /// Asynchronous thread run loop.
-        /// </summary>
-        private void hbHandler()
-        {
-            while (mAgentKey != null) {
-                Thread.Sleep(5000);
-                DateTime d1 = DateTime.UtcNow;
-                XMLement req = new XMLement();
-                req.tag = "t-hb-req";
-                req.addAttribute("t", "" + d1.ToFileTime());
-
-                lock (this) {
-                    req = utopiaRequest(req);
-                    if (messageCallback != null) {
-                        //messageCallback(req.toString());
-                    }
-                }
-            }
-        }
 
 
         public XMLement doLogout() {
@@ -150,10 +128,6 @@ namespace Diwi {
                     messageCallback("Kwx login failed: " + xml.getAttributeValue("reason"));
                 throw new Exception("login failed: " + xml.getAttributeValue("reason"));
             }
-
-           // mHbThread = new Thread(new ThreadStart(hbHandler));
-           // mHbThread.Start();
-
             return xml;
         }
 
@@ -171,10 +145,10 @@ namespace Diwi {
             return new XMLement("NotLoggedInError");
         }
 
-        public XMLement getRoute(int id) {
+        public XMLement getRoute(string id) {
             if (mAgentKey != null) {
                 XMLement req = new XMLement("route-get-req");
-                req.addAttribute("id",id.ToString());
+                req.addAttribute("id",id);
 
                 req = utopiaRequest(req);
 
@@ -183,7 +157,17 @@ namespace Diwi {
             return new XMLement("NotLoggedInError");
         }
 
-
+        public string getRouteMap(string id) {
+            XMLement req = new XMLement("route-get-map-req");
+            req.addAttribute("id", id);
+            req.addAttribute("height", "320");
+            req.addAttribute("width", "240");
+            req = utopiaRequest(req);
+            if (req.tag == "route-get-map-rsp") {
+                return req.getAttributeValue("url");
+            }
+            return null;
+        }
 
 	/// <summary>
     /// Select application on server.
@@ -236,7 +220,16 @@ namespace Diwi {
             XMLement req = new XMLement();
             req.tag = Protocol.TAG_UTOPIA_REQ;
             req.addChild(anElement);
-            return doRequest(req);
+
+            req = doRequest(req);
+
+            if (req.tag == "utopia-rsp") {
+                return req.firstChild();
+            } else {
+                // add error handling!
+            }
+
+            return null;
         }
 
         private XMLement doRequest(XMLement anElement) {

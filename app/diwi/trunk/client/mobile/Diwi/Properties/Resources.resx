@@ -127,7 +127,7 @@
     <value>user</value>
   </data>
   <data name="KwxServerPassword" xml:space="preserve">
-    <value>user</value>
+    <value>diwitom</value>
   </data>
   <data name="KwxServerProtocolVersion" xml:space="preserve">
     <value>4.0</value>
@@ -139,6 +139,6 @@
     <value>http://test.digitalewichelroede.nl/diwi/proto.srv</value>
   </data>
   <data name="KwxServerUsername" xml:space="preserve">
-    <value>geoapp-user</value>
+    <value>diwitom</value>
   </data>
 </root>

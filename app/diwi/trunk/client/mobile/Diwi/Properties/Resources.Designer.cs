@@ -85,7 +85,7 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to user.
+        ///   Looks up a localized string similar to diwitom.
         /// </summary>
         internal static string KwxServerPassword {
             get {
@@ -121,7 +121,7 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to geoapp-user.
+        ///   Looks up a localized string similar to diwitom.
         /// </summary>
         internal static string KwxServerUsername {
             get {

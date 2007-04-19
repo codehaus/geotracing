@@ -55,6 +55,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppController.cs" />
+    <Compile Include="DiwiUIStaticText.cs" />
+    <Compile Include="MediaHandler.cs" />
+    <Compile Include="RouteInfoPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectRoutePage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="StartPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,6 +102,9 @@
     </Compile>
     <Compile Include="Protocol.cs" />
     <Compile Include="UitlegPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WalkRoutePage.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="XMLement.cs" />
