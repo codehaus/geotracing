@@ -32,7 +32,8 @@ namespace Diwi {
 
 
         void voegToe(int i, string s) {
-            
+            new MediaUploader(currentFilename, null);
+            doTerug(0, null);
         }
 
 

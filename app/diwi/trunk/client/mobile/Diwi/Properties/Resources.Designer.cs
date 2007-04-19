@@ -85,6 +85,15 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to http://test.digitalewichelroede.nl/diwi/media.srv.
+        /// </summary>
+        internal static string KwxMediaServerUrl {
+            get {
+                return ResourceManager.GetString("KwxMediaServerUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to diwitom.
         /// </summary>
         internal static string KwxServerPassword {
