@@ -19,7 +19,7 @@ namespace Diwi {
         public StartPage(DiwiPageBase parent)
             : base(parent) {
             AppController.activate();
-            title = "StartPagina";
+            title = "";
             mDrawableElements.Clear();
             mIsInitialized = true;
         }
@@ -44,7 +44,7 @@ namespace Diwi {
 
             mIsInitialized = true;
             timerDelegate = new TimerCallback(doTimeout);
-            mSplashTimer = new System.Threading.Timer(timerDelegate, autoEvent, 5000, 1000);
+            mSplashTimer = new System.Threading.Timer(timerDelegate, autoEvent, 5000, 0);
         }
 
         protected override void OnResize(EventArgs e) {
@@ -55,10 +55,6 @@ namespace Diwi {
             } else {
                 setBackGroundImg(@"Diwi.Resources.start_vert.gif", 240, 320, 0, 0);
             }
-//            draw();
-//            onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
-
         }
-    }
-    
+    }    
 }

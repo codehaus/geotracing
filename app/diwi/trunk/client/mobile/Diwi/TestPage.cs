@@ -30,7 +30,8 @@ namespace Diwi {
         }
 
         private void doGRL(int i, string s) {
-            XMLement getRoutesReq = AppController.sKwxClient.getRouteList();
+            DateTime d = DateTime.UtcNow;
+            int n = d.Millisecond;
             
         }
 
