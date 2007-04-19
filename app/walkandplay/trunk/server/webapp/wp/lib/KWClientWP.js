@@ -41,7 +41,7 @@ KW.WP = {
  * @param mediumId - id of medium
  */
 	gameDelMedium: function(callback, mediumId) {
-		var req = KW.createRequest('game-del-medium-req');
+		var req = KW.createRequest('game-delete-medium-req');
 
 		// Only medium id is required (game is coupled to medium)
 		KW.UTIL.setAttr(req, 'id', mediumId);
@@ -82,7 +82,7 @@ KW.WP = {
  * @param taskId - id of task
  */
 	gameDelTask: function(callback, taskId) {
-		var req = KW.createRequest('game-del-task-req');
+		var req = KW.createRequest('game-delete-task-req');
 
 		// Only medium id is required (game is coupled to medium)
 		KW.UTIL.setAttr(req, 'id', taskId);

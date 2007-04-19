@@ -54,24 +54,35 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				Record[] locations = relater.getRelated(game, LOCATION_TABLE, null);
 				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-				Record locationItem;
+				Record locationItem, locationItems[];
 				for (int i = 0; i < locations.length; i++) {
 					JXElement rec = new JXElement("record");
 					switch (locations[i].getIntField(TYPE_FIELD)) {
 
 						case LOC_TYPE_GAME_TASK:
-							locationItem = relater.getRelated(locations[i], TASK_TABLE, null)[0];
-							rec.setChildText(SCORE_FIELD, locationItem.getIntField(SCORE_FIELD)+"");
+							locationItems = relater.getRelated(locations[i], TASK_TABLE, null);
+							if (locationItems.length != 1) {
+								log.warn("No task found for location id=" + locations[i].getId() + " (ignoring)");
+								continue;
+							}
+							locationItem = locationItems[0];
+							rec.setChildText(SCORE_FIELD, locationItem.getIntField(SCORE_FIELD) + "");
 							rec.setChildText(TYPE_FIELD, "task");
 							break;
 
 						case LOC_TYPE_GAME_MEDIUM:
-							locationItem = relater.getRelated(locations[i], MEDIUM_TABLE, null)[0];
+							locationItems = relater.getRelated(locations[i], MEDIUM_TABLE, null);
+							if (locationItems.length != 1) {
+								log.warn("No medium found for location id=" + locations[i].getId() + " (ignoring)");
+								continue;
+							}
+							locationItem = locationItems[0];
 							rec.setChildText(TYPE_FIELD, "medium");
 							break;
 						default:
 							continue;
 					}
+
 					rec.setChildText(ID_FIELD, locationItem.getId() + "");
 					rec.setChildText(NAME_FIELD, locationItem.getStringField(NAME_FIELD));
 					Point point = new Point(locations[i].getObjectField(POINT_FIELD).toString());
@@ -113,7 +124,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				s1.setChildText("team", "red1");
 				s1.setChildText("points", "5");
 				result.addChild(s1);
-				
+
 				JXElement s2 = new JXElement("record");
 				s2.setChildText("team", "blue1");
 				s2.setChildText("points", "10");
