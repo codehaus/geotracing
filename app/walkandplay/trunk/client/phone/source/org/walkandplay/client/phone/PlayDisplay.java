@@ -2,19 +2,11 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
 import de.enough.polish.ui.Form;
-import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.Gauge;
-import de.enough.polish.ui.ItemCommandListener;
-
 
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.TextField;
-import javax.microedition.media.control.VideoControl;
-import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
-import javax.microedition.media.MediaException;
 
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
@@ -33,13 +25,10 @@ import java.io.IOException;
 public class PlayDisplay extends GameCanvas implements CommandListener {
     // =====
     private GoogleMap.XY xy, prevXY;
-    private String tileRef="";
+    private String tileRef = "";
     private Image mapImage;
     private Displayable prevScreen;
     private String tileBaseURL;
-    private JXElement tileInfo, prevTileInfo;
-    private static final long REFRESH_INTERVAL_MILLIS = 10000L;
-    private long lastRefreshMillis;
     private Image tileImage;
     private MFloat tileScale;
 
@@ -69,17 +58,21 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private final static int SHOW_TASK = 4;
     private final static int SHOW_LOG = 5;
     private final static int SHOW_SCORES = 6;
+    private final static int SHOW_INFO = 7;
+    private final static int SHOW_ERROR = 8;
+    private final static int RETRIEVING_MAP = 9;
     private int SHOW_STATE = 0;
 
     int w, h;
 
     String gpsStatus = "disconnected";
-	String netStatus = "disconnected";
-	String status = "OK";
+    String netStatus = "disconnected";
+    String status = "OK";
+    String errorMsg = "";
 
     private boolean showGPSInfo = true;
-	private TracerEngine tracerEngine;
-	private PlayDisplay playDisplay;
+    private TracerEngine tracerEngine;
+    private PlayDisplay playDisplay;
     private String mediumBaseURL = Net.getInstance().getURL() + "/media.srv?id=";
 
     private Command START_GAME_CMD = new Command(Locale.get("play.Start"), Command.ITEM, 2);
@@ -93,7 +86,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private Command SCORES_CMD = new Command(Locale.get("play.Scores"), Command.ITEM, 2);
     private Command SHOW_LOG_CMD = new Command(Locale.get("play.ShowLog"), Command.ITEM, 2);
     private Command HIDE_LOG_CMD = new Command(Locale.get("play.HideLog"), Command.ITEM, 2);
-    private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.BACK, 1);
+    private Command SHOW_INFO_CMD = new Command(Locale.get("play.ShowInfo"), Command.ITEM, 2);
+    private Command HIDE_INFO_CMD = new Command(Locale.get("play.HideInfo"), Command.ITEM, 2);
+    private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);
+    private Command HIDE_ERROR_CMD = new Command(Locale.get("play.HideError"), Command.ITEM, 2);
 
     public PlayDisplay(WPMidlet aMidlet) {
         super(false);
@@ -101,8 +97,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
         midlet = aMidlet;
         // make sure we stop tracing when we go into play mode
-        if(midlet.traceDisplay!=null) midlet.traceDisplay.stop();
-        try{
+        if (midlet.traceDisplay != null) midlet.traceDisplay.stop();
+        try {
             //#ifdef polish.images.directLoad
             transBar = Image.createImage("/trans_bar.png");
             redDot = Image.createImage("/red_dot.png");
@@ -116,14 +112,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             taskDot = scheduleImage("/task_dot.png");
             redDot = scheduleImage("/red_dot.png");
             transBar = scheduleImage("/trans_bar.png");
-            textDot = scheduleImage("/text_dot.png");
+            textDot = scheduleImage("/text_dot.png");            
             movieDot = scheduleImage("/movie_dot.png");
             photoDot = scheduleImage("/photo_dot.png");
             traceDot = scheduleImage("/trace_dot.png");
             bg = scheduleImage("/bg.png");
             //#endif
-        }catch(Throwable t){
-            Log.log("Could not load the images on PlayDisplay");
+        } catch (Throwable t) {
+            log("Could not load the images on PlayDisplay", true);
         }
 
         playDisplay = this;
@@ -131,92 +127,101 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         addCommand(START_GAME_CMD);
         addCommand(BACK_CMD);
         setCommandListener(this);
+
     }
 
     void start() {
-        tracerEngine = new TracerEngine(midlet, this);
-        tracerEngine.start();
+        try {
+            tracerEngine = new TracerEngine(midlet, this);
+            tracerEngine.start();
 
-        getGameLocations();
+            getGameLocations();
 
-        tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
-        prevScreen = Display.getDisplay(midlet).getCurrent();
-        Display.getDisplay(midlet).setCurrent(this);
-        active = true;
+            tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
+            prevScreen = Display.getDisplay(midlet).getCurrent();
+            Display.getDisplay(midlet).setCurrent(this);
+            active = true;
 
+            fetchTileInfo();
+            show();
+        } catch (Throwable t) {
+            log("Exception in start():\n" + t.getMessage(), true);
+        }
+    }
+
+    private void getGameLocations() {
+        try {
+            JXElement req = new JXElement("query-store-req");
+            req.setAttr("cmd", "q-game-locations");
+            req.setAttr("id", midlet.getGameSchedule().getChildText("gameid"));
+            log(new String(req.toBytes(false)), false);
+            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+            gameLocations = rsp.getChildrenByTag("record");
+
+            // now determine the maximum attainable score
+            for (int i = 0; i < gameLocations.size(); i++) {
+                JXElement r = (JXElement) gameLocations.elementAt(i);
+                if (r.getChildText("type").equals("task")) {
+                    maxScore += Integer.parseInt(r.getChildText("score"));
+                }
+            }
+            log("maxscore: " + maxScore, false);
+
+            log(new String(rsp.toBytes(false)), false);
+        } catch (Throwable t) {
+            log("Exception in getGameLocations():\n" + t.getMessage(), true);
+        }
+    }
+
+    public void setLocation(String aLon, String aLat) {
+        lon = aLon;
+        lat = aLat;
         fetchTileInfo();
         show();
     }
 
-    private void getGameLocations(){
-        JXElement req = new JXElement("query-store-req");
-        req.setAttr("cmd", "q-game-locations");
-        req.setAttr("id", midlet.getGameSchedule().getChildText("gameid"));
-        log(new String(req.toBytes(false)));
-        JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-        gameLocations = rsp.getChildrenByTag("record");
-
-        // now determine the maximum attainable score
-        for(int i=0;i<gameLocations.size();i++){
-            JXElement r = (JXElement)gameLocations.elementAt(i);
-            if(r.getChildText("type").equals("task")){
-                maxScore += Integer.parseInt(r.getChildText("score"));
-            }
-        }
-        log("maxscore: " + maxScore);
-
-        log(new String(rsp.toBytes(false)));
-    }
-
-    public void setLocation(String aLon, String aLat) {
-		lon = aLon;
-		lat = aLat;
-		fetchTileInfo();
-		show();
-	}
-
     protected void fetchTileInfo() {
-		if (!hasLocation() || !active) {
-			return;
-		}
+        if (!hasLocation() || !active) {
+            return;
+        }
 
-		try {
-			// Get pixel offset into GMap 256x256 tile
-			GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
+        try {
+            // Get pixel offset into GMap 256x256 tile
+            GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
 
-			// Get unique tile ref (keyhole string)
-			String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
+            // Get unique tile ref (keyhole string)
+            String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
 
-			// System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
+            // System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
 
-			// Force refresh of mapImage when
-			// no tile info (initial)
-			// OR map keyhole ref changed (when zoom or moving off tile)
-			if (!tileRef.equals(newTileRef)) {
-				// System.out.println("refresh");
-				mapImage = null;
-				xy = prevXY = null;
-				tileRef = newTileRef;
-			}
+            // Force refresh of mapImage when
+            // no tile info (initial)
+            // OR map keyhole ref changed (when zoom or moving off tile)
+            if (!tileRef.equals(newTileRef)) {
+                // System.out.println("refresh");
+                mapImage = null;
+                xy = prevXY = null;
+                tileRef = newTileRef;
+            }
 
-			// Scale x,y to scaled tile image
- 			if (tileScale != null) {
-				// Correct pixel offset with tile scale
-				// Scale x,y offset of our location in mapImage
-				newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
-				newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
+            // Scale x,y to scaled tile image
+            if (tileScale != null) {
+                // Correct pixel offset with tile scale
+                // Scale x,y offset of our location in mapImage
+                newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
+                newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
 
-				// Remember previous (scaled) location
-				prevXY = xy;
+                // Remember previous (scaled) location
+                prevXY = xy;
 
-				// Set current location
-				xy = newTileXY;
-			}
+                // Set current location
+                xy = newTileXY;
+            }
 
-		} catch (Throwable t) {
-			Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
-		}
-	}
+        } catch (Throwable t) {
+            log("Exception in fetchTileInfo:\n" + t.getMessage(), true);
+        }
+    }
 
     private void show() {
         if (active) {
@@ -229,171 +234,188 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     }
 
     void stop() {
-		tracerEngine.stop();
-	}
+        tracerEngine.stop();
+    }
 
     TracerEngine getTracer() {
-		return tracerEngine;
-	}
+        return tracerEngine;
+    }
 
-	public void setGPSInfo(GPSInfo theInfo) {
-		setLocation(theInfo.lon.toString(), theInfo.lat.toString());
-		if (!showGPSInfo) {
-			return;
-		}
-		status = theInfo.toString();
+    public void setGPSInfo(GPSInfo theInfo) {
+        setLocation(theInfo.lon.toString(), theInfo.lat.toString());
+        if (!showGPSInfo) {
+            return;
+        }
+        status = theInfo.toString();
         //show();
     }
 
-	public void setStatus(String s) {
-		status = s;
+    public void setStatus(String s) {
+        status = s;
         //show();
     }
 
-	public void onGPSStatus(String s) {
-		gpsStatus = "GPS:" + s;
+    public void onGPSStatus(String s) {
+        gpsStatus = "GPS:" + s;
         show();
     }
 
     public void onNetStatus(String s) {
-        try{
-            if(s.indexOf("task")!=-1 && SHOW_STATE!=SHOW_TASK){
-                log("we found a task!!");
+        try {
+            if (s.indexOf("task") != -1 && SHOW_STATE != SHOW_TASK) {
+                log("we found a task!!", false);
                 taskId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
-                log("taskid:" + taskId);
+                log("taskid:" + taskId, false);
                 SHOW_STATE = RETRIEVING_TASK;
 
                 // make sure the commands are right
-                removeCommand(HIDE_LOG_CMD);
-                addCommand(SHOW_LOG_CMD);
+                /*removeCommand(HIDE_LOG_CMD);
+                addCommand(SHOW_LOG_CMD);*/
 
-            }else if(s.indexOf("medium")!=-1 && SHOW_STATE!=SHOW_MEDIUM){
-                log("we found a medium!!");
+            } else if (s.indexOf("medium") != -1 && SHOW_STATE != SHOW_MEDIUM) {
+                log("we found a medium!!", false);
                 mediumId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
-                log("mediumid:" + mediumId);
+                log("mediumid:" + mediumId, false);
                 SHOW_STATE = RETRIEVING_MEDIUM;
 
                 // make sure the commands are right
-                removeCommand(HIDE_LOG_CMD);
-                addCommand(SHOW_LOG_CMD);
+                /*removeCommand(HIDE_LOG_CMD);
+                addCommand(SHOW_LOG_CMD);*/
+            } else if (s.indexOf("error") != -1) {
+                SHOW_STATE = SHOW_ERROR;
             }
-        }catch(Throwable t){
-            log("OnNetStatus exception:" + t.getMessage());
+
+            netStatus = "NET:" + s;
+            show();
+        } catch (Throwable t) {
+            log("Exception in onNetStatus:\n" + t.getMessage(), true);
         }
-        netStatus = "NET:" + s;
-        show();
     }
 
-    private void retrieveTask(){
-        // retrieve the task
-        new Thread(new Runnable() {
-            public void run() {
-                log("retrieving the task: " + taskId);
-                JXElement req = new JXElement("query-store-req");
-                req.setAttr("cmd", "q-task");
-                req.setAttr("id", taskId);
-                log(new String(req.toBytes(false)));
-                JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-                log(new String(rsp.toBytes(false)));
-                task = rsp.getChildByTag("record");
-                if(task!=null){
-                    String mediumId = task.getChildText("mediumid");
-                    String url = mediumBaseURL + mediumId + "&resize=" + (w - 10);
-                    log(url);
-                    try {
-                        taskImage = Util.getImage(url);
-                    } catch (Throwable t) {
-                        log("Error fetching task image url: " + url);
-                    }
+    private void retrieveTask() {
+        try {
+            // retrieve the task
+            new Thread(new Runnable() {
+                public void run() {
+                    log("retrieving the task: " + taskId, false);
+                    JXElement req = new JXElement("query-store-req");
+                    req.setAttr("cmd", "q-task");
+                    req.setAttr("id", taskId);
+                    log(new String(req.toBytes(false)), false);
+                    JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+                    log(new String(rsp.toBytes(false)), false);
+                    task = rsp.getChildByTag("record");
+                    if (task != null) {
+                        String mediumId = task.getChildText("mediumid");
+                        String url = mediumBaseURL + mediumId + "&resize=" + (w - 10);
+                        log(url, false);
+                        try {
+                            taskImage = Util.getImage(url);
+                        } catch (Throwable t) {
+                            log("Error fetching task image url: " + url, false);
+                        }
 
-                    SHOW_STATE = SHOW_TASK;
-                }else{
-                    log("No task found with id " + taskId);
+                        SHOW_STATE = SHOW_TASK;
+                    } else {
+                        log("No task found with id " + taskId, false);
+                    }
                 }
-            }
-        }).start();
+            }).start();
+        } catch (Throwable t) {
+            log("Exception in retrieveTask:\n" + t.getMessage(), true);
+        }
     }
 
-    private void retrieveScores(){
-        /*<query-store-rsp cnt="(record count)" >
-           <record>
-             <id>23045</id>
-             <team>[teamname]</team>
-             <points>fietsvissen</points>
-           </record>
-        </query-store-rsp>*/
-        new Thread(new Runnable() {
-            public void run() {
-                JXElement req = new JXElement("query-store-req");
-                req.setAttr("cmd", "q-scores");
-                req.setAttr("gameid", midlet.getGamePlayId());
-                JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-                scores = rsp.getChildrenByTag("record");
-                log(new String(rsp.toBytes(false)));
+    private void retrieveScores() {
+        try {
+            new Thread(new Runnable() {
+                public void run() {
+                    JXElement req = new JXElement("query-store-req");
+                    req.setAttr("cmd", "q-scores");
+                    req.setAttr("gameid", midlet.getGamePlayId());
+                    log(new String(req.toBytes(false)), false);
+                    JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+                    scores = rsp.getChildrenByTag("record");
+                    log(new String(rsp.toBytes(false)), false);
 
-                SHOW_STATE = SHOW_SCORES;
-            }
-        }).start();
-    }
-
-    private void retrieveMedium(){
-        // retrieve the medium
-        new Thread(new Runnable() {
-            public void run() {
-                log("retrieving the medium: " + mediumId);
-                JXElement req = new JXElement("query-store-req");
-                req.setAttr("cmd", "q-medium");
-                req.setAttr("id", mediumId);
-                JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-                medium = rsp.getChildByTag("record");
-                String type = medium.getChildText("type");
-                String url = mediumBaseURL + mediumId;
-                log(url);
-                if (type.equals("image")) {
-                    try {
-                        url += "&resize=" + (w - 10);
-                        mediumImage = Util.getImage(url);
-                    } catch (Throwable t) {
-                        log("Error fetching image url");
-                    }
-                } else if (type.equals("audio")) {
-                    try {
-                        Util.playStream(url);
-                        // open up real player!!!
-                        //midlet.platformRequest(url);
-                    } catch (Throwable t) {
-                        log("Error playing audio url");
-                    }
-                } else if (type.equals("video")) {
-                    try {
-                        // open up real player!!!
-                        midlet.platformRequest(url);
-                    } catch (Throwable t) {
-                        log("Error fetching text url=");
-                    }
-                } else if (type.equals("text")) {
-                    try {
-                        medium.setChildText("description", Util.getPage(url));
-                    } catch (Throwable t) {
-                        log("Error fetching text url=");
-                    }
-                } else if (type.equals("user")) {
-                    //showObject.setChildText("text", "last location of " + showObject.getChildText("name"));
-                } else {
-                    //showObject.setChildText("text", type + " is not supported (yet)");
+                    SHOW_STATE = SHOW_SCORES;
                 }
+            }).start();
+        } catch (Throwable t) {
+            log("Exception in retrieveScores:\n" + t.getMessage(), true);
+        }
+    }
 
-                SHOW_STATE = SHOW_MEDIUM;
-            }
-        }).start();
+    private void retrieveMedium() {
+        try {
+            // retrieve the medium
+            new Thread(new Runnable() {
+                public void run() {
+                    log("retrieving the medium: " + mediumId, false);
+                    JXElement req = new JXElement("query-store-req");
+                    req.setAttr("cmd", "q-medium");
+                    req.setAttr("id", mediumId);
+                    JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+                    medium = rsp.getChildByTag("record");
+                    String type = medium.getChildText("type");
+                    String url = mediumBaseURL + mediumId;
+                    log(url, false);
+                    if (type.equals("image")) {
+                        try {
+                            url += "&resize=" + (w - 10);
+                            mediumImage = Util.getImage(url);
+                        } catch (Throwable t) {
+                            log("Error fetching image url", false);
+                        }
+                    } else if (type.equals("audio")) {
+                        try {
+                            Util.playStream(url);
+                            // open up real player!!!
+                            //midlet.platformRequest(url);
+                        } catch (Throwable t) {
+                            log("Error playing audio url", false);
+                        }
+                    } else if (type.equals("video")) {
+                        try {
+                            // open up real player!!!
+                            //midlet.platformRequest(url);
+                        } catch (Throwable t) {
+                            log("Error fetching text url=", false);
+                        }
+                    } else if (type.equals("text")) {
+                        try {
+                            medium.setChildText("description", Util.getPage(url));
+                        } catch (Throwable t) {
+                            log("Error fetching text url=", false);
+                        }
+                    } else if (type.equals("user")) {
+                        //showObject.setChildText("text", "last location of " + showObject.getChildText("name"));
+                    } else {
+                        //showObject.setChildText("text", type + " is not supported (yet)");
+                    }
+
+                    SHOW_STATE = SHOW_MEDIUM;
+                }
+            }).start();
+        } catch (Throwable t) {
+            log("Exception in retrieveMedium:\n" + t.getMessage(), true);
+        }
     }
 
 
-    private void log(String aMsg){
+    private void log(String aMsg, boolean isError) {
         System.out.println(aMsg);
+        Log.log(aMsg);
+        if (isError) {
+            errorMsg = aMsg;
+            SHOW_STATE = SHOW_ERROR;
+            removeAllCommands();
+            addCommand(HIDE_ERROR_CMD);
+            repaint();
+        }
     }
 
-        /**
+    /**
      * Draws the map.
      *
      * @param g The graphics object.
@@ -410,7 +432,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             h = 208;
         }
 
-        //log("dbg 1");
         Font f = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         int fh = f.getHeight();
         g.setFont(f);
@@ -427,22 +448,46 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
             if (hasLocation() && mapImage == null) {
                 try {
-                    String tileSize = w + "x" + w;
+                    //String tileSize = w + "x" + w;
                     //String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
                     String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=320x320";
-                    g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
+                    
+                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     String s1 = "Fetching map image...";
-                    g.drawString(s1, w/2 - (g.getFont().stringWidth(s1))/2, h/2 - fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(s1, w / 2 - (g.getFont().stringWidth(s1)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
 
                     // Get Google Tile image and draw on mapImage
                     Image tileImage = Util.getImage(tileURL);
                     mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
                     mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+
+                    if (gameLocations != null) {
+                        for (int i = 0; i < gameLocations.size(); i++) {
+                            JXElement loc = (JXElement) gameLocations.elementAt(i);
+
+                            Image img;
+                            String type = loc.getChildText("type");
+                            if (type.equals("task")) {
+                                img = taskDot;
+                            } else if (type.equals("medium")) {
+                                img = textDot;
+                            } else {
+                                img = textDot;
+                            }
+
+                            GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
+                            Gxy.x = (int) new MFloat(Gxy.x).Mul(tileScale).toLong();
+                            Gxy.y = (int) new MFloat(Gxy.y).Mul(tileScale).toLong();
+
+                            mapImage.getGraphics().drawImage(img, Gxy.x, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);                            
+                        }
+                    }
+
                     fetchTileInfo();
                     repaint();
                     return;
                 } catch (Throwable t) {
-                    //g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
                     throw new IOException(t.getMessage());
                 }
             }
@@ -458,63 +503,65 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 }
 
                 // Draw background map
-
-                if(xy.x < 40){
+                if (xy.x < 40) {
                     g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, xy.x, xy.y, Graphics.HCENTER | Graphics.VCENTER);
-                }else if (xy.x > 280){
-                    g.drawImage(mapImage, - 80, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, xy.x - 80, xy.y, Graphics.HCENTER | Graphics.VCENTER);
-                }else{
+                    g.drawImage(redDot, xy.x, xy.y, Graphics.VCENTER | Graphics.HCENTER);
+                } else if (xy.x > 280) {
+                    g.drawImage(mapImage, -80, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(redDot, xy.x - 80, xy.y, Graphics.VCENTER | Graphics.HCENTER);
+                } else {
                     g.drawImage(mapImage, -40, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, xy.x - 40, xy.y, Graphics.HCENTER | Graphics.VCENTER);
+                    g.drawImage(redDot, xy.x - 40, xy.y, Graphics.VCENTER | Graphics.HCENTER);
                 }
 
             } else {
                 g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                 String s = "Retrieving location...";
-                g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);
+                //Gauge gauge = new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
+                //gauge.paint(10, h/2 - transBar.getHeight()/2 + 2*fh, 5, w - 10, g);
+                //g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2 - transBar.getHeight()/2 + 2, Graphics.TOP | Graphics.LEFT);
+                g.drawString(s, w / 2 - (g.getFont().stringWidth(s)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
             }
 
-            // now draw the gamelocations
-            if(gameLocations!=null){
-                for(int i=0;i<gameLocations.size();i++){
-                    JXElement loc = (JXElement)gameLocations.elementAt(i);
-                    String khref = GoogleMap.getKeyholeRef(loc.getChildText("lon"),loc.getChildText("lat"), zoom);
+            /*// now draw the gamelocations
+            if (gameLocations != null) {
+                for (int i = 0; i < gameLocations.size(); i++) {
+                    JXElement loc = (JXElement) gameLocations.elementAt(i);
+                    String khref = GoogleMap.getKeyholeRef(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
                     Image img;
                     String type = loc.getChildText("type");
-                    if(type.equals("task")){
+                    if (type.equals("task")) {
                         img = taskDot;
-                    }else if(type.equals("medium")){
+                    } else if (type.equals("medium")) {
                         img = textDot;
-                    }else{
+                    } else {
                         img = textDot;
                     }
-                    if(tileRef!=null && khref.equals(tileRef)){
-                        GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"),loc.getChildText("lat"), zoom);
-                        if(Gxy.x < 40){
-                            g.drawImage(img, Gxy.x, Gxy.y, Graphics.HCENTER | Graphics.VCENTER);
-                        }else if (Gxy.x > 280){
-                            g.drawImage(img, Gxy.x - 80, Gxy.y, Graphics.HCENTER | Graphics.VCENTER);
-                        }else{
-                            g.drawImage(img, Gxy.x - 40, Gxy.y, Graphics.HCENTER | Graphics.VCENTER);
+                    if (tileRef != null && khref.equals(tileRef)) {
+                        GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
+                        if (Gxy.x < 40) {
+                            g.drawImage(img, Gxy.x, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);
+                        } else if (Gxy.x > 280) {
+                            g.drawImage(img, Gxy.x - 80, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);
+                        } else {
+                            g.drawImage(img, Gxy.x - 40, Gxy.y, Graphics.VCENTER| Graphics.HCENTER);
                         }
                     }
                 }
-            }
+            }*/
 
-            switch(SHOW_STATE){
+            switch (SHOW_STATE) {
                 case RETRIEVING_MEDIUM:
-                    g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     String s1 = "Hit media - retrieving...";
-                    g.drawString(s1, w/2 - (g.getFont().stringWidth(s1))/2, h/2 - fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(s1, w / 2 - (g.getFont().stringWidth(s1)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
                     retrieveMedium();
                     break;
                 case RETRIEVING_TASK:
-                    g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     String s2 = "Hit a task - retrieving...";
-                    g.drawString(s2, w/2 - (g.getFont().stringWidth(s2))/2, h/2 - fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(s2, w / 2 - (g.getFont().stringWidth(s2)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
                     retrieveTask();
                     break;
                 case SHOW_MEDIUM:
@@ -527,20 +574,40 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     new ScoreHandler().showScores();
                     break;
                 case SHOW_LOG:
-                    g.drawImage(transBar, 0, h/2 - transBar.getHeight()/2, Graphics.TOP | Graphics.LEFT);
-                    g.drawString(netStatus, w/2 - (g.getFont().stringWidth(netStatus))/2, h/2 - fh, Graphics.TOP | Graphics.LEFT);
-                    g.drawString(gpsStatus, w/2 - (g.getFont().stringWidth(gpsStatus))/2, h/2, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    break;
+                case SHOW_ERROR:
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(errorMsg, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    break;
+                case SHOW_INFO:
+                    int tH = transBar.getHeight();
+                    int margin = 5;
+                    int imgMargin = 30;
+                    g.drawImage(transBar, 0, h / 2 - 3 / 2 * tH, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - 1 / 2 * tH, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 + 3 / 2 * tH, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(redDot, margin, h / 2 - 3 / 2 * tH + fh, Graphics.VCENTER | Graphics.LEFT);
+                    g.drawString("this is you!", margin + imgMargin + margin, h / 2 - 3 / 2 * tH + fh, Graphics.VCENTER | Graphics.LEFT);
+                    g.drawImage(taskDot, margin, h / 2 - 3 / 2 * tH + fh + 20, Graphics.VCENTER | Graphics.LEFT);
+                    g.drawString("a task - complete to score points", margin + imgMargin + margin, h / 2 - 3 / 2 * tH + fh + 20, Graphics.VCENTER | Graphics.LEFT);
+                    g.drawImage(textDot, margin, h / 2 - 3 / 2 * tH + fh + 40, Graphics.VCENTER | Graphics.LEFT);
+                    g.drawString("media - text/video/photo/audio", margin + imgMargin + margin, h / 2 - 3 / 2 * tH + fh + 40, Graphics.VCENTER | Graphics.LEFT);
                     break;
             }
         } catch (IOException ioe) {
             g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-            String s = "Error\n" + ioe.getMessage() + "\nCannot get image. Try zooming out";
-            g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);
-		} catch (Throwable t) {
+            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+            String s = "Error showing map\n" + ioe.getMessage() + "\nCannot get image. Try zooming out";
+            g.drawString(s, w / 2 - (g.getFont().stringWidth(s)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
+        } catch (Throwable t) {
             g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-            String s = "Error\n" + t.getMessage();
-            g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2, Graphics.TOP | Graphics.LEFT);            
-		}
+            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+            String s = "Error showing map\n" + t.getMessage()+ "\nCannot get image. Try zooming out";
+            g.drawString(s, w / 2 - (g.getFont().stringWidth(s)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
+        }
     }
 
     /*
@@ -549,87 +616,114 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
+            tracerEngine.suspendResume();
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == START_GAME_CMD) {
-            log("resuming track");
+            log("resuming track", false);
             tracerEngine.suspendResume();
             removeCommand(START_GAME_CMD);
-            addCommand(ADD_TEXT_CMD);
-            addCommand(ADD_PHOTO_CMD);
-            addCommand(ADD_AUDIO_CMD);
-            addCommand(ZOOM_IN_CMD);
-            addCommand(ZOOM_OUT_CMD);
-            addCommand(TOGGLE_MAP_CMD);
-            addCommand(SCORES_CMD);
-            addCommand(SHOW_LOG_CMD);
-            addCommand(STOP_GAME_CMD);
+            addAllCommands();
         } else if (cmd == STOP_GAME_CMD) {
-            log("suspending track");
+            log("suspending track", false);
             tracerEngine.suspendResume();
-            removeCommand(STOP_GAME_CMD);
-            removeCommand(ADD_TEXT_CMD);
-            removeCommand(ADD_PHOTO_CMD);
-            removeCommand(ADD_AUDIO_CMD);
-            removeCommand(ZOOM_IN_CMD);
-            removeCommand(ZOOM_OUT_CMD);
-            removeCommand(TOGGLE_MAP_CMD);
-            removeCommand(SCORES_CMD);
-            removeCommand(SHOW_LOG_CMD);
-            this.addCommand(START_GAME_CMD);
+            removeAllCommands();
+            addCommand(START_GAME_CMD);
         } else if (cmd == ADD_PHOTO_CMD) {
-            log("adding photo");
+            log("adding photo", false);
             Display.getDisplay(midlet).setCurrent(new ImageCapture(midlet));
         } else if (cmd == ADD_AUDIO_CMD) {
-            log("adding audio");
+            log("adding audio", false);
             Display.getDisplay(midlet).setCurrent(new AudioCapture(midlet));
         } else if (cmd == ADD_TEXT_CMD) {
-            log("adding text");
+            log("adding text", false);
             new AddTextHandler().addText();
         } else if (cmd == ZOOM_IN_CMD) {
-            log("zoom in");
+            log("zoom in", false);
             zoom++;
             fetchTileInfo();
             show();
         } else if (cmd == ZOOM_OUT_CMD) {
-            log("zoom out");
+            log("zoom out", false);
             zoom--;
             fetchTileInfo();
             show();
         } else if (cmd == TOGGLE_MAP_CMD) {
-            log("zoom out");
+            log("zoom out", false);
             mapType = mapType.equals("sat") ? "map" : "sat";
             fetchTileInfo();
             tileImage = null;
             show();
         } else if (cmd == SCORES_CMD) {
-            log("scores");
+            log("scores", false);
             retrieveScores();
         } else if (cmd == SHOW_LOG_CMD) {
-            log("show log");
+            log("show log", false);
             SHOW_STATE = SHOW_LOG;
-            removeCommand(SHOW_LOG_CMD);
+            removeAllCommands();
             addCommand(HIDE_LOG_CMD);
         } else if (cmd == HIDE_LOG_CMD) {
-            log("hide log");
+            log("hide log", false);
             SHOW_STATE = 0;
-            addCommand(SHOW_LOG_CMD);
+            addAllCommands();
             removeCommand(HIDE_LOG_CMD);
+        } else if (cmd == SHOW_INFO_CMD) {
+            log("show info", false);
+            SHOW_STATE = SHOW_INFO;
+            removeAllCommands();
+            addCommand(HIDE_INFO_CMD);
+        } else if (cmd == HIDE_INFO_CMD) {
+            log("hide info", false);
+            SHOW_STATE = 0;
+            addAllCommands();
+            removeCommand(HIDE_LOG_CMD);
+        } else if (cmd == HIDE_ERROR_CMD) {
+            log("hide error", false);
+            SHOW_STATE = 0;
+            addAllCommands();
+            removeCommand(HIDE_ERROR_CMD);
         }
 
     }
 
+    private void removeAllCommands() {
+        removeCommand(STOP_GAME_CMD);
+        removeCommand(ADD_TEXT_CMD);
+        removeCommand(ADD_PHOTO_CMD);
+        removeCommand(ADD_AUDIO_CMD);
+        removeCommand(ZOOM_IN_CMD);
+        removeCommand(ZOOM_OUT_CMD);
+        removeCommand(TOGGLE_MAP_CMD);
+        removeCommand(SCORES_CMD);
+        removeCommand(SHOW_LOG_CMD);
+        removeCommand(SHOW_INFO_CMD);
+    }
+
+    private void addAllCommands() {
+        removeAllCommands();
+        addCommand(STOP_GAME_CMD);
+        addCommand(ADD_TEXT_CMD);
+        addCommand(ADD_PHOTO_CMD);
+        addCommand(ADD_AUDIO_CMD);
+        addCommand(ZOOM_IN_CMD);
+        addCommand(ZOOM_OUT_CMD);
+        addCommand(TOGGLE_MAP_CMD);
+        addCommand(SCORES_CMD);
+        addCommand(SHOW_LOG_CMD);
+        addCommand(SHOW_INFO_CMD);
+    }
+
     private class TaskHandler implements CommandListener {
-		private TextField textField;
+        private TextField textField;
         private String alert = "";
         private Command okCmd = new Command("OK", Command.OK, 1);
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-		/*
-		* Create the first TextBox and associate
-		* the exit command and listener.
-		*/
-		public void showTask() {
-            log("now get the task!");
+        /*
+          * Create the first TextBox and associate
+          * the exit command and listener.
+          */
+        public void showTask() {
+            log("now get the task!", false);
 
             //#style defaultscreen
             Form form = new Form("");
@@ -645,193 +739,124 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             //#style textbox
             textField = new TextField("", "", 1024, TextField.ANY);
             form.append(textField);
-            if(alert.length()>0) form.append(alert);
+            if (alert.length() > 0) form.append(alert);
 
             form.addCommand(okCmd);
-			form.addCommand(cancelCmd);
+            form.addCommand(cancelCmd);
+            form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+        }
 
-			// Set the command listener for the textbox to the current midlet
-			form.setCommandListener(this);
-
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(form);
-		}
-
-		/*
-		* The commandAction method is implemented by this midlet to
-		* satisfy the CommandListener interface and handle the Exit action.
-		*/
-		public void commandAction(Command command, Displayable screen) {
-			if (command == okCmd) {
+        /*
+          * The commandAction method is implemented by this midlet to
+          * satisfy the CommandListener interface and handle the Exit action.
+          */
+        public void commandAction(Command command, Displayable screen) {
+            if (command == okCmd) {
                 if (textField.getString() == null) {
-                    alert  = "No text typed";
-                }else{
+                    alert = "No text typed";
+                } else {
                     // send the answer!!
-                    log("retrieving the task: " + taskId);
+                    log("retrieving the task: " + taskId, false);
                     JXElement req = new JXElement("play-answertask-req");
                     req.setAttr("id", taskId);
                     req.setAttr("answer", textField.getString());
-                    log(new String(req.toBytes(false)));
+                    log(new String(req.toBytes(false)), false);
                     JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-                    log(new String(rsp.toBytes(false)));
-                    if(rsp.getTag().indexOf("-rsp")!=-1){
-                        String rightAnswer = rsp.getAttr("answer");
+                    log(new String(rsp.toBytes(false)), false);
+                    if (rsp.getTag().indexOf("-rsp") != -1) {
+                        String result = rsp.getAttr("result");
                         String score = rsp.getAttr("score");
-                        if(rightAnswer.equals("true")){
-                            log("we've got the right answer");
+                        if (result.equals("true")) {
+                            log("we've got the right answer", false);
                             alert = "Right answer! You scored " + score + " points";
-                        }else{
-                            log("oops wrong answer");
+                        } else {
+                            log("oops wrong answer", false);
                             alert = "Wrong answer! Try again...";
                         }
-                    }else{
+                    } else {
                         alert = "something went wrong when sending the answer.\n Please try again.";
                     }
                     showTask();
                 }
             } else {
-				onNetStatus("Create cancel");
+                onNetStatus("Create cancel");
                 task = null;
                 taskId = -1;
                 SHOW_STATE = 0;
+                addAllCommands();
                 // Set the current display of the midlet to the textBox screen
-			    Display.getDisplay(midlet).setCurrent(playDisplay);
+                Display.getDisplay(midlet).setCurrent(playDisplay);
             }
-		}
-	}
+        }
+    }
 
-    private class MediumHandler implements CommandListener, ItemCommandListener {
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+    private class MediumHandler implements CommandListener {
+        private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
+        private Command VIEW_VIDEO_CMD = new Command("View video", Command.SCREEN, 2);
         Player player;
 
         /*
 		* Create the first TextBox and associate
 		* the exit command and listener.
 		*/
-		public void showMedium() {
+        public void showMedium() {
             //#style defaultscreen
             Form form = new Form("");
             String type = medium.getChildText("type");
             //#style formbox
             form.append(medium.getChildText("name"));
-            /*//#style formbox*/
-            //form.append(medium.getChildText("description"));
 
             if (type.equals("image")) {
                 form.append(mediumImage);
-            }else if (type.equals("video")) {
-                try {
-                    play(mediumBaseURL + mediumId);
-                }
-                catch(Throwable t) {
-                    log("Exception playing the video:" + t.getMessage());
-                    StringItem si = new StringItem("", mediumBaseURL + mediumId);
-                    si.setAppearanceMode(Item.HYPERLINK);
-                    si.setDefaultCommand(new Command("View", Command.ITEM, 1));
-                    si.setItemCommandListener(this);
-                    form.append(si);
-                }
+            } else if (type.equals("video")) {
+                //#style formbox
+                form.append(medium.getChildText("description"));
+                form.addCommand(VIEW_VIDEO_CMD);
             }
 
-            // Add the Exit Command to the TextBox
-			form.addCommand(cancelCmd);
-
-			// Set the command listener for the textbox to the current midlet
-			form.setCommandListener(this);
-
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(form);
-		}
-
-       void play(String url) throws Exception{
-          try {
-             VideoControl vc;
-             defplayer();
-             // create a player instance
-             player = Manager.createPlayer(url);
-             //player.addPlayerListener(this);
-             // realize the player
-             player.realize();
-             vc = (VideoControl)player.getControl("VideoControl");
-             if(vc != null) {
-                Item video = (Item)vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
-                Form v = new Form("Playing Video...");
-                StringItem si = new StringItem("Status: ", "Playing...");
-                v.append(si);
-                v.append(video);
-                Display.getDisplay(midlet).setCurrent(v);
-             }
-             player.prefetch();
-             player.start();
-          }
-          catch(Throwable t) {
-             reset();
-             throw new Exception("inline playback failed");
-          }
-       }
-
-       void defplayer() throws MediaException {
-          if (player != null) {
-             if(player.getState() == Player.STARTED) {
-                player.stop();
-             }
-             if(player.getState() == Player.PREFETCHED) {
-                player.deallocate();
-             }
-             if(player.getState() == Player.REALIZED ||
-                player.getState() == Player.UNREALIZED) {
-                player.close();
-             }
-          }
-          player = null;
-       }
-       void reset() {
-          player = null;
-       }
-
-       void stopPlayer() {
-          try {
-             defplayer();
-          }
-          catch(MediaException me) {
-          }
-          reset();
-       }
+            form.addCommand(CANCEL_CMD);
+            form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+        }
 
         /*
 		* The commandAction method is implemented by this midlet to
 		* satisfy the CommandListener interface and handle the Exit action.
 		*/
-		public void commandAction(Command command, Displayable screen) {
-			// Set the current display of the midlet to the textBox screen
-            medium = null;
-            mediumId = -1;
-            SHOW_STATE = 0;
-            Display.getDisplay(midlet).setCurrent(playDisplay);
-		}
+        public void commandAction(Command command, Displayable screen) {
+            if (command == CANCEL_CMD) {
+                // Set the current display of the midlet to the textBox screen
+                medium = null;
+                mediumId = -1;
+                SHOW_STATE = 0;
+                addAllCommands();
+                Display.getDisplay(midlet).setCurrent(playDisplay);
+            } else if (command == VIEW_VIDEO_CMD) {
+                try {
+                    midlet.platformRequest(mediumBaseURL + mediumId);
+                }
+                catch (Throwable t) {
+                    log("Exception launching the video:" + t.getMessage(), true);
+                }
+            }
+        }
 
-        /*
-		* The commandAction method is implemented by this midlet to
-		* satisfy the CommandListener interface and handle the Exit action.
-		*/
-		public void commandAction(Command command, Item anItem) {
-			log("Hit the video!!!!");
-		}
     }
 
-	private class AddTextHandler implements CommandListener {
-		private TextField tagsField;
-		private TextField nameField;
-		private TextField textField;
-		private String alert = "";
-		private Command submitCmd = new Command("OK", Command.OK, 1);
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+    private class AddTextHandler implements CommandListener {
+        private TextField tagsField;
+        private TextField nameField;
+        private TextField textField;
+        private String alert = "";
+        private Command submitCmd = new Command("OK", Command.OK, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-		/*
-		* Create the first TextBox and associate
-		* the exit command and listener.
-		*/
-		public void addText() {
+        /*
+          * Create the first TextBox and associate
+          * the exit command and listener.
+          */
+        public void addText() {
             //#style defaultscreen
             Form form = new Form("");
             //#style formbox
@@ -850,7 +875,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             form.append(nameField);
             form.append(tagsField);
             form.append(textField);
-            if(alert.length()>0) form.append(alert);
+            if (alert.length() > 0) form.append(alert);
 
             form.addCommand(submitCmd);
             form.addCommand(cancelCmd);
@@ -858,17 +883,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             form.setCommandListener(this);
 
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
-		/*
-		* The commandAction method is implemented by this midlet to
-		* satisfy the CommandListener interface and handle the Exit action.
-		*/
-		public void commandAction(Command command, Displayable screen) {
-			if (command == submitCmd) {
+        /*
+          * The commandAction method is implemented by this midlet to
+          * satisfy the CommandListener interface and handle the Exit action.
+          */
+        public void commandAction(Command command, Displayable screen) {
+            if (command == submitCmd) {
                 if (textField.getString() == null) {
-                    alert  = "No text typed";
-                }else{
+                    alert = "No text typed";
+                } else {
                     String name = nameField.getString();
                     String text = textField.getString();
                     String tags = tagsField.getString();
@@ -879,57 +904,45 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     }
                 }
             } else {
-				onNetStatus("Add Text cancel");
-			}
+                onNetStatus("Add Text cancel");
+            }
 
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(playDisplay);
-		}
-	}
+            addAllCommands();
+            // Set the current display of the midlet to the textBox screen
+            Display.getDisplay(midlet).setCurrent(playDisplay);
+        }
+    }
 
     private class ScoreHandler implements CommandListener {
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-		public void showScores() {
+        public void showScores() {
             //#style defaultscreen
             Form form = new Form("");
             // Create the TextBox containing the "Hello,World!" message
-            for(int i=0;i<scores.size();i++){
-                JXElement r = (JXElement)scores.elementAt(i);
+            for (int i = 0; i < scores.size(); i++) {
+                JXElement r = (JXElement) scores.elementAt(i);
                 String team = r.getChildText("team");
                 String points = r.getChildText("points");
 
                 //#style formbox
                 form.append(new Gauge(team, false, maxScore, Integer.parseInt(points)));
             }
-
-            /*int[][] dataSequences = new int[][] {
-                    new int[]{ 12, 0, 5, 20, 25, 40 },
-                    new int[]{ 0, 2, 4, 8, 16, 32 },
-                    new int[]{ 1, 42, 7, 12, 16, 1 }
-            };
-
-            int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF };
-
-            //#style formbox
-            ChartItem ci = new ChartItem("scores", dataSequences, colors);
-            form.append(ci);
-            */
-
+            
             form.addCommand(cancelCmd);
-
             form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
-		/*
-		* The commandAction method is implemented by this midlet to
-		* satisfy the CommandListener interface and handle the Exit action.
-		*/
-		public void commandAction(Command command, Displayable screen) {
+        /*
+          * The commandAction method is implemented by this midlet to
+          * satisfy the CommandListener interface and handle the Exit action.
+          */
+        public void commandAction(Command command, Displayable screen) {
             SHOW_STATE = 0;
+            addAllCommands();
             Display.getDisplay(midlet).setCurrent(playDisplay);
-		}
-	}
+        }
+    }
 
 }

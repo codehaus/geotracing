@@ -188,8 +188,28 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 		req.addChildren(thePoints);
 		try {
 			onNetStatus("sending #" + theCount);
-			JXElement rsp = net.utopiaReq(req);
-			//long lastCommandTime = Util.getTime();
+			JXElement rsp = net.utopiaReq(req);            
+            // TODO: remove later - teskting purposes
+            rsp.removeChildren();
+            if (System.currentTimeMillis() % 3 == 0) {
+                JXElement hit = new JXElement("task-hit");
+                hit.setAttr("id", 22560);
+                rsp.addChild(hit);
+            }
+
+            if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 26527);
+                rsp.addChild(hit);
+            }
+
+            if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 22629);
+                rsp.addChild(hit);
+            }
+            
+            //long lastCommandTime = Util.getTime();
 			if (rsp != null) {
 				onNetStatus("sent #" + theCount);
                 System.out.println(new String(rsp.toBytes(false)));

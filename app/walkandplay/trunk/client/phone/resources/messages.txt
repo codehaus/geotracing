@@ -60,6 +60,9 @@ play.ToggleMap=Toggle Map
 play.Scores=Scores
 play.ShowLog=Show Log
 play.HideLog=Hide Log
+play.ShowInfo=Show Info
+play.HideInfo=Hide Info
+play.HideError=Hide Error
 play.Back=Back
 
 settings.SoundOn=Sound ON

@@ -27,7 +27,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     private Net net;
     private Image logo;
 
-    Command PLAY_CMD = new Command(Locale.get("play.Play"), Command.SCREEN, 1);
+    Command PLAY_CMD = new Command(Locale.get("play.Play"), Command.SCREEN, 2);
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
@@ -41,8 +41,6 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             Log.log("Could not load the images on PlayDisplay");
         }
         
-        append(logo);
-
         midlet = aMIDlet;
         
         net = Net.getInstance();
@@ -52,49 +50,43 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             net.start();
         }
 
-        /*JXElement req = new JXElement("query-store-req");
-        req.setAttr("cmd", "q-games-by-user");
-        req.setAttr("user", net.getUserName());
-        JXElement rsp = net.utopiaReq(req);
-        //Vector gameLocations = rsp.getChildrenByTag("record");
-        System.out.println(new String(rsp.toBytes(false)));*/
-
-        Net net = Net.getInstance();
         if(!net.isConnected()){
-            net.setProperties(aMIDlet);
-            net.setListener(this);
-            net.start();
-        }
+            // login must have failed!!!!
+            //#style formbox
+            append("Logging in has failed!! Please check your username and password under Settings/Account and try again.");            
+        }else{
 
-        // get the games
-        try{
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-play-status-by-user");
-            //req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
-            req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, "red2"));
-            JXElement rsp = net.utopiaReq(req);
-            System.out.println(new String(rsp.toBytes(false)));
-            if(rsp!=null) {
-                Vector elms = rsp.getChildrenByTag("record");
-                for(int i=0;i<elms.size();i++){
-                    JXElement elm = (JXElement)elms.elementAt(i);
-                    String name = elm.getChildText("name");
-                    //String description = elm.getChildText("description");
-                    String gameplayState = elm.getChildText("gameplaystate");
-                    String displayName = name + "|" + gameplayState;
-                    //#style formbox                    
-                    gamesGroup.append(displayName, null);
-                    games.put(displayName, elm);
+            // get the games
+            try{
+                JXElement req = new JXElement("query-store-req");
+                req.setAttr("cmd", "q-play-status-by-user");
+                req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
+                JXElement rsp = net.utopiaReq(req);
+                System.out.println(new String(rsp.toBytes(false)));
+                if(rsp!=null) {
+                    Vector elms = rsp.getChildrenByTag("record");
+                    for(int i=0;i<elms.size();i++){
+                        JXElement elm = (JXElement)elms.elementAt(i);
+                        String name = elm.getChildText("name");
+                        //String description = elm.getChildText("description");
+                        String gameplayState = elm.getChildText("gameplaystate");
+                        String displayName = name + " | " + gameplayState;
+                        //String displayName = name + " - '" + description + "' | state: " + gameplayState;
+                        //#style formbox
+                        gamesGroup.append(displayName, null);
+                        games.put(displayName, elm);
+                    }
                 }
+            }catch(Throwable t){
+                System.out.println(t.getMessage());
             }
-        }catch(Throwable t){
-            System.out.println(t.getMessage());
+            
+            append(logo);
+            //#style formbox
+            append("Select a game and press PLAY in the menu");
+            append(gamesGroup);
+            addCommand(PLAY_CMD);
         }
-
-        //#style formbox
-        append("Select a game and press PLAY in the menu");        
-        append(gamesGroup);
-        addCommand(PLAY_CMD);
     }
 
     private void startGame(){
@@ -126,20 +118,14 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == PLAY_CMD) {
             gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
-            System.out.println("dbg 1");
             gameElm = (JXElement) games.get(gameName);
-            System.out.println("dbg 1");
             midlet.setGameSchedule(gameElm);
-            System.out.println("dbg 1");
             midlet.setGamePlayId(Integer.parseInt(gameElm.getChildText("gameplayid")));
             // now start the game
             startGame();
-            System.out.println("dbg 1");
             midlet.setPlayMode(true);
-            System.out.println("dbg 1");
             PlayDisplay d = new PlayDisplay(midlet);
             d.start();
-            System.out.println("dbg 1");
             Display.getDisplay(midlet).setCurrent(d);
 
             

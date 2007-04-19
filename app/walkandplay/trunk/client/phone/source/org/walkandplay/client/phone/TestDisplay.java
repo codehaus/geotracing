@@ -36,6 +36,7 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
     private StringItem msg = new StringItem("", "Starting up...");
 
     public TestDisplay(WPMidlet aMidlet) {
+        //#style defaultscreen
         super("");
         midlet = aMidlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();
@@ -48,29 +49,29 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
         addCommand(STOP_CMD);
 
         //#style formbox
-        append(new Gauge("red2", false, 100, 60));
+        append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
+        append(new ClockItem(""));
 
         /*StringItem si = new StringItem("", url, Item.HYPERLINK);
         si.setDefaultCommand(VIEW_CMD);
         si.setItemCommandListener(this);
         append(si);*/
 
-        try{
-            //midlet.platformRequest(url);
+        /*try{
+            midlet.platformRequest(url);
         }catch(Throwable t){
             show(t.getMessage());
-        }
+        }*/
 
-        try{
-            if(player != null && player.getState() ==
-                    Player.PREFETCHED) {
+        /*try{
+            if(player != null && player.getState() == Player.PREFETCHED) {
                 player.start();
             } else {
                 defplayer();
             }
         }catch(Throwable t){
             show(t.getMessage());
-        }
+        }*/
     }
 
     private void show(String aMsg){
