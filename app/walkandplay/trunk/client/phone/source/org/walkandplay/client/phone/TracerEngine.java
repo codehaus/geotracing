@@ -191,11 +191,11 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 			JXElement rsp = net.utopiaReq(req);            
             // TODO: remove later - teskting purposes
             rsp.removeChildren();
-            if (System.currentTimeMillis() % 3 == 0) {
+            /*if (System.currentTimeMillis() % 3 == 0) {
                 JXElement hit = new JXElement("task-hit");
                 hit.setAttr("id", 22560);
                 rsp.addChild(hit);
-            }
+            }*/
 
             if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                 JXElement hit = new JXElement("medium-hit");

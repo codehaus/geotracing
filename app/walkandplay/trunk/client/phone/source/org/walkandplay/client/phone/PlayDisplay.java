@@ -630,10 +630,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             addCommand(START_GAME_CMD);
         } else if (cmd == ADD_PHOTO_CMD) {
             log("adding photo", false);
-            Display.getDisplay(midlet).setCurrent(new ImageCapture(midlet));
+            Display.getDisplay(midlet).setCurrent(new ImageCaptureDisplay(midlet));
         } else if (cmd == ADD_AUDIO_CMD) {
             log("adding audio", false);
-            Display.getDisplay(midlet).setCurrent(new AudioCapture(midlet));
+            Display.getDisplay(midlet).setCurrent(new AudioCaptureDisplay(midlet));
         } else if (cmd == ADD_TEXT_CMD) {
             log("adding text", false);
             new AddTextHandler().addText();

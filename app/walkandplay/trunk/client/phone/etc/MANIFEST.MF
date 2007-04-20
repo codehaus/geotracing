@@ -10,7 +10,7 @@ MIDlet-Permissions: ${midlet.permissions}
 MIDlet-Permissions-Opt: ${midlet.permissions.opt}
 kw-url: http://test.walkandplay.com/wp
 kw-timeout: 20
-kw-user: geoapp-user
+kw-user: red2
 kw-password: user
 kw-app: geoapp
 kw-role: user

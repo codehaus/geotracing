@@ -28,7 +28,6 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	private Player player;
 	private RecordControl recordcontrol;
 	private ByteArrayOutputStream output;
-	private Displayable prevScreen;
 	private byte[] audioData;
 	private TextField name = new TextField("", null, 24, TextField.ANY);
 	private static final String MIME = "audio/x-wav";
@@ -36,13 +35,12 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	private int rate, bits;
 	final int kbPerSec;
 
-	public AudioCaptureDisplay(WPMidlet aMidlet) {
-        super(aMidlet, "Audio Recorder");
+	public AudioCaptureDisplay (WPMidlet aMidlet) {
+        super(aMidlet, "");
 
 		rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
 		bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
 		kbPerSec = (rate * bits / 8) / 1000;
-		prevScreen = Display.getDisplay(midlet).getCurrent();
 		start = new Command("Start", Command.OK, 1);
 		stop = new Command("Stop", Command.OK, 1);
 		submit = new Command("Submit", Command.OK, 1);
@@ -51,13 +49,13 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 		try {
             player = Manager.createPlayer("capture://audio?rate=" + rate + "&bits=" + bits);
 			player.realize();
-			recordcontrol =
-					(RecordControl) player.getControl("RecordControl");
+			recordcontrol = (RecordControl) player.getControl("RecordControl");
 			output = new ByteArrayOutputStream();
 			recordcontrol.setRecordStream(output);
 			addCommand(start);
 
-            append("AUDIO RECORDER", " Use the menu to start and stop recording");
+            append("", "AUDIO RECORDER");
+            append("", "Use the menu to start and stop recording");
             append("\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
 		} catch (Exception e) {
 			Util.showAlert(midlet, "Error", "Cannot create player. Maybe audio (MMAPI) is not supported.");
@@ -66,7 +64,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	}
 
 	public int append(String s) {
-        //#style smallstring
+        //#style formbox
         return append(s);
         //return append(null, s);
 	}
@@ -107,7 +105,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 				return;
 			}
 
-            append("SUBMITTING AUDIO...", " (takes a while)");
+            append("", "SUBMITTING AUDIO... (takes a while)");
 
 			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, false);
 			if (rsp == null) {
@@ -136,7 +134,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			return;
 		}
 
-        append("PLAYING AUDIO...", "");
+        append("", "PLAYING AUDIO...");
 
 		try {
 			Manager.createPlayer(new ByteArrayInputStream(audioData), MIME).start();
@@ -151,7 +149,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			recordcontrol.startRecord();
 			player.start();
 			startTime = Util.getTime();
-            append("RECORDING AUDIO...", " press Stop to stop recording\n");
+            append("", "RECORDING AUDIO... press Stop to stop recording\n");
 
 			new Thread(new Runnable() {
 				public void run() {
@@ -172,8 +170,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 				}
 			}).start();
 		} catch (Exception e) {
-			Util.showAlert(midlet, "Error",
-					"Cannot start the player. Maybe audio recording is not supported.");
+			Util.showAlert(midlet, "Error", "Cannot start the player. Maybe audio recording is not supported.");
 			back();
 		}
 	}
