@@ -1,15 +1,14 @@
 package org.walkandplay.server.logic;
 
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.handler.QueryHandler;
 import org.geotracing.handler.QueryLogic;
-import org.geotracing.handler.Location;
-import org.geotracing.gis.PostGISUtil;
 import org.keyworx.amuse.core.Protocol;
+import org.keyworx.oase.api.Finder;
 import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.Relater;
-import org.keyworx.oase.api.Finder;
-import org.walkandplay.server.util.Constants;
 import org.postgis.Point;
+import org.walkandplay.server.util.Constants;
 
 import java.util.Map;
 
@@ -135,7 +134,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				throwOnMissingParm(PAR_ID, id);
 
 				String tables = "wp_task,base_medium";
-				String fields = "wp_task.id,base_medium.id AS mediumid,wp_task.name,wp_task.description";
+				String fields = "wp_task.id,base_medium.id AS mediumid,wp_task.name,wp_task.description,wp_task.answer,wp_task.score";
 				String where = "wp_task.id = " + id;
 				String relations = "wp_task,base_medium";
 				String postCond = null;
@@ -145,12 +144,10 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				result = super.doQuery(aQueryName, theParms);
 			}
 		} catch (IllegalArgumentException iae) {
-			result = new JXElement(TAG_ERROR);
-			result.setText("Error in parameter: " + iae.getMessage());
-			log.error("Unexpected Error during query", iae);
+			result = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, Protocol.__4002_Required_attribute_missing, iae.getMessage());
+			log.warn("IllegalArgumentException during query", iae);
 		} catch (Throwable t) {
-			result = new JXElement(TAG_ERROR);
-			result.setText("Unexpected Error during query " + t);
+			result = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, Protocol.__4005_Unexpected_error, t.getMessage());
 			log.error("Unexpected Error during query", t);
 		}
 		return result;

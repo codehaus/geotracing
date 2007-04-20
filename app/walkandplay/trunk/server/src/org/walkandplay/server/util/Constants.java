@@ -33,6 +33,7 @@ public interface Constants {
 	public final static String STATE_FIELD = "state";
 	public final static String TYPE_FIELD = "type";
 	public final static String LOCATION_FIELD = "location";
+	public final static String LOCATION_ID_FIELD = "locationid";
 	public final static String TAG_FIELD = "tag";
 	public final static String SCHEDULE_ID_FIELD = "scheduleid";
 	public final static String STARTDATE_FIELD = "startdate";
@@ -45,6 +46,7 @@ public interface Constants {
 	public final static String LON_FIELD = "lon";
 	public final static String LAT_FIELD = "lat";
 	public final static String RESULT_FIELD = "result";
+	public final static String TIME_FIELD = "time";
 
 	public final static String INVITATION_FIELD = "invitation";
 	public final static String INVITATION_SEND = "invitation-send";

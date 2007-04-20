@@ -4,7 +4,7 @@ ANT Build file for WalkAndPlay.
 
 $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 -->
-<project name="WnP Server" default="build" basedir=".">
+<project name="WP Server" default="build" basedir=".">
 
     <!-- Project global properties; overrule by modifying build.properties -->
  	<property name="home" value="${basedir}"/>
@@ -307,6 +307,12 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		</exec>
 	</target>
 
+	<target name="copy-berlin" depends="build">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="${deploy.test.server}:versions"/>
+		</exec>
+	</target>
 
     <!--<target name="deploy-local++" depends="replace metadata plugin, build">
         <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>

@@ -36,20 +36,6 @@ KW.WP = {
 	},
 
 /**
- * Delete medium from Game.
- * @param callback - user callback function or null
- * @param mediumId - id of medium
- */
-	gameDelMedium: function(callback, mediumId) {
-		var req = KW.createRequest('game-delete-medium-req');
-
-		// Only medium id is required (game is coupled to medium)
-		KW.UTIL.setAttr(req, 'id', mediumId);
-
-		KW.utopia(req, callback);
-	},
-
-		/**
  * Add task to Game.
  * @param callback - user callback function or null
  * @param gameId - id of item to be commented
@@ -73,6 +59,45 @@ KW.WP = {
 		KW.UTIL.addTextElement(task, 'lat', lat);
 
 		req.documentElement.appendChild(task);
+		KW.utopia(req, callback);
+	},
+
+/**
+ * Delete medium from Game.
+ * @param callback - user callback function or null
+ * @param mediumId - id of medium
+ */
+	gameDelMedium: function(callback, mediumId) {
+		var req = KW.createRequest('game-delete-medium-req');
+
+		// Only medium id is required (game is coupled to medium)
+		KW.UTIL.setAttr(req, 'id', mediumId);
+
+		KW.utopia(req, callback);
+	},
+
+/**
+ * Update general Game data.
+ * @param callback - user callback function or null
+ * @param gameId - id of game
+ * @param name - name (optional)
+ * @param desc - description (optionaL
+ * @param intro - intro text (optional)
+ * @param outro - outro text (optional)
+ */
+	gameUpdate: function(callback, gameId, name, desc, intro, outro) {
+		var req = KW.createRequest('game-update-req');
+
+		KW.UTIL.setAttr(req, 'id', gameId);
+
+		// Add medium element
+		var game = req.createElement('game');
+		KW.UTIL.addOptTextElement(game, 'name', name);
+		KW.UTIL.addOptTextElement(game, 'description', desc);
+		KW.UTIL.addOptTextElement(game, 'intro', intro);
+		KW.UTIL.addOptTextElement(game, 'outro', outro);
+
+		req.documentElement.appendChild(game);
 		KW.utopia(req, callback);
 	},
 
