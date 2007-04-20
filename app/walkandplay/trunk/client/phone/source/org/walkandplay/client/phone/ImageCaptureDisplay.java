@@ -23,173 +23,184 @@ import nl.justobjects.mjox.JXElement;
  */
 public class ImageCaptureDisplay extends DefaultDisplay {
 
-	private Command CAPTURE_CMD;
-	private Command SKIP_CMD;
+    private Command capture;
+    private Command skip;
 
-	private Player player = null;
-	private VideoControl video = null;
-	private Image photoPreview;
-	private byte[] photoData;
-	private String photoMime;
-	private long photoTime;
-    //#style formbox
+    private Player player = null;
+    private VideoControl video = null;
+    private Image photoPreview;
+    private byte[] photoData;
+    private String photoMime;
+    private long photoTime;
+    private MIDlet midlet;
     private StringItem status = new StringItem("", "Photo Capture");
-	private GPSLocation location;
+    private GPSLocation location;
 
-	public ImageCaptureDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "Take a picture");
-		showCamera();
+    public ImageCaptureDisplay(WPMidlet aMIDlet) {
+        super(aMIDlet, "");
 
-		CAPTURE_CMD = new Command("Capture", Command.OK, 1);
-		SKIP_CMD = new Command("Cancel", Command.CANCEL, 1);
-		addCommand(CAPTURE_CMD);
-		addCommand(SKIP_CMD);
-	}
+        midlet = aMIDlet;        
+        showCamera();
 
-	public void commandAction(Command c, Displayable d) {
-		if (c == CAPTURE_CMD) {
-			capture();
-			Display.getDisplay(midlet).setCurrent(new ImageCaptureDisplay.PhotoPreview());
-		} else if (c == SKIP_CMD) {
-			player.close();
-			// Set the current display of the midlet to the textBox screen
-			back();
-		}
-	}
+        capture = new Command("Capture", Command.OK, 1);
+        skip = new Command("Cancel", Command.CANCEL, 1);
+        addCommand(capture);
+        addCommand(skip);
+        setCommandListener(this);
+    }
 
-	private void back() {
-		Display.getDisplay(midlet).setCurrent(prevScreen);
-	}
+    public void commandAction(Command c, Displayable d) {
+        if (c == capture) {
+            capture();
+            Display.getDisplay(midlet).setCurrent(new PhotoPreview());
+        } else if (c == skip) {
+            player.close();
+            // Set the current display of the midlet to the textBox screen
+            back();
+        }
+    }
 
-	private void showCamera() {
-		try {
+    public int append(String aString){
+        //#style formbox
+        return append(aString);
+    }
+
+    private void back() {
+        Display.getDisplay(midlet).setCurrent(prevScreen);
+    }
+
+    private void showCamera() {
+        try {
             player = Manager.createPlayer("capture://video");
-			player.realize();
+            player.realize();
 
-			// Add the video playback window (item)
-			video = (VideoControl) player.getControl("VideoControl");
-            Item item = (Item) video.initDisplayMode(GUIControl.USE_GUI_PRIMITIVE, null);
-			item.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER);
-			append(item);
-			// Add a caption
+            // Add the video playback window (item)
+            video = (VideoControl) player.getControl("VideoControl");
+            Item item = (Item) video.initDisplayMode(
+                    GUIControl.USE_GUI_PRIMITIVE, null);
+            item.setLayout(Item.LAYOUT_CENTER |
+                    Item.LAYOUT_NEWLINE_AFTER);
+            append(item);
+            // Add a caption
             status.setText("Press Fire to take photo");
-			status.setLayout(Item.LAYOUT_CENTER);
-			append(status);
+            status.setLayout(Item.LAYOUT_CENTER);
+            append(status);
 
-			player.start();
+            player.start();
 
-		} catch (Throwable e) {
-			Util.showAlert(midlet, "cannot start camera", e.getMessage());
-			back();
-		}
-	}
+        } catch (Throwable e) {
+            Util.showAlert(midlet, "cannot start camera", e.getMessage());
+            back();
+        }
+    }
 
-	private void capture() {
-		try {
-			// PNG, 160x120
-			// BlogClient.photoData = video.getSnapshot(null);
-			//      OR
-			// BlogClient.photoData = video.getSnapshot(
-			//     "encoding=png&width=160&height=120");
+    private void capture() {
+        try {
+            // PNG, 160x120
+            // BlogClient.photoData = video.getSnapshot(null);
+            //      OR
+            // BlogClient.photoData = video.getSnapshot(
+            //     "encoding=png&width=160&height=120");
 
-			// BlogClient.photoPreview = BlogClient.photoData;
-			// BlogClient.photoMime = "png";
+            // BlogClient.photoPreview = BlogClient.photoData;
+            // BlogClient.photoMime = "png";
  // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
-			status.setText("WAIT, taking photo...");
+            status.setText(", WAIT...taking photo...");
 
-			location = GPSFetcher.getInstance().getCurrentLocation();
-			photoTime = Util.getTime();
+            location = GPSFetcher.getInstance().getCurrentLocation();
+            photoTime = Util.getTime();
 
-			try {
-				photoData = video.getSnapshot("encoding=jpeg&width=320&height=240");
-			} catch(Throwable t) {
-				// Some phones don't support specific encodings
-				// This should fix at least SonyEricsson K800i...
-				photoData = video.getSnapshot(null);
-			}
+            try {
+                photoData = video.getSnapshot("encoding=jpeg&width=320&height=240");
+            } catch(Throwable t) {
+                // Some phones don't support specific encodings
+                // This should fix at least SonyEricsson K800i...
+                photoData = video.getSnapshot(null);
+            }
 
-			photoMime = "image/jpeg";
+            photoMime = "image/jpeg";
 
-			player.stop();
-			player.close();
+            player.stop();
+            player.close();
 
-			photoPreview = createPreview(Image.createImage(photoData, 0, photoData.length));
-			status.setText("OK done...");
+            photoPreview = createPreview(Image.createImage(photoData, 0, photoData.length));
+            status.setText("OK done...");
 
-		} catch (Throwable e) {
-			Util.showAlert(midlet, "CAPTURE_CMD error", e.getMessage());
-			back();
-		}
-	}
+        } catch (Throwable e) {
+            Util.showAlert(midlet, "capture error", e.getMessage());
+            back();
+        }
+    }
 
-	// Scale down the image by skipping pixels
-	public static Image createPreview(Image image) {
-		int sw = image.getWidth();
-		int sh = image.getHeight();
+    // Scale down the image by skipping pixels
+    public static Image createPreview(Image image) {
+        int sw = image.getWidth();
+        int sh = image.getHeight();
 
-		int pw = 160;
-		int ph = pw * sh / sw;
+        int pw = 160;
+        int ph = pw * sh / sw;
 
-		Image temp = Image.createImage(pw, ph);
-		Graphics g = temp.getGraphics();
+        Image temp = Image.createImage(pw, ph);
+        Graphics g = temp.getGraphics();
 
-		for (int y = 0; y < ph; y++) {
-			for (int x = 0; x < pw; x++) {
-				g.setClip(x, y, 1, 1);
-				int dx = x * sw / pw;
-				int dy = y * sh / ph;
-				g.drawImage(image, x - dx, y - dy,
-						Graphics.LEFT | Graphics.TOP);
-			}
-		}
+        for (int y = 0; y < ph; y++) {
+            for (int x = 0; x < pw; x++) {
+                g.setClip(x, y, 1, 1);
+                int dx = x * sw / pw;
+                int dy = y * sh / ph;
+                g.drawImage(image, x - dx, y - dy,
+                        Graphics.LEFT | Graphics.TOP);
+            }
+        }
 
-		Image preview = Image.createImage(temp);
-		return preview;
-	}
+        Image preview = Image.createImage(temp);
+        return preview;
+    }
 
-	private class PhotoPreview extends Form implements CommandListener {
+    private class PhotoPreview extends Form implements CommandListener {
 
-		private Command cancel;
-		private Command submit;
-		private TextField name = new TextField("Photo Name (below)", null, 24, TextField.ANY);
+        private Command cancel;
+        private Command submit;
+        private TextField name = new TextField("Photo Name (below)", null, 24, TextField.ANY);
 
-		public PhotoPreview() {
-			super("Photo Preview");
-			cancel = new Command("Back", Command.CANCEL, 1);
-			submit = new Command("Submit", Command.OK, 1);
-			addCommand(cancel);
-			addCommand(submit);
-			setCommandListener(this);
+        public PhotoPreview() {
+            super("Photo Preview");
+            cancel = new Command("Back", Command.CANCEL, 1);
+            submit = new Command("Submit", Command.OK, 1);
+            addCommand(cancel);
+            addCommand(submit);
+            setCommandListener(this);
 
-			append(new ImageItem("", photoPreview, ImageItem.LAYOUT_CENTER, "image"));
-			append(name);
-			append("press Submit to send or Back to cancel");
-		}
+            append(new ImageItem("", photoPreview, ImageItem.LAYOUT_CENTER, "image"));
+            //#style textbox
+            append(name);
+            append("press Submit to send or Back to cancel");
+        }
 
-		public void commandAction(Command c, Displayable d) {
-			if (c == cancel) {
-				photoData = null;
-				photoPreview = null;
-				back();
+        public void commandAction(Command c, Displayable d) {
+            if (c == cancel) {
+                photoData = null;
+                photoPreview = null;
+                back();
 
-			} else if (c == submit) {
-				deleteAll();
-				append("SENDING PHOTO...(takes a while)");
-				JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "image", photoMime, photoTime, photoData, false);
-				if (rsp == null) {
-					append("cannot submit photo !");
-				} else if (Protocol.isPositiveResponse(rsp)) {
-					append("submit photo OK ");
-					append("\nsize=" + photoData.length / 1024 + " kb name= " + name.getString() + " id=" + rsp.getAttr("id"));
+            } else if (c == submit) {
+                deleteAll();
+                append("SENDING PHOTO...(takes a while)");
+                JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "image", photoMime, photoTime, photoData, true);
+                if (rsp == null) {
+                    append("error submitting photo !");
+                } else if (Protocol.isPositiveResponse(rsp)) {
+                    append("submit photo OK ");
+                    append("\nsize=" + photoData.length / 1024 + " kb name= " + name.getString() + " id=" + rsp.getAttr("id"));
 
-				} else {
-					append("submit failed: error is " + rsp.getAttr("error"));
-				}
+                } else {
+                    append("submit failed: error is " + rsp.getAttr("error"));
+                }
 
-			}
-			append("\npress Back to go back");
-		}
+            }
+            append("\npress Back to go back");
+        }
 
-	}
+    }
 
 }
