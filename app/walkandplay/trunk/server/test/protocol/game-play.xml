@@ -3,14 +3,42 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="blue2" password="user" protocolversion="4.0"/>
+			<login-req name="blue2" password="user" portalname="walkandplay" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 
 		<expect id="client1">
 
-			<login-rsp/>
-			<select-app-rsp/>
+			<login-rsp>
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
+
+						<portalname>walkandplay
+						</portalname>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
+			</login-rsp>
+
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
 		</expect>
 
 	</test>
@@ -220,6 +248,8 @@
 						<mediumid/>
 						<name/>
 						<description/>
+						<answer/>
+						<score/>
 					</record>
 				</query-store-rsp>
 			</utopia-rsp>
@@ -251,6 +281,40 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<play-answertask-rsp result="true" score="10" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="medium-insert-req-1">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>item1</name>
+						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<size>2758</size>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	 <test id="play-add-medium-task-1">
+		<send id="client1">
+			<utopia-req>
+				<play-add-medium-req id="${mediumid1}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-add-medium-rsp locationid="${locationid1}"/>
 			</utopia-rsp>
 		</expect>
 	</test>

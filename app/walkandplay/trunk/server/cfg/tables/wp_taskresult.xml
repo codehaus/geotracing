@@ -35,7 +35,7 @@
 		<!-- Points scored for related task -->
 		<field name="score" type="INTEGER" required="true" default="0"/>
 
-		<!-- 1=open 2=done  -->
+		<!-- 1=open 2=hit 3=done  -->
         <field name="state" type="STRING" size="12" default="open" required="true" />
 
 		<!-- 1=open 2=done  -->

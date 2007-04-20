@@ -1,14 +1,10 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.handler.HandlerUtil;
-import org.geotracing.handler.TrackLogic;
-import org.geotracing.handler.Track;
-import org.geotracing.handler.QueryLogic;
+import org.geotracing.handler.*;
 import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.common.util.Rand;
 import org.keyworx.common.util.Sys;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
@@ -22,6 +18,7 @@ import org.walkandplay.server.util.Constants;
 import org.postgis.Point;
 
 import java.util.Vector;
+import java.sql.Timestamp;
 
 /**
  * GamePlayHandler.
@@ -37,6 +34,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	public final static String PLAY_START_SERVICE = "play-start";
 	public final static String PLAY_LOCATION_SERVICE = "play-location";
 	public final static String PLAY_ANSWERTASK_SERVICE = "play-answertask";
+	public final static String PLAY_ADD_MEDIUM_SERVICE = "play-add-medium";
 
 	private Log log = Logging.getLog("GamePlayHandler");
 	private ContentHandlerConfig config;
@@ -60,13 +58,15 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		JXElement response;
 		try {
 			if (service.equals(PLAY_START_SERVICE)) {
-				response = playStartReq(anUtopiaRequest);
+				response = startReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_RESET_SERVICE)) {
-				response = playResetReq(anUtopiaRequest);
+				response = resetReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_LOCATION_SERVICE)) {
-				response = playLocationReq(anUtopiaRequest);
+				response = locationReq(anUtopiaRequest);
 			} else if (service.equals(PLAY_ANSWERTASK_SERVICE)) {
-				response = playAnswerTaskReq(anUtopiaRequest);
+				response = answerTaskReq(anUtopiaRequest);
+			} else if (service.equals(PLAY_ADD_MEDIUM_SERVICE)) {
+				response = addMediumReq(anUtopiaRequest);
 			} else {
 				log.warn("Unknown service " + service);
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
@@ -84,7 +84,104 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		}
 	}
 
-	public JXElement playLocationReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+	public JXElement addMediumReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+/*
+        <play-add-medium-req id="[mediumid]" />
+        <play-add-medium-rsp locationid="[locationid]" taskresultid="[taskresultid]" />
+*/
+		JXElement requestElement = anUtopiaRequest.getRequestCommand();
+		String mediumId = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, mediumId);
+
+		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+		Finder finder = oase.getFinder();
+		Modifier modifier = oase.getModifier();
+		Relater relater = oase.getRelater();
+		// Create Location for medium and relate to track and location tables
+		Record mediumRecord = oase.getFinder().read(Integer.parseInt(mediumId));
+
+		int personId = HandlerUtil.getUserId(anUtopiaRequest);
+
+		// First determine location and add to track
+		Location location;
+		TrackLogic trackLogic = new TrackLogic(oase);
+
+		if (requestElement.hasAttr(TIME_FIELD)) {
+			// if a timestamp was provided we assume we already have the correct creation time
+			long timestamp = requestElement.getLongAttr(TIME_FIELD);
+
+			// Set medium creationdate to timestamp
+			mediumRecord.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timestamp));
+			oase.getModifier().update(mediumRecord);
+
+			location = trackLogic.createLocation(personId, mediumRecord.getId(), timestamp, TrackLogic.REL_TAG_MEDIUM);
+		} else {
+			// Determines timestamp from medium (e.g. EXIF) to create location
+			location = trackLogic.createMediumLocation(mediumRecord.getId());
+		}
+
+		// We either have location or an exception here
+
+		JXElement rsp = createResponse(PLAY_ADD_MEDIUM_SERVICE);
+		rsp.setAttr(LOCATION_ID_FIELD, location.getId());
+
+		// We must have a running GamePlay record
+		Record runningGamePlay = getRunningGamePlay(oase, personId);
+		if (runningGamePlay == null) {
+			throw new UtopiaException("No running GamePlay found for person=" + personId);
+		}
+
+		// Figure out if location is near a task in progress
+		Record game = getGameForGamePlay(oase, runningGamePlay.getId());
+		Point point = location.getPoint();
+		Record[] locationsHit = getLocationsHitForGame(oase, point, game.getId());
+		log.info("Hit locations for medium cnt=" + locationsHit.length);
+		return rsp;
+	}
+
+	public JXElement answerTaskReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+/*
+        <play-answertask-req id="[taskid]" answer="blabla" />
+        <play-answertask-rsp result="[boolean]" score="[nrofpoints] />
+*/
+		JXElement requestElement = anUtopiaRequest.getRequestCommand();
+		String taskId = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, taskId);
+		String playerAnswer = requestElement.getAttr(ANSWER_FIELD);
+		HandlerUtil.throwOnMissingAttr(ANSWER_FIELD, playerAnswer);
+
+		int personId = HandlerUtil.getUserId(anUtopiaRequest);
+
+		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
+		Finder finder = oase.getFinder();
+		Modifier modifier = oase.getModifier();
+		Relater relater = oase.getRelater();
+
+		// We must have a running GamePlay record
+		Record runningGamePlay = getRunningGamePlay(oase, personId);
+		if (runningGamePlay == null) {
+			throw new UtopiaException("No running GamePlay found for person=" + personId);
+		}
+
+		Record task = finder.read(Integer.parseInt(taskId), TASK_TABLE);
+		String[] answers = task.getStringField(ANSWER_FIELD).split(",");
+		boolean result = false;
+		int score = 0;
+		for (int i = 0; i < answers.length; i++) {
+			if (answers[i].equals(playerAnswer)) {
+				result = true;
+				score = task.getIntField(SCORE_FIELD);
+				break;
+			}
+		}
+
+		JXElement rsp = createResponse(PLAY_ANSWERTASK_SERVICE);
+		rsp.setAttr(RESULT_FIELD, result);
+		rsp.setAttr(SCORE_FIELD, score);
+		return rsp;
+	}
+
+	public JXElement locationReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaRequest.getRequestCommand();
 		int personId = HandlerUtil.getUserId(anUtopiaRequest);
 
@@ -161,7 +258,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return response;
 	}
 
-	public JXElement playResetReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+	public JXElement resetReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaRequest.getRequestCommand();
 		String gamePlayId = requestElement.getAttr(ID_FIELD);
 		HandlerUtil.throwOnNonNumAttr("id", gamePlayId);
@@ -178,14 +275,14 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Delete trace if avail
 		TrackLogic trackLogic = new TrackLogic(oase);
 		Record[] tracks = relater.getRelated(gamePlay, TRACK_TABLE, null);
-		for (int i=0; i < tracks.length; i++) {
+		for (int i = 0; i < tracks.length; i++) {
 			// This also deletes related media!!
-			trackLogic.delete(personId, tracks[i].getId()+"");
+			trackLogic.delete(personId, tracks[i].getId() + "");
 		}
 
-			// Delete task results
+		// Delete task results
 		Record[] taskResults = relater.getRelated(gamePlay, TASKRESULT_TABLE, null);
-	    for (int i=0; i < taskResults.length; i++) {
+		for (int i = 0; i < taskResults.length; i++) {
 			modifier.delete(taskResults[i]);
 		}
 
@@ -197,7 +294,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return createResponse(PLAY_RESET_SERVICE);
 	}
 
-	public JXElement playStartReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
+	public JXElement startReq(UtopiaRequest anUtopiaRequest) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaRequest.getRequestCommand();
 		String gamePlayId = requestElement.getAttr(ID_FIELD);
 		HandlerUtil.throwOnNonNumAttr(ID_FIELD, gamePlayId);
@@ -242,49 +339,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return createResponse(PLAY_START_SERVICE);
 	}
 
-	public JXElement playAnswerTaskReq(UtopiaRequest anUtopiaRequest) throws OaseException,UtopiaException {
-/*
-        <play-answertask-req id="[taskid]" answer="blabla" />
-        <play-answertask-rsp result="[boolean]" score="[nrofpoints] />
-*/
-		JXElement requestElement = anUtopiaRequest.getRequestCommand();
-		String taskId = requestElement.getAttr(ID_FIELD);
-		HandlerUtil.throwOnNonNumAttr(ID_FIELD, taskId);
-		String playerAnswer = requestElement.getAttr(ANSWER_FIELD);
-		HandlerUtil.throwOnMissingAttr(ANSWER_FIELD, playerAnswer);
 
-		int personId = HandlerUtil.getUserId(anUtopiaRequest);
-
-		Oase oase = HandlerUtil.getOase(anUtopiaRequest);
-		Finder finder = oase.getFinder();
-		Modifier modifier = oase.getModifier();
-		Relater relater = oase.getRelater();
-
-		// We must have a running GamePlay record
-		Record runningGamePlay = getRunningGamePlay(oase, personId);
-		if (runningGamePlay == null) {
-			throw new UtopiaException("No running GamePlay found for person=" + personId);
-		}
-
-		Record task = finder.read(Integer.parseInt(taskId), TASK_TABLE);
-		String[] answers = task.getStringField(ANSWER_FIELD).split(",");
-		boolean result = false;
-		int score = 0;
-		for (int i=0; i < answers.length; i++) {
-			if (answers[i].equals(playerAnswer)) {
-				result = true;
-				score = task.getIntField(SCORE_FIELD);
-				break;
-			}
-		}
-
-		JXElement rsp = createResponse(PLAY_ANSWERTASK_SERVICE);
-		rsp.setAttr(RESULT_FIELD, result);
-		rsp.setAttr(SCORE_FIELD, score);
-		return rsp;
-	}
-
-	public Record getGameForGamePlay(Oase anOase, int aGamePlayId) throws OaseException, UtopiaException {
+	protected Record getGameForGamePlay(Oase anOase, int aGamePlayId) throws OaseException, UtopiaException {
 		Record game = null;
 		try {
 			Record gamePlay = anOase.getFinder().read(aGamePlayId, GAMEPLAY_TABLE);
@@ -297,7 +353,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return game;
 	}
 
-	public Record getRunningGamePlay(Oase anOase, int aPersonId) throws UtopiaException {
+	protected Record getRunningGamePlay(Oase anOase, int aPersonId) throws UtopiaException {
 		Record result = null;
 		try {
 			String tables = "utopia_person,wp_gameplay";
@@ -318,7 +374,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return result;
 	}
 
-	public Record[] getLocationsHitForGame(Oase anOase, Point aPoint, int aGameId) throws UtopiaException {
+	protected Record[] getLocationsHitForGame(Oase anOase, Point aPoint, int aGameId) throws UtopiaException {
 		try {
 			String distanceClause = "distance_sphere(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")',4326),point)";
 			String tables = "g_location,wp_game";
