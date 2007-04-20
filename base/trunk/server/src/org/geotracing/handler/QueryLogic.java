@@ -37,10 +37,6 @@ public class QueryLogic {
 	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
 
 	public final static String QUERY_STORE_SERVICE = "query-store";
-	public final static String ATTR_TABLES = "tables";
-	public final static String ATTR_FIELDS = "fields";
-	public final static String ATTR_RELATIONS = "relations";
-	public final static String ATTR_POST_COND = "postcond";
 
 	/**
 	 * Clause template for relation queries.
@@ -267,6 +263,7 @@ public class QueryLogic {
 				if (limit > 51) {
 					limit = 51;
 				}
+				
 				String postCond = " LIMIT " + limit;
 
 				// log.info("where=[" + where + "] postCond=[" + postCond +"]");
@@ -789,8 +786,8 @@ public class QueryLogic {
 	 */
 	static public JXElement queryStoreReq(Oase oase, String tables, String fields, String where, String relations, String postCond) throws UtopiaException {
 		JXElement rsp = Protocol.createResponse(QUERY_STORE_SERVICE);
-		rsp.setAttr(ATTR_TABLES, tables);
-		rsp.setAttr(ATTR_FIELDS, fields);
+		// rsp.setAttr(ATTR_TABLES, tables);
+		// rsp.setAttr(ATTR_FIELDS, fields);
 		try {
 
 			// Do query with Record[] result
