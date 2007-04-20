@@ -34,7 +34,8 @@ namespace Diwi {
 
         void doLoopRoute(int i, string s) {
             AppController.sActiveRoute = route;
-            AppController.sActiveRouteMapPath = null;
+            AppController.sActiveRouteMapPathHor = null;
+            AppController.sActiveRouteMapPathVer = null;
             doTerug(0, null);
         }
 

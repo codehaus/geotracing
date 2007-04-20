@@ -57,7 +57,9 @@ namespace Diwi {   // base class for Diwi Pages.
             mDrawableElements = new ArrayList();
             mMenu = new DiwiUIMenu(this);
             addDrawable(mMenu);
-            mouseText = new DiwiUIText(offScreenGraphics);
+            mouseText = new DiwiUIText();
+
+            setBackground();
 
             mInitializing = false;
         
@@ -73,7 +75,14 @@ namespace Diwi {   // base class for Diwi Pages.
             mouseText.draw();
             redrawRect(oldRect, mouseText.rect);
         }
-      
+
+        public bool horizontal {
+            get { 
+                if (this.ClientRectangle.Width > this.ClientRectangle.Height) 
+                    return true; 
+                return false; 
+            }
+        }
         
         public string title {
             get { return mTitle; }
@@ -84,11 +93,24 @@ namespace Diwi {   // base class for Diwi Pages.
             mDrawableElements.Add(d);
         }
 
-        protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY)
-        {
+        void setBackground() {
+            mBackImage = new DiwiImage(this);
+            mBackImage.x = 0;
+            mBackImage.y = 0;
+            if (horizontal) {
+                Size size = new Size(320, 240);
+                mBackImage.size = size;
+                mBackImage.bitmap = AppController.backgroundHorBitmap;
+            } else {
+                Size size = new Size(240, 320);
+                mBackImage.size = size;
+                mBackImage.bitmap = AppController.backgroundVerBitmap;
+            }
+        }
+
+        protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY) {
             Stream stream = null;
-            try
-            {
+            try {
                 stream = AppController.sAssembly.GetManifestResourceStream(anImageName);
                 mBackImage = new DiwiImage(this);
                 Size size = new Size(aWidth, aHeight);
@@ -97,9 +119,7 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.y = aY;
                 mBackImage.bitmap = new Bitmap(stream);
                 draw();
-            }
-            catch (System.IO.FileNotFoundException e)
-            {
+            } catch (System.IO.FileNotFoundException e) {
                 MessageBox.Show(e.Message);
             }
         }
@@ -115,6 +135,7 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.y = aY;
                 mBackImage.bitmap = new Bitmap(stream);
                 draw();
+                stream.Close();
             } catch (System.IO.FileNotFoundException e) {
                 MessageBox.Show(e.Message);
             }
@@ -140,6 +161,7 @@ namespace Diwi {   // base class for Diwi Pages.
                 mForeImage.y = aY;
                 mForeImage.bitmap = new Bitmap(stream);
                 draw();
+                stream.Close();
             } catch (System.IO.FileNotFoundException e) {
                 MessageBox.Show(e.Message);
             }

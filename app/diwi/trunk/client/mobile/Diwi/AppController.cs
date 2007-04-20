@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Threading;
+using System.Drawing;
 using System.Reflection;
+using Microsoft.WindowsMobile.Forms;
+using System.Windows.Forms;
 
 
 namespace Diwi {
@@ -14,24 +17,48 @@ namespace Diwi {
     class AppController
     {
         public static XMLement sActiveRoute = null;
-        public static string sActiveRouteMapPath = null;
+        public static string sActiveRouteMapPathHor = null;
+        public static string sActiveRouteMapPathVer = null;
         public static XMLement sFixedRoutes;
         public static StreamWriter sLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
 
+        public static Bitmap backgroundHorBitmap;
+        public static Bitmap backgroundVerBitmap;
+
 
         public static void activate() {
             sLog = File.CreateText("DiwiLog.txt");
             sKwxClient = KwxClient.instance;
             sGpsReader = GpsReader.instance;
+
+            Stream stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_horz.gif");
+            backgroundHorBitmap = new Bitmap(stream);
+            stream.Close();
+
+            stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_vert.gif");
+            backgroundVerBitmap = new Bitmap(stream);
+            stream.Close();
         }
 
         public static void deactivate() {
             sGpsReader.stop();
             sKwxClient.stop();
             Thread.Sleep(1000);
+        }
+
+
+        public static string makeFoto() {
+            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
+            cameraCaptureDialog.Owner = null;
+            cameraCaptureDialog.Title = "Neem een foto";
+            cameraCaptureDialog.Mode = CameraCaptureMode.Still;
+            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
+                return cameraCaptureDialog.FileName;
+            }
+            return null;
         }
     }
 }

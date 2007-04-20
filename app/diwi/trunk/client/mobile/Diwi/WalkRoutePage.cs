@@ -13,41 +13,58 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class WalkRoutePage : DiwiPageBase {
         
-        MediaDownloader dnl;
-
         public delegate void CallbackHandler(string udata);
+        public delegate void POIHandler(XMLement data, float lat, float lon);
 
+        private POIHandler poiCB;
 
         public WalkRoutePage(DiwiPageBase parent)
             : base(parent) {
-            string path = @"\tmpfile.jpg";
+
             title = "Route: " + AppController.sActiveRoute.getChildValue("name");
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
-           
-            
 
-            string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"));
-            if (mapUrl != null) {
-                dnl = new MediaDownloader(mapUrl, new CallbackHandler(mapReceivedCB));
-                /*
+            poiCB = new POIHandler(navPointReceive);
 
-                if (MediaHandler.doDownload(mapUrl, path) ) {
-                    AppController.sActiveRouteMapPath = path;
-                    setBackGround();
-                }
-                 * 
-                 * */
+            AppController.sKwxClient.poiCallback += new KwxClient.POICallback(navPointMessage);
+        }
+
+        void navPointReceive(XMLement xml, float lat, float lon) {
+            XMLement poi = xml.firstChild();
+            if (poi != null) {
+                // stumbled on an intersting point...
             }
 
         }
 
-        void mapReceived(string path) {
-            AppController.sActiveRouteMapPath = path;
-            setBackGround();
-            draw();
+        void navPointMessage(XMLement xml, float lat, float lon) {
+            if (InvokeRequired)
+                Invoke(poiCB, new object[] { xml,lat,lon });
+            else
+                navPointReceive(xml, lat, lon);
         }
+
+        void mapReceived(string path) {
+            if (AppController.sActiveRouteMapPathHor == null) {
+                AppController.sActiveRouteMapPathHor = path;
+                if (horizontal) {
+                    setBackGround();
+                    draw();
+                }
+                string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"), false);
+                if (mapUrl != null) {
+                    new MediaDownloader(mapUrl, @"\verrMap.jpg", new CallbackHandler(mapReceivedCB));
+                }
+            } else {
+                AppController.sActiveRouteMapPathVer = path;
+                if (!horizontal) {
+                    setBackGround();
+                    draw();
+                }
+            }
+      }
 
         void mapReceivedCB(string path) {
             if( InvokeRequired ) 
@@ -78,7 +95,10 @@ namespace Diwi {
 
 
         void doFoto(int i, string s) {
-            (new MakePhotoPage(this)).ShowDialog();
+            string fileName = AppController.makeFoto();
+            if (fileName != null) {
+                (new MakePhotoPage(this,fileName)).ShowDialog();
+            }
         }
 
 
@@ -90,20 +110,24 @@ namespace Diwi {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             mIsInitialized = true;
+            string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"), true);
+            if (mapUrl != null) {
+                new MediaDownloader(mapUrl, @"\horMap.jpg", new CallbackHandler(mapReceivedCB));
+            }
             setBackGround();
         }
 
         void setBackGround() {
-            if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-                if (AppController.sActiveRouteMapPath == null)
+            if (horizontal) {
+                if (AppController.sActiveRouteMapPathHor == null)
                     setBackGroundImg(@"Diwi.Resources.back_horz.gif", 320, 240, 0, 0);
                 else
-                    setBackGroundFromFile(AppController.sActiveRouteMapPath, 320, 240, 0, 0);
+                    setBackGroundFromFile(AppController.sActiveRouteMapPathHor, 320, 240, 0, 0);
             } else {
-                if (AppController.sActiveRouteMapPath == null)
+                if (AppController.sActiveRouteMapPathVer == null)
                     setBackGroundImg(@"Diwi.Resources.back_vert.gif", 240, 320, 0, 0);
                 else
-                    setBackGroundFromFile(AppController.sActiveRouteMapPath, 320, 240, 0, 0);
+                    setBackGroundFromFile(AppController.sActiveRouteMapPathVer, 320, 240, 0, 0);
             }
         }
 

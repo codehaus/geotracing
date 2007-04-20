@@ -13,8 +13,9 @@ namespace Diwi {
     class MakePhotoPage : DiwiPageBase {
         private DiwiScalingImage mFoto;
         string currentFilename = null;
+        TextBox mNameBox = new TextBox();
 
-        public MakePhotoPage(DiwiPageBase parent)
+        public MakePhotoPage(DiwiPageBase parent, string fileName)
             : base(parent) {
 
             mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe));
@@ -22,30 +23,34 @@ namespace Diwi {
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Maak Foto";
+            currentFilename = fileName;
 
             mFoto = new DiwiScalingImage(this);
             mFoto.size = new Size(192, 144);
             mFoto.x = 10;
-            mFoto.y = 120;
+            if (horizontal) mFoto.y = 36; else mFoto.y = 120;
             addDrawable(mFoto);
+
+            this.Controls.Add(mNameBox);
+
+            mFoto.bitmap = new Bitmap(currentFilename);
+
         }
 
 
         void voegToe(int i, string s) {
-            new MediaUploader(currentFilename, null);
+            new MediaUploader(currentFilename, mNameBox.Text,   null);
             doTerug(0, null);
         }
 
 
 
         void doFoto(int i, string s) {
-            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
-            cameraCaptureDialog.Owner = this;
-            cameraCaptureDialog.Title = "Neem een foto";
-            cameraCaptureDialog.Mode = CameraCaptureMode.Still;
-            currentFilename = null;
-            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
-                currentFilename = cameraCaptureDialog.FileName;
+            FileInfo fi = new FileInfo(currentFilename);
+            fi.Delete();
+
+            currentFilename = AppController.makeFoto();
+            if (currentFilename != null) {
                 mFoto.bitmap = new Bitmap(currentFilename);
                 draw();
             }
@@ -54,20 +59,28 @@ namespace Diwi {
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
+            mNameBox.Width  = 192;
+            mNameBox.Height = 24;
+            mNameBox.Left = 10;
+            if( horizontal )
+                mNameBox.Top = 190;
+            else
+                mNameBox.Top = 268;
+            mNameBox.Focus();
+
             mIsInitialized = true;
-            doFoto(0, null);
         }
 
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (base.doResize(e) == true) {
                 if (mIsInitialized) {
-                    if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-                        mFoto.x = 10;
-                        mFoto.y = 100;
+                    if (horizontal) {
+                        mFoto.y = 36;
+                        mNameBox.Top = 190;
                     } else {
-                        mFoto.x = 10;
-                        mFoto.y = 170;
+                        mFoto.y = 120;
+                        mNameBox.Top = 268;
                     }
                     draw();
                 }

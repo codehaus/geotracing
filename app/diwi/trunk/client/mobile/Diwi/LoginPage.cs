@@ -7,8 +7,9 @@ using System.Drawing;
 namespace Diwi {
     class LoginPage : DiwiPageBase {
 
-        DiwiUIText mServerText = new DiwiUIText(offScreenGraphics);
-        DiwiUIText mServerMess = new DiwiUIText(offScreenGraphics);
+        DiwiUIText mUserText = new DiwiUIText();
+        DiwiUIText mPassText = new DiwiUIText();
+        DiwiUIText mServerMess = new DiwiUIText();
         TextBox mUserBox = new TextBox();
         TextBox mPassBox = new TextBox();
         DiwiUIButton mOkButton;
@@ -18,10 +19,21 @@ namespace Diwi {
             : base(parent) {
 
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
-            mOkButton = new DiwiUIButton(offScreenGraphics, 146, 220, "Login", buttonOK, this);
-            addDrawable(mOkButton);
+            mOkButton = new DiwiUIButton(offScreenGraphics, 146, 170, "Login", buttonOK, this);
 
             AppController.sKwxClient.messageCallback += new KwxClient.MessageCallback(serverMessage);
+
+            mUserText.text = "user:";
+            mPassText.text = "pass:";
+            mServerMess.text = Properties.Resources.KwxServerUrl;
+
+            addDrawable(mUserText);
+            addDrawable(mPassText);
+            addDrawable(mOkButton);
+            addDrawable(mServerMess);
+
+            this.Controls.Add(mUserBox);
+            this.Controls.Add(mPassBox);
 
             title = "Login";
         }
@@ -41,6 +53,25 @@ namespace Diwi {
                 updateKwxMessage(m);
         }
 
+        private void reOrient() {
+            if (!horizontal) { //vertical
+                mOkButton.x = 146;
+                mOkButton.y = 170;
+                mServerMess.y = 286;
+                mUserBox.Top = 100;
+                mPassBox.Top = 130;
+                mUserText.y = 110;
+                mPassText.y = 134; 
+            } else { // horizontal
+                mOkButton.x = 146;
+                mOkButton.y = 130;
+                mServerMess.y = 206;
+                mUserBox.Top = 60;
+                mPassBox.Top = 90;
+                mUserText.y = 70;
+                mPassText.y = 94;
+            }
+        }
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
@@ -48,8 +79,7 @@ namespace Diwi {
             mUserBox.Width = mPassBox.Width = 160;
             mUserBox.Height = mPassBox.Height = 20;
             mUserBox.Left = mPassBox.Left = 40;
-            mUserBox.Top = 100;
-            mPassBox.Top = 130;
+            mServerMess.x = 4; 
 
             mUserBox.Text = Properties.Resources.KwxServerUsername;
             mPassBox.Text = Properties.Resources.KwxServerPassword;
@@ -57,16 +87,12 @@ namespace Diwi {
             mUserBox.Font = mFont;
             mPassBox.Font = mFont;
 
-            this.Controls.Add(mUserBox);
-            this.Controls.Add(mPassBox);
+            mUserText.x = 4; 
+            mPassText.x = 4;
 
-            mServerMess.x = 4; mServerMess.y = 110; mServerMess.draw("user:");
-            mServerMess.x = 4; mServerMess.y = 134; mServerMess.draw("pass:");
-
+            reOrient();
+            
             mUserBox.Focus();
-
-            mServerMess.y = this.ClientRectangle.Height - 34;
-            mServerMess.draw(Properties.Resources.KwxServerUrl);
             mIsInitialized = true;
         }
 
@@ -82,8 +108,8 @@ namespace Diwi {
             // change location of stuff
             if (mInitializing) return;
             if (base.doResize(e)) {
-                int y = this.ClientRectangle.Height - 4;
-                mServerMess.x = 4; mServerMess.y = y -= 20;
+                reOrient();
+                draw();
             }
         }
     }

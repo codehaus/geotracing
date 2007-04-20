@@ -19,7 +19,7 @@ namespace Diwi {
         public static Color sSelTextColor = Color.FromArgb(180, 180, 180);
         static Bitmap mMiniLogo = null;
         private SolidBrush mBrush = new SolidBrush(Color.Red);
-        private DiwiUIText mText = new DiwiUIText(null,Color.Black,"",new Font("Arial", 11, FontStyle.Bold));
+        private DiwiUIText mText = new DiwiUIText(Color.Black,"",new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
         private int mCurrentMenuIndex = -1;
 
