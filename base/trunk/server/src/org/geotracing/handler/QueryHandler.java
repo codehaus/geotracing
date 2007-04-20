@@ -30,11 +30,6 @@ import java.util.Map;
 public class QueryHandler extends DefaultHandler {
 
 	public final static String QUERY_STORE_SERVICE = "query-store";
-
-	/* public final static String ATTR_TABLES = "tables";
-		public final static String ATTR_FIELDS = "fields";
-		public final static String ATTR_RELATIONS = "relations";
-		public final static String ATTR_POST_COND = "postcond";  */
 	public final static String ATTR_CMD = "cmd";
 
 	private Log log = Logging.getLog("QueryHandler");
@@ -164,19 +159,5 @@ public class QueryHandler extends DefaultHandler {
 	}
 
 }
-
-/*
-* $Log: QueryHandler.java,v $
-* Revision 1.8  2005/10/21 13:09:50  just
-* basic bomb protocol
-*
-* Revision 1.7  2005/10/18 12:54:44  just
-* *** empty log message ***
-*
-* Revision 1.6  2005/10/18 07:38:00  just
-* *** empty log message ***
-*
-*
-*/
 
 
