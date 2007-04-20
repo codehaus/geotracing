@@ -85,7 +85,9 @@ namespace Diwi {
         }
 
         public XMLement firstChild() {
-            return (XMLement)mChildren[0];
+            if(mChildren.Count > 0)
+                return (XMLement)mChildren[0];
+            return null;
         }
 
         public string toString() {

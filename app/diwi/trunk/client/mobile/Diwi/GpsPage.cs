@@ -19,12 +19,12 @@ namespace Diwi {
 
             Rectangle r = this.ClientRectangle;
 
-            latLonText = new DiwiUIText(offScreenGraphics, Color.Black);
-            numSatText = new DiwiUIText(offScreenGraphics, Color.Black);
-            speedText = new DiwiUIText(offScreenGraphics, Color.Black);
-            hDopText = new DiwiUIText(offScreenGraphics, Color.Black);
-            demoText = new DiwiUIText(offScreenGraphics, Color.Red);
-            fixText = new DiwiUIText(offScreenGraphics, Color.Black);
+            latLonText = new DiwiUIText(Color.Black);
+            numSatText = new DiwiUIText(Color.Black);
+            speedText = new DiwiUIText(Color.Black);
+            hDopText = new DiwiUIText(Color.Black);
+            demoText = new DiwiUIText(Color.Red);
+            fixText = new DiwiUIText(Color.Black);
 
             addDrawable(latLonText);
             addDrawable(numSatText);

@@ -59,29 +59,29 @@ namespace Diwi {
 
         #region Constructor
 
-        public DiwiUIText(Graphics g) {
+        public DiwiUIText() {
             mTextRect = new Rectangle();
         }
 
-        public DiwiUIText(Graphics g, Color color) {
+        public DiwiUIText(Color color) {
             mTextRect = new Rectangle();
             mBrush = new SolidBrush(color);
         }
 
-        public DiwiUIText(Graphics g, Color color, string text) {
+        public DiwiUIText(Color color, string text) {
             mTextRect = new Rectangle();
             mBrush = new SolidBrush(color);
             mText = text;
         }
 
-        public DiwiUIText(Graphics g, Color color, string text, Font font) {
+        public DiwiUIText(Color color, string text, Font font) {
             mTextRect = new Rectangle();
             mBrush = new SolidBrush(color);
             mFont = font;
             mText = text;
         }
 
-        public DiwiUIText(Graphics g, Color color, string text, Font font, int x, int y) {
+        public DiwiUIText(Color color, string text, Font font, int x, int y) {
             mTextRect = new Rectangle();
             mBrush = new SolidBrush(color);
             mFont = font;

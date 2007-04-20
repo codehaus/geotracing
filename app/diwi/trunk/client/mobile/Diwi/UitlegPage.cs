@@ -56,13 +56,9 @@ namespace Diwi {
 
 
         void doFoto(int i, string s) {
-            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
-            cameraCaptureDialog.Owner = this;
-            cameraCaptureDialog.Title = "Neem een foto";
-            cameraCaptureDialog.Mode = CameraCaptureMode.Still;
-            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
-                string s1 = cameraCaptureDialog.FileName;
-                mFoto.bitmap = new Bitmap(cameraCaptureDialog.FileName);
+            string fileName = AppController.makeFoto();
+            if (fileName != null) {
+                mFoto.bitmap = new Bitmap(fileName);
                 draw();
             }
         }

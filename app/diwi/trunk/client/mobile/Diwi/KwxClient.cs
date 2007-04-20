@@ -16,7 +16,9 @@ namespace Diwi {
 
     class KwxClient {
         public delegate void MessageCallback(string mess);
+        public delegate void POICallback(XMLement mess, float lat, float lon);
         public event MessageCallback messageCallback;
+        public event POICallback poiCallback;
 
         private string mUser = Diwi.Properties.Resources.KwxServerUsername;
         private string mPass = Diwi.Properties.Resources.KwxServerPassword;
@@ -157,11 +159,11 @@ namespace Diwi {
             return new XMLement("NotLoggedInError");
         }
 
-        public string getRouteMap(string id) {
+        public string getRouteMap(string id, bool hor) {
             XMLement req = new XMLement("route-get-map-req");
             req.addAttribute("id", id);
-            req.addAttribute("height", "320");
-            req.addAttribute("width", "240");
+            req.addAttribute("height", hor? "240" : "320");
+            req.addAttribute("width",  hor? "320" : "240");
             req = utopiaRequest(req);
             if (req.tag == "route-get-map-rsp") {
                 return req.getAttributeValue("url");
@@ -207,7 +209,9 @@ namespace Diwi {
                 xml.addChild(pt);
 
                 xml = utopiaRequest(xml);
-                string s = xml.toString();
+                if (poiCallback != null) {
+                    poiCallback(xml, GpsReader.lat, GpsReader.lon);
+                }
             }
         }
 

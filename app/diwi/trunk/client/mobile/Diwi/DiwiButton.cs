@@ -16,7 +16,7 @@ namespace Diwi {
         public static Color sButColor = Color.FromArgb(130, 100, 30);
         public static Color sTextColor = Color.FromArgb(180, 180, 180);
         private SolidBrush mBrush = new SolidBrush(Color.Red);
-        private DiwiUIText mText = new DiwiUIText(null, sTextColor, "", new Font("Arial", 11, FontStyle.Bold));
+        private DiwiUIText mText = new DiwiUIText(sTextColor, "", new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
         private Rectangle mRect;
         private DiwiButtonCallbackHandler mCallback;
@@ -26,6 +26,24 @@ namespace Diwi {
             mText.text = t;
             mRect = new Rectangle(x, y, 12 + mText.width , 24);
             mCallback = cb;
+        }
+
+        public int x {
+            get {
+                return mRect.X;
+            }
+            set {
+                mRect.X = value;
+            }
+        }
+
+        public int y {
+            get {
+                return mRect.Y;
+            }
+            set {
+                mRect.Y = value;
+            }
         }
 
         public void doMouseClick(int x, int y) {

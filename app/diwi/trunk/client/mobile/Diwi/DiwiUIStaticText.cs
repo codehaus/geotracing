@@ -19,6 +19,7 @@ namespace Diwi {
             //mTextBox.ReadOnly = true;
             mTextBox.ForeColor = Color.Black;
            // mTextBox.BorderStyle = BorderStyle.None;
+//            mTextBox.BackColor = Color.Transparent;
             mTextBox.BackColor = DiwiPageBase.sBackgroundColor;
             form.Controls.Add(mTextBox);
         }
