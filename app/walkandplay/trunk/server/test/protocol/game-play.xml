@@ -319,7 +319,7 @@
 		</expect>
 	</test>
 
-	<test id="play-reset-req2">
+<!--	<test id="play-reset-req2">
 		<send id="client1">
 			<utopia-req>
 				<play-reset-req id="${gameplayid}"/>
@@ -331,7 +331,7 @@
 				<play-reset-rsp/>
 			</utopia-rsp>
 		</expect>
-	</test>
+	</test> -->
 
 	<test id="logout">
 		<send id="client1">
