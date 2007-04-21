@@ -5,11 +5,13 @@ package org.walkandplay.server.daemon;
 
 import com.messners.mail.POP3MailMessage;
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.handler.TracingHandler;
 import org.keyworx.amuse.core.Protocol;
 import org.keyworx.amuse.daemon.EmailUploadDaemon;
 import org.keyworx.client.KWClient;
 import org.walkandplay.server.control.GamePlayHandler;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -28,13 +30,17 @@ public class WPEmailUploadDaemon extends EmailUploadDaemon {
 
 		String id = aMediumInsertRsp.getAttr("id", null);
 		try {
-			log.info("afterUpload id=" + id);
+			String dateHeader = aMsg.getHeaderValue("date");
+			SimpleDateFormat dateFormat = new SimpleDateFormat();
+			Date date = dateFormat.parse(dateHeader);
+			log.info("afterUpload id=" + id + " dateHeader=" + dateHeader + " date=" + date);
 
 			// medium-insert-rsp carries one or more medium id's seperated by comma's
 			String[] mediumIds = aMediumInsertRsp.getAttr("id").split(",");
 			for (int i = 0; i < mediumIds.length; i++) {
 				JXElement req = Protocol.createRequest(GamePlayHandler.PLAY_ADD_MEDIUM_SERVICE);
 				req.setAttr("id", mediumIds[i]);
+				req.setAttr("time", date.getTime());
 				JXElement rsp = aKWClient.performUtopiaRequest(req);
 				if (Protocol.isNegativeResponse(rsp)) {
 					log.warn("Negative play-add-medium-rsp for medium id=" + mediumIds[i] + " error=" + rsp.getAttr("error") + " details=" + rsp.getAttr("details"));

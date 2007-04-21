@@ -15,7 +15,9 @@
 			<field name="answer" />
             <field name="score" />
 			<field name="state" />
-		</list>
+			<field name="mediastate" />
+			<field name="answerstate" />
+ 		</list>
 
 		<query>
 			<field name="id" />

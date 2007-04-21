@@ -57,6 +57,7 @@ public interface Constants {
 	public final static String RELTAG_OUTRO = "outro";
 	public final static String RELTAG_MEDIUM = "medium";
 	public final static String RELTAG_CREATOR = "creator";
+	public final static String RELTAG_RESULT = "result";
 	public final static String RELTAG_TASK = "task";
 
 	// Location types
