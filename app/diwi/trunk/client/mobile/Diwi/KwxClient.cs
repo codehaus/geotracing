@@ -197,6 +197,7 @@ namespace Diwi {
         /// lat/lon format broken on server ?
         /// </summary>
         public void sendSample() {
+            
             if (mAgentKey != null) {
                 XMLement xml = new XMLement("nav-point-req");
                 XMLement pt = new XMLement("pt");
