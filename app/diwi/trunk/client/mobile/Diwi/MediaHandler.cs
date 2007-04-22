@@ -98,8 +98,8 @@ namespace Diwi {
 
  
         private void writeField(string name, string value, Stream s) {
-            if (value == null) {
-                value = "";
+            if (value == null || value == "") {
+                value = "noName";
             }
             /*
             --boundary\r\n
@@ -131,7 +131,6 @@ namespace Diwi {
         private void threadHandler() {
             int n;
             byte[] inData = new byte[4096];
-            Stream stream = null;
             FileInfo fi = new FileInfo(localFile);
 
             busy = true;
@@ -162,7 +161,7 @@ namespace Diwi {
             reqStream.Write(boundary, 0, boundary.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
 		    // write content header
-            string t = "Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + fi.Name + "\"";
+            string t = "Content-Disposition: form-data; mime=\"image/jpeg\"; name=\"" + name + "\"; filename=\"" + fi.Name + "\"";
             inData = encoding.GetBytes(t);
             reqStream.Write(inData, 0, inData.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
@@ -186,7 +185,7 @@ namespace Diwi {
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
             reqStream.Write(PREFIX, 0, PREFIX.Length);
             reqStream.Write(boundary, 0, boundary.Length);
-            reqStream.Write(PREFIX, 0, PREFIX.Length);
+ //           reqStream.Write(PREFIX, 0, PREFIX.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
 
             reqStream.Close();
@@ -203,7 +202,6 @@ namespace Diwi {
 
         }
     }
-
 }
 
 /*

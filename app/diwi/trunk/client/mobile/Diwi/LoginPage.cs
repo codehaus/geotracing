@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Drawing;
 
@@ -99,8 +100,12 @@ namespace Diwi {
         public void buttonOK() {
             AppController.sKwxClient.stop();
             AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
-            if (AppController.sKwxClient.agentKey != null)
-                doTerug(0,null);
+            if (AppController.sKwxClient.agentKey != null) {
+                FileInfo fi = new FileInfo(@"\test.jpg");
+                if( fi.Exists ) 
+                new MediaUploader(fi.FullName, "testImage", null);
+                doTerug(0, null);
+            }
         }
         
         
