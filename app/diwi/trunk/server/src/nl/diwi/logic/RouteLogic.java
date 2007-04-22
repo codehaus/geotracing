@@ -6,6 +6,7 @@ package nl.diwi.logic;
 import nl.diwi.external.RouteGenerator;
 import nl.diwi.util.Constants;
 import nl.diwi.util.GPXUtil;
+import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
@@ -35,13 +36,11 @@ import java.util.Vector;
  * @version $Id: CommentLogic.java 353 2007-02-02 12:04:11Z just $
  */
 public class RouteLogic implements Constants {
-	public static final String TABLE_PERSON = "utopia_person";
-	private Log log = Logging.getLog("RouteLogic");
-
 	private static final Properties properties = new Properties();
 	public static final String PROP_MAX_CONTENT_CHARS = "max-content-chars";
 
 	private Oase oase;
+	private Log log = Logging.getLog("RouteLogic");
 
 	public RouteLogic(Oase o) {
 		oase = o;
@@ -104,7 +103,7 @@ public class RouteLogic implements Constants {
 
 				// Convert if routing API is in RD
 				if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
-					lineString = RD2WGS84(lineString);
+					lineString = ProjectionConversionUtil.RD2WGS84(lineString);
 				}
 
 				PGgeometryLW geom = new PGgeometryLW(lineString);
@@ -141,7 +140,7 @@ public class RouteLogic implements Constants {
 				LineString lineString = GPXUtil.GPXRoute2LineString(aRouteElement);
 				// Convert if routing API is in RD
 				if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
-					lineString = RD2WGS84(lineString);
+					lineString = ProjectionConversionUtil.RD2WGS84(lineString);
 				}
 				PGgeometryLW geom = new PGgeometryLW(lineString);
 				route.setObjectField(PATH_FIELD, geom);
@@ -157,7 +156,7 @@ public class RouteLogic implements Constants {
 				LineString lineString = GPXUtil.GPXRoute2LineString(aRouteElement);
 				// Convert if routing API is in RD
 				if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
-					lineString = RD2WGS84(lineString);
+					lineString = ProjectionConversionUtil.RD2WGS84(lineString);
 				}
 
 				PGgeometryLW geom = new PGgeometryLW(lineString);
@@ -256,83 +255,10 @@ public class RouteLogic implements Constants {
 			throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
 		}
 		PGbox2d bbox = (PGbox2d) bounds.getObjectField("bbox");
-
-		double boundsHeight = bbox.getURT().y - bbox.getLLB().y;
-		double boundsWidth = bbox.getURT().x - bbox.getLLB().x;
-
-		if (width / height > boundsWidth / boundsHeight) {
-			//pad x
-			double padWidth = ((width / height) * boundsHeight) - boundsWidth;
-			bbox.getLLB().x -= (padWidth / 2);
-			bbox.getURT().x += (padWidth / 2);
-		} else {
-			//pad y			
-			double padHeight = (boundsWidth * (height / width)) - boundsHeight;
-			bbox.getLLB().y -= (padHeight / 2);
-			bbox.getURT().y += (padHeight / 2);
-		}
-
-		//add a 10% border
-		boundsHeight = bbox.getURT().y - bbox.getLLB().y;
-		boundsWidth = bbox.getURT().x - bbox.getLLB().x;
-		double padHeight = 0.1 * boundsHeight;
-		double padWidth = 0.1 * boundsWidth;
-		bbox.getLLB().x -= padWidth / 2;
-		bbox.getURT().x += padWidth / 2;
-		bbox.getLLB().y -= padHeight / 2;
-		bbox.getURT().y += padHeight / 2;
-
-
-		String boxString;
-		try {
-			boxString = URLEncoder.encode("" + bbox.getLLB().x + "," + bbox.getLLB().y + "," + bbox.getURT().x + "," + bbox.getURT().y, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			log.error("Exception in deleteRoute: " + e.toString());
-			throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
-		}
-
-		return "http://test.digitalewichelroede.nl/map/?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+		
+		MapLogic mapLogic = new MapLogic();
+		
+		return mapLogic.getMapURL(routeId, ProjectionConversionUtil.WGS842RD(bbox.getURT()), ProjectionConversionUtil.WGS842RD(bbox.getLLB()), width, height);
 	}
-
-	/**
-	 * Convert LineString from RD to WGS84.
-	 *
-	 * @param inLS an RD linestring
-	 * @throws UtopiaException Standard exception
-	 */
-	public static LineString RD2WGS84(LineString inLS) throws UtopiaException {
-		try {
-			Point[] inPoints = inLS.getPoints();
-			Point[] outPoints = new Point[inPoints.length];
-			for (int i=0; i < inPoints.length; i++) {
-				outPoints[i] = RD2WGS84(inPoints[i]);
-			}
-
-			LineString result = new LineString(outPoints);
-			result.setSrid(EPSG_WGS84);
-			
-			return result; 
-		} catch (Throwable t) {
-			throw new UtopiaException("Cannot convert LineString", t);
-		}
-	}
-
-	/**
-	 * Convert Point from RD to WGS84.
-	 *
-	 * @param inPT an RD point
-	 * @throws UtopiaException Standard exception
-	 */
-	public static Point RD2WGS84(Point inPT) throws UtopiaException {
-		try {
-			double xy[] = Transform.RDtoWGS84(inPT.x, inPT.y);
-			Point out = new Point(xy[0], xy[1], inPT.z);
-			out.setSrid(EPSG_WGS84);
-			return out;
-		} catch (Throwable t) {
-			throw new UtopiaException("Cannot convert Point", t);
-		}
-	}
-
 }
 

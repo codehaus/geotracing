@@ -107,7 +107,7 @@ KW.DIWI = {
         KW.utopia(req, callback);
 	},
 	
-	tracepoint: function(callback, lat, lon, time) {
+	tracepoint: function(callback, lon, lat, time) {
 		var req = KW.createRequest('nav-point-req');
 		var pt = req.createElement('pt');
 		pt.setAttribute('lat', lat);
@@ -127,6 +127,19 @@ KW.DIWI = {
 	
 	stoptrace: function(callback) {
 		var req = KW.createRequest('nav-stop-req');
+
+		KW.utopia(req, callback);		
+	},
+
+	getnavmap: function(callback, llbLat, llbLon, urtLat, urtLon, width, height) {
+		var req = KW.createRequest('nav-get-map-req');
+
+		req.documentElement.setAttribute('llbLat', llbLat);
+		req.documentElement.setAttribute('llbLon', llbLon);
+		req.documentElement.setAttribute('urtLat', urtLat);
+		req.documentElement.setAttribute('urtLon', urtLon);
+		req.documentElement.setAttribute('height', height);
+		req.documentElement.setAttribute('width', width);
 
 		KW.utopia(req, callback);		
 	},

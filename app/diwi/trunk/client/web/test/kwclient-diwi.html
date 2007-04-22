@@ -82,6 +82,30 @@
 				KW.DIWI.getmap(TST.onMapRsp, id, width, height);
 			},
 
+			activateRoute : function(form) {
+			},
+
+			deactivateRoute : function(form) {
+			},
+
+			enableUserContent : function(form) {
+			},
+
+			disableUserContent : function(form) {
+			},
+
+			getNavMap: function(form) {
+				var id = form.id.value;
+				var llbLon = form.llbLon.value;
+				var llbLat = form.llbLat.value;
+				var urtLon = form.urtLon.value;
+				var urtLat = form.urtLat.value;
+				var height = form.height.value;
+				var width = form.width.value;
+				
+				KW.DIWI.getnavmap(TST.onMapRsp, llbLat, llbLon, urtLat, urtLon, width, height);
+			},
+
 			getPreferences: function(form) {
 				KW.DIWI.getpreferences(TST.onRsp);							
 			},
@@ -108,11 +132,11 @@
 			},
 
 			tracePoint: function(form) {
-				var lat = form.lat.value;
 				var lon = form.lon.value;
+				var lat = form.lat.value;
 				var time = new Date().getTime();
 
-				KW.DIWI.tracepoint(TST.onRsp, lat, lon, time);							
+				KW.DIWI.tracepoint(TST.onRsp, lon, lat, time);							
 			},
 
 			startTrace: function(form) {
@@ -216,8 +240,8 @@
 <form>
 	<h2>Track Point</h2>
 	<table>
-	<tr><td><b>lat:</b> </td><td><input type="text" name="lat" value=""/></td></tr>	
 	<tr><td><b>lon:</b> </td><td><input type="text" name="lon" value=""/></td></tr>
+	<tr><td><b>lat:</b> </td><td><input type="text" name="lat" value=""/></td></tr>	
 	<tr><td><input type="button" name="button" value="Track Point" onClick="TST.tracePoint(this.form)"/></td></tr>		
 	</table>
 </form>
@@ -230,6 +254,42 @@
 <form>
 	<h2>Stop Tracing</h2>
 	<input type="button" name="button" value="Stop Trace" onClick="TST.stopTrace(this.form)"/>		
+</form>
+
+<form>
+	<h2>Activate Route</h2>
+	<table>
+	<tr><td><b>ID:</b> </td><td><input type="text" name="id" value=""/></td></tr>
+	<tr><td><input type="button" name="button" value="Activate Route" onClick="TST.activateRoute(this.form)"/></td></tr>		
+	</table></form>
+
+<form>
+	<h2>Deactivate Route</h2>
+	<input type="button" name="button" value="Deactivate Route" onClick="TST.deactivateRoute(this.form)"/>		
+</form>
+
+<form>
+	<h2>Enable User Content</h2>
+	<input type="button" name="button" value="Enable User Content" onClick="TST.enableUserContent(this.form)"/>		
+</form>
+
+<form>
+	<h2>Disable User Content</h2>
+	<input type="button" name="button" value="Disable User Content" onClick="TST.disableUserContent(this.form)"/>		
+</form>
+
+<form>
+	<h2>Get Navigation Map</h2>
+	<table>
+	<tr><td><b>Height:</b> </td><td><input type="text" name="height" value=""/></td></tr>
+	<tr><td><b>Width:</b> </td><td><input type="text" name="width" value=""/></td></tr>	
+	<tr><td><b>llbLon:</b> </td><td><input type="text" name="llbLon" value=""/></td></tr>	
+	<tr><td><b>llbLat:</b> </td><td><input type="text" name="llbLat" value=""/></td></tr>
+	<tr><td><b>urtLon:</b> </td><td><input type="text" name="urtLon" value=""/></td></tr>	
+ 	<tr><td><b>urtLat:</b> </td><td><input type="text" name="urtLat" value=""/></td></tr>
+
+	<tr><td><input type="button" name="button" value="Get Map" onClick="TST.getNavMap(this.form)"/></td></tr>		
+	</table>
 </form>
 
 <form>

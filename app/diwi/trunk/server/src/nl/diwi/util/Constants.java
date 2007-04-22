@@ -1,6 +1,7 @@
 package nl.diwi.util;
 
 public interface Constants {
+	
     // tablenames
     public final static String ROUTE_TABLE = "diwi_route";
     public final static String POI_TABLE = "diwi_poi";
@@ -8,7 +9,19 @@ public interface Constants {
     public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
     public final static String TRAFFIC_TABLE = "diwi_traffic";
+	public static final String PERSON_TABLE = "utopia_person";
 
+    // Keyworx relationship tags
+    public final static String ACTIVE_TAG = "active";
+
+    // Keyworx services
+    public final static String NAV_GET_MAP = "nav-get-map";	
+    public final static String NAV_POINT = "nav-point";	
+    public final static String NAV_START = "nav-start";	
+    public final static String NAV_STOP = "nav-stop";	    
+    public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";	    
+    public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";	    
+       
     // xml tags
     public final static String PREF_ELM = "pref";
     public final static String ROUTE_ELM = "route";
@@ -19,6 +32,12 @@ public interface Constants {
     public final static String KICH_URI_ELM = "kich-uri";
     public final static String TRAFFIC_ELM = "traffic";
     public final static String THEME_ELM = "theme";
+    public final static String POI_HIT_ELM = "poi-hit";
+
+    public final static String LLB_LAT_ATTR = "llbLat";
+    public final static String LLB_LON_ATTR = "llbLon";
+    public final static String URL_LAT_ATTR = "urtLat";
+    public final static String URT_LON_ATTR = "urtLon";
     
     // table fields
     public final static String ID_FIELD = "id";
@@ -72,7 +91,6 @@ public interface Constants {
     public final static String POI_INSERT_ACTION = "insert";
     public final static String POI_UPDATE_ACTION = "update";
     public final static String POI_DELETE_ACTION = "delete";
-
     
     public static final int EPSG_DUTCH_RD = 28992;
     public static final int EPSG_WGS84 = 4326; //google maps lat lon
@@ -81,4 +99,6 @@ public interface Constants {
 
 	public static final int SRID_ROUTING_API = EPSG_DUTCH_RD;
 	public static final int SRID_KICH_API = EPSG_DUTCH_RD;
+
+	public static final int HIT_DISTANCE = 20;
 }

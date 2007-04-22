@@ -1,11 +1,15 @@
 package nl.diwi.control;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Vector;
 
+import nl.diwi.logic.MapLogic;
 import nl.diwi.logic.NavigationLogic;
 import nl.diwi.logic.RouteLogic;
 import nl.diwi.logic.TrafficLogic;
 import nl.diwi.util.Constants;
+import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
 
 import org.geotracing.handler.EventPublisher;
@@ -22,15 +26,9 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
 
 public class NavigationHandler extends DefaultHandler implements Constants {
-
-    public final static String NAV_GET_MAP = "nav-get-map";	
-    public final static String NAV_POINT = "nav-point";	
-    public final static String NAV_START = "nav-start";	
-    public final static String NAV_STOP = "nav-stop";	    
-    public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";	    
-    public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";	    
     
     /**
 	 * Processes the Client Request.
@@ -107,13 +105,22 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	private JXElement handlePoint(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-
-		Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+		NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 		
 		//result contains 'pt' elements with everything filled out if an EMEA string was sent.
-				
-		return createResponse(NAV_POINT);
+		Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
 		
+		//Get Point from pt elements
+		JXElement ptElement = (JXElement)(reqElm.getChildren().get(0));
+		Point point = new Point(Double.parseDouble(ptElement.getAttr(LAT_FIELD)), 
+				Double.parseDouble(ptElement.getAttr(LON_FIELD)), 0);
+		point.setSrid(EPSG_WGS84);
+		result.addAll(navLogic.checkPoint(point, HandlerUtil.getUserId(anUtopiaReq)));
+		
+		JXElement response = createResponse(NAV_POINT);
+		response.addChildren(result);
+		
+		return response;	
 	}
 
 	private JXElement stopNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
@@ -141,14 +148,34 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	}
 	
 	private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        NavigationLogic logic = createLogic(anUtopiaReq);
+        MapLogic logic = new MapLogic();        
         JXElement reqElm = anUtopiaReq.getRequestCommand();
-        int personId  = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-        	
-        String mapURL = logic.getActiveMap(personId);        
-        JXElement response = createResponse(NAV_ACTIVATE_ROUTE);
-
-        return response;	
+        
+        int height = Integer.parseInt(reqElm.getAttr(HEIGHT_FIELD));
+        int width = Integer.parseInt(reqElm.getAttr(WIDTH_FIELD));
+		double llbLat = Double.parseDouble(reqElm.getAttr(LLB_LAT_ATTR));
+		double llbLon = Double.parseDouble(reqElm.getAttr(LLB_LON_ATTR));
+		double urtLat = Double.parseDouble(reqElm.getAttr(URL_LAT_ATTR));
+		double urtLon = Double.parseDouble(reqElm.getAttr(URT_LON_ATTR));
+//		"BOX(5.37404870986938 52.1408767700195,5.40924692153931 52.172737121582)"
+		
+//		double llbLon = 5.37404870986938;
+//		double llbLat = 52.1408767700195;
+//		double urtLon = 5.40924692153931;
+//		double urtLat = 52.172737121582;
+				
+		
+        Point llb = ProjectionConversionUtil.WGS842RD(new Point(llbLon,llbLat));
+        Point urt = ProjectionConversionUtil.WGS842RD(new Point(urtLon,urtLat));
+		
+        String mapURL = logic.getMapURL(urt, llb, height, width);        
+        JXElement response = createResponse(NAV_GET_MAP);
+        try {
+			response.setAttr(URL_FIELD, URLEncoder.encode(mapURL, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new UtopiaException("Exception in getMap", e);
+		}
+        return response;
 	}
 
 
