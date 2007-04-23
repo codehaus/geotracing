@@ -104,9 +104,11 @@ var GTAPP = {
 		GMAP.resize();
 		DH.addEvent(window, 'resize', GMAP.resize, false);
 
-		// Live Pushlet event setup
-		GTAPP.createLiveListener();
-		PL.joinListen('/gt')
+		// Live Pushlet event setup if available
+		if (PL) {
+			GTAPP.createLiveListener();
+			PL.joinListen('/gt')
+		}
 
 		GTAPP.doPageCommand();
 
