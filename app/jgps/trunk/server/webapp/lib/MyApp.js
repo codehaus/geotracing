@@ -23,6 +23,7 @@ var MYAPP = {
 	DOC_TITLE: 'JGPS',
 	WINDOW_TITLE: 'GeoTracing - JGPS',
 	media: null,
+	currentUser: null,
 
 /** Load file that contains app-specific menu. */
 	createMenu: function(aMenuContent) {
@@ -56,7 +57,7 @@ var MYAPP = {
 
 		// Overrule LiveListener implementation
 		GTAPP.createLiveListener = MYAPP.createLiveListener;
-		
+
 		//GTAPP.onQueryActiveUsers = MYAPP.onQueryActiveUsers;
 
 		// This is the base URL for directional icons (dir_icon_green_01.png through dir_icon_green_08.png)
@@ -102,12 +103,14 @@ var MYAPP = {
 			GTAPP.mode = 'media';
 			GTAPP.showMode();
 			var loginName = DH.getPageParameter('user', null);
+			MYAPP.currentUser = loginName;
+
 			// Get all active tracks
 			GTAPP.blinkStatus('Getting random media...');
 			SRV.get('q-locations-by-user', MYAPP.showlocations, 'user', loginName);
 		}
 	},
-		
+
 
 	createMap: function() {
 		GTAPP.showStatus('Kaart laden ...');
@@ -148,9 +151,30 @@ var MYAPP = {
 	},
 
 	showlocations: function(records){
-		// alert('u=' + userId + ' l=' + loginName);		
-		GTAPP.showStatus('Found ' + records.length + ' media, displaying...');
-		GTW.displayMedia(records);
-		GTAPP.showStatus('Displaying ' + records.length + ' media');
+		// alert('u=' + userId + ' l=' + loginName);
+		GTW.featureSet.dispose();
+		GTAPP.showStatus('Found ' + records.length + ' locations, displaying...');
+
+		var location, record;
+		for (var i = 0; i < records.length; i++) {
+			record = records[i];
+			location = new MyMedium(record.getField('mediumid'),
+				record.getField('name'),
+				record.getField('description'),
+				record.getField('kind'),
+				record.getField('mime'),
+				record.getField('creationdate'),
+				record.getField('lon'),
+				record.getField('lat'),
+				record.getField('subtype'));
+			 location.userName = MYAPP.currentUser;
+			// Create and draw location
+			GTW.featureSet.addFeature(location);
+		}
+		GTW.featureSet.show();
+		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
+		GTW.getFeaturePlayer().show()
+		GTW.featureSet.displayFirst();
+		GTAPP.showStatus('Displaying ' + records.length + ' locations');
 	}
 }
