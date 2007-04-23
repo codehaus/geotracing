@@ -12,6 +12,8 @@ import org.keyworx.utopia.core.session.UtopiaApplication;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.common.log.Logging;
+import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.OaseException;
 
 /**
  * Utilities, shorthands to use in Utopia Handlers.
@@ -69,6 +71,13 @@ public class HandlerUtil {
 	}
 
 	/**
+	 * Get user (Person) record from request.
+	 */
+	public static Record getPersonRecord(UtopiaRequest anUtopiaReq) throws OaseException {
+		return getOase(anUtopiaReq).getFinder().read(getUserId(anUtopiaReq), "utopia_person");
+	}
+
+	/**
 	 * Get user (Person) id from request.
 	 */
 	public static int getUserId(UtopiaRequest anUtopiaReq)  {
@@ -80,6 +89,15 @@ public class HandlerUtil {
 	 */
 	public static String getUserName(UtopiaRequest anUtopiaReq)  {
 		return anUtopiaReq.getUtopiaSession().getContext().getUserName();
+	}
+
+	/**
+	 * Throw exception when numeric attribute empty or not present.
+	 */
+	public static void throwIfNotOwner(Oase anOase, Record aPersonRecord, Record aTargetRecord) throws OaseException, UtopiaException {
+		if (!anOase.getRelater().isRelated(aPersonRecord, aTargetRecord)) {
+			throw new UtopiaException("Person id=" + aPersonRecord.getId() + " is not owner of record id=" + aTargetRecord.getId(), ErrorCode.__6007_insufficient_rights_error);
+		}
 	}
 
 	/**
