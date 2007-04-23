@@ -155,6 +155,11 @@
 			</td>
 		</tr>
 		<tr>
+			<td>
+				<img id="tracerimg" height="100" width="100" src="img/default-user-thumb.jpg" align="right" alt="foto deelnemer" hspace="0" vspace="0"/>
+			</td>
+		</tr>
+		<tr>
 			<td height="60" valign="middle" align="center">
 				<div id="result"></div>
 			</td>
