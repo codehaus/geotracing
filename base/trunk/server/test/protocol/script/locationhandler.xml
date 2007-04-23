@@ -1,0 +1,60 @@
+<testset id="locationhandler" clients="1">
+
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp time=""/>
+
+			<select-app-rsp/>
+		</expect>
+	</test>
+
+
+	<test id="location-create-req">
+		<send id="client1">
+			<utopia-req>
+				<loc-create-req name="aname" type="200" subtype="2" lon="4.92" lat="52.35"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<loc-create-rsp id="${locid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="location-delete-req">
+		<send id="client1">
+			<utopia-req>
+				<loc-delete-req id="${locid1}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<loc-delete-rsp id="${locid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+ 	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+
+</testset>
+

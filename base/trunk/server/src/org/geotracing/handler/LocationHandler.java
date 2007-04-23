@@ -12,6 +12,8 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.oase.api.*;
 
 /**
  * Handles services related to Locations.
@@ -23,6 +25,7 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
 public class LocationHandler extends DefaultHandler {
 	public final static String LOC_CREATE_SERVICE = "loc-create";
 	public final static String LOC_DELETE_SERVICE = "loc-delete";
+	// public final static String LOC_UPDATE_SERVICE = "loc-update";
 
 	public final static String ATTR_NAME = "name";
 	public final static String ATTR_DESCRIPTION = "description";
@@ -34,6 +37,8 @@ public class LocationHandler extends DefaultHandler {
 	public final static String ATTR_STATE = "state";
 	public final static String ATTR_TYPE = "type";
 	public final static String ATTR_SUBTYPE = "subtype";
+
+	public final static String RELTAG_LOC = "loctag";
 
 	/**
 	 * Processes the Client Request.
@@ -127,10 +132,11 @@ public class LocationHandler extends DefaultHandler {
 			String relateIds[] = reqElm.getAttr(ATTR_RELATE_IDS).split(",");
 			for (int i=0; i < relateIds.length; i++) {
 				int nextId = Integer.parseInt(relateIds[i]);
-				location.createRelation(nextId, "loctag");
+				location.createRelation(nextId, RELTAG_LOC);
 			}
 		}
 
+		response.setAttr(ATTR_ID, location.getId());
 		return response;
 	}
 
@@ -148,9 +154,38 @@ public class LocationHandler extends DefaultHandler {
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard Utopia exception
 	 */
-	public JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+	public JXElement deleteReq(UtopiaRequest anUtopiaReq) throws UtopiaException, OaseException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
+		int id = reqElm.getIntAttr(ATTR_ID);
+		HandlerUtil.throwOnNegNumAttr(ATTR_ID, id);
+
+		Oase oase = HandlerUtil.getOase(anUtopiaReq);
+		Finder finder = oase.getFinder();
+		Modifier modifier = oase.getModifier();
+		Relater relater = oase.getRelater();
+
+		// Get location record
+		Record location = finder.read(id, Location.TABLE_NAME);
+		if (location == null) {
+			throw new UtopiaException("Invalid location id: " + id, ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		// Get record of person in session
+		// and check if location is related to logged in user
+		Record person = HandlerUtil.getPersonRecord(anUtopiaReq);
+		HandlerUtil.throwIfNotOwner(oase, person, location);
+
+		// All ok, delete related first
+		Record[] related = relater.getRelated(location, null, RELTAG_LOC);
+		for (int i=0; i < related.length; i++) {
+			modifier.delete(related[i]);
+		}
+
+		// Delete location itself
+		modifier.delete(location);
+
 		JXElement response = createResponse(LOC_DELETE_SERVICE);
+		response.setAttr(ATTR_ID, id);
 
 		return response;
 	}

@@ -146,6 +146,13 @@
 			<utopia-req>
 				<t-trk-resume-req/>
 			</utopia-req>
+<!--			<utopia-req>
+				<t-trk-write-req>
+					<pt ar="1" sr="2"
+						nmea="GPGGA,120236.000,5157.8961,N,00457.2112,E,1,08,1.0,-1.5,M,47.1,M,,0000*7C"/>
+				</t-trk-write-req>
+			</utopia-req>    -->
+
 			<utopia-req>
 				<t-trk-write-req>
 					<pt ar="1" sr="2"
@@ -172,6 +179,9 @@
 			<utopia-rsp>
 				<t-trk-resume-rsp id="${trkid4}"/>
 			</utopia-rsp>
+<!--			<utopia-rsp>
+				<t-trk-write-rsp/>
+			</utopia-rsp> -->
 			<utopia-rsp>
 				<t-trk-write-rsp/>
 			</utopia-rsp>
