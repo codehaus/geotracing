@@ -3,7 +3,7 @@
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 <%@ page import="org.geotracing.handler.QueryLogic" %>
-<%@ page import="org.keyworx.utopia.core.util.Oase"%>
+<%@ page import="org.keyworx.utopia.core.util.Oase" %>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
@@ -27,19 +27,19 @@
 			// JS: SRV.get('q-locations-by-user', 'user', 'dirk');
 			if (command.equals("q-locations-by-user")) {
 				Oase oase = QueryLogic.getOase();
-				String loginName = getParameter(request, QueryLogic.PAR_USER_NAME, null);
-   				// throwOnMissingParm(PAR_USER_NAME, loginName);
-				Record person = QueryLogic.getPersonForLoginName(oase, loginName);
-				int personId = person.getId();
+				String loginName = getParameter(request, "user", null);
+				// We must have a related person otherwise we fail
+					// QueryLogic.throwOnMissingParm(PAR_USER_NAME, loginName);
+					Record person = QueryLogic.getPersonForLoginName(oase, loginName);
+					String tables = "utopia_person,base_medium,g_location";
+					String fields = "g_location.id,g_location.name,g_location.lon,g_location.lat,g_location.type,g_location.subtype,base_medium.id AS mediumid,base_medium.kind,base_medium.mime,base_medium.name AS mediumname,base_medium.description,base_medium.creationdate,base_medium.extra";
+					String where = "utopia_person.id = " + person.getId();
+					String relations = "utopia_person,g_location;g_location,base_medium";
+					String postCond = null;
 
-				// First get all active tracks
-				String tables = "utopia_person,g_location,";
-				String fields = "g_location.id,g_location.lon,g_location.lat,g_location.type,g_location.subtype";
-				String where = "utopia_person.id = " + personId + "";
-				String relations = "g_location,utopia_person";
-				String postCond = null;
-				result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
-				log.info("Result=" + result);
+					result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
+
+					log.info("result=" + result);
 			}
 		} catch (Throwable t) {
 			result = new JXElement(TAG_ERROR);
