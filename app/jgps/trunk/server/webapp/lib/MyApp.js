@@ -16,6 +16,8 @@
 DH.include('MyTracer.js');
 DH.include('MyMedium.js');
 
+var PL;
+
 // This file contains specific functions for Bliin webapp
 var MYAPP = {
 	DOC_TITLE: 'JGPS',
