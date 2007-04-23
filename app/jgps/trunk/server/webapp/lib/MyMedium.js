@@ -13,6 +13,7 @@ function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype) {
 
 	this.subtype = subtype;
 	this.icon = null;
+	this.point = new GLatLng(lat, lon);
 
 	if (this.subtype == 1) {
 		this.icon = "images/rood.png";
@@ -24,56 +25,36 @@ function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype) {
 		this.icon = "images/oranje.png";
 	}
 
+	this._displayInfo = function() {
+
+		self = this;
+		this.onClick = function(e) {
+			DH.cancelEvent(e);
+			self.popupInfoWindow();
+		}
+
+		DH.addEvent(this.iconId, 'click', self.onClick, false);
+	}
 
 	this._displayDescr = function() {
 		DH.setHTML('featuredesc', this.desc);
 		GMAP.resize();
 	}
 
-	// Shows icon on map
-	this.init = function() {
-	}
 
-	this.addMarker = function(point, icon)
-	{
-		var marker = new GMarker(point, icon);
-		var lng = point.x;
-		var lat = point.y;
-		var htmltekst = "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteLocationReq(" + this.id + ")><u>Verwijder marker</u></label><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.ypdateLocationReq(" + this.id + ")><u>Wijzig marker</u></label>";
+	this.popupInfoWindow = function() {
+		var html = '<h3>' + this.name + '</h3>';
 
-		GEvent.addListener(marker, "click", function() {
-			latestoverlay = marker;
-			marker.openInfoWindowHtml(htmltekst);
-		});
-		return marker;
-
-	}
-
-	this.markers = function() {
-		var icon = new GIcon();
-		if (this.subtype == 1)
-		{
-			icon.image = "images/rood.png";
-		}
-		else if (this.subtype == 2)
-		{
-			icon.image = "images/groen.png";
-		}
-		else if (this.subtype == 3)
-		{
-			icon.image = "images/oranje.png";
-		}
-		icon.iconSize = new GSize(15, 25);
-		icon.iconAnchor = new GPoint(10, 30);
-		icon.infoWindowAnchor = new GPoint(9, 2);
-		var punt = new GPoint(this.lon, this.lat);
-		GMAP.map.addOverlay(this.addMarker(punt, icon, id));
+		html += "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteLocationReq(" + this.id + ")><u>Verwijder marker</u></label><br/><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.updateLocationReq(" + this.id + ")><u>Wijzig marker</u></label>";
+		GMAP.map.openInfoWindowHtml(this.point, html);
 	}
 
 	// Shows icon on map
 	this.getIconDiv = function() {
-		return '<div id="' + this.iconId + '" ><img src="' + this.icon + '" border="0" /></div>';
+		return '<div onmouseover=this.style.cursor="pointer" id="' + this.iconId + '" ><img src="' + this.icon + '" border="0" /></div>';
 	}
+
+
 }
 
 
