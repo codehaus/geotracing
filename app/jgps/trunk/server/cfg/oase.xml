@@ -30,12 +30,12 @@
 
 				<!-- ImageMagick executable used for conversion of images. -->
 				<!-- Must be full path on Windows to avoid conflicts with the windows convert command. -->
-				<property name="convertExecutable" os="windows">C:/Program Files/ImageMagick-6.2.3-Q16/convert.exe</property>
+				<property name="convertExecutable" os="windows">C:/Program Files/ImageMagick-6.3.3-Q16/convert.exe</property>
 				<!--  You may also specify a convert executable for Linux and -->
 				<!--  for Mac in the same way with os="linux" or os="mac". -->
 				<!-- property name="convertExecutable" os="linux">/usr/bin/convert</property -->
 				<!-- The line below is the default. -->
-				<property name="convertExecutable">convert</property>
+				<!--<property name="convertExecutable">convert</property>-->
 			</service>
 
 			<service id="finder" class="org.keyworx.oase.service.FinderImpl"/>

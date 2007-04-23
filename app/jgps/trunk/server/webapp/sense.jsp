@@ -1,7 +1,7 @@
 <%@ include file="static-layout-header.html" %>
 
 	<tr>
-		<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">&nbsp;
+		<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="./images/logo_klein.jpg">
 		</td>
 		<td colspan="3" valign="top">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -10,21 +10,11 @@
 
 					<div class="nieuwsbericht">
 							<div class="nieuwsberichttitel">Wat is Jeugd GePoSitioneerd</div><br/>
-					Cum enim saepe mecum ageres ut de amicitia scriberem aliquid,
-						digna mihi res cum omnium cognitione tum nostra familiaritate visa est. Itaque
-						feci non invitus ut prodessem multis rogatu tuo. Sed ut in Catone Maiore, qui
-						est scriptus ad te de senectute, Catonem induxi senem disputantem, quia nulla
-						videbatur aptior persona quae de illa aetate loqueretur quam eius qui et
-						diutissime senex fuisset et in ipsa senectute praeter ceteros floruisset,
-						sic cum accepissemus a patribus maxime memorabilem C. Laeli et P. Scipionis familiaritatem fuisse, idonea mihi Laeli
-						persona visa est quae de amicitia ea ipsa dissereret quae disputata ab eo
-						meminisset Scaevola.
+					In Vlaanderen onderzoekt Jeugd GePoSitioneerd de komende maanden de verkeersveiligheid op straat. De deelnemers zijn alle Vlaamse gemeenten en de jeugdverenigingen, wiens leden de verkeerssituatie in hun speel- en woonomgeving onderzoeken. Vanaf april 2007 zult u groepjes jongeren op straat aan treffen gewapend met digitale camera’s en GPS.
 					</div>
 					<div class="nieuwsbericht">
 							<div class="nieuwsberichttitel">Wat is ...</div><br/>
-						Genus autem hoc sermonum positum in hominum veterum auctoritate,
-						et eorum inlustrium, plus nescio quo pacto videtur habere gravitatis;
-						itaque ipse mea legens sic afficior interdum ut Catonem, non me loqui existimem.
+						De GPS die ze bij zich hebben zorgt dat steeds zichtbaar is waar zij zich bevinden. De resultaten van hun onderzoek zijn te volgen op luchtfoto's, satellietfoto's en kaarten die beschikbaar zijn via deze website.
 					</div>
 					<div class="nieuwsbericht">
 							<div class="nieuwsberichttitel">Waarom Jeugd GePoSitioneerd</div><br/>
@@ -38,15 +28,14 @@ De methode, die  is ontwikkeld door het consortium <a href="http://www.cityworks
 
 
 					</td>
-					<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts"><img src="images/klok.jpg"
+					<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts"><img src="images/telefoon.jpg"
 																							alt="klokgebouw" width="170"
 																							height="100"
 																							class="imageborderonder"/>
 						<br/>
-						<img src="images/lab.jpg" alt="laboratorium" width="170" height="100" class="imageborderonder"/>
+						<img src="images/map.jpg" alt="laboratorium" width="170" height="100" class="imageborderonder"/>
 						<br/>
-						<img src="images/htce.jpg" alt="man op ligfiets" width="170" height="100"
-							 class="imageborderonder"/></td>
+						</td>
 				</tr>
 			</table>
 		</td>

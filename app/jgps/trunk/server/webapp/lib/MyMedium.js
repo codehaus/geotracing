@@ -8,8 +8,8 @@
  * @extends Medium
  * @constructor
  */
-function MyMedium(id, name, desc, type, mime, time, lon, lat) {
-	Medium.apply(this, new Array(id, name, desc, type, mime, time, lon, lat));
+function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype) {
+	Medium.apply(this, new Array(id, name, desc, type, mime, time, lon, lat, subtype));
 
 	// Shows icon on map
 	this.getBGColor = function() {
