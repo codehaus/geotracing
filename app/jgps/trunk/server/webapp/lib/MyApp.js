@@ -47,6 +47,7 @@ var MYAPP = {
 		GTAPP.createMap = MYAPP.createMap;
 		GTAPP.createMenu = MYAPP.createMenu;
 
+	//	GTAPP.doPageCommand=MYAPP.doPageCommand;
 		// Disable menu
 		//GTAPP.createMenu = MYAPP.empty;
 
@@ -55,6 +56,7 @@ var MYAPP = {
 
 		// Overrule LiveListener implementation
 		GTAPP.createLiveListener = MYAPP.createLiveListener;
+		
 		//GTAPP.onQueryActiveUsers = MYAPP.onQueryActiveUsers;
 
 		// This is the base URL for directional icons (dir_icon_green_01.png through dir_icon_green_08.png)
@@ -95,6 +97,14 @@ var MYAPP = {
 			if (tracerName == null) {
 				GTAPP.mShowMediaInBbox(1);
 			}
+		}else if (cmd == 'kaart') {
+			// Optional user to follow immediately
+			GTAPP.mode = 'media';
+			GTAPP.showMode();
+
+			// Get all active tracks
+			GTAPP.blinkStatus('Getting random media...');
+			SRV.get('q-locations-by-user', MYAPP.showlocations, 'user', loginName);
 		}
 	},
 		
@@ -135,5 +145,76 @@ var MYAPP = {
 	createLiveListener: function() {
 		// May overload with MyApp LiveListener
 		GTAPP.liveListener = new LiveListener('status');
+	},
+	/*doPageCommand: function() {
+		// NOTE: see also GMAP.showMap() for specific page
+		// map parms (center,zoom,mapname)
+
+		// Command
+		var cmd = DH.getPageParameter('cmd', null);
+		if (cmd == null) {
+			// nothing to do
+			return;
+		}
+
+		// Handle command
+		if (cmd == 'showtrack') {
+			var id = DH.getPageParameter('id', null);
+			var tracerName = DH.getPageParameter('user', null);
+			if (id == null || tracerName == null) {
+				alert('need track id (id) and user name (user)');
+				return;
+			}
+
+			GTAPP.showStatus('Drawing track for user ' + tracerName);
+
+			GTAPP.onTrackSelect(id, null, tracerName);
+			GTW.displayTrackPlayer();
+
+			GTAPP.showStatus('Track drawn for user ' + tracerName);
+
+			return true;
+		} else if (cmd == 'autoplay') {
+			// No menu visible
+			if (GTAPP.menu != null) {
+				GTAPP.menu.hide();
+			}
+			GTAPP.mAutoPlay();
+		} else if (cmd == 'live') {
+			// Optional user to follow immediately
+			var tracerName = DH.getPageParameter('user', null);
+			if (tracerName != null) {
+				GTW.followTracer = tracerName;
+			}
+
+			// Set in live mode
+			GTAPP.mLive();
+		} else if (cmd == 'archive') {
+			// Optional user to follow immediately
+			var tracerName = DH.getPageParameter('user', null);
+
+			if (tracerName != null) {
+				// Show trackselector for user
+				GTAPP.onUserSelect(null, tracerName);
+			}
+		} else if (cmd == 'kaart') {
+			// Optional user to follow immediately
+			var tracerName = DH.getPageParameter('user', null);
+
+			if (tracerName != null) {
+				// Show trackselector for user
+				GTAPP.onUserStartSelect(null, tracerName);
+			}
+
+		} else {
+			return false;
+		}
+	},*/
+		//onUserStartSelect: function(userId, loginName) {
+		showlocations: function(records){
+		// alert('u=' + userId + ' l=' + loginName);		
+		GTAPP.showStatus('Found ' + records.length + ' media, displaying...');
+		GTW.displayMedia(records);
+		GTAPP.showStatus('Displaying ' + records.length + ' media');
 	}
 }
