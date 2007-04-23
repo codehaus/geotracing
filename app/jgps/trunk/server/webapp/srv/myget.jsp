@@ -33,12 +33,13 @@
 				int personId = person.getId();
 
 				// First get all active tracks
-				String tables = "utopia_person,g_location,base_medium";
-				String fields = "g_location.id,g_location.lon,g_location.lat,g_location.type,g_location.subtype,base_medium.id AS mediumid";
+				String tables = "utopia_person,g_location,";
+				String fields = "g_location.id,g_location.lon,g_location.lat,g_location.type,g_location.subtype";
 				String where = "utopia_person.id = " + personId + "";
-				String relations = "g_location,utopia_person;base_medium,g_location";
+				String relations = "g_location,utopia_person";
 				String postCond = null;
 				result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
+				log.info("Result=" + result);
 			}
 		} catch (Throwable t) {
 			result = new JXElement(TAG_ERROR);

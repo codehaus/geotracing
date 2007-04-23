@@ -48,13 +48,17 @@ var LOCAPP = {
 		GMAP.map.closeInfoWindow();
 	},
 
+	test: function(){
+		alert("testing");	
+	},
+
 	createMarker: function(point, icon) {
 		// ======== Add a "directions" link ======
 		var marker = new GMarker(point, icon);
 		//  var htmltekst="<div style='width:20;height:20'><a href='./locationapp/Toevoegen.jsp?punt=" + point + "' target='_blank' style='color:blue'>editeren</a></div>";
 		var lng = point.lng();
 		var lat = point.lat();
-		var htmltekst = "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormToevoegen('locationapp/add-location-form.html'," + lng + "," + lat + ",'addlocationform')><u>upload figuur</u></label><br><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormToevoegen('locationapp/Toevoegen-form.html'," + lng + "," + lat + ",'toevoegenform')><u>Kies type punt</u></label><br><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteMarker()><u>verwijder punt</u></label>";
+		var htmltekst = "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormToevoegen('locationapp/add-location-form.html'," + lng + "," + lat + ",'addlocationform')><u>Creeër marker</u></label><br><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteMarker()><u>Verwijder marker</u></label>";
 		GEvent.addListener(marker, "click", function() {
 			latestoverlay = marker;
 			marker.openInfoWindowHtml(htmltekst);
@@ -163,7 +167,17 @@ var LOCAPP = {
 		KW.utopia(req);
 	},
 
-
+	deleteLocationReq: function(id) {
+		// <add-location-req relateids="123,456,789" lon="4.99' lat="54.45/>
+		/* srv.get werkt enkel voor select queries
+		var loginName="Dirk";
+		SRV.get('q-delete-locative-media', GTAPP.onQueryDelete, 'id', id);*/
+		var req = KW.createRequest('loc-delete-req');
+		KW.UTIL.setAttr(req, 'id', id);
+		KW.utopia(req);
+	},
+	
+	
 	onUploadMediumRsp: function(elm) {
 		// var rsp = elm.getElementsByTagname('medium-insert-rsp');
 		LOCAPP.pr('medium upload: ' + elm.tagName + ' id=' + elm.getAttribute('id'));
