@@ -148,7 +148,7 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 	public synchronized void inquiryCompleted(int complete) {
 		//log("Device search complete");
 		cls();        
-        //#style smallstring
+        //#style labelinfo
         append("Select a device and press Ok in menu");
         choiceNum = append(deviceCG);
 	}

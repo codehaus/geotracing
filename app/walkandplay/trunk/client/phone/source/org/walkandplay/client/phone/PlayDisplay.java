@@ -33,7 +33,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private MFloat tileScale;
 
     private int zoom = 12;
-    private Image textDot, movieDot, photoDot, redDot, traceDot, taskDot, bg;
+    private Image textDot, movieDot, photoDot, redDot, traceDot, taskDot, bg, locationDot;
     private String mapType = "map";
     private String lon = "0", lat = "0";
     private boolean active;
@@ -49,6 +49,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private Image transBar;
     private int maxScore;
     private Vector scores;
+    private String comment = "";
 
     private Vector gameLocations = new Vector(3);
 
@@ -61,9 +62,11 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private final static int SHOW_INFO = 7;
     private final static int SHOW_ERROR = 8;
     private final static int RETRIEVING_MAP = 9;
+    private final static int SHOW_COMMENT = 10;    
     private int SHOW_STATE = 0;
 
-    int w, h;
+    Font f;
+    int fh, w, h;
 
     String gpsStatus = "disconnected";
     String netStatus = "disconnected";
@@ -90,6 +93,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private Command HIDE_INFO_CMD = new Command(Locale.get("play.HideInfo"), Command.ITEM, 2);
     private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);
     private Command HIDE_ERROR_CMD = new Command(Locale.get("play.HideError"), Command.ITEM, 2);
+    private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
 
     public PlayDisplay(WPMidlet aMidlet) {
         super(false);
@@ -107,6 +111,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             movieDot = Image.createImage("/movie_dot.png");
             photoDot = Image.createImage("/photo_dot.png");
             traceDot = Image.createImage("/trace_dot.png");
+            locationDot = Image.createImage("/location_dot.png");
             bg = Image.createImage("/bg.png");
             //#else
             taskDot = scheduleImage("/task_dot.png");
@@ -117,6 +122,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             photoDot = scheduleImage("/photo_dot.png");
             traceDot = scheduleImage("/trace_dot.png");
             bg = scheduleImage("/bg.png");
+            locationDot = scheduleImage("/location_dot.png");
             //#endif
         } catch (Throwable t) {
             log("Could not load the images on PlayDisplay", true);
@@ -130,11 +136,16 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
     }
 
+    /**
+     * User is now ready to start playing
+     */
     void start() {
         try {
+            // start the traceEngine
             tracerEngine = new TracerEngine(midlet, this);
             tracerEngine.start();
 
+            // get all game locations for this game
             getGameLocations();
 
             tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
@@ -257,6 +268,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
     public void onGPSStatus(String s) {
         gpsStatus = "GPS:" + s;
+        if (s.indexOf("error") != -1 || s.indexOf("err") != -1 || s.indexOf("ERROR") != -1) {
+            log(s, true);
+            SHOW_STATE = SHOW_ERROR;
+        }
         show();
     }
 
@@ -268,20 +283,19 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 log("taskid:" + taskId, false);
                 SHOW_STATE = RETRIEVING_TASK;
 
-                // make sure the commands are right
-                /*removeCommand(HIDE_LOG_CMD);
-                addCommand(SHOW_LOG_CMD);*/
-
             } else if (s.indexOf("medium") != -1 && SHOW_STATE != SHOW_MEDIUM) {
                 log("we found a medium!!", false);
                 mediumId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
                 log("mediumid:" + mediumId, false);
                 SHOW_STATE = RETRIEVING_MEDIUM;
 
-                // make sure the commands are right
-                /*removeCommand(HIDE_LOG_CMD);
-                addCommand(SHOW_LOG_CMD);*/
-            } else if (s.indexOf("error") != -1) {
+            } else if (s.indexOf("cmt") != -1) {
+                log("received a comment!!", false);
+                comment = s.substring(s.indexOf("-") + 1, s.length());
+                log("comment:" + comment, false);
+                new IMHandler().showIM();                
+            } else if (s.indexOf("error") != -1 || s.indexOf("err") != -1 || s.indexOf("ERROR") != -1) {
+                log(s, true);
                 SHOW_STATE = SHOW_ERROR;
             }
 
@@ -402,17 +416,25 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         }
     }
 
-
     private void log(String aMsg, boolean isError) {
-        System.out.println(aMsg);
+        //System.out.println(aMsg);
         Log.log(aMsg);
         if (isError) {
             errorMsg = aMsg;
             SHOW_STATE = SHOW_ERROR;
             removeAllCommands();
             addCommand(HIDE_ERROR_CMD);
-            repaint();
+            show();
         }
+    }
+
+    private void drawAlert(Graphics aGraphics, String aMsg, boolean useBG){
+        //if(useBG) aGraphics.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+        //aGraphics.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+        aGraphics.setColor(255, 255, 255);
+        aGraphics.fillRect(0, 0, w, h);
+        aGraphics.setColor(0, 0, 0);
+        aGraphics.drawString(aMsg, w / 2 - (aGraphics.getFont().stringWidth(aMsg)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
     }
 
     /**
@@ -421,27 +443,24 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
      * @param g The graphics object.
      */
     public void paint(Graphics g) {
-        w = getWidth();
-        // Defeat Nokia bug ?
-        if (w == 0) {
-            w = 176;
+        if(f == null){
+            w = getWidth();
+            h = getHeight();
+            // Defeat Nokia bug ?
+            if (w == 0) w = 240;
+            if (h == 0) h = 320;
         }
-        h = getHeight();
-        // Defeat Nokia bug ?
-        if (h == 0) {
-            h = 208;
-        }
-
-        Font f = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
-        int fh = f.getHeight();
+        
+        f = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
+        fh = f.getHeight();
         g.setFont(f);
-        g.setColor(0, 0, 0);
 
         try {
+            // draw white background
             g.setColor(255, 255, 255);
             g.fillRect(0, 0, w, h);
-            g.setColor(0, 0, 0);
 
+            // calculate the tileScale only once
             if (tileScale == null) {
                 tileScale = new MFloat(h).Div(GoogleMap.I_GMAP_TILE_SIZE);
             }
@@ -451,45 +470,48 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     //String tileSize = w + "x" + w;
                     //String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
                     String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=320x320";
-                    
-                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    String s1 = "Fetching map image...";
-                    g.drawString(s1, w / 2 - (g.getFont().stringWidth(s1)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
+
+                    drawAlert(g, "Fetching map image...", true);
 
                     // Get Google Tile image and draw on mapImage
                     Image tileImage = Util.getImage(tileURL);
                     mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
                     mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-                    if (gameLocations != null) {
+                    /*if (gameLocations != null) {
                         for (int i = 0; i < gameLocations.size(); i++) {
                             JXElement loc = (JXElement) gameLocations.elementAt(i);
 
-                            Image img;
+                            *//*Image img;
                             String type = loc.getChildText("type");
                             if (type.equals("task")) {
-                                img = taskDot;
+                                img = locationDot;
                             } else if (type.equals("medium")) {
                                 img = textDot;
                             } else {
                                 img = textDot;
+                            }*//*
+
+                            String locKhRef = GoogleMap.getKeyholeRef(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
+                            // make sure the locations are in the same tile
+                            if(locKhRef.equals(tileRef)){
+                                GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
+                                Gxy.x = (int) new MFloat(Gxy.x).Mul(tileScale).toLong();
+                                Gxy.y = (int) new MFloat(Gxy.y).Mul(tileScale).toLong();
+                                // draw the location icons onto the map
+                                mapImage.getGraphics().drawImage(locationDot, Gxy.x, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);
                             }
-
-                            GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
-                            Gxy.x = (int) new MFloat(Gxy.x).Mul(tileScale).toLong();
-                            Gxy.y = (int) new MFloat(Gxy.y).Mul(tileScale).toLong();
-
-                            mapImage.getGraphics().drawImage(img, Gxy.x, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);                            
                         }
-                    }
+                    }*/
 
                     fetchTileInfo();
-                    repaint();
+                    show();
                     return;
                 } catch (Throwable t) {
                     throw new IOException(t.getMessage());
                 }
+            }else{
+                drawAlert(g, "Starting up...", true);
             }
 
             if (xy != null) {
@@ -502,7 +524,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
                 }
 
-                // Draw background map
+                // Draw the map and user location
                 if (xy.x < 40) {
                     g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(redDot, xy.x, xy.y, Graphics.VCENTER | Graphics.HCENTER);
@@ -515,53 +537,16 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 }
 
             } else {
-                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                String s = "Retrieving location...";
-                //Gauge gauge = new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
-                //gauge.paint(10, h/2 - transBar.getHeight()/2 + 2*fh, 5, w - 10, g);
-                //g.drawString(s, w/2 - (g.getFont().stringWidth(s))/2, h/2 - transBar.getHeight()/2 + 2, Graphics.TOP | Graphics.LEFT);
-                g.drawString(s, w / 2 - (g.getFont().stringWidth(s)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
+                drawAlert(g, "Retrieving location...", true);
             }
-
-            /*// now draw the gamelocations
-            if (gameLocations != null) {
-                for (int i = 0; i < gameLocations.size(); i++) {
-                    JXElement loc = (JXElement) gameLocations.elementAt(i);
-                    String khref = GoogleMap.getKeyholeRef(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
-                    Image img;
-                    String type = loc.getChildText("type");
-                    if (type.equals("task")) {
-                        img = taskDot;
-                    } else if (type.equals("medium")) {
-                        img = textDot;
-                    } else {
-                        img = textDot;
-                    }
-                    if (tileRef != null && khref.equals(tileRef)) {
-                        GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
-                        if (Gxy.x < 40) {
-                            g.drawImage(img, Gxy.x, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);
-                        } else if (Gxy.x > 280) {
-                            g.drawImage(img, Gxy.x - 80, Gxy.y, Graphics.VCENTER | Graphics.HCENTER);
-                        } else {
-                            g.drawImage(img, Gxy.x - 40, Gxy.y, Graphics.VCENTER| Graphics.HCENTER);
-                        }
-                    }
-                }
-            }*/
 
             switch (SHOW_STATE) {
                 case RETRIEVING_MEDIUM:
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    String s1 = "Hit media - retrieving...";
-                    g.drawString(s1, w / 2 - (g.getFont().stringWidth(s1)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
+                    drawAlert(g, "Hit media - retrieving...", false);
                     retrieveMedium();
                     break;
                 case RETRIEVING_TASK:
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    String s2 = "Hit a task - retrieving...";
-                    g.drawString(s2, w / 2 - (g.getFont().stringWidth(s2)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
+                    drawAlert(g, "Hit media - retrieving...", false);
                     retrieveTask();
                     break;
                 case SHOW_MEDIUM:
@@ -579,8 +564,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
                     break;
                 case SHOW_ERROR:
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    g.drawString(errorMsg, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    drawAlert(g, errorMsg, false);
                     break;
                 case SHOW_INFO:
                     int tH = transBar.getHeight();
@@ -598,15 +582,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     break;
             }
         } catch (IOException ioe) {
-            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-            String s = "Error showing map\n" + ioe.getMessage() + "\nCannot get image. Try zooming out";
-            g.drawString(s, w / 2 - (g.getFont().stringWidth(s)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
+            drawAlert(g, "Error showing map\n" + ioe.getMessage() + "\nCannot get image. Try zooming out", true);
         } catch (Throwable t) {
-            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-            String s = "Error showing map\n" + t.getMessage()+ "\nCannot get image. Try zooming out";
-            g.drawString(s, w / 2 - (g.getFont().stringWidth(s)) / 2, h / 2, Graphics.VCENTER | Graphics.LEFT);
+            drawAlert(g, "Error showing map\n" + t.getMessage() + "\nCannot get image. Try zooming out", true);
         }
     }
 
@@ -681,8 +659,11 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             SHOW_STATE = 0;
             addAllCommands();
             removeCommand(HIDE_ERROR_CMD);
+        } else if (cmd == IM_CMD) {
+            log("instant messaging", false);
+            SHOW_STATE = SHOW_COMMENT;
+            new IMHandler().showIM();
         }
-
     }
 
     private void removeAllCommands() {
@@ -696,6 +677,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         removeCommand(SCORES_CMD);
         removeCommand(SHOW_LOG_CMD);
         removeCommand(SHOW_INFO_CMD);
+        removeCommand(HIDE_ERROR_CMD);
+        removeCommand(HIDE_INFO_CMD);
+        removeCommand(HIDE_LOG_CMD);
+        removeCommand(IM_CMD);
     }
 
     private void addAllCommands() {
@@ -710,6 +695,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         addCommand(SCORES_CMD);
         addCommand(SHOW_LOG_CMD);
         addCommand(SHOW_INFO_CMD);
+        addCommand(IM_CMD);
     }
 
     private class TaskHandler implements CommandListener {
@@ -734,7 +720,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
             form.append(taskImage);
 
-            //#style smallstring
+            //#style labelinfo
             form.append("answer");
             //#style textbox
             textField = new TextField("", "", 1024, TextField.ANY);
@@ -848,7 +834,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         private TextField tagsField;
         private TextField nameField;
         private TextField textField;
-        private String alert = "";
+        private StringItem alertField = new StringItem("", "");
         private Command submitCmd = new Command("OK", Command.OK, 1);
         private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
@@ -859,23 +845,28 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         public void addText() {
             //#style defaultscreen
             Form form = new Form("");
-            //#style formbox
+            
+            //#style labelinfo
             form.append("Enter Title (opt)");
+
             //#style textbox
             nameField = new TextField("", "", 32, TextField.ANY);
-            //#style formbox
+            form.append(nameField);
+
+            //#style labelinfo
             form.append("Enter Text");
+
             //#style textbox
             textField = new TextField("", "", 1024, TextField.ANY);
-            //#style formbox
+            form.append(textField);
+
+            //#style labelinfo
             form.append("Enter Tags (opt)");
             //#style textbox
             tagsField = new TextField("", "", 32, TextField.ANY);
-
-            form.append(nameField);
             form.append(tagsField);
-            form.append(textField);
-            if (alert.length() > 0) form.append(alert);
+
+            form.append(alertField);
 
             form.addCommand(submitCmd);
             form.addCommand(cancelCmd);
@@ -892,7 +883,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         public void commandAction(Command command, Displayable screen) {
             if (command == submitCmd) {
                 if (textField.getString() == null) {
-                    alert = "No text typed";
+                    alertField.setText("No text typed");
                 } else {
                     String name = nameField.getString();
                     String text = textField.getString();
@@ -900,7 +891,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     if (name != null && name.length() > 0 && text != null && text.length() > 0) {
                         tracerEngine.getNet().uploadMedium(name, "text", "text/plain", Util.getTime(), text.getBytes(), false, tags);
                     } else {
-                        setStatus("Type title and tags");
+                        alertField.setText("Type title and tags");
                     }
                 }
             } else {
@@ -942,6 +933,115 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             SHOW_STATE = 0;
             addAllCommands();
             Display.getDisplay(midlet).setCurrent(playDisplay);
+        }
+    }
+
+    private class IMHandler implements CommandListener, NetListener {
+        private StringItem inputField = new StringItem("", "");
+        private TextField outputField = new TextField("", "", 32, TextField.ANY);;
+        private StringItem alertField = new StringItem("", "");
+        private Command submitCmd = new Command("OK", Command.OK, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+        private Net net;
+
+        public void showIM() {
+            //#style defaultscreen
+            Form form = new Form("");
+            //#style labelinfo
+            form.append("last message from webplayer");
+            //#style formbox
+            form.append(inputField);
+            
+            if(comment.length()>0){
+                inputField.setText(comment);
+            }
+            //#style labelinfo
+            form.append("send message to webplayer");
+            //#style textbox
+            form.append(outputField);
+            form.append(alertField);
+
+            net = Net.getInstance();
+            if(!net.isConnected()){
+                net.setProperties(midlet);
+                net.setListener(this);
+                net.start();
+            }
+
+            form.addCommand(submitCmd);
+            form.addCommand(cancelCmd);
+            form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+        }
+
+        public void onNetInfo(String theInfo){
+            System.out.println(theInfo);
+        }
+
+        public void onNetError(String aReason, Throwable anException){
+            System.out.println(aReason);
+        }
+
+        public void onNetStatus(String aStatusMsg){
+            System.out.println(aStatusMsg);
+        }
+
+        private void sendMsg() {
+            try {
+                new Thread(new Runnable() {
+                    public void run() {
+                        try{
+                            String user = new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
+
+                            JXElement req = new JXElement("cmt-insert-req");
+                            JXElement comment = new JXElement("comment");
+                            req.addChild(comment);
+                            JXElement targetPerson = new JXElement("targetperson");
+                            JXElement author = new JXElement("author");
+                            author.setText(user);
+                            comment.addChild(author);
+                            JXElement content = new JXElement("content");
+                            content.setText(outputField.getString());
+                            comment.addChild(content);
+                            log(new String(req.toBytes(false)), false);
+                            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+                            //JXElement rsp = net.utopiaReq(req);
+                            log(new String(rsp.toBytes(false)), false);
+                            if(rsp.getTag().indexOf("-rsp")!=-1){
+                                alertField.setText("msg sent!");
+                            }else{
+                                alertField.setText("error sending msg!");
+                            }
+                            log(new String(rsp.toBytes(false)), false);
+                        }catch(Throwable t){
+                            alertField.setText(t.getMessage());
+                        }
+                    }
+                }).start();
+            } catch (Throwable t) {
+                log("Exception in sendMsg:\n" + t.getMessage(), true);
+            }
+        }
+
+
+        /*
+          * The commandAction method is implemented by this midlet to
+          * satisfy the CommandListener interface and handle the Exit action.
+          */
+        public void commandAction(Command command, Displayable screen) {
+            if (command == submitCmd) {
+                if (outputField.getString() == null) {
+                    alertField.setText("No text typed");
+                } else {
+                    sendMsg();
+                }
+            } else if (command == cancelCmd) {
+                removeAllCommands();
+                addAllCommands();
+                SHOW_STATE = 0;
+                // Set the current display of the midlet to the textBox screen
+                Display.getDisplay(midlet).setCurrent(playDisplay);
+            }
         }
     }
 

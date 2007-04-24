@@ -42,17 +42,17 @@ public class AccountDisplay extends DefaultDisplay {
 
 		// Create input fields for user/password/url
         userField = new TextField("", user, 16, TextField.ANY);
-        passwordField = new TextField("", password, 16, TextField.ANY);
+        passwordField = new TextField("", password, 16, TextField.PASSWORD);
         urlField = new TextField("", url, 512, TextField.ANY);
-        //#style smallstring
+        //#style labelinfo
         append("user");
         //#style textbox
         append(userField);
-        //#style smallstring
+        //#style labelinfo
         append("password");
         //#style textbox
         append(passwordField);
-        //#style smallstring
+        //#style labelinfo
         append("server");
         //#style textbox
         append(urlField);

@@ -124,11 +124,11 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             // now start the game
             startGame();
             midlet.setPlayMode(true);
-            PlayDisplay d = new PlayDisplay(midlet);
-            d.start();
-            Display.getDisplay(midlet).setCurrent(d);
 
-            
+            PlayDisplay d = new PlayDisplay(midlet);
+            //midlet.playDisplay = d;
+            Display.getDisplay(midlet).setCurrent(d);
+            d.start();
         }
     }
 

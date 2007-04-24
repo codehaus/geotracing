@@ -50,6 +50,7 @@ import nl.justobjects.mjox.JXElement;
 public class WPMidlet extends MIDlet implements CommandListener {
 
     List menuScreen;
+    //PlayDisplay playDisplay;
     TraceDisplay traceDisplay;
     private boolean playMode;
 

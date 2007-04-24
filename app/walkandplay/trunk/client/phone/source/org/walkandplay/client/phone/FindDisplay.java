@@ -77,7 +77,7 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
 
             append(logo);
 
-            //#style smallstring
+            //#style labelinfo
             append("Select a game and press Ok in menu");
             //#style formbox
             append(gamesGroup);
