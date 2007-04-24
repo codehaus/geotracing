@@ -96,7 +96,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 
 		g.setColor(4, 4, 4);
 		g.fillRect(0, 0, w, h);
-		g.setColor(255, 255, 255);
+		g.setColor(100, 100, 100);
 
 		try {
 
@@ -110,14 +110,10 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 					String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
 					g.drawString("fetching mapImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
 
-
 					// Get Google Tile image and draw on mapImage
 					Image tileImage = Util.getImage(tileURL);
 					mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
 					mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-					fetchTileInfo();
-					repaint();
-					return;
 				} catch (Throwable t) {
 					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
 					return;
@@ -142,10 +138,9 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 					redDot = Image.createImage("/red_dot.png");
 				}
 
-				g.drawImage(redDot, xy.x, xy.y, Graphics.TOP | Graphics.LEFT);
+				g.drawImage(redDot, xy.x-(redDot.getWidth())/2, xy.y-(redDot.getHeight())/2, Graphics.TOP | Graphics.LEFT);
 			} else {
-				g.setColor(100, 100, 100);
-				g.drawString("No location", 10, 10, Graphics.TOP | Graphics.LEFT);
+				g.drawString("No location (yet)", 10, 10, Graphics.TOP | Graphics.LEFT);
 			}
 		} catch (IOException ioe) {
 			g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
