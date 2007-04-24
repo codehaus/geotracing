@@ -2,6 +2,7 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.ui.*;
 import de.enough.polish.ui.Form;
+import de.enough.polish.ui.TextField;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.Gauge;
@@ -51,6 +52,11 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
         //#style formbox
         append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
         append(new ClockItem(""));
+
+        //#style labelinfo
+        append("labelinfo");
+        //#style textbox
+        append(new TextField("", "", 32, TextField.ANY));
 
         /*StringItem si = new StringItem("", url, Item.HYPERLINK);
         si.setDefaultCommand(VIEW_CMD);

@@ -136,17 +136,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
 	/** From GPSFetcher: GPS NMEA sample received. */
 	synchronized public void onGPSLocation(GPSLocation aLocation) {
-		/*Util.playTone(84, 50, VOLUME);
-
-		traceDisplay.onGPSStatus("sample #" + (++sampleCount));
-		if (paused) {
-			traceDisplay.onNetStatus("paused");
-			traceDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
-			return;
-		}
-		net.sendSample(aLocation.data, roadRating, aLocation.time, sampleCount);*/
-
-        Util.playTone(84, 50, VOLUME);
+		Util.playTone(84, 50, VOLUME);
 
 		onGPSStatus("sample #" + (++sampleCount));
 		if (paused) {
@@ -191,11 +181,17 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 			JXElement rsp = net.utopiaReq(req);            
             // TODO: remove later - teskting purposes
             rsp.removeChildren();
-            /*if (System.currentTimeMillis() % 3 == 0) {
+            if (System.currentTimeMillis() % 3 == 0) {
+                JXElement hit = new JXElement("cmt-hit");
+                hit.setText("bericht van webspeler");
+                rsp.addChild(hit);
+            }
+
+            if (System.currentTimeMillis() % 3 == 0) {
                 JXElement hit = new JXElement("task-hit");
                 hit.setAttr("id", 22560);
                 rsp.addChild(hit);
-            }*/
+            }
 
             if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                 JXElement hit = new JXElement("medium-hit");
@@ -220,6 +216,8 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                         onNetStatus("task-" + e.getAttr("id"));
                     }else if(e.getTag().equals("medium-hit")){
                         onNetStatus("medium-" + e.getAttr("id"));
+                    }else if(e.getTag().equals("cmt-hit")){
+                        onNetStatus("cmt-" + e.getText());
                     }
                 }else{
                     System.out.println("No task or medium hit found");                    

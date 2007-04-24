@@ -54,9 +54,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			recordcontrol.setRecordStream(output);
 			addCommand(start);
 
-            append("", "AUDIO RECORDER");
-            append("", "Use the menu to start and stop recording");
-            append("\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
+            append("AUDIO RECORDER\n Use the menu to start and stop recording.\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
 		} catch (Exception e) {
 			Util.showAlert(midlet, "Error", "Cannot create player. Maybe audio (MMAPI) is not supported.");
 			back();
@@ -72,7 +70,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	public int append(String label, String s) {
 		StringItem si = new StringItem(label, s);
 		si.setLayout(Item.LAYOUT_NEWLINE_BEFORE);
-        //#style smallstring
+        //#style formbox
         return super.append(si);
 	}
 
@@ -109,7 +107,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
 			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, false);
 			if (rsp == null) {
-                append("cannot submit audio !");
+                append("cannot submit audio!");
 			} else if (Protocol.isPositiveResponse(rsp)) {
                 append("submit audio OK, press Back");
 			} else {
@@ -125,6 +123,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
 	private void back() {
 		Display.getDisplay(midlet).setCurrent(prevScreen);
+		//Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
 	}
 
 
@@ -155,6 +154,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 				public void run() {
 					int seconds = 0;
 
+                    //#style formbox
                     StringItem status = new StringItem("STATUS", "0 secs 0 kb");
 					status.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_VCENTER);
 					append(status);
