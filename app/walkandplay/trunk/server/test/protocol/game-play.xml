@@ -162,7 +162,7 @@
 		<send id="client1">
 			<utopia-req>
 				<play-location-req>
-					<pt lon="4.922432899475098" lat="52.37772125015622" label="game2-medium1-brugmidden"/>
+					<pt lon="4.92243289" lat="52.377721250" label="game2-medium1-brugmidden"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -219,7 +219,7 @@
 			<utopia-req>
 				<play-location-req>
 					<pt lon="4.922990798950195" lat="52.37879534725308"/>
-					<pt lon="4.923076629638672" lat="52.37955505869286" label="javakade-sumatrakade"/>
+					<pt lon="4.9230766296386" lat="52.379555058692" label="javakade-sumatrakade"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -227,7 +227,7 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<play-location-rsp>
-					<task-hit id="${taskhitid1}"/>
+					<task-hit id="${taskhitid1}" state="hit" answerstate="open" mediastate="open"/>
 				</play-location-rsp>
 			</utopia-rsp>
 		</expect>
@@ -253,35 +253,6 @@
 						<score/>
 					</record>
 				</query-store-rsp>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-
-	<test id="play-answer-task-1-wrong">
-		<send id="client1">
-			<utopia-req>
-				<play-answertask-req id="${taskhitid1}" answer="wrong"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<play-answertask-rsp state="hit" mediastate="open" answerstate="notok" score="0" />
-			</utopia-rsp>
-		</expect>
-	</test>
-
-	<test id="play-answer-task-1-right">
-		<send id="client1">
-			<utopia-req>
-				<play-answertask-req id="${taskhitid1}" answer="waag"/>
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<play-answertask-rsp state="hit" mediastate="open" answerstate="ok" score="10"  />
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -319,6 +290,36 @@
 			</utopia-rsp>
 		</expect>
 	</test>
+
+	<test id="play-answer-task-1-wrong">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid1}" answer="wrong"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="hit" mediastate="done" answerstate="notok" score="0" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-answer-task-1-right">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid1}" answer="waag"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="done" mediastate="done" answerstate="ok" score="10"  />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
 
 <!--	<test id="play-reset-req2">
 		<send id="client1">
