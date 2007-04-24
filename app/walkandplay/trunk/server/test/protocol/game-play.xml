@@ -246,6 +246,7 @@
 					<record>
 						<id/>
 						<mediumid/>
+						<mediumtype/>
 						<name/>
 						<description/>
 						<answer/>
@@ -266,7 +267,7 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<play-answertask-rsp result="false" score="0" />
+				<play-answertask-rsp state="hit" mediastate="open" answerstate="notok" score="0" />
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -280,7 +281,7 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<play-answertask-rsp result="true" score="10" />
+				<play-answertask-rsp state="hit" mediastate="open" answerstate="ok" score="10"  />
 			</utopia-rsp>
 		</expect>
 	</test>

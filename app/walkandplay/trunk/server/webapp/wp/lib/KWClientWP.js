@@ -36,6 +36,30 @@ KW.WP = {
 	},
 
 /**
+ * Add text medium to Game.
+ * @param callback - user callback function or null
+ * @param gameId - id of item to be commented
+ * @param aText - medium
+ * @param lon - x-coordinate (longitude)
+ * @param lat - y-coordinate (latitude)
+ */
+	gameAddTextMedium: function(callback, gameId, aName, aText, lon, lat) {
+		var req = KW.createRequest('game-add-medium-req');
+
+		KW.UTIL.setAttr(req, 'id', gameId);
+
+		// Add medium element
+		var medium = req.createElement('medium');
+		KW.UTIL.addTextElement(medium, 'name', aName);
+		KW.UTIL.addTextElement(medium, 'text', aText);
+		KW.UTIL.addTextElement(medium, 'lon', lon);
+		KW.UTIL.addTextElement(medium, 'lat', lat);
+
+		req.documentElement.appendChild(medium);
+		KW.utopia(req, callback);
+	},
+
+/**
  * Add task to Game.
  * @param callback - user callback function or null
  * @param gameId - id of item to be commented

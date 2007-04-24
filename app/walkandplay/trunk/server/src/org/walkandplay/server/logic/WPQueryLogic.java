@@ -134,7 +134,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				throwOnMissingParm(PAR_ID, id);
 
 				String tables = "wp_task,base_medium";
-				String fields = "wp_task.id,base_medium.id AS mediumid,wp_task.name,wp_task.description,wp_task.answer,wp_task.score";
+				String fields = "wp_task.id,base_medium.id AS mediumid,base_medium.kind AS mediumtype,wp_task.name,wp_task.description,wp_task.answer,wp_task.score";
 				String where = "wp_task.id = " + id;
 				String relations = "wp_task,base_medium";
 				String postCond = null;
