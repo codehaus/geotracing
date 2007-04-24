@@ -80,9 +80,11 @@ public interface Constants {
 
 	// Task result states
 	public final static String VAL_DONE = "done";
-	public final static String VAL_HIT = "HIT";
+	public final static String VAL_OPEN = "open";
+	public final static String VAL_HIT = "hit";
 	public final static String VAL_OK = "ok";
 	public final static String VAL_NOTOK = "notok";
+	public final static String VAL_UNKNOWN = "unknown";
 
 	// Radius in meters to hit locations
 	public final static int HIT_RADIUS_METERS = 15;
