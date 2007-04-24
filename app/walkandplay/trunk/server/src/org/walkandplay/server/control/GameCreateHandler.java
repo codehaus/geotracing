@@ -5,8 +5,10 @@ import org.geotracing.handler.HandlerUtil;
 import org.geotracing.handler.Location;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
+import org.keyworx.common.util.IO;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.MediaFiler;
 import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
@@ -18,6 +20,10 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
+
+import java.util.HashMap;
+import java.io.File;
+import java.sql.Timestamp;
 
 /**
  * Manage Game content.
@@ -106,10 +112,53 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		HandlerUtil.throwOnMissingChildElement(requestElement, Medium.XML_TAG);
 
 		JXElement mediumElm = requestElement.getChildByTag(Medium.XML_TAG);
-		HandlerUtil.throwOnMissingChildElement(mediumElm, ID_FIELD);
+
+		// At least lon/lat required
 		HandlerUtil.throwOnMissingChildElement(mediumElm, Location.FIELD_LON);
 		HandlerUtil.throwOnMissingChildElement(mediumElm, Location.FIELD_LAT);
 
+		// Medium may be id or a text
+		String mediumIdStr = mediumElm.getChildText(ID_FIELD);
+
+		Record mediumRecord = null;
+		int mediumId = 0;
+		if (mediumIdStr != null) {
+			mediumId = Integer.parseInt(mediumElm.getChildText(ID_FIELD));
+			mediumRecord = oase.getFinder().read(mediumId, MediaFiler.MEDIUM_TABLE);
+		} else {
+			// Assume text
+			HandlerUtil.throwOnMissingChildElement(mediumElm, NAME_FIELD);
+			HandlerUtil.throwOnMissingChildElement(mediumElm, TEXT_FIELD);
+			String name = mediumElm.getChildText(NAME_FIELD);
+			String text = mediumElm.getChildText(TEXT_FIELD);
+
+			// Fill in fields
+			HashMap fields = new HashMap(4);
+
+			// Setup standard medium fields
+			fields.put(MediaFiler.FIELD_NAME, name);
+			// fields.put(MediaFiler.FIELD_DESCRIPTION, "null");
+			fields.put(MediaFiler.FIELD_MIME, "text/plain");
+			fields.put(MediaFiler.FIELD_KIND, MediaFiler.KIND_TEXT);
+
+			// Create medium record and relate to person
+			try {
+				MediaFiler mediaFiler = oase.getMediaFiler();
+				text = IO.forHTMLTag(text);
+				mediumRecord = mediaFiler.insert(text.getBytes(), fields);
+				Record personRecord = HandlerUtil.getPersonRecord(anUtopiaRequest);
+				oase.getRelater().relate(mediumRecord, personRecord);
+				mediumId = mediumRecord.getId();
+			} catch (Throwable t) {
+				throw new UtopiaException("Error in " + GAME_ADD_MEDIUM_SERVICE + " for text " + text, t);
+			}
+		}
+
+		if (mediumRecord == null || mediumId == 0) {
+			throw new UtopiaException("No medium found for id or text");
+		}
+
+		// Ok we have valid medium id
 		Location location = Location.create(oase);
 		String lon = mediumElm.getChildText(Location.FIELD_LON);
 		String lat = mediumElm.getChildText(Location.FIELD_LAT);
@@ -118,8 +167,6 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 
 		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
-
-		int mediumId = Integer.parseInt(mediumElm.getChildText(ID_FIELD));
 
 		location.createRelation(mediumId, RELTAG_MEDIUM);
 		location.createRelation(Integer.parseInt(gameId), RELTAG_MEDIUM);
@@ -225,11 +272,12 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 			Record gameRecord = oase.getFinder().read(gameId, GAME_TABLE);
 			Record[] related = oase.getRelater().getRelated(gameRecord);
 			String relTableName;
-			for (int i=0; i < related.length; i++) {
+			for (int i = 0; i < related.length; i++) {
 				relTableName = related[i].getTableName();
 
 				// Delete only related media. tasks, locations
-				if (relTableName.equals(MEDIUM_TABLE) || relTableName.equals(TASK_TABLE) || relTableName.equals(LOCATION_TABLE)) {
+				if (relTableName.equals(MEDIUM_TABLE) || relTableName.equals(TASK_TABLE) || relTableName.equals(LOCATION_TABLE))
+				{
 					oase.getModifier().delete(related[i]);
 				}
 			}

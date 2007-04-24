@@ -18,9 +18,6 @@ import org.walkandplay.server.util.Constants;
 import org.postgis.Point;
 
 import java.util.Vector;
-import java.util.List;
-import java.util.ArrayList;
-import java.sql.Timestamp;
 
 /**
  * GamePlayHandler.
@@ -123,21 +120,45 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Location location = trackLogic.createLocation(personId, mediumId, timestamp, TrackLogic.REL_TAG_MEDIUM);
 
 		// We either have location or an exception here
-
 		JXElement rsp = createResponse(PLAY_ADD_MEDIUM_SERVICE);
 		rsp.setAttr(LOCATION_ID_FIELD, location.getId());
 
+
 		// We must have a running GamePlay record
-		Record runningGamePlay = getRunningGamePlay(oase, personId);
-		if (runningGamePlay == null) {
+		Record gamePlay = getRunningGamePlay(oase, personId);
+		if (gamePlay == null) {
 			throw new UtopiaException("No running GamePlay found for person=" + personId);
 		}
 
 		// Figure out if location is near a task in progress
-		Record game = getGameForGamePlay(oase, runningGamePlay.getId());
+		Record game = getGameForGamePlay(oase, gamePlay.getId());
 		Point point = location.getPoint();
-		Record[] locationsHit = getLocationsHitForGame(oase, point, game.getId());
-		log.info("Hit locations for medium cnt=" + locationsHit.length);
+		Record task = getTaskHitForGame(oase, point, game.getId());
+		if (task != null) {
+			log.info("Hit task for medium taskid=" + task.getId());
+
+			// Store result of this task
+			Record taskResult = getTaskResultForTask(oase, task.getId(), gamePlay.getId());
+			if (taskResult == null) {
+				throw new UtopiaException("No taskResult found for task=" + task.getId());
+			}
+
+			String totalState = taskResult.getStringField(STATE_FIELD);
+			String answerState = taskResult.getStringField(ANSWER_STATE_FIELD);
+			taskResult.setStringField(MEDIA_STATE_FIELD, VAL_DONE);
+
+			relater.relate(taskResult, medium);
+
+			// Check if we are totally done
+			if (answerState.equals(VAL_DONE)) {
+				// ALL DONE
+				totalState = VAL_DONE;
+				taskResult.setStringField(STATE_FIELD, totalState);
+			}
+			modifier.update(taskResult);
+			rsp.setAttr(TASK_ID_FIELD, totalState);
+			rsp.setAttr(TASK_STATE_FIELD, totalState);					
+		}
 		return rsp;
 	}
 
@@ -160,25 +181,57 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Relater relater = oase.getRelater();
 
 		// We must have a running GamePlay record
-		Record runningGamePlay = getRunningGamePlay(oase, personId);
-		if (runningGamePlay == null) {
+		Record gamePlay = getRunningGamePlay(oase, personId);
+		if (gamePlay == null) {
 			throw new UtopiaException("No running GamePlay found for person=" + personId);
 		}
 
 		Record task = finder.read(Integer.parseInt(taskId), TASK_TABLE);
 		String[] answers = task.getStringField(ANSWER_FIELD).split(",");
-		boolean result = false;
 		int score = 0;
 		for (int i = 0; i < answers.length; i++) {
 			if (answers[i].equals(playerAnswer)) {
-				result = true;
 				score = task.getIntField(SCORE_FIELD);
 				break;
 			}
 		}
 
+		// Store result of this task
+		Record taskResult = getTaskResultForTask(oase, task.getId(), gamePlay.getId());
+		if (taskResult == null) {
+			throw new UtopiaException("No taskResult found for task=" + task.getId());
+		}
+
+
+		// Assemble results (3 states: total (totalState), answer and medium states)
+		String totalState = taskResult.getStringField(STATE_FIELD);
+		String answerState = score > 0 ? VAL_OK : VAL_NOTOK;
+		String mediaState= taskResult.getStringField(MEDIA_STATE_FIELD);
+
+		// Always set outcome of answer
+		taskResult.setField(ANSWER_FIELD, playerAnswer);
+		taskResult.setField(ANSWER_STATE_FIELD, answerState);
+
+		// Ok, set result/score based on result
+		if (score > 0) {
+			taskResult.setIntField(SCORE_FIELD, score);
+
+			// Check if we are totally done
+			if (mediaState.equals(VAL_DONE)) {
+				// ALL DONE
+				totalState = VAL_DONE;
+				taskResult.setStringField(STATE_FIELD, totalState);
+			}
+		}
+
+		// Store result
+		modifier.update(taskResult);
+
+		// Send response
 		JXElement rsp = createResponse(PLAY_ANSWERTASK_SERVICE);
-		rsp.setAttr(RESULT_FIELD, result);
+		rsp.setAttr(STATE_FIELD, totalState);
+		rsp.setAttr(MEDIA_STATE_FIELD, mediaState);
+		rsp.setAttr(ANSWER_STATE_FIELD, answerState);
 		rsp.setAttr(SCORE_FIELD, score);
 		return rsp;
 	}
@@ -407,7 +460,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		}
 	}
 
-	protected Record[] getTasksHitForGame(Oase anOase, Point aPoint, int aGameId) throws UtopiaException {
+	protected Record getTaskHitForGame(Oase anOase, Point aPoint, int aGameId) throws UtopiaException {
+		Record result = null;
 		try {
 			String distanceClause = "distance_sphere(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")',4326),point)";
 			String tables = "g_location,wp_game";
@@ -415,14 +469,20 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			String where = distanceClause + " < " + HIT_RADIUS_METERS + " AND wp_game.id = " + aGameId + " AND g_location.type = " + LOC_TYPE_GAME_TASK;;
 			String relations = "g_location,wp_game";
 			String postCond = null;
-			return QueryLogic.queryStore(anOase, tables, fields, where, relations, postCond);
+			Record[] tasksHit = QueryLogic.queryStore(anOase, tables, fields, where, relations, postCond);
+			if (tasksHit.length == 1) {
+				result = anOase.getFinder().read(tasksHit[0].getId(), TASK_TABLE);
+			} else if (tasksHit.length > 1) {
+				log.warn("More than task hit for aGameId=" + aGameId + " pt=" + aPoint);
+			}
 		} catch (Throwable t) {
 			log.warn("Error query locations for game=" + aGameId, t);
 			throw new UtopiaException("Error in getLocationsHit game=" + aGameId, t);
 		}
+		return result;
 	}
 
- 	protected Record[] getTasksForGame(Oase anOase, int aGameId) throws OaseException, UtopiaException {
+	 protected Record[] getTasksForGame(Oase anOase, int aGameId) throws OaseException, UtopiaException {
 		try {
 			String tables = "wp_game,g_location,wp_task";
 			String fields = "wp_task.id";
@@ -461,6 +521,28 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			log.warn("Error query getTaskResultsForGamePlay gamePlayId=" + aGamePlayId, t);
 			throw new UtopiaException("Error in getTaskResultsForGamePlay aGamePlayId=" + aGamePlayId, t);
 		}
+	}
+
+
+	protected Record getTaskResultForTask(Oase anOase, int aTaskId, int aGamePlayId) throws UtopiaException {
+		Record result = null;
+		try {
+			String tables = "wp_gameplay,wp_task,wp_taskresult";
+			String fields = "wp_taskresult.id";
+			String where = "wp_gameplay.id = " + aGamePlayId + " AND wp_task.id = " + aTaskId;
+			String relations = "wp_gameplay,wp_taskresult;wp_taskresult,wp_task";
+			String postCond = null;
+			Record[] records = QueryLogic.queryStore(anOase, tables, fields, where, relations, postCond);
+			if (records.length == 1) {
+				result = anOase.getFinder().read(records[0].getId(), TASKRESULT_TABLE);
+			} else if (records.length > 1) {
+				throw new UtopiaException("More than taskresult for gamplayid=" + aGamePlayId);
+			}
+		} catch (Throwable t) {
+			log.warn("Error query TaskResultForTask taskId=" + aTaskId + " gamplayid=" + aGamePlayId, t);
+		}
+
+		return result;
 	}
 
 	/*

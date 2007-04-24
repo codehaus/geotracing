@@ -25,6 +25,7 @@ public interface Constants {
 	public final static String TAG_MEDIUM_HIT = "medium-hit";
 
 	// table fields
+	public final static String ANSWER_STATE_FIELD = "answerstate";
 	public final static String ID_FIELD = "id";
 	public final static String OWNER_FIELD = "owner";
 	public final static String VERSION_FIELD = "version";
@@ -40,13 +41,17 @@ public interface Constants {
 	public final static String ENDDATE_FIELD = "enddate";
 	public final static String POINT_FIELD = "point";
 	public final static String PLAYERS_FIELD = "players";
+	public final static String MEDIA_STATE_FIELD = "mediastate";
 	public final static String MEDIUMID_FIELD = "mediumid";
 	public final static String SCORE_FIELD = "score";
 	public final static String ANSWER_FIELD = "answer";
 	public final static String LON_FIELD = "lon";
 	public final static String LAT_FIELD = "lat";
+	public final static String TEXT_FIELD = "text";
 	public final static String RESULT_FIELD = "result";
 	public final static String TIME_FIELD = "time";
+	public final static String TASK_ID_FIELD = "taskid";
+	public final static String TASK_STATE_FIELD = "taskstate";
 
 	public final static String INVITATION_FIELD = "invitation";
 	public final static String INVITATION_SEND = "invitation-send";
@@ -72,6 +77,12 @@ public interface Constants {
 	public final static String PLAY_STATE_RUNNING = "running";
 	public final static String PLAY_STATE_SUSPENDED = "suspended";
 	public final static String PLAY_STATE_DONE = "done";
+
+	// Task result states
+	public final static String VAL_DONE = "done";
+	public final static String VAL_HIT = "HIT";
+	public final static String VAL_OK = "ok";
+	public final static String VAL_NOTOK = "notok";
 
 	// Radius in meters to hit locations
 	public final static int HIT_RADIUS_METERS = 15;
