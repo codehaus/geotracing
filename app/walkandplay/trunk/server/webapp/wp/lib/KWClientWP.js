@@ -137,6 +137,29 @@ KW.WP = {
 		KW.UTIL.setAttr(req, 'id', taskId);
 
 		KW.utopia(req, callback);
+	},
+
+/**
+ * Get gameplay results for team (user).
+ * @param callback - user callback function or null
+ * @param gamePlayId - id of gameplay (game instance for team)
+ */
+	playGetGamePlay: function(callback, gamePlayId) {
+		var req = KW.createRequest('play-get-gameplay-req');
+
+		// Only medium id is required (game is coupled to medium)
+		KW.UTIL.setAttr(req, 'id', gamePlayId);
+
+		KW.utopia(req, callback);
+	},
+
+	/**
+	 * Send heartbeat.
+	 * @param callback - user callback function or null
+	 */
+	playHeartbeat: function(callback) {
+			var req = KW.createRequest('play-hb-req');
+			KW.utopia(req, callback);
 	}
 
 
