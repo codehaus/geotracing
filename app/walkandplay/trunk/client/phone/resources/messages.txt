@@ -63,7 +63,8 @@ play.HideLog=Hide Log
 play.ShowInfo=Show Info
 play.HideInfo=Hide Info
 play.HideError=Hide Error
-play.Back=Back
+play.IM=Send Message
+play.Back=Stop Game
 
 settings.SoundOn=Sound ON
 settings.SoundOff=Sound OFF
