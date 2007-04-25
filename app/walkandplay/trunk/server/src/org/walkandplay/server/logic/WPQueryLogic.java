@@ -1,7 +1,6 @@
 package org.walkandplay.server.logic;
 
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.handler.QueryHandler;
 import org.geotracing.handler.QueryLogic;
 import org.keyworx.amuse.core.Protocol;
 import org.keyworx.oase.api.Finder;
@@ -13,6 +12,7 @@ import org.walkandplay.server.util.Constants;
 import java.util.Map;
 
 public class WPQueryLogic extends QueryLogic implements Constants {
+
 
 	public JXElement doQuery(String aQueryName, Map theParms) {
 		JXElement result;
@@ -37,6 +37,19 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				for (int i = 0; i < records.length; i++) {
 					result.addChild(records[i].toXML());
 				}
+			} else if ("q-game".equals(aQueryName)) {
+				String id = getParameter(theParms, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
+
+				Finder finder = getOase().getFinder();
+
+				Record game = finder.read(Integer.parseInt(id), GAME_TABLE);
+				if (game == null) {
+					throw new IllegalArgumentException("Cannot find game with id=" + id);
+				}
+
+				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
+				result.addChild(game.toXML());
 			} else if ("q-game-locations".equals(aQueryName)) {
 				// All locations within game
 				// Game id
@@ -108,7 +121,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				Record person = getPersonForLoginName(getOase(), loginName);
 				String tables = "utopia_person,wp_gameplay,wp_schedule,wp_game";
-				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_schedule.id AS scheduleid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
+				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_schedule.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
 				String where = "utopia_person.id = " + person.getId();
 				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_schedule;wp_schedule,wp_game";
 				String postCond = null;

@@ -43,6 +43,20 @@
 
 	</test>
 
+	<test id="heartbeat">
+		<send id="client1">
+			<utopia-req>
+				<play-hb-req />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-hb-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
 	<test id="q-play-status">
 		<send id="client1">
 			<utopia-req>
@@ -57,7 +71,7 @@
 						<name/>
 						<description/>
 						<gameid>${gameid}</gameid>
-						<scheduleid>${scheduleid}</scheduleid>
+						<roundid>${roundid}</roundid>
 						<gameplayid>${gameplayid}</gameplayid>
 						<gameplaystate/>
 					</record>
@@ -220,6 +234,7 @@
 				<play-location-req>
 					<pt lon="4.922990798950195" lat="52.37879534725308"/>
 					<pt lon="4.9230766296386" lat="52.379555058692" label="javakade-sumatrakade"/>
+					<pt lon="4.9230766296386" lat="52.379555058692" label="javakade-sumatrakade"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -319,7 +334,19 @@
 		</expect>
 	</test>
 
+ 	<test id="play-get-gameplay">
+		<send id="client1">
+			<utopia-req>
+				<play-get-gameplay-req id="${gameplayid}"/>
+			</utopia-req>
+		</send>
 
+		<expect id="client1">
+			<utopia-rsp>
+				<play-get-gameplay-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
 
 <!--	<test id="play-reset-req2">
 		<send id="client1">

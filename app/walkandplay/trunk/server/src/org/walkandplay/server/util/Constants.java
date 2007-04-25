@@ -19,10 +19,19 @@ public interface Constants {
 
 	// tag names
 	public final static String TAG_GAME = "game";
+	public final static String TAG_GAMEPLAY = "gameplay";
+	public final static String TAG_LOCATIONS = "locations";
 	public final static String TAG_MEDIUM = "medium";
 	public final static String TAG_TASK = "task";
+	public final static String TAG_TASK_RESULT = "task-result";
 	public final static String TAG_TASK_HIT = "task-hit";
 	public final static String TAG_MEDIUM_HIT = "medium-hit";
+
+	// xml attr names
+	public final static String ATTR_TEAM = "team";
+	public final static String ATTR_TRACKID = "trackid";
+	public final static String ATTR_TASKID = "taskid";
+	public final static String ATTR_MEDIUMID = "mediumid";
 
 	// table fields
 	public final static String ANSWER_STATE_FIELD = "answerstate";
@@ -36,7 +45,7 @@ public interface Constants {
 	public final static String LOCATION_FIELD = "location";
 	public final static String LOCATION_ID_FIELD = "locationid";
 	public final static String TAG_FIELD = "tag";
-	public final static String SCHEDULE_ID_FIELD = "scheduleid";
+	public final static String ROUND_ID_FIELD = "roundid";
 	public final static String STARTDATE_FIELD = "startdate";
 	public final static String ENDDATE_FIELD = "enddate";
 	public final static String POINT_FIELD = "point";
