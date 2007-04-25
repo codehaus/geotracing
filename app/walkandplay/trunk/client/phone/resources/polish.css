@@ -35,6 +35,7 @@ colors {
 
     WHITE: rgb(255,255,255);
     LIGHTBLUE: argb(130,197,219,237);
+    TRANSWHITE: argb(130,255,255,255);
     /*LIGHTBLUE: argb(130,153,179,204);*/
     BLACK: rgb(0,0,0);
     RED: rgb(255,0,0);
@@ -287,19 +288,17 @@ focused {
     layout: left | top;
 }
 
-.smallstring{
+.labelinfo{
     margin:2;
     padding:2;
-    font-color: GREY;
+    font-color: BLACK;
     font-size: small;
+    background-color: WHITE;        
 }
 
 .formbox {
     margin:2;
-    padding:2;
-    label{
-        font-size: small;
-    }
+    padding:2;    
     border{
         width:1;
         color:BLACK;

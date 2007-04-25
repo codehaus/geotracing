@@ -756,7 +756,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     if (rsp.getTag().indexOf("-rsp") != -1) {
                         String answerState = rsp.getAttr("answerstate");
                         String mediaState = rsp.getAttr("mediastate");
-                        String score = rsp.getAttr("score");
+                        String score = task.getChildText("score");
                         if (answerState.equals("ok") && mediaState.equals("open")) {
                             log("we've got the right answer", false);
                             alert = "Right answer! You still have to sent in media though. Goodluck!";
