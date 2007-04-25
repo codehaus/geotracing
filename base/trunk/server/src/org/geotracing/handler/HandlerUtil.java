@@ -71,6 +71,20 @@ public class HandlerUtil {
 	}
 
 	/**
+	 * Get user (Account) record from request.
+	 */
+	public static Record getAccountRecord(UtopiaRequest anUtopiaReq) throws OaseException {
+		return getOase(anUtopiaReq).getRelater().getRelated(getPersonRecord(anUtopiaReq), "utopia_account", null)[0];
+	}
+
+	/**
+	 * Get user (Account) name from request.
+	 */
+	public static String getAccountName(UtopiaRequest anUtopiaReq) throws OaseException {
+		return getAccountRecord(anUtopiaReq).getStringField("loginname");
+	}
+
+	/**
 	 * Get user (Person) record from request.
 	 */
 	public static Record getPersonRecord(UtopiaRequest anUtopiaReq) throws OaseException {
