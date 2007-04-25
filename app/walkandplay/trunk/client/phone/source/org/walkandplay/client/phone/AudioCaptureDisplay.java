@@ -38,7 +38,11 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	public AudioCaptureDisplay (WPMidlet aMidlet) {
         super(aMidlet, "");
 
-		rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
+        System.out.println("prev: " + prevScreen);
+        prevScreen = midlet.playDisplay;
+        System.out.println("prev: " + prevScreen);
+
+        rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
 		bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
 		kbPerSec = (rate * bits / 8) / 1000;
 		start = new Command("Start", Command.OK, 1);
@@ -91,7 +95,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			addCommand(play);
 			addCommand(submit);
 
-            append("OK Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb\n");
+            append("Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb.");
             append("Enter Recording Name");
             //#style textbox
             append(name);
@@ -109,8 +113,18 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			if (rsp == null) {
                 append("cannot submit audio!");
 			} else if (Protocol.isPositiveResponse(rsp)) {
-                append("submit audio OK, press Back");
-			} else {
+                //now do an add medium
+                JXElement addMediumReq = new JXElement("play-add-medium-req");
+                addMediumReq.setAttr("id", rsp.getAttr("id"));
+                Log.log(new String(addMediumReq.toBytes(false)));
+                JXElement addMediumRsp = Net.getInstance().utopiaReq(addMediumReq);
+                Log.log(new String(addMediumRsp.toBytes(false)));
+                if(Protocol.isPositiveResponse(addMediumRsp)){
+                    append("add medium failed:" + addMediumRsp.toBytes(false));
+                }else{
+                    append("submit audio OK, press Back");
+                }
+            } else {
                 append("submit audio failed: error is " + rsp.getAttr("error") + " press Back");
 			}
 
@@ -148,21 +162,21 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 			recordcontrol.startRecord();
 			player.start();
 			startTime = Util.getTime();
-            append("", "RECORDING AUDIO... press Stop to stop recording\n");
+            append("", "RECORDING AUDIO...\n press Stop to stop recording");
 
 			new Thread(new Runnable() {
 				public void run() {
 					int seconds = 0;
 
                     //#style formbox
-                    StringItem status = new StringItem("STATUS", "0 secs 0 kb");
+                    StringItem status = new StringItem("", "STATUS 0 secs 0 kb");
 					status.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_VCENTER);
 					append(status);
 					try {
 						while (player != null) {
 							Thread.sleep(1000);
 							seconds++;
-							status.setText(seconds + " secs " + (seconds * kbPerSec) + " kb");
+							status.setText("STATUS" + seconds + " secs " + (seconds * kbPerSec) + " kb");
 						}
 					} catch (Throwable t) {
 
@@ -176,7 +190,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 	}
 
 	private void stop() {        
-        append("Stopping recording...");
+        //append("Stopping recording...");
 		try {
 			recordcontrol.commit();
 			player.close();

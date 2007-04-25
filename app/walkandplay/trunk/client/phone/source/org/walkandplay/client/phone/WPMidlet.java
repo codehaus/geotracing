@@ -50,7 +50,7 @@ import nl.justobjects.mjox.JXElement;
 public class WPMidlet extends MIDlet implements CommandListener {
 
     List menuScreen;
-    //PlayDisplay playDisplay;
+    PlayDisplay playDisplay;
     TraceDisplay traceDisplay;
     private boolean playMode;
 
@@ -59,7 +59,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public WPMidlet() {
         super();
-        Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));        
+        setHome();
+        //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));        
     }
 
     public void setHome(){
@@ -171,7 +172,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
             /*//#ifdef polish.debugEnabled*/
             case 7:
                 // Log
-                Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                //Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                Log.view(this);
                 //Log.view(this);
                 break;
             /*//#endif*/
