@@ -22,7 +22,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
 	/** Instance of KeyWorx client. */
 	private Net net;
-	private MIDlet midlet;
+	private WPMidlet midlet;
 
 	private int sampleCount;
 	private boolean paused = true;
@@ -35,20 +35,25 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
     private long locSendIntervalMillis = DEFAULT_LOC_SEND_INTERVAL_MILLIS;
     private long lastTimeLocSent;
 
+    private boolean isPlaying;
+    private boolean isTracing;
+
 
     /**
 	 * Starts GPS fetching and KW client.
 	 */
-	public TracerEngine(MIDlet aMIDlet, DefaultTraceDisplay aDisplay) {
+	public TracerEngine(WPMidlet aMIDlet, DefaultTraceDisplay aDisplay) {
 		traceDisplay = aDisplay;
-		midlet = aMIDlet;
+        isTracing = true;
+        midlet = aMIDlet;
 		net = Net.getInstance();
 		net.setListener(this);
 	}
 
-    public TracerEngine(MIDlet aMIDlet, PlayDisplay aDisplay) {
+    public TracerEngine(WPMidlet aMIDlet, PlayDisplay aDisplay) {
 		playDisplay = aDisplay;
-		midlet = aMIDlet;
+        isPlaying = true;
+        midlet = aMIDlet;
 		net = Net.getInstance();
 		net.setListener(this);
 	}
@@ -112,26 +117,40 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 	}
 
 	public void suspendResume() {
-		if (paused) {
-			resume();
-		} else {
-			suspend();
-		}
-	}
+        if (paused) {
+            resume();
+        } else {
+            suspend();
+        }
+        
+        if(isPlaying && !paused){
+            JXElement req = new JXElement("play-suspend-req");
+            req.setAttr("id", midlet.getGamePlayId());
+            Log.log(new String(req.toBytes(false)));
+            JXElement rsp = net.utopiaReq(req);
+            Log.log(new String(rsp.toBytes(false)));
+        }
+    }
 
 	public void onGPSConnect() {
-		if(traceDisplay!=null) traceDisplay.onGPSStatus("connected");
-		if(playDisplay!=null) playDisplay.onGPSStatus("connected");
-		if(traceDisplay!=null) traceDisplay.setStatus("GPS connected");
-		if(playDisplay!=null) playDisplay.setStatus("GPS connected");
-
+		if(isTracing){
+            traceDisplay.onGPSStatus("connected");
+            traceDisplay.setStatus("GPS connected");
+        }else if (isPlaying){
+		    playDisplay.onGPSStatus("connected");
+            playDisplay.setStatus("GPS connected");
+        }
+        
 		Util.playTone(60, 250, VOLUME);
 	}
 
 	/** From GPSFetcher: GPS meta NMEA sample received. */
 	synchronized public void onGPSInfo(GPSInfo theInfo) {
-		if(traceDisplay!=null) traceDisplay.setGPSInfo(theInfo);
-		if(playDisplay!=null) playDisplay.setGPSInfo(theInfo);
+        if(isTracing){
+            traceDisplay.setGPSInfo(theInfo);
+        }else if(isPlaying){
+            playDisplay.setGPSInfo(theInfo);
+        }         
 	}
 
 	/** From GPSFetcher: GPS NMEA sample received. */
@@ -140,11 +159,14 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
 		onGPSStatus("sample #" + (++sampleCount));
 		if (paused) {
-			if(traceDisplay!=null) traceDisplay.onNetStatus("paused");
-			if(playDisplay!=null) playDisplay.onNetStatus("paused");
-			if(traceDisplay!=null) traceDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
-			if(playDisplay!=null) playDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
-			return;
+            if(isTracing){
+                traceDisplay.onNetStatus("paused");
+                traceDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
+            }else if (isPlaying){
+                playDisplay.onNetStatus("paused");
+                playDisplay.setStatus("NOTE: not sending GPS !!\ndo ResumeTrack to send");
+            }
+            return;
 		}
 
 
@@ -163,9 +185,11 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 		long now = Util.getTime();
 		if (now - lastTimeLocSent > locSendIntervalMillis) {
 			lastTimeLocSent = now;
-			net.sendPoints(points, sampleCount);
-			sendPoints(points, sampleCount, "play-location-req");
-			sendPoints(points, sampleCount, "t-trk-write-req");
+			if(isTracing){
+                sendPoints(points, sampleCount, "t-trk-write-req");       
+            }else if(isPlaying){
+                sendPoints(points, sampleCount, "play-location-req");
+            }
 			points.removeAllElements();
 		}
     }
@@ -180,7 +204,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 			onNetStatus("sending #" + theCount);
 			JXElement rsp = net.utopiaReq(req);            
             // TODO: remove later - teskting purposes
-            rsp.removeChildren();
+            /*rsp.removeChildren();
             if (System.currentTimeMillis() % 3 == 0) {
                 JXElement hit = new JXElement("cmt-hit");
                 hit.setText("bericht van webspeler");
@@ -203,7 +227,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                 JXElement hit = new JXElement("medium-hit");
                 hit.setAttr("id", 22629);
                 rsp.addChild(hit);
-            }
+            }*/
             
             //long lastCommandTime = Util.getTime();
 			if (rsp != null) {
@@ -213,8 +237,18 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                 JXElement e = rsp.getChildAt(0);
                 if(e!=null){
                     if(e.getTag().equals("task-hit")){
+                        if(isPlaying){
+                            //<play-location-rsp><task-hit id="54232" state="open|hit|done" answerstate="open" mediastate="open"/></play-location-rsp>
+                            //set current task
+                            playDisplay.setTaskHit(e);
+                        }
                         onNetStatus("task-" + e.getAttr("id"));
                     }else if(e.getTag().equals("medium-hit")){
+                        if(isPlaying){
+                            //<play-location-rsp><medium-hit id="54232" state="open|hit"/></play-location-rsp>
+                            //set current medium
+                            playDisplay.setMediumHit(e);
+                        }
                         onNetStatus("medium-" + e.getAttr("id"));
                     }else if(e.getTag().equals("cmt-hit")){
                         onNetStatus("cmt-" + e.getText());
@@ -233,18 +267,24 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
     /** From GPSFetcher: disconnect */
 	public void onGPSDisconnect() {
-		if(traceDisplay!=null) traceDisplay.onGPSStatus("disconnected");
-		if(playDisplay!=null) playDisplay.onGPSStatus("disconnected");
-		if(traceDisplay!=null) traceDisplay.setStatus("GPS disconnected");
-		if(playDisplay!=null) playDisplay.setStatus("GPS disconnected");
+        if (isTracing){
+            traceDisplay.onGPSStatus("disconnected");
+            traceDisplay.setStatus("GPS disconnected");
+        }else if(isPlaying){
+            playDisplay.onGPSStatus("disconnected");
+            playDisplay.setStatus("GPS disconnected");
+        }
 	}
 
 	/** From GPSFetcher: disconnect */
 	public void onGPSError(String aReason, Throwable anException) {
 		Log.log("GPS error: " + aReason + " e=" + anException);
-		if(traceDisplay!=null) traceDisplay.onGPSStatus("error");
-		if(playDisplay!=null) playDisplay.onGPSStatus("error");
-		// traceScreen.setStatus(aReason);
+        if (isTracing){
+            traceDisplay.onGPSStatus("error");
+        }else if (isPlaying){
+            playDisplay.onGPSStatus("error");
+        }
+        // traceScreen.setStatus(aReason);
 		Util.playTone(72, 100, VOLUME);
 		Util.playTone(71, 100, VOLUME);
 		Util.playTone(70, 100, VOLUME);
@@ -252,32 +292,47 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 
 	/** From GPSFetcher: status update */
 	public void onGPSStatus(String aStatusMsg) {
-		if(traceDisplay!=null) traceDisplay.onGPSStatus(aStatusMsg);
-		if(playDisplay!=null) playDisplay.onGPSStatus(aStatusMsg);
-		if(traceDisplay!=null) traceDisplay.setStatus("GPS " + aStatusMsg);
-		if(playDisplay!=null) playDisplay.setStatus("GPS " + aStatusMsg);
+        if (isTracing){
+            traceDisplay.onGPSStatus(aStatusMsg);
+            traceDisplay.setStatus("GPS " + aStatusMsg);
+        }else if (isPlaying){
+            playDisplay.onGPSStatus(aStatusMsg);
+            playDisplay.setStatus("GPS " + aStatusMsg);
+        }
 	}
 
 	public void onGPSTimeout() {
-		if(traceDisplay!=null) traceDisplay.onGPSStatus("timeout");
-		if(playDisplay!=null) playDisplay.onGPSStatus("timeout");
-		if(traceDisplay!=null) traceDisplay.setStatus("GPS timeout");
-		if(playDisplay!=null) playDisplay.setStatus("GPS timeout");
+        if (isTracing){
+            traceDisplay.onGPSStatus("timeout");
+            traceDisplay.setStatus("GPS timeout");
+        }else if (isPlaying){
+            playDisplay.onGPSStatus("timeout");
+            playDisplay.setStatus("GPS timeout");
+        }
 	}
 
 	public void onNetInfo(String theInfo) {
-        if(traceDisplay!=null) traceDisplay.setStatus(theInfo);
-		if(playDisplay!=null) playDisplay.setStatus(theInfo);
+        if (isTracing){
+            traceDisplay.setStatus(theInfo);
+        }else if (isPlaying){
+            playDisplay.setStatus(theInfo);
+        }
 	}
 
 	public void onNetError(String aReason, Throwable anException) {
-		if(traceDisplay!=null) traceDisplay.setStatus("ERROR " + aReason + "\n" + anException);
-		if(playDisplay!=null) playDisplay.setStatus("ERROR " + aReason + "\n" + anException);
+        if (isTracing){
+            traceDisplay.setStatus("ERROR " + aReason + "\n" + anException);
+        }else if (isPlaying){
+            playDisplay.setStatus("ERROR " + aReason + "\n" + anException);
+        }
 	}
 
 	public void onNetStatus(String aStatusMsg) {
-        if(traceDisplay!=null) traceDisplay.onNetStatus(aStatusMsg);
-		if(playDisplay!=null) playDisplay.onNetStatus(aStatusMsg);
+        if (isTracing){
+            traceDisplay.onNetStatus(aStatusMsg);
+        }else if (isPlaying){
+            playDisplay.onNetStatus(aStatusMsg);
+        }
 	}
 
 	/** Check local midlet version with the one from server. */
@@ -305,21 +360,31 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 		try {
 			String gpsURL = GPSSelector.getGPSURL();
 			if (gpsURL == null) {
-				if(traceDisplay!=null) traceDisplay.onGPSStatus("NO GPS");
-				if(playDisplay!=null) playDisplay.onGPSStatus("NO GPS");
-				if(traceDisplay!=null) traceDisplay.setStatus("choose SelectGPS in menu");
-				if(playDisplay!=null) playDisplay.setStatus("choose SelectGPS in menu");
+                if (isTracing){
+                    traceDisplay.onGPSStatus("NO GPS");
+                    traceDisplay.setStatus("choose SelectGPS in menu");
+                }else if (isPlaying){
+                    playDisplay.onGPSStatus("NO GPS");
+                    playDisplay.setStatus("choose SelectGPS in menu");
+                }                          
 				return;
 			}
-			if(traceDisplay!=null) traceDisplay.setStatus("gpsURL=\n" + gpsURL);
-			if(playDisplay!=null) playDisplay.setStatus("gpsURL=\n" + gpsURL);
-			long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
+            if (isTracing){
+                traceDisplay.setStatus("gpsURL=\n" + gpsURL);
+            }else if (isPlaying){
+                playDisplay.setStatus("gpsURL=\n" + gpsURL);
+            }
+            long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
 			gpsFetcher = GPSFetcher.getInstance();
 			gpsFetcher.setListener(this);
 			gpsFetcher.setURL(gpsURL);
 			gpsFetcher.start(GPS_SAMPLE_INTERVAL);
 		} catch (Throwable t) {
-			traceDisplay.onGPSStatus("start error");
+            if (isTracing){
+                traceDisplay.onGPSStatus("start error");
+            }else if (isPlaying){
+                playDisplay.onGPSStatus("start error");
+            }            
 			gpsFetcher = null;
 		}
 	}
