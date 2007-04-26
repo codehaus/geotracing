@@ -16,6 +16,7 @@ public interface Constants {
 	public final static String LOCATION_TABLE = Location.TABLE_NAME;
 	public final static String TRACK_TABLE = Track.TABLE_NAME;
 	public final static String TASKRESULT_TABLE = "wp_taskresult";
+	public final static String MEDIUMRESULT_TABLE = "wp_mediumresult";
 
 	// tag names
 	public final static String TAG_GAME = "game";
@@ -24,6 +25,7 @@ public interface Constants {
 	public final static String TAG_MEDIUM = "medium";
 	public final static String TAG_TASK = "task";
 	public final static String TAG_TASK_RESULT = "task-result";
+	public final static String TAG_MEDIUM_RESULT = "medium-result";
 	public final static String TAG_TASK_HIT = "task-hit";
 	public final static String TAG_MEDIUM_HIT = "medium-hit";
 

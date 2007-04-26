@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- State for medium location -->
+<table>
+
+    <views>
+
+		<insert>
+			<field name="state" />
+ 		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="state" />
+			<field name="time" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="state" />
+		</query>
+ 	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<!-- 1=open 2=hit -->
+        <field name="state" type="STRING" size="12" default="open" required="true" />
+
+		<!-- Time of first hit -->
+        <field name="time" type="TIMESTAMP" />
+
+		<field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+	</data>
+	<!--}data -->
+</table>
