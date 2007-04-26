@@ -103,7 +103,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 		if (!paused) {
 			return;
 		}
-		net.resume();
+		//net.resume();
 		sampleCount = 0;
 		paused = false;
 	}
@@ -112,7 +112,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 		if (paused) {
 			return;
 		}
-		net.suspend();
+		//net.suspend();
 		paused = true;
 	}
 
@@ -124,11 +124,11 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
         }
         
         if(isPlaying && !paused){
-            JXElement req = new JXElement("play-suspend-req");
+            /*JXElement req = new JXElement("play-suspend-req");
             req.setAttr("id", midlet.getGamePlayId());
             Log.log(new String(req.toBytes(false)));
             JXElement rsp = net.utopiaReq(req);
-            Log.log(new String(rsp.toBytes(false)));
+            Log.log(new String(rsp.toBytes(false)));*/
         }
     }
 
@@ -204,8 +204,8 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
 			onNetStatus("sending #" + theCount);
 			JXElement rsp = net.utopiaReq(req);            
             // TODO: remove later - teskting purposes
-            /*rsp.removeChildren();
-            if (System.currentTimeMillis() % 3 == 0) {
+            //rsp.removeChildren();
+            /*if (System.currentTimeMillis() % 3 == 0) {
                 JXElement hit = new JXElement("cmt-hit");
                 hit.setText("bericht van webspeler");
                 rsp.addChild(hit);
@@ -215,8 +215,8 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                 JXElement hit = new JXElement("task-hit");
                 hit.setAttr("id", 22560);
                 rsp.addChild(hit);
-            }
-
+            }*/
+/*
             if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                 JXElement hit = new JXElement("medium-hit");
                 hit.setAttr("id", 26527);
@@ -228,7 +228,7 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                 hit.setAttr("id", 22629);
                 rsp.addChild(hit);
             }*/
-            
+
             //long lastCommandTime = Util.getTime();
 			if (rsp != null) {
 				onNetStatus("sent #" + theCount);

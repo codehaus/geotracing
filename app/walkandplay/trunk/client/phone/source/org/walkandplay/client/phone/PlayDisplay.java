@@ -6,7 +6,6 @@ import de.enough.polish.ui.Form;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.TextField;
-import javax.microedition.media.Player;
 
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
@@ -14,7 +13,6 @@ import org.keyworx.mclient.Protocol;
 import nl.justobjects.mjox.JXElement;
 
 import java.util.Vector;
-import java.io.IOException;
 
 /**
  * MobiTracer main GUI.
@@ -65,6 +63,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private final static int SHOW_ERROR = 8;
     private final static int RETRIEVING_MAP = 9;
     private final static int SHOW_COMMENT = 10;    
+    private final static int SHOW_INTRO = 11;
     private int SHOW_STATE = 0;
 
     Font f;
@@ -95,6 +94,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private Command HIDE_INFO_CMD = new Command(Locale.get("play.HideInfo"), Command.ITEM, 2);
     private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);
     private Command HIDE_ERROR_CMD = new Command(Locale.get("play.HideError"), Command.ITEM, 2);
+    private Command SHOW_INTRO_CMD = new Command(Locale.get("play.ShowIntro"), Command.ITEM, 2);
+    private Command HIDE_INTRO_CMD = new Command(Locale.get("play.HideIntro"), Command.ITEM, 2);
     private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
 
     public PlayDisplay(WPMidlet aMidlet) {
@@ -126,8 +127,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
         playDisplay = this;
 
-        addAllCommands();
-        addCommand(BACK_CMD);
+
+        addCommand(BACK_CMD);        
         setCommandListener(this);
 
     }
@@ -142,14 +143,18 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             tracerEngine.start();
             tracerEngine.suspendResume();
 
-            // get all game locations for this game
+            // get the game and all game locations for this game
+            getGame();
             getGameLocations();
+            SHOW_STATE = SHOW_INTRO;
+
             tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
 
             fetchTileInfo();
             show();
+
         } catch (Throwable t) {
             log("Exception in start():\n" + t.getMessage(), true);
         }
@@ -159,7 +164,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         try {
             JXElement req = new JXElement("query-store-req");
             req.setAttr("cmd", "q-game-locations");
-            req.setAttr("id", midlet.getGameSchedule().getChildText("gameid"));
+            req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
             log(new String(req.toBytes(false)), false);
             JXElement rsp = tracerEngine.getNet().utopiaReq(req);
             gameLocations = rsp.getChildrenByTag("record");
@@ -176,6 +181,20 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             log(new String(rsp.toBytes(false)), false);
         } catch (Throwable t) {
             log("Exception in getGameLocations():\n" + t.getMessage(), true);
+        }
+    }
+
+    private void getGame() {
+        try {
+            JXElement req = new JXElement("query-store-req");
+            req.setAttr("cmd", "q-game");
+            req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
+            log(new String(req.toBytes(false)), false);
+            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
+            log(new String(rsp.toBytes(false)), false);
+            midlet.setGame(rsp.getChildByTag("record"));
+        } catch (Throwable t) {
+            log("Exception in getGame():\n" + t.getMessage(), true);
         }
     }
 
@@ -560,6 +579,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 case SHOW_SCORES:
                     new ScoreHandler().showScores();
                     break;
+                case SHOW_INTRO:
+                    new IntroOutroHandler().showIntro();
+                    break;
                 case SHOW_LOG:
                     g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
@@ -589,7 +611,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 			g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
 			g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
 		} */catch (Throwable t) {
-            log(t.getMessage(), true);
+            log("Paint exception:" + t.getMessage(), true);
             //g.drawString("ERROR", 10, 10, Graphics.TOP | Graphics.LEFT);
 			//g.drawString(t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
 		}
@@ -661,6 +683,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             log("instant messaging", false);
             SHOW_STATE = SHOW_COMMENT;
             new IMHandler().showIM();
+        } else if (cmd == SHOW_INTRO_CMD) {
+            log("show intro", false);
+            new IntroOutroHandler().showIntro();
         }
     }
 
@@ -679,6 +704,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         //removeCommand(HIDE_INFO_CMD);
         removeCommand(HIDE_LOG_CMD);
         removeCommand(IM_CMD);
+        removeCommand(SHOW_INTRO_CMD);
     }
 
     private void addAllCommands() {
@@ -694,13 +720,79 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         addCommand(SHOW_LOG_CMD);
         //addCommand(SHOW_INFO_CMD);
         addCommand(IM_CMD);
+        addCommand(SHOW_INTRO_CMD);
+    }
+
+    private class IntroOutroHandler implements CommandListener {
+        private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
+        private boolean isIntro;
+
+        /*
+		* Create the first TextBox and associate
+		* the exit command and listener.
+		*/
+        public void showIntro() {
+            //#style defaultscreen
+            Form form = new Form("");
+
+            //#style labelinfo
+            form.append("Intro");
+
+            //#style formbox
+            form.append(midlet.getGame().getChildText("intro"));
+
+            isIntro = true;
+            form.addCommand(CANCEL_CMD);
+            form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+        }
+
+        /*
+		* Create the first TextBox and associate
+		* the exit command and listener.
+		*/
+        public void showOutro() {
+            //#style defaultscreen
+            Form form = new Form("");
+
+            //#style labelinfo
+            form.append("Outro");
+
+            //#style formbox
+            form.append(midlet.getGame().getChildText("outro"));
+
+            isIntro = false;
+            form.addCommand(CANCEL_CMD);
+            form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+        }
+
+        /*
+		* The commandAction method is implemented by this midlet to
+		* satisfy the CommandListener interface and handle the Exit action.
+		*/
+        public void commandAction(Command command, Displayable screen) {
+            if (command == CANCEL_CMD) {
+                if(isIntro){
+                    SHOW_STATE = 0;
+                    addAllCommands();
+                    Display.getDisplay(midlet).setCurrent(playDisplay);
+                }else{
+                    tracerEngine.suspendResume();
+                    tracerEngine.stop();
+                    Display.getDisplay(midlet).setCurrent(prevScreen);
+                }
+            }
+        }
     }
 
     private class TaskHandler implements CommandListener {
+        private Form form;
         private TextField textField;
         private String alert = "";
         private Command okCmd = new Command("OK", Command.OK, 1);
         private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+        private Command outroCmd = new Command("Outro", Command.CANCEL, 1);
 
         /*
           * Create the first TextBox and associate
@@ -710,7 +802,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             log("now get the task!", false);
 
             //#style defaultscreen
-            Form form = new Form("");
+            form = new Form("");
             //#style formbox
             form.append(task.getChildText("name"));
             //#style formbox
@@ -744,7 +836,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 if (textField.getString() == null) {
                     alert = "No text typed";
                 } else {
-                    //<play-answertask-rsp state="hit" mediastate="open|done" answerstate="notok|ok" score="75"/>
+                    //<play-answertask-rsp state="hit" mediastate="open|done" answerstate="notok|ok" score="75" playstate="open|done"/>
                     // send the answer!!
                     log("retrieving the task: " + taskId, false);
                     JXElement req = new JXElement("play-answertask-req");
@@ -757,12 +849,20 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                         String answerState = rsp.getAttr("answerstate");
                         String mediaState = rsp.getAttr("mediastate");
                         String score = task.getChildText("score");
+                        String playState = task.getChildText("playstate");
                         if (answerState.equals("ok") && mediaState.equals("open")) {
                             log("we've got the right answer", false);
                             alert = "Right answer! You still have to sent in media though. Goodluck!";
-                        } else if (answerState.equals("ok") && mediaState.equals("done")) {
+                        } else if (answerState.equals("ok") && mediaState.equals("done") && playState.equals("open")) {
                             log("we've got the right answer", false);
                             alert = "Right answer and you already sent in media!\nYou scored " + score + " points\n";
+                        } else if (answerState.equals("ok") && mediaState.equals("done") && playState.equals("done")) {
+                            log("last task finished!!", false);
+                            alert = "Right answer and you already sent in media!\nYou scored " + score + " points\n" +
+                                    "You have now also finished the last task!!!\nThe Game is finished...";
+                            form.removeCommand(okCmd);
+                            form.removeCommand(cancelCmd);
+                            form.addCommand(outroCmd);
                         } else {
                             log("oops wrong answer", false);
                             alert = "Wrong answer! Try again...";
@@ -772,7 +872,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     }
                     showTask();
                 }
-            } else {
+            } else if(command == outroCmd) {
+                new IntroOutroHandler().showOutro();
+            } else if(command == cancelCmd) {
                 onNetStatus("Create cancel");
                 task = null;
                 taskId = -1;
@@ -787,7 +889,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private class MediumHandler implements CommandListener {
         private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
         private Command VIEW_VIDEO_CMD = new Command("View video", Command.SCREEN, 2);
-        Player player;
 
         /*
 		* Create the first TextBox and associate
@@ -797,21 +898,27 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             //#style defaultscreen
             Form form = new Form("");
             String type = medium.getChildText("type");
-            //#style formbox
+            //#style labelinfo
             form.append(medium.getChildText("name"));
 
             String desc = medium.getChildText("description");
+
+            if (desc!=null && desc.length()>0){
+                //#style formbox
+                form.append(desc);
+            }
 
             if (type.equals("image")) {
                 form.append(mediumImage);
 
             } else if (type.equals("video")) {
-                form.addCommand(VIEW_VIDEO_CMD);
-            }
-            
-            if (desc!=null && desc.length()>0){
                 //#style formbox
-                form.append(desc);
+                form.append("When you click on 'view video' the video will be " +
+                        "downloaded and played in your default media player like " +
+                        "realplayer. Afterwards close the media player and continue " +
+                        "here by pressing 'back'");
+
+                form.addCommand(VIEW_VIDEO_CMD);
             }
 
             form.addCommand(CANCEL_CMD);
@@ -825,6 +932,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		*/
         public void commandAction(Command command, Displayable screen) {
             if (command == CANCEL_CMD) {
+                if(tracerEngine.isPaused()){
+                    // we know that the video has been watched
+                    tracerEngine.start();
+                    tracerEngine.resume();
+                }
+
                 // Set the current display of the midlet to the textBox screen
                 medium = null;
                 mediumId = -1;
@@ -833,6 +946,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 Display.getDisplay(midlet).setCurrent(playDisplay);
             } else if (command == VIEW_VIDEO_CMD) {
                 try {
+                    // now first stop the tracer engine because the media download
+                    // needs the internet connection too
+                    tracerEngine.suspend();
+                    tracerEngine.stop();
                     midlet.platformRequest(mediumBaseURL + mediumId);
                 }
                 catch (Throwable t) {
@@ -844,7 +961,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     }
 
     private class AddTextHandler implements CommandListener {
-        private TextField tagsField;
+        //private TextField tagsField;
         private TextField nameField;
         private TextField textField;
         private StringItem alertField = new StringItem("", "");
@@ -860,7 +977,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             Form form = new Form("");
             
             //#style labelinfo
-            form.append("Enter Title (opt)");
+            form.append("Enter Title");
 
             //#style textbox
             nameField = new TextField("", "", 32, TextField.ANY);
@@ -873,11 +990,11 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             textField = new TextField("", "", 1024, TextField.ANY);
             form.append(textField);
 
-            //#style labelinfo
+            /*//#style labelinfo
             form.append("Enter Tags (opt)");
             //#style textbox
             tagsField = new TextField("", "", 32, TextField.ANY);
-            form.append(tagsField);
+            form.append(tagsField);*/
 
             form.append(alertField);
 
@@ -888,6 +1005,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
             Display.getDisplay(midlet).setCurrent(form);
         }
+
 
         /*
           * The commandAction method is implemented by this midlet to
@@ -900,9 +1018,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 } else {
                     String name = nameField.getString();
                     String text = textField.getString();
-                    String tags = tagsField.getString();
+                    //String tags = tagsField.getString();
                     if (name != null && name.length() > 0 && text != null && text.length() > 0) {
-                        JXElement rsp = tracerEngine.getNet().uploadMedium(name, "text", "text/plain", Util.getTime(), text.getBytes(), false, tags);
+                        JXElement rsp = tracerEngine.getNet().uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
                         if (Protocol.isPositiveResponse(rsp)) {
                             //now do an add medium
                             JXElement addMediumReq = new JXElement("play-add-medium-req");
@@ -912,7 +1030,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                             log(new String(addMediumRsp.toBytes(false)), false);                            
                         }
                     } else {
-                        alertField.setText("Type title and tags");
+                        alertField.setText("Type title and text");
                     }
                 }
             } else {

@@ -27,7 +27,8 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     private Net net;
     private Image logo;
 
-    Command PLAY_CMD = new Command(Locale.get("play.Play"), Command.SCREEN, 2);
+    Command PLAY_CMD = new Command(Locale.get("selectGame.Play"), Command.SCREEN, 2);
+    Command DESCRIPTION_CMD = new Command(Locale.get("selectGame.Description"), Command.SCREEN, 2);
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
@@ -76,6 +77,9 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
                         gamesGroup.append(displayName, null);
                         games.put(displayName, elm);
                     }
+                    // select the first on
+                    gamesGroup.setSelectedIndex(0, true);
+
                 }
             }catch(Throwable t){
                 System.out.println(t.getMessage());
@@ -86,6 +90,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             append("Select a game and press PLAY in the menu");
             append(gamesGroup);
             addCommand(PLAY_CMD);
+            addCommand(DESCRIPTION_CMD);
         }
     }
 
@@ -125,7 +130,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
         } else if (cmd == PLAY_CMD) {
             gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
             gameElm = (JXElement) games.get(gameName);
-            midlet.setGameSchedule(gameElm);
+            midlet.setGameRound(gameElm);
             midlet.setGamePlayId(Integer.parseInt(gameElm.getChildText("gameplayid")));
             // now start the game
             startGame();
@@ -135,6 +140,16 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             midlet.playDisplay = d;                        
             Display.getDisplay(midlet).setCurrent(d);
             d.start();
+        }else if (cmd == DESCRIPTION_CMD) {
+            gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
+            gameElm = (JXElement) games.get(gameName);
+            String desc = gameElm.getChildText("description");
+
+            //#style labelinfo
+            append("description");
+
+            //#style formbox
+            append(desc);
         }
     }
 

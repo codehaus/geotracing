@@ -140,7 +140,7 @@
 	<target name="init">
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/polish" />
-		<property name="deploy-url" value="http://test.walkandplay.com/wp/ota/" />
+		<property name="deploy-url" value="http://test.mlgk.nl/wp/ota/" />
 		<property name="resource.dir" value="resources" />
         <property name="source.dir" value="${basedir}/source" />
     </target>
@@ -218,7 +218,7 @@
 					//#= private static final String UPDATE_URL = "${ update-url }";
 					You can change the title of the sample application with the "title"-var.
 					-->
-					<variable name="update-url" value="http://test.walkandplay.com/update" />
+					<variable name="update-url" value="http://test.mlgk.nl/update" />
 					<variable name="title" value="MLGK" />
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
@@ -261,9 +261,9 @@
 				<jad>
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
-					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />					
+					<attribute name="kw-url" value="http://test.mlgk.nl/wp" />					
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="red2" />
+					<attribute name="kw-user" value="red1" />
 					<attribute name="kw-password" value="user" />
 					<attribute name="kw-amulet" value="mlgkamulet" />
 					<attribute name="kw-port" value="6000" />

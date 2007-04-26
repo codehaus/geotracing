@@ -30,7 +30,7 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
     private Display display;
     protected Displayable prevScreen;
     private Player player;
-    private String url = "http://test.walkandplay.com/wp/media.srv?id=26527";
+    private String url = "http://test.mlgk.nl/wp/media.srv?id=26527";
 
     private int w = -1, h = -1;
 	private Font f, fb;
