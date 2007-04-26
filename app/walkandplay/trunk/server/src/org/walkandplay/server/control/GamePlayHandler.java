@@ -166,9 +166,17 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			// Set scores if we are totally done and task result was not already done
 			if (answerState.equals(VAL_OK) && !totalState.equals(VAL_DONE)) {
 				// ALL DONE
-				finishTaskResult(oase, gamePlay, task, taskResult);
+				boolean gameDone = finishTaskResult(oase, gamePlay, task, taskResult);
 
+				// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore
+				Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+				WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), task.getIntField(SCORE_FIELD));
 				totalState = VAL_DONE;
+				if (gameDone) {
+					// playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
+					WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
+				}
+
 			} else {
 				modifier.update(taskResult);
 			}
@@ -176,6 +184,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 			rsp.setAttr(TASK_ID_FIELD, task.getId());
 			rsp.setAttr(TASK_STATE_FIELD, totalState);
+			rsp.setAttr(PLAY_STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
 		}
 		return rsp;
 	}
@@ -233,8 +242,17 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Ok, set score only if also media was done and this task was not yet completed
 		if (score > 0 && mediaState.equals(VAL_DONE) && !totalState.equals(VAL_DONE)) {
 			// ALL DONE
-			finishTaskResult(oase, gamePlay, task, taskResult);
+			boolean gameDone = finishTaskResult(oase, gamePlay, task, taskResult);
+
+			// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore
+			Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+			WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), score);
 			totalState = VAL_DONE;
+
+			if (gameDone) {
+				// playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
+				WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
+			}
 		} else {
 			// Store result
 			modifier.update(taskResult);
@@ -247,6 +265,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		rsp.setAttr(MEDIA_STATE_FIELD, mediaState);
 		rsp.setAttr(ANSWER_STATE_FIELD, answerState);
 		rsp.setAttr(SCORE_FIELD, score);
+		rsp.setAttr(PLAY_STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
 		return rsp;
 	}
 
@@ -321,7 +340,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			pointElm = (JXElement) points.elementAt(i);
 			point = PostGISUtil.createPoint(pointElm.getAttr(LON_FIELD), pointElm.getAttr(LAT_FIELD));
 			Record[] locationsHit = getLocationsHitForGame(oase, point, game.getId());
-			Record locationHit;
+			Record locationHit, round;
 			int lastTaskId = -1, lastMediumId = -1;
 
 			// Go through all locations that were hit
@@ -374,6 +393,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 						hit.setAttr(ANSWER_STATE_FIELD, taskResult.getStringField(ANSWER_STATE_FIELD));
 						hit.setAttr(MEDIA_STATE_FIELD, taskResult.getStringField(MEDIA_STATE_FIELD));
 
+						// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId
+						round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+						WPEventPublisher.taskHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId());
 						break;
 
 					case LOC_TYPE_GAME_MEDIUM:
@@ -410,7 +432,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 						hit = new JXElement(TAG_MEDIUM_HIT);
 						hit.setAttr(ID_FIELD, medium.getId());
 						hit.setAttr(STATE_FIELD, VAL_HIT);
-
+						// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aMediumId, int aMediumResultId
+						round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+						WPEventPublisher.mediumHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), lastMediumId, mediumResult.getId());
 						break;
 					default:
 						continue;
@@ -517,6 +541,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Initialize results if not present
 		initGamePlayResults(oase, gamePlay);
 
+		// playStart(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
+		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+		WPEventPublisher.playStart(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
 		return createResponse(PLAY_START_SERVICE);
 	}
 
@@ -525,7 +552,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	 */
 
 	// Initialize results if not present
-	protected void finishTaskResult(Oase anOase, Record aGamePlay, Record aTask, Record aTaskResult) throws OaseException, UtopiaException {
+	protected boolean finishTaskResult(Oase anOase, Record aGamePlay, Record aTask, Record aTaskResult) throws OaseException, UtopiaException {
 		// ALL DONE
 		int score = aTask.getIntField(SCORE_FIELD);
 
@@ -556,6 +583,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		// Always update gameplay state
 		anOase.getModifier().update(aGamePlay);
+
+		return gameDone;
 	}
 
 	// Initialize results if not present

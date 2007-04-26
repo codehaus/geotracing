@@ -2,25 +2,15 @@
 // Distributable under LGPL license. See terms of license at gnu.org.$
 package org.walkandplay.server.util;
 
-import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.pushlet.core.Dispatcher;
 import nl.justobjects.pushlet.core.Event;
+import org.geotracing.handler.CommentLogic;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
-import org.keyworx.utopia.core.data.Account;
-import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.data.Person;
-import org.keyworx.utopia.core.session.UtopiaRequest;
-import org.keyworx.utopia.core.session.UtopiaSessionContext;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.Point;
-import org.geotracing.handler.Location;
-import org.geotracing.handler.Track;
-import org.geotracing.handler.CommentLogic;
-
-import java.util.Iterator;
-import java.util.Vector;
 
 /**
  * Publishes all events to clients using Pushlet Publisher.
@@ -53,26 +43,37 @@ public class WPEventPublisher {
 	public static final String FIELD_OWNER_ID = "ownerid";
 
 	public static final String FIELD_GAMEPLAY_ID = "gameplayid";
+	public static final String FIELD_GAMEROUND_ID = "roundid";
+	public static final String FIELD_TASK_ID = "taskid";
+	public static final String FIELD_TASKRESULT_ID = "taskresultid";
+	public static final String FIELD_MEDIUM_ID = "mediumid";
+	public static final String FIELD_MEDIUMRESULT_ID = "mediumresultid";
 	public static final String FIELD_LON = "lon";
 	public static final String FIELD_LAT = "lat";
+	public static final String FIELD_SCORE = "score";
 
 	/**
 	 * Event types.
 	 */
 	public static final String EVENT_USER_HEARTBEAT = "user-hb";
+	public static final String EVENT_PLAY_START = "play-start";
+	public static final String EVENT_PLAY_FINISH = "play-finish";
 	public static final String EVENT_USER_MOVE = "user-move";
+	public static final String EVENT_TASK_DONE = "task-done";
+	public static final String EVENT_TASK_HIT = "task-hit";
+	public static final String EVENT_MEDIUM_HIT = "medium-hit";
 	public static final String EVENT_COMMENT_ADD = "comment-add";
 	public static final String EVENT_MEDIUM_ADD = "medium-add";
-	public static final String EVENT_TRACK_CREATE = "track-create";
-	public static final String EVENT_TRACK_DELETE = "track-delete";
-	public static final String EVENT_TRACK_SUSPEND = "track-suspend";
-	public static final String EVENT_TRACK_RESUME = "track-resume";
 
+
+	protected static Log log;
+	static {
+		log = Logging.getLog("eventpublisher");
+	}
 	/**
 	 * Publish comment added event.
 	 */
 	public static void commentAdd(Record aCommentRecord, Oase anOase) {
-		Log log = Logging.getLog(EVENT_COMMENT_ADD);
 		int commentId = aCommentRecord.getId();
 
 		try {
@@ -119,7 +120,6 @@ public class WPEventPublisher {
 
 				// Send pushlet event
 				multicast(event);
-				log.trace("Published: " + event);
 			}
 
 		} catch (Throwable t) {
@@ -127,12 +127,122 @@ public class WPEventPublisher {
 		}
 	}
 
+	/**
+	 * Publish user starts gameplay.
+	 */
+	public static void playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_ROUND_SUBJECT + aGameRoundId);
+			event.setField(FIELD_EVENT, EVENT_PLAY_FINISH);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish playFinish", t);
+		}
+	}
+
+ 	/**
+	 * Publish user starts gameplay.
+	 */
+	public static void playStart(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_ROUND_SUBJECT + aGameRoundId);
+			event.setField(FIELD_EVENT, EVENT_PLAY_START);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish playStart", t);
+		}
+	}
+
+	/**
+	 * Publish new user location to Pushlet framework.
+	 */
+	public static void taskDone(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_ROUND_SUBJECT + aGameRoundId);
+			event.setField(FIELD_EVENT, EVENT_TASK_DONE);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+			event.setField(FIELD_TASK_ID, aTaskId);
+			event.setField(FIELD_TASKRESULT_ID, aTaskResultId);
+			event.setField(FIELD_SCORE, aScore);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish taskDone", t);
+		}
+	}
+
+	/**
+	 * Publish task hit event to Pushlet framework.
+	 */
+	public static void mediumHit(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aMediumId, int aMediumResultId) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
+			event.setField(FIELD_EVENT, EVENT_MEDIUM_HIT);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+			event.setField(FIELD_MEDIUM_ID, aMediumId);
+			event.setField(FIELD_MEDIUMRESULT_ID, aMediumResultId);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish taskHit", t);
+		}
+	}
+
+	/**
+	 * Publish task hit event to Pushlet framework.
+	 */
+	public static void taskHit(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
+			event.setField(FIELD_EVENT, EVENT_TASK_HIT);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+			event.setField(FIELD_TASK_ID, aTaskId);
+			event.setField(FIELD_TASKRESULT_ID, aTaskResultId);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish taskHit", t);
+		}
+	}
 
 	/**
 	 * Publish new user location to Pushlet framework.
 	 */
 	public static void userMove(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, Point aPoint) {
-		Log log = Logging.getLog(EVENT_USER_MOVE);
 
 		try {
 
@@ -146,7 +256,6 @@ public class WPEventPublisher {
 			event.setField(FIELD_LAT, aPoint.y+"");
 
 			multicast(event);
-			log.info("USER MOVE: " + event);
 		} catch (Throwable t) {
 			log.warn("Cannot publish user-move", t);
 		}
@@ -156,6 +265,8 @@ public class WPEventPublisher {
 	 * Publish Event to Pushlet framework.
 	 */
 	private static void multicast(Event anEvent) {
+		log.info("EVENT: " + anEvent.getSubject() + " " + anEvent.getField(FIELD_EVENT));
+
 		// Add time attr if not present
 		if (anEvent.getField(FIELD_TIME) == null) {
 			anEvent.setField(FIELD_TIME, System.currentTimeMillis());
