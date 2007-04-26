@@ -52,6 +52,7 @@ public interface Constants {
 	public final static String ENDDATE_FIELD = "enddate";
 	public final static String POINT_FIELD = "point";
 	public final static String PLAYERS_FIELD = "players";
+	public final static String PLAY_STATE_FIELD = "playstate";
 	public final static String MEDIA_STATE_FIELD = "mediastate";
 	public final static String MEDIUMID_FIELD = "mediumid";
 	public final static String SCORE_FIELD = "score";
