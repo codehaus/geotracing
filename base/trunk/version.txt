@@ -1,5 +1,15 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
+2.0.3 - 26.apr.2007
+- both get.jsp and QueryHandler.java handle same queries
+- extensible QueryLogic class can be configured with QueryHandler
+- MobiTracer: improvements to GPS smoothing
+- MobiTracer:  improvements to Map view (e.g. show trace)
+- fixed bug in JXParser2 (keyworx) that cut off large tracks
+- upgrade to keyworx 1.0.7rc8
+- introduced LocationHandler.java to manage individual locations
+- g_location includes subtype field
+
 2.0.2 - 25.mrt.2007
 - upgrade to Keyworx 1.0.7rc7 (includes new Parser handling charsets and cdata)
 - refinements to use PostGIS Point for g_location table
