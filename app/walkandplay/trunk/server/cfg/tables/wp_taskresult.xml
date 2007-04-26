@@ -47,6 +47,12 @@
         <field name="answerstate" type="STRING" size="12"  default="open" required="true" />
 
 		<field name="extra" type="XML" />
+
+		<field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+		
+		<!-- Time of first hit -->
+        <field name="time" type="TIMESTAMP" />
 	</data>
 	<!--}data -->
 </table>

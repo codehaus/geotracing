@@ -5,12 +5,12 @@
     <property name="webappurl" host="ronaldinho.local">http://local.walkandplay.com/wp</property>
     <property name="siteurl" host="suwa">http://local.walkandplay.com</property>
     <property name="webappurl" host="suwa">http://local.walkandplay.com/wp</property>
-    <property name="siteurl" host="test">http://test.walkandplay.com</property>
-    <property name="webappurl" host="test">http://test.walkandplay.com/wp</property>
+    <property name="siteurl" host="berlin">http://test.mlgk.nl</property>
+    <property name="webappurl" host="berlin">http://test.mlgk.nl/wp</property>
     <property name="siteurl" host="prod">http://www.walkandplay.com</property>
     <property name="webappurl" host="prod">http://www.walkandplay.com/wp</property>
 
-	<property name="hit.radius">30</property>
+	<!-- not used: see Constants.java <property name="hit.radius">30</property>  -->
 
 	<config>
         <!-- Oase context file. Context id becomes portal name -->
