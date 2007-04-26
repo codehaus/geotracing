@@ -48,7 +48,9 @@ trace.Radar=Radar
 
 find.Ok=Ok
 
-play.Play=Play
+selectGame.Play=Play
+selectGame.Description=Description
+
 play.Start=Start
 play.Stop=Stop
 play.AddPhoto=Add photo
@@ -58,13 +60,15 @@ play.ZoomIn=Zoom in
 play.ZoomOut=Zoom out
 play.ToggleMap=Toggle Map
 play.Scores=Scores
-play.ShowLog=Show Log
-play.HideLog=Hide Log
-play.ShowInfo=Show Info
-play.HideInfo=Hide Info
-play.HideError=Hide Error
-play.IM=Send Message
-play.Back=Stop Game
+play.ShowLog=Show log
+play.HideLog=Hide log
+play.ShowInfo=Show info
+play.HideInfo=Hide info
+play.HideError=Hide error
+play.IM=Send message
+play.Back=Stop game
+play.ShowIntro=Show intro
+play.HideIntro=Hide intro
 
 settings.SoundOn=Sound ON
 settings.SoundOff=Sound OFF

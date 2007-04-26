@@ -8,9 +8,9 @@ MicroEdition-Configuration: ${midlet.cldc}
 MicroEdition-Profile: ${midlet.midp}
 MIDlet-Permissions: ${midlet.permissions}
 MIDlet-Permissions-Opt: ${midlet.permissions.opt}
-kw-url: http://test.walkandplay.com/wp
+kw-url: http://test.mlgk.nl/wp
 kw-timeout: 20
-kw-user: red2
+kw-user: red1
 kw-password: user
 kw-app: geoapp
 kw-role: user
