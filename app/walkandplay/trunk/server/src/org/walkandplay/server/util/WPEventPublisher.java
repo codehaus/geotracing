@@ -20,6 +20,20 @@ import org.postgis.Point;
  */
 public class WPEventPublisher {
 	/**
+	 * Event types.
+	 */
+	//public static final String EVENT_USER_HEARTBEAT = "user-hb";
+	public static final String EVENT_PLAY_START = "play-start";
+	public static final String EVENT_PLAY_FINISH = "play-finish";
+	public static final String EVENT_USER_MOVE = "user-move";
+	public static final String EVENT_TASK_DONE = "task-done";
+	public static final String EVENT_TASK_HIT = "task-hit";
+	public static final String EVENT_MEDIUM_HIT = "medium-hit";
+	public static final String EVENT_COMMENT_ADD = "comment-add";
+	public static final String EVENT_MEDIUM_ADD = "medium-add";
+	public static final String EVENT_ANSWER_SUBMIT = "answer-submit";
+
+	/**
 	 * Pushlet topic (subject)
 	 */
 	public static final String PUSHLET_SUBJECT = "/wp";
@@ -27,6 +41,7 @@ public class WPEventPublisher {
 	public static final String GAME_PLAY_SUBJECT = PUSHLET_SUBJECT + "/play/";
 	public static final String GAME_ROUND_SUBJECT = PUSHLET_SUBJECT + "/round/";
 	public static final String FIELD_EVENT = "event";
+	public static final String FIELD_ANSWER = "id";
 	public static final String FIELD_ID = "id";
 	public static final String FIELD_USER_ID = "userid";
 	public static final String FIELD_TARGET = "target";
@@ -52,24 +67,37 @@ public class WPEventPublisher {
 	public static final String FIELD_LAT = "lat";
 	public static final String FIELD_SCORE = "score";
 
-	/**
-	 * Event types.
-	 */
-	public static final String EVENT_USER_HEARTBEAT = "user-hb";
-	public static final String EVENT_PLAY_START = "play-start";
-	public static final String EVENT_PLAY_FINISH = "play-finish";
-	public static final String EVENT_USER_MOVE = "user-move";
-	public static final String EVENT_TASK_DONE = "task-done";
-	public static final String EVENT_TASK_HIT = "task-hit";
-	public static final String EVENT_MEDIUM_HIT = "medium-hit";
-	public static final String EVENT_COMMENT_ADD = "comment-add";
-	public static final String EVENT_MEDIUM_ADD = "medium-add";
 
 
 	protected static Log log;
 	static {
 		log = Logging.getLog("eventpublisher");
 	}
+
+		/**
+	 * Publish task hit event to Pushlet framework.
+	 */
+	public static void answerSubmit(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, String theAnswer) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
+			event.setField(FIELD_EVENT, EVENT_ANSWER_SUBMIT);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+			event.setField(FIELD_TASK_ID, aTaskId);
+			event.setField(FIELD_TASKRESULT_ID, aTaskResultId);
+			event.setField(FIELD_ANSWER, theAnswer);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish taskHit", t);
+		}
+	}
+
 	/**
 	 * Publish comment added event.
 	 */
