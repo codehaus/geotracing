@@ -238,18 +238,23 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Always set outcome of answer
 		taskResult.setField(ANSWER_FIELD, playerAnswer);
 		taskResult.setField(ANSWER_STATE_FIELD, answerState);
+		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+
+		// Send event: answer submit
+		WPEventPublisher.answerSubmit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), playerAnswer);
 
 		// Ok, set score only if also media was done and this task was not yet completed
 		if (score > 0 && mediaState.equals(VAL_DONE) && !totalState.equals(VAL_DONE)) {
 			// ALL DONE
 			boolean gameDone = finishTaskResult(oase, gamePlay, task, taskResult);
 
+			// Send event: task done
 			// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore
-			Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
 			WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), score);
 			totalState = VAL_DONE;
 
 			if (gameDone) {
+				// Send event: gameplay done
 				// playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
 				WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
 			}
@@ -258,6 +263,10 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			modifier.update(taskResult);
 		}
 
+		// If scored but media state not done don't return score
+		if (!mediaState.equals(VAL_DONE)) {
+			score = 0;
+		}
 
 		// Send response
 		JXElement rsp = createResponse(PLAY_ANSWERTASK_SERVICE);
@@ -313,6 +322,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	public JXElement locationReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaReq.getRequestCommand();
 		int personId = HandlerUtil.getUserId(anUtopiaReq);
+		String accountName = HandlerUtil.getAccountName(anUtopiaReq);
 
 		Oase oase = HandlerUtil.getOase(anUtopiaReq);
 		Finder finder = oase.getFinder();
@@ -322,7 +332,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// We must have a running GamePlay record
 		Record gamePlay = getRunningGamePlay(oase, personId);
 		if (gamePlay == null) {
-			throw new UtopiaException("No running GamePlay found for person=" + personId);
+			// throw new UtopiaException("No running GamePlay found for person=" + personId);
+			return createResponse(PLAY_LOCATION_SERVICE);
 		}
 
 		// Record to track
@@ -450,7 +461,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		// Send out event for last point
 		if (point != null) {
-			WPEventPublisher.userMove(personId, HandlerUtil.getAccountName(anUtopiaReq), getGameRoundForGamePlay(oase, gamePlay).getId(), gamePlay.getId(), point);
+			WPEventPublisher.userMove(personId, accountName, getGameRoundForGamePlay(oase, gamePlay).getId(), gamePlay.getId(), point);
 		}
 
 		return response;
