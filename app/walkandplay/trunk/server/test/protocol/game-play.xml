@@ -248,8 +248,10 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>item1</name>
-						<filename>/var/keyworx/webapps/walkandplay/test/media/bentejoes.jpg</filename>
+						<filename>/var/keyworx/webapps/walkandplay/wptest/media/bentejoes.jpg</filename>
 						<size>242652</size>
+						<kind>image</kind>
+						<mime>image/jpeg</mime>
 					</medium>
 				</medium-insert-req>
 			</utopia-req>
@@ -453,8 +455,10 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>waterland</name>
-						<filename>/var/keyworx/webapps/walkandplay/test/media/waterland.jpg</filename>
+						<filename>/var/keyworx/webapps/walkandplay/wptest/media/waterland.jpg</filename>
 						<size>652049</size>
+						<kind>image</kind>
+						<mime>image/jpeg</mime>
 					</medium>
 				</medium-insert-req>
 			</utopia-req>
