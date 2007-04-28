@@ -330,14 +330,22 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Relater relater = oase.getRelater();
 
 		// We must have a running GamePlay record
+		// Record to track
+		TrackLogic trackLogic = new TrackLogic(oase);
+
 		Record gamePlay = getRunningGamePlay(oase, personId);
 		if (gamePlay == null) {
 			// throw new UtopiaException("No running GamePlay found for person=" + personId);
-			return createResponse(PLAY_LOCATION_SERVICE);
+			Track track = trackLogic.getActiveTrack(personId);
+			if (track == null) {
+				return createResponse(PLAY_LOCATION_SERVICE);
+			}
+			gamePlay = getGamePlayForTrack(oase, track);
+			if (gamePlay == null) {
+				return createResponse(PLAY_LOCATION_SERVICE);								
+			}
 		}
 
-		// Record to track
-		TrackLogic trackLogic = new TrackLogic(oase);
 		Vector points = trackLogic.write(requestElement.getChildren(), personId);
 
 		// Determine if any task or medium was hit
@@ -638,6 +646,14 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	/**
 	 * ************* Data Queries ***********************
 	 */
+ 	protected Record getGamePlayForTrack(Oase anOase, Track aTrack) throws OaseException, UtopiaException {
+		try {
+			return anOase.getRelater().getRelated(aTrack.getRecord(), GAMEPLAY_TABLE, null)[0];
+		} catch (Throwable t) {
+			// log.warn("Cannot find gameplay for aTrack.id=" + aTrack.getId(), t);
+			return null;
+		}
+	}
 
 	protected Record getGameRoundForGamePlay(Oase anOase, Record aGamePlay) throws OaseException, UtopiaException {
 		try {
