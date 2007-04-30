@@ -146,10 +146,15 @@ namespace Diwi {
         }
 
         static public XMLement createFromRawXml(string rawXml) {
+            XmlElement msEl = null;
             XmlDocument msXml = new XmlDocument();
-            msXml.LoadXml(rawXml);
-            XmlElement msEl = msXml.DocumentElement;
 
+            try {
+                msXml.LoadXml(rawXml);
+                msEl = msXml.DocumentElement;
+            } catch (XmlException e) {
+                return null;
+            }
             return new XMLement(msEl);
         }
     }

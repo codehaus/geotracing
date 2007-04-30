@@ -66,6 +66,7 @@
     <Compile Include="SelectRoutePage.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Sound.cs" />
     <Compile Include="StartPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,6 +135,9 @@
     <EmbeddedResource Include="Resources\start_vert.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ploink.wav" />
   </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
   <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />

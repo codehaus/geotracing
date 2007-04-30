@@ -53,9 +53,10 @@ namespace Diwi {
                     setBackGround();
                     draw();
                 }
-                string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"), false);
+                string mapUrl = AppController.sKwxClient.getBoundsMap((float)1.0, false);
+//                string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"), false);
                 if (mapUrl != null) {
-                    new MediaDownloader(mapUrl, @"\verrMap.jpg", new CallbackHandler(mapReceivedCB));
+                    new MediaDownloader(mapUrl, @"\verMap.jpg", new CallbackHandler(mapReceivedCB));
                 }
             } else {
                 AppController.sActiveRouteMapPathVer = path;
@@ -110,7 +111,8 @@ namespace Diwi {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             mIsInitialized = true;
-            string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"), true);
+            string mapUrl = AppController.sKwxClient.getBoundsMap((float)1.0, true);
+//            string mapUrl = AppController.sKwxClient.getRouteMap(AppController.sActiveRoute.getAttributeValue("id"), true);
             if (mapUrl != null) {
                 new MediaDownloader(mapUrl, @"\horMap.jpg", new CallbackHandler(mapReceivedCB));
             }

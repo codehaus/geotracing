@@ -101,9 +101,9 @@ namespace Diwi {
             AppController.sKwxClient.stop();
             AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
             if (AppController.sKwxClient.agentKey != null) {
-                FileInfo fi = new FileInfo(@"\test.jpg");
-                if( fi.Exists ) 
-                new MediaUploader(fi.FullName, "testImage", null);
+             //   FileInfo fi = new FileInfo(@"\test.jpg");
+             //   if( fi.Exists ) 
+             //   new MediaUploader(fi.FullName, "testImage", null);
                 doTerug(0, null);
             }
         }
