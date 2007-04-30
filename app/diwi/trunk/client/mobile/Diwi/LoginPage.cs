@@ -26,7 +26,7 @@ namespace Diwi {
 
             mUserText.text = "user:";
             mPassText.text = "pass:";
-            mServerMess.text = Properties.Resources.KwxServerUrl;
+            mServerMess.text = "";
 
             addDrawable(mUserText);
             addDrawable(mPassText);

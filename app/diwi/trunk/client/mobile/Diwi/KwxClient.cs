@@ -203,21 +203,11 @@ namespace Diwi {
             string s = req.toString();
 
             req = utopiaRequest(req);
-            if (req.tag == "route-get-map-rsp") {
+            if ((req!=null) && (req.tag == "route-get-map-rsp")) {
                 return req.getAttributeValue("url");
             }
             return null;
             //  <nav-get-map-req llbLat="52.0" llbLon="5.1" urtLat="52.15" urtLon="5.11" height="320" width ="240"/>
-
-            /* <route-get-map-req 
-                height=\"240\" 
-                llbLat=\"51,9481952819824\" 
-                llbLon=\"5,58073768561535\" 
-                width=\"320\" 
-                urtLon=\"5,60779895836659\" 
-                urtLat=\"51,9661952819824\" >
-              </route-get-map-req>"
-            */
             // rawXml	"<utopia-rsp logts=\"1177937077509\"><route-get-map-nrsp errorid=\"6005\" error=\"Unexpected error\" details=\"Unexpected error in request java.lang.NumberFormatException: For input string: \"\"\"/></utopia-rsp>"	string
        
         
@@ -277,9 +267,9 @@ namespace Diwi {
             XMLement req = new XMLement();
             req.tag = Protocol.TAG_UTOPIA_REQ;
             req.addChild(anElement);
-
-            req = doRequest(req);
-
+            lock (this) {
+                req = doRequest(req);
+            }
             if ((req != null) && (req.tag == "utopia-rsp")) {
                 return req.firstChild();
             } else {

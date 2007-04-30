@@ -153,6 +153,8 @@ namespace Diwi {
                 msXml.LoadXml(rawXml);
                 msEl = msXml.DocumentElement;
             } catch (XmlException e) {
+                string str = string.Format("Caught XmlException: {0}", e.ToString());
+                AppController.sLog.WriteLine(str);
                 return null;
             }
             return new XMLement(msEl);
