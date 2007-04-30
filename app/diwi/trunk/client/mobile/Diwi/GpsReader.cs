@@ -91,7 +91,7 @@ namespace Diwi {
                 }
                 float min = (float)60.0 * (deg - (float)((int)deg));
                 float sec = (float)60.0 * (min - (float)((int)min));
-                s = ((int)deg).ToString() + "°" + ((int)min).ToString() + "'" + ((int)sec).ToString() + "''" + s;
+                s = ((int)deg).ToString() + "Â°" + ((int)min).ToString() + "'" + ((int)sec).ToString() + "''" + s;
                 return s;
             }
         }
@@ -107,7 +107,7 @@ namespace Diwi {
                 }
                 float min = (float)60.0 * (deg - (float)((int)deg));
                 float sec = (float)60.0 * (min - (float)((int)min));
-                s = ((int)deg).ToString() + "°" + ((int)min).ToString() + "'" + ((int)sec).ToString() + "''" + s;
+                s = ((int)deg).ToString() + "Â°" + ((int)min).ToString() + "'" + ((int)sec).ToString() + "''" + s;
                 return s;
             }
         }
@@ -118,7 +118,7 @@ namespace Diwi {
         }
 
         static public float km2degLon(float km) {
-            return km / (float)(Math.Cos(GpsReader.lat * 3.14159 * 0.5) * (40000.0 / 360.0));
+            return km / (float)(Math.Cos((GpsReader.lat * 1.5708)/90.0) * (40000.0 / 360.0));
         }
 
 
