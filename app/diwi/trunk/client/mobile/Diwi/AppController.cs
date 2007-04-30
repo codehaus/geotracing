@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Reflection;
 using Microsoft.WindowsMobile.Forms;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 
 namespace Diwi {
@@ -28,11 +29,11 @@ namespace Diwi {
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
+        private static Sound sPloink;
+
 
         public static void activate() {
             sLog = File.CreateText("DiwiLog.txt");
-            sKwxClient = KwxClient.instance;
-            sGpsReader = GpsReader.instance;
 
             Stream stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_horz.gif");
             backgroundHorBitmap = new Bitmap(stream);
@@ -41,6 +42,13 @@ namespace Diwi {
             stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_vert.gif");
             backgroundVerBitmap = new Bitmap(stream);
             stream.Close();
+
+            stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.ploink.wav");
+            sPloink = new Sound(stream);
+            stream.Close();
+
+            sKwxClient = KwxClient.instance;
+            sGpsReader = GpsReader.instance;
         }
 
         public static void deactivate() {
@@ -60,5 +68,12 @@ namespace Diwi {
             }
             return null;
         }
+
+
+        public static void SysBeep() {
+            sPloink.Play();
+        }
+ 
+
     }
 }

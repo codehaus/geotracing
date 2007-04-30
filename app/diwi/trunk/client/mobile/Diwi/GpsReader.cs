@@ -25,6 +25,8 @@ namespace Diwi {
         private CultureInfo mUSFormat = new CultureInfo(0x0409); // constant voor en-US domain. gebruikt in nummerformat parsing 
         private System.IO.Ports.SerialPort mSerialPort;
         private Thread mReadDataThread = null;
+        private Thread mOpenPortThread = null;
+        
         private bool mIsRunning = false;
         private string mPort;
         private string mNMEA;
@@ -38,7 +40,7 @@ namespace Diwi {
         private bool  mDemo = false;
         private bool  mHasFix = false;
         private float mBearing, mSpeed, mLat, mLon, mPrecision;
-        private int   mNumSats;
+        private int   mNumSats, mSoundCount;
 
         #region properties
 
@@ -111,6 +113,14 @@ namespace Diwi {
         }
 
 
+        static public float km2degLat(float km) {
+            return km / (float)(40000.0 / 360.0);
+        }
+
+        static public float km2degLon(float km) {
+            return km / (float)(Math.Cos(GpsReader.lat * 3.14159 * 0.5) * (40000.0 / 360.0));
+        }
+
 
 
 #endregion
@@ -140,14 +150,30 @@ namespace Diwi {
                     mCanDemo = false;
                 }
             }
-            if (mReadDataThread == null) {
+
+            if (mOpenPortThread == null) {
                 if (mSerialPort == null) {
                     mSerialPort = new System.IO.Ports.SerialPort(mPort);
                 }
+
+                try {
+                    mSerialPort.Open();
+                    mDemo = false;
+                } catch (IOException) {
+                    mDemo = true;
+                }
+
+                mOpenPortThread = new Thread(openPortThread);
+            }
+
+            if (mReadDataThread == null) {
                 mReadDataThread = new Thread(readThread);
             }
+
+
             mIsRunning = true;
             mReadDataThread.Start();
+            mOpenPortThread.Start();
         }
 
         /// <summary>
@@ -168,6 +194,11 @@ namespace Diwi {
                 mReadDataThread = null;
             }
 
+            if (mOpenPortThread != null) {
+                mOpenPortThread.Abort();
+                mOpenPortThread = null;
+            }
+
             if (nmeaDemoFile != null) {
                 nmeaDemoFile.Close();
                 nmeaDemoFile = null;
@@ -185,6 +216,24 @@ namespace Diwi {
             }
         }
 
+
+        private void openPortThread() {
+            while (mIsRunning == true) {
+                if (mDemo) {
+                    try {
+                        mSerialPort.Open();
+                        mDemo = false;
+                        if (mCanDemo && callback != null) {
+                            callback((int)sMess.M_DEMO);
+                        }
+                    } catch (IOException) {
+                        mDemo = true;
+                    }
+                }
+                Thread.Sleep(5000);
+            }
+        }
+
         /// <summary>
         /// thread sun loop reading GPS, or trying.
         /// </summary>
@@ -193,39 +242,33 @@ namespace Diwi {
             // keep trying to open serial port; when fail, send data from file if 'candemo'
             while (mIsRunning == true) {
 
-                // new attempt every 2 seconds
                 while (mIsRunning == true) {
-                    try {
-                        mSerialPort.Open();
-                        if (callback != null) {
-                            mDemo = false;
-                            if(mCanDemo)
-                                callback((int)sMess.M_DEMO);
-                        }
-                        break;
-                    } catch (IOException) {
-                        mDemo = true;
+
+                    if (mDemo) {
                         if (mCanDemo) {
-                            if (callback != null) {
-                                callback((int)sMess.M_DEMO);
-                            }
                             // read from file
-                            for (int i = 0; i < 3; i++) {
-                                string s = nmeaDemoFile.ReadLine();
+                            string s = nmeaDemoFile.ReadLine();
+                            if (s != null) {
+                                parse(s, false);
+                                s = nmeaDemoFile.ReadLine();
                                 if (s != null) {
-                                    parse(s);
-                                } else {
-                                    nmeaDemoFile.Close();
-                                    try {
-                                        nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
-                                    } catch (Exception) {
-                                        mCanDemo = false;
-                                    }
+                                    parse(s, false);
+                                }
+
+                            } else {
+                                nmeaDemoFile.Close();
+                                try {
+                                    nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
+                                } catch (Exception) {
+                                    mCanDemo = false;
                                 }
                             }
                         }
-                        Thread.Sleep(2000);
+                    } else {
+                        break;
                     }
+
+                    Thread.Sleep(1000);
                 }
 
                 while (mIsRunning == true) {
@@ -237,6 +280,10 @@ namespace Diwi {
                         // port broken, or somesuch
                         if (mSerialPort.IsOpen) {
                             mSerialPort.Close();
+                            mDemo = true;
+                            if (mCanDemo && callback != null) {
+                                callback((int)sMess.M_DEMO);
+                            }
                         }
                         // up one loop and try to open the port again
                         break;
@@ -248,7 +295,7 @@ namespace Diwi {
 
                     if (data.Length > 0) {
                         // got data from GPS
-                        parse(data);
+                        parse(data,true);
                     }
                 }
             }
@@ -260,7 +307,7 @@ namespace Diwi {
         /// parse NMEA string received.
         /// currently only RMC and GGA strings are processed
         /// </summary>
-        public bool parse(string sentence)
+        public bool parse(string sentence,bool real)
         {
             string[] words;
 
@@ -273,17 +320,17 @@ namespace Diwi {
             words = sentence.Split(',');
 
             switch (words[0]) {
-                case "$GPRMC":
-                    return ParseGPRMC(words);
+                case "$GPRMC":                  
+                    return ParseGPRMC(words,real);
                 case "$GPGGA":
-                    return ParseGPGGA(words);
+                    return ParseGPGGA(words,real);
                 default:
                     return false;
             }
         }
 
 
-        public bool ParseGPGGA(string[] words) {
+        public bool ParseGPGGA(string[] words,bool real) {
 
             if (words[7] != "") {
                 mNumSats = int.Parse(words[7]);
@@ -300,13 +347,21 @@ namespace Diwi {
             return true;
         }
 
-        public bool ParseGPRMC(string[] words) {
+        public bool ParseGPRMC(string[] words,bool real) {
 
             if (words[2] == "A")
                 setFixStatus(true);
             else {
                 setFixStatus(false);
                 return false; // geen fix; geen interessante data!
+            }
+
+            if (real) {
+                mSoundCount--;
+                if (mSoundCount <= 0) {
+                    mSoundCount = 10;
+                    AppController.SysBeep();
+                }
             }
 
             if (words[3] != "" && words[4] != "" && words[5] != "" && words[6] != "") {

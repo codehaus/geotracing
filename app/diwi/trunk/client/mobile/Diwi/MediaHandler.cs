@@ -161,12 +161,19 @@ namespace Diwi {
             reqStream.Write(boundary, 0, boundary.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
 		    // write content header
-            string t = "Content-Disposition: form-data; mime=\"image/jpeg\"; name=\"" + name + "\"; filename=\"" + fi.Name + "\"";
+            string t = "Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + fi.Name + "\"";
             inData = encoding.GetBytes(t);
             reqStream.Write(inData, 0, inData.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
 
-		// write content
+            t = "Content-Type: image/jpeg";
+            inData = encoding.GetBytes(t);
+            reqStream.Write(inData, 0, inData.Length);
+            reqStream.Write(NEWLINE, 0, NEWLINE.Length);
+
+            reqStream.Write(NEWLINE, 0, NEWLINE.Length);
+
+            // write content
 
             FileStream rdr = new FileStream(localFile, FileMode.Open);
 

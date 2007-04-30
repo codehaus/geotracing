@@ -5,6 +5,8 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
+using System.Globalization;
+
 using Diwi;
 
 namespace Diwi {
@@ -15,6 +17,8 @@ namespace Diwi {
     /// </summary>
 
     class KwxClient {
+        private CultureInfo mUSFormat = new CultureInfo(0x0409);
+
         public delegate void MessageCallback(string mess);
         public delegate void POICallback(XMLement mess, float lat, float lon);
         public event MessageCallback messageCallback;
@@ -171,6 +175,54 @@ namespace Diwi {
             return null;
         }
 
+        public string getBoundsMap(float radiusKm, bool hor) {
+
+            float urtLat, urtLon, llbLat, llbLon;
+            if (hor) {
+                urtLat = GpsReader.lat + GpsReader.km2degLat(radiusKm);
+                llbLat = GpsReader.lat - GpsReader.km2degLat(radiusKm);
+                urtLon = GpsReader.lon + GpsReader.km2degLon((float)(radiusKm * 1.5));
+                llbLon = GpsReader.lon - GpsReader.km2degLon((float)(radiusKm * 1.5));
+            } else {
+                urtLat = GpsReader.lat + GpsReader.km2degLat((float)(radiusKm * 1.5));
+                llbLat = GpsReader.lat - GpsReader.km2degLat((float)(radiusKm * 1.5));
+                urtLon = GpsReader.lon + GpsReader.km2degLon(radiusKm);
+                llbLon = GpsReader.lon - GpsReader.km2degLon(radiusKm);
+            }
+
+            XMLement req = new XMLement("route-get-map-req");
+            req.addAttribute("height", hor ? "240" : "320");
+            req.addAttribute("width", hor ? "320" : "240");
+
+            req.addAttribute("llbLat", llbLat.ToString(mUSFormat));
+            req.addAttribute("llbLon", llbLon.ToString(mUSFormat));
+            req.addAttribute("urtLat", urtLat.ToString(mUSFormat));
+            req.addAttribute("urtLon", urtLon.ToString(mUSFormat));
+
+
+            string s = req.toString();
+
+            req = utopiaRequest(req);
+            if (req.tag == "route-get-map-rsp") {
+                return req.getAttributeValue("url");
+            }
+            return null;
+            //  <nav-get-map-req llbLat="52.0" llbLon="5.1" urtLat="52.15" urtLon="5.11" height="320" width ="240"/>
+
+            /* <route-get-map-req 
+                height=\"240\" 
+                llbLat=\"51,9481952819824\" 
+                llbLon=\"5,58073768561535\" 
+                width=\"320\" 
+                urtLon=\"5,60779895836659\" 
+                urtLat=\"51,9661952819824\" >
+              </route-get-map-req>"
+            */
+            // rawXml	"<utopia-rsp logts=\"1177937077509\"><route-get-map-nrsp errorid=\"6005\" error=\"Unexpected error\" details=\"Unexpected error in request java.lang.NumberFormatException: For input string: \"\"\"/></utopia-rsp>"	string
+       
+        
+        }
+
 	/// <summary>
     /// Select application on server.
     /// </summary>
@@ -228,7 +280,7 @@ namespace Diwi {
 
             req = doRequest(req);
 
-            if (req.tag == "utopia-rsp") {
+            if ((req != null) && (req.tag == "utopia-rsp")) {
                 return req.firstChild();
             } else {
                 // add error handling!
