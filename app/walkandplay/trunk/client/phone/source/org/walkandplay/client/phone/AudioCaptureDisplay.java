@@ -37,10 +37,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
 	public AudioCaptureDisplay (WPMidlet aMidlet) {
         super(aMidlet, "");
-
-        System.out.println("prev: " + prevScreen);
         prevScreen = midlet.playDisplay;
-        System.out.println("prev: " + prevScreen);
 
         rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
 		bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
