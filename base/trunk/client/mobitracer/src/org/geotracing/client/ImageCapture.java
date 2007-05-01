@@ -183,7 +183,7 @@ public class ImageCapture extends Form implements CommandListener {
 			} else if (c == submit) {
 				deleteAll();
 				append("SENDING PHOTO...(takes a while)");
-				JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "image", photoMime, photoTime, photoData, true);
+				JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
 				if (rsp == null) {
 					append("error submitting photo !");
 				} else if (Protocol.isPositiveResponse(rsp)) {

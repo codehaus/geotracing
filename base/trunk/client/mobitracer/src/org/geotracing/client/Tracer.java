@@ -49,7 +49,7 @@ public class Tracer implements GPSFetcherListener, NetListener {
 		midlet = aMIDlet;
 		net = Net.getInstance();
 		net.setListener(this);
-		Log.log("Tracer cons");
+		// Log.log("Tracer cons");
 	}
 
 	public Net getNet() {
