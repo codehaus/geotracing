@@ -54,7 +54,8 @@ public interface Constants {
 	public final static String PLAYERS_FIELD = "players";
 	public final static String PLAY_STATE_FIELD = "playstate";
 	public final static String MEDIA_STATE_FIELD = "mediastate";
-	public final static String MEDIUMID_FIELD = "mediumid";
+	public final static String MEDIUM_ID_FIELD = "mediumid";
+	public final static String MEDIUM_RESULT_ID_FIELD = "mediumresultid";
 	public final static String SCORE_FIELD = "score";
 	public final static String ANSWER_FIELD = "answer";
 	public final static String LON_FIELD = "lon";
@@ -63,6 +64,7 @@ public interface Constants {
 	public final static String RESULT_FIELD = "result";
 	public final static String TIME_FIELD = "time";
 	public final static String TASK_ID_FIELD = "taskid";
+	public final static String TASK_RESULT_ID_FIELD = "taskresultid";
 	public final static String TASK_STATE_FIELD = "taskstate";
 
 	public final static String INVITATION_FIELD = "invitation";
