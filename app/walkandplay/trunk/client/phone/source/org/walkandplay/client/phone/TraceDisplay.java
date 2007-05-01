@@ -263,7 +263,7 @@ public class TraceDisplay extends DefaultTraceDisplay   {
 				String text = textField.getString();
 				String tags = tagsField.getString();
 				if (name != null && name.length() > 0 && text != null && text.length() > 0) {
-					tracerEngine.getNet().uploadMedium(name, "text", "text/plain", Util.getTime(), text.getBytes(), false, tags);
+					tracerEngine.getNet().uploadMedium(name, null, "text", "text/plain", Util.getTime(), text.getBytes(), false);
 				} else {
 					setStatus("Type title and tags");
 				}

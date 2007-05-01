@@ -82,10 +82,12 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Help"), null);
         //#style mainQuitCommand
         menuScreen.append(Locale.get("menu.Quit"), null);
-        /*//#ifdef polish.debugEnabled*/
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
-        /*//#endif*/
+        //#style mainLogCommand
+        menuScreen.append("test display", null);
+        //#style mainLogCommand
+        menuScreen.append("video canvas", null);
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
 
@@ -178,14 +180,18 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 Display.getDisplay(this).setCurrent(new SplashCanvas(this, -1));
                 //notifyDestroyed();
                 break;
-            /*//#ifdef polish.debugEnabled*/
             case 7:
                 // Log
-                //Display.getDisplay(this).setCurrent(new TestDisplay(this));
                 Log.view(this);
-                //Log.view(this);
                 break;
-            /*//#endif*/
+            case 8:
+                // test display
+                Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                break;
+            case 9:
+                // video canvas 1
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=26527", true));
+                break;
         }
     }
 

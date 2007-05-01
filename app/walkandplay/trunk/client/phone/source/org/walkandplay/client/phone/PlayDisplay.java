@@ -6,6 +6,9 @@ import de.enough.polish.ui.Form;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.TextField;
+import javax.microedition.media.Manager;
+import javax.microedition.media.Player;
+import javax.microedition.media.control.VideoControl;
 
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
@@ -948,9 +951,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 try {
                     // now first stop the tracer engine because the media download
                     // needs the internet connection too
-                    tracerEngine.suspend();
+                    /*tracerEngine.suspend();
                     tracerEngine.stop();
-                    midlet.platformRequest(mediumBaseURL + mediumId);
+                    midlet.platformRequest(mediumBaseURL + mediumId);*/
+                    Display.getDisplay(midlet).setCurrent(new VideoDisplay(midlet, mediumBaseURL + mediumId, false));
                 }
                 catch (Throwable t) {
                     log("Exception launching the video:" + t.getMessage(), true);

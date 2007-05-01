@@ -49,14 +49,14 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
         addCommand(START_CMD);
         addCommand(STOP_CMD);
 
-        //#style formbox
+        /*//#style formbox
         append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
-        append(new ClockItem(""));
+        append(new ClockItem(""));*/
 
-        //#style labelinfo
+        /*//#style labelinfo
         append("labelinfo");
         //#style textbox
-        append(new TextField("", "", 32, TextField.ANY));
+        append(new TextField("", "", 32, TextField.ANY));*/
 
         /*StringItem si = new StringItem("", url, Item.HYPERLINK);
         si.setDefaultCommand(VIEW_CMD);
@@ -67,6 +67,12 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
             midlet.platformRequest(url);
         }catch(Throwable t){
             show(t.getMessage());
+        }*/
+
+        /*try{
+            play(url);
+        }catch(Throwable t){
+            show(t.getMessage());            
         }*/
 
         /*try{
