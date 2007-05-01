@@ -120,7 +120,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
                 JXElement addMediumRsp = Net.getInstance().utopiaReq(addMediumReq);
                 Log.log(new String(addMediumRsp.toBytes(false)));
                 if(Protocol.isPositiveResponse(addMediumRsp)){
-                    append("submit audio OK, press Back");                    
+                    append("submit audio OK, press Back");                          
                 }else{
                     append("add medium failed:" + addMediumRsp.toBytes(false));
                 }
