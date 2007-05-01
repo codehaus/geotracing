@@ -109,7 +109,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
             append("", "SUBMITTING AUDIO... (takes a while)");
 
-			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), "audio", MIME, startTime, audioData, false);
+			JXElement rsp = Net.getInstance().uploadMedium(name.getString(), null, "audio", MIME, startTime, audioData, false);
 			if (rsp == null) {
                 append("cannot submit audio!");
 			} else if (Protocol.isPositiveResponse(rsp)) {
