@@ -480,7 +480,7 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<play-add-medium-rsp locationid="${locationid2}" taskstate="done" playstate="done"/>
+				<play-add-medium-rsp locationid="${locationid2}" taskstate="done" playstate="running"/>
 			</utopia-rsp>
 		</expect>
 	</test>
@@ -587,7 +587,7 @@
 		<send id="client1">
 			<utopia-req>
 				<play-location-req>
-					<pt lon="4.936079978942871" lat="52.37761645879678"/>
+					<pt lon="4.936079978942871" lat="52.37761645879678"  label="fotootje"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -812,7 +812,7 @@
 		<send id="client1">
 			<utopia-req>
 				<play-location-req>
-					<pt lon="4.937710762023926" lat="52.37421060424173"/>
+					<pt lon="4.937710762023926" lat="52.37421060424173" label="text poi"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -1084,7 +1084,7 @@
 		<send id="client1">
 			<utopia-req>
 				<play-location-req>
-					<pt lon="4.9291276931762695" lat="52.375625375719025"/>
+					<pt lon="4.9291276931762695" lat="52.375625375719025" label="veemkade"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -1288,18 +1288,88 @@
 		</expect>
 	</test>
 
-	<test id="play-location-req2">
+	<test id="play-location-req2-hit-task3">
 		<send id="client1">
 			<utopia-req>
 				<play-location-req>
-					<pt lon="4.922347068786621" lat="52.376044558564104"/>
+					<pt lon="4.9223470687866" lat="52.37604455856" label="voor zwijger"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<play-location-rsp/>
+				<play-location-rsp>
+					<task-hit id="${taskhitid3}" state="hit" answerstate="open" mediastate="open"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-answer-task-3-right">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid3}" answer="zwijger"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="hit" mediastate="open" answerstate="ok" score="0" playstate="running"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-task32">
+			<send id="client1">
+				<utopia-req>
+					<play-location-req>
+						<pt lon="4.92234706878" lat="52.376044558" label="voor zwijger"/>
+					</play-location-req>
+				</utopia-req>
+			</send>
+
+			<expect id="client1">
+				<utopia-rsp>
+					<play-location-rsp>
+						<task-hit id="${taskhitid3}" state="hit" answerstate="ok" mediastate="open"/>
+					</play-location-rsp>
+				</utopia-rsp>
+			</expect>
+		</test>
+
+	<test id="medium-insert-req-3">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>zwijger</name>
+						<filename>/var/keyworx/webapps/walkandplay/wptest/media/zwijger-old.jpg</filename>
+						<size>68323</size>
+						<kind>image</kind>
+						<mime>image/jpeg</mime>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-add-medium-task-3">
+		<send id="client1">
+			<utopia-req>
+				<play-add-medium-req id="${mediumid3}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-add-medium-rsp locationid="${locationid3}" taskstate="done" playstate="done"/>
 			</utopia-rsp>
 		</expect>
 	</test>

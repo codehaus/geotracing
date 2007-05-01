@@ -155,6 +155,30 @@ public class WPEventPublisher {
 		}
 	}
 
+
+	/**
+	 * Publish task hit event to Pushlet framework.
+	 */
+	public static void mediumHit(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aMediumId, int aMediumResultId) {
+
+		try {
+
+			// Pushlet subject (topic) is e.g. "/location/piet"
+			Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
+			event.setField(FIELD_EVENT, EVENT_MEDIUM_HIT);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+			event.setField(FIELD_MEDIUM_ID, aMediumId);
+			event.setField(FIELD_MEDIUMRESULT_ID, aMediumResultId);
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish taskHit", t);
+		}
+	}
+
 	/**
 	 * Publish user starts gameplay.
 	 */
@@ -221,28 +245,6 @@ public class WPEventPublisher {
 		}
 	}
 
-	/**
-	 * Publish task hit event to Pushlet framework.
-	 */
-	public static void mediumHit(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aMediumId, int aMediumResultId) {
-
-		try {
-
-			// Pushlet subject (topic) is e.g. "/location/piet"
-			Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
-			event.setField(FIELD_EVENT, EVENT_MEDIUM_HIT);
-			event.setField(FIELD_USER_ID, aUserId);
-			event.setField(FIELD_USER_NAME, aUserName);
-			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
-			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
-			event.setField(FIELD_MEDIUM_ID, aMediumId);
-			event.setField(FIELD_MEDIUMRESULT_ID, aMediumResultId);
-
-			multicast(event);
-		} catch (Throwable t) {
-			log.warn("Cannot publish taskHit", t);
-		}
-	}
 
 	/**
 	 * Publish task hit event to Pushlet framework.
@@ -279,6 +281,7 @@ public class WPEventPublisher {
 			event.setField(FIELD_EVENT, EVENT_USER_MOVE);
 			event.setField(FIELD_USER_ID, aUserId);
 			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
 			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
 			event.setField(FIELD_LON, aPoint.x+"");
 			event.setField(FIELD_LAT, aPoint.y+"");

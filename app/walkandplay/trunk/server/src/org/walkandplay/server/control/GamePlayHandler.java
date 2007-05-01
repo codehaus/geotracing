@@ -35,7 +35,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	public final static String PLAY_LOCATION_SERVICE = "play-location";
 	public final static String PLAY_ANSWERTASK_SERVICE = "play-answertask";
 	public final static String PLAY_ADD_MEDIUM_SERVICE = "play-add-medium";
-	public final static String PLAY_GET_TEAM_RESULT_SERVICE = "play-get-gameplay";
+	public final static String PLAY_GET_GAMEPLAY_SERVICE = "play-get-gameplay";
 	public final static String PLAY_HEARTBEAT_SERVICE = "play-hb";
 
 	private Log log = Logging.getLog("GamePlayHandler");
@@ -69,8 +69,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 				response = answerTaskReq(anUtopiaReq);
 			} else if (service.equals(PLAY_ADD_MEDIUM_SERVICE)) {
 				response = addMediumReq(anUtopiaReq);
-			} else if (service.equals(PLAY_GET_TEAM_RESULT_SERVICE)) {
-				response = getTeamResultReq(anUtopiaReq);
+			} else if (service.equals(PLAY_GET_GAMEPLAY_SERVICE)) {
+				response = getGamePlayReq(anUtopiaReq);
 			} else if (service.equals(PLAY_HEARTBEAT_SERVICE)) {
 				response = heartbeatReq(anUtopiaReq);
 			} else {
@@ -279,7 +279,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	}
 
 
-	public JXElement getTeamResultReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
+	public JXElement getGamePlayReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 /*
         <get-team-result-req id="[gameplayid]"  />
 
@@ -299,7 +299,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		JXElement gamePlayElm = getResultForTeam(HandlerUtil.getOase(anUtopiaReq), HandlerUtil.getAccountName(anUtopiaReq), gamePlayId);
 
-		JXElement rsp = createResponse(PLAY_GET_TEAM_RESULT_SERVICE);
+		JXElement rsp = createResponse(PLAY_GET_GAMEPLAY_SERVICE);
 		rsp.addChild(gamePlayElm);
 		return rsp;
 	}
@@ -335,15 +335,16 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		Record gamePlay = getRunningGamePlay(oase, personId);
 		if (gamePlay == null) {
+			return createResponse(PLAY_LOCATION_SERVICE);
 			// throw new UtopiaException("No running GamePlay found for person=" + personId);
-			Track track = trackLogic.getActiveTrack(personId);
+			/* Track track = trackLogic.getActiveTrack(personId);
 			if (track == null) {
 				return createResponse(PLAY_LOCATION_SERVICE);
 			}
 			gamePlay = getGamePlayForTrack(oase, track);
 			if (gamePlay == null) {
 				return createResponse(PLAY_LOCATION_SERVICE);								
-			}
+			}  */
 		}
 
 		Vector points = trackLogic.write(requestElement.getChildren(), personId);
@@ -588,8 +589,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Record[] taskResults = getTaskResultsForGamePlay(anOase, aGamePlay);
 
 		// Assume all done until we find a task-result not yet completed
-		boolean gameDone=true;
-		for (int i=0; i < taskResults.length; i++) {
+		boolean gameDone = true;
+		for (int i = 0; i < taskResults.length; i++) {
 			if (!taskResults[i].getStringField(STATE_FIELD).equals(VAL_DONE)) {
 				gameDone = false;
 				break;
@@ -646,7 +647,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	/**
 	 * ************* Data Queries ***********************
 	 */
- 	protected Record getGamePlayForTrack(Oase anOase, Track aTrack) throws OaseException, UtopiaException {
+	protected Record getGamePlayForTrack(Oase anOase, Track aTrack) throws OaseException, UtopiaException {
 		try {
 			return anOase.getRelater().getRelated(aTrack.getRecord(), GAMEPLAY_TABLE, null)[0];
 		} catch (Throwable t) {
@@ -684,9 +685,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			// Get all result records
 			Record[] results = relater.getRelated(gamePlay, null, null);
 			Record nextResult;
-			for (int i=0; i < results.length; i++) {
+			for (int i = 0; i < results.length; i++) {
 				nextResult = results[i];
-				JXElement resultElm=null;
+				JXElement resultElm = null;
 
 				// Determine result type from tablename and create element
 				// for each result
@@ -694,7 +695,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 				if (tableName.equals(TASKRESULT_TABLE)) {
 					// Add task result element
 					resultElm = new JXElement(TAG_TASK_RESULT);
-					resultElm.setAttr(TASK_ID_FIELD, nextResult.getId());
+					resultElm.setAttr(TASK_RESULT_ID_FIELD, nextResult.getId());
 					resultElm.setAttr(TIME_FIELD, nextResult.getLongField(TIME_FIELD));
 					resultElm.setAttr(STATE_FIELD, nextResult.getStringField(STATE_FIELD));
 					resultElm.setAttr(ANSWER_STATE_FIELD, nextResult.getStringField(ANSWER_STATE_FIELD));
@@ -706,19 +707,25 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 					if (nextResult.getStringField(MEDIA_STATE_FIELD).equals(VAL_DONE)) {
 						Record media[] = relater.getRelated(nextResult, MEDIUM_TABLE, null);
 						if (media.length > 0) {
-							resultElm.setAttr(MEDIUMID_FIELD, media[0].getId());
+							resultElm.setAttr(MEDIUM_ID_FIELD, media[0].getId());
 						} else {
 							log.warn("Wrong number of media: (" + media.length + ") related to taskresult id=" + nextResult.getId());
 						}
 					}
+
+					Record taskAndLocactionId = getTaskAndLocationIdForTaskResult(anOase, nextResult.getId());
+					resultElm.setAttr(TASK_ID_FIELD, taskAndLocactionId.getIntField(TASK_ID_FIELD));
+					resultElm.setAttr(LOCATION_ID_FIELD, taskAndLocactionId.getIntField(LOCATION_ID_FIELD));
 				} else if (tableName.equals(MEDIUMRESULT_TABLE)) {
 					// Add medium result element
 					resultElm = new JXElement(TAG_MEDIUM_RESULT);
-					resultElm.setAttr(MEDIUMID_FIELD, nextResult.getId());
+					resultElm.setAttr(MEDIUM_RESULT_ID_FIELD, nextResult.getId());
 					resultElm.setAttr(STATE_FIELD, nextResult.getStringField(STATE_FIELD));
 					resultElm.setAttr(TIME_FIELD, nextResult.getLongField(TIME_FIELD));
+					Record mediumAndLocactionId = getMediumAndLocationIdForMediumResult(anOase, nextResult.getId());
+					resultElm.setAttr(MEDIUM_ID_FIELD, mediumAndLocactionId.getIntField(MEDIUM_ID_FIELD));
+					resultElm.setAttr(LOCATION_ID_FIELD, mediumAndLocactionId.getIntField(LOCATION_ID_FIELD));
 				}
-
 
 				// Add to total result
 				if (resultElm != null) {
@@ -833,6 +840,20 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		}
 	}
 
+	protected Record getMediumAndLocationIdForMediumResult(Oase anOase, int aMediumResultId) throws OaseException, UtopiaException {
+		try {
+			String tables = "g_location,base_medium,wp_mediumresult";
+			String fields = "g_location.id AS locationid,base_medium.id AS mediumid";
+			String where = "wp_mediumresult.id = " + aMediumResultId;
+			String relations = "wp_mediumresult,base_medium;g_location,base_medium";
+			String postCond = null;
+			return QueryLogic.queryStore(anOase, tables, fields, where, relations, postCond)[0];
+		} catch (Throwable t) {
+			log.warn("Error query getMediumAndLocationIdForMediumResult aMediumResultId=" + aMediumResultId, t);
+			throw new UtopiaException("Error in getMediumAndLocationIdForMediumResult aMediumResultId=" + aMediumResultId, t);
+		}
+	}
+
 	protected Record getMediumResultForMedium(Oase anOase, int aMediumId, int aGamePlayId) throws UtopiaException {
 		Record result = null;
 		try {
@@ -861,7 +882,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			String tables = "g_location,wp_game,wp_task";
 			String fields = "wp_task.id";
 			String where = distanceClause + " < " + HIT_RADIUS_METERS + " AND wp_game.id = " + aGameId + " AND g_location.type = " + LOC_TYPE_GAME_TASK;
-			;
+
 			String relations = "g_location,wp_game;g_location,wp_task";
 			String postCond = null;
 			Record[] tasksHit = QueryLogic.queryStore(anOase, tables, fields, where, relations, postCond);
@@ -895,6 +916,20 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		} catch (Throwable t) {
 			log.warn("Error query getTasksForGame gamePlayId=" + aGameId, t);
 			throw new UtopiaException("Error in getTasksForGame aGamePlayId=" + aGameId, t);
+		}
+	}
+
+	protected Record getTaskAndLocationIdForTaskResult(Oase anOase, int aTaskResultId) throws OaseException, UtopiaException {
+		try {
+			String tables = "g_location,wp_task,wp_taskresult";
+			String fields = "g_location.id AS locationid,wp_task.id AS taskid";
+			String where = "wp_taskresult.id = " + aTaskResultId;
+			String relations = "wp_taskresult,wp_task;g_location,wp_task";
+			String postCond = null;
+			return QueryLogic.queryStore(anOase, tables, fields, where, relations, postCond)[0];
+		} catch (Throwable t) {
+			log.warn("Error query getTaskAndLocationIdForTaskResult aTaskResultId=" + aTaskResultId, t);
+			throw new UtopiaException("Error in getTaskAndLocationIdForTaskResult aTaskResultId=" + aTaskResultId, t);
 		}
 	}
 

@@ -22,8 +22,6 @@ import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
 
 import java.util.HashMap;
-import java.io.File;
-import java.sql.Timestamp;
 
 /**
  * Manage Game content.
@@ -199,7 +197,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		HandlerUtil.throwOnMissingChildElement(taskElm, DESCRIPTION_FIELD);
 		HandlerUtil.throwOnMissingChildElement(taskElm, SCORE_FIELD);
 		HandlerUtil.throwOnMissingChildElement(taskElm, ANSWER_FIELD);
-		HandlerUtil.throwOnMissingChildElement(taskElm, MEDIUMID_FIELD);
+		HandlerUtil.throwOnMissingChildElement(taskElm, MEDIUM_ID_FIELD);
 		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LON);
 		HandlerUtil.throwOnMissingChildElement(taskElm, Location.FIELD_LAT);
 
@@ -221,7 +219,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 		location.setPoint(Double.parseDouble(lon), Double.parseDouble(lat), 0.0D, time);
 		location.saveInsert();
 
-		int mediumId = Integer.parseInt(taskElm.getChildText(MEDIUMID_FIELD));
+		int mediumId = Integer.parseInt(taskElm.getChildText(MEDIUM_ID_FIELD));
 		Record mediumRecord = oase.getFinder().read(mediumId, MEDIUM_TABLE);
 
 		// Create relations
