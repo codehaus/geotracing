@@ -10,8 +10,8 @@ MIDlet-Permissions: ${midlet.permissions}
 MIDlet-Permissions-Opt: ${midlet.permissions.opt}
 kw-url: http://www.geotracing.com/gt
 kw-timeout: 20
-kw-user: please_fill_in
-kw-password: please_fill_in
+kw-user: please_supply
+kw-password: please_supply
 kw-app: geoapp
 kw-role: user
 audio-rate: 8000

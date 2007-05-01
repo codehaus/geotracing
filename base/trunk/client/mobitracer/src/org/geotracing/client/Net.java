@@ -233,11 +233,7 @@ public class Net {
 		}
 	}
 
-	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
-		return uploadMedium(aName, aType, aMime, aTime, theData, encode, null);
-	}
-
-	/* public JXElement uploadMediumOld(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
+	/* public JXElement addMediumOld(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
 
 		// get the current image bytes
 		// byte[] imageBytes = getImgFromRecStore(aKey);
@@ -274,7 +270,7 @@ public class Net {
 		return utopiaReq(uploadReq);
 	}  */
 
-	public JXElement uploadMedium(String aName, String aType, String aMime, long aTime, byte[] theData, boolean encode, String theTags) {
+	public JXElement addMedium(String aName, String aType, String aMime, long aTime, byte[] theData, String theTags) {
 		HTTPUploader uploader = new HTTPUploader();
 		JXElement rsp = null;
 		try {
@@ -285,7 +281,7 @@ public class Net {
 
 			uploader.writeField("agentkey", agentKey);
 			uploader.writeField("name", aName);
-			uploader.writeFile(aName, aMime, "mt-upload", theData);
+			uploader.writeFile(aName, aMime, "mobitracer-upload", theData);
 
 			rsp = uploader.getResponse();
 			if (Protocol.isNegativeResponse(rsp)) {
@@ -322,12 +318,12 @@ public class Net {
 			uploader.writeField("agentkey", agentKey);
 			uploader.writeField("name", aName);
 			uploader.writeField("description", aDescription);
-			uploader.writeFile(aName, aMime, "mt-upload", theData);
+			uploader.writeFile(aName, aMime, "mobit-upload", theData);
 
 			rsp = uploader.getResponse();
 
         } catch (Throwable t) {
-			Log.log("Upload err: " + t);
+			Log.log("Upload error: " + t);
 		}
 		return rsp;
 	}

@@ -377,8 +377,17 @@ public class RadarScreen extends GameCanvas {
 						g.setFont(fb);
 						int distance = Integer.parseInt(nearestObject.getChildText("distance"));
 						int id = Integer.parseInt(nearestObject.getChildText("id"));
-						String hint = nearestObject.getChildText("user") + "/" + nearestObject.getChildText("type") + "/" + distance + "m/#" + id;
+						String hint = nearestObject.getChildText("user") + "/" + nearestObject.getChildText("type") + "/" + distance + "m/";
+						String name = nearestObject.getChildText("name");
+						if (name == null || name.length() == 0) {
+							name = "unnamed";
+						}
 
+						int nameLength = name.length();
+						if (nameLength > 8) {
+							name = name.substring(0,4) + ".." + name.substring(nameLength-2, nameLength);
+						}
+						hint += name;
 						// Did we bump on the nearest object ?
 						if (distance < MIN_HIT_DIST) {
 							msg += " <<HIT>>";
@@ -456,7 +465,7 @@ public class RadarScreen extends GameCanvas {
 				return;
 			}
 
-			log("fetching GPS location...");
+			log("fetching GPS loc...");
 			setState(STATE_DETECTING);
 			if (!cheating) {
 				GPSLocation myNewLocation = GPSFetcher.getInstance().getCurrentLocation();

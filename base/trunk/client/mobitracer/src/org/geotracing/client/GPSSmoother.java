@@ -80,7 +80,7 @@ public class GPSSmoother {
 		// discard the first
 		if (lastLocation == null || (aLocation.time - lastLocation.time > RESTART_THRESHOLD_MILLIS)) {
 			// Start discarding upto START_MAX_DISCARD_COUNT samples
-			Log.log("GPSSmoother: start discard");
+			// Log.log("GPSSmoother: start discard");
 			startDiscards = 0;
 		}
 

@@ -143,7 +143,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 				g.drawString("No location (yet)", 10, 10, Graphics.TOP | Graphics.LEFT);
 			}
 		} catch (IOException ioe) {
-			g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
+			g.drawString("cannot get mapimage", 10, 10, Graphics.TOP | Graphics.LEFT);
 			g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
 		} catch (Throwable t) {
 			g.drawString("ERROR", 10, 10, Graphics.TOP | Graphics.LEFT);
