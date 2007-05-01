@@ -18,6 +18,14 @@ Panes.prototype.dispose = function()
 		if (pane) pane.dispose();
 	}
 }
+Panes.prototype.hide = function()
+{
+	for (var i=0; i<arguments.length; i++)
+	{
+		var pane = this[arguments[i]];
+		if (pane) pane.hide(1);
+	}
+}
 
 function Pane(id,x,y,w,h,hide_delay,keep_visible,parent)
 {
@@ -61,8 +69,8 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent)
 	//content
 	var content = document.createElement('div');
 		content.className = 'content';
-		content.style.width = this.w +12 +"px";
-		content.style.height = this.h +16 +"px";
+		content.style.width = this.w +9 +"px";
+		content.style.height = this.h +12 +"px";
 		if (browser.cssfilter) content.style.filter = 'Alpha(opacity=100)'; //IE display bug
 	pane.appendChild(content);
 	pane.style.visibility = 'visible';
@@ -101,15 +109,18 @@ Pane.prototype.setSize = function(w,h)
 	var elms = this.div.childNodes;
 	
 	elms[1].style.width = this.w +'px';
+	elms[2].style.left = this.w+16 +'px';
 	elms[3].style.height = this.h +'px';
 	elms[4].style.width = this.w +'px'; elms[4].style.height = this.h +'px'; 
-	elms[5].style.height = this.h +'px';
-	elms[7].style.width = this.w +'px';
+	elms[5].style.height = this.h +'px'; elms[5].style.left = this.w+16 +'px';
+	elms[6].style.top = this.h+16 +'px';
+	elms[7].style.width = this.w +'px'; elms[7].style.top = this.h+16 +'px';
+	elms[8].style.left = this.w+16 +'px'; elms[8].style.top = this.h+16 +'px';
 	
-	this.div.style.width = (this.w+12+16) +"px";
-	this.div.style.height = (this.h+12+16) +"px";
-	this.content.style.width = this.w+4 +"px";
-	this.content.style.height = this.h+6 +"px";
+	this.div.style.width = (this.w+16+16) +'px';
+	this.div.style.height = (this.h+16+16) +'px';
+	this.content.style.width = this.w +9 +'px';
+	this.content.style.height = this.h +12 +'px';
 }
 
 Pane.prototype.show = function()

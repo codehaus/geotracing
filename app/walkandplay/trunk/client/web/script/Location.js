@@ -2,31 +2,61 @@
 /* thnx for reading this code */
 
 
-//game locations
+//map locations
+
+wp_location_expanded = false;
 
 /* locations collection */
 
 function wpLocations(name)
 {
-	this.location = new Object();
-	this.name = name;
-	this.length = 0;
+	var array = new idArray('location');
+	
+	//extend obj
+	array.update = function()
+	{
+		for (id in this.location) this.location[id].update();
+	}
+	array.center = function()
+	{
+		var ave_lat = 0;
+		var ave_lon = 0;
+		for (id in this.location)
+		{
+			var p = this.location[id].geo
+			ave_lat += Number(p.lat());
+			ave_lon += Number(p.lng());
+		}
+		ave_lat = ave_lat/this.length;
+		ave_lon = ave_lon/this.length;
+		
+		gmap.panTo( new GLatLng(ave_lat,ave_lon) );
+	}
+	
+	return array;
 }
-wpLocations.prototype.push = function(obj)
-{
-	this.location[obj.id] = obj;
-	this.length++;
-}
-wpLocations.prototype.del = function(id)
-{
-	this.location[id].dispose();
-	delete this.location[id];
-	this.lenght--;
-}
-wpLocations.prototype.update = function()
-{
-	for (id in this.location) this.location[id].update();
-}
+
+// function wpLocations(name)
+// {
+// 	this.location = new Object();
+// 	this.name = name;
+// 	this.length = 0;
+// }
+// wpLocations.prototype.push = function(obj)
+// {
+// 	this.location[obj.id] = obj;
+// 	this.length++;
+// }
+// wpLocations.prototype.del = function(id)
+// {
+// 	this.location[id].dispose();
+// 	delete this.location[id];
+// 	this.lenght--;
+// }
+// wpLocations.prototype.update = function()
+// {
+// 	for (id in this.location) this.location[id].update();
+// }
 
 /* location object */
 
@@ -35,13 +65,16 @@ function wpLocation(collection,id,p,type,state,name)
 	this.collection = collection;
 	this.id = id;
 	this.geo = p;
-	this.type = type; //->use these!
-	this.state = state;
+	this.type = type;
+	this.state = state || 'disabled';
+	this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
 	this.name = name;
-	
 	this.scale = .5;
-	this.w = this.scale * 40;
-	this.h = this.scale * 68;
+	this.maxw = 40;
+	this.maxh = 68;
+	
+	this.w = this.scale * this.maxw;
+	this.h = this.scale * this.maxh;
 	
 	//create marker
 	var location = document.createElement('IMG');
@@ -50,11 +83,11 @@ function wpLocation(collection,id,p,type,state,name)
 		location.style.height = this.h +'px';
 		location.style.zIndex = this.z = parseInt(this.geo.lat()  * -100000);
 		//location.style.border = '1px dotted lime';
-		if (browser.pngsupport) location.src = 'media/icon_location+.png';
+		if (browser.properpngsupport) location.src = 'media/'+this.icon;
 		else
 		{
 			location.src = 'media/blank.gif';
-			location.style.filter = PNGbgImage('icon_location+.png').substr(7);
+			location.style.filter = PNGbgImage(this.icon).substr(7);
 		}
 		
 	//add type icon ..?
@@ -68,12 +101,18 @@ function wpLocation(collection,id,p,type,state,name)
 	{
 		if (infopane)
 		{
-			infopane.setPosition(obj.x+14,obj.y-52);
-			infopane.content.innerHTML = obj.name+' ('+obj.type.substring(0,1)+'='+obj.id+')';
-			if (obj.collection.name=='game' && wp_game_edit)
-			{
-				infopane.content.innerHTML+= '<br><a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')">del</a>';
-			}
+			var str = '';
+				str+= '"<b>'+obj.name+'</b>"<br>'; // ('+obj.type.substring(0,1)+'='+obj.id+')<br>';
+				if (obj.state=='enabled') str+= '<a href="javascript://view" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
+				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
+				//delete button
+				//if (obj.collection.name=='game' && wp_mode=='create')
+				if (wp_mode=='create')
+				{
+					str+= ' <a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')" class="red">delete</a>';
+				}
+			infopane.content.innerHTML = str;
+			infopane.setPosition(obj.x+14,obj.y-48);
 			infopane.show();
 		}
 	}
@@ -96,7 +135,7 @@ function wpLocation(collection,id,p,type,state,name)
 		shadow.style.height = (this.scale*40) +'px';
 		shadow.style.zIndex = this.z;
 		//shadow.style.border = '1px dotted red';
-		if (browser.pngsupport) shadow.src = 'media/icon_location_shadow.png';
+		if (browser.properpngsupport) shadow.src = 'media/icon_location_shadow.png';
 		else
 		{
 			shadow.src = 'media/blank.gif';
@@ -143,12 +182,12 @@ wpLocation.prototype.update = function()
 //	tmp_debug(2,'scaling, zoom=',z,', s=',s); //Math.round(10* Math.pow(3,(z/10))));
 	
 	
-	this.w = this.scale * 40;
-	this.h = this.scale * 68;
+	this.w = this.scale * this.maxw;
+	this.h = this.scale * this.maxh;
 	
 	//position
 	var px = gmap.fromLatLngToDivPixel(this.geo);
-	this.x = px.x - this.w/2 - 5;
+	this.x = px.x - this.w/1.4;
 	this.y = px.y - this.h;
 	
 	//apply to elm
@@ -164,27 +203,155 @@ wpLocation.prototype.update = function()
 
 }
 
+wpLocation.prototype.enable = function(enable)
+{
+	this.state = (enable)? 'enabled':'disabled';
+	//update icon src
+	this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
+	this.changeIcon(this.icon);
+}
+
+wpLocation.prototype.zoomTo = function()
+{
+	if (this.collection.info) this.collection.info.hide(1);
+	gmap.setCenter(this.geo,17);
+}
 
 wpLocation.prototype.expand = function()
 {
+	if (this.state!='enabled')
+	{
+		alert(this.type+' not hit yet!');
+		return;
+	}
 	
+	if (this.collection.info) this.collection.info.hide(1);
+	if (wp_location_expanded) wp_location_expanded.collapse();
+	
+	wp_location_expanded = this;
+	this.expanded = true;
+	this.changeIcon('icon_location_r.png');
+	
+	panes['display'].show();
+
+	//get location info
+	var obj = this;
+	SRV.get('q-'+this.type,function(resp) { obj.updateDetails(resp) },'id',this.id);
+
+	tmp_debug(2,'expand ',this.id);
+}
+
+wpLocation.prototype.updateDetails = function(resp)
+{
+	var record = resp[0];
+	
+	this.mediumid = (this.type=='medium')? this.id:record.getField('mediumid');
+	this.desc = record.getField('description');
+
+	if (this.type=='medium')
+	{
+		this.mediumtype = record.getField('type');
+		var title = this.mediumtype;
+	}
+	else
+	{
+		this.mediumtype = record.getField('mediumtype');
+		var title = 'task';
+	}
+	
+
+	var str = '';
+		str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
+		str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
+		str+= '<div id="medium_display" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
+		
+		switch (this.mediumtype)
+		{
+			case 'text':
+				str+= DH.getURL('/wp/media.srv?id='+this.mediumid);
+				break;
+			
+			case 'image':
+				str+= '<img src="/wp/media.srv?id='+this.mediumid+'&resize=225x169">';
+				break;
+			
+			case 'video':
+			case 'audio':
+				str+= '<embed src="/wp/media.srv?id='+this.mediumid+'" style="width:225px;"></embed>';
+				
+// 				//QuickTime embed
+// 				str+= '<OBJECT id="promoqt" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="536" HEIGHT="230" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
+// 				str+= '<PARAM name="SRC" VALUE="/download/promo/'+promo+'.mp4">';
+// 				str+= '<PARAM name="CONTROLLER" VALUE="false">';
+// 				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
+// 				str+= '<PARAM name="BGCOLOR" VALUE="white">';
+// 				str+= '<PARAM name="CACHE" VALUE="true">';
+// 				str+= '<EMBED name="promoqt" SRC="/download/promo/'+promo+'.mp4" BGCOLOR="white" WIDTH="536" HEIGHT="230" CONTROLLER="false" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
+// 				str+= '</EMBED>';
+// 				str+= '</OBJECT>';
+				
+				
+				break;
+		}
+
+		str+= '</div>';
+		if (this.desc) str+= this.desc+'<br>';
+		
+		
+	if (this.type=='task' && wp_mode=='create')
+	{
+		str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+		this.answer = record.getField('answer');
+		this.score = record.getField('score');
+		str+= 'answer: '+this.answer+'<br>';
+		str+= 'score: '+this.score+' points<br>';
+		str+= '</div>';
+	}
+
+// 	if (this.type=='task' && wp_mode=='create')
+// 	{
+// 		str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+// 		this.answer = record.getField('answer');
+// 		this.score = record.getField('score');
+// 		str+= 'answer: '+this.answer+'<br>';
+// 		str+= 'score: '+this.score+' points<br>';
+// 		str+= '</div>';
+// 	}
+
+	
+
+	panes['display'].content.firstChild.innerHTML = str;
+
+	if (this.mediumtype!='text')
+	{
+ 		var div = document.getElementById('medium_display');
+		div.style.backgroundColor = 'white';
+		div.style.textAlign = 'center';
+		div.style.lineHeight = '0px';
+	}
+	
+	//tmp_debug(3,'details height:',panes['display'].content.firstChild.offsetHeight);
 
 }
 
 wpLocation.prototype.collapse = function()
 {
+	this.expanded = false;
+	wp_location_expanded = false;
+	this.changeIcon(this.icon);
 	
-
+	panes['display'].hide(1);
+	
+	tmp_debug(2,'collapse ',this.id);
 }
 
 
 wpLocation.prototype.changeIcon = function(src)
 {
-	if (browser.pngsupport) location.src = 'media/icon_location+.png';
+	if (browser.properpngsupport) this.div.src = 'media/'+src;
 	else
 	{
-		location.src = 'media/blank.gif';
-		location.style.filter = PNGbgImage('icon_location+.png').substr(7);
+		this.div.style.filter = PNGbgImage(src).substr(7);
 	}
 }
 
@@ -193,3 +360,5 @@ wpLocation.prototype.dispose = function()
 	gmap.getPane(G_MAP_MARKER_PANE).removeChild(this.div);
 	gmap.getPane(G_MAP_MARKER_SHADOW_PANE).removeChild(this.shadow_div);
 }
+
+

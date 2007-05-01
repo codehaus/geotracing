@@ -1,0 +1,66 @@
+<!--
+
+ANT Build file for W&P Web Client.
+
+$Id$
+-->
+<project name="WP Web" default="deploy-local" basedir=".">
+
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+
+	<!-- Project global properties; overrule by modifying build.properties -->
+    <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+
+	<!-- Initialization of properties (dirs, files) -->
+	<property file="${home}/../../build.properties"/>
+	<property file="${home}/build.properties"/>
+
+	<property name="build.dir" value="${home}/build"/>
+
+	<!-- The .jar -->
+	<property name="package.zip" value="${build.dir}/${project.id}-${component.id}-${component.version}.zip"/>
+
+
+	<!-- Initialize: create dirs and set timestamp.. -->
+	<target name="init" >
+		<tstamp/>
+	</target>
+
+
+	<!-- Package into archive files -->
+	<target name="package" >
+		<echo message="Packaging distribution into ${package.zip}"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${home}"
+				excludes="build.xml,build/**"/>
+		</zip>
+	</target>
+
+<!--	<target name="sync-berlin" >
+		<exec executable="rsync">
+			<arg line="-alzvx  -e ssh "/>
+			<arg line="${home}/"/>
+			<arg line="${deploy.test.server}:${deploy.test.dir}" />
+		</exec>
+	</target>
+
+
+	<target name="copy-test">
+		<exec executable="scp">
+			<arg line="-r"/>
+			<arg line="${home}/"/>
+			<arg line="keyworx@test.walkandplay.com:${deploy.test.dir}"/>
+		</exec>
+	</target>    -->
+
+	<target name="deploy-local">
+		<copy todir="${deploy.local.dir}" overwrite="true">
+			<fileset dir="${home}"/>
+		</copy>
+	</target>
+
+</project>

@@ -1,3 +1,35 @@
+/* usemedia.com . joes koppers . 2006-2007 */
+/* thnx for reading this code */
+
+
+//general js utilities
+
+
+/* id based arrays */
+
+function idArray(collection)
+{
+	this.collection = collection;
+	this[collection] = new Object();
+	this.length = 0;
+}
+idArray.prototype.push = function(obj)
+{
+	this[this.collection][obj.id] = obj;
+	this.length++;
+}
+idArray.prototype.del = function(id)
+{
+	this[this.collection][id].dispose();
+	delete this[this.collection][id];
+	this.lenght--;
+}
+// idArray.prototype.update = function()
+// {
+// 	for (id in this[this.collection]) this[this.collection][id].update();
+// }
+
+
 function no_spam_mail(user,domain) //antispam mailto
 {
 	self.location = 'mailto:'+user+'@'+domain;
