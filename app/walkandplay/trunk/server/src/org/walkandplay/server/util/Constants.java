@@ -36,7 +36,9 @@ public interface Constants {
 	public final static String ATTR_MEDIUMID = "mediumid";
 
 	// table fields
+	public final static String ANSWER_FIELD = "answer";
 	public final static String ANSWER_STATE_FIELD = "answerstate";
+	public final static String END_DATE_FIELD = "enddate";
 	public final static String ID_FIELD = "id";
 	public final static String OWNER_FIELD = "owner";
 	public final static String VERSION_FIELD = "version";
@@ -51,17 +53,18 @@ public interface Constants {
 	public final static String STARTDATE_FIELD = "startdate";
 	public final static String ENDDATE_FIELD = "enddate";
 	public final static String POINT_FIELD = "point";
+	public final static String EVENTS_FIELD = "events";
 	public final static String PLAYERS_FIELD = "players";
 	public final static String PLAY_STATE_FIELD = "playstate";
 	public final static String MEDIA_STATE_FIELD = "mediastate";
 	public final static String MEDIUM_ID_FIELD = "mediumid";
 	public final static String MEDIUM_RESULT_ID_FIELD = "mediumresultid";
 	public final static String SCORE_FIELD = "score";
-	public final static String ANSWER_FIELD = "answer";
 	public final static String LON_FIELD = "lon";
 	public final static String LAT_FIELD = "lat";
 	public final static String TEXT_FIELD = "text";
 	public final static String RESULT_FIELD = "result";
+	public final static String START_DATE_FIELD = "startdate";
 	public final static String TIME_FIELD = "time";
 	public final static String TASK_ID_FIELD = "taskid";
 	public final static String TASK_RESULT_ID_FIELD = "taskresultid";

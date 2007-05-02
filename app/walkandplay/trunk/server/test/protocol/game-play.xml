@@ -485,6 +485,20 @@
 		</expect>
 	</test>
 
+	<test id="get-gameplay-events">
+		<send id="client1">
+			<utopia-req>
+				<play-get-events-req id="${gameplayid}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-get-events-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
 	<test id="play-location-req2">
 		<send id="client1">
 			<utopia-req>

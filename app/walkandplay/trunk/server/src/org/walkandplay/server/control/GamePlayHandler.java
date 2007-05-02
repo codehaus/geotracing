@@ -1,6 +1,9 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
+import nl.justobjects.jox.parser.JXBuilder;
+import nl.justobjects.jox.parser.JXBuilderListener;
+import nl.justobjects.pushlet.core.Event;
 import org.geotracing.handler.*;
 import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
@@ -14,11 +17,14 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.oase.api.*;
+import org.keyworx.oase.store.record.FileFieldImpl;
 import org.walkandplay.server.util.Constants;
 import org.walkandplay.server.util.WPEventPublisher;
 import org.postgis.Point;
 
 import java.util.Vector;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * GamePlayHandler.
@@ -36,10 +42,10 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	public final static String PLAY_ANSWERTASK_SERVICE = "play-answertask";
 	public final static String PLAY_ADD_MEDIUM_SERVICE = "play-add-medium";
 	public final static String PLAY_GET_GAMEPLAY_SERVICE = "play-get-gameplay";
+	public final static String PLAY_GET_EVENTS_SERVICE = "play-get-events";
 	public final static String PLAY_HEARTBEAT_SERVICE = "play-hb";
 
 	private Log log = Logging.getLog("GamePlayHandler");
-	private ContentHandlerConfig config;
 
 	/**
 	 * Processes the Client Request.
@@ -54,10 +60,15 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		// Get the service name for the request
 		String service = anUtopiaReq.getServiceName();
-		log.info("Handling request for service=" + service);
-		log.info(new String(anUtopiaReq.getRequestCommand().toBytes(false)));
 
+		if (getProperty("verbose").equals("true")) {
+			log.info("Handling request for service=" + service);
+			log.info(new String(anUtopiaReq.getRequestCommand().toBytes(false)));
+		}
+
+		long t1;
 		JXElement response;
+		t1 = Sys.now();
 		try {
 			if (service.equals(PLAY_START_SERVICE)) {
 				response = startReq(anUtopiaReq);
@@ -73,21 +84,25 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 				response = getGamePlayReq(anUtopiaReq);
 			} else if (service.equals(PLAY_HEARTBEAT_SERVICE)) {
 				response = heartbeatReq(anUtopiaReq);
+			} else if (service.equals(PLAY_GET_EVENTS_SERVICE)) {
+				response = getEventsReq(anUtopiaReq);
 			} else {
 				log.warn("Unknown service " + service);
 				response = createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
 			}
-
-			log.info("Handled service=" + service + " response=" + response.getTag());
-			log.info(new String(response.toBytes(false)));
-			return new UtopiaResponse(response);
 		} catch (UtopiaException ue) {
 			log.error("Negative response for service=" + service + "; exception:" + ue.getMessage());
-			return new UtopiaResponse(createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage()));
+			response = createNegativeResponse(service, ue.getErrorCode(), "Error in request: " + ue.getMessage());
 		} catch (Throwable t) {
 			log.error("Unexpected error in service : " + service, t);
-			return new UtopiaResponse(createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request"));
+			response = createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "error " + t);
 		}
+
+		if (getProperty("verbose").equals("true")) {
+			log.info("Handled service=" + service + " response=" + response.getTag() + " in " + (Sys.now() - t1) + " ms");
+			log.info(new String(response.toBytes(false)));
+		}
+		return new UtopiaResponse(response);
 	}
 
 	public JXElement addMediumReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
@@ -170,11 +185,11 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 				// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore
 				Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
-				WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), task.getIntField(SCORE_FIELD));
+				storeEvent(oase, gamePlay, WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), task.getIntField(SCORE_FIELD)));
 				totalState = VAL_DONE;
 				if (gameDone) {
 					// playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
-					WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
+					storeEvent(oase, gamePlay, WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId()));
 				}
 
 			} else {
@@ -241,7 +256,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
 
 		// Send event: answer submit
-		WPEventPublisher.answerSubmit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), playerAnswer);
+		storeEvent(oase, gamePlay, WPEventPublisher.answerSubmit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), playerAnswer, answerState));
 
 		// Ok, set score only if also media was done and this task was not yet completed
 		if (score > 0 && mediaState.equals(VAL_DONE) && !totalState.equals(VAL_DONE)) {
@@ -250,13 +265,13 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 			// Send event: task done
 			// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore
-			WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), score);
+			storeEvent(oase, gamePlay, WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), score));
 			totalState = VAL_DONE;
 
 			if (gameDone) {
 				// Send event: gameplay done
 				// playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
-				WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
+				storeEvent(oase, gamePlay, WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId()));
 			}
 		} else {
 			// Store result
@@ -278,6 +293,26 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		return rsp;
 	}
 
+	/**
+	 * Get gameplay events.
+	 * <p/>
+	 *
+	 * @param anUtopiaReq A UtopiaRequest
+	 * @return A UtopiaResponse.
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
+	 */
+	public JXElement getEventsReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		JXElement requestElement = anUtopiaReq.getRequestCommand();
+		String gamePlayIdStr = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, gamePlayIdStr);
+		int gamePlayId = Integer.parseInt(gamePlayIdStr);
+
+		Vector events = getGamePlayEvents(HandlerUtil.getOase(anUtopiaReq), gamePlayId);
+		JXElement response = createResponse(PLAY_GET_EVENTS_SERVICE);
+		response.addChildren(events);
+		return response;
+	}
 
 	public JXElement getGamePlayReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 /*
@@ -415,7 +450,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 						// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId
 						round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
-						WPEventPublisher.taskHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId());
+						storeEvent(oase, gamePlay, WPEventPublisher.taskHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId()));
 						break;
 
 					case LOC_TYPE_GAME_MEDIUM:
@@ -454,7 +489,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 						hit.setAttr(STATE_FIELD, VAL_HIT);
 						// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aMediumId, int aMediumResultId
 						round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
-						WPEventPublisher.mediumHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), lastMediumId, mediumResult.getId());
+						storeEvent(oase, gamePlay, WPEventPublisher.mediumHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), lastMediumId, mediumResult.getId()));
 						break;
 					default:
 						continue;
@@ -470,7 +505,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		// Send out event for last point
 		if (point != null) {
-			WPEventPublisher.userMove(personId, accountName, getGameRoundForGamePlay(oase, gamePlay).getId(), gamePlay.getId(), point);
+			storeEvent(oase, gamePlay, WPEventPublisher.userMove(personId, accountName, getGameRoundForGamePlay(oase, gamePlay).getId(), gamePlay.getId(), point));
 		}
 
 		return response;
@@ -542,7 +577,27 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Record person = finder.read(personId, PERSON_TABLE);
 
 		// Game state is scheduled or running
+		gamePlay.setLongField(START_DATE_FIELD, Sys.now());
 		gamePlay.setStringField(STATE_FIELD, PLAY_STATE_RUNNING);
+
+		FileField fileField = gamePlay.getFileField(EVENTS_FIELD);
+		File emptyFile = null;
+
+		try {
+			emptyFile = File.createTempFile("empty", ".txt");
+		} catch (IOException ioe) {
+			log.warn("Cannot create empty temp file", ioe);
+			return createNegativeResponse(PLAY_START_SERVICE, ErrorCode.__6005_Unexpected_error, "Cannot create temp file");
+		}
+
+		if (fileField == null) {
+			gamePlay.createFileField(emptyFile);
+		} else {
+			fileField.setIncomingFile(emptyFile);
+		}
+
+		gamePlay.setFileField(EVENTS_FIELD, fileField);
+
 		modifier.update(gamePlay);
 
 		// Start any track if not already active
@@ -563,7 +618,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 		// playStart(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
 		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
-		WPEventPublisher.playStart(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId());
+		storeEvent(oase, gamePlay, WPEventPublisher.playStart(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId()));
 		return createResponse(PLAY_START_SERVICE);
 	}
 
@@ -598,6 +653,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		}
 
 		if (gameDone) {
+			aGamePlay.setLongField(END_DATE_FIELD, Sys.now());
 			aGamePlay.setStringField(STATE_FIELD, VAL_DONE);
 		}
 
@@ -642,6 +698,19 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		}
 
 
+	}
+
+	// Initialize results if not present
+	protected void storeEvent(Oase anOase, Record aGamePlay, Event anEvent) throws OaseException, UtopiaException {
+		if (getProperty("verbose").equals("true")) {
+			log.info("EVENT: " + anEvent.getSubject() + " " + anEvent.getField(WPEventPublisher.FIELD_EVENT));
+		}
+
+		anEvent = (Event) anEvent.clone();
+		FileField fileField = aGamePlay.getFileField(EVENTS_FIELD);
+		String eventStr = anEvent.toXML(true) + "\n";
+		fileField.append(eventStr.getBytes());
+		anOase.getModifier().update(aGamePlay);
 	}
 
 	/**
@@ -752,6 +821,57 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		}
 
 		return game;
+	}
+
+	public static Vector getGamePlayEvents(Oase anOase, int aGamePlayId) throws UtopiaException {
+		final Vector result = new Vector();
+		try {
+			Record gamePlay = anOase.getFinder().read(aGamePlayId, GAMEPLAY_TABLE);
+			JXBuilder builder = new JXBuilder(
+					new JXBuilderListener() {
+						/**
+						 * Called by XmlElementParser when it parsed and created an JXElement.
+						 */
+						public void element(JXElement e) {
+							result.add(e);
+						}
+
+						/**
+						 * Called when parser encounters an error.
+						 */
+						public void error(String msg) {
+							Logging.getLog().warn("getGamePlayEvents() error: " + msg);
+						}
+
+						/**
+						 * End of input stream is reached.
+						 * <p/>
+						 * This may occur when listening for multiple documents on a stream.
+						 *
+						 * @param message	 text message
+						 * @param anException optional exception that caused the stream end
+						 */
+						public void endInputStream(String message, Throwable anException) {
+							Logging.getLog().trace("getGamePlayEvents() EOF reached: " + message + " e=" + anException);
+						}
+
+					}
+			);
+
+			// Event data file
+			FileFieldImpl fileField = (FileFieldImpl) gamePlay.getFileField(EVENTS_FIELD);
+			File file = fileField.getStoredFile();
+
+			// Only makes sense to parse a file with content
+			if (file != null && file.exists() && file.length() > 0) {
+				builder.setMultiDoc(true);
+				builder.build(fileField.getFileInputStream());
+			}
+		} catch (Throwable t) {
+			new UtopiaException("Error query getGamePlayEvents gamePlayId=" + aGamePlayId, t);
+		}
+
+		return result;
 	}
 
 	protected Record getRunningGamePlay(Oase anOase, int aPersonId) throws UtopiaException {
