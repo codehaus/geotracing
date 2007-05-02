@@ -118,7 +118,7 @@ input, textarea
 	height:45px;
 
 	background-color:white;
-	z-index:100;
+	z-index:10000;
 	
 	opacity:.8;
 

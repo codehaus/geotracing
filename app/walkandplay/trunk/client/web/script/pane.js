@@ -26,6 +26,14 @@ Panes.prototype.hide = function()
 		if (pane) pane.hide(1);
 	}
 }
+Panes.prototype.show = function()
+{
+	for (var i=0; i<arguments.length; i++)
+	{
+		var pane = this[arguments[i]];
+		if (pane) pane.show();
+	}
+}
 
 function Pane(id,x,y,w,h,hide_delay,keep_visible,parent)
 {

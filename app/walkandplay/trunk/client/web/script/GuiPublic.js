@@ -33,11 +33,27 @@ function wpCreatePane(type)
 			
 			pane.hideMore = function()
 			{
+				if (browser.safari && document.getElementById('qtvideo'))
+				{
+					//qt safari bug (force sound stop)
+					tmp_debug(1,'QT STOP');
+					document.getElementById('qtvideo').Stop();
+				}
 				//clear pane contents
 				this.content.firstChild.innerHTML = '';
+
 			}
 			//pane.show();
 			break
+			
+		case 'play':
+			var pane = new Pane('play',110,0,600,80,1,true);
+			pane.setContent(wpGuiCreate('play'));
+			//align bottom if window
+			pane.div.style.top = '';
+			pane.div.style.bottom = '20px';
+		
+			break;
 		
 		default:
 			if (wp_login.id) wpCreatePaneUser(type);
@@ -83,6 +99,11 @@ function wpGuiCreate(type,s,id,n)
 		case 'display':
 			str+= '<div id="media_display" style="width:230px;"></div>';
 			str+= '<div style="right:15px; top:8px"><a href="javascript://close" onclick="wpCloseDisplay();this.blur()">close</a></div>';
+			break;
+			
+		case 'play':
+			str+= '<span class="title">game</span> "<b>name</b>"<br>[status, team, score]';
+			str+= '<div style="right:15px; top:8px"><a href="javascript://exit" onclick="if(confirm(\'leave gameplay?\'))wpSelect(\'play\')">exit</a></div>';
 			break;
 		
 		default:

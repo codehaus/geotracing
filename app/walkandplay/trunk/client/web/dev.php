@@ -107,6 +107,7 @@ function init()
 		/* gui */
 				
 		<?=$debug?>
+		wp_max_livetrace = 100;
 		
 		wpStartup();
 		

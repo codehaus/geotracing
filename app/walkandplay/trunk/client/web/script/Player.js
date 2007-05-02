@@ -57,9 +57,11 @@ function wpPlayer(collection,id,p,name,t)
 	this.geo = p;
 
  	this.name = name;
-	this.icon = 'icon_player_'+this.name.substring(0,1)+'.png';
+ 	var color = this.name.substring(0,1);
+	this.icon = 'icon_player_'+color+'.png';
  	
  	this.trace = new Array(0); //geo points history
+ 	this.trace_color = (color=='r')? 'rgb(200,0,20)':(color=='b')? 'rgb(50,100,200)':'rgb(45,170,75)';
  	
 	this.x_smoothing = .025;
 	this.y_smoothing = .025;
@@ -137,7 +139,8 @@ function wpPlayer(collection,id,p,name,t)
 	this.animate(true);
 
 	//->debug
-	location.title = 'debug: id='+this.id+', name='+this.name;
+	var obj = this;
+	location.onclick = function() { alert('debug: player, id='+obj.id+', name='+obj.name) };
 }
 
 wpPlayer.prototype.updateLocation = function(p,t)
@@ -159,6 +162,7 @@ wpPlayer.prototype.updateLocation = function(p,t)
 	this.y = px.y - this.h/2;
 	
 	//this.update();
+	this.showTrace();
 }
 
 wpPlayer.prototype.update = function(p,t)
@@ -186,6 +190,8 @@ wpPlayer.prototype.update = function(p,t)
 	this.div.style.top = this.y +'px';
 	this.div.style.width = this.w +'px';
 	this.div.style.height = this.h +'px';
+	
+	this.showTrace();
 }
 
 
@@ -250,6 +256,25 @@ wpPlayer.prototype.speed = function()
 	return (this.geo.distanceFrom(this.prevgeo) / 1000) / ((this.time - this.prevtime) / 3600000);
 }
 
+wpPlayer.prototype.showTrace = function()
+{
+	if (this.trace.length<2) return; //we need two points minimum
+	//remove current trace
+ 	if (this.traceOverlay) gmap.removeOverlay(this.traceOverlay);
+// 	if (!wp_live_traces) return;
+ 	//width adjusted to mapview
+ 	var w = gmap.getZoom()/4;
+ 	w = (w>4)? Math.round(w):Math.floor(w);
+ 	//only show last 100 points (for performance)
+ 	var trace = (this.trace.length>wp_max_livetrace+100)? this.trace.slice(this.trace.length-wp_max_livetrace):this.trace;
+ 	gmap.removeOverlay(this.traceOverlay);
+ 	this.traceOverlay = new GPolyline(trace,this.trace_color,Math.max(1,w),0.8);
+	//add new trace
+ 	gmap.addOverlay(this.traceOverlay);
+}
+
+
+
 
 wpPlayer.prototype.zoomTo = function()
 {
@@ -277,6 +302,7 @@ wpPlayer.prototype.expand = function()
 	tmp_debug(2,'expand ',this.id);
 }
 
+/*
 wpPlayer.prototype.updateDetails = function(resp)
 {
 	var record = resp[0];
@@ -315,18 +341,18 @@ wpPlayer.prototype.updateDetails = function(resp)
 			
 			case 'video':
 			case 'audio':
-				str+= '<embed src="/wp/media.srv?id='+this.mediumid+'" style="width:225px;"></embed>';
+//				str+= '<embed id="video" src="/wp/media.srv?id='+this.mediumid+'" style="width:225px; height=168px;"></embed>';
 				
-// 				//QuickTime embed
-// 				str+= '<OBJECT id="promoqt" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="536" HEIGHT="230" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
-// 				str+= '<PARAM name="SRC" VALUE="/download/promo/'+promo+'.mp4">';
-// 				str+= '<PARAM name="CONTROLLER" VALUE="false">';
-// 				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
-// 				str+= '<PARAM name="BGCOLOR" VALUE="white">';
-// 				str+= '<PARAM name="CACHE" VALUE="true">';
-// 				str+= '<EMBED name="promoqt" SRC="/download/promo/'+promo+'.mp4" BGCOLOR="white" WIDTH="536" HEIGHT="230" CONTROLLER="false" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
-// 				str+= '</EMBED>';
-// 				str+= '</OBJECT>';
+				//QuickTime embed
+				str+= '<OBJECT id="qtvideo" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="225" HEIGHT="184" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
+				str+= '<PARAM name="SRC" VALUE="/wp/media.srv?id='+this.mediumid+'">';
+				str+= '<PARAM name="CONTROLLER" VALUE="true">';
+				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
+				str+= '<PARAM name="BGCOLOR" VALUE="white">';
+				str+= '<PARAM name="CACHE" VALUE="true">';
+				str+= '<EMBED name="qtvideo" SRC="/wp/media.srv?id='+this.mediumid+'" BGCOLOR="white" WIDTH="225" HEIGHT="184" CONTROLLER="true" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
+				str+= '</EMBED>';
+				str+= '</OBJECT>';
 				
 				
 				break;
@@ -361,6 +387,7 @@ wpPlayer.prototype.updateDetails = function(resp)
 
 }
 
+
 wpPlayer.prototype.collapse = function()
 {
 	this.expanded = false;
@@ -371,6 +398,7 @@ wpPlayer.prototype.collapse = function()
 	
 	tmp_debug(2,'collapse ',this.id);
 }
+*/
 
 wpPlayer.prototype.changeIcon = function(src)
 {
@@ -385,9 +413,8 @@ wpPlayer.prototype.dispose = function()
 {
 	if (this.animating) window.clearInterval(this.animating);
 	if (this.blinking) window.clearTimeout(this.blinking);
+	
+	if (this.traceOverlay) gmap.removeOverlay(this.traceOverlay);
 
 	gmap.getPane(G_MAP_MARKER_PANE).removeChild(this.div);
 }
-
-
-

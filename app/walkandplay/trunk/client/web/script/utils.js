@@ -22,7 +22,7 @@ idArray.prototype.del = function(id)
 {
 	this[this.collection][id].dispose();
 	delete this[this.collection][id];
-	this.lenght--;
+	this.length--;
 }
 // idArray.prototype.update = function()
 // {

@@ -11,6 +11,7 @@ wp_location_expanded = false;
 function wpLocations(name)
 {
 	var array = new idArray('location');
+	array.name = name
 	
 	//extend obj
 	array.update = function()
@@ -203,12 +204,14 @@ wpLocation.prototype.update = function()
 
 }
 
-wpLocation.prototype.enable = function(enable)
+wpLocation.prototype.enable = function(enable,expand)
 {
 	this.state = (enable)? 'enabled':'disabled';
 	//update icon src
 	this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
 	this.changeIcon(this.icon);
+	
+	if (expand) this.expand();
 }
 
 wpLocation.prototype.zoomTo = function()
@@ -277,20 +280,19 @@ wpLocation.prototype.updateDetails = function(resp)
 			
 			case 'video':
 			case 'audio':
-				str+= '<embed src="/wp/media.srv?id='+this.mediumid+'" style="width:225px;"></embed>';
-				
-// 				//QuickTime embed
-// 				str+= '<OBJECT id="promoqt" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="536" HEIGHT="230" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
-// 				str+= '<PARAM name="SRC" VALUE="/download/promo/'+promo+'.mp4">';
-// 				str+= '<PARAM name="CONTROLLER" VALUE="false">';
-// 				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
-// 				str+= '<PARAM name="BGCOLOR" VALUE="white">';
-// 				str+= '<PARAM name="CACHE" VALUE="true">';
-// 				str+= '<EMBED name="promoqt" SRC="/download/promo/'+promo+'.mp4" BGCOLOR="white" WIDTH="536" HEIGHT="230" CONTROLLER="false" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
-// 				str+= '</EMBED>';
-// 				str+= '</OBJECT>';
-				
-				
+				//str+= '<embed src="/wp/media.srv?id='+this.mediumid+'" style="width:225px;"></embed>';
+
+				//QuickTime embed
+				str+= '<OBJECT id="qtvideo" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="225" HEIGHT="168" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
+				str+= '<PARAM name="SRC" VALUE="/wp/media.srv?id='+this.mediumid+'">';
+				str+= '<PARAM name="CONTROLLER" VALUE="true">';
+				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
+				str+= '<PARAM name="BGCOLOR" VALUE="white">';
+				str+= '<PARAM name="CACHE" VALUE="true">';
+				str+= '<EMBED name="qtvideo" SRC="/wp/media.srv?id='+this.mediumid+'" BGCOLOR="white" WIDTH="225" HEIGHT="168" CONTROLLER="true" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
+				str+= '</EMBED>';
+				str+= '</OBJECT>';
+
 				break;
 		}
 
@@ -300,11 +302,27 @@ wpLocation.prototype.updateDetails = function(resp)
 		
 	if (this.type=='task' && wp_mode=='create')
 	{
+		//show answer and score
 		str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
 		this.answer = record.getField('answer');
 		this.score = record.getField('score');
 		str+= 'answer: '+this.answer+'<br>';
 		str+= 'score: '+this.score+' points<br>';
+		str+= '</div>';
+	}
+	
+	if (this.type=='task' && wp_mode=='play')
+	{
+		//add answer pane (updated by gamestate and live events)
+		str+= '<div id="answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+		if (this.play_answerstate=='open') str+= '- no answer given yet -';
+		else
+		{
+			str+= 'last answer: '+this.play_answer+'<br>';
+			//if (this.play_score==0) str+= 'task not complete yet';
+			if (this.play_answerstate=='notok') str+= '<span class="red">wrong answer!</span>';
+			else str+= 'score: '+this.play_score;
+		}
 		str+= '</div>';
 	}
 
@@ -333,6 +351,25 @@ wpLocation.prototype.updateDetails = function(resp)
 	//tmp_debug(3,'details height:',panes['display'].content.firstChild.offsetHeight);
 
 }
+
+wpLocation.prototype.updateAnswer = function(answerstate,answer,score)
+{
+	if (answerstate!='scoreupdate')
+	{
+		this.play_answerstate = answerstate;
+		this.play_answer = answer || '';
+	}
+	this.play_score = score || 0;
+
+	if (this.expanded) this.expand();
+}
+
+//wpLocation.prototype.
+// wpLocation.prototype.answerupdateAnswer = function()
+// {
+// 	this.lastanswer = '';
+// 	this.score = 0;
+// }
 
 wpLocation.prototype.collapse = function()
 {
