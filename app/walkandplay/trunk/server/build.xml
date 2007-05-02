@@ -237,6 +237,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		<copy todir="${build.war.dir}" overwrite="true">
 			<fileset dir="${home.webapp.dir}">
 				<include name="lib/**"/>
+				<include name="srv/**"/>
 			</fileset>
 		</copy>
 
