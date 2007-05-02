@@ -109,6 +109,10 @@ function wpSelectGame(type,id,roundid,playid)
 	
 			//get current gamestate
 			KW.WP.playGetGamePlay(function(resp) { wpUpdatePlay(resp,wp_selected_play) },wp_selected_play);
+			
+			//close list, open play display
+			panes.hide('list_games');
+			panes.show('play');
 			break;
 			
 		case 'create':
@@ -190,10 +194,20 @@ function wpUpdatePlay(resp,id)
  	for (var i=0; i<tasks.length; i++)
  	{
  		var id = tasks[i].getAttribute('taskid');
- 		var enabled = (tasks[i].getAttribute('state')!='open')
+ 		var enabled = (tasks[i].getAttribute('state')!='open');
+ 		var answerstate = tasks[i].getAttribute('answerstate');
 
  		if (enabled) tasksdone++;
 		wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
+		
+		var lastanswer,score;
+		
+		if (answerstate!='open')
+		{
+			var lastanswer = tasks[i].getAttribute('answer');
+			var score = tasks[i].getAttribute('score');
+		}
+		wp_games.game[wp_selected_game].locations.location[id].updateAnswer(answerstate,lastanswer,score);
  	}
 
  	for (var i=0; i<media.length; i++)
@@ -213,9 +227,9 @@ function wpUpdatePlay(resp,id)
 /* view functions */
 
 function wpCloseDisplay()
-{
+{	
 	if (wp_location_expanded) wp_location_expanded.collapse();
-	else panes['display'].hide(1);
+	else panes['display'].hide(1);	
 }
 
 
@@ -267,7 +281,7 @@ function wpGame(record)
 	this.locations = new wpLocations('game');
 	
 	//location rollover
-	var pane = new Pane('location_info',0,0,120,20,150,false,gmap.getPane(G_MAP_FLOAT_PANE));
+	var pane = new Pane('location_info',0,0,120,20,250,false,gmap.getPane(G_MAP_FLOAT_PANE));
 		pane.content.onmousedown = function(e)
 		{
 			if (!e) e = event;
@@ -545,6 +559,16 @@ wpGame.prototype.unLoad = function()
 {
 	//remove all locations
 	for (var id in this.locations.location) this.locations.del(id);
+	
+	if (wp_mode=='play')
+	{
+		//unsubscibe from pushlet events
+		PL.unsubscribe();
+		//kill users
+		for (var id in wp_players.player) wp_players.del(id);
+	}
+	
+	tmp_debug(2,'game unloaded, id=',this.id);
 }
 
 wpGame.prototype.dispose = function()
@@ -617,14 +641,48 @@ function wpLive(event)
 			
 			var taskid = (eventType=='task-hit')? event.get('taskid'):event.get('mediumid');
 
-			wp_games.game[wp_selected_game].locations.location[taskid].enable(true);
+			wp_games.game[wp_selected_game].locations.location[taskid].enable(true,true);
+			break;
+			
+		case 'answer-submit':
+			var taskid = event.get('taskid');
+			var answer = event.get('answer');
+			var answerstate = event.get('answerstate');
+			
+			wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer(answerstate,answer);
+			
+			break;
+			
+		case 'task-done':
+			var playid = event.get('gameplayid');
+			var taskid = event.get('taskid');
+			var score = event.get('score');
+			
+			if (wp_selected_play==playid)
+			{
+				//update score
+				wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer('scoreupdate',false,score);
+			}
+			else
+			{
+				//score by other team
+				//-> update play display (team scores)
+			}
+		
 			break;
 
 		
 		case 'play-finish':
 			//->update all locations to disabled (for now, with gamebot)
+			//..
 			var game = wp_games.game[wp_selected_game];
-			for (var id in game.locations.location) game.locations.location[id].enable(false); 
+			for (var id in game.locations.location)
+			{
+				game.locations.location[id].enable(false); 
+				game.locations.location[id].play_answerstate = 'open';
+			}
+			//remove trace
+			for (var id in wp_players.player) wp_players.player[id].trace = new Array();
 			
 			break;
 			

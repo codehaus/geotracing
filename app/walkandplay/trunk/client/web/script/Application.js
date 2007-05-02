@@ -52,7 +52,7 @@ function wpSelect(mode)
 		wp_games.game[wp_selected_game].unLoad();
 		wp_selected_game = false;
 		//hide panes
-		panes.hide('edit_game','list_games','list_locations','display');
+		panes.hide('edit_game','list_games','list_locations','display','play');
 		
 	}
 
