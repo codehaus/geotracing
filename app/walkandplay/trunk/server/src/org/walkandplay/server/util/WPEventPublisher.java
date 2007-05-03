@@ -79,7 +79,7 @@ public class WPEventPublisher {
 	}
 
 	/**
-	 * Publish task hit event to Pushlet framework.
+	 * Publish answer submit event to Pushlet framework.
 	 */
 	public static Event answerSubmit(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, String theAnswer, String theAnswerState) {
 
@@ -99,7 +99,7 @@ public class WPEventPublisher {
 
 			multicast(event);
 		} catch (Throwable t) {
-			log.warn("Cannot publish taskHit", t);
+			log.warn("Cannot publish answerSubmit", t);
 		}
 		return event;
 	}
@@ -164,6 +164,41 @@ public class WPEventPublisher {
 		return (Event[]) events.toArray(new Event[events.size()]);
 	}
 
+
+	/**
+	 * Publish medium submit for trace to Pushlet framework.
+	 */
+	public static Event mediumAdd(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int theMediumId) {
+		 return mediumAdd(aUserId, aUserName, aGameRoundId, aGamePlayId, theMediumId, -1, -1);
+	}
+	/**
+	 * Publish medium submit to Pushlet framework, optional task.
+	 */
+	public static Event mediumAdd(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int theMediumId, int aTaskId, int aTaskResultId) {
+
+		// Pushlet subject (topic) is e.g. "/location/piet"
+		Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
+		try {
+
+			event.setField(FIELD_EVENT, EVENT_MEDIUM_ADD);
+			event.setField(FIELD_USER_ID, aUserId);
+			event.setField(FIELD_USER_NAME, aUserName);
+			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
+			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
+			event.setField(FIELD_MEDIUM_ID, theMediumId);
+
+			// Optional if medium was also part of answering task
+			if (aTaskId > 0) {
+				event.setField(FIELD_TASK_ID, aTaskId);
+				event.setField(FIELD_TASKRESULT_ID, aTaskResultId);
+			}
+
+			multicast(event);
+		} catch (Throwable t) {
+			log.warn("Cannot publish mediumAdd", t);
+		}
+		return event;
+	}
 
 	/**
 	 * Publish task hit event to Pushlet framework.

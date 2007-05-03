@@ -9,7 +9,6 @@ import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
-import org.keyworx.utopia.core.config.ContentHandlerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
@@ -23,6 +22,7 @@ import org.walkandplay.server.util.WPEventPublisher;
 import org.postgis.Point;
 
 import java.util.Vector;
+import java.util.Iterator;
 import java.io.File;
 import java.io.IOException;
 
@@ -156,6 +156,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Record game = getGameForGamePlay(oase, gamePlay.getId());
 		Point point = location.getPoint();
 		Record task = getTaskHitForGame(oase, point, game.getId());
+		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+		String accountName = HandlerUtil.getAccountName(anUtopiaReq);
+
 		if (task != null) {
 			log.info("HIT task for medium add taskid=" + task.getId());
 
@@ -178,18 +181,20 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			// Relate added medium
 			relater.relate(taskResult, medium, RELTAG_RESULT);
 
+			// Publish event with related task/taskresult
+			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), mediumId, task.getId(), taskResult.getId()));
+
 			// Set scores if we are totally done and task result was not already done
 			if (answerState.equals(VAL_OK) && !totalState.equals(VAL_DONE)) {
 				// ALL DONE
 				boolean gameDone = finishTaskResult(oase, gamePlay, task, taskResult);
 
 				// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId, int aScore
-				Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
-				storeEvent(oase, gamePlay, WPEventPublisher.taskDone(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), task.getIntField(SCORE_FIELD)));
+				storeEvent(oase, gamePlay, WPEventPublisher.taskDone(personId, accountName, round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), task.getIntField(SCORE_FIELD)));
 				totalState = VAL_DONE;
 				if (gameDone) {
 					// playFinish(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
-					storeEvent(oase, gamePlay, WPEventPublisher.playFinish(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId()));
+					storeEvent(oase, gamePlay, WPEventPublisher.playFinish(personId, accountName, round.getId(), gamePlay.getId()));
 				}
 
 			} else {
@@ -200,6 +205,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			rsp.setAttr(TASK_ID_FIELD, task.getId());
 			rsp.setAttr(TASK_STATE_FIELD, totalState);
 			rsp.setAttr(PLAY_STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
+		} else {
+			// Medium is not part of answering task: just publish id's
+			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), mediumId));
 		}
 		return rsp;
 	}
@@ -700,15 +708,27 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 	}
 
-	// Initialize results if not present
+	// Store (pushlet) event into gameplay table.
 	protected void storeEvent(Oase anOase, Record aGamePlay, Event anEvent) throws OaseException, UtopiaException {
 		if (getProperty("verbose").equals("true")) {
 			log.info("EVENT: " + anEvent.getSubject() + " " + anEvent.getField(WPEventPublisher.FIELD_EVENT));
 		}
 
-		anEvent = (Event) anEvent.clone();
+		Iterator iter = anEvent.getFieldNames();
+		JXElement storedEvent = new JXElement("event");
+		String name;
+		while (iter.hasNext()) {
+			name = (String) iter.next();
+
+			// Skip Pushlet internal fields
+			if (name.startsWith("p_")) {
+				continue;
+			}
+
+			storedEvent.setAttr(name, anEvent.getField(name));
+		}
 		FileField fileField = aGamePlay.getFileField(EVENTS_FIELD);
-		String eventStr = anEvent.toXML(true) + "\n";
+		String eventStr = storedEvent.toString() + "\n";
 		fileField.append(eventStr.getBytes());
 		anOase.getModifier().update(aGamePlay);
 	}
