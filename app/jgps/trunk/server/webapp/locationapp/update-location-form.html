@@ -1,0 +1,54 @@
+<form id="updatelocationform" name="updatelocationform" enctype="multipart/form-data" method="post" action="media.srv">
+	<table>
+		<tr>
+			<td>id</td><td><input name="id" id="id" type="text" disabled="disabled"/></td>
+		</tr>
+		<tr>
+			<td>name *</td><td><input name="name" id="name" type="text"/></td>
+		</tr>
+		<tr>
+			<td>description</td><td><input name="description" id="description" type="text"/></td>
+		</tr>
+		<tr>
+			<td>file</td><td>
+			<input name="file" id="file" type="file"/>
+		</td>
+		</tr>
+		<tr>
+			<td>longitude</td><td><input name="lon" id="lon" type="text"/></td>
+		</tr>
+		<tr>
+			<td>latitude</td><td><input name="lat" id="lat" type="text"/></td>
+		</tr>
+		<tr>
+			<td>categorie</td><td><select name="categories" id="categories" class="icon-menu">
+			<option value="1">knelpunt</option>
+			<option value="2">veilig</option>
+			<option value="3">specifieke locatie</option>
+			<option value="4">opgelost</option>
+		</select>
+
+		</td>
+		</tr>
+		<!-- See http://binnyva.blogspot.com/search/label/xhtml for placing images in SELECT form item -->
+
+
+		<!--		<tr align="left">
+					<td><input type="radio" name="categorie" value="knelpunt"/>Knelpunten</td>
+					<td><img src="images/rood.png"/></td>
+				</tr>
+				<tr align="left">
+					<td><input type="radio" name="categorie" value="specifiek"/>specifieke&nbsp;locatie</td>
+					<td><img src="images/oranje.png"/></td>
+				</tr>
+				<tr align="left">
+					<td><input type="radio" name="categorie" value="veilig"/>Veilig punt</td>
+					<td><img src="images/groen.png"/></td>
+				</tr>       -->
+		<tr>
+			<td colspan="2">
+				<a href="#" onclick="return LOCAPP.updateLocationReq();" style="color:blue">[Update Location]</a>
+			</td>
+		</tr>
+	</table>
+</form>
