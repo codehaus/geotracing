@@ -12,6 +12,13 @@ var LOCAPP = {
 	currentLon: null,
 	currentLat: null,
 	currentForm: null,
+	currentId: null,
+	currentDesc: null,
+	currentType: null,
+	currentSubtype: null,
+	currentName: null,
+	toUpdateUserId: null,
+	UpdateUserId: null,
 
 	latestoverlay:null ,
 	loadForm: function(aFormFile) {
@@ -28,6 +35,20 @@ var LOCAPP = {
 		DH.getURL(aFormFile, LOCAPP.onLoadForm);
 
 	},
+	
+	loadFormUpdate: function(aFormFile, lng, lat, id,desc,type,subtype,name, form) {
+		LOCAPP.pr('load form: ' + aFormFile);
+		LOCAPP.currentLon = lng;
+		LOCAPP.currentLat = lat;
+		LOCAPP.currentForm = form;
+		LOCAPP.currentId = id;
+		LOCAPP.currentDesc = desc;
+		LOCAPP.currentType = type;
+		LOCAPP.currentSubtype = subtype;
+		
+		DH.getURL(aFormFile, LOCAPP.onLoadForm);
+
+	},
 
 	onLoadForm: function(aFormText) {
 		LOCAPP.pr('onLoadForm');
@@ -35,21 +56,27 @@ var LOCAPP = {
 		var toevoegenForm = DH.getObject(LOCAPP.currentForm);
 		if (toevoegenForm) {
 			//alert(lng);
-			toevoegenForm.lon.value = LOCAPP.currentLon;
-			toevoegenForm.lat.value = LOCAPP.currentLat;
+			if(toevoegenForm.id=='addlocationform')
+			{
+				toevoegenForm.lon.value = LOCAPP.currentLon;
+				toevoegenForm.lat.value = LOCAPP.currentLat;
+			}
+			else
+			{
+				toevoegenForm.lon.value = LOCAPP.currentLon;
+				toevoegenForm.lat.value = LOCAPP.currentLat;
+				toevoegenForm.id.value = LOCAPP.currentId;
+				toevoegenForm.subtype.value = LOCAPP.currentSubtype;
+				toevoegenForm.description.value = LOCAPP.currentDesc;
+				toevoegenForm.name.value = LOCAPP.currentName;
+			}
 		}
 		GMAP.resize();
-
-
 	},
 
 	deleteMarker: function() {
 		GMAP.map.removeOverlay(latestoverlay);
 		GMAP.map.closeInfoWindow();
-	},
-
-	test: function(){
-		alert("testing");	
 	},
 
 	createMarker: function(point, icon) {
@@ -66,36 +93,31 @@ var LOCAPP = {
 		return marker;
 	} ,
 
+	starteditSession: function() {
+		LOCAPP.pr('start');
+		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
+		LOCAPP.loadForm('locationapp/loginedit-form.html');
+	
+		
+	},
+
 	startSession: function() {
 		LOCAPP.pr('start');
 		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
 		LOCAPP.loadForm('locationapp/login-form.html');
-
-		var icon = new GIcon();
-		icon.image = "./images/nieuw.png";
-		icon.iconSize = new GSize(20, 34);
-		icon.iconAnchor = new GPoint(10, 30);
-		icon.infoWindowAnchor = new GPoint(9, 2);
-
-		GEvent.addListener(GMAP.map, "click", function(marker, point) {
-			if (!marker) {
-
-				//if (addLocationForm) {
-				GMAP.map.addOverlay(LOCAPP.createMarker(point, icon));
-				//addLocationForm.lon.value = point.lng();
-				//addLocationForm.lat.value = point.lat();
-				//}
-
-			}
-		});
-
+	
 	},
-
+	starteditmapSession: function() {
+		LOCAPP.pr('start');
+		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
+		LOCAPP.loadForm('locationapp/loginedit-form.html');
+	
+	},
 	login: function() {
 		LOCAPP.pr('logging in...');
 
 		var loginForm = document.getElementById('loginform');
-
+		var punt = DH.getPageParameter('punt', null);
 		if (loginForm.username.value == "") {
 			alert("Please fill in you name.");
 			loginForm.username.focus();
@@ -112,9 +134,121 @@ var LOCAPP = {
 		KW.login(loginForm.username.value, loginForm.password.value);
 		LOCAPP.pr('login sent');
 		LOCAPP.loadForm('locationapp/ingelogd.html');
-		var doc = KW.createRequest('q-media-by-user');
+		//GTW.featureSet.dispose();
+		MYAPP.currentUser = loginForm.username.value;
+		
+		window.location="locatie-map.jsp?punt=" + punt +"&cmd=kaart&user=" + loginForm.username.value;
 		return false;
+		
+	},
+	
+	loginEdit: function() {
+		LOCAPP.pr('logging in...');
 
+		var loginForm = document.getElementById('logineditform');
+		var punt = DH.getPageParameter('punt', null);
+		var loginName = loginForm.username.value;
+		var str=loginName.substring(loginName.length - 1,loginName.length);
+		if (loginForm.username.value == "") {
+			alert("Please fill in you name.");
+			loginForm.username.focus();
+			return false;
+		}
+					
+		if (loginForm.password.value == "") {
+			alert("Please fill in your password.");
+			loginForm.password.focus();
+			return false;
+		}
+		else
+		{
+			if(str!='e'){
+				alert("you don't have edit rights.");
+				loginForm.password.focus();
+				return false;
+			}
+			else
+			{
+				KW.login(loginForm.username.value, loginForm.password.value);
+				LOCAPP.pr('login sent');
+				LOCAPP.loadForm('locationapp/ingelogd.html');
+				//GTW.featureSet.dispose();
+				GTAPP.mode = 'media';
+				GTAPP.showMode();
+				MYAPP.currentUser = loginForm.username.value;
+				SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', loginForm.username.value);
+				var icon = new GIcon();
+				icon.image = "./images/nieuw.png";
+				icon.iconSize = new GSize(20, 34);
+				icon.iconAnchor = new GPoint(10, 30);
+				icon.infoWindowAnchor = new GPoint(9, 2);
+		
+				GEvent.addListener(GMAP.map, "click", function(marker, point) {
+					if (!marker) {
+		
+						//if (addLocationForm) {
+						GMAP.map.addOverlay(LOCAPP.createMarker(point, icon));
+						//addLocationForm.lon.value = point.lng();
+						//addLocationForm.lat.value = point.lat();
+						//}
+		
+					}
+				});
+				return false;
+			}
+		}
+		
+
+	},
+
+	/*loginEditMap: function() {
+		LOCAPP.pr('logging in...');
+
+		var loginForm = document.getElementById('logineditmapform');
+		
+		
+		if (loginForm.username.value == "") {
+			alert("Please fill in you name.");
+			loginForm.username.focus();
+			return false;
+		}
+					
+		if (loginForm.password.value == "") {
+			alert("Please fill in your password.");
+			loginForm.password.focus();
+			return false;
+		}
+
+		//loginForm.username.value=loginname.substring(0,loginname.length()-1);
+		// Do the login
+		//loginName=loginName.substring(0,loginName.length - 1);
+		//SRV.get('q-getuserid', LOCAPP.getUpdateUserId, 'user', loginName);
+		KW.login(loginForm.username.value, loginForm.password.value);
+		LOCAPP.pr('login sent');
+		LOCAPP.loadForm('locationapp/ingelogd.html');
+		//GTW.featureSet.dispose();
+		GTAPP.mode = 'media';
+		GTAPP.showMode();
+		//MYAPP.currentUser = loginName;
+		//SRV.get('q-locations-by-user', MYAPP.showlocations, 'user', loginName);
+		var punt = DH.getPageParameter('punt', null);
+		MYAPP.currentUser = loginForm.username.value;
+		SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', loginForm.username.value);
+		return false;
+	},*/
+
+	getToUpdateUserId: function(records)
+	{
+		var record;
+		record=records[0];
+		LOCAPP.toUpdateUserId=record.getField('uid');
+	},
+	
+	getUpdateUserId: function(records)
+	{
+		var record;
+		record=records[0];
+		LOCAPP.UpdateUserId=record.getField('uid');
 	},
 
 	pr: function (s) {
@@ -157,6 +291,10 @@ var LOCAPP = {
 		return false;
 	},
 
+	updateLocationReq: function(){
+			
+	},
+
 	addLocationReq: function(lon, lat, relateids, category) {
 		// <add-location-req relateids="123,456,789" lon="4.99' lat="54.45/>
 		var req = KW.createRequest('loc-create-req');
@@ -164,6 +302,16 @@ var LOCAPP = {
 		KW.UTIL.setAttr(req, 'lat', lat);
 		KW.UTIL.setAttr(req, 'relateids', relateids);
 		KW.UTIL.setAttr(req, 'subtype', category);
+//		KW.UTIL.setAttr(req, 'id', LOCAPP.UpdateUserId);
+		KW.utopia(req);
+		//LOCAPP.UpdatePersReq(LOCAPP.UpdateUserId,LOCAPP.toUpdateUserId);
+	},
+
+	UpdatePersReq: function(UpdateUserId, toUpdateUserId) {
+		// <add-location-req relateids="123,456,789" lon="4.99' lat="54.45/>
+		var req = KW.createRequest('loc-update-pers-req');
+		KW.UTIL.setAttr(req, 'UpdateUserId', UpdateUserId);
+		KW.UTIL.setAttr(req, 'toUpdateUserId', toUpdateUserId);
 		KW.utopia(req);
 	},
 
@@ -175,6 +323,7 @@ var LOCAPP = {
 		var req = KW.createRequest('loc-delete-req');
 		KW.UTIL.setAttr(req, 'id', id);
 		KW.utopia(req);
+		LOCAPP.deleteMarker();
 	},
 	
 	

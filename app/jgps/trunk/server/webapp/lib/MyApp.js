@@ -27,14 +27,24 @@ var MYAPP = {
 
 /** Load file that contains app-specific menu. */
 	createMenu: function(aMenuContent) {
-		if (!aMenuContent) {
-			DH.getURL('locmenu.html', GTAPP.createMenu);
-			return;
+		var soort = DH.getPageParameter('type', null);
+		if(soort!='edit')
+		{
+			if (!aMenuContent) {
+				DH.getURL('locmenu.html', GTAPP.createMenu);
+				return;
+			}
 		}
-
-		// Content loaded: setup menu
-		DH.setHTML('menucontainer', aMenuContent);
-		GTAPP.menu = new Menu('mainmenu');
+		else
+		{
+			if (!aMenuContent) {
+				DH.getURL('locmenuedit.html', GTAPP.createMenu);
+				return;
+			}
+		}
+			// Content loaded: setup menu
+			DH.setHTML('menucontainer', aMenuContent);
+			GTAPP.menu = new Menu('mainmenu');
 	},
 
 	empty: function() {
@@ -103,6 +113,7 @@ var MYAPP = {
 			GTAPP.mode = 'media';
 			GTAPP.showMode();
 			var loginName = DH.getPageParameter('user', null);
+			loginName=loginName + 'e';
 			MYAPP.currentUser = loginName;
 
 			// Get all active tracks
@@ -166,12 +177,44 @@ var MYAPP = {
 				record.getField('creationdate'),
 				record.getField('lon'),
 				record.getField('lat'),
-				record.getField('subtype'));
+				record.getField('subtype'),
+				record.getField('id'));
 			 location.userName = MYAPP.currentUser;
 			// Create and draw location
 			GTW.featureSet.addFeature(location);
 		}
 		GTW.featureSet.show();
+		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
+		GTW.getFeaturePlayer().show()
+		GTW.featureSet.displayFirst();
+		GTAPP.showStatus('Displaying ' + records.length + ' locations');
+	},
+	
+	showMarkerlocations: function(records){
+		// alert('u=' + userId + ' l=' + loginName);
+		
+		GTW.featureSet.dispose();
+		GTAPP.showStatus('Found ' + records.length + ' locations, displaying...');
+
+		var location, record;
+		for (var i = 0; i < records.length; i++) {
+			record = records[i];
+			location = new MyMedium(record.getField('mediumid'),
+				record.getField('name'),
+				record.getField('description'),
+				record.getField('kind'),
+				record.getField('mime'),
+				record.getField('creationdate'),
+				record.getField('lon'),
+				record.getField('lat'),
+				record.getField('subtype'),
+				record.getField('id'));
+				
+			 location.userName = MYAPP.currentUser;
+			// Create and draw location
+			GTW.featureSet.addFeature(location);
+		}
+		GTW.featureSet.showMarker();
 		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
 		GTW.getFeaturePlayer().show()
 		GTW.featureSet.displayFirst();
