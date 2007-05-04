@@ -45,7 +45,7 @@
 				</div>
 			</td>
 			<td valign="middle" align="right" >
-				<div class="nieuwsberichttitel"><a href="deelnemersedit.jsp">[klik hier om te editeren]</a></div>
+				<div class="nieuwsberichttitel"><a href="deelnemers.jsp">[klik hier om te raadplegen]</a></div>
 			</td>
 	   </tr>
 	<%
@@ -105,9 +105,9 @@
 					  <tr>
 						  <td width="60" height="60" align="left" valign="top" rowspan="2">
 						  	<% if(publiek==1) { %>
-							  <a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
+							  <a href="./locationapp/loginedit-form.html?type=edit&punt=<%=punt%>&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
 							<% } else {%>
-							<a href="locatie-map.jsp?punt=<%=punt%>&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
+							<a href="./locationapp/loginedit-form.html?type=edit&punt=<%=punt%>&user=<%= loginName %>"><img src="<%= imageURL %>" alt="<%= loginName %>" border="0" width="60" height="60"/></a>
 							<% } %>
 						  </td>
 						  <td align="left" valign="top" bgcolor="#eeeeee">
@@ -120,9 +120,9 @@
 								  <div align="right">
 									 <!-- <a href="locatie-map.jsp?punt=<%=punt%>&cmd=archive&user=<%= loginName %>">Bekijk mijn routes</a>-->
 									  	<% if(publiek==1) { %>
-										  <a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>">Bekijk mijn routes</a><% } 
+										  <a href="./locationapp/loginedit-form.html?type=edit&punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn routes</a><% } 
 										  else {%>
-										  <a href="locatie-map.jsp?punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn routes</a><% } %>
+										  <a href="./locationapp/loginedit-form.html?type=edit&punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn routes</a><% } %>
 							  </div>
 							  </div>
 						   </td>
