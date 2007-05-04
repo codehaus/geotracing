@@ -17,6 +17,7 @@ namespace Diwi {
     /// </summary>
     class AppController
     {
+        public static int sActiveRouteID = 0;
         public static XMLement sActiveRoute = null;
         public static string sActiveRouteMapPathHor = null;
         public static string sActiveRouteMapPathVer = null;

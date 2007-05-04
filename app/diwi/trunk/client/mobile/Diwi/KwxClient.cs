@@ -83,7 +83,7 @@ namespace Diwi {
                 }
             }
 
-            x = doNavStart();
+           x = doNavStart();
 
         }
 
@@ -175,24 +175,28 @@ namespace Diwi {
             return null;
         }
 
-        public string getBoundsMap(float radiusKm, bool hor) {
+        public string getBoundsMap(int id, float radiusKm, bool hor) {
 
             float urtLat, urtLon, llbLat, llbLon;
+            XMLement req = new XMLement("nav-get-map-req");
+
             if (hor) {
                 urtLat = GpsReader.lat + GpsReader.km2degLat(radiusKm);
                 llbLat = GpsReader.lat - GpsReader.km2degLat(radiusKm);
                 urtLon = GpsReader.lon + GpsReader.km2degLon((float)(radiusKm * 1.5));
                 llbLon = GpsReader.lon - GpsReader.km2degLon((float)(radiusKm * 1.5));
+                req.addAttribute("height", "320");
+                req.addAttribute("width", "240");
             } else {
                 urtLat = GpsReader.lat + GpsReader.km2degLat((float)(radiusKm * 1.5));
                 llbLat = GpsReader.lat - GpsReader.km2degLat((float)(radiusKm * 1.5));
                 urtLon = GpsReader.lon + GpsReader.km2degLon(radiusKm);
                 llbLon = GpsReader.lon - GpsReader.km2degLon(radiusKm);
+                req.addAttribute("height", "240");
+                req.addAttribute("width", "320");
             }
 
-            XMLement req = new XMLement("route-get-map-req");
-            req.addAttribute("height", hor ? "240" : "320");
-            req.addAttribute("width", hor ? "320" : "240");
+  //         req.addAttribute("id", id.ToString() );
 
             req.addAttribute("llbLat", llbLat.ToString(mUSFormat));
             req.addAttribute("llbLon", llbLon.ToString(mUSFormat));
@@ -203,12 +207,11 @@ namespace Diwi {
             string s = req.toString();
 
             req = utopiaRequest(req);
-            if ((req!=null) && (req.tag == "route-get-map-rsp")) {
+
+            if ((req!=null) && (req.tag == "nav-get-map-rsp")) {
                 return req.getAttributeValue("url");
             }
             return null;
-            //  <nav-get-map-req llbLat="52.0" llbLon="5.1" urtLat="52.15" urtLon="5.11" height="320" width ="240"/>
-            // rawXml	"<utopia-rsp logts=\"1177937077509\"><route-get-map-nrsp errorid=\"6005\" error=\"Unexpected error\" details=\"Unexpected error in request java.lang.NumberFormatException: For input string: \"\"\"/></utopia-rsp>"	string
        
         
         }
@@ -239,7 +242,7 @@ namespace Diwi {
         /// lat/lon format broken on server ?
         /// </summary>
         public void sendSample() {
-            
+
             if (mAgentKey != null) {
                 XMLement xml = new XMLement("nav-point-req");
                 XMLement pt = new XMLement("pt");

@@ -44,6 +44,9 @@ namespace Diwi {
 
         #region properties
 
+        public static float deg2Rad(float degrees) {
+            return (degrees * (float)Math.PI) / 180.0f;
+        }
 
         static public string nmea {
             get { return sGPS.mNMEA; }
@@ -118,7 +121,7 @@ namespace Diwi {
         }
 
         static public float km2degLon(float km) {
-            return km / (float)(Math.Cos((GpsReader.lat * 1.5708)/90.0) * (40000.0 / 360.0));
+            return km / (float)( Math.Cos( deg2Rad(GpsReader.lat) ) * (40000.0 / 360.0));
         }
 
 

@@ -33,6 +33,7 @@ namespace Diwi {
 
 
         void doLoopRoute(int i, string s) {
+            AppController.sActiveRouteID = int.Parse( route.getAttributeValue("id") );
             AppController.sActiveRoute = route;
             AppController.sActiveRouteMapPathHor = null;
             AppController.sActiveRouteMapPathVer = null;

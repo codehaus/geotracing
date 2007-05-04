@@ -36,6 +36,8 @@ namespace Diwi {
             this.Controls.Add(mUserBox);
             this.Controls.Add(mPassBox);
 
+            reOrient();
+
             title = "Login";
         }
 
@@ -80,7 +82,7 @@ namespace Diwi {
             mUserBox.Width = mPassBox.Width = 160;
             mUserBox.Height = mPassBox.Height = 20;
             mUserBox.Left = mPassBox.Left = 40;
-            mServerMess.x = 4; 
+            mServerMess.x = 4;
 
             mUserBox.Text = Properties.Resources.KwxServerUsername;
             mPassBox.Text = Properties.Resources.KwxServerPassword;
@@ -88,7 +90,7 @@ namespace Diwi {
             mUserBox.Font = mFont;
             mPassBox.Font = mFont;
 
-            mUserText.x = 4; 
+            mUserText.x = 4;
             mPassText.x = 4;
 
             reOrient();
