@@ -916,9 +916,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
             } else if (type.equals("video")) {
                 //#style formbox
-                form.append("When you click on 'view video' the video will be " +
+                /*form.append("When you click on 'view video' the video will be " +
                         "downloaded and played in your default media player like " +
                         "realplayer. Afterwards close the media player and continue " +
+                        "here by pressing 'back'");*/
+                form.append("When you click on 'view video' the video will be " +
+                        "downloaded. This might take a while.... Afterwards continue " +
                         "here by pressing 'back'");
 
                 form.addCommand(VIEW_VIDEO_CMD);
@@ -935,11 +938,11 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		*/
         public void commandAction(Command command, Displayable screen) {
             if (command == CANCEL_CMD) {
-                if(tracerEngine.isPaused()){
+                /*if(tracerEngine.isPaused()){
                     // we know that the video has been watched
                     tracerEngine.start();
                     tracerEngine.resume();
-                }
+                }*/
 
                 // Set the current display of the midlet to the textBox screen
                 medium = null;
