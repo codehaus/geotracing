@@ -5,7 +5,7 @@
 }
 
 a:link {
-	color: #004b7d;
+	color: #02497d;
 	text-decoration: none;
 	font-weight: bold;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -13,7 +13,7 @@ a:link {
 
 a:visited {
 	text-decoration: none;
-	color: #004b7d;
+	color: #02497d;
 	font-weight: bold;
 }
 
@@ -63,7 +63,7 @@ a:visited {
 .nieuwsberichttitel, .teksttitel {
 	font-size: 12px;
 	font-weight: bold;
-	color: #004b7d;
+	color: #02497d;
 	letter-spacing: 2px;
 	padding-top: 1px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -83,13 +83,13 @@ a:visited {
 
 a:hover {
 	text-decoration: underline;
-	color: #004b7d;
+	color: #0E3224;
 	font-weight: bold;
 }
 
 a:active {
 	text-decoration: none;
-	color: #004b7d;
+	color: #02497d;
 	font-weight: bold;
 }
 
@@ -113,7 +113,7 @@ a:active {
 }
 
 .imagekaderrood {
-	border: 10px solid #004b7d;
+	border: 10px solid #02497d;
 	margin-top: 5px;
 	margin-right: 5px;
 	margin-bottom: 5px;
@@ -132,7 +132,7 @@ a:active {
 	padding-bottom: 3px;
 	padding-top: 5px;
 	text-transform: uppercase;
-	width: 290px;
+	width: 190px;
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
 	border-bottom-color: #FFFFFF;

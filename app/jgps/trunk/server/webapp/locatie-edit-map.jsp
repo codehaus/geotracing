@@ -111,7 +111,7 @@
 		<table width="100%"  border="0" cellpadding="0" cellspacing="0">
 			<tr>
 				<td width="25%" align="left">
-					<div id="mainmenuanchor">&nbsp;</div>
+					<div id="mainmenu">&nbsp;</div>	
 				</td>
 				<td width="25%" align="left">
 					<span id="mode" style="visibility: hidden">&nbsp;</span>
@@ -125,7 +125,7 @@
 	</td>
 	<td height="23" width="320" bgcolor="#004b7d" class="sitewide">
 		<a href="index.jsp">home</a>
-		| <a href="kaart.jsp?punt=0,4.203817,50.795272&zoom=9">kaart</a> | <a href="deelnemers.jsp">deelnemers</a>
+		| <a href="locatie-map.jsp?punt=4.203817,50.795272&zoom=9">kaart</a> | <a href="deelnemers.jsp">deelnemers</a>
 		| <a href="help.jsp">help</a> | <a href="colofon.jsp">partners</a>
 	</td>
 </tr>

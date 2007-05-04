@@ -40,7 +40,21 @@
 					result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
 
 					log.info("result=" + result);
-			}
+			} else if (command.equals("q-getuserid")) {
+				Oase oase = QueryLogic.getOase();
+				String loginName = getParameter(request, "user", null);
+				// We must have a related person otherwise we fail
+					// QueryLogic.throwOnMissingParm(PAR_USER_NAME, loginName);
+					String tables = "utopia_account";
+					String fields = "utopia_account.id as uid";
+					String where = "utopia_account.loginname = '" + loginName + "'";
+					String relations = null;
+					String postCond = null;
+
+					result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
+
+					log.info("result=" + result);
+			}  
 		} catch (Throwable t) {
 			result = new JXElement(TAG_ERROR);
 			result.setText("Unexpected Error during myget " + t);
