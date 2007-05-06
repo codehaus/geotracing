@@ -196,6 +196,7 @@ namespace Diwi {
                 req.addAttribute("width", "320");
             }
 
+            MapHandler.setBounds(hor, urtLat, urtLon, llbLat, llbLon);
   //         req.addAttribute("id", id.ToString() );
 
             req.addAttribute("llbLat", llbLat.ToString(mUSFormat));

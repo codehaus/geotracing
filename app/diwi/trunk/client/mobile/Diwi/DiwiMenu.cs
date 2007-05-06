@@ -92,6 +92,25 @@ namespace Diwi {
             draw();
         }
 
+        static Byte min(int n1, int n2) {
+            if (n1 > n2) return (Byte)n2;
+            return (Byte)n1;
+        }
+
+        static void lightenRect(Rectangle r) {
+            Color c;
+            for (int y = r.Y; y < r.Height; y++) {
+                for (int x = r.X; x < r.Width; x++) {
+                    c = DiwiPageBase.offScreenBitmap.GetPixel(x, y);
+                    DiwiPageBase.offScreenBitmap.SetPixel(x, y, Color.FromArgb(
+                        min((c.R * 150) / 100, 255), 
+                        min((c.G * 150) / 100, 255), 
+                        min((c.B * 150) / 100, 255)
+                        
+                        ));
+                }
+            }
+        }
 
         public void draw() {
             int index = 0;
@@ -132,6 +151,8 @@ namespace Diwi {
                 } else {
                     mText.color = sTextColor;
                 }
+                //DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, (Rectangle)mItemRects[index]);
+                //lightenRect((Rectangle)mItemRects[index]);
                 mText.draw();
                 //mMenuGraphics.DrawRectangle(new Pen(Color.Black, 1.0F), (Rectangle)mItemRects[index]);
                 index++;

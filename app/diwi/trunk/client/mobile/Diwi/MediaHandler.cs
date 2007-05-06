@@ -13,11 +13,11 @@ namespace Diwi {
         string uri;
         string path;
         bool busy=false;
-        WalkRoutePage.CallbackHandler callb;
+        MapHandler.DownloadCallbackHandler callb;
 
 
 
-        public MediaDownloader(string url, string p, WalkRoutePage.CallbackHandler cb) {
+        public MediaDownloader(string url, string p, MapHandler.DownloadCallbackHandler cb) {
             uri = Uri.UnescapeDataString(url);
             callb = cb;
             mThread = new Thread(new ThreadStart(threadHandler));
@@ -203,7 +203,7 @@ namespace Diwi {
             sr.Close();
 
             if (callb != null)
-                callb(null);
+                callb();
 
             busy = false;
 

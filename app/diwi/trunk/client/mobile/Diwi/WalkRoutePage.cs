@@ -13,7 +13,7 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class WalkRoutePage : DiwiPageBase {
         
-        public delegate void CallbackHandler(string udata);
+        public delegate void CallbackHandler();
         public delegate void POIHandler(XMLement data, float lat, float lon);
 
         private POIHandler poiCB;
@@ -29,10 +29,26 @@ namespace Diwi {
             poiCB = new POIHandler(navPointReceive);
 
             AppController.sKwxClient.poiCallback += new KwxClient.POICallback(navPointMessage);
+            MapHandler.sDownloadCallback += new MapHandler.CallbackHandler(mapReceivedCB);
         }
+
+        void drawPos(int x, int y) {
+            Rectangle oldRect = mouseText.rect;
+            mouseText.erase(sBackgroundColor);
+
+            mouseText.text = "pos: " + x.ToString() + ", " + y.ToString();
+            mouseText.x = 4;
+            mouseText.y = mCurrentRect.Height - 18;
+            mouseText.draw();
+            redrawRect(oldRect, mouseText.rect);
+        }
+
 
         void navPointReceive(XMLement xml, float lat, float lon) {
             XMLement poi = xml.firstChild();
+            int x = MapHandler.currentXpixel(horizontal);
+            int y = MapHandler.currentYpixel(horizontal);
+            setPosition(x, y);
             if (poi != null) {
                 // stumbled on an intersting point...
             }
@@ -46,31 +62,16 @@ namespace Diwi {
                 navPointReceive(xml, lat, lon);
         }
 
-        void mapReceived(string path) {
-            if (AppController.sActiveRouteMapPathHor == null) {
-                AppController.sActiveRouteMapPathHor = path;
-                if (horizontal) {
-                    setBackGround();
-                    draw();
-                }
-                string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID,(float)0.3, false);
-                if (mapUrl != null) {
-                    new MediaDownloader(mapUrl, @"\verMap.jpg", new CallbackHandler(mapReceivedCB));
-                }
-            } else {
-                AppController.sActiveRouteMapPathVer = path;
-                if (!horizontal) {
-                    setBackGround();
-                    draw();
-                }
-            }
-      }
+        void mapReceived() {
+            setBackGround();
+            draw();
+        }
 
-        void mapReceivedCB(string path) {
+        void mapReceivedCB() {
             if( InvokeRequired ) 
-                Invoke(new CallbackHandler(mapReceived),new object[] { path } );
+                Invoke(new CallbackHandler(mapReceived),null );
             else
-                mapReceived(path);
+                mapReceived();
         }
 
 
@@ -110,10 +111,7 @@ namespace Diwi {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             mIsInitialized = true;
-            string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID,(float)0.3, true);
-            if (mapUrl != null) {
-                new MediaDownloader(mapUrl, @"\horMap.jpg", new CallbackHandler(mapReceivedCB));
-            }
+            MapHandler.active = true;
             setBackGround();
         }
 

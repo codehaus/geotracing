@@ -11,18 +11,22 @@ namespace Diwi {   // base class for Diwi Pages.
     // 
     class DiwiPageBase : Form {
         private enum sKeys { M_UP=38, M_DOWN=40, M_LEFT=37, M_RIGHT=39 };
-        protected static Bitmap offScreenBitmap;
+        public static Bitmap offScreenBitmap;
+        Icon sMeIcon = null;
         public static Graphics offScreenGraphics;
         private static Rectangle mBaseRect = new Rectangle(0, 0, 0, 0);
         protected Graphics onScreenGraphics;
         protected DiwiPageBase mParent;
         protected bool mIsInitialized = false;
         protected ArrayList mDrawableElements;
-        private Rectangle mCurrentRect;
+        protected Rectangle mCurrentRect;
         protected DiwiUIMenu mMenu;
         public static Color sBackgroundColor;
         protected bool mInitializing = true;
-        private DiwiUIText mouseText;
+        protected DiwiUIText mouseText;
+        
+        int mYposition = -1;
+        int mXposition = -1;
 
         DiwiImage mBackImage = null;
         DiwiScalingImage mForeImage = null;
@@ -36,6 +40,10 @@ namespace Diwi {   // base class for Diwi Pages.
             sBackgroundColor = Color.FromArgb(180, 250, 0);
 
             mCurrentRect = this.ClientRectangle;
+
+            if (sMeIcon == null) {
+                sMeIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.mypos.ico"));
+            }
 
             this.SuspendLayout();
 
@@ -106,6 +114,13 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.size = size;
                 mBackImage.bitmap = AppController.backgroundVerBitmap;
             }
+        }
+
+        protected void setPosition(int x, int y) {
+            bool redraw = ( x != mXposition || y != mYposition);
+            mXposition = x;
+            mYposition = y;
+            if (redraw) draw();
         }
 
         protected void setBackGroundImg(String anImageName, int aWidth, int aHeight, int aX, int aY) {
@@ -193,8 +208,10 @@ namespace Diwi {   // base class for Diwi Pages.
                     draw();
                     break;
                 case (int)sKeys.M_LEFT:
+                    MapHandler.mapRadius *= 1.5F;
                     break;
                 case (int)sKeys.M_RIGHT:
+                    MapHandler.mapRadius *= 0.75F;
                     break;
                 case (int)sKeys.M_UP:
                     mMenu.incIndex();
@@ -232,12 +249,18 @@ namespace Diwi {   // base class for Diwi Pages.
             if (mBackImage != null) {
                 mBackImage.draw();
             }
+
+            if (mXposition != -1 && mYposition != -1) {
+                offScreenGraphics.DrawIcon(sMeIcon, mXposition-8, mYposition-8);
+            }
+
             foreach (DiwiDrawable d in mDrawableElements) {
                 d.draw();
             }
             if (onScreenGraphics == null) onScreenGraphics = this.CreateGraphics();
             onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
+
 
 
         static bool baseResize(Rectangle r) {
