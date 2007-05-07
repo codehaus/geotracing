@@ -8,6 +8,7 @@ using System.Reflection;
 using Microsoft.WindowsMobile.Forms;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Microsoft.WindowsMobile.Status;
 
 
 namespace Diwi {
@@ -32,6 +33,7 @@ namespace Diwi {
 
         private static Sound sPloink;
 
+       // SystemState
 
         public static void activate() {
             sLog = File.CreateText("DiwiLog.txt");
