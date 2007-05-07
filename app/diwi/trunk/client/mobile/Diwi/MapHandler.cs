@@ -118,6 +118,9 @@ namespace Diwi {
         static void mapReceived(string path) {
             if (AppController.sActiveRouteMapPathHor == null) {
                 AppController.sActiveRouteMapPathHor = path;
+                if (sDownloadCallback != null) {
+                    sDownloadCallback();
+                }
                 string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
                 if (mapUrl != null) {
                     new MediaDownloader(mapUrl, @"\verMap.jpg", new DownloadCallbackHandler(mapReceived));
@@ -128,13 +131,11 @@ namespace Diwi {
                     sDownloadCallback();
                 }
                 sDoDownload--;
-                if (sDoDownload >= 1) {
+                if (sDoDownload > 0) {
                     sDoDownload = 1;
                     downLoadMaps();
                 }
             }
         }
-
     }
-
 }

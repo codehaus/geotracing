@@ -45,26 +45,29 @@ namespace Diwi {
 
 
         void navPointReceive(XMLement xml, float lat, float lon) {
-            XMLement poi = xml.firstChild();
-            int x = MapHandler.currentXpixel(horizontal);
-            int y = MapHandler.currentYpixel(horizontal);
-            setPosition(x, y);
-            if (poi != null) {
-                // stumbled on an intersting point...
-            }
-
+                XMLement poi = xml.firstChild();
+                int x = MapHandler.currentXpixel(horizontal);
+                int y = MapHandler.currentYpixel(horizontal);
+                setPosition(x, y);
+                if (poi != null) {
+                    // stumbled on an intersting point...
+                }
         }
 
         void navPointMessage(XMLement xml, float lat, float lon) {
-            if (InvokeRequired)
-                Invoke(poiCB, new object[] { xml,lat,lon });
-            else
-                navPointReceive(xml, lat, lon);
+            if (xml != null) {
+                if (InvokeRequired)
+                    Invoke(poiCB, new object[] { xml, lat, lon });
+                else
+                    navPointReceive(xml, lat, lon);
+            }
         }
 
         void mapReceived() {
-            setBackGround();
-            draw();
+            if ( (!horizontal && AppController.sActiveRouteMapPathVer != null) || (horizontal && AppController.sActiveRouteMapPathHor != null)) {
+                setBackGround();
+                draw();
+            } 
         }
 
         void mapReceivedCB() {
