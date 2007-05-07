@@ -25,7 +25,7 @@ import org.keyworx.oase.api.*;
 public class LocationHandler extends DefaultHandler {
 	public final static String LOC_CREATE_SERVICE = "loc-create";
 	public final static String LOC_DELETE_SERVICE = "loc-delete";
-	// public final static String LOC_UPDATE_SERVICE = "loc-update";
+	public final static String LOC_UPDATE_SERVICE = "loc-update";
 
 	public final static String ATTR_NAME = "name";
 	public final static String ATTR_DESCRIPTION = "description";
@@ -61,6 +61,8 @@ public class LocationHandler extends DefaultHandler {
 				response = createReq(anUtopiaReq);
 			} else if (service.equals(LOC_DELETE_SERVICE)) {
 				response = deleteReq(anUtopiaReq);
+			} else if (service.equals(LOC_UPDATE_SERVICE)) {
+				response = updateReq(anUtopiaReq);
 			} else {
 				// Unknown request
 				response = HandlerUtil.unknownReq(anUtopiaReq);
@@ -130,7 +132,7 @@ public class LocationHandler extends DefaultHandler {
 		// Optional: relate medium to other records
 		if (reqElm.hasAttr(ATTR_RELATE_IDS)) {
 			String relateIds[] = reqElm.getAttr(ATTR_RELATE_IDS).split(",");
-			for (int i=0; i < relateIds.length; i++) {
+			for (int i = 0; i < relateIds.length; i++) {
 				int nextId = Integer.parseInt(relateIds[i]);
 				location.createRelation(nextId, RELTAG_LOC);
 			}
@@ -177,7 +179,7 @@ public class LocationHandler extends DefaultHandler {
 
 		// All ok, delete related first
 		Record[] related = relater.getRelated(location, null, RELTAG_LOC);
-		for (int i=0; i < related.length; i++) {
+		for (int i = 0; i < related.length; i++) {
 			modifier.delete(related[i]);
 		}
 
@@ -187,6 +189,100 @@ public class LocationHandler extends DefaultHandler {
 		JXElement response = createResponse(LOC_DELETE_SERVICE);
 		response.setAttr(ATTR_ID, id);
 
+		return response;
+	}
+
+	/**
+	 * Update Location.
+	 * <p/>
+	 * Examples
+	 * <code>
+	 * &lt;loc-update-req &gt; &lt;
+	 * <p/>
+	 * &lt;loc-update-rsp id="locationid" &gt; &lt;
+	 * </code>
+	 *
+	 * @param anUtopiaReq A UtopiaRequest
+	 * @return A UtopiaResponse.
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard Utopia exception
+	 */
+	public JXElement updateReq(UtopiaRequest anUtopiaReq) throws UtopiaException, OaseException {
+		JXElement reqElm = anUtopiaReq.getRequestCommand();
+
+		// Required attr id
+		String idStr = reqElm.getAttr(ATTR_ID, null);
+		HandlerUtil.throwOnMissingAttr(ATTR_ID, idStr);
+
+		// Get neccessary objects
+		Oase oase = HandlerUtil.getOase(anUtopiaReq);
+		Location location = (Location) oase.get(Location.class, idStr);
+		if (location == null) {
+			throw new UtopiaException("No location found for id=" + idStr, ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		// Update specified fields
+		if (reqElm.hasAttr(ATTR_NAME)) {
+			location.setStringValue(Location.FIELD_NAME, reqElm.getAttr(ATTR_NAME));
+		}
+
+		// Add optional type to location
+		if (reqElm.hasAttr(ATTR_DESCRIPTION)) {
+			location.setStringValue(Location.FIELD_DESCRIPTION, reqElm.getAttr(ATTR_DESCRIPTION));
+		}
+
+		if (reqElm.hasAttr(ATTR_LON)) {
+			double lon = reqElm.getDoubleAttr(ATTR_LON);
+			double lat = reqElm.getDoubleAttr(ATTR_LAT);
+			long time = Sys.now();
+			location.setPoint(PostGISUtil.createPoint(lon, lat, 0.0d, time));
+		}
+
+		// Add optional type to location
+		if (reqElm.hasAttr(ATTR_STATE)) {
+			location.setIntValue(Location.FIELD_STATE, reqElm.getIntAttr(ATTR_STATE));
+		}
+
+		// Add optional type to location
+		if (reqElm.hasAttr(ATTR_TYPE)) {
+			location.setIntValue(Location.FIELD_TYPE, reqElm.getIntAttr(ATTR_TYPE));
+		}
+
+		// Add optional subtype to location
+		if (reqElm.hasAttr(ATTR_SUBTYPE)) {
+			location.setIntValue(Location.FIELD_SUBTYPE, reqElm.getIntAttr(ATTR_SUBTYPE));
+		}
+
+		Record locRecord = location.getRecord();
+		if (locRecord.isModified()) {
+			location.saveUpdate();
+		}
+
+		// Optional: relate medium to other records
+		if (reqElm.hasAttr(ATTR_RELATE_IDS)) {
+			Relater relater = oase.getRelater();
+
+			// Unrelate existing relations
+			Record[] related = relater.getRelated(locRecord);
+			for (int i=0; i < related.length; i++) {
+				relater.unrelate(locRecord, related[i]);
+			}
+
+			// Create relation with Person
+			location.createRelation(HandlerUtil.getUserId(anUtopiaReq), "location");
+
+			// Update new relations
+			String relateIds[] = reqElm.getAttr(ATTR_RELATE_IDS).split(",");
+			for (int i = 0; i < relateIds.length; i++) {
+				int nextId = Integer.parseInt(relateIds[i]);
+				location.createRelation(nextId, RELTAG_LOC);
+			}
+		}
+
+		// Create and return response
+		JXElement response = createResponse(LOC_UPDATE_SERVICE);
+
+		response.setAttr(ATTR_ID, location.getId());
 		return response;
 	}
 
