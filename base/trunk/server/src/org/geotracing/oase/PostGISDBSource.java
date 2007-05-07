@@ -81,6 +81,66 @@ public class PostGISDBSource extends PostgreSQLDBSource {
 	}
 
 	/**
+	 * Get SQL string for creating table.
+	 * <p/>
+	 * PostGISDBsource uses alter table syntax.
+	 */
+	protected String getCreateTableSQL(TableDef aTableDef) throws OaseException {
+		StringBuffer sb = new StringBuffer(64);
+
+		sb.append("CREATE TABLE ");
+		sb.append(aTableDef.getName());
+		FieldDef[] fieldDefs = aTableDef.getFieldDefs();
+		FieldDef nextFieldDef = null;
+		// CREATE TABLE authors (id integer PRIMARY KEY)
+		if (!fieldDefs[0].getName().equals("id")) {
+			throw new OaseException("First field must be id (primary key)");
+		}
+
+		// Create table with just id
+		sb.append(" ( id integer PRIMARY KEY); ");
+
+		// Add all other fields using ADD COLUMN syntax
+		for (int i = 1; i < fieldDefs.length; i++) {
+			nextFieldDef = fieldDefs[i];
+			// Only define fields that are mapped to DB_SOURCE
+			if (!TypeDef.getSourceId(nextFieldDef.getType()).equals(StoreContextConfig.SOURCE_DB)) {
+				continue;
+			}
+
+			// Append ADD COLUMN statements: special case for spatial colums
+			if (nextFieldDef.getType() == FieldDef.TYPE_OBJECT) {
+				// Spatial column
+				sb.append(getAddSpatialColumnSQL(aTableDef, fieldDefs[i]));
+			} else {
+				// Other "normal" column
+				sb.append("ALTER TABLE " + aTableDef.getName() + " ADD COLUMN ");
+
+				// Add <name> <type> pair
+				sb.append(nextFieldDef.getName());
+				sb.append(' ');
+
+				String sqlType = getSQLType(TypeDef.getStorageType(nextFieldDef.getType()));
+				sb.append(sqlType);
+
+				// Optional (size) constraint.
+				if (nextFieldDef.getSize() != -1) {
+					sb.append("(" + nextFieldDef.getSize() + ")");
+				}
+
+				// Optional required
+				if (nextFieldDef.isRequired()) {
+					sb.append(" NOT NULL");
+				}
+				sb.append("; ");
+			}
+		}
+
+		// return final result.
+		return sb.toString();
+	}
+
+	/**
 	 * Update Record.
 	 *
 	 * @throws org.keyworx.oase.api.OaseException
@@ -177,24 +237,26 @@ public class PostGISDBSource extends PostgreSQLDBSource {
 
 	/**
 	 * Extended DBSources may provide their specific DB post-creation constraints.
+	 protected String[] getPostCreateTableSQL(TableDef aTableDef) throws OaseException {
+	 // For PostGIS: select spatial columns (defined as type OBJECT)
+
+	 List result = new ArrayList(1);
+	 FieldDef[] fieldDefs = aTableDef.getFieldDefs();
+
+	 // Check all fielddefs for (spatial) columns.
+	 for (int i = 0; i < fieldDefs.length; i++) {
+	 // Handle spatial object fields
+	 if (fieldDefs[i].getType() == FieldDef.TYPE_OBJECT) {
+	 result.add(getAddSpatialColumnSQL(aTableDef, fieldDefs[i]));
+	 }
+	 }
+	 return (String[]) result.toArray(new String[result.size()]);
+	 }
 	 */
-	protected String[] getPostCreateTableSQL(TableDef aTableDef) throws OaseException {
-		// For PostGIS: select spatial columns (defined as type OBJECT)
 
-		List result = new ArrayList(1);
-		FieldDef[] fieldDefs = aTableDef.getFieldDefs();
-
-		// Check all fielddefs for (spatial) columns.
-		for (int i = 0; i < fieldDefs.length; i++) {
-			// Handle spatial object fields
-			if (fieldDefs[i].getType() == FieldDef.TYPE_OBJECT) {
-				result.add(getAddSpatialColumnSQL(aTableDef, fieldDefs[i]));
-			}
-		}
-		return (String[]) result.toArray(new String[result.size()]);
-	}
-
-	/** Return SQL string to create spatial column in PostGIS. */
+	/**
+	 * Return SQL string to create spatial column in PostGIS.
+	 */
 	protected String getAddSpatialColumnSQL(TableDef aTableDef, FieldDef aFieldDef) {
 		// PostGIS syntax examples:
 		// SELECT AddGeometryColumn('gistest', 'latlon_test','point', 4326,'POINT',2)";

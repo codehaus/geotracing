@@ -120,11 +120,28 @@ just[AT]justobjects.nl<br/>
 <li>live tracking</li>
 <li>geotagged media (<a href="http://en.wikipedia.org/wiki/Locative_media" target="_new">locative media</a>)</li>
 <li>user-centric/multi-user interaction</li>
-<li>navigation/LBS (v2+)</li>
+<li>Location Based Services</li>
 <li>application-driven development</li>
-<li>tech: C/S, mobile, GPS, Java, AJAX, Google Maps</li>
+<li>tech: C/S, GPS, Java, AJAX, Google Maps, PostGIS</li>
 <li>OSS: LGPL, <a href="http://geotracing.codehaus.org" target="_new">geotracing.codehaus.org</a></li>
 </ul>
+</div>
+
+<div class="slide">
+<h1>GPS - Global Positioning System</h1>
+<div class="center">
+	<img  src="assets/gps-illustration.jpg" alt="overview" />
+</div>
+<p>
+Source: <a href="http://www.aero.org/education/primers/gps/" target="_new">GPS Primer</a>
+</p>
+</div>
+
+<div class="slide">
+<h1>GPS Devices</h1>
+<div class="center">
+	<img  src="assets/gps-devices.jpg" alt="overview" />
+</div>
 </div>
 
 <div class="slide">
@@ -164,8 +181,8 @@ just[AT]justobjects.nl<br/>
 </li>
 <li>Allow "Digital geo-story telling"
 <ul>
-	<li>mapping experience</li>
-	<li>navigating experience (2.0)</li>
+	<li>mapping personal experiences</li>
+	<li>navigating others' experiences</li>
 </ul>
 </li>
 </ul>
@@ -185,7 +202,7 @@ just[AT]justobjects.nl<br/>
 
 
 <div class="slide">
-<h1>Applications - Realized</h1>
+<h1>Applications</h1>
 <table border="0" cellspacing="4" cellpadding="8">
 	<tr>
 		<td align="center">
@@ -226,7 +243,7 @@ just[AT]justobjects.nl<br/>
 
 
 <div class="slide">
-<h1>Applications - In Progress</h1>
+<h1>Applications - Continued</h1>
 <table border="0" cellspacing="4" cellpadding="8">
 	<tr>
 		<td align="center">
@@ -235,18 +252,18 @@ just[AT]justobjects.nl<br/>
 			Sense of Brainport</a>
 		</td>
 		<td align="center">
-			<a href="http://www.bliin.com" target="_new"><img src="assets/bliin.jpg" width="200" height="150" alt="traceland" /><br/>
+			<a href="http://bliin.com" target="_new"><img src="assets/bliin.jpg" width="200" height="150" alt="traceland" /><br/>
 			Bliin</a>
 
 		</td>
 		<td align="center">
-			<a href="http://kwlabs-blog.waag.org/mediawiki/index.php/KWLocativeMedia" target="_new"><img src="assets/mlgk.jpg" width="200" height="150" alt="traceland" /><br/>
-			MLGK</a>
+			<a href="http://www.mlgk.nl" target="_new"><img src="assets/mlgk.jpg" width="200" height="150" alt="mlgk" /><br/>
+			Mobile Learning Game Kit</a>
 		</td>
 	</tr>
 	<tr>
 		<td align="center">
-			<a href="http://www.waag.org/programma/locativemedia" target="_new"><img src="assets/diwi.jpg" width="200" height="150" alt="traceland" /><br/>
+			<a href="http://www.digitalewichelroede.nl" target="_new"><img src="assets/diwi.jpg" width="200" height="150" alt="traceland" /><br/>
 			Digital Dowsing-rod</a>
 
 		</td>
@@ -270,7 +287,7 @@ just[AT]justobjects.nl<br/>
 <li>Sign up and login
 <ul>
 	<li>go to <a href="http://www.geotracing.com/gt">Traceland app</a></li>
-	<li>select "My | Admin"</li>
+	<li>select "My | Login"</li>
 	<li>sign up</li>
 	<li>login</li>
 </ul>
@@ -311,9 +328,20 @@ just[AT]justobjects.nl<br/>
 		<li>send text/photo/video/audio</li>
 	</ul>
 </li>
-<li>view your location on Google Map
+<li>view your location/trace on Google Map
 </li>
-</ul>
+<li>GeoRadar
+	<ul>
+		<li>track nearby users and media</li>
+	</ul>
+</li></ul>
+</div>
+
+<div class="slide">
+<h1>MobiTracer - GeoRadar</h1>
+	<div class="center">
+		<img  src="assets/georadar.jpg" alt="mt-phones" />
+	</div>
 </div>
 
 <div class="slide">
@@ -344,7 +372,7 @@ just[AT]justobjects.nl<br/>
 	<ul>
 		<li>storage layer (Oase)</li>
 		<li>multi-database support</li>
-		<li>now MySQL, PostGIS planned</li>
+		<li>PostGIS (spatial extension to PostgreSQL)</li>
 	</ul>
 </li>
 </ul>
@@ -367,6 +395,7 @@ just[AT]justobjects.nl<br/>
 	<li>WebEditor (/my)
 <ul>
 	<li>manage tracks/media</li>
+	<li>uploads: media, GPX</li>
 </ul>
 </li>
 <li>WebViewer
@@ -396,8 +425,8 @@ just[AT]justobjects.nl<br/>
 	</ul>
 </li>
 <li><a href="http://www.google.com/apis/maps" target="_new">Google Maps</a></li>
+<li><a href="http://http://www.postgis.org" target="_new">PostGIS</a> spatial RDBMS</li>
 <li>Research: AJAX lib (<a href="http://www.dojotoolkit.org/" target="_new">Dojo?</a>, <a href="http://docs.codehaus.org/display/MAP/Home" target="_new">MapBuilder?</a>)</li>
-<li>Research: spatial RDBMS (<a href="http://http://www.postgis.org" target="_new">PostGIS?</a>)</li>
 </ul>
 </div>
 
@@ -560,13 +589,13 @@ http://www..../get.jsp?cmd=q-active-tracks
 	<li>organize OSS project</li>
 	<li>documentation</li>
 	<li>client: PDA</li>
+	<li>server: spatial DB (PostGIS, done)</li>
 </ul>
 	</li>
 <li>planned features (v2)
 <ul>
 	<li>navigation/LBS</li>
 	<li>standards: openGIS, ...</li>
-	<li>server: spatial DB (PostGIS)</li>
 	<li>client: AJAX framework (DOJO?/MapBuilder?)</li>
 </ul>
 </li>
