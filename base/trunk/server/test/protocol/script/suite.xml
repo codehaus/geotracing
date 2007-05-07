@@ -1,9 +1,10 @@
 <testsuite>
 	<testset file="tracinghandler.xml"/>
-	<testset file="locationhandler.xml"/>
 	<testset file="queryhandler.xml"/>
-	<!--
+	<testset file="locationhandler.xml"/>
 	<testset file="commenthandler.xml"/>
+	<!--
+
 	<testset file="profilehandler.xml"/> -->
 </testsuite>
 

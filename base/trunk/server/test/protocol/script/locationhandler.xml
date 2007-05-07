@@ -16,7 +16,6 @@
 		</expect>
 	</test>
 
-
 	<test id="location-create-req">
 		<send id="client1">
 			<utopia-req>
@@ -27,6 +26,34 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<loc-create-rsp id="${locid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="location-update-empty-req">
+		<send id="client1">
+			<utopia-req>
+				<loc-update-req id="${locid1}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<loc-update-rsp id="${locid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="location-update-req">
+		<send id="client1">
+			<utopia-req>
+				<loc-update-req id="${locid1}" name="aname" type="202" subtype="3" lon="4.92" lat="52.35"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<loc-update-rsp id="${locid1}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
