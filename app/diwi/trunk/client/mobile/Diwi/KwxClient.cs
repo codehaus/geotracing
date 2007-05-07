@@ -347,6 +347,8 @@ namespace Diwi {
                     CurrentPageEvent(str);
                 }
                 */
+            } catch (Exception) {
+                return null;
             }
         }
     }
