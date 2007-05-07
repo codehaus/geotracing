@@ -25,7 +25,7 @@ var MYAPP = {
 	},
 
 	start: function() {
-		GTAPP.mShowHelp("content/message.html");
+		// GTAPP.mShowHelp("content/message.html");
     },
 
 // Called in GTAPP.init() (see overload above)

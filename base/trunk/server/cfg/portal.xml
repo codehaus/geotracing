@@ -79,10 +79,10 @@
 				<property name="password" host="sumatra">email.upload.password.sumatra</property> -->
 			</daemon>
 
-			<!-- Tracer Bot
+			<!-- Tracer Bot  -->
 			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
 				<property name="intervalMillis">20000</property>
-			</daemon>    -->
+			</daemon>
 
 			<!-- Daemon for various upgrades
 			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
