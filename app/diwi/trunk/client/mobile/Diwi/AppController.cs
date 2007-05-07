@@ -31,6 +31,8 @@ namespace Diwi {
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
+        public static Backlight sBacklight = new Backlight();
+
         private static Sound sPloink;
 
        // SystemState
@@ -52,11 +54,14 @@ namespace Diwi {
 
             sKwxClient = KwxClient.instance;
             sGpsReader = GpsReader.instance;
+
+            sBacklight.Activate();
         }
 
         public static void deactivate() {
             sGpsReader.stop();
             sKwxClient.stop();
+            sBacklight.Release();
             Thread.Sleep(1000);
         }
 

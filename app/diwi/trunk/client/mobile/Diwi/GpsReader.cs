@@ -158,6 +158,12 @@ namespace Diwi {
                 if (mSerialPort == null) {
                     mSerialPort = new System.IO.Ports.SerialPort(mPort);
                 }
+ 
+                try {
+                    mSerialPort.Close();
+                } catch (IOException) {
+                    ;
+                }
 
                 try {
                     mSerialPort.Open();
