@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppController.cs" />
+    <Compile Include="backlight.cs" />
     <Compile Include="DiwiUIStaticText.cs" />
     <Compile Include="MakePhotoPage.cs">
       <SubType>Form</SubType>
