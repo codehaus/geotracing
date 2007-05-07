@@ -19,4 +19,8 @@ GMAP.addKey('localhost8080',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xTwM0brOpm-All5BF6PoaKBxRWWERRoOsVQVA34Dw_ROVWVdbWHUb4KkA',
 		'^https?://localhost:8080/.*' );
 
+GMAP.addKey('suwa',
+		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xQ8ZmgLZnPvpLJYUK9gOBqAWzbFrBR3Q1c7LX1SJP-2ggv7isGJmZAg2A',
+		'^https?://suwa/.*' );
+
 GMAP.loadGoogleMapScript('2.66');

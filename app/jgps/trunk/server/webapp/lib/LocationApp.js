@@ -291,8 +291,12 @@ var LOCAPP = {
 		return false;
 	},
 
-	updateLocationReq: function(){
-			
+	updateLocationReq: function(id, relateids, category){
+		// <add-location-req relateids="123,456,789" lon="4.99' lat="54.45/>
+		var req = KW.createRequest('loc-update-req');
+		KW.UTIL.setOptAttr(req, 'relateids', relateids);
+		KW.UTIL.setOptAttr(req, 'subtype', category);
+		KW.utopia(req);
 	},
 
 	addLocationReq: function(lon, lat, relateids, category) {
