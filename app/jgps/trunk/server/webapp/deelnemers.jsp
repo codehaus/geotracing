@@ -45,7 +45,7 @@
 		</div>
 	</td>
 	<td valign="middle" align="right">
-		<div class="nieuwsberichttitel"><a href="deelnemersedit.jsp">[klik hier om te editeren]</a></div>
+		<div class="nieuwsberichttitel"><a href="deelnemersedit.jsp"></a></div>
 	</td>
 </tr>
 <%
@@ -151,8 +151,8 @@
 							<!-- <a href="locatie-map.jsp?punt=<%=punt%>&cmd=archive&user=<%= loginName %>">Bekijk mijn routes</a>-->
 							<% if (publiek == 1) { %>
 							<a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>">Bekijk mijn
-								routes</a><% } else {%>
-							<a href="locatie-map.jsp?punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn routes</a><% } %>
+								punten</a><% } else {%>
+							<a href="locatie-map.jsp?punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn punten</a><% } %>
 						</div>
 					</div>
 				</td>
