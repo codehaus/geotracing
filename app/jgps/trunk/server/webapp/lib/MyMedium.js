@@ -74,8 +74,17 @@ function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype, locid) {
 		var lat = point.y;
 		var html = '<h3>' + this.name + '</h3>';
 		var desc=this.desc;
-		desc=desc.replace(' ' ,'_');
-		html += "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteLocationReq(" + this.locid + ")><u>Verwijder marker</u></label><br/><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormUpdate('locationapp/update-location-form.html','" + lng + "','" + lat + "','" + this.locid + "','" + this.name + "','" + this.subtype + "','" + desc + "','updatelocationform')><u>Wijzig marker</u></label>";
+		while (desc.indexOf(' ')>0)
+		{
+			desc=desc.replace(' ' ,'&nbsp;');
+		}
+		var name=this.name;
+		while (name.indexOf(' ')>0)
+		{
+			name=name.replace(' ','&nbsp;');
+		}
+		
+		html += "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteLocationReq(" + this.locid + ")><u>Verwijder marker</u></label><br/><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormUpdate('locationapp/update-location-form.html','" + lng + "','" + lat + "','" + this.locid + "','" + name + "','" + this.subtype + "','" + desc + "','updatelocationform')><u>Wijzig marker</u></label>";
 
 		GEvent.addListener(marker, "click", function() {
 			latestoverlay = marker;
@@ -86,6 +95,7 @@ function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype, locid) {
 			latestoverlay = marker;
 			jj.display();
      	});
+		LOCAPP.gmarkers.push(marker);
 		return marker;
 	}
 }

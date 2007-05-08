@@ -19,6 +19,8 @@ var LOCAPP = {
 	currentName: null,
 	toUpdateUserId: null,
 	UpdateUserId: null,
+	gmarkers: [],
+	aanmaken: null,
 
 	latestoverlay:null ,
 	loadForm: function(aFormFile) {
@@ -36,14 +38,14 @@ var LOCAPP = {
 
 	},
 	
-	loadFormUpdate: function(aFormFile, lng, lat, id,desc,type,subtype,name, form) {
+	loadFormUpdate: function(aFormFile, lng, lat, id,name,subtype,desc, form) {
 		LOCAPP.pr('load form: ' + aFormFile);
 		LOCAPP.currentLon = lng;
 		LOCAPP.currentLat = lat;
 		LOCAPP.currentForm = form;
 		LOCAPP.currentId = id;
 		LOCAPP.currentDesc = desc;
-		LOCAPP.currentType = type;
+		//LOCAPP.currentType = type;
 		LOCAPP.currentSubtype = subtype;
 		
 		DH.getURL(aFormFile, LOCAPP.onLoadForm);
@@ -66,7 +68,7 @@ var LOCAPP = {
 				toevoegenForm.lon.value = LOCAPP.currentLon;
 				toevoegenForm.lat.value = LOCAPP.currentLat;
 				toevoegenForm.id.value = LOCAPP.currentId;
-				toevoegenForm.subtype.value = LOCAPP.currentSubtype;
+				toevoegenForm.categories.value = LOCAPP.currentSubtype;
 				toevoegenForm.description.value = LOCAPP.currentDesc;
 				toevoegenForm.name.value = LOCAPP.currentName;
 			}
@@ -77,6 +79,14 @@ var LOCAPP = {
 	deleteMarker: function() {
 		GMAP.map.removeOverlay(latestoverlay);
 		GMAP.map.closeInfoWindow();
+	},
+	
+	deleteAllMarkers: function() {
+		for (var i=0;i<this.gmarkers.length;i++) {
+    	    GMAP. map.removeOverlay(this.gmarkers[i]);
+      	}
+		GMAP.map.closeInfoWindow();
+		GEvent.removeListener(LOCAPP.aanmaken);
 	},
 
 	createMarker: function(point, icon) {
@@ -90,12 +100,15 @@ var LOCAPP = {
 			latestoverlay = marker;
 			marker.openInfoWindowHtml(htmltekst);
 		});
+		
+		LOCAPP.gmarkers.push(marker);
 		return marker;
 	} ,
 
 	starteditSession: function() {
 		LOCAPP.pr('start');
-		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
+	//	KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
+		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60, '/jgps');
 		LOCAPP.loadForm('locationapp/loginedit-form.html');
 	
 		
@@ -103,16 +116,12 @@ var LOCAPP = {
 
 	startSession: function() {
 		LOCAPP.pr('start');
-		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
+		//KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
+		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60, '/jgps');
 		LOCAPP.loadForm('locationapp/login-form.html');
 	
 	},
-	starteditmapSession: function() {
-		LOCAPP.pr('start');
-		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60);
-		LOCAPP.loadForm('locationapp/loginedit-form.html');
 	
-	},
 	login: function() {
 		LOCAPP.pr('logging in...');
 
@@ -131,13 +140,27 @@ var LOCAPP = {
 		}
 
 		// Do the login
-		KW.login(loginForm.username.value, loginForm.password.value);
+		MYAPP.currentUser = loginForm.username.value;
+		//		alert(3);
+		KW.login(loginForm.username.value, MYAPP.currentUser );
+		//alert(1);
 		LOCAPP.pr('login sent');
 		LOCAPP.loadForm('locationapp/ingelogd.html');
 		//GTW.featureSet.dispose();
-		MYAPP.currentUser = loginForm.username.value;
+		//alert(MYAPP.currentUser);
 		
-		window.location="locatie-map.jsp?punt=" + punt +"&cmd=kaart&user=" + loginForm.username.value;
+		
+	//	window.location="locatie-map.jsp?punt=" + punt +"&cmd=kaart&user=" + loginForm.username.value;
+		SRV.get('q-locations-by-user', MYAPP.showlocations, 'user', MYAPP.currentUser );
+		/*MYAPP.ingelogd=true;
+		//LOCAPP.gmarkers=null;
+		MYAPP.init();
+		MYAPP.start();
+		if(this.gmarkers.length!=0)
+		{
+			LOCAPP.deleteAllMarkers();
+		}
+		*/
 		return false;
 		
 	},
@@ -169,14 +192,15 @@ var LOCAPP = {
 			}
 			else
 			{
-				KW.login(loginForm.username.value, loginForm.password.value);
+				MYAPP.currentUser = loginForm.username.value;
+				KW.login(loginForm.username.value, MYAPP.currentUser );
 				LOCAPP.pr('login sent');
 				LOCAPP.loadForm('locationapp/ingelogd.html');
 				//GTW.featureSet.dispose();
 				GTAPP.mode = 'media';
 				GTAPP.showMode();
-				MYAPP.currentUser = loginForm.username.value;
-				SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', loginForm.username.value);
+				
+				SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', MYAPP.currentUser );
 				var icon = new GIcon();
 				icon.image = "./images/nieuw.png";
 				icon.iconSize = new GSize(20, 34);
@@ -185,13 +209,12 @@ var LOCAPP = {
 		
 				GEvent.addListener(GMAP.map, "click", function(marker, point) {
 					if (!marker) {
-		
-						//if (addLocationForm) {
 						GMAP.map.addOverlay(LOCAPP.createMarker(point, icon));
-						//addLocationForm.lon.value = point.lng();
-						//addLocationForm.lat.value = point.lat();
-						//}
-		
+					}
+				});
+				LOCAPP.aanmaken=GEvent.addListener(GMAP.map, "click", function(marker, point) {
+					if (!marker) {
+						GMAP.map.addOverlay(LOCAPP.createMarker(point, icon));
 					}
 				});
 				return false;
@@ -290,14 +313,27 @@ var LOCAPP = {
 		KW.MEDIA.upload(LOCAPP.onUploadMediumRsp, DH.getObject('addlocationform'));
 		return false;
 	},
-
-	updateLocationReq: function(id, relateids, category){
+	
+	updateLocation: function () {
+		LOCAPP.pr('uploading medium...');
+		KW.MEDIA.upload(LOCAPP.UpdateUploadMediumRsp, DH.getObject('updatelocationform'));
+		return false;
+	},
+	
+	updateLocationReq: function(lon, lat, relateids, category, id, desc,name){
 		// <add-location-req relateids="123,456,789" lon="4.99' lat="54.45/>
 		var req = KW.createRequest('loc-update-req');
 		KW.UTIL.setOptAttr(req, 'relateids', relateids);
 		KW.UTIL.setOptAttr(req, 'subtype', category);
+		KW.UTIL.setAttr(req, 'lon', lon);
+		KW.UTIL.setAttr(req, 'lat', lat);
+		KW.UTIL.setAttr(req, 'id', id);
+		KW.UTIL.setAttr(req, 'desc', desc);
+		KW.UTIL.setAttr(req, 'name', name);
+		
 		KW.utopia(req);
 	},
+
 
 	addLocationReq: function(lon, lat, relateids, category) {
 		// <add-location-req relateids="123,456,789" lon="4.99' lat="54.45/>
@@ -330,6 +366,26 @@ var LOCAPP = {
 		LOCAPP.deleteMarker();
 	},
 	
+	UpdateUploadMediumRsp: function(elm) {
+		// var rsp = elm.getElementsByTagname('medium-insert-rsp');
+		LOCAPP.pr('medium upload: ' + elm.tagName + ' id=' + elm.getAttribute('id'));
+		var updateLocationForm = DH.getObject('updatelocationform');
+		var lon = updateLocationForm.lon.value;
+		var lat = updateLocationForm.lat.value;
+		var subtype = updateLocationForm.categories.value;
+		var name = updateLocationForm.name.value;
+		var desc = updateLocationForm.description.value;
+		var id = updateLocationForm.id.value;
+		
+		KW.MEDIA.update(LOCAPP.onUpdateMediumRsp, id, name, desc);
+		
+		var mediumDiv = DH.getObject('featurepreview');
+		var relatieids = elm.getAttribute('id');
+		mediumDiv.innerHTML = '<img src="media.srv?id=' + relatieids + '&resize=100" border="0" />';
+		
+		
+		LOCAPP.updateLocationReq(lon, lat, relatieids, subtype, id, desc,name);
+	},
 	
 	onUploadMediumRsp: function(elm) {
 		// var rsp = elm.getElementsByTagname('medium-insert-rsp');

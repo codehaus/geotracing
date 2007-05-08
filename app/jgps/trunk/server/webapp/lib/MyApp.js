@@ -24,6 +24,7 @@ var MYAPP = {
 	WINDOW_TITLE: 'GeoTracing - JGPS',
 	media: null,
 	currentUser: null,
+	ingelogd: false,
 
 /** Load file that contains app-specific menu. */
 	createMenu: function(aMenuContent) {
@@ -103,6 +104,12 @@ var MYAPP = {
 		}
 		//var cmd = DH.getPageParameter('cmd', 'archive');
 		var cmd = DH.getPageParameter('cmd', null);
+		if(MYAPP.ingelogd==true)
+		{
+			MYAPP.ingelogd==false;
+			cmd="kaart";
+		}
+		
 		if (cmd == 'archive') {
 			var tracerName = DH.getPageParameter('user', null);
 			if (tracerName == null) {
@@ -134,6 +141,7 @@ var MYAPP = {
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);
 		GMAP.addMapType('hybrid', G_HYBRID_MAP);
 		// GMAP.addMapType('luchtfoto', G_MAP_EINDHOVEN_SAT);
+
 
 		// Create the Google Map
 		GMAP.createGMap('map');
