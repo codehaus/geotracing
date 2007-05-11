@@ -11,9 +11,8 @@ function wpCreatePane(type)
 	{
 		/* public panes */
 		
-		
 		case 'main':
-			var pane = new Pane('main',40,40,230,80,1,true);
+			var pane = new Pane('main',40,40,225,80,1,true);
 			pane.setContent(wpGuiCreate('main'));
 			pane.show();
 			break;
@@ -25,34 +24,39 @@ function wpCreatePane(type)
 			break;
 			
 		case 'display':
-			var pane = new Pane('display',0,40,230,340,1,true);
+			var pane = new Pane('display',0,40,230,100,1,true,undefined,true); //auto-size pane
 			pane.setContent(wpGuiCreate('display'));
 			//align right side of window
 			pane.div.style.left = '';
 			pane.div.style.right = '20px';
-			
+
+			/*			
 			pane.hideMore = function()
 			{
-				if (browser.safari && document.getElementById('qtvideo'))
-				{
-					//qt safari bug (force sound stop)
-					tmp_debug(1,'QT STOP');
-					document.getElementById('qtvideo').Stop();
-				}
 				//clear pane contents
-				this.content.firstChild.innerHTML = '';
-
+				var obj = this;
+				window.setTimeout(function() { obj.content.firstChild.innerHTML = '' },150);
+				
+// 				if (browser.safari && document.getElementById('qtvideo'))
+// 				{
+// 					//qt safari bug (force sound stop)
+// 					tmp_debug(1,'QT STOP');
+// 					document.getElementById('qtvideo').Stop();
+// 				}
 			}
-			//pane.show();
+			*/
 			break
 			
-		case 'play':
-			var pane = new Pane('play',110,0,600,80,1,true);
-			pane.setContent(wpGuiCreate('play'));
+		case 'playdisplay':
+			var pane = new Pane('playdisplay',110,0,600,80,1,true);
+			pane.setContent(wpGuiCreate('playdisplay'));
 			//align bottom if window
 			pane.div.style.top = '';
-			pane.div.style.bottom = '20px';
-		
+			pane.div.style.bottom = '30px';
+			//refs for updating
+			pane.game = pane.content.childNodes[0];
+			pane.play = pane.content.childNodes[1];
+			pane.round = pane.content.childNodes[2];
 			break;
 		
 		default:
@@ -97,13 +101,16 @@ function wpGuiCreate(type,s,id,n)
 			break;
 			
 		case 'display':
-			str+= '<div id="media_display" style="width:230px;"></div>';
-			str+= '<div style="right:15px; top:8px"><a href="javascript://close" onclick="wpCloseDisplay();this.blur()">close</a></div>';
+			str+= '<div id="media_display" style="width:228px; margin-bottom:5px"></div>';
 			break;
 			
-		case 'play':
-			str+= '<span class="title">game</span> "<b>name</b>"<br>[status, team, score]';
-			str+= '<div style="right:15px; top:8px"><a href="javascript://exit" onclick="if(confirm(\'leave gameplay?\'))wpSelect(\'play\')">exit</a></div>';
+		case 'playdisplay':
+			str+= '<div id="playdisplay_game" style="left:11px; top:9px; width:160px"></div>';
+			str+= '<div id="playdisplay_game" style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#dbdbdb; height:80px"></div>';
+			str+= '<div id="playdisplay_game" style="left:400px; top:9px; width:215px"></div>';
+
+			str+= '<a style="position:absolute; right:13px; top:5px" href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
+//			str+= '<input type="button" style="position:absolute; right:13px; top:5px" value="exit" onclick="if(confirm(\'leave gameplay?\'))wpSelect(\'play\')">';
 			break;
 		
 		default:
@@ -209,158 +216,4 @@ Tooltip.prototype.update = function(e,x,y)
 	
 	this.elm.style.left = this.x +'px';
 	this.elm.style.top = this.y +'px';
-}
-
-
-
-
-
-
-
-
-
-
-/* animation classes */
-
-// function iiFadeRepeat(obj)
-// {
-// 	tmp_debug(4,'iiFadeRepeat');
-// 	//to prevent bugs in MSIE when object is killed while fading
-// 	if (obj)
-// 	{
-// 		obj.animate();
-// 		tmp_debug(4,'fadeRepeat:',obj);
-// 	}
-// 	//else 
-// }
-
-function iiFade(obj,elm,b,e,continues,s,t,f)
-{
-	this.obj = obj; //name of object
-
-	this.elm = elm; //target dom elements array
-	this.fade = this.begin = b; //use begin>end for fadeout;
-	this.end = e;
-	this.continues = continues; //true/false for continues/once, number for specific amount of fade repeats
-	this.count = 1;
-	this.forceEnd = (typeof(f))? f:-1;
-
-	this.step = (b>e)? -s:s; 	
-	this.interval = t;
-	this.loop = false; //ref to window.interval
-}
-
-iiFade.prototype.start = function()
-{
-
-	//reset first if used repeatedly
-	this.fade = this.begin;
-	this.count = 1;
-	//set start level
-	this.apply('show');
-	
-	//skip fading effects (user option)
-	if (ii_disable_effects && this.obj!='ii_activity_glow' && this.obj!='loginfade')
-	{
-		this.stop();
-		return;
-	}
-	
-	//start interval
-	this.fading = true;
-	//this.loop = window.setInterval('iiFadeRepeat('+this.obj+')',this.interval);
-	this.loop = window.setInterval(this.obj+'.animate()',this.interval);
-}
-
-iiFade.prototype.cancel = function()
-{
-	//abort
-	this.fading = false;
-	if (this.loop) window.clearTimeout(this.loop);
-	this.loop = false;
-	this.fade = this.begin;
-	if (this.fade==0) this.apply('hide');
-	else this.apply();
-}
-
-iiFade.prototype.stop = function()
-{
-	this.fading = false;
-	if (this.loop) window.clearTimeout(this.loop);
-	this.loop = false;
-	//set fade to exact end value, unless an override end value is given
-	this.fade = (this.forceEnd>-1)? this.forceEnd:this.end;
-	if (this.fade==0) this.apply('hide');
-	else this.apply();
-}
-
-iiFade.prototype.animate = function()
-{
-	this.fade += this.step;
-
-	if ((this.step<0 && this.fade<=Math.min(this.begin,this.end)) || (this.step>0 && this.fade>=Math.max(this.begin,this.end)))
-	{
-		if (this.continues>1)
-		{
-			if (this.count<this.continues) //repeat specific amount of times
-			{
-				this.count++;
-				this.step = -this.step;
-			}
-			else
-			{
-				//done
-				this.stop();
-				return;
-			}
-		}
-		else if (this.continues)
-		{
-			this.step = -this.step; //reverse the fade
-		}
-		else
-		{
-			//done
-			this.stop();
-			return;
-		}
-	}
-	//apply to div(s)
-	this.apply();
-	
-	//if (this.obj=='ii_new.glow') document.getElementById('footer').innerHTML = 'fade='+this.fade;
-}
-
-iiFade.prototype.apply = function(display)
-{
-	for (var i=0; i<this.elm.length; i++)
-	{
-		//min=0, max=100;
-		var f = Math.min(this.fade,100);
-		var f = Math.max(f,0);
-		if (ii_browser_cssfilter) this.elm[i].style.filter = 'alpha(opacity='+f+')';
-		else this.elm[i].style.opacity = f/100;
-		
-		if (display)
-		{
-			this.elm[i].style.visibility = (display=='hide')? 'hidden':'visible';
-			this.elm[i].style.display = (display=='hide')? 'none':'block';
-		}
-
-
-// 		if (f==0) this.elm[i].style.visibility = 'hidden';
-// 		else this.elm[i].style.visibility = 'visible';
-		
-		if (display && display=='show') this.elm[i].style.display = 'block';
-
-		//show or hide the elm entirely
-// 		if (display)
-// 		{
-//			this.elm[i].style.display = (display=='show')? 'block':'none';
-// 			if (display=='show') this.elm[i].style.visibility = 'visible';
-			
-//			this.elm[i].style.visibility = (display=='hide')? 'hidden':'visible';
-			
-// 		}
-	}
 }

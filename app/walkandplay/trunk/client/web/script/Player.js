@@ -20,34 +20,6 @@ function wpPlayers()
 	return array;
 }
 
-
-
-playertest = false;
-
-function testPlayer()
-{
-	if (wp_players.player[100])
-	{
-		//delete test player
-		wp_players.del(100);
-	}
-	else
-	{
-		//add testplayer
-		var p = gmap.getCenter();
-		var id = '100'
-		var name = 'test';
-		var t = new Date().getTime();
-	
-		wp_players.push( playertest = new wpPlayer(wp_players,id,p,name,t) );
-	}
-	
-	
-//	playertest.animate(true);
-
-}
-
-
 /* location object */
 
 function wpPlayer(collection,id,p,name,t)
@@ -61,7 +33,8 @@ function wpPlayer(collection,id,p,name,t)
 	this.icon = 'icon_player_'+color+'.png';
  	
  	this.trace = new Array(0); //geo points history
- 	this.trace_color = (color=='r')? 'rgb(200,0,20)':(color=='b')? 'rgb(50,100,200)':'rgb(45,170,75)';
+// 	this.trace_color = (color=='r')? 'rgb(200,0,20)':(color=='b')? 'rgb(50,100,200)':'rgb(45,170,75)';
+ 	this.trace_color = (color=='r')? '#c80014':(color=='b')? '#3264c8':'#2daa4b';
  	
 	this.x_smoothing = .025;
 	this.y_smoothing = .025;
