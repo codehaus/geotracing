@@ -1,0 +1,86 @@
+<portal name="schuttevaer">
+
+	<!-- Standard host-dependent container properties -->
+	<property name="siteurl" host="suwa">http://local.geosailing.com/svr</property>
+	<property name="webappurl" host="suwa">http://local.geosailing.com/svr</property>
+	<property name="siteurl" host="pundit">http://test.geosailing.com/svr</property>
+	<property name="webappurl" host="pundit">http://test.geosailing.com/svr</property>
+
+	<config>
+		<!-- Oase context file. Context id becomes portal name -->
+		<context file="oase-context.xml"/>
+	</config>
+
+
+	<!-- Connectors -->
+	<connectors>
+		<connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+			<property name="port">5514</property>
+			<property name="pongTimeoutMillis">30000</property>
+		</connector>
+	</connectors>
+
+
+	<!-- Application context -->
+	<application name="geoapp" organisation="Just Objects">
+
+		<config>
+			<data file="data.xml"/>
+		</config>
+
+		<!-- Utopia handlers -->
+		<handlers>
+			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+				<property name="max-file-size">1000000</property>
+			</handler>
+
+			<handler id="t" class="org.geotracing.handler.TracingHandler"/>
+			<handler id="loc" class="org.geotracing.handler.LocationHandler"/>
+
+			<!-- Handler for ALL queries -->
+			<handler id="query" class="org.geotracing.handler.QueryHandler">
+				<property name="logic">org.geotracing.handler.QueryLogic</property>
+			</handler>
+
+			<handler id="cmt" class="org.geotracing.handler.CommentHandler">
+				<property name="allow-anonymous">true</property>
+				<property name="max-content-chars">1024</property>
+				<property name="max-commments-per-target">256</property>
+				<property name="thread-alert">false</property>
+			</handler>
+
+			<handler id="profile" class="org.geotracing.handler.ProfileHandler">
+				<property name="logic">org.geotracing.handler.ProfileLogic</property>
+			</handler>
+
+			<!-- External KWX plugin for generic tagging (see external/kwx-tagging). -->
+			<handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
+		</handlers>
+
+
+		<daemons>
+			<!-- For testing Daemons
+			<daemon id="tracklistener" class="org.geotracing.server.TrackListenerDaemon">
+				<property name="intervalMillis">15000</property>
+			</daemon>
+
+			<property name="host">email.upload.host</property>
+
+			<property name="email" host="pundit">email.upload.email.pundit</property>
+			<property name="user" host="pundit">email.upload.user.pundit</property>
+			<property name="password" host="pundit">email.upload.password.pundit</property>
+
+               -->
+
+			<!-- Daemon for various upgrades
+			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
+				<property name="locations">true</property>
+			</daemon>    -->
+			<!-- Tracer Bot  -->
+			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
+				<property name="intervalMillis">8000</property>
+			</daemon>
+
+		</daemons>
+	</application>
+</portal>
