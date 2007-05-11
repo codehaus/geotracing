@@ -2,7 +2,11 @@
 // Distributable under LGPL license. See terms of license at gnu.org.
 
 var TRACER = {
-	current: null
+	current: null,
+	BLINK_INTERVAL_SHOW: 250,
+	BLINK_INTERVAL_HIDE: 250,
+	MARKER_OFFSET_X: 5,
+	MARKER_OFFSET_Y: 5
 }
 
 /**
@@ -26,7 +30,6 @@ function Tracer(name, color, iconURL, pt, time) {
 	this.live = false;
 	this.full = false;
 	this.lastPoint = null;
-	this.blinkInterval = 250;
 	this.thumbId = null;
 	this.thumbURL = 'img/default-user-thumb-4x3.jpg';
 
@@ -56,6 +59,8 @@ function Tracer(name, color, iconURL, pt, time) {
 	this.blink = function() {
 		DH.toggleVisibility(this.iconId);
 
+		this.blinkInterval = DH.isVisible(this.iconId) ? TRACER.BLINK_INTERVAL_SHOW : TRACER.BLINK_INTERVAL_HIDE;
+
 		// JS Trick to have setTimeout() call our object method
 		var self = this;
 		setTimeout(function() {
@@ -77,13 +82,14 @@ function Tracer(name, color, iconURL, pt, time) {
 
 		// Setup TLabel object
 		tl = new TLabel();
+		tl.glide = true;
 		tl.id = 'tlab' + this.name;
 		tl.anchorLatLng = this.point;
 		tl.anchorPoint = 'topLeft';
 		tl.content = html;
 
 		// To shift icon on exact lat/lon location (half size of icon)
-		tl.markerOffset = new GSize(5, 5);
+		tl.markerOffset = new GSize(TRACER.MARKER_OFFSET_X, TRACER.MARKER_OFFSET_Y);
 
 		return tl;
 	}
@@ -170,7 +176,7 @@ function Tracer(name, color, iconURL, pt, time) {
 	}
 
 	// Set Tracer at lon/lat location
-	this.setLocation = function(point, time) {
+	this.setLocation = function(point, time, force) {
 		if (point == null) {
 			return;
 		}
@@ -203,7 +209,11 @@ function Tracer(name, color, iconURL, pt, time) {
 
 		} else {
 			// Only Move TLabel
-			this.tlabel.moveToLatLng(this.point);
+			if (force) {
+				this.tlabel.forceToLatLng(this.point);				
+			} else {
+				this.tlabel.moveToLatLng(this.point);
+			}
 		}
 	}
 

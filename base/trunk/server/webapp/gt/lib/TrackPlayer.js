@@ -262,7 +262,7 @@ function TrackPlayer() {
 					return;
 				}
 
-				this.track.getTracer().setLocation(this.curPoint);
+				this.track.getTracer().setLocation(this.curPoint, this.curPoint.time, true);
 				this.playPoints.push(this.curPoint);
 				this.distance += this.curPoint.distance;
 

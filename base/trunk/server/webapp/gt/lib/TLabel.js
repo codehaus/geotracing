@@ -11,6 +11,7 @@
 // 6. use this.map.getPane(G_MAP_MAP_PANE) to fetch mapTray  (ok also in 2.0.3)
 // 7. keep element as object var (this.elm)
 // 8. no need (afaict) to append elm to document.body (solved performance problems by leaving out)
+// 9. added animated gliding to location (set TLabel.glide = true to enable)
 //
 // $Id$
 diffpos = function(x, y) {
@@ -22,12 +23,25 @@ diffpos = function(x, y) {
 var diffusions = new Array(new diffpos(-5, -5), new diffpos(0, -5), new diffpos(5, -5), new diffpos(-5, 0), new diffpos(0, 0), new diffpos(5, 0), new diffpos(-5, 5), new diffpos(0, 5), new diffpos(5, 5), new diffpos(10, 5));
 
 
+var TLABEL = {
+	SMOOTH_FACTOR: .050,
+	ANIMATE_INTERVAL: 150,
+	DEBUG: false
+}
+
 function TLabel(diffuse) {
 	this.diffuse = false;
 	this.elm = null;
+	this.glide = false;
 	if (diffuse) {
 		// to avoid collisions
 		this.diffuse = diffuse;
+	}
+}
+
+TLabel.prototype.debug = function(s) {
+	if (TLABEL.DEBUG == true) {
+		GLog.write(s);
 	}
 }
 
@@ -52,7 +66,8 @@ TLabel.prototype.initialize = function(a) {
 		this.setOpacity(this.percentOpacity);
 	}
 
-	this.elm = b; // document.getElementById(this.id);
+	this.elm = b;
+	// document.getElementById(this.id);
 	this.w = this.elm.offsetWidth;
 	this.h = this.elm.offsetHeight;
 	this.mapTray = this.map.getPane(G_MAP_MAP_PANE);
@@ -62,8 +77,14 @@ TLabel.prototype.initialize = function(a) {
 		this.markerOffset = new GSize(0, 0);
 	}
 	this.moveToXY();
-	//	GEvent.bind(a, "zoomend", this, this.moveToXY);
-	GEvent.bind(a, "moveend", this, this.moveToXY);
+
+	// GEvent.bind(a, "zoomend", this, this.forceToXY);
+	GEvent.bind(a, "moveend", this, this.forceToXY);
+}
+
+TLabel.prototype.forceToLatLng = function(aGLatLng) {
+	this.anchorLatLng = aGLatLng;
+	this.forceToXY();
 }
 
 TLabel.prototype.moveToLatLng = function(aGLatLng) {
@@ -71,14 +92,33 @@ TLabel.prototype.moveToLatLng = function(aGLatLng) {
 	this.moveToXY();
 }
 
+TLabel.prototype.forceToXY = function() {
+	this.getXY();
+	if (this.glide == true) {
+		this.x = this.targetX;
+		this.y = this.targetY;
+	}
+	this.moveElm();
+}
+
 TLabel.prototype.moveToXY = function() {
-	//if (a) {
-	// GLog.write(a.toString());
-	// this.anchorLatLng = a;
-	//}
-	var b = this.getXY();
-	var x = parseInt(b.x);
-	var y = parseInt(b.y);
+	this.getXY();
+	if (this.glide == true) {
+		this.animate();
+	} else {
+		this.moveElm();
+	}
+}
+
+TLabel.prototype.moveElm = function() {
+	this.elm.style.left = this.x + 'px';
+	this.elm.style.top = this.y + 'px';
+}
+
+TLabel.prototype.getXY = function(a, b) {
+	var xy = this.map.fromLatLngToDivPixel(this.anchorLatLng)
+	var x = parseInt(xy.x);
+	var y = parseInt(xy.y);
 	with (Math) {
 		switch (this.anchorPoint) {
 			case 'topLeft':break;
@@ -93,27 +133,81 @@ TLabel.prototype.moveToXY = function() {
 			default:break;
 		}
 	}
-	// commented out to allow diffusion
-	//	var d = document.getElementById(this.id);
-	//	d.style.left = x - this.markerOffset.width + 'px';
-	//	d.style.top = y - this.markerOffset.height + 'px';
 
-	var offsetX = 0;
-	var offsetY = 0;
-	var d = this.elm; // document.getElementById(this.id);
 	if (this.diffuse == true) {
-		d.style.left = x - this.markerOffset.width + diffusions[Math.floor(Math.random() * 10)].x + 'px';
-		d.style.top = y - this.markerOffset.height + diffusions[Math.floor(Math.random() * 10)].y + 'px';
+		x = x - this.markerOffset.width + diffusions[Math.floor(Math.random() * 10)].x;
+		y = y - this.markerOffset.height + diffusions[Math.floor(Math.random() * 10)].y;
 	} else {
-		d.style.left = x - this.markerOffset.width + 'px';
-		d.style.top = y - this.markerOffset.height + 'px';
+		x = x - this.markerOffset.width;
+		y = y - this.markerOffset.height;
+	}
 
+	if (this.glide == true) {
+		this.targetX = x;
+		this.targetY = y;
+		if (!this.x) {
+			this.x = x;
+			this.y = y;
+		}
+
+	} else {
+		this.x = x;
+		this.y = y;
+	}
+
+	xy.x = x;
+	xy.y = y;
+
+	return xy;
+}
+
+TLabel.prototype.animate = function(show) {
+	var obj = this;
+	this.debug('animate enter');
+	if (!this.animating || this.animating == null) {
+		this.debug('start animation');
+		this.animating = window.setInterval(function() { obj.glideElm() }, TLABEL.ANIMATE_INTERVAL);
 	}
 }
 
-TLabel.prototype.getXY = function(a, b) {
-	return this.map.fromLatLngToDivPixel(this.anchorLatLng);
+TLabel.prototype.glideElm = function() {
+	//this.debug('glideElm enter x=' + this.x + ' tx=' + this.targetX + ' y=' + this.y + ' ty=' + this.targetY);
+
+	var diffX = Math.abs(this.targetX - this.x);
+	var diffY = Math.abs(this.targetY - this.y);
+
+	if (diffX <= 1 && diffY <= 1) {
+		if (this.animating) {
+			this.debug('stop animation');
+			window.clearTimeout(this.animating);
+			this.animating = null;
+		}
+		this.moveElm();
+		return;
+	}
+
+	// Glide by moving slowly to current value
+	var deltaX = TLABEL.SMOOTH_FACTOR * (this.targetX - this.x);
+	var deltaY = TLABEL.SMOOTH_FACTOR * (this.targetY - this.y);
+
+	//this.debug('glideElm deltaX=' + deltaX + ' deltaX=' + deltaY);
+	if (Math.abs(deltaX) <= 1 && Math.abs(deltaY) <= 1) {
+		deltaX = deltaX < 0 ? -1.0 : 1.0;
+		deltaY = deltaY < 0 ? -1.0 : 1.0;
+	}
+	//this.debug('glideElm NOW deltaX=' + deltaX + ' deltaX=' + deltaY);
+
+
+	this.x = this.x + deltaX;
+	this.y = this.y + deltaY;
+
+	//apply to icon div
+	this.x = Math.round(this.x);
+	this.y = Math.round(this.y);
+	//this.debug('glideElm exit x=' + this.x + ' tx=' + this.targetX + ' y=' + this.y + ' ty=' + this.targetY);
+	this.moveElm();
 }
+
 /*
 function normSin(a) {
 	if (a > 0.9999) {
@@ -149,7 +243,8 @@ TLabel.prototype.setOpacity = function(b) {
 		b = 100;
 	}
 	var c = b / 100;
-	var d = this.elm; // document.getElementById(this.id);
+	var d = this.elm;
+	// document.getElementById(this.id);
 	if (typeof(d.style.filter) == 'string') {
 		d.style.filter = 'alpha(opacity:' + b + ')';
 	}
