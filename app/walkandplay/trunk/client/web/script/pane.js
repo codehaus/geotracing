@@ -15,7 +15,12 @@ Panes.prototype.dispose = function()
 	for (var i=0; i<arguments.length; i++)
 	{
 		var pane = this[arguments[i]];
-		if (pane) pane.dispose();
+		if (pane)
+		{
+			pane.dispose();
+			delete this[arguments[i]];
+		}
+		
 	}
 }
 Panes.prototype.hide = function()
@@ -35,7 +40,7 @@ Panes.prototype.show = function()
 	}
 }
 
-function Pane(id,x,y,w,h,hide_delay,keep_visible,parent)
+function Pane(id,x,y,w,h,hide_delay,keep_visible,parent,autosize)
 {
 	this.id = id;
 	this.x = x;
@@ -47,41 +52,66 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent)
 	this.keep_visible = (keep_visible)? true:false;
 	this.closing = false;
 	this.parent = parent;
+	this.autosize = autosize;
 	
 	/* build */
 
 	var pane = document.createElement('div');
 		pane.style.visibility = 'hidden'; //hide during creation
 		pane.style.display = 'none';
-		pane.className = 'pane';
+		pane.className = (!this.autosize)? 'pane':'pane_autosize';
 		pane.style.left = this.x +"px";
 		pane.style.top = this.y +"px";
 		pane.style.width = (this.w+16+16) +"px";
-		pane.style.height = (this.h+16+16) +"px";
+		if (!this.autosize) pane.style.height = (this.h+16+16) +"px";
 	if (parent) parent.appendChild(pane);
 	else document.body.appendChild(pane);
 	
-	//bg	
 	var c = 'w'; //default white pane
-	var str = '<div style="left:0px; top:0px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_nw.png')+'"></div>';
-		str+= '<div style="left:16px; top:0px; width:'+(w)+'px; height:16px; '+PNGbgImage('pane_'+c+'_n.png')+'"></div>';
-		str+= '<div style="left:'+(w+16)+'px; top:0px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_ne.png')+'"></div>';
-		str+= '<div style="left:0px; top:16px; width:16px; height:'+h+'px; '+PNGbgImage('pane_'+c+'_w.png')+'"></div>';
-		str+= '<div style="left:16px; top:16px; width:'+(w)+'px; height:'+(h)+'px; '+PNGbgImage('pane_'+c+'_c.png')+'"></div>';
-		str+= '<div style="left:'+(w+16)+'px; top:16px; width:16px; height:'+(h)+'px; '+PNGbgImage('pane_'+c+'_e.png')+'"></div>';
-		str+= '<div style="left:0px; top:'+(h+16)+'px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_sw.png')+'"></div>';
-		str+= '<div style="left:16px; top:'+(h+16)+'px; width:'+(w)+'px; height:16px; '+PNGbgImage('pane_'+c+'_s.png')+'"></div>';
-		str+= '<div style="left:'+(w+16)+'px; top:'+(h+16)+'px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_se.png')+'"></div>';
-	pane.innerHTML = str;
-	
-	//content
-	var content = document.createElement('div');
-		content.className = 'content';
-		content.style.width = this.w +9 +"px";
-		content.style.height = this.h +12 +"px";
-		if (browser.cssfilter) content.style.filter = 'Alpha(opacity=100)'; //IE display bug
-	pane.appendChild(content);
-	pane.style.visibility = 'visible';
+	if (!this.autosize)
+	{
+		//bg	
+		var str = '<div style="left:0px; top:0px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_nw.png')+'"></div>';
+			str+= '<div style="left:16px; top:0px; width:'+(w)+'px; height:16px; '+PNGbgImage('pane_'+c+'_n.png')+'"></div>';
+			str+= '<div style="left:'+(w+16)+'px; top:0px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_ne.png')+'"></div>';
+			str+= '<div style="left:0px; top:16px; width:16px; height:'+h+'px; '+PNGbgImage('pane_'+c+'_w.png')+'"></div>';
+			str+= '<div style="left:16px; top:16px; width:'+(w)+'px; height:'+(h)+'px; '+PNGbgImage('pane_'+c+'_c.png')+'"></div>';
+			str+= '<div style="left:'+(w+16)+'px; top:16px; width:16px; height:'+(h)+'px; '+PNGbgImage('pane_'+c+'_e.png')+'"></div>';
+			str+= '<div style="left:0px; top:'+(h+16)+'px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_sw.png')+'"></div>';
+			str+= '<div style="left:16px; top:'+(h+16)+'px; width:'+(w)+'px; height:16px; '+PNGbgImage('pane_'+c+'_s.png')+'"></div>';
+			str+= '<div style="left:'+(w+16)+'px; top:'+(h+16)+'px; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_se.png')+'"></div>';
+		pane.innerHTML = str;
+		//content
+		var content = document.createElement('div');
+			content.className = 'content';
+			content.style.width = this.w +9 +"px";
+			content.style.height = this.h +12 +"px";
+			if (browser.cssfilter) content.style.filter = 'Alpha(opacity=100)'; //IE display bug
+		pane.appendChild(content);
+		pane.style.visibility = 'visible';
+	}
+	else
+	{
+		//with vertical auto-sizing
+		var str = '<div style="float:left; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_nw.png')+'"></div>';
+			str+= '<div style="float:left; width:'+(w)+'px; height:16px; '+PNGbgImage('pane_'+c+'_n.png')+'"></div>';
+			str+= '<div style="float:left; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_ne.png')+'"></div>';
+			//embedded content div (table is necessary to get this working in IE)
+			str+= '<div style="float:left; width:'+(w+32)+'px;">';
+			str+= '<table border=0 cellpadding=0 cellspacing=0>';
+			str+= '<tr>';
+			str+= '<td style="width:'+16+'px; '+PNGbgImage('pane_'+c+'_w.png')+'"></td>';
+			str+= '<td style="width:'+w+'px; height:'+(h)+'px; vertical-align:top; '+PNGbgImage('pane_'+c+'_c.png')+'"><div class="content"></div></td>';
+			str+= '<td style="width:'+16+'px; '+PNGbgImage('pane_'+c+'_e.png')+'"></td>';
+			str+= '</tr>';
+			str+= '</table>';
+ 			str+= '</div>';
+			str+= '<div style="position:relative; float:left; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_sw.png')+'"></div>';
+			str+= '<div style="position:relative; float:left; width:'+(w)+'px; height:16px; '+PNGbgImage('pane_'+c+'_s.png')+'"></div>';
+			str+= '<div style="position:relative; float:left; width:16px; height:16px; '+PNGbgImage('pane_'+c+'_se.png')+'"></div>';
+		pane.innerHTML = str;
+		pane.style.visibility = 'visible';
+	}
 	
 	//keep visible onmousover
 	var obj = this;
@@ -90,7 +120,7 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent)
 	
 	//refs
 	this.div = pane;
-	this.content = content;
+	this.content = (!this.autosize)? content:pane.childNodes[3].getElementsByTagName('div')[0];
 	
 	//add to panes
 	panes[id] = this;
@@ -176,7 +206,6 @@ Pane.prototype.dispose = function()
 {
 	if (this.parent) this.parent.removeChild(this.div)
 	else document.body.removeChild(this.div);
-	delete panes[this.id];
 }
 
 Pane.prototype.hideMore = function()

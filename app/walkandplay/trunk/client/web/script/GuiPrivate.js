@@ -32,17 +32,17 @@ function wpCreatePaneUser(type)
 		/* user panes */
 					
 		case 'list_games':
-			var pane = new Pane('list_games',110,160,180,140,1,true);
+			var pane = new Pane('list_games',100,160,180,140,1,true);
 			pane.setContent(wpGuiCreate('my_games'));
 			break;
 			
 		case 'edit_game':
-			var pane = new Pane('edit_game',110,160,180,160,1,true);
+			var pane = new Pane('edit_game',100,160,180,160,1,true);
 			pane.setContent(wpGuiCreate('edit_game'));
 			break;
 
 		case 'list_locations':
-			var pane = new Pane('list_locations',110,360,120,140,1,true);
+			var pane = new Pane('list_locations',100,360,120,140,1,true);
 			break;
 
 		case 'edit_location':

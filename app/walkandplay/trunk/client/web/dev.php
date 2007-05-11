@@ -43,12 +43,11 @@
 <script type="text/javascript" src="script/Player.js"></script>
 
 <script type="text/javascript" src="script/pane.js"></script>
-
+<script type="text/javascript" src="script/humandate.js"></script> 
 
 <!-- 
 <script type="text/javascript" src="script/slider.js"></script>
 <script type="text/javascript" src="script/qtcheck.js"></script>
-<script type="text/javascript" src="script/humandate.js"></script> 
 -->
 
 
@@ -95,7 +94,7 @@ function init()
 		gmap.setCenter(mapcenter, mapzoom);
 		//default map settings
 		gmap.enableDoubleClickZoom();
-		gmap.addControl(new GLargeMapControl(),new GControlPosition(G_ANCHOR_TOP_LEFT,new GSize(35,170)));
+		gmap.addControl(new GLargeMapControl(),new GControlPosition(G_ANCHOR_TOP_LEFT,new GSize(30,170)));
 		gmap.addControl(new GMapTypeControl());
 		gmap.setMapType(G_MAP_TYPE); 
 		gmaptype = 'map';

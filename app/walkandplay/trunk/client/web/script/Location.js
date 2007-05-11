@@ -113,7 +113,7 @@ function wpLocation(collection,id,p,type,state,name)
 					str+= ' <a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')" class="red">delete</a>';
 				}
 			infopane.content.innerHTML = str;
-			infopane.setPosition(obj.x+14,obj.y-48);
+			infopane.setPosition(obj.x+12,obj.y-46);
 			infopane.show();
 		}
 	}
@@ -229,7 +229,7 @@ wpLocation.prototype.expand = function()
 	}
 	
 	if (this.collection.info) this.collection.info.hide(1);
-	if (wp_location_expanded) wp_location_expanded.collapse();
+	if (wp_location_expanded && wp_location_expanded.id!=this.id) wp_location_expanded.collapse();
 	
 	wp_location_expanded = this;
 	this.expanded = true;
@@ -246,6 +246,23 @@ wpLocation.prototype.expand = function()
 
 wpLocation.prototype.updateDetails = function(resp)
 {
+	if (!resp)
+	{
+		//only update answer contents
+		var str = '';
+		if (this.play_answerstate=='open') str+= '- no answer given yet -';
+		else
+		{
+			str+= 'last answer: '+this.play_answer+'<br>';
+			//if (this.play_score==0) str+= 'task not complete yet';
+			if (this.play_answerstate=='notok') str+= '<span class="red">wrong answer!</span>';
+			else str+= 'score: '+this.play_score;
+		}
+		document.getElementById('display_answer').innerHTML = str;
+		
+		return;
+	}
+	
 	var record = resp[0];
 	
 	this.mediumid = (this.type=='medium')? this.id:record.getField('mediumid');
@@ -264,6 +281,7 @@ wpLocation.prototype.updateDetails = function(resp)
 	
 
 	var str = '';
+		str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onclick="wp_location_expanded.collapse()">close</a>';
 		str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
 		str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
 		str+= '<div id="medium_display" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
@@ -280,8 +298,7 @@ wpLocation.prototype.updateDetails = function(resp)
 			
 			case 'video':
 			case 'audio':
-				//str+= '<embed src="/wp/media.srv?id='+this.mediumid+'" style="width:225px;"></embed>';
-
+				/*
 				//QuickTime embed
 				str+= '<OBJECT id="qtvideo" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="225" HEIGHT="168" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
 				str+= '<PARAM name="SRC" VALUE="/wp/media.srv?id='+this.mediumid+'">';
@@ -292,6 +309,15 @@ wpLocation.prototype.updateDetails = function(resp)
 				str+= '<EMBED name="qtvideo" SRC="/wp/media.srv?id='+this.mediumid+'" BGCOLOR="white" WIDTH="225" HEIGHT="168" CONTROLLER="true" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
 				str+= '</EMBED>';
 				str+= '</OBJECT>';
+				*/
+
+				//Flash embed
+				str+= '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="225" height="169" id="world">';
+				str+= '<param name="movie" value="/wp/media.srv?id='+this.mediumid+'&format=swf&resize=225x169" />';
+				str+= '<param name="quality" value="high" />';
+				str+= '<param name="bgcolor" value="#ffffff" />';
+				str+= '<embed src="/wp/media.srv?id='+this.mediumid+'&format=swf&resize=225x169" quality="high" bgcolor="#ffffff" width="225" height="169" name="world" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />';
+				str+= '</object>';
 
 				break;
 		}
@@ -299,7 +325,7 @@ wpLocation.prototype.updateDetails = function(resp)
 		str+= '</div>';
 		if (this.desc) str+= this.desc+'<br>';
 		
-		
+	//create
 	if (this.type=='task' && wp_mode=='create')
 	{
 		//show answer and score
@@ -311,10 +337,11 @@ wpLocation.prototype.updateDetails = function(resp)
 		str+= '</div>';
 	}
 	
+	//play
 	if (this.type=='task' && wp_mode=='play')
 	{
 		//add answer pane (updated by gamestate and live events)
-		str+= '<div id="answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+		str+= '<div id="display_answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
 		if (this.play_answerstate=='open') str+= '- no answer given yet -';
 		else
 		{
@@ -336,10 +363,10 @@ wpLocation.prototype.updateDetails = function(resp)
 // 		str+= '</div>';
 // 	}
 
-	
 
 	panes['display'].content.firstChild.innerHTML = str;
 
+	//center medium
 	if (this.mediumtype!='text')
 	{
  		var div = document.getElementById('medium_display');
@@ -347,9 +374,6 @@ wpLocation.prototype.updateDetails = function(resp)
 		div.style.textAlign = 'center';
 		div.style.lineHeight = '0px';
 	}
-	
-	//tmp_debug(3,'details height:',panes['display'].content.firstChild.offsetHeight);
-
 }
 
 wpLocation.prototype.updateAnswer = function(answerstate,answer,score)
@@ -359,29 +383,22 @@ wpLocation.prototype.updateAnswer = function(answerstate,answer,score)
 		this.play_answerstate = answerstate;
 		this.play_answer = answer || '';
 	}
-	this.play_score = score || 0;
+	this.play_score = score || '';
 
-	if (this.expanded) this.expand();
+	if (this.expanded) this.updateDetails();
 }
-
-//wpLocation.prototype.
-// wpLocation.prototype.answerupdateAnswer = function()
-// {
-// 	this.lastanswer = '';
-// 	this.score = 0;
-// }
 
 wpLocation.prototype.collapse = function()
 {
+	panes['display'].content.firstChild.innerHTML = '';
+	panes['display'].hide(1);
+	
 	this.expanded = false;
 	wp_location_expanded = false;
 	this.changeIcon(this.icon);
 	
-	panes['display'].hide(1);
-	
-	tmp_debug(2,'collapse ',this.id);
+	tmp_debug(1,'collapse ',this.id);
 }
-
 
 wpLocation.prototype.changeIcon = function(src)
 {
@@ -397,5 +414,3 @@ wpLocation.prototype.dispose = function()
 	gmap.getPane(G_MAP_MARKER_PANE).removeChild(this.div);
 	gmap.getPane(G_MAP_MARKER_SHADOW_PANE).removeChild(this.shadow_div);
 }
-
-

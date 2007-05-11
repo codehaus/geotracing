@@ -21,6 +21,7 @@ function wpStartup()
  	
  	wp_locations = new wpLocations();
  	wp_players = new wpPlayers();
+ 	
 }
 
 function wpSelect(mode)
@@ -51,11 +52,13 @@ function wpSelect(mode)
 		//unload game
 		wp_games.game[wp_selected_game].unLoad();
 		wp_selected_game = false;
-		//hide panes
-		panes.hide('edit_game','list_games','list_locations','display','play');
+		
 		
 	}
-
+	
+	//hide panes
+	panes.hide('edit_game','list_games','list_locations','display','playdisplay');
+	
 	wp_mode = mode;
 	
 	var create = '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>';
@@ -89,6 +92,12 @@ function wpSelect(mode)
 	
 	//rewrite menu
 	document.getElementById('menu').innerHTML = create+', '+play+' and '+view;
+}
+
+function wpCloseDisplay()
+{	
+	if (wp_location_expanded) wp_location_expanded.collapse();
+	else panes['display'].hide(1);	
 }
 
 
@@ -238,6 +247,7 @@ function wpLoadScript(src)
 
 function wpLoggedOut()
 {
+/*
 	if (wp_selected_game)
 	{
 		if (wp_mode=='create')
@@ -257,6 +267,7 @@ function wpLoggedOut()
 		wp_games.game[wp_selected_game].unLoad();
 		wp_selected_game = false;
 	}	
+*/	
 	
 	//clear data
 	document.forms['loginform'].login.value = wp_login.loginname = '';
@@ -268,18 +279,26 @@ function wpLoggedOut()
 
 	//clear cookie
 	wpSetAutoLogin(false);
+
+	wp_live = false;
 	
 	//unload stuff
 	panes.dispose('list_games','list_locations','edit_game','edit_location');
-
+	
+	if (wp_hb) window.clearTimeout(wp_hb);
+/*
 	//dispose games
 	for (var id in wp_games.game) wp_games.del(id);
-
+*/
  	
  	document.getElementById('login').innerHTML = '<a href="javascript://login" onclick="wpLogin()">login</a>';
  	
- 	//back to view mode
+ 	//back to view mode (will unload current game)
  	wpSelect('view');
+ 	
+ 	
+ 	//-> dispose all games ?
+ 	//.. add later
 }
 
 
