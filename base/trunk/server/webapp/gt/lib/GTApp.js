@@ -107,7 +107,8 @@ var GTAPP = {
 		// Live Pushlet event setup if available
 		if (PL) {
 			GTAPP.createLiveListener();
-			PL.joinListen('/gt')
+			// Delay pushlets listening as to not interfere with page loading
+			window.setTimeout('PL.joinListen("/gt")', 8000);
 		}
 
 		GTAPP.doPageCommand();
@@ -170,14 +171,9 @@ var GTAPP = {
 	},
 
 	/** Load file that contains app-specific menu. */
-	createMenu: function(aMenuContent) {
-		if (!aMenuContent) {
-			DH.getURL('mainmenu.html', GTAPP.createMenu);
-			return;
-		}
-
-		// Content loaded: setup menu
-		DH.setHTML('menucontainer', aMenuContent);
+	createMenu: function() {
+		// Load content into menu div
+		DH.setHTML('menucontainer', DH.getURL('mainmenu.html'));
 		GTAPP.menu = new Menu('mainmenu');
 	},
 
