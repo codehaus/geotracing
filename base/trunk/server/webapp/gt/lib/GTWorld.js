@@ -133,7 +133,10 @@ var GTW = {
 	createTracerByRecord: function(record) {
 		var tracer = GTW.createTracer(record.getField('loginname'),
 				record.getField('lon'), record.getField('lat'), record.getField('time'));
-
+		
+		if (record.getField('color') != null) {
+			tracer.color = record.getField('color');
+		}
 		// tracer.record = record;
 		return tracer;
 	},
