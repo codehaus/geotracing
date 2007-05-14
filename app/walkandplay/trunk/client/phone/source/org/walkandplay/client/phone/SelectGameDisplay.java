@@ -95,16 +95,16 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     }
 
     private void startGame(){
-        JXElement req = new JXElement("play-reset-req");
+        /*JXElement req = new JXElement("play-reset-req");
         req.setAttr("id", midlet.getGamePlayId());
         System.out.println(new String(req.toBytes(false)));
         JXElement rsp = net.utopiaReq(req);
-        System.out.println(new String(rsp.toBytes(false)));
+        System.out.println(new String(rsp.toBytes(false)));*/
 
-        req = new JXElement("play-start-req");
+        JXElement req = new JXElement("play-start-req");
         req.setAttr("id", midlet.getGamePlayId());
         System.out.println(new String(req.toBytes(false)));
-        rsp = net.utopiaReq(req);
+        JXElement rsp = net.utopiaReq(req);
         System.out.println(new String(rsp.toBytes(false)));
     }
 

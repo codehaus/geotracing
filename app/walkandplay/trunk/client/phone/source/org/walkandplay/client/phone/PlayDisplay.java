@@ -130,8 +130,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
         playDisplay = this;
 
-
-        addCommand(BACK_CMD);        
         setCommandListener(this);
 
     }
@@ -154,6 +152,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
+
+            //addCommand(BACK_CMD);
 
             fetchTileInfo();
             show();
@@ -708,27 +708,29 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         removeCommand(HIDE_LOG_CMD);
         removeCommand(IM_CMD);
         removeCommand(SHOW_INTRO_CMD);
+        removeCommand(BACK_CMD);
     }
 
     private void addAllCommands() {
         removeAllCommands();
+        addCommand(ZOOM_IN_CMD);
+        addCommand(ZOOM_OUT_CMD);
+        addCommand(TOGGLE_MAP_CMD);
         //addCommand(STOP_GAME_CMD);
         addCommand(ADD_TEXT_CMD);
         //addCommand(ADD_PHOTO_CMD);
         addCommand(ADD_AUDIO_CMD);
-        addCommand(ZOOM_IN_CMD);
-        addCommand(ZOOM_OUT_CMD);
-        addCommand(TOGGLE_MAP_CMD);
-        addCommand(SCORES_CMD);
-        addCommand(SHOW_LOG_CMD);
-        //addCommand(SHOW_INFO_CMD);
         addCommand(IM_CMD);
         addCommand(SHOW_INTRO_CMD);
+        addCommand(SCORES_CMD);
+        addCommand(SHOW_LOG_CMD);
+        addCommand(BACK_CMD);
+        //addCommand(SHOW_INFO_CMD);
     }
 
     private class IntroOutroHandler implements CommandListener {
         private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
-        private boolean isIntro;
+        private Command CONTINUE_CMD = new Command("Continue", Command.SCREEN, 1);
 
         /*
 		* Create the first TextBox and associate
@@ -744,8 +746,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             //#style formbox
             form.append(midlet.getGame().getChildText("intro"));
 
-            isIntro = true;
-            form.addCommand(CANCEL_CMD);
+            form.addCommand(CONTINUE_CMD);
             form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
         }
@@ -764,7 +765,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             //#style formbox
             form.append(midlet.getGame().getChildText("outro"));
 
-            isIntro = false;
             form.addCommand(CANCEL_CMD);
             form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
@@ -775,16 +775,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 		* satisfy the CommandListener interface and handle the Exit action.
 		*/
         public void commandAction(Command command, Displayable screen) {
-            if (command == CANCEL_CMD) {
-                if(isIntro){
-                    SHOW_STATE = 0;
-                    addAllCommands();
-                    Display.getDisplay(midlet).setCurrent(playDisplay);
-                }else{
-                    tracerEngine.suspendResume();
-                    tracerEngine.stop();
-                    Display.getDisplay(midlet).setCurrent(prevScreen);
-                }
+            if (command == CONTINUE_CMD) {
+                SHOW_STATE = 0;
+                addAllCommands();
+                Display.getDisplay(midlet).setCurrent(playDisplay);
+            }else if (command == CANCEL_CMD) {            
+                tracerEngine.suspendResume();
+                tracerEngine.stop();
+                Display.getDisplay(midlet).setCurrent(prevScreen);
             }
         }
     }
@@ -798,9 +796,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         private Command outroCmd = new Command("Outro", Command.CANCEL, 1);
 
         /*
-          * Create the first TextBox and associate
-          * the exit command and listener.
-          */
+        * Create the first TextBox and associate
+        * the exit command and listener.
+        */
         public void showTask() {
             log("now get the task!", false);
 
@@ -920,6 +918,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                         "downloaded and played in your default media player like " +
                         "realplayer. Afterwards close the media player and continue " +
                         "here by pressing 'back'");*/
+                //#style formbox
                 form.append("When you click on 'view video' the video will be " +
                         "downloaded. This might take a while.... Afterwards continue " +
                         "here by pressing 'back'");
@@ -949,6 +948,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 mediumId = -1;
                 SHOW_STATE = 0;
                 addAllCommands();
+                // carbage collect after viewing the video
+                System.gc();
                 Display.getDisplay(midlet).setCurrent(playDisplay);
             } else if (command == VIEW_VIDEO_CMD) {
                 try {
