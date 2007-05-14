@@ -6,9 +6,6 @@ import de.enough.polish.ui.Form;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.TextField;
-import javax.microedition.media.Manager;
-import javax.microedition.media.Player;
-import javax.microedition.media.control.VideoControl;
 
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
@@ -34,7 +31,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private MFloat tileScale;
 
     private int zoom = 12;
-    private Image mediumDot, redDot, taskDot, bg;
+    private Image mediumDot, playerDot, taskDot, bg;
     private String mapType = "map";
     private String lon = "0", lat = "0";
     private boolean active;
@@ -111,15 +108,37 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         // make sure we stop tracing when we go into play mode
         if (midlet.traceDisplay != null) midlet.traceDisplay.stop();
         try {
+            String user = new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
+
             //#ifdef polish.images.directLoad
             transBar = Image.createImage("/trans_bar.png");
-            redDot = Image.createImage("/red_dot.png");
+
+            if(user.indexOf("red")!=-1){
+                playerDot = Image.createImage("/icon_player_r.png");
+            }else if(user.indexOf("green")!=-1){
+                playerDot = Image.createImage("/icon_player_g.png");
+            }else if(user.indexOf("blue")!=-1){
+                playerDot = Image.createImage("/icon_player_b.png");
+            }else if(user.indexOf("yellow")!=-1){
+                playerDot = Image.createImage("/icon_player_y.png");
+            }
+            
             taskDot = Image.createImage("/task_dot.png");
             mediumDot = Image.createImage("/medium_dot.png");
             bg = Image.createImage("/bg.png");
             //#else
             taskDot = scheduleImage("/task_dot.png");
-            redDot = scheduleImage("/red_dot.png");
+
+            if(user.indexOf("red")!=-1){
+                playerDot = scheduleImage("/icon_player_r.png");
+            }else if(user.indexOf("green")!=-1){
+                playerDot = scheduleImage("/icon_player_g.png");
+            }else if(user.indexOf("blue")!=-1){
+                playerDot = scheduleImage("/icon_player_b.png");
+            }else if(user.indexOf("yellow")!=-1){
+                playerDot = scheduleImage("/icon_player_y.png");
+            }
+
             transBar = scheduleImage("/trans_bar.png");
             mediumDot = scheduleImage("/medium_dot.png");
             bg = scheduleImage("/bg.png");
@@ -545,13 +564,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 				// Draw the map and user location
                 if (xy.x < 40) {
                     g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, xy.x - (redDot.getWidth())/2, xy.y - (redDot.getHeight())/2, Graphics.VCENTER | Graphics.HCENTER);
+                    g.drawImage(playerDot, xy.x - (playerDot.getWidth())/2, xy.y - (playerDot.getHeight())/2, Graphics.VCENTER | Graphics.HCENTER);
                 } else if (xy.x > 280) {
                     g.drawImage(mapImage, -80, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, xy.x - (redDot.getWidth())/2 - 80, xy.y - (redDot.getHeight())/2, Graphics.VCENTER | Graphics.HCENTER);
+                    g.drawImage(playerDot, xy.x - (playerDot.getWidth())/2 - 80, xy.y - (playerDot.getHeight())/2, Graphics.VCENTER | Graphics.HCENTER);
                 } else {
                     g.drawImage(mapImage, -40, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, xy.x - (redDot.getWidth())/2 - 40, xy.y - (redDot.getHeight())/2, Graphics.VCENTER | Graphics.HCENTER);
+                    g.drawImage(playerDot, xy.x - (playerDot.getWidth())/2 - 40, xy.y - (playerDot.getHeight())/2, Graphics.VCENTER | Graphics.HCENTER);
                 }
 			} else {
                 g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
@@ -601,7 +620,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     g.drawImage(transBar, 0, h / 2 - 3 / 2 * tH, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(transBar, 0, h / 2 - 1 / 2 * tH, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(transBar, 0, h / 2 + 3 / 2 * tH, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(redDot, margin, h / 2 - 3 / 2 * tH + fh, Graphics.VCENTER | Graphics.LEFT);
+                    g.drawImage(playerDot, margin, h / 2 - 3 / 2 * tH + fh, Graphics.VCENTER | Graphics.LEFT);
                     g.drawString("this is you!", margin + imgMargin + margin, h / 2 - 3 / 2 * tH + fh, Graphics.VCENTER | Graphics.LEFT);
                     g.drawImage(taskDot, margin, h / 2 - 3 / 2 * tH + fh + 20, Graphics.VCENTER | Graphics.LEFT);
                     g.drawString("a task - complete to score points", margin + imgMargin + margin, h / 2 - 3 / 2 * tH + fh + 20, Graphics.VCENTER | Graphics.LEFT);
