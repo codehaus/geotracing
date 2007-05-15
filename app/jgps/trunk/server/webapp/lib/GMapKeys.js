@@ -23,4 +23,9 @@ GMAP.addKey('suwa',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xQ8ZmgLZnPvpLJYUK9gOBqAWzbFrBR3Q1c7LX1SJP-2ggv7isGJmZAg2A',
 		'^https?://suwa/.*' );
 
+
+GMAP.addKey('1931905258080',
+		'ABQIAAAAt7Ibvd2mEm4_CMsaVz8I0RQK1xveFYhH_WOOZCOsijYXAhtAExRxS-qSScdriDB45nR5lZJ_Hmmf-g',
+		'^https?://193.190.5.25:8080/.*' );
+
 GMAP.loadGoogleMapScript('2.66');
