@@ -21,7 +21,7 @@ var PL;
 // This file contains specific functions for Bliin webapp
 var MYAPP = {
 	DOC_TITLE: 'JGPS',
-	WINDOW_TITLE: 'GeoTracing - JGPS',
+	WINDOW_TITLE: 'JeugdGePostioneerd',
 	media: null,
 	currentUser: null,
 	ingelogd: false,
@@ -119,6 +119,7 @@ var MYAPP = {
 			// Optional user to follow immediately
 			GTAPP.mode = 'media';
 			GTAPP.showMode();
+			DH.setHTML('debug','Leessessie');
 			var loginName = DH.getPageParameter('user', null);
 			loginName=loginName + 'e';
 			MYAPP.currentUser = loginName;
@@ -143,10 +144,11 @@ var MYAPP = {
 		// GMAP.addMapType('luchtfoto', G_MAP_EINDHOVEN_SAT);
 
 
+
 		// Create the Google Map
 		GMAP.createGMap('map');
 
-		GMAP.map.addControl(new GMapTypeControl());
+		//GMAP.map.addControl(new GMapTypeControl());
 		GMAP.map.addControl(new GOverviewMapControl());
 		GMAP.map.addControl(new GLargeMapControl());
 		GMAP.map.addControl(new GScaleControl());
@@ -171,8 +173,8 @@ var MYAPP = {
 
 	showlocations: function(records){
 		// alert('u=' + userId + ' l=' + loginName);
-		GTW.featureSet.dispose();
-		GTAPP.showStatus('Found ' + records.length + ' locations, displaying...');
+	/*	GTW.featureSet.dispose();
+		GTAPP.showStatus(records.length + ' locaties, weergeven...');
 
 		var location, record;
 		for (var i = 0; i < records.length; i++) {
@@ -195,14 +197,11 @@ var MYAPP = {
 		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
 		GTW.getFeaturePlayer().show()
 		GTW.featureSet.displayFirst();
-		GTAPP.showStatus('Displaying ' + records.length + ' locations');
-	},
-	
-	showMarkerlocations: function(records){
-		// alert('u=' + userId + ' l=' + loginName);
+		GTAPP.showStatus(records.length + ' locaties worden weergegeven');*/
+		
 		
 		GTW.featureSet.dispose();
-		GTAPP.showStatus('Found ' + records.length + ' locations, displaying...');
+		GTAPP.showStatus(records.length + ' locaties, weergegeven...');
 
 		var location, record;
 		for (var i = 0; i < records.length; i++) {
@@ -216,7 +215,42 @@ var MYAPP = {
 				record.getField('lon'),
 				record.getField('lat'),
 				record.getField('subtype'),
-				record.getField('id'));
+				record.getField('id'),
+				record.getField('actie'),
+				record.getField('oplossing'));
+				
+			 location.userName = MYAPP.currentUser;
+			// Create and draw location
+			GTW.featureSet.addFeature(location);
+		}
+		GTW.featureSet.show();
+		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
+		GTW.getFeaturePlayer().show()
+		GTW.featureSet.displayFirst();
+		GTAPP.showStatus(records.length + ' locaties worden weergegeven');
+	},
+	
+	showMarkerlocations: function(records){
+		// alert('u=' + userId + ' l=' + loginName);
+		DH.setHTML('debug','Bewerksessie');
+		GTW.featureSet.dispose();
+		GTAPP.showStatus(records.length + ' locaties, weergegeven...');
+
+		var location, record;
+		for (var i = 0; i < records.length; i++) {
+			record = records[i];
+			location = new MyMedium(record.getField('mediumid'),
+				record.getField('name'),
+				record.getField('description'),
+				record.getField('kind'),
+				record.getField('mime'),
+				record.getField('creationdate'),
+				record.getField('lon'),
+				record.getField('lat'),
+				record.getField('subtype'),
+				record.getField('id'),
+				record.getField('actie'),
+				record.getField('oplossing'));
 				
 			 location.userName = MYAPP.currentUser;
 			// Create and draw location
@@ -226,6 +260,6 @@ var MYAPP = {
 		GTW.getFeaturePlayer().setFeatureSet(GTW.featureSet);
 		GTW.getFeaturePlayer().show()
 		GTW.featureSet.displayFirst();
-		GTAPP.showStatus('Displaying ' + records.length + ' locations');
+		GTAPP.showStatus(records.length + ' locaties worden weergegeven');
 	}
 }

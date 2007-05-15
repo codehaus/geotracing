@@ -5,48 +5,14 @@
 <%@ include file="static-layout-header.html" %>
 <!-- $Id:$ -->
 <tr>
-<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">
-	<!--		<table width="100%" border="0" cellspacing="0" cellpadding="0">
-				<tr>
-					<td height="20" bgcolor="#B8BEBE"><div class="fragmenttekstwitbold">bekijk de routes van:</div></td>
-				</tr>
-
-				<tr>
-					<td height="20" class="deelnemertekst"><a href="kentie.html">Peter Kentie </a></td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst"><a href="edelkoort.html">Lidewij Edelkoort </a></td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst"><a href="deelenemer3.html">Deelnemer 3</a></td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst"><a href="deelnemer4.html">Deelnemer 4 </a></td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst"><a href="deelnemer5.html">Deelnemer 5 </a></td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst">&nbsp;</td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst">&nbsp;</td>
-				</tr>
-				<tr>
-					<td height="20" class="deelnemertekst">&nbsp;</td>
-				</tr>
-			</table> -->
-</td>
-<td colspan="3" valign="top">
-<table width="100%" border="0" cellspacing="0" cellpadding="8">
+<td colspan="5" valign="top" align="center">
+<table border="0" cellspacing="0" cellpadding="8">
 <tr>
-	<td align="left" valign="top">
+	<td colspan="2" align="left" valign="top">
 		<div class="nieuwsberichttitel"><strong>Deelnemers</strong><br/>
 		</div>
 	</td>
-	<td valign="middle" align="right">
-		<div class="nieuwsberichttitel"><a href="deelnemersedit.jsp"></a></div>
-	</td>
+
 </tr>
 <%
 	Record[] accountRecords = model.query(/* tables: */ "utopia_account,utopia_role,utopia_person",
@@ -107,7 +73,8 @@
 		// Maak parameter uit publiek + punt
 		String punt = publiek + "," + locatie;
 		if (i % 2 == 0) { %><tr><!-- i= <%= i%> --><% } %>
-	<td valign="top" class="borderleftbottom" width="320"><!-- i= <%= i%> -->
+		
+	<td valign="top" class="borderleftbottom" width="500"><!-- i= <%= i%> -->
 		<!--			    <table width="320" border="0" cellspacing="0" cellpadding="4">
 				<tr>
 					<td width="75" valign="top" class="borderbottom">
@@ -122,12 +89,12 @@
 						<div class="voorsteltekst"><%= toelichting %></div></td>
 				</tr>
 			    </table>  -->
-		<table width="320" border="0" cellspacing="0" cellpadding="0">
+		<table border="0" cellspacing="0" cellpadding="0">
 			<tr>
-				<td height="20" colspan="2" bgcolor="#B8BEBE" class="naam"><%=naam%></td>
+				<td height="30" width="300" colspan="2" bgcolor="#B8BEBE" class="naam"><%=naam%></td>
 			</tr>
 			<tr>
-				<td width="60" height="60" align="left" valign="top" rowspan="2">
+				<td width="40" height="40" align="left" valign="top" rowspan="2">
 					<% if (publiek == 1) { %>
 					<a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>"><img src="<%= imageURL %>"
 																								  alt="<%= loginName %>"
@@ -140,20 +107,19 @@
 																						height="60"/></a>
 					<% } %>
 				</td>
-				<td align="left" valign="top" bgcolor="#eeeeee">
+				<td width="150" align="left" valign="top" bgcolor="#eeeeee">
 					<div class="voorsteltekst"><%= toelichting %></div>
 				</td>
 			</tr>
 			<tr>
-				<td height="20" valign="bottom" bgcolor="#eeeeee">
+				<td height="30" width="150" valign="bottom" bgcolor="#eeeeee" align="right">
 					<div class="voorsteltekst">
-						<div align="right">
-							<!-- <a href="locatie-map.jsp?punt=<%=punt%>&cmd=archive&user=<%= loginName %>">Bekijk mijn routes</a>-->
-							<% if (publiek == 1) { %>
+						<% if (publiek == 1) { %>
 							<a href="locatie-map.jsp?punt=<%=punt%>&cmd=kaart&user=<%= loginName %>">Bekijk mijn
 								punten</a><% } else {%>
-							<a href="locatie-map.jsp?punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn punten</a><% } %>
-						</div>
+							<a href="locatie-map.jsp?punt=<%=punt%>&user=<%= loginName %>">Bekijk mijn punten</a>
+						<% } %>
+						
 					</div>
 				</td>
 			</tr>

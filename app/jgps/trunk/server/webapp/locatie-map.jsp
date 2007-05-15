@@ -125,7 +125,7 @@
 	</td>
 	<td height="23" width="320" bgcolor="#004b7d" class="sitewide">
 		<a href="index.jsp">home</a>
-		| <a href="kaart.jsp?punt=0,4.203817,50.795272&zoom=9">kaart</a> | <a href="deelnemers.jsp">deelnemers</a>
+		| <a href="deelnemers.jsp">gemeentes</a>
 		| <a href="help.jsp">help</a> | <a href="colofon.jsp">partners</a>
 	</td>
 </tr>
@@ -141,7 +141,7 @@
 				<table border="0" cellpadding="0" cellspacing="0">
 				<tr>
 						<td align="left" width="220">
-							<div id="session" class="deelnemertekst"/>
+							<div id="session"/>
 
 							</td>
 					</tr>
@@ -156,11 +156,11 @@
 		</tr>
 		<tr>
 			<td>
-				<img id="tracerimg" height="100" width="100" src="img/default-user-thumb.jpg" align="right" alt="foto deelnemer" hspace="0" vspace="0"/>
+				<!--<img id="tracerimg" height="100" width="100" src="img/default-user-thumb.jpg" align="right" alt="foto deelnemer" hspace="0" vspace="0"/>-->
 			</td>
 		</tr>
 		<tr>
-			<td height="60" valign="middle" align="center">
+			<td height="60">
 				<div id="result"></div>
 			</td>
 		</tr>
@@ -187,7 +187,7 @@
 		</tr>
 		<tr>
 			<td height="240" width="320" valign="middle" align="center">
-				<div id="featurepreview">foto</div>
+				<div id="featurepreview"></div>
 			</td>
 		</tr>
 		<tr>

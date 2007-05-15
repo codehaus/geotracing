@@ -1,31 +1,38 @@
 <form id="addlocationform" name="addlocationform" enctype="multipart/form-data" method="post" action="media.srv">
 	<table>
 		<tr>
-			<td>name *</td><td><input name="name" id="name" type="text"/></td>
+			<td>Locatie *</td><td><input name="name" id="name" type="text"/></td>
 		</tr>
 		<tr>
-			<td>description</td><td><input name="description" id="description" type="text"/></td>
+			<td>Categorie</td>
+			<td><select name="categories" id="categories" class="icon-menu">
+					<option value="1">knelpunt</option>
+					<option value="2">veilig</option>
+					<option value="3">specifieke locatie</option>
+				</select>
+			</td>
 		</tr>
 		<tr>
-			<td>file</td><td>
+			<td>Probleem</td><td><textarea rows="4" cols="25" name="description" id="description" /></textarea></td>
+		</tr>
+		<tr>
+			<td>Oplossing</td><td><textarea rows="4" cols="25" name="oplossing" id="oplossing" /></textarea></td>
+		</tr>
+		<tr>
+			<td>Bestand</td><td>
 			<input name="file" id="file" type="file"/>
 		</td>
 		</tr>
 		<tr>
-			<td>longitude</td><td><input name="lon" id="lon" type="text"/></td>
+			<td>Actie gemeente</td><td><textarea rows="4" cols="25" name="actie" id="actie" /></textarea></td>
 		</tr>
 		<tr>
-			<td>latitude</td><td><input name="lat" id="lat" type="text"/></td>
+			<td>Longitude</td><td><input name="lon" id="lon" type="text" disabled="disabled"/></td>
 		</tr>
 		<tr>
-			<td>categorie</td><td><select name="categories" id="categories" class="icon-menu">
-			<option value="1">knelpunt</option>
-			<option value="2">veilig</option>
-			<option value="3">specifieke locatie</option>
-		</select>
-
-		</td>
+			<td>Latitude</td><td><input name="lat" id="lat" type="text" disabled="disabled"/></td>
 		</tr>
+		
 		<!-- See http://binnyva.blogspot.com/search/label/xhtml for placing images in SELECT form item -->
 
 
@@ -43,7 +50,7 @@
 				</tr>       -->
 		<tr>
 			<td colspan="2">
-				<a href="#" onclick="return LOCAPP.addLocation();" style="color:blue">[Add Location]</a>
+				<a href="#" onclick="return LOCAPP.addLocation();" style="color:blue">Opslaan</a>
 			</td>
 		</tr>
 	</table>

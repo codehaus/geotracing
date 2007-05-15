@@ -10,8 +10,8 @@ DH.include('Feature.js');
  * @extends Feature
  * @constructor
  */
-function Medium(id, name, desc, type, mime, time, lon, lat) {
-	Feature.apply(this, new Array(id, name, desc, type, time, lon, lat))
+function Medium(id, name, desc, type, mime, time, lon, lat, actie, oplossing) {
+	Feature.apply(this, new Array(id, name, desc, type, time, lon, lat, actie, oplossing))
 
 	this.mime = mime;
 	this.url = 'media.srv?id=' + this.id;

@@ -28,11 +28,12 @@
 			if (command.equals("q-locations-by-user")) {
 				Oase oase = QueryLogic.getOase();
 				String loginName = getParameter(request, "user", null);
+				log.info("user=" + loginName);
 				// We must have a related person otherwise we fail
 					// QueryLogic.throwOnMissingParm(PAR_USER_NAME, loginName);
 					Record person = QueryLogic.getPersonForLoginName(oase, loginName);
 					String tables = "utopia_person,base_medium,g_location";
-					String fields = "g_location.id,g_location.name,g_location.lon,g_location.lat,g_location.type,g_location.subtype,base_medium.id AS mediumid,base_medium.kind,base_medium.mime,base_medium.name AS mediumname,base_medium.description,base_medium.creationdate,base_medium.extra";
+					String fields = "g_location.id,g_location.name,g_location.lon,g_location.lat,g_location.type,g_location.actie,g_location.oplossing,g_location.subtype,base_medium.id AS mediumid,base_medium.kind,base_medium.mime,base_medium.name AS mediumname,base_medium.description,base_medium.creationdate,base_medium.extra";
 					String where = "utopia_person.id = " + person.getId();
 					String relations = "utopia_person,g_location;g_location,base_medium";
 					String postCond = null;
