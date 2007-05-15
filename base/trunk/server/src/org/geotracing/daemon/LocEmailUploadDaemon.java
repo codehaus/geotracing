@@ -21,6 +21,8 @@ import org.geotracing.handler.TracingHandler;
  * @author Just van den Broecke
  */
 public class LocEmailUploadDaemon extends EmailUploadDaemon {
+	// Default Utopia service to use for adding medium after upload
+	public static final String DEFAULT_SERVICE = TracingHandler.T_TRK_ADD_MEDIUM_SERVICE;
 
 	public LocEmailUploadDaemon() {
 	}
@@ -36,20 +38,31 @@ public class LocEmailUploadDaemon extends EmailUploadDaemon {
 	protected void afterUpload(POP3MailMessage aMsg, KWClient aKWClient, JXElement aMediumInsertRsp) {
 
 		String id = aMediumInsertRsp.getAttr("id", null);
+
+		// Determine service to use for adding medium
+		// This may be app-specific
+		String service = getContext().getProperty("useService");
+		if (service == null) {
+			service = DEFAULT_SERVICE;
+		}
+
 		try {
 			log.info("afterUpload id=" + id);
 
 			// medium-insert-rsp carries one or more medium id's seperated by comma's
 			String[] mediumIds = aMediumInsertRsp.getAttr("id").split(",");
 			for (int i = 0; i < mediumIds.length; i++) {
-				JXElement req = Protocol.createRequest(TracingHandler.T_TRK_ADD_MEDIUM_SERVICE);
+
+
+				JXElement req = Protocol.createRequest(service);
 				req.setAttr("id", mediumIds[i]);
 				JXElement rsp = aKWClient.performUtopiaRequest(req);
 				if (Protocol.isNegativeResponse(rsp)) {
-					log.warn("Negative loc-add-medium-rsp for medium id=" + mediumIds[i] + " error=" + rsp.getAttr("error") + " details=" + rsp.getAttr("details"));
+					log.warn("Negative response " + service + " for medium id=" + mediumIds[i] + " error=" + rsp.getAttr("error") + " details=" + rsp.getAttr("details"));
 					continue;
 				}
-				log.info("OK related medium id=" + mediumIds[i] + " to location id=" + rsp.getId());
+				
+				log.info("OK related medium id=" + mediumIds[i] + " to location id=" + rsp.getId() + " using " + service);
 			}
 		} catch (Throwable t) {
 			log.warn("Unexpected error file: from=" + extractSenderEmail(aMsg) + " id=" + id, t);

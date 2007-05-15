@@ -73,6 +73,7 @@
 				<property name="user" host="pundit">email.upload.user.pundit</property>
 				<property name="password" host="pundit">email.upload.password.pundit</property>
 
+				<property name="useService" >t-trk-add-medium</property>
 				<!-- Test-server context
 				<property name="email" host="sumatra">email.upload.email.sumatra</property>
 				<property name="user" host="sumatra">email.upload.user.sumatra</property>
