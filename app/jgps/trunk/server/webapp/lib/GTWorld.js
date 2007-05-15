@@ -77,9 +77,12 @@ var GTW = {
 		DH.setHTML('trackinfo', ' ');
 		DH.setHTML('trackview', 'track info');
 		DH.setHTML('featuretitle', ' ');
-		DH.setHTML('featureinfo', ' ');
-		DH.setHTML('featurepreview', 'feature preview');
-		DH.setHTML('featuredesc', 'feature description (if avail)');
+		DH.setHTML('featureinfo', '');
+		DH.setHTML('session', 'Probleem omschrijving');
+		DH.setHTML('result', 'Oplossing');
+		//DH.setHTML('deelnemertekst', 'Probleem omschrijving');
+		DH.setHTML('featurepreview', 'Foto');
+		DH.setHTML('featuredesc', 'Actie gemeente (indien nodig)');
 	},
 
 	clearTrackPlayer: function() {

@@ -1,16 +1,15 @@
 <%@ include file="static-layout-header.html" %>
-
-<tr>
-<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="images/DSC00757.jpg"
-																		width="193" height="141"
-																		class="imageborderonder"/><br/>
-	<img src="images/Schoolstraat_11.jpg" width="193" height="141" class="imageborderonder"/>
+<link href="css/brainport.css" rel="stylesheet" type="text/css"/>
+	<tr>
+		<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><img src="images/DSC00757.jpg"
+																		width="170" height="100"
+																		class="imageborderonder"/><br/><br />
+	<img src="images/Schoolstraat_11.jpg" width="170" height="100" class="imageborderonder"/><br />
 	<br/>
-	<img src="images/verkeersborden.jpg" width="193" height="304" class="imageborderonder"/></td>
-<td colspan="3" valign="top">
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<img src="images/verkeersborden.jpg" width="170" height="250" class="imageborderonder"/></td>
+		<td colspan="3" valign="top"><table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top" width="560">
+<td valign="top" width="510">
 
 <div class="nieuwsbericht">
 	<div class="nieuwsberichttitel">Help</div>
@@ -61,9 +60,7 @@
 			<p>Door op een willekeurig punt op de  kaart te dubbel-klikken verspringt de kaart naar dit punt. </p>
 		</div>
 		</td>
-<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts" align="right">
-	
-	<img src=./images/luchtfoto.jpg width="225" height="149"></td>
+	  <td valign="top" class="kolomrechts" bgcolor="#EFEFEF" align="right" width="170"><img src=./images/luchtfoto.jpg width="170" height="100"><br /><br /><a href='Handleiding.jsp'><img src=./images/telefoon.jpg width="170" height="100" border="0"></a><br /><br /><img src=./images/map.jpg width="170" height="100"><br /><br />	  </td>
 </tr>
 </table>
 </td>

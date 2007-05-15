@@ -1,14 +1,16 @@
 <%@ include file="static-layout-header.html" %>
 
 <tr>
-<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright">&nbsp;
-	
-</td>
+<td width="170" valign="top" bgcolor="#F5F5F5" class="borderright"><div style="visibility:hidden"><img src="../jgps/images/DSC00757.jpg"
+																		width="170" height="100"
+																		class="imageborderonder"/><br/><br />
+	<img src="../jgps/images/Schoolstraat_11.jpg" width="170" height="100" class="imageborderonder"/><br />
+	<br/>
+	<img src="../jgps/images/verkeersborden.jpg" width="170" height="250" class="imageborderonder"/></td>
 <td colspan="3" valign="top">
-
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td valign="top" width="560">
+<td valign="top" width="510">
 	<div class="fragmenttekst">
 	<div class="nieuwsberichttitel"><strong>Partners</strong>
 
@@ -71,8 +73,7 @@ Economische afwegingen van kosten en baten, de ecologische effecten van mobilite
 		Info: <a href="http://www.justobjects.nl">www.justobjects.nl</a></p>
 </div>
 </td>
-<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts">&nbsp;
-</td>
+<td width="170" valign="top" bgcolor="#F5F5F5" class="kolomrechts">&nbsp;</td>
 </tr>
 </table>
 </td>

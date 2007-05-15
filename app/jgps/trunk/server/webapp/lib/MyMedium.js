@@ -8,13 +8,15 @@
  * @extends Medium
  * @constructor
  */
-function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype, locid) {
-	Medium.apply(this, new Array(id, name, desc, type, mime, time, lon, lat));
+function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype, locid, actie, oplossing) {
+	Medium.apply(this, new Array(id, name, desc, type, mime, time, lon, lat, actie, oplossing));
 
 	this.subtype = subtype;
 	this.icon = null;
 	this.point = new GLatLng(lat, lon);
 	this.locid=locid;
+	this.actie=actie;
+	this.oplossing=oplossing;
 
 	if (this.subtype == 1) {
 		this.icon = "images/rood.png";
@@ -74,17 +76,41 @@ function MyMedium(id, name, desc, type, mime, time, lon, lat, subtype, locid) {
 		var lat = point.y;
 		var html = '<h3>' + this.name + '</h3>';
 		var desc=this.desc;
-		while (desc.indexOf(' ')>0)
+		if(desc != null)
 		{
-			desc=desc.replace(' ' ,'&nbsp;');
-		}
-		var name=this.name;
-		while (name.indexOf(' ')>0)
-		{
-			name=name.replace(' ','&nbsp;');
+			while (desc.indexOf(' ')>0)
+			{
+				desc=desc.replace(' ' ,'&nbsp;');
+			}
 		}
 		
-		html += "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteLocationReq(" + this.locid + ")><u>Verwijder marker</u></label><br/><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormUpdate('locationapp/update-location-form.html','" + lng + "','" + lat + "','" + this.locid + "','" + name + "','" + this.subtype + "','" + desc + "','updatelocationform')><u>Wijzig marker</u></label>";
+		var name=this.name;
+		if(name != null)
+		{
+			while (name.indexOf(' ')>0)
+			{
+				name=name.replace(' ','&nbsp;');
+			}
+		}
+		
+		var actie=this.actie;
+		if(actie != null)
+		{
+			while (actie.indexOf(' ')>0)
+			{
+				actie=actie.replace(' ','&nbsp;');
+			}
+		}
+		
+		var oplossing=this.oplossing;
+		if(oplossing != null)
+		{
+			while (oplossing.indexOf(' ')>0)
+			{
+				oplossing=oplossing.replace(' ','&nbsp;');
+			}
+		}
+		html += "<label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.deleteLocationReq(" + this.locid + ")><u>Verwijder marker</u></label><br/><label onmouseover=this.style.cursor='pointer' onclick=LOCAPP.loadFormUpdate('locationapp/update-location-form.html','" + lng + "','" + lat + "','" + this.locid + "','" + name + "','" + this.subtype + "','" + desc + "','" + actie + "','" + oplossing + "','updatelocationform')><u>Wijzig marker</u></label>";
 
 		GEvent.addListener(marker, "click", function() {
 			latestoverlay = marker;

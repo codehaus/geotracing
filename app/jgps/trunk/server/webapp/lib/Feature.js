@@ -14,7 +14,7 @@ var FEAT = {
  *
  * @constructor
  */
-function Feature(theId, name, desc, type, time, lon, lat) {
+function Feature(theId, name, desc, type, time, lon, lat, actie, oplossing) {
 	this.id = theId;
 	this.name = name;
 	this.type = type;
@@ -23,7 +23,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	this.lat=lat;
 	
 	if (!this.desc || this.desc == null || this.desc == 'null') {
-		this.desc = 'no description';
+		this.desc = 'geen probleemstelling';
 	}
 	this.time = new Number(time);
 	// somehow needed
@@ -142,7 +142,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	}
 
 	this._displayTitle = function() {
-		DH.setHTML('featuretitle', this.getTitle());
+		DH.setHTML('featuretitle', this.name);
 	}
 
 	this._displayUser = function() {
@@ -159,14 +159,16 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 	}
 
 	this._displayInfo = function() {
-		DH.setHTML('featureinfo', this.getDate() + ' <span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'' + this.type + '\',\'' + this.name + '\')" >comments (' + this.record.getField('comments') + ')</a></span>');
+		DH.setHTML('featureinfo', this.getDate());
 		if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, this.type, this.name);
 		}
 	}
 
 	this._displayDescr = function() {
-		DH.setHTML('featuredesc', this.desc);
+		DH.setHTML('featuredesc', this.actie);
+		DH.setHTML('result', this.oplossing);
+		DH.setHTML('session', this.desc);
 	}
 
 	this._queryInfo = function() {
