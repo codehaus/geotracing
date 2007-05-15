@@ -10,6 +10,10 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	<!-- Project global properties; overrule by modifying build.properties -->
 	<property file="build.properties"/>
 
+	<!-- set properties for eternal libs -->
+	<property name="geotracing.external.dir" value="${basedir}/../../../../base/trunk/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
 	<property name="home.cfg.dir" value="${home}/cfg"/>
@@ -32,8 +36,23 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 	</target>
 
 
+
+	<!-- Optional download/upack of external packages. -->
+	<target name="externals" depends="init">
+		<echo message="downloading and unpacking external packages"/>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${jaf}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${javamail}"/>
+		</ant>
+
+	</target>
+
 	<!-- Build the .wars for the project -->
-	<target name="war" depends="init">
+	<target name="war" depends="externals">
 		<echo message="Building webapp..."/>
 		<echo message="using GeoTracing war dir: ${gt.war.dir}" />
 
@@ -56,9 +75,15 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 
-		<!--  <copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
-			<fileset dir="${home.data.dir}"/>
-		</copy>    -->
+		<!-- Copy additional external libraries -->
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
+			<fileset dir="${jaf.dir}">
+				<include name="activation.jar"/>
+			</fileset>
+			<fileset dir="${javamail.dir}">
+				<include name="mail.jar"/>
+			</fileset>
+		</copy>
 
 		<!-- Replace users/passwords with local values as not to have them in repository -->
 		<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
