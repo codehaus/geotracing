@@ -46,6 +46,7 @@ public interface Constants {
 	public final static String DESCRIPTION_FIELD = "description";
 	public final static String STATE_FIELD = "state";
 	public final static String TYPE_FIELD = "type";
+	public final static String KIND_FIELD = "kind";
 	public final static String LOCATION_FIELD = "location";
 	public final static String LOCATION_ID_FIELD = "locationid";
 	public final static String TAG_FIELD = "tag";

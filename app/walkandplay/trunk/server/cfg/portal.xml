@@ -91,6 +91,9 @@
                 <property name="email" host="berlin">email.upload.email.berlin</property>
                 <property name="user" host="berlin">email.upload.user.berlin</property>
                 <property name="password" host="berlin">email.upload.password.berlin</property>
+
+				<!-- application request to use -->
+				<property name="useService" >play-add-medium</property>
             </daemon>
 
 			<!--

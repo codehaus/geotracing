@@ -158,6 +158,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Record task = getTaskHitForGame(oase, point, game.getId());
 		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
 		String accountName = HandlerUtil.getAccountName(anUtopiaReq);
+		String mediumType = medium.getStringField(KIND_FIELD);
 
 		if (task != null) {
 			log.info("HIT task for medium add taskid=" + task.getId());
@@ -182,7 +183,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			relater.relate(taskResult, medium, RELTAG_RESULT);
 
 			// Publish event with related task/taskresult
-			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), mediumId, task.getId(), taskResult.getId()));
+			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), mediumId, mediumType, task.getId(), taskResult.getId()));
 
 			// Set scores if we are totally done and task result was not already done
 			if (answerState.equals(VAL_OK) && !totalState.equals(VAL_DONE)) {
@@ -207,7 +208,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 			rsp.setAttr(PLAY_STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
 		} else {
 			// Medium is not part of answering task: just publish id's
-			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), mediumId));
+			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), mediumId, mediumType));
 		}
 		return rsp;
 	}

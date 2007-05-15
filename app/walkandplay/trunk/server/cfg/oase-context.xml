@@ -17,6 +17,7 @@
         <table file="tables/g_track.xml"/>
         <table file="tables/g_location.xml"/>
         <table file="tables/g_area.xml"/>
+		<table file="tables/kw_comment.xml"/>
 
 		<!-- walkandplay tables -->
 		<table file="tables/wp_game.xml"/>
