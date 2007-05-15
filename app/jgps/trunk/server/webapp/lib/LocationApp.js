@@ -149,9 +149,9 @@ var LOCAPP = {
 		DH.setHTML('debug','Leessessie');
 		KW.init(LOCAPP.onRsp, LOCAPP.onNegRsp, 60, '/jgps');
 		LOCAPP.loadForm('locationapp/login-form.html');
-	
+
 	},
-	
+
 	login: function() {
 		LOCAPP.pr('logging in...');
 
@@ -178,8 +178,8 @@ var LOCAPP = {
 		LOCAPP.loadForm('locationapp/ingelogd.html');
 		//GTW.featureSet.dispose();
 		//alert(MYAPP.currentUser);
-		
-		
+
+
 	//	window.location="locatie-map.jsp?punt=" + punt +"&cmd=kaart&user=" + loginForm.username.value;
 		SRV.get('q-locations-by-user', MYAPP.showlocations, 'user', MYAPP.currentUser );
 		MYAPP.ingelogd=true;
@@ -190,11 +190,11 @@ var LOCAPP = {
 		{
 			LOCAPP.deleteAllMarkers();
 		}
-		
+
 		return false;
-		
+
 	},
-	
+
 	loginEdit: function() {
 		LOCAPP.pr('logging in...');
 
@@ -207,7 +207,7 @@ var LOCAPP = {
 			loginForm.username.focus();
 			return false;
 		}
-					
+
 		if (loginForm.password.value == "") {
 			alert("Please fill in your password.");
 			loginForm.password.focus();
@@ -229,14 +229,14 @@ var LOCAPP = {
 				//GTW.featureSet.dispose();
 				GTAPP.mode = 'media';
 				GTAPP.showMode();
-				
+
 				SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', MYAPP.currentUser );
 				var icon = new GIcon();
 				icon.image = "./images/nieuw.png";
 				icon.iconSize = new GSize(20, 34);
 				icon.iconAnchor = new GPoint(10, 30);
 				icon.infoWindowAnchor = new GPoint(9, 2);
-		
+
 				GEvent.addListener(GMAP.map, "click", function(marker, point) {
 					if (!marker) {
 						GMAP.map.addOverlay(LOCAPP.createMarker(point, icon));
@@ -250,7 +250,7 @@ var LOCAPP = {
 				return false;
 			}
 		}
-		
+
 
 	},
 
@@ -258,14 +258,14 @@ var LOCAPP = {
 		LOCAPP.pr('logging in...');
 
 		var loginForm = document.getElementById('logineditmapform');
-		
-		
+
+
 		if (loginForm.username.value == "") {
 			alert("Please fill in you name.");
 			loginForm.username.focus();
 			return false;
 		}
-					
+
 		if (loginForm.password.value == "") {
 			alert("Please fill in your password.");
 			loginForm.password.focus();
@@ -296,7 +296,7 @@ var LOCAPP = {
 		record=records[0];
 		LOCAPP.toUpdateUserId=record.getField('uid');
 	},
-	
+
 	getUpdateUserId: function(records)
 	{
 		var record;
@@ -379,8 +379,6 @@ var LOCAPP = {
 		KW.UTIL.setAttr(req, 'actie', actie);
 		
 		KW.utopia(req);
-		LOCAPP.deleteAllMarkers();
-		SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', MYAPP.currentUser );
 	},
 
 
@@ -408,9 +406,6 @@ var LOCAPP = {
 		
 //		KW.UTIL.setAttr(req, 'id', LOCAPP.UpdateUserId);
 		KW.utopia(req);
-		LOCAPP.deleteAllMarkers();
-		SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', MYAPP.currentUser );
-		//LOCAPP.UpdatePersReq(LOCAPP.UpdateUserId,LOCAPP.toUpdateUserId);
 	},
 
 	UpdatePersReq: function(UpdateUserId, toUpdateUserId) {
@@ -488,6 +483,9 @@ var LOCAPP = {
 		} else if (elm.tagName == 'logout-rsp') {
 			LOCAPP.pr('logout OK');
 			window.clearInterval(LOCAPP.hbTimer);
+		} else if (elm.tagName == 'loc-create-rsp') {
+			LOCAPP.deleteAllMarkers();
+			SRV.get('q-locations-by-user', MYAPP.showMarkerlocations, 'user', MYAPP.currentUser );
 		} else if (elm.tagName == 't-hb-rsp') {
 			LOCAPP.pr('heartbeat OK');
 		} else {
