@@ -203,6 +203,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 				<include name="g_track.xml"/>
 				<include name="g_location.xml"/>
 				<include name="g_area.xml"/>
+				<include name="kw_comment.xml"/>
 			</fileset>
 			<fileset dir="${keyworx.dir}/server/cfg/utopia/tables">
 				<include name="oase_initialdata.xml"/>
