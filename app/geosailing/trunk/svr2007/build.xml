@@ -1,0 +1,125 @@
+<!--
+
+ANT Build file for GeoSailing Schuttevaer server.
+
+$Id: build.xml,v 1.3 2006-04-26 12:39:44 just Exp $
+-->
+<project name="geosailing" default="build" basedir=".">
+
+	<!-- Initialization of properties (dirs, files) -->
+	<!-- Project global properties; overrule by modifying build.properties -->
+	<property file="build.properties"/>
+
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+	<property name="home.cfg.dir" value="${home}/server/cfg"/>
+	<property name="home.data.dir" value="${home}/server/data"/>
+	<property name="home.webapp.dir" value="${home}/server/webapp"/>
+
+	<property name="build.dir" value="${home}/build"/>
+	<property name="build.war.dir" value="${build.dir}/war"/>
+	<property name="version.dir" value="${home}/version"/>
+	<property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
+
+
+	<!-- The .jar -->
+	<property name="project.war" value="${build.dir}/${project.id}.war"/>
+
+	<!-- Initialize: create dirs and set timestamp.. -->
+	<target name="init">
+		<mkdir dir="${build.dir}"/>
+		<tstamp/>
+	</target>
+
+
+	<!-- Build the .wars for the project -->
+	<target name="war" depends="init">
+		<echo message="Building webapp..."/>
+		<echo message="using geoTracing war dir: ${gt.war.dir}" />
+
+		<delete dir="${build.war.dir}"/>
+		<delete file="${project.war}"/>
+		<mkdir dir="${build.war.dir}"/>
+
+		<copy todir="${build.war.dir}" overwrite="true">
+			<fileset dir="${gt.war.dir}">
+				<exclude name="WEB-INF/data/**"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/cfg" overwrite="true">
+			<fileset dir="${home.cfg.dir}"/>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+			<fileset dir="${home.data.dir}"/>
+		</copy>
+
+		<copy todir="${build.war.dir}" overwrite="true">
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+		
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.dir}/version" files="index.html"/>
+			<filelist dir="${gt.war.dir}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Make war -->
+		<jar jarfile="${project.war}">
+			<fileset dir="${build.war.dir}">
+				<include name="**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- Build all clean. -->
+	<target name="build" depends="clean,war"/>
+
+		<!-- Package into archive files -->
+	<target name="package">
+		<echo message="Packaging distribution into ${package.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${home}"
+				prefix="${project.id}-${version}"
+				excludes="build/**,version/**"/>
+		</zip>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="deploy-local">
+		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
+	</target>
+
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${project.id}" overwrite="true">
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+	</target>
+
+	<target name="deploy-test">
+		<copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+	</target>
+
+	<target name="deploy-test-raw">
+		<copy todir="${deploy.test.dir}/${project.id}" overwrite="true">
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+	</target>
+	
+	<target name="copy-war-samoa">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="samoa@samoa:versions"/>
+		</exec>
+	</target>
+
+</project>

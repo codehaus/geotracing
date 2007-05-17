@@ -1,0 +1,71 @@
+<!--
+
+ANT Build file for GeoSailing testing.
+
+$Id: build.xml 737 2007-05-17 15:26:09Z just $
+-->
+<project name="geosailing-test" default="mw-emulator" basedir=".">
+
+	<property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property name="iamw.jsp" value="http://local.geosailing.com/svr/iamw.jsp?" />
+	<property name="iamw.fr1" value="frm_Type=1&amp;frm_dcName=UNNAMED%20MAMBO&amp;frm_Imei=352021009412545&amp;frm_dcLcip=10.49.13.242" />
+	<property name="iamw.start" value="frm_Type=2&amp;frm_Imei=352021009412545&amp;frm_Timestamp=103838.120211206&amp;frm_gpLat=53.1997&amp;frm_gpLng=5.7844&amp;frm_gpSpeed=0.11&amp;frm_gpTrigger=start&amp;frm_gpHead=81.31" />
+	<property name="iamw.loc1" value="frm_Type=2&amp;frm_Imei=352021009412545&amp;frm_Timestamp=103838.120211206&amp;frm_gpLat=55.198&amp;frm_gpLng=5.9511&amp;frm_gpSpeed=0.11&amp;frm_gpTrigger=&amp;frm_gpHead=81.31" />
+	<property name="iamw.loc2" value="frm_Type=2&amp;frm_Imei=352021009412545&amp;frm_Timestamp=103838.120211206&amp;frm_gpLat=55.197&amp;frm_gpLng=5.9521&amp;frm_gpSpeed=0.11&amp;frm_gpTrigger=&amp;frm_gpHead=81.31" />
+	<property name="iamw.loc3" value="frm_Type=2&amp;frm_Imei=352021009412545&amp;frm_Timestamp=103838.120211206&amp;frm_gpLat=55.196&amp;frm_gpLng=5.9531&amp;frm_gpSpeed=0.11&amp;frm_gpTrigger=&amp;frm_gpHead=81.31" />
+	<property name="iamw.urls" value="${iamw.jsp}${iamw.fr1},${iamw.jsp}${iamw.start},${iamw.jsp}${iamw.loc1},${iamw.jsp}${iamw.loc2},${iamw.jsp}${iamw.loc3}" />
+
+	<!--  -->
+
+	<!-- sets paths to all external package dirs. -->
+	<property file="${geotracing.external.dir}/build.properties"/>
+
+
+	<property name="build.dir" value="${basedir}/build"/>
+
+	<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+	<property name="urlstress.class" value="org.keyworx.amuse.test.httpclient.URLStress"/>
+	<property name="mwclient.class" value="mambo.MWClient"/>
+
+	<!-- Initialize: setup properties, create dirs and set timestamp.. -->
+	<target name="init" >
+
+
+
+		<path id="compile.sourcepath">
+			<pathelement location="${basedir}/src"/>
+		</path>
+
+		<path id="gt.classpath">
+			<pathelement location="${keyworx.jar}"/>
+		</path>
+	</target>
+
+	<target name="mw-emulator" depends="init">
+		<java classname="${urlstress.class}" fork="true">
+			<classpath refid="gt.classpath"/>
+			<!-- <nrofclients> <msg> <mediumurl,medumurl,..> [mininterval] [maxinterval] [rounds] -->
+			<arg value="1"/>
+			<arg value="mambo"/>
+			<arg value="${iamw.urls}"/>
+			<arg value="100"/>
+			<arg value="200"/>
+			<arg value="1"/>
+		</java>
+	</target>
+
+	<target name="mw-client" depends="init">
+		<java classname="${mwclient.class}" fork="true">
+			<classpath refid="gt.classpath"/>
+			<!-- <nrofclients> <msg> <mediumurl,medumurl,..> [mininterval] [maxinterval] [rounds] -->
+			<arg value="1"/>
+			<arg value="mambo"/>
+			<arg value="${iamw.urls}"/>
+			<arg value="100"/>
+			<arg value="200"/>
+			<arg value="1"/>
+		</java>
+	</target>
+
+</project>
