@@ -21,14 +21,16 @@ $Id$
 	<!-- sets paths to all external package dirs. -->
 	<property file="${geotracing.external.dir}/build.properties"/>
 
+
+	<property name="build.dir" value="${basedir}/build"/>
+
+	<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+	<property name="urlstress.class" value="org.keyworx.amuse.test.httpclient.URLStress"/>
+	<property name="mwclient.class" value="mambo.MWClient"/>
+
 	<!-- Initialize: setup properties, create dirs and set timestamp.. -->
 	<target name="init" >
 
-
-		<property name="build.dir" value="${basedir}/build"/>
-
-		<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
-		<property name="urlstress.class" value="org.keyworx.amuse.test.httpclient.URLStress"/>
 
 
 		<path id="compile.sourcepath">
@@ -42,6 +44,19 @@ $Id$
 
 	<target name="mw-emulator" depends="init">
 		<java classname="${urlstress.class}" fork="true">
+			<classpath refid="gt.classpath"/>
+			<!-- <nrofclients> <msg> <mediumurl,medumurl,..> [mininterval] [maxinterval] [rounds] -->
+			<arg value="1"/>
+			<arg value="mambo"/>
+			<arg value="${iamw.urls}"/>
+			<arg value="100"/>
+			<arg value="200"/>
+			<arg value="1"/>
+		</java>
+	</target>
+
+	<target name="mw-client" depends="init">
+		<java classname="${mwclient.class}" fork="true">
 			<classpath refid="gt.classpath"/>
 			<!-- <nrofclients> <msg> <mediumurl,medumurl,..> [mininterval] [maxinterval] [rounds] -->
 			<arg value="1"/>
