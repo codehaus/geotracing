@@ -114,5 +114,12 @@ $Id: build.xml,v 1.3 2006-04-26 12:39:44 just Exp $
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 	</target>
+	
+	<target name="copy-war-samoa">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="samoa@samoa:versions"/>
+		</exec>
+	</target>
 
 </project>

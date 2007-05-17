@@ -15,6 +15,8 @@
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="java.util.Vector"%>
+<%@ page import="org.geotracing.handler.EventPublisher"%>
+<%@ page import="nl.justobjects.pushlet.core.Event"%>
 <%!
 	public static Oase oase;
 	public static TrackLogic trackLogic;
@@ -69,7 +71,7 @@
 
 	/** Performs command and returns XML result. */
 	public synchronized String doCommand(HttpServletRequest request, HttpServletResponse response) {
-		logParms(request);
+		// logParms(request);
 
 		String frameType = getParameter(request, PAR_FRAME_TYPE, "unknown");
 		String imei = getParameter(request, PAR_IMEI, null);
@@ -83,22 +85,24 @@
 			Record userInfo = getUserInfoByIMEI(imei);
 			int personId = userInfo.getIntField(ATTR_ID);
 			String userName = userInfo.getStringField(ATTR_USER_NAME);
-			log.info("imei=" + imei + " user=" + userName);
 
 			if (frameType.equals(FRAME_TYPE_ONE)) {
 				// {frm_Type=1}, {frm_dcName=UNNAMED MAMBO}, {frm_dcLcip=10.49.13.242}, {frm_Imei=352021009412545}
+				log.info("START imei=" + imei + " user=" + userName);
 			} else if (frameType.equals(FRAME_TYPE_TWO)) {
 				//  {frm_gpLat=53.1997}, {frm_gpSpeed=0.11}, {frm_gpTrigger=start}, {frm_gpLng=5.7844}, {frm_Type=2}, {frm_gpHead=81.31}, {frm_Imei=352021009412545}, {frm_Timestamp=103838.120211206}
 
 				// 2. get active track, if not create new track using user account name
 				Track track = trackLogic.getActiveTrack(personId);
 				if (track == null) {
-					trackLogic.create(personId, userName, Track.VAL_NORMAL_TRACK, Sys.now());
+					log.info("CREATE TRACK imei=" + imei + " user=" + userName);
+					track = trackLogic.create(personId, userName, Track.VAL_NORMAL_TRACK, Sys.now());
 				}
 
 				// 3. get PAR_TRIGGER, if "start" do resume
 				String trigger = getParameter(request, PAR_TRIGGER, "EMPTY");
 				if (trigger.equals("start")) {
+					log.info("RESUME TRACK imei=" + imei + " user=" + userName);
 					trackLogic.resume(personId, Track.VAL_NORMAL_TRACK, Sys.now());
 				}
 
@@ -113,6 +117,7 @@
 
 				// may check for: minimal distance, minimal time between samples
 				// 5. publish to pushlets (live events)
+				EventPublisher.tracerMove(personId, userName, track.getId(), track.getName(), pt);
 			} else {
 				log.warn("unknown frametype " + frameType);
 			}
