@@ -73,7 +73,7 @@ public class EventPublisher {
 			String accountName = null;
 			if (!aCommentRecord.isNull(CommentLogic.FIELD_OWNER)) {
 				ownerId = aCommentRecord.getIntField(CommentLogic.FIELD_OWNER);
-				Person ownerPerson = (Person) anOase.get(Person.class,  ownerId + "");
+				Person ownerPerson = (Person) anOase.get(Person.class, ownerId + "");
 				accountName = ownerPerson.getAccount().getLoginName();
 			}
 
@@ -299,38 +299,39 @@ public class EventPublisher {
 					continue;
 				}
 
-				// Pushlet subject (topic) is e.g. "/location/piet"
-				Event event = Event.createDataEvent(PUSHLET_SUBJECT);
-				event.setField(FIELD_EVENT, EVENT_USER_MOVE);
-				event.setField(FIELD_ID, person.getId());
-				event.setField(FIELD_USER_NAME, accountName);
-				event.setField(FIELD_TRACK_ID, trackId);
-				event.setField(FIELD_TRACK_NAME, trackName);
-
-				// For now just copy (almost) all attrs
-				String nextField = null;
-				for (Iterator iter = nextElement.getAttrs().keys(); iter.hasNext();) {
-					nextField = (String) iter.next();
-
-					// Skip raw GPS data
-					if (nextField.equals(Track.ATTR_NMEA)) {
-						continue;
-					}
-
-					event.setField(nextField, nextElement.getAttr(nextField));
-
-					// Calculate RD coord X,Y for backward compat
-					// XY rd = WGS84toRD.calculate(nextElement.getAttr(Track.ATTR_LAT), nextElement.getAttr(Track.ATTR_LON));
-					// event.setField("x", rd.x);
-					// event.setField("y", rd.y);
-				}
-
-				multicast(event);
-				log.trace("Published: " + event);
+				// Publish point for person/track
+				tracerMove(person.getId(), accountName, trackId, trackName, nextElement);
 			}
 		} catch (Throwable t) {
 			log.warn("Cannot publish geo elements", t);
 		}
+	}
+
+	/**
+	 * Publish new tracer location to Pushlet framework.
+	 */
+	public static void tracerMove(int aPersonId, String anAccountName, int aTrackId, String aTrackName, JXElement aPoint) {
+		// Pushlet subject (topic) is e.g. "/location/piet"
+		Event event = Event.createDataEvent(PUSHLET_SUBJECT);
+		event.setField(FIELD_EVENT, EVENT_USER_MOVE);
+		event.setField(FIELD_ID, aPersonId);
+		event.setField(FIELD_USER_NAME, anAccountName);
+		event.setField(FIELD_TRACK_ID, aTrackId);
+		event.setField(FIELD_TRACK_NAME, aTrackName);
+		// For now just copy (almost) all attrs
+		String nextField = null;
+		for (Iterator iter = aPoint.getAttrs().keys(); iter.hasNext();) {
+			nextField = (String) iter.next();
+
+			// Skip raw GPS data
+			if (nextField.equals(Track.ATTR_NMEA)) {
+				continue;
+			}
+
+			event.setField(nextField, aPoint.getAttr(nextField));
+		}
+
+		multicast(event);
 	}
 
 	/**
