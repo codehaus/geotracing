@@ -19,5 +19,5 @@ GMAP.addKey('berlin',
                 '^https?://test.diwi.nl/.*' );
 
 
-GMAP.loadGoogleMapScript('2.66');
+GMAP.loadGoogleMapScript();
 

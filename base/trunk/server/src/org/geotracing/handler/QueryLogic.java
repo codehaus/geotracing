@@ -361,10 +361,10 @@ public class QueryLogic {
 				addUserAttrs(result, "g_track");
 
 			} else if (aQueryName.equals(CMD_QUERY_ALL_TRACKS)) {
-				String tables = "g_track";
-				String fields = null;
+				String tables = "g_track,g_location";
+				String fields = "g_track.id,g_track.name,g_location.lon,g_location.lat,g_location.time";
 				String where = null;
-				String relations = null;
+				String relations = "g_track,g_location,lastpt";
 				String postCond = null;
 				result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
 				addUserAttrs(result, "g_track");
@@ -699,6 +699,9 @@ public class QueryLogic {
 				// TODO: add Relater.getRelatedCount()
 				int mediaCnt = oase.getRelater().getRelated(person, "base_medium", null).length;
 				userInfo.setChildText("media", mediaCnt + "");
+
+				int trackCnt = oase.getRelater().getRelated(person, "g_track", null).length;
+				userInfo.setChildText("tracks", trackCnt + "");
 
 				// Add location
 				// TODO: add g_location related to persons
