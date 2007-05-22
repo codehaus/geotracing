@@ -25,6 +25,9 @@ var MYAPP = {
 	},
 
 	start: function() {
+		if (DH.getPageParameter('cmd', null) == null) {
+			GTAPP.mShowMediaInBbox(50);
+ 		}
 		// GTAPP.mShowHelp("content/message.html");
     },
 
@@ -73,7 +76,7 @@ var MYAPP = {
 		GMAP.map.enableDoubleClickZoom();
 
 		// Set map parm defaults (may be overridden by page parms in GMAP.showMap())
-		GMAP.setDefaultMapParms(new GLatLng(52.37261, 4.900435), 10, 'satellite');
+		GMAP.setDefaultMapParms(new GLatLng(52.37261, 4.900435), 3, 'satellite');
 
 		// Show the map
 		GMAP.showMap();

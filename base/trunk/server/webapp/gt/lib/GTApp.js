@@ -492,6 +492,30 @@ var GTAPP = {
 		SRV.get('q-recent-tracks', GTAPP.onQueryTracks, 'max', max);
 	},
 
+	mUserTracks: function(loginName) {
+		GTAPP.mode = 'tracks';
+		GTAPP.showMode();
+
+		// Get all active tracks
+		GTAPP.clearMap();
+		GTAPP._deleteSelectors();
+
+		GTAPP.blinkStatus('Getting tracks for ' + loginName + "...");
+		SRV.get('q-tracks-by-user', GTAPP.onQueryUserTracks, 'user', loginName);
+	},
+
+	mAllTracks: function() {
+		GTAPP.mode = 'tracks';
+		GTAPP.showMode();
+
+		// Get all active tracks
+		GTAPP.clearMap();
+		GTAPP._deleteSelectors();
+
+		GTAPP.blinkStatus('Getting all tracks...');
+		SRV.get('q-all-tracks', GTAPP.onQueryTracks);
+	},
+
 	mMy: function() {
 	   window.open('my', 'MyGeoTracing');
 	},
@@ -536,6 +560,21 @@ var GTAPP = {
 		var bounds = GMAP.map.getBounds();
 		var bbox = bounds.getSouthWest().x + ',' + bounds.getSouthWest().y + ',' + bounds.getNorthEast().x + ',' + bounds.getNorthEast().y;
 		SRV.get('q-recent-media', GTAPP.onQueryMedia, 'max', max, 'bbox', bbox);
+	},
+
+	mShowMediaByUser: function(user) {
+		GTAPP.mode = 'media';
+		GTAPP.showMode();
+
+		// Get all active tracks
+		GTAPP.clearMap();
+		GTAPP._deleteSelectors();
+
+		GTAPP.blinkStatus('Getting media for ' + user + '...');
+		//var bounds = GMAP.map.getBounds();
+		//var bbox = bounds.getSouthWest().x + ',' + bounds.getSouthWest().y + ',' + bounds.getNorthEast().x + ',' + bounds.getNorthEast().y;
+		// var bbox = bounds.minX + ',' + bounds.minY + ',' + bounds.maxX + ',' + bounds.maxY;
+		SRV.get('q-media-by-user', GTAPP.onQueryMedia, 'user', user);
 	},
 
 	mShowMediaInBbox: function(max) {

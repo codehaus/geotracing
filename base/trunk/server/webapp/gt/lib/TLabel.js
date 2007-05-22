@@ -26,7 +26,8 @@ var diffusions = new Array(new diffpos(-5, -5), new diffpos(0, -5), new diffpos(
 var TLABEL = {
 	SMOOTH_FACTOR: .050,
 	ANIMATE_INTERVAL: 150,
-	DEBUG: false
+	DEBUG: false,
+	G_MAP_PANE: G_MAP_MARKER_PANE
 }
 
 function TLabel(diffuse) {
@@ -70,7 +71,7 @@ TLabel.prototype.initialize = function(a) {
 	// document.getElementById(this.id);
 	this.w = this.elm.offsetWidth;
 	this.h = this.elm.offsetHeight;
-	this.mapTray = this.map.getPane(G_MAP_MAP_PANE);
+	this.mapTray = this.map.getPane(TLABEL.G_MAP_PANE);
 	// document.getElementById(a.getContainer().id).firstChild;
 	this.mapTray.appendChild(b);
 	if (!this.markerOffset) {
@@ -298,7 +299,7 @@ GMap2.prototype.addTLabel = function(a) {
 
 GMap2.prototype.removeTLabel = function(a) {
 	//var b = document.getElementById(a.id);
-	this.getPane(G_MAP_MAP_PANE).removeChild(a.elm);
+	this.getPane(TLABEL.G_MAP_PANE).removeChild(a.elm);
 	// 	document.getElementById(this.getContainer().id).firstChild.removeChild(b);
 	delete(b);
 }

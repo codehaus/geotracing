@@ -339,7 +339,7 @@ function Tracer(name, color, iconURL, pt, time) {
 			desc = ' ';
 		}
 
-		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >messages (' + this.record.getField('comments') + ')</a></span>');
+		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="GTAPP.mUserTracks(\'' + this.name + '\')" >tracks (' + this.record.getField('tracks') + ')</a>&nbsp;&nbsp;<a href="#" onclick="GTAPP.mShowMediaByUser(\'' + this.name + '\')" >media (' + this.record.getField('media') + ')</a>&nbsp;&nbsp;<a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >msgs (' + this.record.getField('comments') + ')</a>&nbsp;&nbsp;</span>');
 		if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, 'user', this.name);
 		}
