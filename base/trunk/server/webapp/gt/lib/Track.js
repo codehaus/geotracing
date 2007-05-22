@@ -37,10 +37,15 @@ function Track(id, name, tracer) {
 
 		// Only draw line if we have a previous point
 		if (lastPoint != null) {
-			var ptArr = [];
+			/* var ptArr = [];
 			ptArr[0] = lastPoint;
 			ptArr[1] = aPoint;
-			this.drawPoints(ptArr);
+			this.drawPoints(ptArr);  */
+			this.clearPolyLines();
+			for (var i = 0; i < this.segments.length; i++) {
+				// Draw the entire Track on map
+				this.drawPoints(this.segments[i]);
+			}
 		}
 	}
 
@@ -51,14 +56,17 @@ function Track(id, name, tracer) {
 	}
 
 	this.clear = function () {
+		this.clearPolyLines();
+
+		this.featureSet.clear();
+	}
+
+	this.clearPolyLines = function () {
 		for (var i = 0; i < this.polyLines.length; i++) {
 			GMAP.map.removeOverlay(this.polyLines[i]);
 		}
 
 		this.polyLines = [];
-
-		this.featureSet.clear();
-
 	}
 
 	// Drawin view
@@ -81,6 +89,9 @@ function Track(id, name, tracer) {
 			this.drawPoints(ptArr.slice(200));
 			return;
 		}
+
+		//var lineWidth = GMAP.map.getZoom()/4;
+		//lineWidth = (lineWidth > 4)? Math.round(lineWidth) : Math.floor(lineWidth);
 
 		// Draw using GMap Polyline
 		var pl = new GPolyline(ptArr, this.color, GTW.polyLineWidth, GTW.polyLineOpacity);

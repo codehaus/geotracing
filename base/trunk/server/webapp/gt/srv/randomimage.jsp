@@ -1,9 +1,8 @@
-<%@ page import="org.geotracing.handler.QueryHandler"%>
+<%@ page import="org.geotracing.handler.QueryLogic"%>
 <%@ page import="org.keyworx.amuse.core.Amuse"%>
 <%@ page import="org.keyworx.oase.api.Record"%>
 <%@ page import="org.keyworx.utopia.core.util.Oase"%>
 <%@ page import="javax.servlet.ServletContext"%>
-<%@ page import="org.geotracing.handler.QueryLogic"%>
 <%!
 	public static Oase oase;
 
