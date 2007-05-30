@@ -8,15 +8,13 @@
 <%@ page import="org.keyworx.common.util.Sys" %>
 <%@ page import="org.keyworx.oase.api.Record" %>
 <%@ page import="org.keyworx.utopia.core.util.Oase" %>
-<%@ page import="javax.servlet.ServletRequest"%>
-<%@ page import="javax.servlet.http.HttpServletRequest"%>
-<%@ page import="javax.servlet.http.HttpServletResponse"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="java.util.Iterator"%>
-<%@ page import="java.util.Map"%>
-<%@ page import="java.util.Vector"%>
-<%@ page import="org.geotracing.handler.EventPublisher"%>
-<%@ page import="nl.justobjects.pushlet.core.Event"%>
+<%@ page import="javax.servlet.ServletRequest" %>
+<%@ page import="javax.servlet.http.HttpServletRequest" %>
+<%@ page import="javax.servlet.http.HttpServletResponse" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="org.geotracing.handler.EventPublisher" %>
+<%@ page import="nl.justobjects.pushlet.core.Event" %>
+<%@ page import="java.util.*" %>
 <%!
 	public static Oase oase;
 	public static TrackLogic trackLogic;
@@ -110,7 +108,17 @@
 				JXElement pt = new JXElement("pt");
 				pt.setAttr("lon", getParameter(request, PAR_LON, null));
 				pt.setAttr("lat", getParameter(request, PAR_LAT, null));
-				pt.setAttr("t", Sys.now());
+
+
+				String timestamp = getParameter(request, PAR_TIMESTAMP, null);
+				if (timestamp == null) {
+					log.warn("no timestamp");
+					return RESULT_CODE;
+				}
+
+				// Use formatted GPS timestamp
+				long t = parseTimestamp(timestamp);
+				pt.setAttr("t", t);
 				Vector pts = new Vector(1);
 				pts.add(pt);
 				trackLogic.write(pts, personId);
@@ -160,9 +168,24 @@
 	}
 
 
-
 	Map getParameters(ServletRequest req) {
 		return req.getParameterMap();
+	}
+
+	long parseTimestamp(String aTimestamp) {
+		// example 085558.910030605 hhmmss.sssddmmyy
+		// is 3.jun.2005 08:55:58 
+		GregorianCalendar c = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+		int len = aTimestamp.length();
+		int hs = Integer.parseInt(aTimestamp.substring(0, 2));
+		int ms = Integer.parseInt(aTimestamp.substring(2, 4));
+		int ss = Integer.parseInt(aTimestamp.substring(4, 6));
+		int d = Integer.parseInt(aTimestamp.substring(len - 6, len - 4));
+		int m = Integer.parseInt(aTimestamp.substring(len - 4, len - 2)) - 1;
+		int y = 2000 + Integer.parseInt(aTimestamp.substring(len - 2, len));
+		c.set(y, m, d, hs, ms, ss);
+		// p("gregDate=" + c.getTime() + " ms=" + c.getTimeInMillis());
+		return c.getTimeInMillis();
 	}
 
 	/** Get user name etc from imei. */
