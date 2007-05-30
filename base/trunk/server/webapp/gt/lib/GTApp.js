@@ -79,7 +79,10 @@ var GTAPP = {
 		if (MYAPP.WINDOW_TITLE) {
 			document.title = MYAPP.WINDOW_TITLE;
 		}
-		DH.setHTML('title', MYAPP.DOC_TITLE);
+
+		if (DH.getObject('title')) {
+			DH.setHTML('title', MYAPP.DOC_TITLE);
+		}
 
 		// Init server.js
 		SRV.init();

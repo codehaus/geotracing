@@ -23,7 +23,7 @@ function LiveListener(aStatusElm) {
 		// Set indicator
 		tracer.setLive();
 		if (tracer.activeTrack == null) {
-			tracer.newTrack(event.get('id'), event.get('trackname'));
+			tracer.newTrack(event.get('trackid'), event.get('trackname'));
 			tracer.show();
 			// tracer.readTrack(event.get('trackid'), event.get('trackname'), true);
 		}

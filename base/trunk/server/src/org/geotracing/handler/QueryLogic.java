@@ -34,33 +34,10 @@ import java.util.*;
  * @version $Id$
  */
 public class QueryLogic {
-	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
-
-	public final static String QUERY_STORE_SERVICE = "query-store";
-
-	/**
-	 * Clause template for relation queries.
-	 */
-	public static String IS_RELATED =
-			"( REL_ALIAS.rec1 = TABLE1.id AND REL_ALIAS.rec2 = TABLE2.id ) ";
-
-
-	/**
-	 * Clause template for tagged relation queries.
-	 */
-	public static final String IS_RELATED_WITH_TAG =
-			"(" + IS_RELATED +
-					" AND REL_ALIAS.tag = 'TAG' )";
-
-	/**
-	 * To separate multiple relation specs.
-	 */
-	public static final String REL_SPEC_SEPARATOR = ";";
-
-	public static final String REL_ALIAS_BASE = "rel";
-
+	/** The query command id's, send e.g. in handler with cmd=.. */
 	public static final String CMD_QUERY_STORE = "q-store";
 	public static final String CMD_QUERY_ACTIVE_TRACKS = "q-active-tracks";
+	public static final String CMD_QUERY_ALL_USERS = "q-all-users";
 	public static final String CMD_QUERY_AROUND = "q-around";
 	public static final String CMD_QUERY_AROUND2 = "q-around2";
 	public static final String CMD_QUERY_ALL_TRACKS = "q-all-tracks";
@@ -72,7 +49,6 @@ public class QueryLogic {
 	public static final String CMD_QUERY_ROW_COUNT = "q-row-count";
 	public static final String CMD_QUERY_RECENT_TRACKS = "q-recent-tracks";
 	public static final String CMD_QUERY_TRACKS_BY_USER = "q-tracks-by-user";
-	public static final String CMD_QUERY_ALL_USERS = "q-all-users";
 	public static final String CMD_QUERY_RANDOM_TRACK = "q-random-track";
 	public static final String CMD_QUERY_LOCATIVE_MEDIA = "q-locative-media";
 	public static final String CMD_QUERY_RECENT_MEDIA = "q-recent-media";
@@ -85,6 +61,7 @@ public class QueryLogic {
 	public static final String CMD_QUERY_TAGS = "q-tags";
 	public static final String CMD_QUERY_TAGGED = "q-tagged";
 
+	/** Parameter names. */
 	public static final String PAR_ID = "id";
 	public static final String PAR_CMD = "cmd";
 	public static final String PAR_BBOX = "bbox";
@@ -113,8 +90,31 @@ public class QueryLogic {
 	public final static String OUTPUT_XML = "xml";
 	public static String DB_RANDOM_FUN = "RANDOM()";
 
-	private static Oase oase;
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd'.'MM'.'yy-HH:mm:ss");
+
+	public final static String QUERY_STORE_SERVICE = "query-store";
+
+	/**
+	 * Clause template for relation queries.
+	 */
+	public static String IS_RELATED =
+			"( REL_ALIAS.rec1 = TABLE1.id AND REL_ALIAS.rec2 = TABLE2.id ) ";
+
+
+	/**
+	 * Clause template for tagged relation queries.
+	 */
+	public static final String IS_RELATED_WITH_TAG =
+			"(" + IS_RELATED +
+					" AND REL_ALIAS.tag = 'TAG' )";	private static Oase oase;
 	public static Log log = Logging.getLog("QueryLogic");
+
+	/**
+	 * To separate multiple relation specs.
+	 */
+	public static final String REL_SPEC_SEPARATOR = ";";
+
+	public static final String REL_ALIAS_BASE = "rel";
 
 	/** Singleton. */
 	private static QueryLogic instance;
@@ -360,6 +360,13 @@ public class QueryLogic {
 				// Add account/person attrs to each record
 				addUserAttrs(result, "g_track");
 
+			} else if (aQueryName.equals(CMD_QUERY_ALL_USERS)) {
+				String tables = "utopia_person,utopia_account,utopia_role";
+				String fields = "utopia_person.id,utopia_account.id AS accountid, utopia_account.loginname,utopia_person.extra";
+				String where = "utopia_role.name = 'user' AND utopia_account.state = 1";
+				String relations = "utopia_account,utopia_person;utopia_account,utopia_role";
+				String postCond = "ORDER BY utopia_account.loginname";
+				result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
 			} else if (aQueryName.equals(CMD_QUERY_ALL_TRACKS)) {
 				String tables = "g_track,g_location";
 				String fields = "g_track.id,g_track.name,g_location.lon,g_location.lat,g_location.time";
@@ -379,13 +386,6 @@ public class QueryLogic {
 				String where = "utopia_account.loginname = '" + userName + "'";
 				String relations = "utopia_account,utopia_person;g_track,utopia_person";
 				String postCond = "ORDER BY g_track.id";
-				result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
-			} else if (aQueryName.equals(CMD_QUERY_ALL_USERS)) {
-				String tables = "utopia_person,utopia_account,utopia_role";
-				String fields = "utopia_person.id,utopia_account.id AS accountid, utopia_account.loginname";
-				String where = "utopia_role.name = 'user' AND utopia_account.state = 1";
-				String relations = "utopia_account,utopia_person;utopia_account,utopia_role";
-				String postCond = "ORDER BY utopia_account.loginname";
 				result = QueryLogic.queryStoreReq(oase, tables, fields, where, relations, postCond);
 			} else if (aQueryName.equals(CMD_QUERY_RECENT_TRACKS)) {
 				// Optional number
