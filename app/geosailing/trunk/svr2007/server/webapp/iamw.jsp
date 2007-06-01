@@ -106,6 +106,14 @@
 
 				// 4. get PAR_LAT/PAR_LON and write to track
 				JXElement pt = new JXElement("pt");
+				String lonStr = getParameter(request, PAR_LON, "0.0");
+				String latStr = getParameter(request, PAR_LAT, "0.0");
+
+				if (lonStr.startsWith("0.0") || latStr.startsWith("0.0")) {
+					log.warn("ignoring 0.0 or null lon/lat");
+					return RESULT_CODE;
+				}
+
 				pt.setAttr("lon", getParameter(request, PAR_LON, null));
 				pt.setAttr("lat", getParameter(request, PAR_LAT, null));
 

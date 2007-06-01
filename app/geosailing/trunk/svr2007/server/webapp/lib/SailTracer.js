@@ -25,8 +25,7 @@ function SailTracer(name, color, iconURL, pt, time) {
 		this.iconId = 'icon' + this.id;
 		var iconPath = this.getIconPath('N');
 		// var html = '<img id="' + this.iconId + '" src="' + this.iconURL + '1.png" border="0" width="55" height="55" onload="DH.fixPNG(this)" />';
-		var html = '<a href="#"><img border="0" id="' + this.iconId + '" src="' + iconPath + '"/></a>';
-		DH.fixPNG(DH.getObject(this.iconId));
+		var html = '<a href="#"><img border="0" id="' + this.iconId + '" src="' + iconPath + '" onload="DH.fixPNG(this)" /></a>';
 
 		// Setup TLabel object
 		tl = new TLabel();
@@ -35,6 +34,8 @@ function SailTracer(name, color, iconURL, pt, time) {
 		tl.anchorLatLng = this.point;
 		tl.anchorPoint = 'topLeft';
 		tl.content = html;
+
+		// DH.fixPNG(DH.getObject(this.iconId));
 
 		// To shift icon on exact lat/lon location (half size of icon)
 		tl.markerOffset = new GSize(8, 8);
@@ -45,13 +46,13 @@ function SailTracer(name, color, iconURL, pt, time) {
 	this.createStatusLine = function() {
 		var id = this.id;
 		var div = '<div class="boatinfo" id="user' + id + '" >';
-		div += '<a href="#" name="bekijk de route en meer info" title="bekijk de route en meer info">';
+		div += '<a href="#" onclick="MYAPP.showUserDetails(\'' + this.name + '\')" name="bekijk de route en meer info" title="bekijk de route en meer info">';
 		div += '<div class="boatcolor" id="color' + id + '" style="background-color: ' + this.color + '">&nbsp;&nbsp;&nbsp;&nbsp;</div>';
 		div += '<div class="boatname">' + this.name + '</div>';
 		div += '<div class="boatspeed" id="speed' + id + '">0 km/h</div>';
 		div += '<div class="boatheading" id="course' + id + '">-</div>';
 		div += '</a></div>';
-		div += '<div class="findboat"><a href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\') "name="zoek boot op de kaart" title="zoek boot op de kaart">zoek boot</a></div>';
+		div += '<div class="findboat"><a href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\')" name="zoek boot op de kaart" title="zoek boot op de kaart">zoek boot</a></div>';
 		/*
 				<div class="boatinfo">
 			<a href="#" name="bekijk de route en meer info" title="bekijk de route en meer info">

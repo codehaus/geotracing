@@ -13,7 +13,7 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Shows icon on map
 	this.getIconDiv = function() {
-		return '<img id="' + this.iconId + '" src="img/media_icon.png" border="0" width="34" height="35" onload="DH.fixPNG(this)" />';
+		return '<a href="#"><img id="' + this.iconId + '" src="img/media_icon.png" border="0" width="34" height="35" onload="DH.fixPNG(this)" /></a>';
 	}
 
 	// Displays medium in pop-up info window

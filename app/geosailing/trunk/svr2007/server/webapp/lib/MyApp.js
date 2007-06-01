@@ -76,6 +76,29 @@ var MYAPP = {
 
 	},
 
+	onQueryUserTracks: function(records) {
+		var activeTrackRec;
+		for (var i=0; i < records.length; i++) {
+			if (records[i].getField('state') == 1) {
+				activeTrackRec = records[i];
+				break;
+			}
+		}
+
+		if (!activeTrackRec) {
+			alert('sorry, geen active route gevonden !');
+			return;
+		}
+
+		var loginName = activeTrackRec.getField('loginname');
+		var tracer = GTW.getTracer(loginName);
+		tracer.readTrack(activeTrackRec.getField('id'), loginName, true);
+	},
+
+	showUserDetails: function(aLoginName) {
+		SRV.get('q-tracks-by-user', MYAPP.onQueryUserTracks, 'user', aLoginName);
+	},
+
 	empty: function() {
 
 	},
@@ -126,6 +149,10 @@ var MYAPP = {
 		var userId, userName;
 		var userList = DH.getObject('boatlist');
 		var userDiv, color, tracer;
+
+		// Save existing div stuff
+		var userListHTML = userList.innerHTML;
+		userList.innerHTML = ' ';
 		for (var i = 0; i < records.length; i++) {
 			tracer = GTW.createTracerByRecord(records[i]);
 			userId = records[i].getField('id');
@@ -135,7 +162,7 @@ var MYAPP = {
 			userDiv = tracer.createStatusLine();
 			userList.innerHTML += userDiv;
 		}
-
+		userList.innerHTML += userListHTML;
 
 		GTAPP.showStatus('Archive Mode - ' + records.length + ' users');
 	},
