@@ -24,7 +24,14 @@ var MYAPP = {
 // LOGOS_LINKS: new Array('http://www.sneekweek.nl', 'http://www.schuttevaer.nl', 'http://www.nhl.nl'),
 	LOGOS_LINKS: new Array('http://www.devriessails.nl', 'http://www.maxlead.nl', 'http://www.4ptelecom.nl', 'http://www.kuiperverzekeringen.nl'),
 	logoIndex: 0,
+	MAP_INIT_CENTER: new GLatLng(53.12715, 5.175445),
+	MAP_INIT_ZOOM: 10,
+	liveMedia: new FeatureSet(),
 
+/** Add uploaded medium. */
+	addLiveMedium: function(aMedium) {
+		MYAPP.liveMedia.addFeature(aMedium);
+	},
 
 /** Create listener to incoming live events. */
 	createLiveListener: function() {
@@ -35,7 +42,7 @@ var MYAPP = {
 	clearMap: function() {
 		GTW.clearTracers();
 		GTW.clearFeatures();
-		//		GTW.stopAutoPlay();
+		MYAPP.liveMedia.dispose();
 		//		GTW.clearPanels();
 	},
 
@@ -52,7 +59,7 @@ var MYAPP = {
 		GMAP.createGMap('map');
 
 		// map.addControl(new GMapTypeControl());
-		GMAP.map.addControl(new GOverviewMapControl());
+		// GMAP.map.addControl(new GOverviewMapControl());
 		GMAP.map.addControl(new GLargeMapControl());
 		GMAP.map.addControl(new GMapTypeControl());
 		GMAP.map.addControl(new GScaleControl());
@@ -66,7 +73,8 @@ var MYAPP = {
 		// Oost	:	5.30.000   = 5.5
 		// West	:	4.45.000   = 4.75
 		// GMAP.setDefaultMapParms(new GLatLng(52.86581372, 5.2679443359375), 9, 'satellite');
-		GMAP.setDefaultMapParms(new GLatLng(53.1249985, 5.125), 9, 'satellite');
+		// 5.179128333333333, 53.09179666666667
+		GMAP.setDefaultMapParms(MYAPP.MAP_INIT_CENTER, MYAPP.MAP_INIT_ZOOM, 'satellite');
 
 		// Show the map
 		GMAP.showMap();
@@ -76,9 +84,17 @@ var MYAPP = {
 
 	},
 
+	drawActiveTrack: function(aLoginName) {
+		SRV.get('q-tracks-by-user', MYAPP.onQueryUserTracks, 'user', aLoginName);
+	},
+
+	zoomOut: function() {
+		GMAP.map.setCenter(MYAPP.MAP_INIT_CENTER, MYAPP.MAP_INIT_ZOOM);
+	},
+
 	onQueryUserTracks: function(records) {
 		var activeTrackRec;
-		for (var i=0; i < records.length; i++) {
+		for (var i = 0; i < records.length; i++) {
 			if (records[i].getField('state') == 1) {
 				activeTrackRec = records[i];
 				break;
@@ -96,7 +112,11 @@ var MYAPP = {
 	},
 
 	showUserDetails: function(aLoginName) {
-		SRV.get('q-tracks-by-user', MYAPP.onQueryUserTracks, 'user', aLoginName);
+		var tracer = GTW.getTracer(aLoginName);
+		var panel = new Panel(aLoginName + ' Info', '#072855', 'white');
+		panel.setXY(200, 100);
+		panel.setDimension(400, 300);
+		panel.loadContent('content/boot.html');
 	},
 
 	empty: function() {
@@ -191,7 +211,6 @@ var MYAPP = {
 		}
 
 		tracer.zoomTo();
-
 	}
 
 }

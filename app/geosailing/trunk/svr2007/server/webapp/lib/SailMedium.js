@@ -12,9 +12,21 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 	Medium.apply(this, new Array(id, name, desc, type, mime, time, lon, lat));
 
 	// Shows icon on map
-	this.getIconDiv = function() {
-		return '<a href="#"><img id="' + this.iconId + '" src="img/media_icon.png" border="0" width="34" height="35" onload="DH.fixPNG(this)" /></a>';
+	this.getBGColor = function() {
+		if (this.userName && this.userName != null) {
+			var tracer = GTW.getTracer();
+			if (!tracer) {
+				tracer = GTW.createTracer(this.userName);
+			}
+			this.bgColor = tracer.getColor();
+		}
+		return this.bgColor;
 	}
+
+	// Shows icon on map
+/*	this.getIconDiv = function() {
+		return '<a href="#"><img id="' + this.iconId + '" src="img/media_icon.png" border="0" width="34" height="35" onload="DH.fixPNG(this)" /></a>';
+	}   */
 
 	// Displays medium in pop-up info window
 	this.display = function() {
@@ -23,14 +35,14 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Show icon on map
 	this.show = function() {
-		var tl = new TLabel(true);
+		var tl = new TLabel(false);
 		tl.id = 'tlab' + this.id;
 		tl.anchorLatLng = this.getGLatLng();
 		tl.anchorPoint = 'topLeft';
 
 		// Overridden in subclass
 		tl.content = this.getIconDiv();
-		tl.markerOffset = new GSize(17, 17);
+		tl.markerOffset = new GSize(5, 5);
 
 		// Add Tlabel to map
 		GMAP.map.addTLabel(tl);

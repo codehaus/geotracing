@@ -21,7 +21,7 @@ function SailLiveListener(aStatusElm) {
 	this.showStatus = function(aTracer, aMsg) {
 		var date = new Date();
 		var dateStr = date.format("HH:mm:ss");
-		var msg = '[' + dateStr + '] ' + aTracer.name + ' ' + aMsg;
+		var msg = '[' + dateStr + '] ' + aTracer.name + ' - ' + aMsg;
 		var statusElm;
 		LIVE_STATS[3] = LIVE_STATS[2];
 		LIVE_STATS[2] = LIVE_STATS[1];
@@ -63,7 +63,7 @@ function SailLiveListener(aStatusElm) {
 				event.get('lat'));
 
 		medium.userName = tracer.name;
-		// MYAPP.media.addFeature(medium);
+		MYAPP.addLiveMedium(medium);
 		medium.show();
 		medium.blink(20);
 		// medium.display();
@@ -81,7 +81,7 @@ function SailLiveListener(aStatusElm) {
 		}
 
 		tracer.move(event.get('lon'), event.get('lat'), event.get('t'));
-		this.showStatus(tracer, tracer.speed + 'km/h ' + tracer.courseStr);
+		this.showStatus(tracer, tracer.speed + ' km/h - ' + tracer.courseStr);
 	}
 
 }

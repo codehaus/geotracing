@@ -46,13 +46,14 @@ function SailTracer(name, color, iconURL, pt, time) {
 	this.createStatusLine = function() {
 		var id = this.id;
 		var div = '<div class="boatinfo" id="user' + id + '" >';
-		div += '<a href="#" onclick="MYAPP.showUserDetails(\'' + this.name + '\')" name="bekijk de route en meer info" title="bekijk de route en meer info">';
+		div += '<a href="#" onclick="MYAPP.showUserDetails(\'' + this.name + '\')" name="meer info over boot" title="bekijk meer info over boot">';
 		div += '<div class="boatcolor" id="color' + id + '" style="background-color: ' + this.color + '">&nbsp;&nbsp;&nbsp;&nbsp;</div>';
 		div += '<div class="boatname">' + this.name + '</div>';
 		div += '<div class="boatspeed" id="speed' + id + '">0 km/h</div>';
 		div += '<div class="boatheading" id="course' + id + '">-</div>';
 		div += '</a></div>';
-		div += '<div class="findboat"><a href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\')" name="zoek boot op de kaart" title="zoek boot op de kaart">zoek boot</a></div>';
+		div += '<div class="findboat"><a href="#" onclick="MYAPP.drawActiveTrack(\'' + this.name + '\')" name="teken route van boot op de kaart" title="teken route van boot op de kaart">route</a></div>';
+		div += '<div class="findboat"><a href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\')" name="volg boot op de kaart" title="volg boot op de kaart">volg</a></div>';
 		/*
 				<div class="boatinfo">
 			<a href="#" name="bekijk de route en meer info" title="bekijk de route en meer info">
@@ -103,10 +104,15 @@ function SailTracer(name, color, iconURL, pt, time) {
 	}
 
 	this.openInfoWindow = function() {
-		var html = '<b>name:</b> ' + this.name + '<p><img width="128" height="96" src="img/users/' + this.name + '.jpg" border="0"/>&nbsp;&nbsp;<a href="#" onclick="javascript:MYAPP.mShowMediaByUser(\'' + this.name + '\');return false\" >view media</a></p>';
+	//	var html = '<b>name:</b> ' + this.name + '<p><img width="128" height="96" src="img/users/' + this.name + '.jpg" border="0"/>&nbsp;&nbsp;<a href="#" onclick="javascript:MYAPP.mShowMediaByUser(\'' + this.name + '\');return false\" >view media</a></p>';
 
-		GMAP.map.openInfoWindowHtml(this.point, html);
-		GMAP.map.panTo(this.point);
+	//	GMAP.map.openInfoWindowHtml(this.point, html);
+	//	MYAPP.showUserDetails(this.name);
+	}
+
+
+	this.popupInfoWindow = function() {
+		MYAPP.showUserDetails(this.name);
 	}
 
 	// Show static info
@@ -154,8 +160,18 @@ function SailTracer(name, color, iconURL, pt, time) {
 			}
 			
 			this.speed = GMAP.speed(this.lastPoint, this.point);
+
+			// for bots
+			if (this.speed > 1000) {
+				this.speed /= 100;
+			}
+
+			if (this.speed > 200) {
+				this.speed /= 10;
+			}
+
 			this.speed = this.speed.toFixed(2);
-			DH.getObject('speed' + this.id).innerHTML = this.speed + 'km/h';
+			DH.getObject('speed' + this.id).innerHTML = this.speed + ' km/h';
 			DH.getObject('course' + this.id).innerHTML = this.courseStr;
 
 		}
@@ -165,7 +181,7 @@ function SailTracer(name, color, iconURL, pt, time) {
 	/** Center map around tracer location. */
 	this.zoomTo = function () {
 		if (this.point != null) {
-			GMAP.map.setCenter(this.point, 12);
+			GMAP.map.setCenter(this.point, 13);
 		} else {
 			alert('De boot ' + this.name + ' heeft nog geen locatie.');
 		}

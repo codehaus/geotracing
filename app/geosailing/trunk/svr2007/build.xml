@@ -59,6 +59,10 @@ $Id: build.xml,v 1.3 2006-04-26 12:39:44 just Exp $
 			<fileset dir="${home.webapp.dir}"/>
 		</copy>
 		
+		<!-- Replace users/passwords with local values as not to have them in repository -->
+		<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
+				 replacefilterfile="${home}/security.properties" summary="true"/>
+
 		<!-- Set version numbers and build info in version/index.html. -->
 		<concat destfile="${build.war.dir}/version/index.html">
 			<filelist dir="${home.webapp.dir}/version" files="index.html"/>
@@ -109,16 +113,27 @@ $Id: build.xml,v 1.3 2006-04-26 12:39:44 just Exp $
 		<copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-test-raw">
-		<copy todir="${deploy.test.dir}/${project.id}" overwrite="true">
-			<fileset dir="${home.webapp.dir}"/>
-		</copy>
+	<target name="deploy-test-raw" >
+		<exec executable="rsync">
+			<arg line="-alzvx  -e ssh "/>
+			<arg line="${home.webapp.dir}/"/>
+			<arg line="pundit:/home/httpd/geosailing/${project.id}/" />
+		</exec>
 	</target>
+
 	
 	<target name="copy-war-samoa">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
 			<arg line="samoa@samoa:versions"/>
+		</exec>
+	</target>
+
+	<target name="deploy-samoa-raw" >
+		<exec executable="rsync">
+			<arg line="-alzvx  -e ssh "/>
+			<arg line="${home.webapp.dir}/"/>
+			<arg line="samoa@samoa:/home/www/geosailing/${project.id}/" />
 		</exec>
 	</target>
 
