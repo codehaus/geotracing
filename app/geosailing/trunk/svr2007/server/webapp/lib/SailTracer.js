@@ -112,7 +112,7 @@ function SailTracer(name, color, iconURL, pt, time) {
 
 
 	this.popupInfoWindow = function() {
-		MYAPP.showUserDetails(this.name);
+		BOAT.show(this.name);
 	}
 
 	// Show static info

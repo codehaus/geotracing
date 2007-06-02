@@ -15,6 +15,7 @@ DH.include('SailLiveListener.js');
 DH.include('SailTracer.js');
 DH.include('SailMedium.js');
 DH.include('Buoy.js');
+DH.include('BoatPopup.js');
 
 // This file contains specific app functions
 var MYAPP = {
@@ -113,10 +114,11 @@ var MYAPP = {
 
 	showUserDetails: function(aLoginName) {
 		var tracer = GTW.getTracer(aLoginName);
-		var panel = new Panel(aLoginName + ' Info', '#072855', 'white');
+		BOAT.show(aLoginName);
+/*		var panel = new Panel(aLoginName + ' Info', '#072855', 'white');
 		panel.setXY(200, 100);
 		panel.setDimension(400, 300);
-		panel.loadContent('content/boot.html');
+		panel.loadContent('popup/boot.html');  */
 	},
 
 	empty: function() {
@@ -157,7 +159,7 @@ var MYAPP = {
 	},
 
 	mShowHelp: function (url) {
-		var helpPanel = new Panel('HELP', 'blue', 'white');
+		var helpPanel = new Panel('Help', '#072855', 'white');
 		helpPanel.setXY(100, 100);
 		helpPanel.setDimension(600, 500);
 		helpPanel.loadContent(url);
@@ -188,8 +190,6 @@ var MYAPP = {
 	},
 
 	start: function() {
-		// GTAPP.mShowHelp("content/appabout.html");
-		// GTAPP.mLive();
 		GTAPP.mode = 'live';
 		window.setInterval(MYAPP.logoAnim, 10000);
 		SRV.get('q-all-users', MYAPP.onQueryAllUsers);
