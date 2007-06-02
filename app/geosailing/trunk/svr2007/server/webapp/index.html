@@ -19,109 +19,113 @@
 
 <body onunload="GUnload()">
 <div id="map"></div>
-<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#000000">
 
-	<tr>
-		<td align="left" valign="top">
-			<div id="topanchor"></div>
-		</td>
+<tr>
+<td align="left" valign="top">
+	<div id="topanchor"></div>
+</td>
 
-		<td valign="top" bgcolor="#9FB4D3">
-			<table border="0" align="right" cellpadding="0" cellspacing="0">
-				<tr>
-					<td bgcolor="#cccccc" align="left">
-						<div id="sidebar">
-							<div id="title">
-								Geosailing
-							</div>
+<td valign="top">
+	<table border="0" align="right" cellpadding="0" cellspacing="0">
+		<tr>
+			<td align="left">
+				<div id="sidebar">
+					<div id="title">
+						Geosailing
+					</div>
 
-							<div id="subtitle">
-								volg live de Schuttevaerrace 2007
-							</div>
+					<div id="subtitle">
+						volg live de Schuttevaerrace 2007
+					</div>
 
-							<div id="buttons">
-								<div class="helpbutton">
-									<a href="#" onclick="MYAPP.mShowHelp('content/help.html')">help</a>
-								</div>
-
-								<div class="resetbutton">
-									<a href="#" onclick="MYAPP.clearMap()">wis kaart</a>
-								</div>
-
-								<div class="commentbutton">
-									<a href="#" onclick="CMT.showCommentPanel(23, '', 'Schuttevaer Live')">commentaar</a>
-								</div>
-
-								<div class="clearfloats">
-								</div>
-							</div>
-
-							<div id="boatlistheader">
-								klik op een boot voor meer details
-							</div>
-
-							<div id="boatlist">
-								<!-- boot 1
-										<div class="boatinfo">
-											<a href="#" name="bekijk de route en meer info" title="bekijk de route en meer info">
-											<div class="boatcolor">
-											<img src="sidebar/images/sidebar-bootkleur-1.gif" />
-											</div>
-											<div class="boatname">
-											Hurde Wyn
-											</div>
-											<div class="boatspeed">
-											30 km/h
-											</div>
-											<div class="boatheading">
-											NW
-											</div>
-											</a>
-										</div>
-										<div class="findboat">
-										<a href="#" name="zoek boot op de kaart" title="zoek boot op de kaart">zoek boot</a>
-										</div>
-									   -->
-								<!-- einde boatlist -->
-								<div class="clearfloats">
-								</div>
-							</div>
-
-							<div id="liveinfo">
-								<div id="livetitle">
-									live
-								</div>
-
-								<div class="livelogentry" id="livestatus0">&nbsp;</div>
-
-								<div class="livelogentry" id="livestatus1">&nbsp;</div>
-
-								<div class="livelogentry" id="livestatus2">&nbsp;</div>
-
-								<div class="livelogentry" id="livestatus3">&nbsp;</div>
-							</div>
-
-							<div class="sponsorbox" id="sponsor"><a id="sponsorlink" target="_blank"
-																	href="http://www.devriessails.nl"><img
-									id="sponsorimg"  src="img/logo/devriessailsW.gif" border="0"
-									alt="logo"/></a></div>
-
-							<!-- <div class="sponsorbox">
-								  <a href="http://www.devriessails.nl" target="_blank"><img src="sidebar/images/Logo-de-vries-sails-front.gif" alt="De Vries sails" border="0" /></a>
-								 </div> -->
+					<div id="buttons">
+						<div class="helpbutton">
+							<a href="#" onclick="MYAPP.mShowHelp('content/help.html')">help</a>
 						</div>
-					</td>
-				</tr>
 
-				<tr>
-					<td>
-						<div id="bottomanchor">&nbsp;</div>
-					</td>
-				</tr>
-			</table>
+						<div class="resetbutton">
+							<a href="#" onclick="MYAPP.clearMap()">wis kaart</a>
+						</div>
 
-		</td>
-	</tr>
+						<div class="commentbutton">
+							<a href="#" onclick="CMT.showCommentPanel(23, '', 'Schuttevaer Live')">commentaar</a>
+						</div>
+
+						<div class="clearfloats">
+						</div>
+					</div>
+
+					<div id="boatlistheader">
+						klik op een boot voor meer details&nbsp;&nbsp&nbsp;<a href="#" onclick="MYAPP.zoomOut()"
+																			  name="bekijk de hele kaart"
+																			  title="bekijk de hele kaart"
+																			  class="zoomout">[zoom uit]</a>
+					</div>
+
+					<div id="boatlist">
+						<!-- boot 1
+																<div class="boatinfo">
+																	<a href="#" name="bekijk de route en meer info" title="bekijk de route en meer info">
+																	<div class="boatcolor">
+																	<img src="sidebar/images/sidebar-bootkleur-1.gif" />
+																	</div>
+																	<div class="boatname">
+																	Hurde Wyn
+																	</div>
+																	<div class="boatspeed">
+																	30 km/h
+																	</div>
+																	<div class="boatheading">
+																	NW
+																	</div>
+																	</a>
+																</div>
+																<div class="findboat">
+																<a href="#" name="zoek boot op de kaart" title="zoek boot op de kaart">zoek boot</a>
+																</div>
+															   -->
+						<!-- einde boatlist -->
+						<div class="clearfloats">
+						</div>
+					</div>
+
+					<div id="liveinfo">
+						<div id="livetitle">
+							live
+						</div>
+
+						<div class="livelogentry" id="livestatus0">&nbsp;</div>
+
+						<div class="livelogentry" id="livestatus1">&nbsp;</div>
+
+						<div class="livelogentry" id="livestatus2">&nbsp;</div>
+
+						<div class="livelogentry" id="livestatus3">&nbsp;</div>
+					</div>
+
+					<div class="sponsorbox" id="sponsor">
+						<a id="sponsorlink" target="_blank" href="http://www.devriessails.nl">
+							<img id="sponsorimg" src="img/logo/devriessailsW.gif" border="0" alt="logo"/>
+						</a>
+					</div>
+
+					<!-- <div class="sponsorbox">
+													  <a href="http://www.devriessails.nl" target="_blank"><img src="sidebar/images/Logo-de-vries-sails-front.gif" alt="De Vries sails" border="0" /></a>
+													 </div> -->
+				</div>
+			</td>
+		</tr>
+
+		<tr>
+			<td>
+				<div id="bottomanchor">&nbsp;</div>
+			</td>
+		</tr>
+	</table>
+
+</td>
+</tr>
 </table>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
 <script type="text/javascript">
