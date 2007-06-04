@@ -133,7 +133,7 @@
 				String speedStr = getParameter(request, PAR_SPEED, "0.0");
 				float speed = Float.parseFloat(speedStr) * KM_PER_KNOT;
 				if (speed < MIN_SPEED || speed > MAX_SPEED) {
-					log.warn(userName + ": discard empty, small or large speed: " + speed + " km/h");
+					// log.warn(userName + ": discard empty, small or large speed: " + speed + " km/h");
 					if (speed < MIN_SPEED) {
 						pt.setAttr("speed", speed);
 					}

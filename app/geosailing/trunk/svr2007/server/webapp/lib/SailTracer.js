@@ -30,17 +30,33 @@ function SailTracer(name, color, iconURL, pt, time) {
 		// Setup TLabel object
 		tl = new TLabel();
 		tl.glide = true;
-		tl.id = 'trclab' + this.name;
+		tl.id = 'trclab' + this.id;
 		tl.anchorLatLng = this.point;
 		tl.anchorPoint = 'topLeft';
 		tl.content = html;
-
+		tl.setMaxWH(50, 50);
+		tl.iconId = this.iconId;
 		// DH.fixPNG(DH.getObject(this.iconId));
 
 		// To shift icon on exact lat/lon location (half size of icon)
 		tl.markerOffset = new GSize(8, 8);
 
 		return tl;
+	}
+
+	/** Toggle to follow tracer. */
+	this.followToggle = function () {
+		if (this.isFollowed()) {
+			TRACER.follow = null;
+			DH.setHTML('follow' + this.id, 'volg');
+		} else {
+			if (TRACER.follow && TRACER.follow != null) {
+				DH.setHTML('follow' + TRACER.follow.id, 'volg');
+			}
+			this.zoomTo();
+			TRACER.follow = this;
+			DH.setHTML('follow' + this.id, '* volg *');
+		}
 	}
 
 	this.createStatusLine = function() {
@@ -52,7 +68,7 @@ function SailTracer(name, color, iconURL, pt, time) {
 		div += '<div class="boatheading" id="course' + id + '">-</div>';
 		div += '</a>';
 		div += '<a class="findboat" href="#" onclick="MYAPP.drawActiveTrack(\'' + this.name + '\')" name="teken route van boot op de kaart" title="teken route van boot op de kaart">route</a></div>';
-		div += '<a class="findboat" href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\')" name="zoom in en volg boot op de kaart" title="zoom in en volg boot op de kaart">volg</a></div>';
+		div += '<a id="follow' + id + '" class="findboat" href="#" onclick="MYAPP.followBoat(\'' + this.name + '\')" name="zoom in en volg boot op de kaart" title="zoom in en volg boot op de kaart">volg</a></div>';
 		/*
 		<a href="#" name="meer info over deze boot" title="bekijk meer info over deze boot" class="boatinfo">
 			<img src="images/sidebar-bootkleur-1.gif" class="boatcolor" />
@@ -79,6 +95,11 @@ function SailTracer(name, color, iconURL, pt, time) {
 		return GTW.TRACER_ICON_URL + colorStr + '/boot-' + colorStr + '-' + aCourseStr + '.png';
 	}
 
+	/** Is this tracer followed. */
+	this.isFollowed = function () {
+		return (TRACER.follow && TRACER.follow == this) ? true : false;
+	}
+
 	// Move Tracer to lon/lat location
 	this.move = function(lon, lat, time) {
 
@@ -92,10 +113,15 @@ function SailTracer(name, color, iconURL, pt, time) {
 		// Move TLabel
 		this.setLocation(pt);
 
-		if (this.activeTrack != null) {
-			this.activeTrack.addLivePoint(pt);
-		}
+
 		this.showLiveInfo();
+
+		if (this.isFollowed() == true) {
+			if (this.activeTrack != null) {
+				this.activeTrack.addLivePoint(pt);
+			}
+			this.panTo();
+		}
 	}
 
 	this.openInfoWindow = function() {
@@ -108,6 +134,14 @@ function SailTracer(name, color, iconURL, pt, time) {
 
 	this.popupInfoWindow = function() {
 		BOAT.show(this.name);
+	}
+
+
+	/** Pan map around tracer location. */
+	this.panTo = function () {
+		if (this.point != null) {
+			GMAP.map.panTo(this.point);
+		}
 	}
 
 	// Show static info
@@ -179,9 +213,8 @@ function SailTracer(name, color, iconURL, pt, time) {
 			var zoom = GMAP.map.getZoom();
 			// Keep zoom-level if already zoomed in.
 			zoom = (zoom > 13) ? zoom : 13;
-			GMAP.map.setCenter(this.point, zoom);
-		} else {
-			alert('De boot ' + this.name + ' heeft nog geen locatie.');
+			GMAP.map.setZoom(zoom);
+			GMAP.map.panTo(this.point);
 		}
 	}
 
