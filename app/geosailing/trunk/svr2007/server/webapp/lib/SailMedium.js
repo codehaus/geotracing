@@ -30,7 +30,16 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 
 	// Displays medium in pop-up info window
 	this.display = function() {
-		this.openInfoWindow();
+		if (!this.userName || this.userName == null) {
+			return;
+		}
+
+		if (BOAT.boatName == this.userName) {
+			this._displayTitle();
+			this._displayInfo();
+			this._displayPreview();
+			this._displayDescr();
+		}
 	}
 
 	// Show icon on map
@@ -69,6 +78,10 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 		var html = '<b>name:</b> ' + this.name + '<p><img width="280" height="210" id="' + this.previewId + '" title="" src="' + src + '" border="0" align="left" hspace="4" vspace="4" /><b>user:</b> ' + this.userName + '<br/>' + this.getDate() + '</p><p><i>'+ this.desc +'</i></p><p><a href="javascript:MYAPP.mDisplayPrevMedium()">prev</a> | <a href="javascript:MYAPP.mDisplayNextMedium()">next</a></p>';
 		GMAP.map.openInfoWindowHtml(this.getGLatLng(), html);
 		GMAP.map.panTo(this.getGLatLng());
+	}
+
+	this._displayInfo = function() {
+		DH.setHTML('featureinfo', this.getDate());
 	}
 }
 

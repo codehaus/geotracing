@@ -1,38 +1,50 @@
 <div class="popup" id="boatpopup">
 	<div id="boatpopupbuttons">
-		<div id="boatpopupinfobutton"><a href="#" onclick="BOAT.onShowInfo()">info</a></div><div id="boatpopupmediabutton"><a href="#" onclick="BOAT.onShowMedia()">foto's</a></div>
+		<div id="boatpopupinfobutton"><a href="#" onclick="BOAT.onShowInfo()">info</a></div><div id="boatpopupmediabutton"><a href="#" onclick="BOAT.onShowMedia()">foto's <span id="mediacount">&nbsp;</span></a></div>
 	</div>
 	<br/>
 	<div id="boatpopupinfo">
-		<table border="0" cellpadding="0" cellspacing="0">
-			<tr>
-				<td align="center" >
-					<span id="tracerid">boot naam</span>
-				</td>
-				<td rowspan="2" width="80">
-					<img id="tracerimg" height="60" width="80" src="img/default-user-thumb-4x3.jpg"
-						 align="right" alt="user thumb" hspace="0" vspace="0"/>
-				</td>
-			</tr>
-			<tr>
-				<td align="left" >
-					<div id="tracerdesc">
-						(boot beschrijving)
-					</div>
-				</td>
-			</tr>
-		</table>
+		<h2><div id="tracerid">boot naam</div></h2>
+		<div><img id="tracerimg" height="60" width="80" src="img/default-user-thumb-4x3.jpg"
+						 align="right" alt="user thumb" hspace="0" vspace="0"/></div>
+		<div id="slogan">
+			(nog geen slogan)
+		</div>
+		<div>
+			thuishaven: <span id="thuishaven">(onbekend)</span>
+		</div>
+		<div>
+			schipper: <span id="schipper"><(onbekend)</span>
+		</div>
+		<div>
+			crewlid1: <span id="crewlid1">(onbekend)</span>
+		</div>
+		<div>
+			crewlid2: <span id="crewlid2">(onbekend)</span>
+		</div>
+		<div>
+			fietser: <span id="fietser">(onbekend)</span>
+		</div>
+		<div>
+			hardloper: <span id="hardloper">(onbekend)</span>
+		</div>
+		<div>
+			link: <span id="url">(geen)</span>
+		</div>
+		<div>
+			laatste locatie (DD): <span id="tracerloc">(onbekend)</span><br/> op <span id="tracerlocdate">(onbekend)</span>
+		</div>
 	</div>
 	<div id="boatpopupmedia">
-		<table border="0" cellpadding="0" cellspacing="0">
+		<table border="0" width="100%" cellpadding="0" cellspacing="0">
 			<tr>
 				<td height="20" bgcolor="#000066">
-					<div id="featuretitle" class="infohead">FEATURE TITLE</div>
+					<div id="featuretitle" class="infohead">(foto titel)</div>
 				</td>
 			</tr>
 			<tr>
-				<td height="240" width="320" valign="middle" align="center" bgcolor="#dddddd">
-					<div id="featurepreview">MEDIA PREVIEW</div>
+				<td height="240" valign="middle" align="center" bgcolor="#dddddd">
+					<div id="featurepreview">(foto preview)</div>
 				</td>
 			</tr>
 			<tr>
@@ -47,8 +59,8 @@
 			</tr>
 			<tr>
 				<td align="left">
-					<div id="featureinfo">FEATURE INFO</div>
-					<div id="featuredesc">feature description (if available)</div>
+					<div id="featureinfo">algemene foto info (datum etc)</div>
+					<div id="featuredesc">foto beschrijving (indien aanwezig)</div>
 				</td>
 			</tr>
 		</table>

@@ -21,7 +21,7 @@ DH.include('BoatPopup.js');
 var MYAPP = {
 	WINDOW_TITLE: 'Geosailing - Schuttevaer 2007 Live',
 	DOC_TITLE: 'Geosailing',
-	LOGOS: new Array('img/logo/devriessailsW.gif', 'img/logo/maxleadW.gif', 'img/logo/4ptelecomW.gif', 'img/logo/kuiperverzW.gif'),
+	LOGOS: new Array('sidebar/images/devriessailsW.gif', 'sidebar/images/maxleadW.gif', 'sidebar/images/4ptelecomW.gif', 'sidebar/images/kuiperverzW.gif'),
 // LOGOS_LINKS: new Array('http://www.sneekweek.nl', 'http://www.schuttevaer.nl', 'http://www.nhl.nl'),
 	LOGOS_LINKS: new Array('http://www.devriessails.nl', 'http://www.maxlead.nl', 'http://www.4ptelecom.nl', 'http://www.kuiperverzekeringen.nl'),
 	logoIndex: 0,
@@ -44,7 +44,7 @@ var MYAPP = {
 		GTW.clearTracers();
 		GTW.clearFeatures();
 		MYAPP.liveMedia.dispose();
-		//		GTW.clearPanels();
+		BOAT.mediaSet.dispose();
 	},
 
 
@@ -136,6 +136,7 @@ var MYAPP = {
 		// This is the base URL for directional icons (dir_icon_green_01.png through dir_icon_green_08.png)
 		// SailTracer will determine appropriate icon based on geo-course (heading)
 		GTW.TRACER_ICON_URL = 'img/iconen/boten/';
+		GTW.minTrackPtDist = 30;
 		// Disable menu
 		GTAPP.createMenu = MYAPP.empty;
 
@@ -182,6 +183,9 @@ var MYAPP = {
 			userName = records[i].getField('loginname');
 			color = records[i].getField('color');
 			userDiv = tracer.createStatusLine();
+			if (i == records.length -1) {
+				userList.innerHTML += '<span class="clearfloats"></span>';
+			}
 			userList.innerHTML += userDiv;
 		}
 		userList.innerHTML += userListHTML;
