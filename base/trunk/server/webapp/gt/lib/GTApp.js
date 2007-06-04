@@ -417,7 +417,7 @@ var GTAPP = {
 		}
 		GTW.displayTrackPlayer();
 
-		tracer.zoomTo();
+		tracer.panTo();
 		tracer.readTrack(trackId, trackName, true);
 		tracer.show();
 	},

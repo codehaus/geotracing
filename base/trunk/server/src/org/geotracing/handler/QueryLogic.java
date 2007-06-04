@@ -382,7 +382,7 @@ public class QueryLogic {
 
 				// First get Person+Account
 				String tables = "utopia_person,utopia_account,g_track";
-				String fields = "utopia_account.loginname,utopia_person.id AS personid,utopia_person.extra,g_track.id,g_track.name";
+				String fields = "utopia_account.loginname,utopia_person.id AS personid,utopia_person.extra,g_track.id,g_track.name,g_track.state";
 				String where = "utopia_account.loginname = '" + userName + "'";
 				String relations = "utopia_account,utopia_person;g_track,utopia_person";
 				String postCond = "ORDER BY g_track.id";
@@ -669,6 +669,9 @@ public class QueryLogic {
 				// Add account name
 				userInfo.setChildText("id", person.getIdString());
 				userInfo.setChildText("loginname", loginName);
+				userInfo.setChildText("firstname", person.getStringField("firstname"));
+				userInfo.setChildText("lastname", person.getStringField("lastname"));
+				userInfo.setChildText("city", person.getStringField("city"));
 
 				// Member since
 				userInfo.setChildText("creationdate", person.getLongField("creationdate") + "");
