@@ -45,7 +45,7 @@ function Tracer(name, color, iconURL, pt, time) {
 			GTW.trackPlayer.setTrack(this.activeTrack);
 		}
 
-		this.zoomTo();
+		this.panTo();
 	}
 
 	// Add a medium
@@ -321,7 +321,7 @@ function Tracer(name, color, iconURL, pt, time) {
 	}
 
 	/** Center map around tracer location. */
-	this.zoomTo = function () {
+	this.panTo = function () {
 		if (this.point != null) {
 			GMAP.map.setCenter(this.point, GMAP.map.getZoom());
 		}
