@@ -17,6 +17,39 @@ DH.include('SailMedium.js');
 DH.include('Buoy.js');
 DH.include('BoatPopup.js');
 
+
+TLabel.prototype.moveElm = function() {
+	if (this.maxw && this.maxh && this.iconId) {
+		//mapzoom based scale
+		var z = this.map.getZoom();
+		var s = Math.pow(3,(z/8)) / 12;
+
+		this.scale = Math.max(.3,s);
+
+	//	tmp_debug(2,'scaling, zoom=',z,', s=',s); //Math.round(10* Math.pow(3,(z/10))));
+
+		this.sw = Math.round(this.scale * this.maxw);
+		this.sh = Math.round(this.scale * this.maxh);
+
+		// alert('this.w=' + this.w + ' this.h=' + this.h)
+		//apply to elm
+		var icon = document.getElementById(this.iconId);
+		icon.style.width = this.sw +'px';
+		icon.style.height = this.sh +'px';
+
+		//this.x = this.x - this.sw/2;
+		//this.y = this.y - this.sh/2;
+	}
+
+	this.elm.style.left = this.x + 'px';
+	this.elm.style.top = this.y + 'px';
+}
+
+TLabel.prototype.setMaxWH = function(w, h) {
+	this.maxw = w;
+	this.maxh = h;
+}
+
 // This file contains specific app functions
 var MYAPP = {
 	WINDOW_TITLE: 'Geosailing - Schuttevaer 2007 Live',
@@ -45,6 +78,7 @@ var MYAPP = {
 		GTW.clearFeatures();
 		MYAPP.liveMedia.dispose();
 		BOAT.mediaSet.dispose();
+		// TRACER.follow = null;
 	},
 
 
@@ -87,6 +121,23 @@ var MYAPP = {
 
 	drawActiveTrack: function(aLoginName) {
 		SRV.get('q-tracks-by-user', MYAPP.onQueryUserTracks, 'user', aLoginName);
+	},
+
+
+	followBoat: function(aBoatName) {
+		var tracer = GTW.getTracer(aBoatName);
+		if (!tracer) {
+			alert('kan boot genaamd ' + aBoatName + ' niet vinden !!');
+			return;
+		}
+
+		// Kijk of ie al locatie heeft
+		if (!tracer.getLocation() || tracer.getLocation() == null) {
+			alert('De boot ' + aBoatName + ' heeft nog geen locatie.');
+			return;
+		}
+
+		tracer.followToggle();
 	},
 
 	zoomOut: function() {
@@ -205,16 +256,6 @@ var MYAPP = {
 		value = value.replace(/^\s+/, '');
 		value = value.replace(/\s+$/, '');
 		return value;
-	},
-
-	zoomToBoat: function(aBoatName) {
-		var tracer = GTW.getTracer(aBoatName);
-		if (!tracer) {
-			alert('kan boot genaamd ' + aBoatName + ' niet vinden !!');
-			return;
-		}
-
-		tracer.zoomTo();
 	}
 
 }
