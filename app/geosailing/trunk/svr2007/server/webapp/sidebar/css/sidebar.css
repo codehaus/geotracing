@@ -1,0 +1,177 @@
+a {
+	color:white;
+	text-decoration:none;
+}
+a:hover{
+	color:white;
+	text-decoration:none;
+}
+
+img{
+	border:0 none;
+}
+
+#sidebar{
+	min-height:100%;
+	width:300px;
+	float:right;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	background-color:#000000;	
+}
+
+#titleimg {
+	margin: 10px 0 10px 8px;
+}
+
+.mainbuttons{
+	margin: 0 5px 5px 8px;
+	width:287px;
+	border:solid;
+	border-width:2px;
+	border-color:#000000;
+	color:#DDDDDD;
+	font-weight:400;
+}
+.helpbutton{
+	padding:2px 0 2px 0;
+	width:25%;
+	background-color:#444444;
+	float:left;
+	text-align:center;
+	display:block;
+}
+.helpbutton:hover{
+	background-color:#777777;
+}
+
+.resetbutton{
+	padding:2px 0 2px 0;
+	width:35%;
+	background-color:#444444;
+	border-left:solid;
+	border-right:solid;
+	border-width:2px;
+	border-color:#000000;
+	float:left;
+	text-align:center;
+	display:block;
+}
+.resetbutton:hover{
+	background-color:#777777;
+}
+.commentbutton{
+	padding:2px 0 2px 0;
+	width:36%;
+	background-color:#444444;
+	float:left;
+	text-align:center;
+	display:block;
+}
+.commentbutton:hover{
+	background-color:#777777;
+}
+
+#boatlistheader{
+	margin:15px 4px 5px 10px;
+	width:200px;
+	float:left;
+	color:#AAAAAA;
+	font-weight:bold;
+	display:block;
+}
+.zoomout{
+	margin:15px 0 5px 0;
+	width:76px;
+	height:15px;
+	float:left;
+	text-align:center;
+	background-color:#444444;
+	font-size:11px;
+	color:#FFFFFF;
+}
+.zoomout:hover{
+	background-color:#777777;
+}
+
+#boatlist{
+	padding:0 5px 0 10px;
+	margin: 5px 0 20px 0;
+	height:300px;
+	color:#FFFFFF;
+}
+
+.boatinfo{
+	height:15px;
+	width:200px;
+	margin: 2px 0 2px 0;
+	float:left;	
+	display:block;
+}
+.boatcolor{
+	width:15px;
+	float:left;
+}
+.boatname{
+	margin-left:5px;
+	width:80px;
+	float:left;
+}
+.boatspeed{
+	width:70px;
+	float:left;
+	overflow:hidden;
+	height:15px;
+}
+.boatheading{
+	width:auto;
+	float:left;
+}
+.boatinfo:hover{
+	background-color:#777777;
+	cursor:pointer;
+}
+
+.findboat{
+	width:36px;
+	height:15px;
+	float:left;
+	text-align:center;
+	font-size:11px;
+	margin: 2px 0 2px 4px;
+	background-color:#444444;
+}
+.findboat:hover{
+	background-color:#777777;
+}
+.findboat a{
+	display:block;
+}
+.clearfloats{
+	clear:both;
+}
+
+#liveinfo{
+	border-top:solid;
+	border-width:1px;
+	border-color:#FFFFFF;
+	border-left:none;
+	border-right:none;
+	padding:10px 5px 20px 10px;
+}
+
+#livetitle{
+	height:16px;
+	color:#999999;
+}
+.livelogentry{
+	color:#FFFFFF;
+}
+
+.sponsorbox{
+	margin:0 0 10px 10px;
+	height:50px;
+	width:280px;
+	background-color:#808080;
+	text-align:center;
+}

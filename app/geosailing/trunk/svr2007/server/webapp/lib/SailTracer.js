@@ -45,21 +45,17 @@ function SailTracer(name, color, iconURL, pt, time) {
 
 	this.createStatusLine = function() {
 		var id = this.id;
-		var div = '<div class="boatinfo" id="user' + id + '" >';
-		div += '<a href="#" onclick="MYAPP.showUserDetails(\'' + this.name + '\')" name="meer info over boot" title="bekijk meer info over boot">';
+		var div = '<a id="user' + id + '" class="boatinfo" href="#" onclick="MYAPP.showUserDetails(\'' + this.name + '\'); return false;" name="meer info over boot" title="bekijk meer info over deze boot">';
 		div += '<div class="boatcolor" id="color' + id + '" style="background-color: ' + this.color + '">&nbsp;&nbsp;&nbsp;&nbsp;</div>';
 		div += '<div class="boatname">' + this.name + '</div>';
 		div += '<div class="boatspeed" id="speed' + id + '">0 km/h</div>';
 		div += '<div class="boatheading" id="course' + id + '">-</div>';
-		div += '</a></div>';
-		div += '<div class="findboat"><a href="#" onclick="MYAPP.drawActiveTrack(\'' + this.name + '\')" name="teken route van boot op de kaart" title="teken route van boot op de kaart">route</a></div>';
-		div += '<div class="findboat"><a href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\')" name="volg boot op de kaart" title="volg boot op de kaart">volg</a></div>';
+		div += '</a>';
+		div += '<a class="findboat" href="#" onclick="MYAPP.drawActiveTrack(\'' + this.name + '\')" name="teken route van boot op de kaart" title="teken route van boot op de kaart">route</a></div>';
+		div += '<a class="findboat" href="#" onclick="MYAPP.zoomToBoat(\'' + this.name + '\')" name="zoom in en volg boot op de kaart" title="zoom in en volg boot op de kaart">volg</a></div>';
 		/*
-				<div class="boatinfo">
-			<a href="#" name="bekijk de route en meer info" title="bekijk de route en meer info">
-			<div class="boatcolor">
-			<img src="sidebar/images/sidebar-bootkleur-1.gif" />
-			</div>
+		<a href="#" name="meer info over deze boot" title="bekijk meer info over deze boot" class="boatinfo">
+			<img src="images/sidebar-bootkleur-1.gif" class="boatcolor" />
 			<div class="boatname">
 			Hurde Wyn
 			</div>
@@ -69,11 +65,10 @@ function SailTracer(name, color, iconURL, pt, time) {
 			<div class="boatheading">
 			NW
 			</div>
-			</a>
-		</div>
-		<div class="findboat">
-		<a href="#" name="zoek boot op de kaart" title="zoek boot op de kaart">zoek boot</a>
-		</div>
+		</a>
+		<a href="#" name="teken route van boot op de kaart" title="teken route van boot op de kaart" class="findboat">route</a>
+		<a href="#" name="zoom in en volg boot op de kaart" title="zoom in en volg boot op de kaart" class="findboat">volg</a>
+
 		*/
 		// return '<div class="boatinfo" id="user' + id + '" >&nbsp;&nbsp;' + '<span id="color' + id + '" style="background-color: ' + this.color + '">&nbsp;&nbsp;&nbsp;&nbsp;</span>' + this.name + '&nbsp;&nbsp;&nbsp;&nbsp;<span id="speed' + id + '">-</span>&nbsp;&nbsp;&nbsp;&nbsp;' + '<span id="course' + id + '">-</span></div>';
 		return div;
@@ -181,7 +176,10 @@ function SailTracer(name, color, iconURL, pt, time) {
 	/** Center map around tracer location. */
 	this.zoomTo = function () {
 		if (this.point != null) {
-			GMAP.map.setCenter(this.point, 13);
+			var zoom = GMAP.map.getZoom();
+			// Keep zoom-level if already zoomed in.
+			zoom = (zoom > 13) ? zoom : 13;
+			GMAP.map.setCenter(this.point, zoom);
 		} else {
 			alert('De boot ' + this.name + ' heeft nog geen locatie.');
 		}

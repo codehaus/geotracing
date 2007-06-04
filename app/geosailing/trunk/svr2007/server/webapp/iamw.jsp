@@ -1,8 +1,9 @@
 <%@ page import="nl.justobjects.jox.dom.JXElement,
+				 org.geotracing.handler.EventPublisher,
 				 org.geotracing.handler.QueryLogic,
 				 org.geotracing.handler.Track,
-				 org.geotracing.handler.TrackLogic,
-				 org.keyworx.amuse.core.Amuse" %>
+				 org.geotracing.handler.TrackLogic" %>
+<%@ page import="org.keyworx.amuse.core.Amuse" %>
 <%@ page import="org.keyworx.common.log.Log" %>
 <%@ page import="org.keyworx.common.log.Logging" %>
 <%@ page import="org.keyworx.common.util.Sys" %>
@@ -12,8 +13,6 @@
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="org.geotracing.handler.EventPublisher" %>
-<%@ page import="nl.justobjects.pushlet.core.Event" %>
 <%@ page import="java.util.*" %>
 <%!
 	public static Oase oase;
@@ -63,6 +62,9 @@
 
 	public static final String FRAME_TYPE_ONE = "1";
 	public static final String FRAME_TYPE_TWO = "2";
+	public static final float MIN_SPEED = 1.0f;
+	public static final float MAX_SPEED = 200.0f;
+	public static final float KM_PER_KNOT = 1.85200f;
 
 	public static Log log = Logging.getLog("mambo-iamw.jsp");
 
@@ -109,8 +111,8 @@
 				String lonStr = getParameter(request, PAR_LON, "0.0");
 				String latStr = getParameter(request, PAR_LAT, "0.0");
 
-				if (lonStr.startsWith("0.0") || latStr.startsWith("0.0")) {
-					log.warn("ignoring 0.0 or null lon/lat");
+				if (lonStr.startsWith("0") || latStr.startsWith("0")) {
+					log.warn(userName + ": ignoring 0.0 or null lon/lat");
 					return RESULT_CODE;
 				}
 
@@ -127,15 +129,25 @@
 				// Use formatted GPS timestamp
 				long t = parseTimestamp(timestamp);
 				pt.setAttr("t", t);
-				Vector pts = new Vector(1);
-				pts.add(pt);
-				trackLogic.write(pts, personId);
+
+				String speedStr = getParameter(request, PAR_SPEED, "0.0");
+				float speed = Float.parseFloat(speedStr) * KM_PER_KNOT;
+				if (speed < MIN_SPEED || speed > MAX_SPEED) {
+					log.warn(userName + ": discard empty, small or large speed: " + speed + " km/h");
+					if (speed < MIN_SPEED) {
+						pt.setAttr("speed", speed);
+					}
+				} else {
+					Vector pts = new Vector(1);
+					pts.add(pt);
+					trackLogic.write(pts, personId);
+				}
 
 				// may check for: minimal distance, minimal time between samples
 				// 5. publish to pushlets (live events)
 				EventPublisher.tracerMove(personId, userName, track.getId(), track.getName(), pt);
 			} else {
-				log.warn("unknown frametype " + frameType);
+				log.warn(userName + ": unknown frametype " + frameType);
 			}
 		} catch (IllegalArgumentException iae) {
 			log.error("illegal argument", iae);
