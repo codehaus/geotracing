@@ -34,7 +34,7 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 			return;
 		}
 
-		if (BOAT.boatName == this.userName) {
+		if (BOAT.boatName != null && BOAT.boatName == this.userName) {
 			this._displayTitle();
 			this._displayInfo();
 			this._displayPreview();
@@ -52,6 +52,7 @@ function SailMedium(id, name, desc, type, mime, time, lon, lat) {
 		// Overridden in subclass
 		tl.content = this.getIconDiv();
 		tl.markerOffset = new GSize(5, 5);
+		tl.setScaling(this.iconId, 20, 20, .2);
 
 		// Add Tlabel to map
 		GMAP.map.addTLabel(tl);

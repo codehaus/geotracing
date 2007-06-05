@@ -28,6 +28,7 @@ public class MWClient {
 	private BufferedReader reader;
 	private static final String IAMW_HOST = "141.252.27.97";
 	private static final int IAMW_PORT = 13000;
+	// 352022004550131 imei mambo01 samoa
 	String SIGNAL_DATA_DEVICE_INFORMATION = "$<MSG.Info.ServerLogin>$DeviceName=JustsMamboEmulator$Software=mambo_2.3.19_final2$Hardware=MAMBO-55$LastValidPosition=$GPRMC,103837.120,A,5711.9861,N,00577.0695,E,0.11,81.31,211206,,*30$IMEI=352021009412545$PhoneNumber=$LocalIP=213.84.253.107$CmdVersion=2$SUCCESS$<end>";
 	String SIGNAL_DATA_GPS_START = "$352021009412545,start*3D$GPRMC,103838.120,A,5311.9861,N,00547.0695,E,0.11,81.31,211206,,*30$<end>$<end>";   //  signal data to be sent met start signaal
 	String SIGNAL_DATA_GPS_1 = "$352021009412545*3D$GPRMC,103839.120,A,5711.9861,N,00577.0695,E,0.11,81.31,211206,,*30$<end>$<end>";   //  signal data to be sent
@@ -261,7 +262,7 @@ public class MWClient {
 			}
 		} else {
 			MWClient cc = new MWClient(IAMW_HOST, IAMW_PORT);
-			cc.readData("afsluitdijk.txt");
+			cc.readData("11-steden-segmented.txt");
 			cc.testExtended();
 			cc.bailOut(null);
 		}

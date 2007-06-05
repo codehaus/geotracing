@@ -29,6 +29,7 @@ BOAT = {
 	onPanelClose: function() {
 		BOAT.panelOpen = false;
 		BOAT.panel.hide();
+		BOAT.boatName = null;
 	},
 
 	onShowMedia: function() {
@@ -71,6 +72,11 @@ BOAT = {
 		var slogan = record.getField("slogan");
 		if (slogan != null) {
 			DH.setHTML("slogan", slogan);
+		}
+
+		var regnr = record.getField("regnr");
+		if (regnr != null) {
+			DH.setHTML("regnr", regnr);
 		}
 
 		var thuishaven = record.getField("thuishaven");
