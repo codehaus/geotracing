@@ -17,37 +17,98 @@ DH.include('SailMedium.js');
 DH.include('Buoy.js');
 DH.include('BoatPopup.js');
 
+TLabel.prototype.getXY = function(a, b) {
+	var xy = this.map.fromLatLngToDivPixel(this.anchorLatLng)
+	var x = parseInt(xy.x);
+	var y = parseInt(xy.y);
+	with (Math) {
+		switch (this.anchorPoint) {
+			case 'topLeft':break;
+			case 'topCenter':x -= floor(this.w / 2);break;
+			case 'topRight':x -= this.w;break;
+			case 'midRight':x -= this.w;y -= floor(this.h / 2);break;
+			case 'bottomRight':x -= this.w;y -= this.h;break;
+			case 'bottomCenter':x -= floor(this.w / 2);y -= this.h;break;
+			case 'bottomLeft':y -= this.h;break;
+			case 'midLeft':y -= floor(this.h / 2);break;
+			case 'center':x -= floor(this.w / 2);y -= floor(this.h / 2);break;
+			default:break;
+		}
+	}
 
-TLabel.prototype.moveElm = function() {
-	if (this.maxw && this.maxh && this.iconId) {
-		//mapzoom based scale
-		var z = this.map.getZoom();
-		var s = Math.pow(3,(z/8)) / 12;
+	if (this.scaleElmId) {
+		// mapzoom based scale
+		var zoom = this.map.getZoom();
+		if (this.lastZoom && (zoom == this.lastZoom)) {
+			// zoom not changed: no need to apply scaling
+			// return;
+		}
 
-		this.scale = Math.max(.3,s);
+		// Zoom changed: remember
+		this.lastZoom = zoom;
+
+		// Calc scale
+		var scale = Math.pow(3,(zoom/8)) / 12;
+
+		// Keep to minimum
+		scale = Math.max(this.minScaleFactor, scale);
 
 	//	tmp_debug(2,'scaling, zoom=',z,', s=',s); //Math.round(10* Math.pow(3,(z/10))));
 
-		this.sw = Math.round(this.scale * this.maxw);
-		this.sh = Math.round(this.scale * this.maxh);
+		// calc scaled w/h
+		var sw = Math.round(scale * this.maxW);
+		var sh = Math.round(scale * this.maxH);
 
 		// alert('this.w=' + this.w + ' this.h=' + this.h)
 		//apply to elm
-		var icon = document.getElementById(this.iconId);
-		icon.style.width = this.sw +'px';
-		icon.style.height = this.sh +'px';
+		var icon = document.getElementById(this.scaleElmId);
+		if (!icon) {
+			return;
+		}
 
-		//this.x = this.x - this.sw/2;
-		//this.y = this.y - this.sh/2;
+		icon.style.width = sw +'px';
+		icon.style.height = sh +'px';
+
+		// Correct marker offset (assume middle and topleft anchor!!!)
+		this.markerOffset.width = sw/2;
+		this.markerOffset.height = sh/2;
 	}
 
-	this.elm.style.left = this.x + 'px';
-	this.elm.style.top = this.y + 'px';
+	if (this.diffuse == true) {
+		x = x - this.markerOffset.width + diffusions[Math.floor(Math.random() * 10)].x;
+		y = y - this.markerOffset.height + diffusions[Math.floor(Math.random() * 10)].y;
+	} else {
+		x = x - this.markerOffset.width;
+		y = y - this.markerOffset.height;
+	}
+
+	if (this.glide == true) {
+		this.targetX = x;
+		this.targetY = y;
+		if (!this.x) {
+			this.x = x;
+			this.y = y;
+		}
+
+	} else {
+		this.x = x;
+		this.y = y;
+	}
+
+	xy.x = x;
+	xy.y = y;
+
+	return xy;
 }
 
-TLabel.prototype.setMaxWH = function(w, h) {
-	this.maxw = w;
-	this.maxh = h;
+TLabel.prototype.setScaling = function(aScaleElmId, aMaxW, aMaxH, aMinScaleFactor) {
+	this.scaleElmId = aScaleElmId;
+	this.maxW = aMaxW;
+	this.maxH = aMaxH;
+	this.minScaleFactor = .3;
+	if (aMinScaleFactor) {
+		this.minScaleFactor = aMinScaleFactor;
+	}
 }
 
 // This file contains specific app functions
@@ -93,8 +154,7 @@ var MYAPP = {
 		// Create the Google Map
 		GMAP.createGMap('map');
 
-		// map.addControl(new GMapTypeControl());
-		// GMAP.map.addControl(new GOverviewMapControl());
+		GMAP.map.addControl(new GOverviewMapControl());
 		GMAP.map.addControl(new GLargeMapControl());
 		GMAP.map.addControl(new GMapTypeControl());
 		GMAP.map.addControl(new GScaleControl());

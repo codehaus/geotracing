@@ -1,8 +1,4 @@
-<%@ page import="nl.justobjects.jox.dom.JXElement,
-				 org.geotracing.handler.EventPublisher,
-				 org.geotracing.handler.QueryLogic,
-				 org.geotracing.handler.Track,
-				 org.geotracing.handler.TrackLogic" %>
+<%@ page import="nl.justobjects.jox.dom.JXElement" %>
 <%@ page import="org.keyworx.amuse.core.Amuse" %>
 <%@ page import="org.keyworx.common.log.Log" %>
 <%@ page import="org.keyworx.common.log.Logging" %>
@@ -14,6 +10,9 @@
 <%@ page import="javax.servlet.http.HttpServletResponse" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.geotracing.handler.*"%>
+<%@ page import="org.postgis.Point"%>
+<%@ page import="org.geotracing.gis.PostGISUtil"%>
 <%!
 	public static Oase oase;
 	public static TrackLogic trackLogic;
@@ -64,6 +63,8 @@
 	public static final String FRAME_TYPE_TWO = "2";
 	public static final float MIN_SPEED = 1.0f;
 	public static final float MAX_SPEED = 200.0f;
+	public static final double AUTO_SEGMENT_DIST_KM = 0.3D;
+	public static final long AUTO_SEGMENT_TIME_MILLIS = 120000L;
 	public static final float KM_PER_KNOT = 1.85200f;
 
 	public static Log log = Logging.getLog("mambo-iamw.jsp");
@@ -99,11 +100,11 @@
 					track = trackLogic.create(personId, userName, Track.VAL_NORMAL_TRACK, Sys.now());
 				}
 
-				// 3. get PAR_TRIGGER, if "start" do resume
+				// 3.A get PAR_TRIGGER, if "start" do resume (NO, do autosegment)
 				String trigger = getParameter(request, PAR_TRIGGER, "EMPTY");
 				if (trigger.equals("start")) {
-					log.info("RESUME TRACK imei=" + imei + " user=" + userName);
-					trackLogic.resume(personId, Track.VAL_NORMAL_TRACK, Sys.now());
+					log.info("IGNORE START TRIGGER RESUME TRACK imei=" + imei + " user=" + userName);
+					// trackLogic.resume(personId, Track.VAL_NORMAL_TRACK, Sys.now());
 				}
 
 				// 4. get PAR_LAT/PAR_LON and write to track
@@ -112,12 +113,12 @@
 				String latStr = getParameter(request, PAR_LAT, "0.0");
 
 				if (lonStr.startsWith("0") || latStr.startsWith("0")) {
-					log.warn(userName + ": ignoring 0.0 or null lon/lat");
+					// log.warn(userName + ": ignoring 0.0 or null lon/lat");
 					return RESULT_CODE;
 				}
 
-				pt.setAttr("lon", getParameter(request, PAR_LON, null));
-				pt.setAttr("lat", getParameter(request, PAR_LAT, null));
+				pt.setAttr("lon", lonStr);
+				pt.setAttr("lat", latStr);
 
 
 				String timestamp = getParameter(request, PAR_TIMESTAMP, null);
@@ -138,6 +139,32 @@
 						pt.setAttr("speed", speed);
 					}
 				} else {
+					// 3.B determine if we should start a new track-segment (resume)
+					// a. if no points in track yet
+					// b. if time and distance since last point is "too big"
+					boolean startSegment = false;
+					if (track.getIntValue(Track.FIELD_PTCOUNT) == 0) {
+						log.info(userName + " adds first point lon=" + lonStr + " lat=" + latStr);
+						startSegment = true;
+					} else {
+						// At least one point in track, determine if we should start segment
+						// based on distance/time difference since last point.
+						Location lastLocation = (Location) track.getRelatedObject(Location.class, Track.REL_TAG_LAST_PT);
+						Point lastPoint = lastLocation.getPoint();
+						Point currentPoint = PostGISUtil.createPoint(lonStr, latStr);
+						double distance = PostGISUtil.distance(lastPoint, currentPoint);
+						double deltaT = t - (long) lastPoint.m;
+						if (distance > AUTO_SEGMENT_DIST_KM && deltaT > AUTO_SEGMENT_TIME_MILLIS) {
+							log.info(userName + " distance=" + distance + " km deltaT=" + (deltaT/60) + " sec");
+							startSegment = true;
+						}
+					}
+
+					// SHould we start a segment (i.e. resume track) ?
+					if (startSegment) {
+						log.info("RESUME TRACK imei=" + imei + " user=" + userName);
+						trackLogic.resume(personId, Track.VAL_NORMAL_TRACK, t);
+					}
 					Vector pts = new Vector(1);
 					pts.add(pt);
 					trackLogic.write(pts, personId);

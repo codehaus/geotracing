@@ -12,20 +12,15 @@
 // This file contains specific app functions
 var BUOY = {
 	buoys: new Array(),
-	icon: null,
+	ICONS: [],
 
 	init: function() {
-		var icon = new GIcon();
-		// icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
-		icon.image = "http://www.geosailing.com/svr/img/iconen/boei.png";
-		icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-		// icon.iconSize = new GSize(12, 20);
-		icon.iconSize = new GSize(16, 17);
-		icon.shadowSize = new GSize(22, 20);
-		// icon.iconAnchor = new GPoint(6, 20);
-		icon.iconAnchor = new GPoint(8, 17);
-		icon.infoWindowAnchor = new GPoint(5, 1);
-		BUOY.icon = icon;
+
+		BUOY.ICONS['Boei'] = 'img/iconen/boei.png';
+		BUOY.ICONS['Neutral'] = 'img/iconen/vlag_neutral.png';
+		BUOY.ICONS['Haveningang'] = BUOY.ICONS['Neutral'] ;
+		BUOY.ICONS['Start'] = 'img/iconen/vlag_start.png';
+		BUOY.ICONS['Finish'] = 'img/iconen/vlag_finish.png';
 
 		/*new Buoy("Boei", "VL5", 5.086067, 52.99828);
 		new Buoy("Boei", "ZS13", 5.84132, 53.4155867);
@@ -63,19 +58,19 @@ var BUOY = {
 		new Buoy("Boei", "BS13", 5.285846666666667, 53.222408333333334);
 		new Buoy("Boei", "BS20", 5.306925, 53.19933);
 		new Buoy("Boei", "BO44", 5.39805, 53.17675833333333);
-		new Buoy("Cardinaal West", "VL8/WM1", 5.1843216666666665, 53.28971333333333);
+		new Buoy("Boei", "VL8/WM1", 5.1843216666666665, 53.28971333333333);
 		new Buoy("Boei", "WM6", 5.235713333333333, 53.301786666666665);
 		new Buoy("Boei", "NM4/S21", 5.2575, 53.31699666666667);
 		new Buoy("Boei", "SG15/S2", 5.195188333333333, 53.34153666666667);
 		new Buoy("Boei", "BO18", 5.37108, 53.10505333333333);
-		new Buoy("Cardinaal Noord", "BO9/KZ2", 5.338236666666667, 53.083666666666666);
+		new Buoy("Boei", "BO9/KZ2", 5.338236666666667, 53.083666666666666);
 		new Buoy("Haveningang", "Terschelling", 5.219, 53.35435);
-		new Buoy("Haveningang", "Hindelopen", 5.402333333333333, 52.93666666666667);
-		new Buoy("Haveningang", "Stavoren", 5.353083333333333, 52.88625);
-		new Buoy("Haveningang", "Vlieland", 5.0985, 53.294666666666664);
+		new Buoy("Finish", "Hindelopen", 5.402333333333333, 52.93666666666667);
+		new Buoy("Start", "Stavoren", 5.353083333333333, 52.88625);
+		new Buoy("Haveningang", "Vlieland", 5.091333333333333, 53.295833333333334);
 		new Buoy("Haveningang", "Harlingen", 5.403833333333333, 53.17658333333333);
 		new Buoy("Haveningang", "Texel-Waddenhaven/Oudeschild", 4.852983333333333, 53.03908333333333);
-		new Buoy("Sluis", "Kornwerderzand", 5.3341666666666665, 53.07866666666666);
+		new Buoy("Neutral", "Kornwerderzand", 5.3341666666666665, 53.07866666666666);
 	},
 
 	show: function() {
@@ -101,23 +96,63 @@ function Buoy(type, name, lon, lat) {
 	this.name = name;
 	this.type = type;
 	this.point = new GLatLng(lat, lon);
-	this.marker = new GMarker(this.point, BUOY.icon);
+	this.tlabel = null;
+	this.iconId = 'buoyimg' + name;
 
-	var self = this;
-
-	GEvent.addListener(this.marker, "click", function() {
-		self.marker.openInfoWindowHtml(self.type + " <b>" + self.name + "</b> <br/>lon,lat =  " + lon.toFixed(6) + ', ' + lat.toFixed(5) + ' (DD)');
-	});
 
 	BUOY.buoys.push(this);
 
+	this.getIconPath = function() {
+		return BUOY.ICONS[this.type];
+	}
+
 	// Displays feature in Panel
 	this.show = function() {
-		GMAP.map.addOverlay(this.marker);
+		var tl = new TLabel(false);
+		tl.id = 'buoy' + this.name;
+		tl.anchorLatLng = this.point;
+		tl.anchorPoint = 'topLeft';
+
+		// Overridden in subclass
+		tl.content = '<a href="#" title="' + this.type + ' - ' + this.name + '" ><img border="0" id="' + this.iconId + '" src="' + this.getIconPath() + '" onload="DH.fixPNG(this)" /></a>';
+		tl.markerOffset = new GSize(5, 5);
+		tl.setScaling(this.iconId, 25, 25, .3);
+
+		// Add Tlabel to map
+		GMAP.map.addTLabel(tl);
+
+		this.tlabel = tl;
+
+		var buoy = this;
+		// alert('show() url=' + this.url + ' name=' + this.name);
+		// Define callback for mouse over medium icon
+		this.onClickIcon = function (e) {
+
+			buoy.openInfoWindow();
+
+			// self.display();
+			// self.blowUp();
+			// DH.cancelEvent(e);
+		}
+
+		DH.addEvent(this.tlabel.elm, 'click', this.onClickIcon, false);
 	}
 
 	// Displays feature in Panel
 	this.hide = function() {
-		GMAP.map.removeOverlay(this.marker);
+		if (this.tlabel == null) {
+			return;
+		}
+		// remove Tlabel from map
+		GMAP.map.removeTLabel(this.tlabel);
+
+		this.tlabel = null;
+	}
+
+
+	this.openInfoWindow = function() {
+		var html = this.type + " <b>" + this.name + "</b> <br/>lon,lat =  " + this.point.lng().toFixed(6) + ', ' + this.point.lat().toFixed(5) + ' (DD)';
+		GMAP.map.openInfoWindowHtml(this.point, html);
+		// GMAP.map.panTo(this.getGLatLng());
 	}
 }

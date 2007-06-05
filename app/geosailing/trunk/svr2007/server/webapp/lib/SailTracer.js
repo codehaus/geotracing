@@ -34,28 +34,32 @@ function SailTracer(name, color, iconURL, pt, time) {
 		tl.anchorLatLng = this.point;
 		tl.anchorPoint = 'topLeft';
 		tl.content = html;
-		tl.setMaxWH(50, 50);
-		tl.iconId = this.iconId;
-		// DH.fixPNG(DH.getObject(this.iconId));
+		tl.setScaling(this.iconId, 40, 40, .3);
 
 		// To shift icon on exact lat/lon location (half size of icon)
-		tl.markerOffset = new GSize(8, 8);
+		tl.markerOffset = new GSize(11, 11);
 
 		return tl;
 	}
 
 	/** Toggle to follow tracer. */
 	this.followToggle = function () {
+		var linkElm = DH.getObject('follow' + this.id)
+
 		if (this.isFollowed()) {
 			TRACER.follow = null;
-			DH.setHTML('follow' + this.id, 'volg');
+			linkElm.className = 'findboat';
+			linkElm.innerHTML = 'volg';
 		} else {
 			if (TRACER.follow && TRACER.follow != null) {
-				DH.setHTML('follow' + TRACER.follow.id, 'volg');
+				var t = DH.getObject('follow' + TRACER.follow.id)
+				t.innerHTML = 'volg';
+				t.className = 'findboat';
 			}
 			this.zoomTo();
 			TRACER.follow = this;
-			DH.setHTML('follow' + this.id, '* volg *');
+			linkElm.className = 'findboatactive';
+			linkElm.innerHTML = 'stop';
 		}
 	}
 
