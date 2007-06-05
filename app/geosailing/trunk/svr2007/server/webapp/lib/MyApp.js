@@ -139,6 +139,7 @@ var MYAPP = {
 		GTW.clearFeatures();
 		MYAPP.liveMedia.dispose();
 		BOAT.mediaSet.dispose();
+		GMAP.map.clearOverlays();
 		// TRACER.follow = null;
 	},
 

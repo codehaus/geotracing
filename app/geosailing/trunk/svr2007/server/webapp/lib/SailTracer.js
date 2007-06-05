@@ -34,10 +34,10 @@ function SailTracer(name, color, iconURL, pt, time) {
 		tl.anchorLatLng = this.point;
 		tl.anchorPoint = 'topLeft';
 		tl.content = html;
-		tl.setScaling(this.iconId, 40, 40, .3);
+		tl.setScaling(this.iconId, 45, 45, .3);
 
 		// To shift icon on exact lat/lon location (half size of icon)
-		tl.markerOffset = new GSize(11, 11);
+		tl.markerOffset = new GSize(20, 20);
 
 		return tl;
 	}
