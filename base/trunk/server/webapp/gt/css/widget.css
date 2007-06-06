@@ -178,7 +178,7 @@
 
 .pn-closer {
 	top: 0px;
-	left: 0px;
+	right: 0px;
     height: 15px;
     width: 15px;
     cursor: pointer;
