@@ -65,7 +65,9 @@ var BUOY = {
 		new Buoy("Boei", "BO18", 5.37108, 53.10505333333333);
 		new Buoy("Boei", "BO9/KZ2", 5.338236666666667, 53.083666666666666);
 		new Buoy("Haveningang", "Terschelling", 5.219, 53.35435);
-		new Buoy("Finish", "Hindelopen", 5.402333333333333, 52.93666666666667);
+		// 5.402408838272095" lat="52.9452439138168"
+		// old: 5.402333333333333, 52.93666666666667
+		new Buoy("Finish", "Hindelopen", 5.402408838272095, 52.9452439138168);
 		new Buoy("Start", "Stavoren", 5.353083333333333, 52.88625);
 		new Buoy("Haveningang", "Vlieland", 5.091333333333333, 53.295833333333334);
 		new Buoy("Haveningang", "Harlingen", 5.403833333333333, 53.17658333333333);

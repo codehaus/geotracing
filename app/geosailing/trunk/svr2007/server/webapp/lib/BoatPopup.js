@@ -58,14 +58,19 @@ BOAT = {
 	onShowInfo: function() {
 		DH.getStyleObject('boatpopupmedia').display = 'none';
 		DH.getStyleObject('boatpopupinfo').display = 'block';
+//		var linkElm = DH.getObject('follow' + this.id)
+
 		BOAT.mediaSet.dispose();
-		DH.setHTML("tracerid", BOAT.boatName);
 
 		var tracer = GTW.getTracer(BOAT.boatName);
 		var record = tracer.record;
+
+		var boatColor = '&nbsp;<span style="background-color: ' + tracer.color + '">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;';
+		DH.setHTML("tracerid", boatColor + BOAT.boatName);
+
 		tracer.thumbId = record.getField("thumbid");
 		if (tracer.thumbId != null) {
-			tracer.thumbURL = 'media.srv?id=' + tracer.thumbId + "&resize=160x120!";
+			tracer.thumbURL = 'media.srv?id=' + tracer.thumbId + "&resize=90x68!";
 		}
 		DH.getObject('tracerimg').src = tracer.thumbURL;
 
@@ -128,8 +133,8 @@ BOAT = {
 		if (BOAT.panel == null) {
 			BOAT.panel = new Panel(aBoatName, '#444444', 'white', null, BOAT.onPanelClose);
 			BOAT.panel.setXY(200, 100);
-			BOAT.panel.setDimension(400, 400);
-			BOAT.initContent = DH.getURL('popup/boot.html');
+			BOAT.panel.setDimension(330, 400);
+			BOAT.initContent = DH.getURL('popup/boat.html');
 		}
 
 		// Save target id
@@ -171,6 +176,16 @@ BOAT = {
 			var lonLatTime = new Number(location.time);
 			var date = new Date(lonLatTime);
 			DH.setHTML("tracerlocdate", date.format("DDD D MMM YYYY HH:mm:ss"));
+		}
+
+		DH.setHTML("tracerspeed", '-');
+		DH.setHTML("tracercourse", '-');
+
+		if (tracer.speed) {
+			DH.setHTML("tracerspeed", tracer.speed + ' km/h');
+		}
+		if (tracer.course) {
+			DH.setHTML("tracercourse", Math.round(tracer.course) + ' ~ ' + tracer.courseStr);
 		}
 	}
 }

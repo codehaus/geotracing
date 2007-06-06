@@ -111,6 +111,26 @@ TLabel.prototype.setScaling = function(aScaleElmId, aMaxW, aMaxH, aMinScaleFacto
 	}
 }
 
+CMT.showCommentPanel = function(aTargetId, aTargetType, aTargetName) {
+	if (CMT.commentPanel == null) {
+		CMT.commentPanel = new Panel('commentpanel', '#5e0000', 'white', null, CMT.onPanelClose);
+		CMT.commentPanel.setDimension(500, 500);
+		CMT.commentPanel.setXY(50, 50);
+	}
+
+
+	// Save target id
+	CMT.currentTarget = aTargetId + '';
+	CMT.currentType = aTargetType;
+	CMT.currentName = aTargetName;
+	CMT.commentPanel.show();
+	CMT.commentPanel.loadContent('popup/comment.html');
+	CMT.commentPanel.setTitle('Commentaar');
+	CMT.displayComments();
+	CMT.panelOpen = true;
+	return false;
+}
+
 // This file contains specific app functions
 var MYAPP = {
 	WINDOW_TITLE: 'Geosailing - Schuttevaer 2007 Live',

@@ -1,0 +1,39 @@
+<div class="infopopup" id="commentpanel">
+	<form id="commentform" name="commentform" method="get" action="#" onsubmit="return CMT.addComment();">
+		<table border="0" cellspacing="4" cellpadding="4">
+			<tr>
+				<td colspan="2"><h3>Maak een commentaar</h3></td>
+
+			</tr>
+			<tr>
+				<td colspan="2"><p>Tik onder je commentaar in. Je email wordt nooit getoond.</p></td>
+
+			</tr>
+			<tr>
+				<td colspan="2"><textarea cols="40" rows="8" name="content" id="content"></textarea></td>
+
+			</tr>
+			<tr>
+				<td>naam</td><td><input name="name" id="name" type="text"/></td>
+			</tr>
+			<tr>
+				<td>link (optioneel)</td><td><input name="url" id="url" type="text"/></td>
+			</tr>
+			<tr>
+				<td>email (optioneel)</td><td><input name="email" id="email" type="text"/></td>
+			</tr>
+			<tr>
+				<td></td><td><input name="targetid" id="targetid" type="hidden" value="-13"/></td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td><td><input type="submit" name="submit" value="Voeg Toe !!"/></td>
+			</tr>
+		</table>
+	</form>
+	<span class="cmtlink"><a id="addcommentlink" href="#" onclick="CMT.showAddCommentForm()">Klik hier om een commentaar toe te voegen &gt;&gt;</a></span>
+	<h3>Commentaren</h3>
+	<div id="commentlist">
+		Bezig commentaren op te halen...
+	</div>
+</div>
+
