@@ -65,7 +65,7 @@ BOAT = {
 		var record = tracer.record;
 		tracer.thumbId = record.getField("thumbid");
 		if (tracer.thumbId != null) {
-			tracer.thumbURL = 'media.srv?id=' + tracer.thumbId + "&resize=80x60!";
+			tracer.thumbURL = 'media.srv?id=' + tracer.thumbId + "&resize=160x120!";
 		}
 		DH.getObject('tracerimg').src = tracer.thumbURL;
 
@@ -126,7 +126,7 @@ BOAT = {
 
 	show: function(aBoatName) {
 		if (BOAT.panel == null) {
-			BOAT.panel = new Panel(aBoatName, '#072855', 'white', null, BOAT.onPanelClose);
+			BOAT.panel = new Panel(aBoatName, '#444444', 'white', null, BOAT.onPanelClose);
 			BOAT.panel.setXY(200, 100);
 			BOAT.panel.setDimension(400, 400);
 			BOAT.initContent = DH.getURL('popup/boot.html');
