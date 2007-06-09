@@ -173,3 +173,39 @@ a.infoboxbutton{
 }
 
 
+.helpbody{
+	width:600px;
+	margin-top:10px;
+	padding:10px;
+	background-color:#000000;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#FFFFFF;
+}
+
+.helpbody a {
+	color:white;
+	text-decoration:underline;
+}
+
+.helptitle{
+	font-size:14px;
+	font-weight:bold;
+	padding-top:10px;
+	position:inherit;
+}
+
+.helpimageleft{
+	width:103px;
+	margin-right:10px;
+	margin-top:2px;
+	float:left;
+	position:relative;
+}
+.helptekstright{
+	float:left;
+	width:470px;
+	margin-top:2px;
+	padding-top:1px;
+	position:relative;
+}
