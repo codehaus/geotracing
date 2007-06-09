@@ -114,7 +114,7 @@ TLabel.prototype.setScaling = function(aScaleElmId, aMaxW, aMaxH, aMinScaleFacto
 CMT.showCommentPanel = function(aTargetId, aTargetType, aTargetName) {
 	if (CMT.commentPanel == null) {
 		CMT.commentPanel = new Panel('commentpanel', '#5e0000', 'white', null, CMT.onPanelClose);
-		CMT.commentPanel.setDimension(500, 500);
+		CMT.commentPanel.setDimension(640, 500);
 		CMT.commentPanel.setXY(50, 50);
 	}
 
@@ -294,7 +294,7 @@ var MYAPP = {
 	mShowHelp: function (url) {
 		var helpPanel = new Panel('Help', '#072855', 'white');
 		helpPanel.setXY(100, 100);
-		helpPanel.setDimension(600, 500);
+		helpPanel.setDimension(640, 500);
 		helpPanel.loadContent(url);
 	},
 
