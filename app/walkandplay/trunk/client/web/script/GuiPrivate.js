@@ -14,9 +14,10 @@ function wpGuiUserInit()
 	//send heartbeats
 	wp_hb = window.setInterval('wpHeartBeat()',60000*5) //send hb every minute (=idle user)
 	
-	/* -> create */
+	wpCreatePane('edit_game');
+	wpCreatePane('edit_location');
 
-	wpGameInit();
+	//wpGameInit();
 }
 
 function wpHeartBeat()
@@ -29,28 +30,18 @@ function wpCreatePaneUser(type)
 {
 	switch (type)
 	{
-		/* user panes */
+		/* registered user panes */
 					
-		case 'list_games':
-			var pane = new Pane('list_games',100,160,180,140,1,true);
-			pane.setContent(wpGuiCreate('my_games'));
-			break;
-			
 		case 'edit_game':
 			var pane = new Pane('edit_game',100,160,180,160,1,true);
 			pane.setContent(wpGuiCreate('edit_game'));
 			break;
 
-		case 'list_locations':
-			var pane = new Pane('list_locations',100,360,120,140,1,true);
-			break;
-
 		case 'edit_location':
 			var pane = new Pane('edit_location',310,60,300,210,1,true,gmap.getPane(G_MAP_FLOAT_PANE));
 			pane.setContent(wpGuiCreate('edit_location'));
-//			pane.onclick = ;
 			pane.content.style.lineHeight = '9px';
-			//block gmap events
+			//block gmap events (since pane is attached to map pane)
 			pane.content.onmousedown = function(e)
 			{
 				if (!e) e = event;

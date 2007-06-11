@@ -10,7 +10,7 @@ MIDlet-Permissions: ${midlet.permissions}
 MIDlet-Permissions-Opt: ${midlet.permissions.opt}
 kw-url: http://test.mlgk.nl/wp
 kw-timeout: 20
-kw-user: red1
+kw-user: yellow2
 kw-password: user
 kw-app: geoapp
 kw-role: user

@@ -2,7 +2,10 @@
 <?php
 	switch($_SERVER["HTTP_HOST"])
 	{
-		case "local.mlgk.nl": case "test.mlgk.nl": $key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRGAXkkWYA3JiTOCSaqJOEk_4qGkhRYUEVifAgdoyuk3uEfBOCthrNEBg"; break;
+		case "local.mlgk.nl":
+		case "test.mlgk.nl": 
+			$key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRGAXkkWYA3JiTOCSaqJOEk_4qGkhRYUEVifAgdoyuk3uEfBOCthrNEBg";
+			break;
 	}
 	//needed for google polylines in MSIE
 	if (eregi("MSIE",$_SERVER["HTTP_USER_AGENT"]))
@@ -33,7 +36,7 @@
 
 <!-- gui -->
 
-<script type="text/javascript" src="script/utils.js"></script>
+<script type="text/javascript" src="script/common/utils.js"></script>
 
 <script type="text/javascript" src="script/Application.js"></script>
 <script type="text/javascript" src="script/GuiPublic.js"></script>
@@ -42,18 +45,12 @@
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
 
-<script type="text/javascript" src="script/pane.js"></script>
-<script type="text/javascript" src="script/humandate.js"></script> 
-
-<!-- 
-<script type="text/javascript" src="script/slider.js"></script>
-<script type="text/javascript" src="script/qtcheck.js"></script>
--->
-
+<script type="text/javascript" src="script/common/pane.js"></script>
+<script type="text/javascript" src="script/common/humandate.js"></script> 
 
 <!-- development -->
 
-<script type="text/javascript" src="script/dev.js"></script>
+<script type="text/javascript" src="script/common/dev.js"></script>
 
 <!-- geotracing -->
 
@@ -79,7 +76,6 @@ function init()
 	}
 	else
 	{
-		
 		/* init the google map */
 
 		var mapdiv = document.getElementById('map');
@@ -95,6 +91,7 @@ function init()
 		//default map settings
 		gmap.enableDoubleClickZoom();
 		gmap.addControl(new GLargeMapControl(),new GControlPosition(G_ANCHOR_TOP_LEFT,new GSize(30,170)));
+		gmap.addControl(new GScaleControl(),new GControlPosition(G_ANCHOR_BOTTOM_LEFT,new GSize(180,15)));
 		gmap.addControl(new GMapTypeControl());
 		gmap.setMapType(G_MAP_TYPE); 
 		gmaptype = 'map';
@@ -103,29 +100,21 @@ function init()
 		//fancy map edge fading
 		wpMapFadeEdges(mapdiv);
 
-		/* gui */
+		/* init gui */
 				
 		<?=$debug?>
 		wp_max_livetrace = 100;
-		
-		wpStartup();
-		
-		/* init geotracing */
 		
 		//queries
 		SRV.init();
 		SRV.url = '/wp/srv/get.jsp?';
 		//requests
 		wp_KW_inited = false; //will be inited at login
-
-/*		//live events (pushlet)
-		wp_live = false; //will be inited after media and user init */
+		//live events (pushlet)
 		PL._showStatus = function() { }; //no pushlet statusbar updates
 
+		wpStartup();
 
-		//players
-		//..
-		
 		//login
  		wpAutoLogin();
 

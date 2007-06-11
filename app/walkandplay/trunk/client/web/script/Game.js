@@ -17,67 +17,74 @@ wp_selected_play = false;
 function wpGameInit()
 {
 	wp_live = false;
+	wp_live_subscribed = false;
 	
 	//panes
 	wpCreatePane('list_games');
 	wpCreatePane('list_locations');
-	wpCreatePane('edit_game');
-	wpCreatePane('edit_location');
-	wpCreatePane('playdisplay');
+	wpCreatePane('play');
+	wpCreatePane('view');
 
 	//game collections	
 	wp_games = new idArray('game');
 	wp_rounds = new idArray('round');
 	wp_plays = new idArray('play');
 	wp_players = new wpPlayers();
+	
+	//locations and players
+ 	wp_locations = new wpLocations();
+ 	wp_players = new wpPlayers();
+
+	wp_view = false;
 }
 
 function wpListGames(resp)
 {
-	var list = ''; 
-	if (resp)
+	var header = '';
+	var list = '';
+
+	for (var i in resp)
 	{
-		tmp_debug(3,'q-play-state-by-user: records=',resp.length);
+		//wp_games.push( new wpGame(resp[i]) );
 		
-		for (var i in resp)
+		var name = resp[i].getField('name');
+		var desc = resp[i].getField('description');
+		var bullit = '&bull; '; //'<span class="red">&bull;</span> ';
+		var shortname = (name.length>30)? name.substring(0,29)+'..':name;		
+		
+		if (wp_mode=='play')
 		{
-			//wp_games.push( new wpGame(resp[i]) );
+			var id = resp[i].getField('gameid');
+			var roundid = resp[i].getField('roundid');
+			var playid = resp[i].getField('gameplayid');
 			
-			var name = resp[i].getField('name');
-			var desc = resp[i].getField('description');
-			
-			
-			if (wp_mode=='play')
-			{
-				var id = resp[i].getField('gameid');
-				var roundid = resp[i].getField('roundid');
-				var playid = resp[i].getField('gameplayid');
-				
-				list+= '<a href="javascript://play_game" onclick="wpSelectGame(\'play\','+id+','+roundid+','+playid+')" title="'+desc+'">'+name+'</a><br>';
-			}
-			else if (wp_mode=='create')
-			{
-				var id = resp[i].getField('id');
-				list+= '<a href="javascript://edit_game" onclick="wpSelectGame(\'create\','+id+')" title="'+desc+'">'+name+'</a><br>';
-			}
+			list+= bullit+'<a href="javascript://play_game" onclick="wpSelectGame(\'play\','+id+','+roundid+','+playid+')" title="'+desc+'">'+shortname+'</a><br>';
+		}
+		else if (wp_mode=='create')
+		{
+			var id = resp[i].getField('id');
+			list+= bullit+'<a href="javascript://edit_game" onclick="wpSelectGame(\'create\','+id+')" title="'+desc+'">'+shortname+'</a><br>';
+		}
+		else if (wp_mode=='view')
+		{
+			var id = resp[i].getField('id');
+			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="wpListRounds('+id+')" title="'+desc+'">'+shortname+'</a><br>';
+			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="wpSelectGame(\'view_rounds\','+id+')" title="'+desc+'">'+shortname+'</a><br>';
+			list+= bullit+'<a href="javascript://view_gamerounds" onclick="SRV.get(\'q-gamerounds\',function(resp) { wpListRounds('+id+',resp) },\'gameid\','+id+');" title="'+desc+'">'+shortname+'</a><br>';
 		}
 	}
-// 	else
-// 	{
-// 		for (var id in wp_games.game)
-// 		{
-// 			str+= '<a href="javascript://edit_game" onclick="wp_games.game['+id+'].edit()">'+wp_games.game[id].name+'</a><br>';
-// 		}
-// 	}
 
-	var header = (wp_mode=='create')? '<span class="red">select a game to edit:</span><br>':'<span class="red">select a game to play:</span><br>';
+	switch(wp_mode)
+	{
+		case 'create': header = '<span class="red">select a game to edit:</span><br>'; break;
+		case 'play': header = '<span class="red">select a game to play:</span><br>'; break;
+		case 'view': header = '<span class="red">select a game to view:</span><br>'; break;
+	}
+// 	var header = (wp_mode=='create')? '<span class="red">select a game to edit:</span><br>':'<span class="red">select a game to play:</span><br>';
 	if (list=='') list = '- no games available -';
 
-//str+= '<br><br>';
-//str+= '<input type="button" value="player test" onclick="testPlayer()"><br><br>';
-//str+= '<input type="button" value="game state test" onclick="playGetTeamResult()"><br>';
-
-	panes['list_games'].setContent(header+list);
+	if (wp_mode=='view') panes['list_games'].setContent(wpGuiCreate('list_games_view')+header+list);
+	else panes['list_games'].setContent(header+list);
 	panes['list_games'].show();
 }
 
@@ -88,7 +95,7 @@ function wpSelectGame(type,id,roundid,playid)
 	wp_selected_play = playid || wp_selected_play;
 
 	//create new if needed, will return to this function
-	if (!wp_games.game[id])
+	if (!wp_games.game[id] && type!='view_rounds')
 	{
 		SRV.get('q-game',wpLoadGame,'id',id);
 		return;
@@ -99,31 +106,57 @@ function wpSelectGame(type,id,roundid,playid)
 	switch (type)
 	{
 		case 'play':
-			
 			//add gameround and play
 			if (!wp_rounds[wp_selected_round]) wp_rounds.push( new wpRound(wp_selected_round) );
 			if (!wp_plays[wp_selected_play]) wp_plays.push( new wpPlay(wp_selected_play) );
 
-			//get current gamestate
-			
-			
 			//close list, open play display
 			panes.hide('list_games');
-			panes.show('playdisplay');
+			panes['play'].clearContents();
+			panes.show('play');
 			
+			//get current gamestate
 			game.getLocations(true); //will update playstate when loaded
 			break;
 			
 		case 'create':
 			wp_games.game[id].edit();
 			break;
-			
+
 		case 'view':
+			//add gameround and play
+			if (!wp_rounds[wp_selected_round]) wp_rounds.push( new wpRound(wp_selected_round) );
+			
+			//get plays for this round
+			SRV.get('q-gameplays',wpSelectRound,'roundid',wp_selected_round);
+			
+			//if (!wp_plays[wp_selected_play]) wp_plays.push( new wpPlay(wp_selected_play) );
+			
+// 			panes.hide('list_games','list_rounds');
+// 			panes['view'].setContent(wpGuiCreate('view'));
+// 			panes['play'].clearContents();
+// 			panes.show('view','play');
+// 			
+// 			game.getLocations(true); 
+			
 			break;
 			
 		default:
 			break;
 	}
+}
+
+function wpSelectRound(resp)
+{
+	//update round properties
+	wp_rounds.round[wp_selected_round].addTeams(resp)
+
+	//show view ctls and load game locations
+	panes.hide('list_games','list_rounds');
+	panes['view'].setContent(wpGuiCreate('view'));
+	panes['play'].clearContents();
+	panes.show('view','play');
+	wp_games.game[wp_selected_game].getLocations(true); 
 }
 
 function wpLoadGame(resp)
@@ -134,6 +167,7 @@ function wpLoadGame(resp)
 	//return to select	
 	wpSelectGame(wp_mode,wp_selected_game);
 }
+
 
 
 /* create functions */
@@ -181,121 +215,151 @@ function wpEditLocation(type)
 
 /* play functions */
 
+function wpGetPlay()
+{
+
+}
+
 function wpUpdatePlay(resp)
 {
-	var gameplay = resp.getElementsByTagName('gameplay')[0];
-	var tasks = resp.getElementsByTagName('task-result');
-	var media = resp.getElementsByTagName('medium-result');
-	
+	var game = wp_games.game[wp_selected_game];
 	var tasks_hit = 0;
 	var media_hit = 0;
 	var tasks_done = 0;
 
-	//update locations, count state	
- 	for (var i=0; i<tasks.length; i++)
- 	{
- 		var id = tasks[i].getAttribute('taskid');
- 		var enabled = (tasks[i].getAttribute('state')!='open');
- 		var answerstate = tasks[i].getAttribute('answerstate');
-
- 		if (enabled) tasks_hit++;
- 		if (answerstate=='ok') tasks_done++;
-		wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
-		
-		var lastanswer,score;
-		
-		if (answerstate!='open')
+	if (!resp)
+	{
+		//for view playback, start values;
+		var state = 'playback';
+		var team = (wp_selected_play)? wp_rounds.round[wp_selected_round].teams.team[wp_selected_play].name:'';
+		var score = 0;
+	}
+	else
+	{
+		var gameplay = resp.getElementsByTagName('gameplay')[0];
+		var tasks = resp.getElementsByTagName('task-result');
+		var media = resp.getElementsByTagName('medium-result');
+	
+		//update locations, count state	
+		for (var i=0; i<tasks.length; i++)
 		{
-			var lastanswer = tasks[i].getAttribute('answer');
-			var score = tasks[i].getAttribute('score');
+			var id = tasks[i].getAttribute('taskid');
+			var enabled = (tasks[i].getAttribute('state')!='open');
+			var answerstate = tasks[i].getAttribute('answerstate');
+			var mediastate = tasks[i].getAttribute('mediastate');
+			
+			if (enabled) tasks_hit++;
+			if (answerstate=='ok') tasks_done++;
+			wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
+			
+			var lastanswer = '';
+			var score= '';
+			var mediumid = false;
+			
+			if (answerstate!='open')
+			{
+				lastanswer = tasks[i].getAttribute('answer');
+				score = tasks[i].getAttribute('score');
+			}
+			if (mediastate!='open')
+			{
+				mediumid = tasks[i].getAttribute('mediumid');
+			}
+			wp_games.game[wp_selected_game].locations.location[id].updateAnswer(answerstate,lastanswer,mediumid,score);
 		}
-		wp_games.game[wp_selected_game].locations.location[id].updateAnswer(answerstate,lastanswer,score);
- 	}
-
- 	for (var i=0; i<media.length; i++)
- 	{
- 		var id = media[i].getAttribute('mediumid');
- 		var enabled = (media[i].getAttribute('state')!='open')
-
- 		if (enabled) media_hit++;
-		wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
- 	}
 	
+		for (var i=0; i<media.length; i++)
+		{
+			var id = media[i].getAttribute('mediumid');
+			var enabled = (media[i].getAttribute('state')!='open')
+	
+			if (enabled) media_hit++;
+			wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
+		}
 
-	//tmp_debug(1,'play (',wp_selected_play,') state: tasks=',tasks.length,' (',tasksdone,' done), media=',media.length,' (',mediadone,' done)');	
-	
-	
+		var state = gameplay.getAttribute('state');
+		var team = gameplay.getAttribute('team');
+		var score = gameplay.getAttribute('score');
+	}
+
 	//update play (and play display)
-	var state = gameplay.getAttribute('state');
-	var team = gameplay.getAttribute('team');
-	var score = gameplay.getAttribute('score');
-
-	var play = wp_plays.play[wp_selected_play];
-	play.state = state;
-	play.score = Number(score);
-	play.team = team;
-	play.tasks_hit = tasks_hit;
-	play.media_hit = media_hit;
-	play.tasks_done = tasks_done;
+	if (wp_selected_play)
+	{
+		var play = wp_plays.play[wp_selected_play];
+		play.state = state;
+		play.score = Number(score);
+		play.team = team;
+		play.tasks_hit = tasks_hit;
+		play.media_hit = media_hit;
+		play.tasks_done = tasks_done;
+	}
 
 	var str = '';
-		str+= '<span class="title">game</span> "<b>'+wp_games.game[wp_selected_game].name+'</b>"<br>';
+		str+= '<span class="title">game</span> "<b>'+game.name+'</b>"<br>';
 		str+= '<span class="grey">status:</span></div><br>&nbsp;&nbsp;<i>'+state+'</i><br>';
-		str+= '<span class="grey">locations:</span><br>&nbsp;&nbsp; '+tasks.length+' tasks and '+media.length+' media. ';
-	panes['playdisplay'].game.innerHTML = str;
+		str+= '<span class="grey">locations:</span><br>&nbsp;&nbsp; '+game.tasks+' tasks and '+game.media+' media. ';
+	panes['play'].game.innerHTML = str;
 	
-	wpUpdateScore();
-	wpUpdateRound('welcome '+team+' HQ');
-// 	var str = '';
-// 		str+= 'playing as team "<b class="'+team.substring(0,1)+'">'+team+'</b>"<br>';
-// 		str+= '<span class="'+team.substring(0,1)+'" style="float:right; margin-top:12px; margin-right:5px;"><b style="font-size:18px">'+score+'</b> points</span>';
-// 		str+= '<span class="grey">score:</span></div><br>&nbsp;&nbsp;100% completed<br>';
-// 		str+= '<span class="grey">hit:</span><br>&nbsp;&nbsp; <b id="">'+tasksdone+'</b> of '+tasks.length+' tasks, <b id="">'+mediadone+'</b> of '+media.length+' media. ';
-// 	panes['playdisplay'].team_stats.innerHTML = str;
-
-	
+	wpUpdatePlayScore();
+	var msg = (wp_mode=='play')? 'welcome '+team+' HQ':'';
+	wpUpdatePlayRound(msg);
 		
-	if (!wp_live)
+	//(re)start live events handling
+	if (wp_mode=='play')
 	{
-		wp_live = true;
-		//start live events listener
-		PL.joinListen('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play);
-		//alert('PL.joinListen');
-		onData = wpLive;
+		if (!wp_live)
+		{
+			wp_live = true;
+			wp_live_subscribed = true;
+			//start live events listener
+			PL.joinListen('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play);
+			onData = wpLive;
+		}
+		else if (!wp_live_subscribed)
+		{
+			PL.subscribe('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play);
+			wp_live_subscribed = true;
+		}
 	}
 }
 
-function wpUpdateScore()
+function wpUpdatePlayScore()
 {
+	if (!wp_selected_play) return;
+	
 	var game = wp_games.game[wp_selected_game];
 	var play = wp_plays.play[wp_selected_play];
 	
 	if (!play.team) return;
 	
-	var m = (play.media_hit/game.media) * (game.media/(game.tasks+game.media)) * 100;
-	var t = (play.tasks_done/game.tasks) * (game.tasks/(game.tasks+game.media)) * 100;
+	var m = (game.tasks==0 || game.media==0)? 0:(play.media_hit/game.media) * (game.media/(game.tasks+game.media)) * 100;
+	var t = (game.tasks==0 || game.media==0)? 0:(play.tasks_done/game.tasks) * (game.tasks/(game.tasks+game.media)) * 100;
 	var completed = Math.round(m+t);
 	
-	
 	var str = '';
-		//str+= '<b>playing as team</b> "<b class="'+play.team.substring(0,1)+'">'+play.team+'</b>"<br>';
 		str+= '<span class="title">team</span> "<b class="'+play.team.substring(0,1)+'">'+play.team+'</b>"<br>';
 		str+= '<span class="'+play.team.substring(0,1)+'" style="float:right; margin-top:10px; margin-right:5px; line-height:18px;"><b style="font-size:18px">'+play.score+'</b> points</span>';
 		str+= '<span class="grey">score:</span></div><br>&nbsp;&nbsp;'+completed+'% completed<br>';
-//		str+= '<span class="grey">locations hit:</span><br>&nbsp;&nbsp; <b id="">'+play.tasks_hit+':'+play.tasks_done+'</b>/'+game.tasks+' tasks, <b id="">'+play.media_hit+'</b>/'+game.media+' media. ';
 		str+= '<span class="grey">locations hit:</span><br>&nbsp;&nbsp; <b id="">'+play.tasks_hit+'</b> tasks and <b id="">'+play.media_hit+'</b> media. ';
-	panes['playdisplay'].play.innerHTML = str;
+	panes['play'].play.innerHTML = str;
 }
 
-function wpUpdateRound(msg)
+function wpUpdatePlayRound(msg)
 {
 	//game messages to all players and total score display
 	var str = '';
 		//str+= '<b>playing as team</b> "<b class="'+play.team.substring(0,1)+'">'+play.team+'</b>"<br>';
 		str+= '<span class="title">round</span><br>';
-		str+= new Date().format('time');
-		str+= ' - <i>';
-		str+= msg || '';
+		if (wp_mode=='play')
+		{
+			str+= new Date().format('time');
+			str+= ' - <i>';
+			str+= msg || '';
+		}
+		else
+		{
+			str+= msg;
+		}
 		str+= '</i><br>';
 		str+= '<span class="grey">scores:</span></div><br>';
 
@@ -304,53 +368,286 @@ function wpUpdateRound(msg)
 		str+= '<div style="position:relative; background-color:rgb(50,100,200); width:50px; height:9px; margin-left:10px; margin-top:3px; font-size:1px;"></div>';
 		str+= '<div style="position:relative; background-color:rgb(45,170,75); width:50px; height:9px; margin-left:10px; margin-top:3px; font-size:1px;"></div>';
 
-	panes['playdisplay'].round.innerHTML = str;
-
+	panes['play'].round.innerHTML = str;
 }
 
 function wpLeavePlay()
 {
-	if (confirm('leave gameplay?'))
+	if (confirm('leave this gameplay?'))
 	{
-		wpSelect('view');
-		window.setTimeout("panes.hide('playdisplay')",250); //to force hide in IE, //->fix in future version?
+		wpSelect('play');
+		window.setTimeout("panes.hide('play')",250); //to force hide in IE, //->fix in future version?
 	}
 }
 
 
+
 /* view functions */
 
+function wpSelectView(type)
+{
+	wp_selected_view = type; //live or archived
+	
+	//get games
+	//-> need other query here!
+//	SRV.get('q-play-status-by-user',wpListGames,'user','green2');
+	
+ 	SRV.get('q-games',wpListGames);
+//	SRV.get('q-',wpListGames,'','');
+}
 
+function wpListRounds(id,resp)
+{
+//	alert('list round id='+id);
 
+	if (!panes['list_rounds']) wpCreatePane('list_rounds');
+	var list = '';
+		
+	for (var i in resp)
+	{
+		var roundid = resp[i].getField('id');
+		var name = resp[i].getField('name');
+		var desc = name;
+		
+		var shortname = (name.length>26)? name.substring(0,25)+'..':name;
+		
+		list+= '&bull; <a href="javascript://view_round" onclick="wpSelectGame(\'view\','+id+','+roundid+')" title="'+desc+'">'+shortname+'</a><br>';
+	}
 
+	//->there are no queries for viewable rounds and plays yet, hardcoded for now
+// 	var gameid = 22435;
+// 	var roundid = 22451;
+// 	var name = 'game2round';
+// 	var desc = name;
+// 	
+// 	list+= '&bull; <a href="javascript://view_round" onclick="wpSelectGame(\'view\','+gameid+','+roundid+')" title="'+desc+'">'+name+'</a><br>';
 
+	var header = '<span class="red">select a gameround:</span><br>';
+	if (list=='') list = '- no rounds available -';
 
+	panes['list_rounds'].setContent(header+list);
+	panes['list_rounds'].show();
+}
 
+function wpCreateView(resp)
+{
+// 	if (!resp)
+// 	{
+// 		//get game-events
+// 		SRV.get('get-gameplay-events',function(resp) { wpGetView(id,resp) },'id',id);
+// 		return;
+// 	}
 
-/* games collection */
+	//make game-events collection
+	var events = resp.getElementsByTagName('event')
+	
+	if (events.length==0)
+	{
+		document.getElementById('view_ctls').style.display = 'none';
+		alert('team has not played yet')
+	}
+	else
+	{
+	
+		wp_view = new wpView();
+		for (var i=0; i<events.length; i++)
+		{
+			wp_view.events.push( new wpEvent(events[i]) );
+		}
+		wp_view.begin = Number(events[0].getAttribute('time'));
+		wp_view.end = Number(events[events.length-1].getAttribute('time'));
+		
+		var d =  (wp_view.end - wp_view.begin)/1000; //seconds total
+		var hrs = Math.floor(d/3600);
+		var mins = Math.floor(d/60) - (hrs*60);
+		var secs = Math.floor(d - (hrs*60*60) - (mins*60));
+		if (hrs<10) hrs = '0'+hrs;
+		if (mins<10) mins = '0'+mins;
+		if (secs<10) secs = '0'+secs;
+		wp_view.duration = hrs+':'+mins+':'+secs;
+		
+		document.getElementById('view_duration').innerHTML = '<span class="grey">playtime:</span> '+wp_view.duration;
+	
+		//enable playback controls
+		document.getElementById('view_ctls').style.display = 'block';
+	}
+}
 
-//games
-// function wpGames()
-// {
-// 	return new idArray('game');
-// }
+function wpView()
+{
+	this.events = new Array();
+	
+	this.state = 'paused';
+	this.step = 0;
+	this.progress = 0;
+	this.rate = 1; //==realtime, smaller = faster
+	this.rate_change = false;
+	this.viewing = false;
+}
+wpView.prototype.startstop = function()
+{
+	this.state = (this.state=='paused')? 'playing':'paused';
 
+	if (this.state=='playing')
+	{
+		if (this.step<this.events.length-1)
+		{
+			//start
+			this.playback();
+			//progress
+			this.update(true);
+			//restart blinking
+			if (this.step>0) for (var id in wp_players.player) wp_players.player[id].blink();
+		}
+		else this.state = 'paused';
+	}
+	else
+	{
+		//stop
+		if (this.viewing) window.clearTimeout(this.viewing);
+		if (this.updating) window.clearTimeout(this.updating);
+		this.viewing = false;
+		this.updating = false;
+		//stop smoothing, blinking players
+		wp_players.update();
+		for (var id in wp_players.player) wp_players.player[id].blink(1);
+	}
 
-// function wpGames()
-// {
-// 	this.game = new Object();
-// 	this.length = 0;
-// }
-// wpGames.prototype.push = function(obj)
-// {
-// 	this.game[obj.id] = obj;
-// 	this.length++;
-// }
-// wpGames.prototype.del = function(id)
-// {
-// 	this.game[id].dispose();
-// 	this.lenght--;
-// }
+	//update play/pause button
+	var img = (this.state=='paused')? 'play':'pause';
+	document.getElementById('view_start').src = (browser.properpngsupport)? 'media/button_'+img+'.png':'media/button_'+img+'.gif';
+}
+
+wpView.prototype.update = function(sync)
+{
+	if (sync || this.rate_change)
+	{
+		this.rate_change = false;
+		this.progress = (this.events[this.step].timestamp-this.begin) * this.rate;
+	}
+	
+ 	var progress = this.progress / ((this.end-this.begin)*this.rate);
+ 	document.getElementById('view_progress_bar').style.width = Math.min(180,Math.round(progress * 180)) +'px';
+	
+	this.progress+=200;
+	
+	var obj = this;
+	this.updating = window.setTimeout(function() { obj.update() },200);
+}
+
+wpView.prototype.playback = function()
+{
+
+// 	var progress = (time - this.begin) / (this.end-this.begin);
+// 	document.getElementById('view_progress_bar').style.width = Math.round(progress * 180) +'px';
+	
+	//document.getElementById('view_ctls').lastChild.innerHTML = new Date(time).format('time in game: ','longtime'); //->move to round pane
+	
+	//var time = this.events[this.step].timestamp;
+	//wpUpdatePlayRound(new Date(time).format('time in game: ','longtime'));
+	
+	wpUpdatePlayRound('time in game: '+this.events[this.step].time);
+	
+	//send event to live handler
+	wpLive( this.events[this.step] );
+
+	if (this.step<this.events.length-1)
+	{
+		this.step++;
+		var interval = this.events[this.step].timestamp - this.events[this.step-1].timestamp;
+		
+		tmp_debug(3,'playback: step=',this.step,',interval=',(interval/1000),'s)');
+		
+		//continue playback
+		var obj = this;
+		this.viewing = window.setTimeout(function() { obj.playback() },interval * this.rate);
+	}
+	else
+	{
+		//stop view playback;
+		if (this.state=='playing') this.startstop();
+	}
+}
+
+wpView.prototype.setRate = function(r)
+{
+	this.rate = 1/r;
+	this.rate_change = true;
+}
+
+wpView.prototype.rset = function()
+{
+	if (this.state=='playing') this.startstop();
+// 	{
+// 		var restart = true;
+// 		this.startstop();
+// 	}
+// 	else var restart = false;
+
+	//progress
+	this.step = 0;
+	this.progress = 0;
+	document.getElementById('view_progress_bar').style.width = '0px';
+	//kill players
+	for (var id in wp_players.player) wp_players.del(id);
+	//disable locations
+	for (var id in wp_games.game[wp_selected_game].locations.location) wp_games.game[wp_selected_game].locations.location[id].enable(false);
+	//update play display
+	wpUpdatePlay();
+	panes.hide('display');
+	
+	//if (restart) this.startstop();
+}
+
+function wpEvent(xml)
+{
+	this.timestamp = Number(xml.getAttribute('time'));
+	this.time = new Date(Number(this.timestamp)).format('date',', ','longtime');
+	this.xml = xml;
+}
+wpEvent.prototype.get = function(name)
+{
+	//for wpLive()
+	return this.xml.getAttribute(name);
+}
+
+function wpSelectPlay(id)
+{
+	if (wp_view)
+	{
+		//if (wp_view.state=='playing') wp_view.startstop();
+		wp_view.rset();
+	}
+
+	//select team, get team events, reset playback to start
+	if (id!='')
+	{
+		wp_selected_play = Number(id);
+		wp_view_state = 'paused';
+		if (!wp_plays[wp_selected_play]) wp_plays.push( new wpPlay(wp_selected_play) );
+		
+		//get game events for this gameplay
+		SRV.get('get-gameplay-events',wpCreateView,'id',id);
+	}
+	else 
+	{
+		wp_selected_play = false;
+		document.getElementById('view_ctls').style.display = 'none';
+		document.getElementById('view_duration').innerHTML = '';
+	}
+	
+	wpUpdatePlay();
+}
+
+function wpLeaveView()
+{
+	if (wp_view) 
+	{
+		//if (wp_view.state=='playing') wp_view.startstop();
+		wp_view.rset();
+	}
+	wpSelect('view');
+}
 
 
 
@@ -370,6 +667,7 @@ function wpGame(record)
 	this.locations = new wpLocations('game');
 	
 	//location rollover
+	panes.dispose('location_info');
 	var pane = new Pane('location_info',0,0,140,20,250,false,gmap.getPane(G_MAP_FLOAT_PANE));
 		pane.content.onmousedown = function(e)
 		{
@@ -473,10 +771,11 @@ wpGame.prototype.updateLocations = function(resp,center)
 	if (panes['list_locations'].visible) this.listLocations();
 	
 	//center game in mapview
-	if (center) this.locations.center();
+	if (center && this.locations.length>0) this.locations.center();
 	
-	//update play state
+	//update play/view state
 	if (wp_mode=='play' && wp_selected_play) KW.WP.playGetGamePlay(wpUpdatePlay,wp_selected_play);
+	if (wp_mode=='view') wpUpdatePlay();
 }
 
 wpGame.prototype.listLocations = function()
@@ -511,7 +810,7 @@ wpGame.prototype.edit = function()
 	
 	var str = '';
 		str+= '<span class="red" style="font-size:14px; font-weight:bold">edit game</span><br>';
-		str+= '"<b>'+this.name+'</b>"';
+		str+= '<div style="position:relative; width:130px;">"<b>'+this.name+'</b>"</div>';
 		str+= '<div style="position:relative; width:175px; margin-top:5px">';
 		str+= '<span class="grey">description:</span><br>'+this.description.substr(0,50)+'...<br>';
 		str+= '<span class="grey">locations:</span><br><span id="edit_game_tasks_cnt">0</span> tasks and <span id="edit_game_media_cnt">0</span> media. ';
@@ -669,8 +968,9 @@ wpGame.prototype.unLoad = function()
 	if (wp_mode=='play')
 	{
 		//unsubscibe from pushlet events
-		//PL.unsubscribe();
-		PL.leave();
+		PL.unsubscribe();
+		wp_live_subscribed = false;
+		//PL.leave();
 		//kill users
 		for (var id in wp_players.player) wp_players.del(id);
 	}
@@ -687,12 +987,32 @@ wpGame.prototype.dispose = function()
 }
 
 
-function wpRound(id)
+
+function wpRound(id,name)
 {
 	this.id = id;
-	this.name = 'testround';
+	this.name = name || 'gameround';
+
+	this.teams = new idArray('team');
 	
-	//this.plays = new idArray('play');
+	//->need query for this!
+	//
+//	SRV.get('q-game'
+	
+// 	this.teams.push( {id:27515, name:'red2'} );
+// 	this.teams.push( {id:27520, name:'blue2'} );
+// 	this.teams.push( {id:150608, name:'green2'} );
+}
+
+wpRound.prototype.addTeams = function(resp)
+{
+	for (var i in resp)
+	{
+		var id = resp[i].getField('id');
+		var name = resp[i].getField('loginname');
+		
+		this.teams.push( {id:id, name:name } );
+	}
 }
 
 function wpPlay(id,team)
@@ -712,8 +1032,13 @@ wpPlay.prototype.dispose = function()
 }
 
 
+
+/* live and playback event handling */
+
 function wpLive(event)
 {
+	if (wp_mode=='play' && !wp_live_subscribed) return;
+	
 	var eventType = event.get('event');
 
 /*	Event types and attributes:
@@ -725,10 +1050,11 @@ function wpLive(event)
 	¥	play-finish: (common)
 	¥	timeout (time is up, voor later)
 
-	¥	task-hit (common), taskid, taskresultid
-	¥	medium-hit (common), mediumid, mediumresultid
-	¥	answer-submit (common), taskid, taskresultid, answer
-	¥	medium-add
+	¥	task-hit: (common), taskid, taskresultid
+	¥	medium-hit: (common), mediumid, mediumresultid
+	¥	answer-submit: (common), taskid, taskresultid, answer
+	¥	medium-add (common), mediumid (if medium only added to trace)
+	¥	medium-add (common), mediumid, taskid, taskresultid (if medium added to trace AND part of anwering task)
 	¥	message (later) 	*/
 
 	var playid = event.get('gameplayid');
@@ -760,11 +1086,11 @@ function wpLive(event)
 			if (wp_selected_play==playid)
 			{
 				//update score
-				wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer('scoreupdate',false,score);
+				wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer('score-update',false,false,score);
 				wp_plays.play[wp_selected_play].tasks_done++;
 				wp_plays.play[wp_selected_play].score += Number(score);
-				wpUpdateScore();
-				//panes['playdisplay'].team_score.innerHTML = score;
+				wpUpdatePlayScore();
+				//panes['play'].team_score.innerHTML = score;
 			}
 			else
 			{
@@ -772,7 +1098,7 @@ function wpLive(event)
 				//var t = Number(event.get('t'));
 				var team = event.get('username');
 				var msg = team+' scored '+score+' points!';
-				wpUpdateRound(msg);
+				wpUpdatePlayRound(msg);
 			}
 		
 			break;
@@ -780,24 +1106,15 @@ function wpLive(event)
 		case 'play-finish':
 			//->this is for gamebot demo only -> change later
 			//..
-			if (wp_selected_play==playid)
+			if (wp_mode=='view')
 			{
-				
-// 				var game = wp_games.game[wp_selected_game];
-// 				for (var id in game.locations.location)
-// 				{
-// 					game.locations.location[id].enable(false); 
-// 					game.locations.location[id].play_answerstate = 'open';
-// 				}
-// 				
-// 				//reset gameplay
-// 				wp_plays.del(wp_selected_play);
-// 				wp_plays.push ( new wpPlay(wp_selected_play) );
+				document.getElementById('view_progress_bar').style.width = '180px';
+				wp_view.startstop();
+				return;
 			}
-			else
-			{
-				wpUpdateRound(event.get('username')+' finished the game!');
-			}
+			
+			wpUpdatePlayRound(event.get('username')+' finished the game!');
+
 			//remove trace
 			var id = event.get('userid');
 			var player = wp_players.player[id];
@@ -813,6 +1130,8 @@ function wpLive(event)
 		case 'play-start':
 			//->this is for gamebot demo only -> change later
 			//..
+			if (wp_mode=='view') return;
+			
 			if (wp_selected_play==playid)
 			{
 				//reset gameplay
@@ -821,7 +1140,7 @@ function wpLive(event)
 			}
 			else
 			{
-				wpUpdateRound(event.get('username')+' started playing..');
+				wpUpdatePlayRound(event.get('username')+' started playing..');
 			}
 			break;
 			
@@ -839,9 +1158,8 @@ function wpLive(event)
 			{
 				if (eventType=='task-hit') wp_plays.play[wp_selected_play].tasks_hit++;
 				else wp_plays.play[wp_selected_play].media_hit++;
-				wpUpdateScore();
+				wpUpdatePlayScore();
 			}
-
 			
 			location.enable(true,true);
 			break;
@@ -855,9 +1173,17 @@ function wpLive(event)
 			
 			break;
 			
-
-		
-
+		case 'medium-add':
+			var taskid = event.get('taskid');
+			var mediumid = event.get('mediumid');
+			
+			if (taskid)
+			{
+				var type = event.get('kind');
+				wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer('medium-add',false,mediumid);
+			}
+			
+			break;
 			
 		default:
 			//tmp_debug(2,'<span style="color:#dd0000">wpLive:&gt; type=',eventType,'</span>');

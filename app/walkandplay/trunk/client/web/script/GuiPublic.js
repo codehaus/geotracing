@@ -23,6 +23,20 @@ function wpCreatePane(type)
 			//pane.show();
 			break;
 			
+
+		case 'list_games':
+			var pane = new Pane('list_games',100,160,180,140,1,true);
+			break;
+
+		case 'list_rounds':
+			var pane = new Pane('list_rounds',320,188,165,140,1,true);
+			pane.setContent(wpGuiCreate('list_rounds'));
+			break;
+			
+		case 'list_locations':
+			var pane = new Pane('list_locations',100,360,120,140,1,true);
+			break;
+
 		case 'display':
 			var pane = new Pane('display',0,40,230,100,1,true,undefined,true); //auto-size pane
 			pane.setContent(wpGuiCreate('display'));
@@ -47,9 +61,15 @@ function wpCreatePane(type)
 			*/
 			break
 			
-		case 'playdisplay':
-			var pane = new Pane('playdisplay',110,0,600,80,1,true);
-			pane.setContent(wpGuiCreate('playdisplay'));
+		case 'view':
+			var pane = new Pane('view',100,160,180,135,1,true);
+// 			pane.setContent(wpGuiCreate('view'));
+// 			pane.show();
+			break;
+
+		case 'play':
+			var pane = new Pane('play',110,0,590,80,1,true);
+			pane.setContent(wpGuiCreate('play'));
 			//align bottom if window
 			pane.div.style.top = '';
 			pane.div.style.bottom = '30px';
@@ -57,6 +77,12 @@ function wpCreatePane(type)
 			pane.game = pane.content.childNodes[0];
 			pane.play = pane.content.childNodes[1];
 			pane.round = pane.content.childNodes[2];
+			pane.clearContents = function()
+			{
+				this.game.innerHTML = '';
+				this.play.innerHTML = '';
+				this.round.innerHTML = '';
+			}
 			break;
 		
 		default:
@@ -72,13 +98,12 @@ function wpGuiCreate(type,s,id,n)
 	switch(type)
 	{
 		case 'main':
- 			if (!browser.cssfilter) str+= '<img src="media/mlgk.png" ondblclick="tmp_debug(\'toggle\')">';
- 			else str+= '<div style="width:116px; height:48px; '+PNGbgImage('mlgk.png')+'"></div>';
+ 			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
+ 			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
 			str+= '<div id="menu" style="line-height:20px;">';
 			str+= '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>, ';
 			str+= '<a href="javascript://play" onclick="wpSelect(\'play\')">play</a> and ';
-//			str+= '<a href="javascript://view">view</a>';
-			str+= '<span class="red">view</span>'; //view is default modus 
+			str+= '<a href="javascript://view" onclick="wpSelect(\'view\')">view</a>';
 			str+= '</div>';
 			str+= '<div id="login"><a href="javascript://login" onclick="wpLogin()">login</a></div>';
 			break;
@@ -86,7 +111,7 @@ function wpGuiCreate(type,s,id,n)
 		case 'login':
 			str+= '<form name="loginform" method="" action="" onsubmit="return wpDoLogin();">';
 			
-			str+= '<div id="loginerror" style="left:15px; top:4px; width:130px; font-size:10px; color:#dd0000; text-align:center;"></div>';
+			str+= '<div id="loginerror" style="left:15px; top:2px; width:130px; font-size:10px; color:#dd0000; text-align:center;"></div>';
 			
 			str+= '<div style="left:11px; top:19px;">';
 			str+= '<div class="column" style="width:45px;">name:</div><input type=text name=login value="" class="inputtext" style="width:85px;"><br>';
@@ -95,7 +120,7 @@ function wpGuiCreate(type,s,id,n)
  			str+= '<a href="javascript://toggle_autologin" onclick="wpToggleAutoLogin();this.blur()" title="requires cookies enabled in your browser">remember login</a>';
 			str+= '</div>';
 
-			str+= '<input type="button" value="cancel" onclick="panes[\'login\'].hide(1)" style="position:absolute; right:65px; bottom:8px; width:50px;">';
+			str+= '<input type="button" value="cancel" onclick="wpCancelLogin()" style="position:absolute; right:65px; bottom:8px; width:50px;">';
 			str+= '<input type=submit value="login" style="position:absolute; right:11px; bottom:8px; width:50px;">';
 			str+= '</form>';
 			break;
@@ -104,13 +129,66 @@ function wpGuiCreate(type,s,id,n)
 			str+= '<div id="media_display" style="width:228px; margin-bottom:5px"></div>';
 			break;
 			
-		case 'playdisplay':
-			str+= '<div id="playdisplay_game" style="left:11px; top:9px; width:160px"></div>';
-			str+= '<div id="playdisplay_game" style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#dbdbdb; height:80px"></div>';
-			str+= '<div id="playdisplay_game" style="left:400px; top:9px; width:215px"></div>';
+		case 'list_games_view':
+			if (wp_viewmode=='archived') str+= '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
+			else str+= '<b><a href="javascript://archived_games">archived</a> or <span class="red">live games</span></b><br><br>';
+			str+= '<div id="list_rounds"></div>';
+			break;
+			
+		case 'play':
+			str+= '<div style="left:11px; top:9px; width:160px">x</div>';
+			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#dbdbdb; height:80px">x</div>';
+			str+= '<div style="left:400px; top:9px; width:215px">x</div>';
 
-			str+= '<a style="position:absolute; right:13px; top:5px" href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
-//			str+= '<input type="button" style="position:absolute; right:13px; top:5px" value="exit" onclick="if(confirm(\'leave gameplay?\'))wpSelect(\'play\')">';
+			str+= '<div style="position:absolute; right:13px; top:5px"></div>';
+			break;
+			
+		case 'view':
+			var round = 'date';
+			str+= '<div style="position:relative; width:150px; margin-bottom:10px"><span class="title">replay </span> "<b>'+wp_games.game[wp_selected_game].name+'</b>" / <b>'+wp_rounds.round[wp_selected_round].name+'</b></div>';
+			str+= '<a style="position:absolute; right:12px; top:6px" href="javascript://exit" onclick="wpLeaveView()">exit</a>';
+			//str+= '<span class="title">team</span>&nbsp;';
+			
+			var round = wp_rounds.round[wp_selected_round];
+			if (round.teams.length==0) str+= '- no gameplays available -<br>';
+			else
+			{
+				str+= '<select name="play" onchange="wpSelectPlay(this.value)">';
+				str+= '<option value="">select a team..</option>';
+				str+= '<option value=""></option>';			
+				for (var id in round.teams.team) str+= '<option value="'+id+'">'+round.teams.team[id].name+'</option>';
+				str+= '<option value=""></option>';
+				str+= '</select><!--<span id="view_duration" style="margin-left:10px;"></span>--><br>';
+			}
+			
+			str+= '<div id="view_ctls" style="display:none; margin-top:8px; margin-left:-5px;">';
+			str+= '<div style="background-color:#dbdbdb; width:188px; height:42px;">';
+
+			var type = (browser.properpngsupport)? 'png':'gif';
+			str+= '<img src="media/button_begin.'+type+'" onclick="wp_view.rset()" onmouseover="HiImg(this,1,\''+type+'\')" onmouseout="HiImg(this,0,\''+type+'\')" style="cursor:pointer; position:absolute; left:6px; top:10px; width:22px; height:22px;">';
+			str+= '<img id="view_start" src="media/button_play.'+type+'" onclick="wp_view.startstop()"onmouseover="HiImg(this,1,\''+type+'\')" onmouseout="HiImg(this,0,\''+type+'\')" style="cursor:pointer; position:absolute; left:31px; top:3px; width:36px; height:36px;">';
+			
+			str+= '<span id="view_duration" style="position:absolute; left:73px; top:3px;">duration</span>';
+			
+			str+= '<select name="rate" onchange="wp_view.setRate(Number(this.value))" style="position:absolute; left:91px; top:21px;">';
+			str+= '<option value=".5" style="padding-left:5px">.5 x</option>';
+			str+= '<option value="1" selected>realtime</option>';
+			str+= '<option value="2" style="padding-left:9px">2 x</option>';
+			str+= '<option value="4" style="padding-left:9px">4 x</option>';
+			str+= '<option value="8" style="padding-left:9px">8 x</option>';
+			str+= '<option value="16">16 x</option>';
+			str+= '<option value="32">32 x</option>';
+			str+= '<option value=""></option>';
+			str+= '</select>';
+			str+= '</div>';
+
+			str+= '<div id="view_progress" style="position:absolute; left:4px; top:47px; width:180px; height:20px; background-color:white;">';
+			str+= '<div id="view_progress_bar" style="position:absolute; left:0px; top:0px; width:0px; height:20px; background-color:rgb(213,213,213)"></div>';
+			var type = (browser.pngsupport)? 'png':'gif';
+			str+= '<img src="media/progress.'+type+'" style="position:absolute; left:0px; top:0px; z-index:10; width:180px; height:20px;">';
+			str+= '</div>';
+			
+			str+= '</div>';
 			break;
 		
 		default:
@@ -120,7 +198,49 @@ function wpGuiCreate(type,s,id,n)
 	return str;
 }
 
+function wpEmbedMedium(type,id)
+{
+	var str = '';
+	
+	switch (type)
+	{
+		case 'text':
+			str+= DH.getURL('/wp/media.srv?id='+id);
+			break;
+		
+		case 'image':
+			str+= '<img src="/wp/media.srv?id='+id+'&resize=225x169">';
+			break;
+		
+		case 'video':
+		case 'audio':
+			/*
+			//QuickTime embed
+			str+= '<OBJECT id="qtvideo" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="225" HEIGHT="168" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
+			str+= '<PARAM name="SRC" VALUE="/wp/media.srv?id='+this.mediumid+'">';
+			str+= '<PARAM name="CONTROLLER" VALUE="true">';
+			str+= '<PARAM name="AUTOPLAY" VALUE="true">';
+			str+= '<PARAM name="BGCOLOR" VALUE="white">';
+			str+= '<PARAM name="CACHE" VALUE="true">';
+			str+= '<EMBED name="qtvideo" SRC="/wp/media.srv?id='+this.mediumid+'" BGCOLOR="white" WIDTH="225" HEIGHT="168" CONTROLLER="true" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
+			str+= '</EMBED>';
+			str+= '</OBJECT>';
+			*/
 
+			//Flash embed
+			str+= '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="225" height="169" id="world">';
+			str+= '<param name="movie" value="/wp/media.srv?id='+id+'&format=swf&resize=225x169" />';
+			str+= '<param name="quality" value="high" />';
+			str+= '<param name="bgcolor" value="#ffffff" />';
+			str+= '<embed src="/wp/media.srv?id='+id+'&format=swf&resize=225x169" quality="high" bgcolor="#ffffff" width="225" height="169" name="world" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />';
+			str+= '</object>';
+			break;
+	}
+	
+	//alert(str);
+	
+	return str;
+}
 
 function AddGTlogo(mapdiv)
 {
@@ -166,10 +286,14 @@ function Hi(id,show)
 {
 	document.getElementById(id).style.visibility = (show)? 'visible':'hidden';
 }
-function HiImg(id,img,show)
+function HiImg(id,show,type)
 {
+	var type = type || 'png';
 	var elm = (typeof(id)=='object')? id:document.getElementById(id);
-	elm.src = (show)? 'media/'+img.replace(/\./,'X.'):'media/'+img;
+	
+	elm.src = (show)? elm.src.replace(eval('/\.'+type+'/'),'X.'+type):elm.src.replace(eval('/\X.'+type+'/'),'.'+type);
+	
+	//elm.src = (show)? elm.src.replace(/\.png/,'X.png'):elm.src.replace(/\X.png/,'.png');
 }
 
 /* tooltip obj */
