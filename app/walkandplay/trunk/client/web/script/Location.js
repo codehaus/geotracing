@@ -156,20 +156,12 @@ function wpLocation(collection,id,p,type,state,name)
 	location.title = 'debug: id='+this.id+', type='+this.type;
 
 	
-	//reveal
-// 	this.div.style.visibility = 'visible';
-// 	this.shadow_div.style.visibility = 'visible';
-	
-	
-	//id,owner,name,desc,intro,outro,state,t
-// 	var properties = ['id','owner','name','description','intro','outro','state','creationdate','modificationdate'];
-// 
-// 	for (var i in properties)
-// 	{
-// 		this[properties[i]] = record.getField(properties[i]);
-// 	}
-// 	
-// 	this.loaded = false;
+	//default state in play
+	this.play_answerstate = 'open';
+	this.play_answer = '';
+	this.play_answer_medium = false;
+	this.play_answer_mediumtype = '';
+	this.play_score = '';
 }
 
 wpLocation.prototype.update = function()
@@ -211,6 +203,16 @@ wpLocation.prototype.enable = function(enable,expand)
 	this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
 	this.changeIcon(this.icon);
 	
+	if (this.state=='disabled')
+	{
+		//reset playstate
+		this.play_answerstate = 'open';
+		this.play_answer = '';
+		this.play_answer_medium = false;
+		this.play_answer_mediumtype = '';
+		this.play_score = '';
+	}
+	
 	if (expand) this.expand();
 }
 
@@ -246,146 +248,114 @@ wpLocation.prototype.expand = function()
 
 wpLocation.prototype.updateDetails = function(resp)
 {
-	if (!resp)
+	if (resp)
 	{
-		//only update answer contents
-		var str = '';
-		if (this.play_answerstate=='open') str+= '- no answer given yet -';
+		var record = resp[0];
+		
+		this.mediumid = (this.type=='medium')? this.id:record.getField('mediumid');
+		this.desc = record.getField('description');
+	
+		if (this.type=='medium')
+		{
+			this.mediumtype = record.getField('type');
+			var title = this.mediumtype;
+		}
 		else
 		{
-			str+= 'last answer: '+this.play_answer+'<br>';
-			//if (this.play_score==0) str+= 'task not complete yet';
-			if (this.play_answerstate=='notok') str+= '<span class="red">wrong answer!</span>';
-			else str+= 'score: '+this.play_score;
+			this.mediumtype = record.getField('mediumtype');
+			var title = 'task';
 		}
-		document.getElementById('display_answer').innerHTML = str;
 		
-		return;
-	}
-	
-	var record = resp[0];
-	
-	this.mediumid = (this.type=='medium')? this.id:record.getField('mediumid');
-	this.desc = record.getField('description');
-
-	if (this.type=='medium')
-	{
-		this.mediumtype = record.getField('type');
-		var title = this.mediumtype;
-	}
-	else
-	{
-		this.mediumtype = record.getField('mediumtype');
-		var title = 'task';
-	}
-	
-
-	var str = '';
-		str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onclick="wp_location_expanded.collapse()">close</a>';
-		str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
-		str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
-		str+= '<div id="medium_display" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
-		
-		switch (this.mediumtype)
+		//display pane contents
+		var str = '';
+			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onmousedown="wp_location_expanded.collapse()">close</a>';
+			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
+			str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
+			str+= '<div id="display_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
+			str+= wpEmbedMedium(this.mediumtype,this.mediumid);
+			str+= '</div>';
+			if (this.desc) str+= this.desc+'<br>';
+			
+		//create
+		if (this.type=='task' && wp_mode=='create')
 		{
-			case 'text':
-				str+= DH.getURL('/wp/media.srv?id='+this.mediumid);
-				break;
-			
-			case 'image':
-				str+= '<img src="/wp/media.srv?id='+this.mediumid+'&resize=225x169">';
-				break;
-			
-			case 'video':
-			case 'audio':
-				/*
-				//QuickTime embed
-				str+= '<OBJECT id="qtvideo" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="225" HEIGHT="168" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
-				str+= '<PARAM name="SRC" VALUE="/wp/media.srv?id='+this.mediumid+'">';
-				str+= '<PARAM name="CONTROLLER" VALUE="true">';
-				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
-				str+= '<PARAM name="BGCOLOR" VALUE="white">';
-				str+= '<PARAM name="CACHE" VALUE="true">';
-				str+= '<EMBED name="qtvideo" SRC="/wp/media.srv?id='+this.mediumid+'" BGCOLOR="white" WIDTH="225" HEIGHT="168" CONTROLLER="true" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
-				str+= '</EMBED>';
-				str+= '</OBJECT>';
-				*/
-
-				//Flash embed
-				str+= '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="225" height="169" id="world">';
-				str+= '<param name="movie" value="/wp/media.srv?id='+this.mediumid+'&format=swf&resize=225x169" />';
-				str+= '<param name="quality" value="high" />';
-				str+= '<param name="bgcolor" value="#ffffff" />';
-				str+= '<embed src="/wp/media.srv?id='+this.mediumid+'&format=swf&resize=225x169" quality="high" bgcolor="#ffffff" width="225" height="169" name="world" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />';
-				str+= '</object>';
-
-				break;
+			//show answer and score
+			str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+			this.answer = record.getField('answer');
+			this.score = record.getField('score');
+			str+= 'answer: '+this.answer+'<br>';
+			str+= 'score: '+this.score+' points<br>';
+			str+= '</div>';
 		}
-
-		str+= '</div>';
-		if (this.desc) str+= this.desc+'<br>';
-		
-	//create
-	if (this.type=='task' && wp_mode=='create')
-	{
-		//show answer and score
-		str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
-		this.answer = record.getField('answer');
-		this.score = record.getField('score');
-		str+= 'answer: '+this.answer+'<br>';
-		str+= 'score: '+this.score+' points<br>';
-		str+= '</div>';
 	}
 	
-	//play
-	if (this.type=='task' && wp_mode=='play')
+	//play and viewmode
+	if (this.type=='task' && wp_mode!='create')
 	{
 		//add answer pane (updated by gamestate and live events)
-		str+= '<div id="display_answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
-		if (this.play_answerstate=='open') str+= '- no answer given yet -';
+		if (resp) str+= '<div id="display_answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+		else var str='';
+		
+		//update answer
+		if (this.play_answerstate=='open') str+= '- no answer given yet -<br>';
 		else
 		{
-			str+= 'last answer: '+this.play_answer+'<br>';
-			//if (this.play_score==0) str+= 'task not complete yet';
-			if (this.play_answerstate=='notok') str+= '<span class="red">wrong answer!</span>';
-			else str+= 'score: '+this.play_score;
+			str+= '<span class="title">score:</span> ';
+			if (this.play_answerstate=='notok') str+= '<span class="red">wrong answer!</span><br>';
+			else  str+= '<b>'+this.play_score+'</b><br>';
+			str+= 'last answer: "'+this.play_answer+'"<br>';
+		}
+		//medium
+		if (this.play_answer_medium)
+		{
+			str+= 'last answer medium:<br>';
+			str+= '<div id="display_answer_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
+			str+= wpEmbedMedium(this.play_answer_mediumtype,this.play_answer_medium);
+			str+= '</div>';
 		}
 		str+= '</div>';
 	}
 
-// 	if (this.type=='task' && wp_mode=='create')
-// 	{
-// 		str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
-// 		this.answer = record.getField('answer');
-// 		this.score = record.getField('score');
-// 		str+= 'answer: '+this.answer+'<br>';
-// 		str+= 'score: '+this.score+' points<br>';
-// 		str+= '</div>';
-// 	}
-
-
-	panes['display'].content.firstChild.innerHTML = str;
-
-	//center medium
-	if (this.mediumtype!='text')
+	if (!resp) //only update answer, not entire pane
 	{
- 		var div = document.getElementById('medium_display');
-		div.style.backgroundColor = 'white';
-		div.style.textAlign = 'center';
-		div.style.lineHeight = '0px';
+		document.getElementById('display_answer').innerHTML = str;
+	}
+	else
+	{	
+		//update pane
+		panes['display'].content.firstChild.innerHTML = str;
+		//center medium
+		if (this.mediumtype!='text')
+		{
+			var div = document.getElementById('display_medium');
+			div.style.backgroundColor = 'white';
+			div.style.textAlign = 'center';
+			div.style.lineHeight = '0px';
+		}
 	}
 }
 
-wpLocation.prototype.updateAnswer = function(answerstate,answer,score)
+wpLocation.prototype.updateAnswer = function(answerstate,answer,medium,score)
 {
-	if (answerstate!='scoreupdate')
+	if (answerstate!='score-update' && answerstate!='medium-add')
 	{
 		this.play_answerstate = answerstate;
 		this.play_answer = answer || '';
 	}
 	this.play_score = score || '';
 
-	if (this.expanded) this.updateDetails();
+	if (answerstate!='score-update' && medium)
+	{
+		this.play_answer_medium = medium;
+		var obj = this;
+		var f = function(resp) //->SRV doesn't seem to work in synchronous mode!
+		{
+			obj.play_answer_mediumtype = resp[0].getField('kind');
+			if (obj.expanded) obj.updateDetails();
+		}
+		SRV.get('q-medium-info',f,'id',this.play_answer_medium);
+	}
+	else if (this.expanded) this.updateDetails();
 }
 
 wpLocation.prototype.collapse = function()

@@ -7,7 +7,12 @@
 wp_autologin = false;
 wp_set_autologin = false;
 wp_login = new Object();
-wp_mode = 'play'; //default modus is play
+wp_login_action = false;
+
+wp_mode = 'view'; 
+wp_viewmode = 'archived';
+wp_viewstate = 'paused';
+
 
 function wpStartup()
 {
@@ -19,21 +24,23 @@ function wpStartup()
  	
  	wpToggleAutoLogin(); //auto-login enabled by default
  	
- 	wp_locations = new wpLocations();
- 	wp_players = new wpPlayers();
+ 	wpGameInit();
  	
+ 	wpSelect(wp_mode);
 }
 
 function wpSelect(mode)
 {
 	if (!wp_login.id && (mode=='create' || mode=='play')) 
 	{
-		alert('please login first');
+		wp_login_action = mode;
+		//wpSelect();
 		wpLogin();
-		return false;
+		document.getElementById('loginerror').innerHTML = 'please login first';
+		mode = '';
 	}
 
-	//unload game if any
+	//is there a game selected/active?
 	if (wp_selected_game)
 	{
 		if (wp_mode=='create')
@@ -48,16 +55,19 @@ function wpSelect(mode)
 				document.onmousemove = null;
 			}
 		}
-		
+		if (wp_mode=='view')
+		{
+			if (wp_view) wp_view.rset();
+		}
 		//unload game
 		wp_games.game[wp_selected_game].unLoad();
 		wp_selected_game = false;
-		
-		
+		wp_selected_round = false;
+		wp_selected_play = false;
 	}
 	
 	//hide panes
-	panes.hide('edit_game','list_games','list_locations','display','playdisplay');
+	panes.hide('edit_game','list_games','list_rounds','list_locations','display','play','view');
 	
 	wp_mode = mode;
 	
@@ -68,25 +78,33 @@ function wpSelect(mode)
 	switch (mode)
 	{
 		case 'create':
-			create = '<span class="red">create</span>';
+			create = '<span class="red" style="cursor:pointer" onclick="wpSelect()">create</span>';
 
 			wp_add_location = new Tooltip('icon_location_b_enabled.png',-17,-38,20,34);
 
 			//get editable games for user
-			//SRV.get('q-games-by-user',wpEditGames,'user',wp_login.loginname);
 			SRV.get('q-games-by-user',wpListGames,'user',wp_login.loginname);
 			break;
 			
 		case 'play':
-			play = '<span class="red">play</span>';
+			play = '<span class="red" style="cursor:pointer" onclick="wpSelect()">play</span>';
+			panes['play'].content.lastChild.innerHTML = '<a href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
 			
 			//get scheduled games for user
 			SRV.get('q-play-status-by-user',wpListGames,'user',wp_login.loginname);
 			break;
 			
 		case 'view':
-			view = '<span class="red">view</span>';
-			panes.hide('list_games');
+			view = '<span class="red" style="cursor:pointer" onclick="wpSelect()">view</span>';
+			panes['play'].content.lastChild.innerHTML = '';
+			
+			//get available games (live or archived)
+			var select = wp_viewmode;
+			wpSelectView(select);
+			break;
+			
+		default:
+			//no selected mode
 			break;
 	}
 	
@@ -214,6 +232,13 @@ function wpProcessLogin(resp,errorId,error,details)
 	}
 }
 
+function wpCancelLogin()
+{
+	document.getElementById('loginerror').innerHTML = '';
+	panes.hide('login');
+	wp_login_action = false;
+}
+
 function wpLoggedIn()
 {
 	if (!wp_login.id) return;
@@ -233,6 +258,13 @@ function wpLoggedIn()
 	/* load registered user gui */
 
 	wpLoadScript('GuiPrivate.js');
+	
+	//switch mode
+	if (wp_login_action)
+	{
+		wpSelect(wp_login_action);
+		wp_login_action = false;
+	}
 }
 
 function wpLoadScript(src)
@@ -247,27 +279,8 @@ function wpLoadScript(src)
 
 function wpLoggedOut()
 {
-/*
-	if (wp_selected_game)
-	{
-		if (wp_mode=='create')
-		{
-			//check if there's an unsaved location
-			if (wp_locations.location['new']) if (wpCancelLocation(true)) return;
-			
-			//disable location tooltip
-			if (wp_add_location && wp_add_location.enabled)
-			{
-				wp_add_location.enable(0);
-				document.onmousemove = null;
-			}
-		}
-		
-		//unload game
-		wp_games.game[wp_selected_game].unLoad();
-		wp_selected_game = false;
-	}	
-*/	
+ 	//no mode (unloads game)
+ 	wpSelect();
 	
 	//clear data
 	document.forms['loginform'].login.value = wp_login.loginname = '';
@@ -280,25 +293,20 @@ function wpLoggedOut()
 	//clear cookie
 	wpSetAutoLogin(false);
 
+	if (wp_live) PL.leave();
 	wp_live = false;
+	wp_live_subscribed = false;
 	
 	//unload stuff
-	panes.dispose('list_games','list_locations','edit_game','edit_location');
+	panes.dispose('edit_game','edit_location');
 	
 	if (wp_hb) window.clearTimeout(wp_hb);
-/*
-	//dispose games
-	for (var id in wp_games.game) wp_games.del(id);
-*/
  	
  	document.getElementById('login').innerHTML = '<a href="javascript://login" onclick="wpLogin()">login</a>';
  	
- 	//back to view mode (will unload current game)
- 	wpSelect('view');
- 	
- 	
  	//-> dispose all games ?
- 	//.. add later
+ 	//..
+	//for (var id in wp_games.game) wp_games.del(id);
 }
 
 
@@ -319,37 +327,23 @@ function wpMapClick(m,p)
 		//add tmp location and edit
 		wp_games.game[wp_game_selected].editLocation(p);
 	}
-	
-	
-	//if (playertest) playertest.updateLocation(p,new Date().getTime());
-	
 }
 
 function wpMapMoveend()
 {
 	tmp_debug(3,'moveend');
 	
-	//new bounds and ppd
-//	iiGetCurrentPixelperDegree();
-	
-	//media
-//	iiGetMedia();
-
-//	if (ii_media_expanded) ii_media_hideTimeout = 300; //shorten detailoverlay hide timeout after map panning
-
-	//locations
+	//locations, players
 	wp_locations.update();
 	wp_players.update();
-	
-	
+
+	//game locations	
 	if (wp_game_selected)
 	{
 		var game = wp_games.game[wp_game_selected];
 
 		game.locations.update();
-	//	game.players.update();
 	}
-	
 }
 
 function wpMapZoomend(b,e)
@@ -362,97 +356,9 @@ function wpMapZoomend(b,e)
 		var px = gmap.fromLatLngToDivPixel(wp_locations.location['new'].geo);
 		panes['edit_location'].setPosition(px.x,px.y);
 	}
-
 }
 
 function wpWindowResize()
 {
-	//->update map div height
-	//..
-
-	//keep status & live users display centered
-// 	if (ii_panes['status']) ii_panes['status'].div.style.left = (gmap.getSize().width/2)-205 +'px';
-// 	if (ii_panes['users']) ii_panes['users'].div.style.left = (gmap.getSize().width/2)+140 +'px';
-}
-
-
-/* KW server communication and live events */
-
-function _wpLiveInit(subject)
-{
-	//wp_live = true;
-	//return; //tmp disable
-
-	//register pushlet
-	PL.joinListen('/wp/'+subject);
-	onData = wpLive;
-}
-
-function _wpLive(event)
-{
-	var eventType = event.get('event');
-
-/*	Event types and attributes:
-	"user-move": userid, username, gameplayid, lon, lat */
-
-
-	switch (eventType)
-	{
-		case 'user-move':
-			var id = event.get('userid');
-	
-			var p = new GLatLng(event.get('lat'),event.get('lon'));
-			var t = event.get('t');
-			var timestamp = new Date().getTime();
-			var name = event.get('username');
-		
-			
-			
-			//add or update player
-			if (wp_players.player[id]) wp_players.player[id].updateLocation(p,t);
-			else wp_players.push( new wpPlayer(wp_players,id,p,name,t) );
-
-			tmp_debug(2,'<span style="color:#dd0000">user-move:&gt; user=',name,'</span>');
-			break;
-			
-//			playertest.
-			
-			
-		case 'task-hit':
-			
-			
-			break;
-			
-		default:
-			tmp_debug(2,'<span style="color:#dd0000">wpLive:&gt; type=',eventType,'</span>');
-			break;
-		
-	}
-	
-}
-
-
-
-
-
-function iiKWClientNegRsp(errorId, error, details)
-{
-	if (errorId==4100) //bad login
-	{
-		//warning
-		iiActivityGlow(true,'#ff0000',100,0,false,14,50);
-		document.getElementById('loginerror').innerHTML = 'invalid login !';
-		
-		//failed auto-login
-		var autologin = readCookie('autologin');
-		if (autologin && autologin!='false')
-		{
-		 	 iiSetAutoLogin(false)
-		 	 document.getElementById('me_login').style.display = 'block';
-		 	 document.getElementById('me_clickevents').style.display = 'block';
-		}
-	}
-	
-	//do something useful with other errors here
-	tmp_debug(3,'negative resp:',errorId,':',error,' details=',details);
+	//not used
 }

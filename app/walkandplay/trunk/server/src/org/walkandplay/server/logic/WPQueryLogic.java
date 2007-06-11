@@ -37,6 +37,8 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				for (int i = 0; i < records.length; i++) {
 					result.addChild(records[i].toXML());
 				}
+			} else if ("q-games".equals(aQueryName)) {
+				result = createResponse(getOase().getFinder().readAll(GAME_TABLE));
 			} else if ("q-game".equals(aQueryName)) {
 				String id = getParameter(theParms, PAR_ID, null);
 				throwOnMissingParm(PAR_ID, id);
@@ -50,6 +52,28 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
 				result.addChild(game.toXML());
+			} else if ("q-gamerounds".equals(aQueryName)) {
+				String id = getParameter(theParms, "gameid", null);
+				throwOnMissingParm("gameid", id);
+				Finder finder = getOase().getFinder();
+
+				Record game = finder.read(Integer.parseInt(id), GAME_TABLE);
+				if (game == null) {
+					throw new IllegalArgumentException("Cannot find game with id=" + id);
+				}
+
+				Record[] gameRounds = getOase().getRelater().getRelated(game, SCHEDULE_TABLE, null);
+				result = createResponse(gameRounds);
+			} else if ("q-gameplays".equals(aQueryName)) {
+				String id = getParameter(theParms, "roundid", null);
+				throwOnMissingParm("roundid", id);
+				String tables = "utopia_person,wp_gameplay,wp_schedule";
+				String fields = "wp_gameplay.id,wp_gameplay.state";
+				String where = "wp_schedule.id = " + id;
+				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_schedule;wp_schedule,utopia_person";
+				String postCond = null;
+				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
+				addUserAttrs(result, GAMEPLAY_TABLE);
 			} else if ("q-game-locations".equals(aQueryName)) {
 				// All locations within game
 				// Game id

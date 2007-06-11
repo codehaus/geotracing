@@ -4,9 +4,6 @@
 
 //wp game players (locations)
 
-//wp_player_expanded = false;
-
-
 function wpPlayers()
 {
 	var array = new idArray('player');
@@ -33,14 +30,22 @@ function wpPlayer(collection,id,p,name,t)
 	this.icon = 'icon_player_'+color+'.png';
  	
  	this.trace = new Array(0); //geo points history
-// 	this.trace_color = (color=='r')? 'rgb(200,0,20)':(color=='b')? 'rgb(50,100,200)':'rgb(45,170,75)';
- 	this.trace_color = (color=='r')? '#c80014':(color=='b')? '#3264c8':'#2daa4b';
- 	
-	this.x_smoothing = .025;
-	this.y_smoothing = .025;
-	
+ 	if (wp_mode=='view') this.trace.push(p);
+	var c;
+	switch (color)
+	{
+		case 'r': c = '#c80014'; break;
+		case 'g': c = '#2daa4b'; break;
+		case 'b': c = '#3264c8'; break;
+		case 'y': c = '#ffd02b'; break;
+	}
+ 	this.trace_color = c; //(color=='r')? '#c80014':(color=='b')? '#3264c8':'#ffd02b'; //'#2daa4b';
+
+	//animation settings 	
+	this.x_smoothing = .03;
+	this.y_smoothing = .03;
+	this.smooth_timeout = 150;
 	this.blinkdelay = 1500;
-	
 	
 	this.scale = .5; //tmp value, obj is updated right after creation
  	this.maxw = 25;
@@ -109,6 +114,7 @@ function wpPlayer(collection,id,p,name,t)
 	this.div = location;
 	
 	this.update();
+
 	this.animate(true);
 
 	//->debug
@@ -121,7 +127,8 @@ wpPlayer.prototype.updateLocation = function(p,t)
 	if (p.equals(this.geo)) return; //no update needed
 	
 	//save previous and new location
-	this.trace.push(this.geo);
+	if (wp_mode=='view') this.trace.push(p); //smoothing disabled in view mode, display current geo in trace
+	else this.trace.push(this.geo);
 	
 	//for speed calculations
 	this.prevgeo = this.geo;
@@ -134,8 +141,16 @@ wpPlayer.prototype.updateLocation = function(p,t)
 	this.x = px.x - this.w/2;
 	this.y = px.y - this.h/2;
 	
-	//this.update();
-	this.showTrace();
+	//disable smoothing in view mode, for now.
+	if (wp_mode=='view') this.update();
+	else
+	{
+		this.showTrace();
+
+		//restart smooth
+		var obj = this;
+		if (!this.animating) this.animating = window.setTimeout(function() { obj.smooth() },this.smooth_timeout);
+	}
 }
 
 wpPlayer.prototype.update = function(p,t)
@@ -147,7 +162,6 @@ wpPlayer.prototype.update = function(p,t)
 	this.scale = Math.max(.3,s);
 	
 //	tmp_debug(2,'scaling, zoom=',z,', s=',s); //Math.round(10* Math.pow(3,(z/10))));
-	
 	
 	this.w = this.scale * this.maxw;
 	this.h = this.scale * this.maxh;
@@ -167,20 +181,17 @@ wpPlayer.prototype.update = function(p,t)
 	this.showTrace();
 }
 
-
 wpPlayer.prototype.smooth = function(obj)
 {
-	//tmp_debug(1,'smooth: this.x=',this.x,' this.smoothX=',this.smoothX); 
-
 	with (Math)
 	{
 		if ( round(this.smoothX)==round(this.x) && round(this.smoothY)==round(this.y) )
 		{
-			//tmp_querytime = tmp_debug(1,'smooth, no update','querytime');
+			//no update needed, pause smooth interval
+			this.animating = false;
 			return;
 		}
 	}
-
 
 	//smooth by moving slowly to current value
     this.smoothX += this.x_smoothing * (this.x - this.smoothX);
@@ -194,19 +205,24 @@ wpPlayer.prototype.smooth = function(obj)
 // 	this.infodiv.style.top = Math.round(this.smoothY) + (this.h/2) -126 +"px";
 // 	this.infoshadowdiv.style.left = Math.round(this.smoothX) + (this.w/2) -37 +"px"; 
 // 	this.infoshadowdiv.style.top = Math.round(this.smoothY) + (this.h/2) -61 +"px";
+
+	//interval
+	var obj = this;
+	this.animating = window.setTimeout(function() { obj.smooth() },this.smooth_timeout);
 }
-// 
 
 wpPlayer.prototype.animate = function(show)
 {
 	var obj = this;
 	if (show)
 	{
-		this.animating = window.setInterval(function() { obj.smooth() } ,150);
+		//this.animating = window.setInterval(function() { obj.smooth() } ,150);
+		if (wp_mode!='view') this.animating = window.setTimeout(function() { obj.smooth() },this.smooth_timeout);
 		this.blink(0);
 	}
 	else
 	{
+		//if (this.animating) window.clearInterval(this.animating);
 		if (this.animating) window.clearTimeout(this.animating);
 		this.blink(1);
 	}
@@ -214,7 +230,9 @@ wpPlayer.prototype.animate = function(show)
 
 wpPlayer.prototype.blink = function(stop)
 {
-	this.div.style.visibility = (this.blinkdelay==1500)? 'hidden':'visible';
+	//if (wp_mode=='view' && wp_viewmode=='archived') return; //player icons don't blink in playback (archived view)
+
+	this.div.style.visibility = (this.blinkdelay==500 || stop)? 'visible':'hidden';
 
 	//show is longer than hide
 	this.blinkdelay = (this.blinkdelay==1500)? 500:1500;
@@ -246,9 +264,6 @@ wpPlayer.prototype.showTrace = function()
  	gmap.addOverlay(this.traceOverlay);
 }
 
-
-
-
 wpPlayer.prototype.zoomTo = function()
 {
 	if (this.collection.info) this.collection.info.hide(1);
@@ -274,104 +289,6 @@ wpPlayer.prototype.expand = function()
 
 	tmp_debug(2,'expand ',this.id);
 }
-
-/*
-wpPlayer.prototype.updateDetails = function(resp)
-{
-	var record = resp[0];
-	
-	this.mediumid = (this.type=='medium')? this.id:record.getField('mediumid');
-	this.desc = record.getField('description');
-
-	if (this.type=='medium')
-	{
-		this.mediumtype = record.getField('type');
-		var title = this.mediumtype;
-	}
-	else
-	{
-		this.mediumtype = record.getField('mediumtype');
-		var title = 'task';
-	}
-	
-
-	var str = '';
-		str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
-		str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
-//		str+= 'type=<b>'+this.type+'</b><br>';
-//		str+= 'medium=<br>';
-		str+= '<div id="medium_display" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
-		
-		switch (this.mediumtype)
-		{
-			case 'text':
-				str+= DH.getURL('/wp/media.srv?id='+this.mediumid);
-				break;
-			
-			case 'image':
-				str+= '<img src="/wp/media.srv?id='+this.mediumid+'&resize=225x169">';
-				break;
-			
-			case 'video':
-			case 'audio':
-//				str+= '<embed id="video" src="/wp/media.srv?id='+this.mediumid+'" style="width:225px; height=168px;"></embed>';
-				
-				//QuickTime embed
-				str+= '<OBJECT id="qtvideo" CLASSID="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" WIDTH="225" HEIGHT="184" CODEBASE="http://www.apple.com/qtactivex/qtplugin.cab">';
-				str+= '<PARAM name="SRC" VALUE="/wp/media.srv?id='+this.mediumid+'">';
-				str+= '<PARAM name="CONTROLLER" VALUE="true">';
-				str+= '<PARAM name="AUTOPLAY" VALUE="true">';
-				str+= '<PARAM name="BGCOLOR" VALUE="white">';
-				str+= '<PARAM name="CACHE" VALUE="true">';
-				str+= '<EMBED name="qtvideo" SRC="/wp/media.srv?id='+this.mediumid+'" BGCOLOR="white" WIDTH="225" HEIGHT="184" CONTROLLER="true" AUTOPLAY="true" CACHE="true" PLUGINSPAGE="http://www.apple.com/quicktime/download/">';
-				str+= '</EMBED>';
-				str+= '</OBJECT>';
-				
-				
-				break;
-		}
-
-		str+= '</div>';
-		if (this.desc) str+= this.desc+'<br>';
-		
-		
-	if (this.type=='task')
-	{
-		str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
-		this.answer = record.getField('answer');
-		this.score = record.getField('score');
-		str+= 'answer: '+this.answer+'<br>';
-		str+= 'score: '+this.score+' points<br>';
-		str+= '</div>';
-	}
-	
-
-	panes['display'].content.firstChild.innerHTML = str;
-
-	if (this.mediumtype!='text')
-	{
- 		var div = document.getElementById('medium_display');
-		div.style.backgroundColor = 'white';
-		div.style.textAlign = 'center';
-		div.style.lineHeight = '0px';
-	}
-	
-	//tmp_debug(3,'details height:',panes['display'].content.firstChild.offsetHeight);
-
-}
-
-
-wpPlayer.prototype.collapse = function()
-{
-	this.expanded = false;
-	wp_location_expanded = false;
-	this.changeIcon(this.icon);
-	
-	panes['display'].hide(1);
-	
-	tmp_debug(2,'collapse ',this.id);
-}
-*/
 
 wpPlayer.prototype.changeIcon = function(src)
 {

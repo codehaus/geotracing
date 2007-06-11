@@ -1,3 +1,4 @@
 <?php
-	include("dev.php");
+	header("Location:stable");
+	//include("dev.php");
 ?>
