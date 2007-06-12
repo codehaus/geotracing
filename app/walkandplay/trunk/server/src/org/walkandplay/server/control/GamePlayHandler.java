@@ -157,7 +157,9 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Point point = location.getPoint();
 		Record task = getTaskHitForGame(oase, point, game.getId());
 		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
-		String accountName = HandlerUtil.getAccountName(anUtopiaReq);
+
+		// Use account related to medium (request may come from admin when email medium upload)
+		String accountName = relater.getRelated(person, "utopia_account", null)[0].getStringField("loginname"); //HandlerUtil.getAccountName(anUtopiaReq);
 		String mediumType = medium.getStringField(KIND_FIELD);
 
 		if (task != null) {
@@ -224,6 +226,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		String playerAnswer = requestElement.getAttr(ANSWER_FIELD);
 		HandlerUtil.throwOnMissingAttr(ANSWER_FIELD, playerAnswer);
 
+		playerAnswer = playerAnswer.trim().toLowerCase();
 		int personId = HandlerUtil.getUserId(anUtopiaReq);
 
 		Oase oase = HandlerUtil.getOase(anUtopiaReq);
@@ -241,7 +244,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		String[] answers = task.getStringField(ANSWER_FIELD).split(",");
 		int score = 0;
 		for (int i = 0; i < answers.length; i++) {
-			if (answers[i].equals(playerAnswer)) {
+			if (answers[i].trim().toLowerCase().equals(playerAnswer)) {
 				score = task.getIntField(SCORE_FIELD);
 				break;
 			}
@@ -555,6 +558,8 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		gamePlay.setStringField(STATE_FIELD, PLAY_STATE_SCHEDULED);
 		modifier.update(gamePlay);
 
+		// TODO re-init events field
+
 		return createResponse(PLAY_RESET_SERVICE);
 	}
 
@@ -586,28 +591,28 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Record person = finder.read(personId, PERSON_TABLE);
 
 		// Game state is scheduled or running
-		gamePlay.setLongField(START_DATE_FIELD, Sys.now());
+		if (gamePlay.getStringField(STATE_FIELD).equals(PLAY_STATE_SCHEDULED)) {
+			gamePlay.setLongField(START_DATE_FIELD, Sys.now());
+		}
+
 		gamePlay.setStringField(STATE_FIELD, PLAY_STATE_RUNNING);
 
 		FileField fileField = gamePlay.getFileField(EVENTS_FIELD);
-		File emptyFile = null;
-
-		try {
-			emptyFile = File.createTempFile("empty", ".txt");
-		} catch (IOException ioe) {
-			log.warn("Cannot create empty temp file", ioe);
-			return createNegativeResponse(PLAY_START_SERVICE, ErrorCode.__6005_Unexpected_error, "Cannot create temp file");
-		}
 
 		if (fileField == null) {
+			File emptyFile;
+
+			try {
+				emptyFile = File.createTempFile("empty", ".txt");
+			} catch (IOException ioe) {
+				log.warn("Cannot create empty temp file", ioe);
+				return createNegativeResponse(PLAY_START_SERVICE, ErrorCode.__6005_Unexpected_error, "Cannot create temp file");
+			}
 			gamePlay.createFileField(emptyFile);
-		} else {
-			fileField.setIncomingFile(emptyFile);
+			gamePlay.setFileField(EVENTS_FIELD, fileField);
+
+			modifier.update(gamePlay);
 		}
-
-		gamePlay.setFileField(EVENTS_FIELD, fileField);
-
-		modifier.update(gamePlay);
 
 		// Start any track if not already active
 		TrackLogic trackLogic = new TrackLogic(oase);
