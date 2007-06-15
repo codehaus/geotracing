@@ -122,7 +122,7 @@ KW.CMS = {
 	 * @param commentId - id of comment
 	 */
 	getallmedia: function(callback) {
-		var req = KW.createRequest('kich-getlist-req');
+		var req = KW.createRequest('kich-get-media-req');
 		KW.utopia(req, callback);
 	},
 
