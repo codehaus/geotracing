@@ -1,281 +1,310 @@
-#maakroutecontainer{
- position: absolute;
- width: 800px;
- top: 0px;
- left: 0px;
- z-index: 50;
+#maakroutecontainer {
+	position: absolute;
+	width: 800px;
+	top: 0px;
+	left: 0px;
+	z-index: 50;
 }
 
-.slidertext{
- position:absolute;
- left: 420px;
- z-index: 50;
- width:auto; 
-}
-.slidercaption{
- text-align:center;
- line-height:13px;
- font-size:12px;
- position:absolute;
- left: 20px;
- z-index: 50;
- width:auto; 
-}
-.radiocaption{
- text-align:center;
- line-height:13px;
- font-size:12px;
+.slidertext {
+	position: absolute;
+	left: 420px;
+	z-index: 50;
+	width: auto;
 }
 
-#caption1{
- top: 223px;
+.slidercaption {
+	text-align: center;
+	line-height: 13px;
+	font-size: 12px;
+	position: absolute;
+	left: 20px;
+	z-index: 50;
+	width: auto;
 }
 
+.radiocaption {
+	text-align: center;
+	line-height: 13px;
+	font-size: 12px;
+}
+
+#caption1 {
+	top: 223px;
+}
 
 #slider1 {
- position: absolute;
- top: 222px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 222px;
+	left: 200px;
+	z-index: 50;
+}
+
 #besloten {
- top: 220px;
+	top: 220px;
 }
-	
-#caption2{
- top: 253px;
+
+#caption2 {
+	top: 253px;
 }
+
 #slider2 {
- position: absolute;
- top: 252px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 252px;
+	left: 200px;
+	z-index: 50;
+}
+
 #halfopen {
- top: 250px;
-}	
-
-
-#caption3{
- top: 283px;
+	top: 250px;
 }
+
+#caption3 {
+	top: 283px;
+}
+
 #slider3 {
- position: absolute;
- top: 282px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 282px;
+	left: 200px;
+	z-index: 50;
+}
+
 #open {
- top: 280px;
-}	
-
-#caption4{
- top: 313px;
+	top: 280px;
 }
+
+#caption4 {
+	top: 313px;
+}
+
 #slider4 {
- position: absolute;
- top: 312px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 312px;
+	left: 200px;
+	z-index: 50;
+}
+
 #bedrijven {
- top: 310px;
-}	
-
-#caption5{
- top: 343px;
+	top: 310px;
 }
+
+#caption5 {
+	top: 343px;
+}
+
 #slider5 {
- position: absolute;
- top: 342px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 342px;
+	left: 200px;
+	z-index: 50;
+}
+
 #bewoning {
- top: 340px;
-}	
-
-#caption6{
- top: 373px;
+	top: 340px;
 }
+
+#caption6 {
+	top: 373px;
+}
+
 #slider6 {
- position: absolute;
- top: 372px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 372px;
+	left: 200px;
+	z-index: 50;
+}
+
 #bos {
- top: 370px;
-}	
-
-#caption7{
- top: 403px;
+	top: 370px;
 }
+
+#caption7 {
+	top: 403px;
+}
+
 #slider7 {
- position: absolute;
- top: 402px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 402px;
+	left: 200px;
+	z-index: 50;
+}
+
 #heide {
- top: 400px;
-}	
-
-#caption8{
- top: 433px;
+	top: 400px;
 }
+
+#caption8 {
+	top: 433px;
+}
+
 #slider8 {
- position: absolute;
- top: 432px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 432px;
+	left: 200px;
+	z-index: 50;
+}
+
 #grasland {
- top: 430px;
-}	
-
-#caption9{
- top: 463px;
+	top: 430px;
 }
+
+#caption9 {
+	top: 463px;
+}
+
 #slider9 {
- position: absolute;
- top: 462px;
- left: 200px;
- z-index: 50; 
-}	
-#zee {
- top: 460px;
-}	
-
-#caption10{
- top: 493px;
+	position: absolute;
+	top: 462px;
+	left: 200px;
+	z-index: 50;
 }
+
+#zee {
+	top: 460px;
+}
+
+#caption10 {
+	top: 493px;
+}
+
 #slider10 {
- position: absolute;
- top: 492px;
- left: 200px;
- z-index: 50; 
-}	
+	position: absolute;
+	top: 492px;
+	left: 200px;
+	z-index: 50;
+}
+
 #sloten {
- top: 490px;
-}	
+	top: 490px;
+}
 
 #butmaakeigenroute {
- position: absolute;
- width: 80px;
- top: 520px;
- left: 390px;
- z-index: 60; 
-}	
-
+	position: absolute;
+	width: 80px;
+	top: 520px;
+	left: 390px;
+	z-index: 60;
+}
 
 #total {
- position: absolute;
- width: 50px;
- top: 80px;
- left: 100px;
- z-index: 50; 
-}	
-#totaltekst {
- position: absolute;
- width: 50px;
- top: 170px;
- left: 100px;
- z-index: 50; 
-}	
+	position: absolute;
+	width: 50px;
+	top: 80px;
+	left: 100px;
+	z-index: 50;
+}
 
-#radiobuttons { 
- position: absolute;
- width: auto;
- top: 530px;
- left: 220px;
- z-index: 60; 
+#totaltekst {
+	position: absolute;
+	width: 50px;
+	top: 170px;
+	left: 100px;
+	z-index: 50;
+}
+
+#radiobuttons {
+	position: absolute;
+	width: auto;
+	top: 530px;
+	left: 220px;
+	z-index: 60;
 }
 
 #radiobuttons input {
- width:	auto;
- text-align: left;
- padding: 0-px;
- margin-right: 0px;}	
+	width: auto;
+	text-align: left;
+	padding: 0 -px;
+	margin-right: 0px;
+}
 
-.listboxes{
- position:absolute;
- top:130px;
- z-index: 50;
- width:auto; 
+.listboxes {
+	position: absolute;
+	top: 130px;
+	z-index: 50;
+	width: auto;
 }
-.listboxes p{
- text-align:center;
- line-height:8px;
+
+.listboxes p {
+	text-align: center;
+	line-height: 8px;
 }
-#startpunt-lb{
- left: 15px;
+
+#startpunt-lb {
+	left: 15px;
 }
-#eindpunt-lb{
- left: 145px;
+
+#eindpunt-lb {
+	left: 145px;
 }
-#thema-lb{
- left: 275px;
+
+#thema-lb {
+	left: 275px;
 }
-#afstand-lb{
- left: 405px;
+
+#afstand-lb {
+	left: 405px;
 }
+
 #maakroutebox {
- position: absolute;
- width: auto;
- top: 30px;
- left: 565px;
- z-index: 50;
+	position: absolute;
+	width: auto;
+	top: 30px;
+	left: 565px;
+	z-index: 50;
 }
+
 #leguitbox {
-position: absolute;
- width: auto;
- top: 125px;
- left: 585px;
- z-index: 30;
+	position: absolute;
+	width: auto;
+	top: 125px;
+	left: 585px;
+	z-index: 30;
 }
+
 #leguitbullet {
- position: absolute;
- width: auto;
- top: 290px;
- left: 578px;
- z-index: 20;
+	position: absolute;
+	width: auto;
+	top: 290px;
+	left: 578px;
+	z-index: 20;
 }
 
 #leguittext {
-position: absolute;
- width: 200px;
- top: 150px;
- left: 605px;
- z-index: 35;
+	position: absolute;
+	width: 200px;
+	top: 150px;
+	left: 605px;
+	z-index: 35;
 }
 
-.genroutetekst{
- text-align:center;
- line-height:13px;
- font-size:12px;
- color:#660000;
- }
- 
-#generated-routes{
- position: absolute;
- width: auto;
- top: 50px;
- left: 605px;
- z-index: 60;
- }
+.genroutetekst {
+	text-align: center;
+	line-height: 13px;
+	font-size: 12px;
+	color: #660000;
+}
 
-#generated-routes-image{
- position: absolute;
- width: auto;
- top: 350px;
- left: 605px;
- z-index: 60;
- }
-#generated-routes-image-big{
- position: absolute;
- width: auto;
- top: 80px;
- left: 50px;
- z-index: 60;
- }
+#generated-routes {
+	position: absolute;
+	width: auto;
+	top: 50px;
+	left: 605px;
+	z-index: 60;
+}
+
+#generated-routes-image {
+	position: absolute;
+	width: auto;
+	top: 350px;
+	left: 605px;
+	z-index: 60;
+}
+
+#generated-routes-image-big {
+	position: absolute;
+	width: auto;
+	top: 80px;
+	left: 50px;
+	z-index: 60;
+}

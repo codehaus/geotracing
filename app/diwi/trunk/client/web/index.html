@@ -2,9 +2,9 @@
 <html>
 <head>
 <title>De Digitale Wichelroede</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <link rel="stylesheet" type="text/css" href="css/home.css">
-  <link rel="stylesheet" type="text/css" href="css/lightbox.css">
+<!--  <link rel="stylesheet" type="text/css" href="css/lightbox.css">   -->
 
 </head>
 	<script type="text/javascript" src="lib/gt/DHTML.js"></script>
@@ -16,120 +16,9 @@
 	<script type="text/javascript" src="js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="js/selectstartpage.js"></script>
 	<script type="text/javascript" src="js/selectvasteroute.js"></script>
+	<script type="text/javascript" src="js/DiWiApp.js"></script>
 
 	<script language="JavaScript" type="text/JavaScript">
-		var TST = {
-			// Initialization of KWClient library
-			init: function() {
-				TST.pr('init...');
-				SRV.init();
-				SRV.url = '/diwi/srv/get.jsp?';
-				// KeyWorx client with
-				// callbacks (2x)
-				// server timeout in minutes
-				// server root path /diwi
-				KW.init(TST.onRsp, TST.onNegRsp, 1, '/diwi');
-				TST.pr('init done');
-			},
-
-				// called from form submit
-			login: function() {
-				TST.pr('login start');
-				var loginForm = DH.getObject('loginform');
-				var name = loginForm.name.value;
-				var password = loginForm.password.value;
-				TST.pr('login name=' + name + ' password=' + password);
-
-				// Call KWClient
-				KW.login(name, password);
-				TST.pr('login sent');
-				return false;
-			},
-			login_neutral: function() {
-				TST.pr('login start');
-				var name = 'diwi-web';
-				var password = 'diwi';
-				// Call KWClient
-				KW.login(name, password);
-			return false;
-			},
-			logout: function() {
-				TST.pr('logout start');
-				// KeyWorx client
-				KW.logout();
-				TST.pr('logout sent');
-				return false;
-			},
-			restoreSession: function() {
-				SRV.init();
-				SRV.url = '/diwi/srv/get.jsp?';
-				KW.restoreSession();
-//				KW.DIWI.getfixedroutes(TST.onRsp);
-			},
-			getFixedRoutes: function() {
-//				KW.DIWI.getfixedroutes(TST.onRsp);
-				SRV.get('q-diwi-routes', TST.onFixedRoute, 'type', '0');	
-
-			},
-			
-			onFixedRoute: function(elm) {
-					maakVasteRoutesForm(elm);				
-			},
-
-
-			onRsp: function(elm) {
-				if (!elm) {
-					TST.pr('empty response');
-					return;
-				}
-
-				TST.pr('server response ' + elm.tagName);
-				if (elm.tagName == 'login-rsp') {
-					KW.selectApp('geoapp', 'user');
-				} else if (elm.tagName == 'select-app-rsp') {
-	
-					KW.storeSession();
-//					KW.DIWI.getfixedroutes(TST.onFixedRoute);					
-						// Show new content, here logout form
-					DH.toggleDisplay(document.getElementById('butmaakroute'));
-					DH.toggleDisplay(document.getElementById('butmijnpagina'));
-					DH.hide('loginform');
-					toggleLogButton();
-					toggleInlogBox();
-//					SRV.init();
-//					SRV.url = '/diwi/srv/get.jsp?';
-
-				} else if (elm.tagName == 'logout-rsp') {
-					TST.pr('logout OK');
-					DH.toggleDisplay(document.getElementById('butmaakroute'));
-					DH.toggleDisplay(document.getElementById('butmijnpagina'));
-					DH.show('loginform');
-				} else if (elm.tagName == 'route-getlist-rsp') {
-					maakVasteRoutesForm(elm);
-				} else {
-					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
-				}
-			},
-
-		// KWClient negative response handler.
-			onNegRsp: function(errorId, error, details) {
-				TST.pr('negative resp:' + error + ' details=' + details);
-			},
-
-		// Util for printing/displaying debug output
-			pr: function (s) {
-				DH.addHTML('result', '<br/>' + s);
-			}
-
-		}
-
-		// Call TST.init() when page is fully loaded
-		DH.addEvent(window, 'load', TST.init, false);
-
-// *******************************************************************************************************************
-// 		Einde inlogcode
-// *******************************************************************************************************************
-
 
 var currentSelection = 1;
 var toolbarData = new Array();
@@ -246,7 +135,7 @@ function show(d){
 }
 
 function restoreLoggedIn() {
-	if (queryString('logged')=='true') { 
+	if (queryString('logged')=='true') {
 		KW.restoreSession();
 		document.getElementById('butinloggen').style.display = "none";
 		document.getElementById('butuitloggen').style.display = "block";
@@ -255,11 +144,11 @@ function restoreLoggedIn() {
 
 function submitenter(myfield,e){
 	var keycode;
-	if (window.event) 
+	if (window.event)
 		keycode = window.event.keyCode;
-	else if (e) 
+	else if (e)
 		keycode = e.which;
-	else 
+	else
 		return true;
 
 	if (keycode == 13){
@@ -268,12 +157,12 @@ function submitenter(myfield,e){
    	} else
    		return true;
 	}
-	
+
 </script>
 
 <body  background="home/images/back.gif">
 
-<script type="text/javascript" src="js/lightbox.js"></script>
+<!-- <script type="text/javascript" src="js/lightbox.js"></script>   -->
 
 
 	<!--
@@ -293,7 +182,7 @@ function submitenter(myfield,e){
 		<a><img id="8" src="home/buttons/uitloggen.gif" onMouseOver="src='home/buttons/uitloggenH.gif'"
 		onMouseOut="src='home/buttons/uitloggen.gif'" onClick="toonLoginButton()" border="0"></a>
 	</div>
-	
+
 	<div id="butmaakroute" style="display:none;">
 		<a><img id="6" src="home/buttons/maakroute.gif"onMouseOver="src='home/buttons/maakrouteH.gif'"
 		onMouseOut="src='home/buttons/maakroute.gif'" onClick="location.href='mypage/mypage.html?mp=false'" border="0"></a>
@@ -304,12 +193,12 @@ function submitenter(myfield,e){
 	</div>
 	<div id="onderbutlijn"> <img  src="home/images/onderbuttons2.gif" border="0"> </div>
 	<div id="inlogbox" style="display:none;"> <img src="home/images/videobox.gif" border="0"> </div>
-	<div id="inlogform"  class="logform" style="display:none;" > 
+	<div id="inlogform"  class="logform" style="display:none;" >
 		<form id="loginform"   class="logform" action="javascript:TST.login()">
 			<p>Loginnaam :<br>
 				<input type="text" name="name" >
 			</p>
-	
+
 			<p> Wachtwoord :<br>
 				<input type="password" name="password" onKeyPress="return submitenter(this,event)"><br>
 				<div id="logforminlogbut" style="display:inherit">
@@ -330,12 +219,12 @@ function submitenter(myfield,e){
 		<img id="8" src="home/buttons/introvideo.gif"onMouseOver="" onMouseOut="" onClick=""  border="0">
 	</div>
 	<div id="watistext">
-	
+
 <!--	<font size="-2">Wat is de digitale wichelroede en wat kun je er allemaal mee? Klik om de introductie video te bekijken.</font> -->
 	<font size="-2">Helaas is er in de huidige versie nog geen introductie video te bekijken.</font>
-	
+
 	</div>
-	
+
 </div>
 
 
@@ -442,7 +331,7 @@ Deze kennis wordt digitaal gemaakt en gekoppeld aan GEO-Informatie (informatie o
 <p>
 Nee. De Digitale Wichelroede is een onderzoeksproject. Dit betekent dat we een nul-versie ontwikkelen die in de zomer van 2007 door een speciaal team wordt getest. Uiteindelijk moeten de resultaten leiden tot het opstellen van een rapport waarin onder meer de bruikbaarheid van een systeem om kennis digitaal op te slaan en van de interface, de ordening van informatie, het onderscheid tussen passief en actief gebruik met het oog op gebruiksgemak, -plezier en intensiteit ge&euml;valueerd wordt. Met de resultaten van ons onderzoek kan in een vervolgtraject een product voor de markt worden gemaakt.
 </p>
-<H3>Waarom is onderzoek naar mogelijkheden van 
+<H3>Waarom is onderzoek naar mogelijkheden van
  gebruik van Locatie gebaseerde technologie van belang?</H3>
 <p>
 De verwachting is dat Locatie gebaseerde technologie innoveert omdat het zich richt op de individuele, plaatsafhankelijke informatievraag, inspeelt op een veranderend gebruik van het landschap (onder andere economische vernieuwing van landelijke gebieden) en bijdraagt aan een toeristisch-recreatief product geschrankt op GEO-Informatie. Bovendien is veel cultuurhistorische kennis nog niet ontsloten voor digitaal gebruik. Denk bijvoorbeeld aan de kennis van historische verenigingen of van mensen die vaak al jaar en dag in een bepaalde streek wonen en de prachtigste verhalen hebben. Deze kennis is wel erg waardevol. Het is belangrijk deze verhalen digitaal op te slaan zodat je ze makkelijk opnieuw kan gebruiken. Bijvoorbeeld voor de Digitale Wichelroede. Met project de Digitale Wichelroede bouwen en slaan we bruggen tussen geo-informatie deskundigen, cultuurhistorische bronhouders (zoals gemeenten, provincies, stichtingen en bewoners van een bepaald gebied) en educatie-toeristische informatie deskundigen. Tegelijkertijd dient het project tot projectontwikkeling, want is het een proeftuin voor geo-informatica en mobiele technologie.
@@ -461,7 +350,7 @@ Het gebied waar de Grebbelinie ligt is grootschaliger dan die van de Limesweg. D
 </p>
 <H3>Contact</H3>
 <p>
-De Wichelroede wordt mede mogelijk gemaakt door Ruimte voor Geo-Informatie (RGI) en Provincie Utrecht en wordt uitgevoerd door een consortium waarin de volgende partners plaatsnemen: Alterra, DS, Galileo, Gemeente Utrecht, Kadaster TDN, KPN, Provincie Utrecht, Stichting Vernieuwing Gelderse Vallei (SVGV), Waag en Wageningen Universiteit. 
+De Wichelroede wordt mede mogelijk gemaakt door Ruimte voor Geo-Informatie (RGI) en Provincie Utrecht en wordt uitgevoerd door een consortium waarin de volgende partners plaatsnemen: Alterra, DS, Galileo, Gemeente Utrecht, Kadaster TDN, KPN, Provincie Utrecht, Stichting Vernieuwing Gelderse Vallei (SVGV), Waag en Wageningen Universiteit.
 
 Voor meer informatie kunt u contact opnemen met: <a href="mailto:info@digitalewichelroede.nl">info@digitalewichelroede.nl</a> of 06 466 11 870
 </p>
@@ -471,10 +360,10 @@ Het project gebruikt met toestemming van Paul Roncken (WUR-KGR-LAR) de titel De 
 <br><br>
 </div>
 <!-----------------------------------------------------------------------------------------------------------
- Het routeform, ook wel fixed routes of predefined routes genoemd, worden in selectvasteroute.js gemaakt. 
+ Het routeform, ook wel fixed routes of predefined routes genoemd, worden in selectvasteroute.js gemaakt.
 ------------------------------------------------------------------------------------------------------------>
 <div id="routespagina" class="pagina" style="display:none;">
-	<div id="vasteroutes-lb"> 
+	<div id="vasteroutes-lb">
 <!--		<form action="dummyvalue">
 		<select>
 			<option value="0" selected="selected">kies een van de routes</option>
@@ -482,18 +371,12 @@ Het project gebruikt met toestemming van Paul Roncken (WUR-KGR-LAR) de titel De 
 			<option value="2" >heeel lang</option>
 			<option value="4" >snert route</option>
 		</select>
-		</form> 
+		</form>
 		-->
 	</div>
 	<div id="vaste_routes_content">
 	</div>
 </div>
-
-
 </body>
-<script type="text/javascript">
-	DH.addEvent(window, 'load', isLoggedIn(), false);
-	DH.addEvent(window, 'load', TST.getFixedRoutes(), false);
-</script>
 
 </html>
