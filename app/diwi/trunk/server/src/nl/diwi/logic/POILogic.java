@@ -65,6 +65,8 @@ public class POILogic implements Constants {
 
 			Record poi = oase.getModifier().create(POI_TABLE);
 			setFields(poi, kichId, aPOIElement);
+
+			// TODO: what if this fails (revert kich POI?) ?
 			oase.getModifier().insert(poi);
 
 			return poi.getId();
