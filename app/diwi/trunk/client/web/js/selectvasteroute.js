@@ -38,7 +38,7 @@
 
 	function toonSelectedVasteRoute() {
  		if (n_vaste_routes == -1){
-			TST.getFixedRoutes();
+			DIWI.getFixedRoutes();
 		} else {
 			var selected = document.getElementById('fixed_routes_form').value;
 			var n = 0;

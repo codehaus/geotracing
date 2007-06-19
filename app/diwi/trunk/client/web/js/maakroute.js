@@ -99,7 +99,7 @@
 	function verwerkPlaatje (elm) {
 	//	plaatje = unescape(elm.getAttribute('url'));
 	//	imageString = '<a href=' + plaatje + ' rel="lightbox"><img src=' + plaatje + '></a>';
-		imageString = '<a href=\'TST.getBigMap();\' ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
+		imageString = '<a href=\'DIWI.getBigMap();\' ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
 	//	imageString = '<img src=\"' + unescape(elm.getAttribute('url')) + '\">';
 	
 		var ni = document.getElementById('generated-routes-image');
@@ -191,4 +191,3 @@
 		document.getElementById("s10value").value = s10.getValue();
 	};
 	s10.setValue(0);
-	

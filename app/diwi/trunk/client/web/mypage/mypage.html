@@ -26,10 +26,10 @@
 	<script type="text/javascript">
 
 /************ De Session wordt uit een koekje gehaald... ********************/
-		var TST = {
+		var DIWI = {
 			// Initialization of KWClient library
 			init: function() {
-				TST.pr('init...');
+				DIWI.pr('init...');
 				SRV.init();
 				SRV.url = '/diwi/srv/get.jsp?';
 
@@ -37,49 +37,49 @@
 				// callbacks (2x)
 				// server timeout in minutes
 				// server root path /diwi
-				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+				KW.init(DIWI.onRsp, DIWI.onNegRsp, 100, '/diwi');
 
 				// Try to restore and continue with saved session
-				TST.pr('init done, restoring session');
+				DIWI.pr('init done, restoring session');
 				KW.restoreSession();
 				document.getElementsByTagName("name")[0].innerHTML=KW.agentKey;
-				TST.pr('restored session, key=' + KW.agentKey);
+				DIWI.pr('restored session, key=' + KW.agentKey);
 
-				TST.getStartPoints();
-				TST.getEndPoints();
-				TST.getThemes();
+				DIWI.getStartPoints();
+				DIWI.getEndPoints();
+				DIWI.getThemes();
 
-				TST.getTraces();
+				DIWI.getTraces();
 
-				TST.testUtopia();
+				DIWI.testUtopia();
 			},
 
 				// test fun to see if session is really active
 			testUtopia: function() {
-				TST.pr('testUtopia start');
+				DIWI.pr('testUtopia start');
 
 				// May use any request, here a common one: echo
 				var req = KW.createRequest('echo-req');
-				KW.post(TST.onRsp, req);
+				KW.post(DIWI.onRsp, req);
 			},
 			logout: function() {
-				TST.pr('logout start');
+				DIWI.pr('logout start');
 				// KeyWorx client
 				KW.logout();
-				TST.pr('logout sent');
+				DIWI.pr('logout sent');
 				return false;
 			},
 			getTraces: function() {
             	var user = 'geoapp-user';
- 				SRV.get('q-tracks-by-user', TST.onTrackRsp, 'user', user);
+ 				SRV.get('q-tracks-by-user', DIWI.onTrackRsp, 'user', user);
 			},
 			getSelectedTrace: function(in_id) {
 			    var id = in_id;
- 				SRV.get('get-track', TST.onSelectedTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t');
+ 				SRV.get('get-track', DIWI.onSelectedTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t');
 			},
 
 			maakroutes: function() {
-				TST.pr('maakroute start');
+				DIWI.pr('maakroute start');
 				var params = new Array();
 				params[KW.DIWI.BESLOTEN_PARAM] = 	s1.getValue();
 				params[KW.DIWI.HALFOPEN_PARAM] = 	s2.getValue();
@@ -99,31 +99,37 @@
 
 				KW.DIWI.generateroute(null, params);
 			},
+
 			getRoute: function(id) {
-				KW.DIWI.getroute(TST.onRsp, id);
+				KW.DIWI.getroute(DIWI.onRsp, id);
 			},
+
 			getMap: function(id, height, width) {
-				KW.DIWI.getmap(TST.onMapRsp, id, width, height);
+				KW.DIWI.getmap(DIWI.onMapRsp, id, width, height);
 			},
+
 			getStartPoints: function() {
-				KW.CMS.getstartpoints(TST.onRsp);
+				KW.CMS.getstartpoints(DIWI.onRsp);
 			},
 
 			getEndPoints: function() {
-				KW.CMS.getendpoints(TST.onRsp);
+				KW.CMS.getendpoints(DIWI.onRsp);
 			},
 
 			getThemes: function() {
-				KW.CMS.getthemes(TST.onRsp);
+				KW.CMS.getthemes(DIWI.onRsp);
 			},
+
 			getActiveRoute: function() {
-				KW.DIWI.getactiveroute(TST.inRsp);
+				KW.DIWI.getactiveroute(DIWI.inRsp);
 			},
+
 			getFixedRoutes: function() {
-				KW.DIWI.getfixedroutes(TST.onRsp);
+				KW.DIWI.getfixedroutes(DIWI.onRsp);
 			},
+
 			getBigMap: function() {
-				KW.DIWI.getmap(TST.onMapRsp, currentGeneratedRouteId,800, 800);
+				KW.DIWI.getmap(DIWI.onMapRsp, currentGeneratedRouteId,800, 800);
 			},
 
 			onMapRsp: function(elm) {
@@ -140,20 +146,20 @@
 			onTrackRsp: function(elm) {
 				maakTracesForm(elm);
 			},
+
 			onSelectedTrackRsp: function(elm) {
 				toonSelectedTrace(elm);
 			},
 
-
 			onRsp: function(elm) {
 				if (!elm) {
-					TST.pr('empty response');
+					DIWI.pr('empty response');
 					return;
 				}
 
-				TST.pr('got server response ' + elm.tagName);
+				DIWI.pr('got server response ' + elm.tagName);
 				if (elm.tagName == 'person-getdefault-rsp') {
-					TST.pr('person-getlist OK');
+					DIWI.pr('person-getlist OK');
 				} else if (elm.tagName == 'poi-get-startpoints-rsp') {
 					maakStartpuntForm(elm);
 				} else if (elm.tagName == 'poi-get-endpoints-rsp') {
@@ -164,27 +170,27 @@
 					maakThemasForm(elm);
 				}  else if (elm.tagName == 'route-generate-rsp') {
 					currentGeneratedRouteId = elm.firstChild.getAttribute('id');
-					KW.DIWI.getmap(TST.onMapRsp, currentGeneratedRouteId, 150, 150);
+					KW.DIWI.getmap(DIWI.onMapRsp, currentGeneratedRouteId, 150, 150);
 					verwerkGenRoute(elm);
 				}
 
 				else {
-					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					DIWI.pr('rsp tag=' + elm.tagName + ' ' + elm);
 				}
 				if (elm.tagName == 'logout-rsp') {
-					TST.pr('logout OK');
+					DIWI.pr('logout OK');
 					document.location.href='../index.html?logged=false' ;
 				}
 				else {
-					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
-					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');
+					DIWI.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					DIWI.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');
 				}
 
 			},
 
 		// KWClient negative response handler.
 			onNegRsp: function(errorId, error, details) {
-				TST.pr('negative resp:' + error + ' details=' + details);
+				DIWI.pr('negative resp:' + error + ' details=' + details);
 			},
 
 		// Util for printing/displaying debug output
@@ -194,8 +200,8 @@
 
 		}
 
-		// Call TST.init() when page is fully loaded
-		DH.addEvent(window, 'load', TST.init, false);
+		// Call DIWI.init() when page is fully loaded
+		DH.addEvent(window, 'load', DIWI.init, false);
 /*******************************************************************************/
 	var currentGeneratedRouteId = 0;
 	var currentSelection = 1;
@@ -306,7 +312,7 @@
 </div>
 <div id="butuitloggen">
 	<a><img id="5" src="buttons/uitloggen.jpg"onMouseOver="highlightItem(this, 1)"
-		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); javascript:TST.logout();" border="0"></a>
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); javascript:DIWI.logout();" border="0"></a>
 </div>
 
 <!-- Alles wat op mijnpagina getoond moet worden. ---------------------------------------------------->
@@ -555,7 +561,7 @@
 	</div>
 
 	<div id="butmaakeigenroute">
-		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a>
+		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:DIWI.maakroutes();" border="0"></a>
 	</div>
 	<div id="maakroutebox" style="display:none"><img src="buttons/maakrouteblokken.gif" border="0"></div>
 	<div id="leguitbox" style="display:block"><img src="../home/images/videobox.gif" border="0"></div>

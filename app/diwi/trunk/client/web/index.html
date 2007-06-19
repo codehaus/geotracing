@@ -109,7 +109,7 @@ function toonLogoutButton() {
 }
 
 function toonLoginButton() {
-	TST.logout();
+	DIWI.logout();
 	toggleLogButton();
 }
 
@@ -152,7 +152,7 @@ function submitenter(myfield,e){
 		return true;
 
 	if (keycode == 13){
-   		TST.login();
+   		DIWI.login();
    		return false;
    	} else
    		return true;
@@ -194,7 +194,7 @@ function submitenter(myfield,e){
 	<div id="onderbutlijn"> <img  src="home/images/onderbuttons2.gif" border="0"> </div>
 	<div id="inlogbox" style="display:none;"> <img src="home/images/videobox.gif" border="0"> </div>
 	<div id="inlogform"  class="logform" style="display:none;" >
-		<form id="loginform"   class="logform" action="javascript:TST.login()">
+		<form id="loginform"   class="logform" action="javascript:DIWI.login()">
 			<p>Loginnaam :<br>
 				<input type="text" name="name" >
 			</p>
@@ -202,7 +202,7 @@ function submitenter(myfield,e){
 			<p> Wachtwoord :<br>
 				<input type="password" name="password" onKeyPress="return submitenter(this,event)"><br>
 				<div id="logforminlogbut" style="display:inherit">
-				<a><img src="home/buttons/login.gif" onClick="javascript:TST.login()"></a>
+				<a><img src="home/buttons/login.gif" onClick="javascript:DIWI.login()"></a>
 				</div>
 <!--				<input type="button" value="Login" name="Submit" onClick="javascript:TST.login()" > -->
 			</p>

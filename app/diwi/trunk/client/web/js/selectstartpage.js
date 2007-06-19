@@ -54,13 +54,13 @@
 	
 	function isLoggedIn() {
 		if (queryString('logged')=='true') { 
-			TST.restoreSession();
+			DIWI.restoreSession();
 			document.getElementById('butmaakroute').style.display = 'block';
 			document.getElementById('butmijnpagina').style.display = 'block';
 			toggleLogButton()
 		}
 		if (queryString('routes')=='true') { 
-			TST.restoreSession();
+			DIWI.restoreSession();
 			document.getElementById('butmaakroute').style.display = 'block';
 			document.getElementById('butmijnpagina').style.display = 'block';
 			show(2);
