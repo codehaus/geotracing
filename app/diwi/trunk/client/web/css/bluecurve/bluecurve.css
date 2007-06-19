@@ -5,76 +5,81 @@
 	*/
 
 .dynamic-slider-control {
-	position:			relative;
-	background-color:	rgb(230,230,230);
-	-moz-user-focus:	normal;
-	-moz-user-select:	none;
-	cursor:				default;
+	position: relative;
+	background-color: rgb( 230, 230, 230 );
+	-moz-user-focus: normal;
+	-moz-user-select: none;
+	cursor: default;
 }
 
 .horizontal {
-	width:				200px;
-	height:				27px;
+	width: 200px;
+	height: 27px;
 }
 
 .vertical {
-	width:				29px;
-	height:				200px;
+	width: 29px;
+	height: 200px;
 }
 
 .dynamic-slider-control input {
-	display:	none;
+	display: none;
 }
 
 .dynamic-slider-control .handle {
-	position:			absolute;	
-	font-size:			1px;
-	overflow:			hidden;
-	-moz-user-select:	none;
-	cursor:				default;
+	position: absolute;
+	font-size: 1px;
+	overflow: hidden;
+	-moz-user-select: none;
+	cursor: default;
 }
 
 .dynamic-slider-control.horizontal .handle {
-	width:				31px;
-	height:				14px;
-	background-image:	url("handle.horizontal.png");
+	width: 31px;
+	height: 14px;
+	background-image: url( "handle.horizontal.png" );
 }
 
-.dynamic-slider-control.horizontal .handle div {}
-.dynamic-slider-control.horizontal .handle.hover {}
+.dynamic-slider-control.horizontal .handle div {
+}
+
+.dynamic-slider-control.horizontal .handle.hover {
+}
 
 .dynamic-slider-control.vertical .handle {
-	width:				15px;
-	height:				31px;
-	background-image:	url("handle.vertical.png");
+	width: 15px;
+	height: 31px;
+	background-image: url( "handle.vertical.png" );
 }
 
-.dynamic-slider-control.vertical .handle.hover {}
+.dynamic-slider-control.vertical .handle.hover {
+}
 
 .dynamic-slider-control .line {
-	position:			absolute;
-	font-size:			0.01mm;
-	overflow:			hidden;
-	border:				1px solid rgb(90,97,90);
-	background:			rgb(189,190,189);
-	
-	behavior:			url("css/boxsizing.htc"); /* ie path bug */
-	box-sizing:			content-box;
-	-moz-box-sizing:	content-box;
+	position: absolute;
+	font-size: 0.01mm;
+	overflow: hidden;
+	border: 1px solid rgb( 90, 97, 90 );
+	background: rgb( 189, 190, 189 );
+
+	behavior: url( "css/boxsizing.htc" ); /* ie path bug */
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 }
+
 .dynamic-slider-control.vertical .line {
-	width:				3px;
+	width: 3px;
 }
 
 .dynamic-slider-control.horizontal .line {
-	height:				3px;
+	height: 3px;
 }
 
 .dynamic-slider-control .line div {
-	width:		1px;
-	height:		1px;
-	
-	border:				1px solid;
-	border-color:		rgb(230,230,230) rgb(189,190,189)
-						rgb(189,190,189) rgb(230,230,230);
+	width: 1px;
+	height: 1px;
+
+	border: 1px solid;
+	border-color: rgb( 230, 230, 230 ) rgb( 189, 190, 189 )
+	rgb( 189, 190, 189 ) rgb( 230, 230, 230 );
 }

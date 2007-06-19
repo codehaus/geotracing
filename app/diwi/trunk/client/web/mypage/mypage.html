@@ -14,7 +14,10 @@
 	<script type="text/javascript" src="../lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="../js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="../js/KWClientCMS.js"></script>
+	<script type="text/javascript" src="../js/traces.js"></script>
 	<script type="text/javascript" src="../lib/openlayers/lib/OpenLayers.js"></script>
+	<script type="text/javascript" src="../lib/gt/Server.js"></script>
+	<script type="text/javascript" src="../lib/gt/Record.js"></script>
 		<!--- slider js --->
 	<script src="../js/range.js" type="text/javascript"></script>
 	<script src="../js/timer.js" type="text/javascript"></script>
@@ -41,10 +44,12 @@
 				KW.restoreSession();
 				document.getElementsByTagName("name")[0].innerHTML=KW.agentKey;
 				TST.pr('restored session, key=' + KW.agentKey);
-				
+
 				TST.getStartPoints();
 				TST.getEndPoints();
 				TST.getThemes();
+
+				TST.getTraces();
 
 				TST.testUtopia();
 			},
@@ -64,15 +69,15 @@
 				TST.pr('logout sent');
 				return false;
 			},
-			getTracks function() {
-            	var user = '';
- 				SRV.get('q-tracks-by-user', TST.onTrackRsp, 'user', user);	
+			getTraces: function() {
+            	var user = 'geoapp-user';
+ 				SRV.get('q-tracks-by-user', TST.onTrackRsp, 'user', user);
 			},
-			getSelectedTrack function() {
-			    var id = 109;
- 				SRV.get('get-track', TST.onSelectedTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t');	
+			getSelectedTrace: function(in_id) {
+			    var id = in_id;
+ 				SRV.get('get-track', TST.onSelectedTrackRsp, 'id', id, 'format', 'gtx', 'attrs', 'lon,lat,t');
 			},
-			
+
 			maakroutes: function() {
 				TST.pr('maakroute start');
 				var params = new Array();
@@ -91,8 +96,8 @@
 				params[KW.DIWI.THEMA_PARAM] = 		document.getElementById("thema").value;
 				params[KW.DIWI.AFSTAND_PARAM] = 	document.getElementById("afstand").value;
 				params[KW.DIWI.WANDELAAR_PARAM] = 	document.getElementById("wandelen").checked;
-	
-				KW.DIWI.generateroute(null, params);				
+
+				KW.DIWI.generateroute(null, params);
 			},
 			getRoute: function(id) {
 				KW.DIWI.getroute(TST.onRsp, id);
@@ -101,15 +106,15 @@
 				KW.DIWI.getmap(TST.onMapRsp, id, width, height);
 			},
 			getStartPoints: function() {
-				KW.CMS.getstartpoints(TST.onRsp);							
+				KW.CMS.getstartpoints(TST.onRsp);
 			},
 
 			getEndPoints: function() {
-				KW.CMS.getendpoints(TST.onRsp);							
+				KW.CMS.getendpoints(TST.onRsp);
 			},
 
 			getThemes: function() {
-				KW.CMS.getthemes(TST.onRsp);							
+				KW.CMS.getthemes(TST.onRsp);
 			},
 			getActiveRoute: function() {
 				KW.DIWI.getactiveroute(TST.inRsp);
@@ -118,7 +123,7 @@
 				KW.DIWI.getfixedroutes(TST.onRsp);
 			},
 			getBigMap: function() {
-				KW.DIWI.getmap(TST.onMapRsp, currentGeneratedRouteId,800, 800);		
+				KW.DIWI.getmap(TST.onMapRsp, currentGeneratedRouteId,800, 800);
 			},
 
 			onMapRsp: function(elm) {
@@ -133,13 +138,13 @@
 			},
 
 			onTrackRsp: function(elm) {
-	//			TST.pr('xml content:<pre>' + DH.escape(records.xml) + '</pre>');	
+				maakTracesForm(elm);
 			},
 			onSelectedTrackRsp: function(elm) {
-	//			TST.pr('xml content:<pre>' + DH.escape(records.xml) + '</pre>');	
+				toonSelectedTrace(elm);
 			},
 
-	
+
 			onRsp: function(elm) {
 				if (!elm) {
 					TST.pr('empty response');
@@ -161,20 +166,20 @@
 					currentGeneratedRouteId = elm.firstChild.getAttribute('id');
 					KW.DIWI.getmap(TST.onMapRsp, currentGeneratedRouteId, 150, 150);
 					verwerkGenRoute(elm);
-				} 
-				
+				}
+
 				else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
 				}
 				if (elm.tagName == 'logout-rsp') {
 					TST.pr('logout OK');
 					document.location.href='../index.html?logged=false' ;
-				} 
+				}
 				else {
 					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
-					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');
 				}
-				
+
 			},
 
 		// KWClient negative response handler.
@@ -200,18 +205,18 @@
 	toolbarData[3] = new Array('buttons/mijnpagina.jpg', 'buttons/mijnpaginaH.jpg', 'buttons/mijnpaginaH.jpg');
 	toolbarData[4] = new Array('buttons/maakroute.jpg', 'buttons/maakrouteH.jpg', 'buttons/maakrouteH.jpg');
 	toolbarData[5] = new Array('buttons/uitloggen.jpg', 'buttons/uitloggenH.jpg', 'buttons/uitloggenH.jpg');
-	
+
 	var buttons=5;
-	
+
 	var popupData = new Array("kaartpopup1","kaartpopup2","kaartpopup3","kaartpopup4");
-	
+
 	function highlightItem(obj, state) {
 	 i = obj.getAttribute('id');
 	 if (i != currentSelection) {
 			obj.setAttribute('src', toolbarData[i][state]);
 	 }
 	}
-	
+
 	function selectButton(obj) {
 	 i = obj.getAttribute('id');
 		var tbar = new Array();
@@ -222,30 +227,30 @@
 	obj.setAttribute('src', toolbarData[i][2]);
 	 currentSelection = i;
 	}
-	
-	
+
+
 	function toonPlaatje(index) {
 		im = document.getElementById(200);
 	 im.src = imageNames[index-1];
 	}
-	
+
 	function laadtPlaatjes() {
-		var d=document; 
-		if(d.images){ 
-			if(!d.MM_p){ 
+		var d=document;
+		if(d.images){
+			if(!d.MM_p){
 				d.MM_p=new Array();
-			}										
-			var i,j=d.MM_p.length,a=laadtPlaatjes.arguments; 
+			}
+			var i,j=d.MM_p.length,a=laadtPlaatjes.arguments;
 			for(i=0; i<a.length; i++) {
-				if (a[i].indexOf("#")!=0){ 
-					d.MM_p[j]=new Image; 
+				if (a[i].indexOf("#")!=0){
+					d.MM_p[j]=new Image;
 					d.MM_p[j++].src=a[i];
 					j++;
 				}
 			}
 		}
 	}
-	
+
 	function hidePopup(d) {
 	if(d.length < 1) { return; }
 		DH.toggleDisplay(document.getElementById(popupData[d]));
@@ -254,7 +259,7 @@
 		if(d.length < 1) { return; }
 		DH.toggleDisplay(document.getElementById(popupData[d]));
 	}
-	
+
 	function show(d){
 		for (i=0;i<4;i++){
 			if (i==d) {
@@ -283,108 +288,97 @@
 <div id="line"><img src="images/line.jpg" border="0"></div>
 <div id="copyright"><img src="images/copyright.jpg" border="0"></div>
 
-<div id="butroutes"> 
-	<a><img id="1" src="buttons/routes.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);location.href='../index.html?routes=true';" border="0"></a> 
+<div id="butroutes">
+	<a><img id="1" src="buttons/routes.jpg"onMouseOver="highlightItem(this, 1)"
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);location.href='../index.html?routes=true';" border="0"></a>
 </div>
-<div id="buthome"> 
-	<a><img id="2" src="buttons/home.jpg"onMouseOver="highlightItem(this, 1)" 
+<div id="buthome">
+	<a><img id="2" src="buttons/home.jpg"onMouseOver="highlightItem(this, 1)"
 		onMouseOut="highlightItem(this, 0)" onClick="location.href='../index.html?logged=true';" border="0"></a></div>
 
-<div id="butmijnpagina"> 
-	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);toonMijnPagina();" border="0"></a> 
+<div id="butmijnpagina">
+	<a><img id="3" src="buttons/mijnpagina.jpg"onMouseOver="highlightItem(this, 1)"
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);toonMijnPagina();" border="0"></a>
 </div>
-<div id="butmaakroute"> 
-	<a><img id="4" src="buttons/maakroute.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);toonMaakRoutePagina();" border="0"></a> 
+<div id="butmaakroute">
+	<a><img id="4" src="buttons/maakroute.jpg"onMouseOver="highlightItem(this, 1)"
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this);toonMaakRoutePagina();" border="0"></a>
 </div>
-<div id="butuitloggen"> 
-	<a><img id="5" src="buttons/uitloggen.jpg"onMouseOver="highlightItem(this, 1)" 
-		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); javascript:TST.logout();" border="0"></a> 
+<div id="butuitloggen">
+	<a><img id="5" src="buttons/uitloggen.jpg"onMouseOver="highlightItem(this, 1)"
+		onMouseOut="highlightItem(this, 0)" onClick="selectButton(this); javascript:TST.logout();" border="0"></a>
 </div>
 
 <!-- Alles wat op mijnpagina getoond moet worden. ---------------------------------------------------->
 <div id="mijnpaginacontainer" style="display:block;">
-<!--	<div id="kaart"><img src="images/kaart.jpg" border="0"></div> -->
 	<div id="personaliabox"><img src="../home/images/videobox.gif" border="0"></div>
 	<div id="bullet"><img src="buttons/bullet.gif" border="0"></div>
-<!--
-	<div id="commentaarbox"><img src="images/commentaar.jpg" border="0"></div>
-			
+
+	<div id="commentaarbox"><img src="buttons/commentaarblok.gif" border="0"></div>
+
 	<div id="commentaartekst">
-		<H10>Commentaar</H10>
-		<br><br>
-		<p> 
-		- Wat een te gekke muziek! <br>
-		- Meer van dit alles man!!! <br>
-		- Nog harder!!!!!!!!!!! <br>
-		</p>
-	</div>
-	
-	<div id="commentaarnavigatie">	
+		<H10>Opmerkingen over uw route:</H10>
+        Was helemaal fijn!
 		<p>
-			<a href="">vorige</a> | 1 van 5 | <a href="">volgende</a>		
 		</p>
 	</div>
 
+
+	<div id="commentaarEditbox" style='display:block'><img src="buttons/commentaarblok.gif" border="0"></div>
+
+	<div id="commentaarEdittekst" style='display:block'>
+		<H10>Opmerkingen over uw route:</H10>
+
+        <textarea rows="5" cols="22">
+        </textarea>
+		<a href="" onClick="">Wijzig het commentaar</a>
+	</div>
+<!--
 -->
 	<div id="map">
 	</div>
 
 
 	<script type="text/javascript">
-		var lon = 4.80;
-		var lat = 52.35;
-		var x = 155500;
-		var y = 462500;
-		var zoom = 6;
-		var map, layer1,layer2,layer3,layer4,layer5,layer6;
-	
-		function maakMap() {
-			map = new OpenLayers.Map($('map'), {
-				controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()],
-				maxExtent: new OpenLayers.Bounds(-157973.103596, 300670.145842, 472056.321374,678687.800824),
-				units: 'meters', projection: "EPSG:28992", 'maxResolution':'auto', numZoomLevels: 17});
-	
-			// PostGIS routes projected on topo-map
-			var wmsURL='http://test.digitalewichelroede.nl/map';
-			var sld='http://88.198.19.182/mapserver/topnl/select-route.sld';
-	
-			layer1 = new OpenLayers.Layer.WMS.Untiled( "Geese - All Routes",
-					  wmsURL, {layers: 'topnl_geese,all_diwi_routes'} );
-			map.addLayer(layer1);
-	
-			layer2 = new OpenLayers.Layer.WMS.Untiled( "Geese - Single Route",
-					  wmsURL, {layers: 'topnl_geese,single_diwi_route', id: '161', format: 'image/png'} );
-			map.addLayer(layer2);
-	
-			layer3 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - All Routes",
-					  wmsURL, {layers: 'topnl_raster,all_diwi_routes', format: 'image/png'} );
-			map.addLayer(layer3);
-	
-			layer4 = new OpenLayers.Layer.WMS.Untiled( "TopNL Raster - Single Route",
-					  wmsURL + '?ID=161&LAYERS=topnl_raster,single_diwi_route');
-			map.addLayer(layer4);
-	
-	
-			map.setCenter(new OpenLayers.LonLat(x, y), zoom);
-			map.addControl( new OpenLayers.Control.LayerSwitcher() );
-	
-		}
-		maakMap();
-	</script>
-	
-	<div id="butspeelaf"> 
-		<a><img id="6" src="buttons/speelaf.jpg" border="0"></a>		
+
+	    var map, layer, popup;
+        var markers = 'null';
+        var feature, marker;
+
+        map = new OpenLayers.Map('map');
+
+        layer = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+            "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+        map.addLayer(layer);
+
+        map.addControl(new OpenLayers.Control.LayerSwitcher());
+        map.zoomToMaxExtent();
+
+        var playing = false;
+        function toggleButtonSrc(){
+            if (playing == false){
+                document.getElementById('playbutton').setAttribute('src', 'buttons/speelstop_stop.gif');
+                playing = true;
+            } else {
+                document.getElementById('playbutton').setAttribute('src', 'buttons/speelstop_play.gif');
+                playing = false;
+            }
+        }
+   	</script>
+
+	<div id="butspeelaf">
+		<a><img id="playbutton" src="buttons/speelstop_play.gif"  onclick="StartTheTimer();" border="0"></a>
 	</div>
-	
-	<div id="butwijzigprofiel"> 
-<!--		<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> -->		
+	<div id="butstop">
+		<a><img id="stopbutton" src="buttons/speelstop_stop.gif"  onclick="StopTheClock();" border="0"></a>
 	</div>
-	
-	
-	<div id="butkiesroute"> 
+
+	<div id="butwijzigprofiel">
+<!--		<a><img id="7" src="buttons/wijzigprofiel.jpg" border="0"></a> -->
+	</div>
+
+
+	<div id="butkiesroute">
 	<!--			<form action="dummyvalue">
 				<select name="newurl" onChange="">
 					<option value="0" selected="selected">kies een van mijn routes</option>
@@ -395,52 +389,38 @@
 				</select>
 				</form> -->
 	</div>
-			
-	
-	<script type="text/javascript">
-		var routeString = '<form><select id="routes" ><option value="0" selected="selected">kies een van mijn routes</option><option value="';
-	
-		function maakFixedRouteForm(elm) {
-			routeString += '1" >bunkerholen</option><option value="2" >heeel lang</optio<option value="3" >sner route';
-			routeString += '</option></select></form>';
-	
-			var ni = document.getElementById('butkiesroute');
-			ni.innerHTML = routeString;
-		}
-		maakFixedRouteForm(0);	//Deze moet weg...	
-	</script>
-			
+
 	<div id="paginaheader">
 		<p>
 			Mijn pagina<br>
 		</p>
 	</div>
-	
-	<div id="routeheader" > 
+
+	<div id="routeheader" >
 		<p>
-		Ronde om de Grebbeberg		  
+		Ronde om de Grebbeberg
 		</p>
 	</div>
-	 
+
 	 <div id="author">
 			<p>
-			Kim Deal, gedaan op 23 februari 2007 
+			Kim Deal, gedaan op 23 februari 2007
 			</p>
 	 </div>
-	
-	<div id="ookgelopen"> 
+
+	<div id="ookgelopen">
 		<p>
-			Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.			
+			Deze route is ook gelopen door de volgende wandelaars: Jan Jansen, Piet Pietersen, Harry Visser.
 		</p>
 	</div>
-	
+
 	<div id="personaliatekst">
 		<h11>
 			Steve Albini <br>
 		</h11>
 		<p>
 		<img  src="images/self.jpg" border="0" align="left">
-		Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!						            
+		Haai, mijn naam is <name>Steve Albini</name> en ik ben het meest bekend geworden als producer van de Pixies en natuurlijk Nirvana!
 		</p>
 	</div>
 </div>
@@ -457,26 +437,26 @@
 			Route samenstellen<br>
 		</p>
 	</div>
-	
+
 	<div id="radiobuttons" class="radiocaption">
 		<input id="wandelen" name=rb1 type=radio  onClick="selectWandelen()"> Wandelen
 		<input id="fietsen" name=rb2 type=radio  onClick="selectFietsen()"> Fietsen
 	</div>
 
-	<div class="listboxes" id="startpunt-lb"> 
+	<div class="listboxes" id="startpunt-lb">
 	</div>
-	<div class="listboxes" id="eindpunt-lb"> 
+	<div class="listboxes" id="eindpunt-lb">
 	</div>
-	<div class="listboxes" id="thema-lb"> 
+	<div class="listboxes" id="thema-lb">
 	</div>
-	<div class="listboxes" id="afstand-lb"> 
+	<div class="listboxes" id="afstand-lb">
 	</div>
 
 
 	<div  class="slidercaption" id="caption1">
 		Besloten agrarisch gebied
-	</div>	
-	
+	</div>
+
 	<div class="slider" id="slider1" >
 		<input class="slider-input" id="s1input"/>
 	</div>
@@ -486,17 +466,17 @@
 
 	<div  class="slidercaption" id="caption2">
 		Halfopen agrarisch gebied
-	</div>	
+	</div>
 	<div class="slider" id="slider2" >
 		<input class="slider-input" id="s2input"/>
 	</div>
 	<div class="slidertext" id="halfopen">
 		 <input id="s2value" value="0" onChange="s2.setValue(parseInt(this.value))" />%
 	</div>
-	
+
 	<div  class="slidercaption" id="caption3">
 		Open agrarisch gebied
-	</div>	
+	</div>
 	<div class="slider" id="slider3" >
 		<input class="slider-input" id="s3input"/>
 	</div>
@@ -506,17 +486,17 @@
 
 	<div  class="slidercaption" id="caption4">
 		Bedrijven en industrie
-	</div>	
+	</div>
 	<div class="slider" id="slider4" >
 		<input class="slider-input" id="s4input"/>
 	</div>
 	<div  class="slidertext" id="bedrijven">
 		 <input id="s4value" value="0" onChange="s4.setValue(parseInt(this.value))" />%
 	</div>
-	
+
 	<div  class="slidercaption" id="caption5">
 		Bewoningskernen
-	</div>	
+	</div>
 	<div class="slider" id="slider5" >
 		<input class="slider-input" id="s5input"/>
 	</div>
@@ -526,17 +506,17 @@
 
 	<div  class="slidercaption" id="caption6">
 		Bos
-	</div>	
+	</div>
 	<div class="slider" id="slider6" >
 		<input class="slider-input" id="s6input"/>
 	</div>
 	<div class="slidertext"  id="bos">
 		 <input id="s6value" value="0" onChange="s6.setValue(parseInt(this.value))" />%
 	</div>
-	
+
 	<div  class="slidercaption" id="caption7">
 		Heide zand en duingebied
-	</div>	
+	</div>
 	<div class="slider" id="slider7" >
 		<input class="slider-input" id="s7input"/>
 	</div>
@@ -546,7 +526,7 @@
 
 	<div  class="slidercaption" id="caption8">
 		Natuurlijk grasland, moeras <br>en riet
-	</div>	
+	</div>
 	<div class="slider" id="slider8" >
 		<input class="slider-input" id="s8input"/>
 	</div>
@@ -556,7 +536,7 @@
 
 	<div  class="slidercaption" id="caption9">
 		Zee en grote meren
-	</div>	
+	</div>
 	<div class="slider" id="slider9" >
 		<input class="slider-input" id="s9input"/>
 	</div>
@@ -566,16 +546,16 @@
 
 	<div  class="slidercaption" id="caption10">
 		Sloten, beken, rivieren en <br>plassen
-	</div>	
+	</div>
 	<div class="slider" id="slider10" >
 		<input class="slider-input" id="s10input"/>
 	</div>
 	<div class="slidertext"  id="sloten">
 		 <input id="s10value"  value="0" onChange="s10.setValue(parseInt(this.value))" />%
 	</div>
-	
+
 	<div id="butmaakeigenroute">
-		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a> 
+		<a><img  src="buttons/maakroute.gif"onMouseOver="" onMouseOut="" onClick="javascript:TST.maakroutes();" border="0"></a>
 	</div>
 	<div id="maakroutebox" style="display:none"><img src="buttons/maakrouteblokken.gif" border="0"></div>
 	<div id="leguitbox" style="display:block"><img src="../home/images/videobox.gif" border="0"></div>
@@ -587,20 +567,18 @@
 	</div>
 	<div id="generated-routes" class="genroutetekst"></div>
 	<div id="generated-routes-image"></div>
-	<div id="generated-routes-image-big"></div>	
+	<div id="generated-routes-image-big"></div>
 </div>
 
-<!-- slcr.js maakt de sliders... -->	
+<!-- slcr.js maakt de sliders... -->
 <script type="text/javascript" src="../js/maakroute.js"></script>
-	
+
 <!-- Einde van alles wat op maakroutepagina getoond moet worden. ------------------------------------------>
 <script type="text/javascript" src="../js/selectstartpage.js"></script>
 
 <script type="text/javascript">
 	DH.addEvent(window, 'load', beginPagina(), false);
 </script>
-
-</font>
 </body>
 
 
