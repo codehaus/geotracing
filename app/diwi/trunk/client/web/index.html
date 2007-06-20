@@ -4,7 +4,10 @@
 	<title>De Digitale Wichelroede</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 	<link rel="stylesheet" type="text/css" href="css/home.css">
-	<!--  <link rel="stylesheet" type="text/css" href="css/lightbox.css">   -->
+	<link rel="stylesheet" type="text/css" href="css/maakroute.css">
+	<link rel="stylesheet" type="text/css" href="css/bluecurve/bluecurve.css">
+	<link rel="stylesheet" type="text/css" href="css/winclassic.css">
+
 	<script type="text/javascript" src="lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClient.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClientExt.js"></script>
@@ -14,60 +17,59 @@
 	<script type="text/javascript" src="js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="js/selectstartpage.js"></script>
 	<script type="text/javascript" src="js/DiWiNav.js"></script>
+	<script type="text/javascript" src="js/maakroute.js"></script>
+	<script type="text/javascript" src="js/slider.js"></script>
+	<script type="text/javascript" src="js/range.js"></script>
+	<script type="text/javascript" src="js/timer.js"></script>
 	<script type="text/javascript" src="js/DiWiApp.js"></script>
 </head>
+
 <body>
 <div id="top"><img src="media/images/top2.jpg" border="0"/></div>
 
-<div id="topfoto"><img id="plaatje" src="media/images/01.gif" border="0"/></div>
+<div id="topfoto"><img id="plaatje" src="media/images/01.gif"/></div>
 
 <div id="butwelkom">
-	<img class="button" id="b1" src="media/buttons/welkom.gif" border="0"/>
+	<img class="button" id="b1" src="media/buttons/welkom.gif"/>
 </div>
 
 <div id="butroutes">
-	<img class="button" id="b2" src="media/buttons/routes.gif" border="0"/>
+	<img class="button" id="b2" src="media/buttons/routes.gif"/>
 </div>
 
 <div id="butaanmelden">
-	<img class="button" id="b3" src="media/buttons/aanmelden.gif"  border="0"/>
+	<img class="button" id="b3" src="media/buttons/aanmelden.gif"/>
 </div>
 
 <div id="butfaq">
-	<img class="button" id="b4" src="media/buttons/faq.gif"  border="0"/>
+	<img class="button" id="b4" src="media/buttons/faq.gif"/>
 </div>
 
 <div id="rechterkolom">
-	<div id="bovenbutlijn"><img src="media/images/bovenbuttons.gif" border="0"/></div>
+	<div id="bovenbutlijn"><img src="media/images/bovenbuttons.gif"/></div>
 
-	<div id="butinloggen" style="display:block">
-		<a><img id="b5" src="media/buttons/inloggen.gif" onMouseOver="src='home/buttons/inloggenH.gif'"
-				onMouseOut="src='home/buttons/inloggen.gif'" onClick="toggleInlogBox()" border="0"></a>
+	<div id="butinloggen">
+		<img id="b5" src="media/buttons/inloggen.gif"/>
 	</div>
 
 	<div id="butuitloggen" style="display:none">
-		<a><img id="b8" src="media/buttons/uitloggen.gif" onMouseOver="src='home/buttons/uitloggenH.gif'"
-				onMouseOut="src='home/buttons/uitloggen.gif'" onClick="toonLoginButton()" border="0"></a>
+		<img id="b6" src="media/buttons/uitloggen.gif">
 	</div>
 
 	<div id="butmaakroute" style="display:none;">
-		<a><img id="b6" src="media/buttons/maakroute.gif" onMouseOver="src='home/buttons/maakrouteH.gif'"
-				onMouseOut="src='home/buttons/maakroute.gif'" onClick="location.href='mypage/mypage.html?mp=false'"
-				border="0"></a>
+		<img id="b7" src="media/buttons/maakroute.gif"/>
 	</div>
 
 	<div id="butmijnpagina" style="display:none;">
-		<a><img id="b7" src="media/buttons/mijnpagina.gif" onMouseOver="src='home/buttons/mijnpaginaH.gif'"
-				onMouseOut="src='home/buttons/mijnpagina.gif'" onClick="location.href='mypage/mypage.html?mp=true'"
-				border="0"></a>
+		<img id="b8" src="media/buttons/mijnpagina.gif"/>
 	</div>
 
-	<div id="onderbutlijn"><img src="media/images/onderbuttons2.gif" border="0"></div>
+	<div id="onderbutlijn"><img src="media/images/onderbuttons2.gif"/></div>
 
-	<div id="inlogbox" style="display:none;"><img src="media/images/videobox.gif" border="0"></div>
+	<div id="inlogbox" style="display:none;"><img src="media/images/videobox.gif"/></div>
 
 	<div id="inlogform" class="logform" style="display:none;">
-		<form id="loginform" class="logform" action="javascript:DIWI.login()">
+		<form id="loginform" class="logform" action="javascript:DIWIAPP.login()">
 			<p>Loginnaam :<br>
 				<input type="text" name="name">
 			</p>
@@ -76,21 +78,21 @@
 				<input type="password" name="password" onKeyPress="return submitenter(this,event)"><br>
 
 				<div id="logforminlogbut" style="display:inherit">
-					<img class="button" src="media/buttons/login.gif" onClick="DIWI.login()">
+					<img class="button" src="media/buttons/login.gif" onClick="DIWIAPP.login()">
 				</div>
 			</p>
 		</form>
 	</div>
 
 
-	<div id="videobox"><img src="media/images/videobox.gif" border="0"></div>
-	<!--	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" border="0"></a> </div> -->
-	<div id="fotovideobox"><img src="media/images/fotovideobox.gif" border="0"></div>
+	<div id="videobox"><img src="media/images/videobox.gif"></div>
+	<!--	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" ></a> </div> -->
+	<div id="fotovideobox"><img src="media/images/fotovideobox.gif"></div>
 
-	<div id="spotmetbox"><img src="media/images/spotmetbox.gif" border="0"></div>
+	<div id="spotmetbox"><img src="media/images/spotmetbox.gif"></div>
 
 	<div id="butintrovideo">
-		<img id="9" src="media/buttons/introvideo.gif" onMouseOver="" onMouseOut="" onClick="" border="0">
+		<img id="9" src="media/buttons/introvideo.gif" onMouseOver="" onMouseOut="" onClick="">
 	</div>
 
 	<div id="watistext">
@@ -102,7 +104,7 @@
 
 </div>
 
-<div id="line"><img src="media/images/lijn.gif" border="0"></div>
+<div id="line"><img src="media/images/lijn.gif"><span id="msg">niet ingelogd</span></div>
 
 
 <div id="pagina" class="pagina">
