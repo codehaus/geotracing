@@ -8,6 +8,10 @@ body {
 	background: #00FF00 url(../media/images/back.gif );
 }
 
+img {
+	border: 0;
+}
+
 h1 {
 	font-family: Georgia, Times New Roman, Times, serif;
 	line-height: 1.6em;
@@ -86,6 +90,17 @@ p {
 	top: 20px;
 	left: 100px;
 	z-index: 1;
+}
+
+#msg {
+	position: absolute;
+	top: -5px;
+	left: 356px;
+	z-index: 200;
+	font-size: 0.6em;
+	font-style: italic;
+	color: #5a3d1c;
+
 }
 
 .pagina {

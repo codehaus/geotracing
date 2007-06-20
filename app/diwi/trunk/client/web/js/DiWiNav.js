@@ -6,11 +6,19 @@ var DIWINAV = {
 	buttons: {},
 	selectedButtonId: null,
 
+	addButton: function(aButton) {
+		DIWINAV.buttons[aButton.id] = aButton;
+	},
+
 	init: function() {
-		DIWINAV.buttons['b1'] = new Button('b1', 'welkom');
-		DIWINAV.buttons['b2'] = new Button('b2', 'routes', DIWIAPP.showFixedRoutes);
-		DIWINAV.buttons['b3'] = new Button('b3', 'aanmelden');
-		DIWINAV.buttons['b4'] = new Button('b4', 'faq');
+		new Button('b1', 'welkom');
+		new Button('b2', 'routes', DIWIAPP.showFixedRoutes);
+		new Button('b3', 'aanmelden');
+		new Button('b4', 'faq');
+		new Button('b5', 'inloggen', DIWIAPP.prepareLogin);
+		new Button('b6', 'uitloggen', DIWIAPP.logout);
+		new Button('b7', 'maakroute', initMakeRouteForm);
+		new Button('b8', 'mijnpagina');
 		DIWINAV.buttons['b1'].onSelect();
 	},
 
@@ -82,13 +90,13 @@ function Button(anId, aContentId, anActionFun) {
 	DH.addEvent(DH.getObject(this.id), 'mouseover', this.onMouseOver, false);
 	DH.addEvent(DH.getObject(this.id), 'mouseout', this.onMouseOut, false);
 	DH.addEvent(DH.getObject(this.id), 'click', this.onSelect, false);
+
+	DIWINAV.addButton(this);
 }
 
 
-function toggleInlogBox() {
-	DH.toggleDisplay(document.getElementById('inlogbox'));
-	DH.toggleDisplay(document.getElementById('inlogform'));
-}
+
+
 function toggleLogButton() {
 	DH.toggleDisplay(document.getElementById('butuitloggen'));
 	DH.toggleDisplay(document.getElementById('butinloggen'));
@@ -99,7 +107,7 @@ function toonLogoutButton() {
 }
 
 function toonLoginButton() {
-	DIWI.logout();
+	DIWIAPP.logout();
 	toggleLogButton();
 }
 
@@ -147,7 +155,7 @@ function submitenter(myfield, e) {
 		return true;
 
 	if (keycode == 13) {
-		DIWI.login();
+		DIWIAPP.login();
 		return false;
 	} else
 		return true;

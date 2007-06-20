@@ -1,0 +1,176 @@
+<div id="maakroutecontainer">
+
+<h1>Maak Route</h1>
+
+<p>
+	Route maken...
+</p>
+
+<div id="paginaheader">
+	<p>
+		Route samenstellen<br>
+	</p>
+</div>
+
+<div id="radiobuttons" class="radiocaption">
+	<input id="wandelen" name=rb1 type=radio onClick="selectWandelen()"> Wandelen
+	<input id="fietsen" name=rb2 type=radio onClick="selectFietsen()"> Fietsen
+</div>
+
+<div class="listboxes" id="startpunt-lb">
+</div>
+
+<div class="listboxes" id="eindpunt-lb">
+</div>
+
+<div class="listboxes" id="thema-lb">
+</div>
+
+<div class="listboxes" id="afstand-lb">
+</div>
+
+
+<div class="slidercaption" id="caption1">
+	Besloten agrarisch gebied
+</div>
+
+<div class="slider" id="slider1">
+	<input class="slider-input" id="s1input"/>
+</div>
+
+<div class="slidertext" id="besloten">
+	<input id="s1value" value="0" onChange="s1.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption2">
+	Halfopen agrarisch gebied
+</div>
+
+<div class="slider" id="slider2">
+	<input class="slider-input" id="s2input"/>
+</div>
+
+<div class="slidertext" id="halfopen">
+	<input id="s2value" value="0" onChange="s2.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption3">
+	Open agrarisch gebied
+</div>
+
+<div class="slider" id="slider3">
+	<input class="slider-input" id="s3input"/>
+</div>
+
+<div class="slidertext" id="open">
+	<input id="s3value" value="0" onChange="s3.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption4">
+	Bedrijven en industrie
+</div>
+
+<div class="slider" id="slider4">
+	<input class="slider-input" id="s4input"/>
+</div>
+
+<div class="slidertext" id="bedrijven">
+	<input id="s4value" value="0" onChange="s4.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption5">
+	Bewoningskernen
+</div>
+
+<div class="slider" id="slider5">
+	<input class="slider-input" id="s5input"/>
+</div>
+
+<div class="slidertext" id="bewoning">
+	<input id="s5value" value="0" onChange="s5.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption6">
+	Bos
+</div>
+
+<div class="slider" id="slider6">
+	<input class="slider-input" id="s6input"/>
+</div>
+
+<div class="slidertext" id="bos">
+	<input id="s6value" value="0" onChange="s6.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption7">
+	Heide zand en duingebied
+</div>
+
+<div class="slider" id="slider7">
+	<input class="slider-input" id="s7input"/>
+</div>
+
+<div class="slidertext" id="heide">
+	<input id="s7value" value="0" onChange="s7.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption8">
+	Natuurlijk grasland, moeras <br>en riet
+</div>
+
+<div class="slider" id="slider8">
+	<input class="slider-input" id="s8input"/>
+</div>
+
+<div class="slidertext" id="grasland">
+	<input id="s8value" value="0" onChange="s8.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption9">
+	Zee en grote meren
+</div>
+
+<div class="slider" id="slider9">
+	<input class="slider-input" id="s9input"/>
+</div>
+
+<div class="slidertext" id="zee">
+	<input id="s9value" value="0" onChange="s9.setValue(parseInt(this.value))"/>%
+</div>
+
+<div class="slidercaption" id="caption10">
+	Sloten, beken, rivieren en <br>plassen
+</div>
+
+<div class="slider" id="slider10">
+	<input class="slider-input" id="s10input"/>
+</div>
+
+<div class="slidertext" id="sloten">
+	<input id="s10value" value="0" onChange="s10.setValue(parseInt(this.value))"/>%
+</div>
+
+<div id="butmaakeigenroute">
+	<a><img src="media/buttons/maakroute.gif" onMouseOver="" onMouseOut="" onClick="javascript:DIWIAPP.createRoute();"
+			border="0"></a>
+</div>
+
+<div id="maakroutebox" style="display:none"><img src="media/buttons/maakrouteblokken.gif" border="0"></div>
+
+<div id="leguitbox" style="display:block"><img src="media/images/videobox.gif" border="0"></div>
+
+<div id="leguitbullet" style="display:block"><img src="media/buttons/bullet.gif" border="0"></div>
+
+<div id="leguittext" class="slidercaption" style="display:block">
+	Stel uw eigen route samen naar uw eigen voorkeuren!
+	Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen.
+	Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.
+</div>
+
+<div id="generated-routes" class="genroutetekst"></div>
+
+<div id="generated-routes-image"></div>
+
+<div id="generated-routes-image-big"></div>
+</div>
+
