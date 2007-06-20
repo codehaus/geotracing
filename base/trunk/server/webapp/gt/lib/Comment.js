@@ -76,7 +76,7 @@ CMT = {
 
 	showCommentPanel: function(aTargetId, aTargetType, aTargetName) {
 		if (CMT.commentPanel == null) {
-			CMT.commentPanel = new Panel('commentpanel', 'red', 'white', null, CMT.onPanelClose);
+			CMT.commentPanel = new Panel('commentpanel', '#000044', 'white', null, CMT.onPanelClose);
 			CMT.commentPanel.setDimension(500, 500);
 			CMT.commentPanel.setXY(50, 50);
 		}

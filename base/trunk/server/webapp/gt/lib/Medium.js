@@ -24,9 +24,9 @@ function Medium(id, name, desc, type, mime, time, lon, lat) {
 	this.getIconDiv = function() {
 		if (this.type == 'text') {
 			var src = 'img/poi.gif';
-			var img = '<img title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';
+			var img = '<img id="' + this.iconId + '" title="' + this.getTitle() + '" src="' + src + '" border="0"  alt="" />';
 
-			return '<div class="texticon" id="' + this.iconId + '" style="border: 1px solid ' + this.bgColor + ';" >' + img + '</div>';
+			return '<div class="texticon" style="border: 1px solid ' + this.bgColor + ';" >' + img + '</div>';
 		} else {
 			return '<div class="medicon" id="' + this.iconId + '" style="background-color:' + this.getBGColor() + ';" >&nbsp;&nbsp;&nbsp;&nbsp;</div>';
 		}

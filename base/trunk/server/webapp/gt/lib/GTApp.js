@@ -596,7 +596,7 @@ var GTAPP = {
 	},
 
 	mShowHelp: function(url) {
-		var helpPanel = new Panel('INFO', 'red', 'white');
+		var helpPanel = new Panel('INFO', '#000044', 'white');
 		helpPanel.setXY(100, 100);
 		helpPanel.setDimension(600, 500);
 		helpPanel.loadContent(url);
