@@ -5,10 +5,10 @@ body {
 	font-size: 1.1em;
 	font-family: verdana, arial, helvetica, sans-serif;
 	color: #5a3d1c;
-	background: #00FF00 url(../home/images/back.gif);
+	background: #00FF00 url(../media/images/back.gif );
 }
 
-H1 {
+h1 {
 	font-family: Georgia, Times New Roman, Times, serif;
 	line-height: 1.6em;
 	font-size: 1.7em;
@@ -21,6 +21,19 @@ h2 {
 	margin: 0 0 5px 0;
 	padding: 0;
 	font-size: 1.1em;
+}
+
+
+H3 {
+	margin-left: 20px;
+	font-size: 1.0em;
+}
+
+H4 {
+	line-height: 1.1em;
+	font-size: 0.6em;
+	margin: 0 0 0 0;
+	padding: 0;
 }
 
 .content>p {
@@ -55,17 +68,6 @@ p {
 	font-size: 0.7em;
 }
 
-H3 {
-	margin-left: 20px;
-	font-size: 1.0em;
-}
-
-H4 {
-	line-height: 1.1em;
-	font-size: 0.6em;
-	margin: 0 0 0 0;
-	padding: 0;
-}
 
 /* All the content boxes belong to the content class. */
 .header {
