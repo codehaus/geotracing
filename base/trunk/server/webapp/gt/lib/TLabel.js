@@ -135,6 +135,44 @@ TLabel.prototype.getXY = function(a, b) {
 		}
 	}
 
+	if (this.scaleElmId) {
+		// mapzoom based scale
+		var zoom = this.map.getZoom();
+		if (this.lastZoom && (zoom == this.lastZoom)) {
+			// zoom not changed: no need to apply scaling
+			// return;
+		}
+
+		// Zoom changed: remember
+		this.lastZoom = zoom;
+
+		// Calc scale
+		var scale = Math.pow(3, (zoom / 8)) / 12;
+
+		// Keep to minimum
+		scale = Math.max(this.minScaleFactor, scale);
+
+		//	tmp_debug(2,'scaling, zoom=',z,', s=',s); //Math.round(10* Math.pow(3,(z/10))));
+
+		// calc scaled w/h
+		var sw = Math.round(scale * this.maxW);
+		var sh = Math.round(scale * this.maxH);
+
+		// alert('this.w=' + this.w + ' this.h=' + this.h)
+		//apply to elm
+		var icon = document.getElementById(this.scaleElmId);
+		if (!icon) {
+			return;
+		}
+
+		icon.style.width = sw + 'px';
+		icon.style.height = sh + 'px';
+
+		// Correct marker offset (assume middle and topleft anchor!!!)
+		this.markerOffset.width = sw / 2;
+		this.markerOffset.height = sh / 2;
+	}
+
 	if (this.diffuse == true) {
 		x = x - this.markerOffset.width + diffusions[Math.floor(Math.random() * 10)].x;
 		y = y - this.markerOffset.height + diffusions[Math.floor(Math.random() * 10)].y;
@@ -162,12 +200,24 @@ TLabel.prototype.getXY = function(a, b) {
 	return xy;
 }
 
+TLabel.prototype.setScaling = function(aScaleElmId, aMaxW, aMaxH, aMinScaleFactor) {
+	this.scaleElmId = aScaleElmId;
+	this.maxW = aMaxW;
+	this.maxH = aMaxH;
+	this.minScaleFactor = .3;
+	if (aMinScaleFactor) {
+		this.minScaleFactor = aMinScaleFactor;
+	}
+}
+
 TLabel.prototype.animate = function(show) {
 	var obj = this;
 	this.debug('animate enter');
 	if (!this.animating || this.animating == null) {
 		this.debug('start animation');
-		this.animating = window.setInterval(function() { obj.glideElm() }, TLABEL.ANIMATE_INTERVAL);
+		this.animating = window.setInterval(function() {
+			obj.glideElm()
+		}, TLABEL.ANIMATE_INTERVAL);
 	}
 }
 

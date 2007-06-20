@@ -12,6 +12,8 @@
 				 org.keyworx.utopia.core.util.Oase,
 				 javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse"%>
 <%@ page import="java.io.PrintWriter"%>
+<%@ page import="java.util.Vector"%>
+<%@ page import="org.keyworx.common.util.IO"%>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
@@ -77,6 +79,17 @@
 
 				if (ip != null) {
 					anAppRequest.setChildText("ip", ip);
+				}
+
+				// Escape special chars in any uploaded text stuff
+				JXElement nextChild;
+				String nextText;
+				Vector children = anAppRequest.getChildren();
+				for (int i=0; i < children.size(); i++) {
+					nextChild = (JXElement) children.get(i);
+					if (nextChild.hasText()) {
+						nextChild.setText(IO.forHTMLTag(nextChild.getText()));
+					}
 				}
 
 				// Set fields directly from request

@@ -94,6 +94,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 
 		// Overridden in subclass
 		tl.content = this.getIconDiv();
+		tl.setScaling(this.iconId, 16, 16, .2);
 
 		// Add Tlabel to map
 		GMAP.map.addTLabel(tl);

@@ -195,7 +195,7 @@ $Id$
 		</ant>
 
 		<copy todir="${build.war.dir}/WEB-INF/" file="${home.cfg.dir}/web.xml" overwrite="true"/>
-		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/3gp2swf.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/videoconv.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/image-meta.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${home.bin.dir}/drawloc.sh" overwrite="true"/>

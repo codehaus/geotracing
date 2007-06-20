@@ -43,6 +43,8 @@ var KW = {
 	loginReq: null,
 	selectAppReq: null,
 	recovering: false,
+	user: null,
+	pwd: null,
 
 // Initialization: must be called before anything
 	init: function(rspCallback, nrspCallback, theTimeoutMins, theWebRoot) {
@@ -124,6 +126,8 @@ var KW = {
 		var xml = doc.documentElement;
 		xml.setAttribute('name', user);
 		xml.setAttribute('password', password);
+		KW.user = user;
+		KW.pwd = password;
 		xml.setAttribute('protocolVersion', KW.protocolVersion);
 		KW.loginReq = doc;
 		KW.post(KW._loginRsp, doc);
@@ -202,6 +206,23 @@ var KW = {
 		KW.agentKey = KW._readCookie('agentkey');
 	},
 
+	// Store account data locally (cookies).
+	clearAccount: function() {
+		KW.user = ' ';
+		KW.pwd = ' ';
+		KW.storeAccount();
+	},
+
+	// Store account data locally (cookies).
+	storeAccount: function() {
+		KW._createCookie('kwacc', KW.user + ',' + KW.pwd, 365);
+	},
+
+// Get account data from cookie.
+	getAccountData: function( ) {
+		var data = KW._readCookie('kwacc');
+		return (data && data != null) ? data.split(',') : null;
+	},
 //
 // Private/internal functions
 //
