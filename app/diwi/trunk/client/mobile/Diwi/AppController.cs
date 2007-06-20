@@ -9,6 +9,10 @@ using Microsoft.WindowsMobile.Forms;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.WindowsMobile.Status;
+using System.ComponentModel;
+
+using System.Data;
+using System.Diagnostics;
 
 
 namespace Diwi {
@@ -65,6 +69,14 @@ namespace Diwi {
             Thread.Sleep(1000);
         }
 
+        public static void playVideo(string fn)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = fn;
+            process.StartInfo.Verb = "Open";
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
+        }
 
         public static string makeFoto() {
             CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
@@ -77,6 +89,19 @@ namespace Diwi {
             return null;
         }
 
+        public static string makeVideo()
+        {
+            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
+            cameraCaptureDialog.Owner = null;
+            cameraCaptureDialog.Title = "Neem een video";
+            cameraCaptureDialog.Mode = CameraCaptureMode.VideoWithAudio;
+            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0)
+            {
+                return cameraCaptureDialog.FileName;
+                // viewVideoFileInWMP(cameraCaptureDialog.FileName);
+            }
+            return null;
+        }
 
         public static void SysBeep() {
             sPloink.Play();

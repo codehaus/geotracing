@@ -77,31 +77,21 @@ namespace Diwi {
                 mapReceived();
         }
 
-
-        private void viewVideoFileInWMP(string fn) {
-            Process process = new Process();
-            process.StartInfo.FileName = fn;
-            process.StartInfo.Verb = "Open";
-            process.StartInfo.UseShellExecute = true;
-            process.Start();
-        }
-
-
-        void doVideo(int i, string s) {
-            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
-            cameraCaptureDialog.Owner = this;
-            cameraCaptureDialog.Title = "Neem een video";
-            cameraCaptureDialog.Mode = CameraCaptureMode.VideoWithAudio;
-            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
-                viewVideoFileInWMP(cameraCaptureDialog.FileName);
+        void doVideo(int i, string s)
+        {
+            string fileName = AppController.makeVideo();
+            if (fileName != null)
+            {
+                (new MakeVideoPage(this, fileName)).ShowDialog();
             }
         }
 
-
-        void doFoto(int i, string s) {
+        void doFoto(int i, string s)
+        {
             string fileName = AppController.makeFoto();
-            if (fileName != null) {
-                (new MakePhotoPage(this,fileName)).ShowDialog();
+            if (fileName != null)
+            {
+                (new MakePhotoPage(this, fileName)).ShowDialog();
             }
         }
 

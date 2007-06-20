@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Diwi {
 
@@ -49,14 +50,23 @@ namespace Diwi {
             HttpWebResponse response = (HttpWebResponse)req.GetResponse();
             stream = response.GetResponseStream();
 
-            FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+            try
+            {
 
-            do {
-                n = stream.Read(inBuffer, 0, 1024);
-                fstream.Write(inBuffer, 0, n);
-            } while (n == 1024);
+                FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+                do
+                {
+                    n = stream.Read(inBuffer, 0, 1024);
+                    fstream.Write(inBuffer, 0, n);
+                } while (n == 1024);
 
-            fstream.Close();
+                fstream.Close();
+            }
+            catch (IOException e)
+            {
+                ; // MessageBox.Show(e.Message, "Error downloading file.");
+            }
+
             stream.Close();
 
             if (callb != null)
@@ -71,6 +81,7 @@ namespace Diwi {
         private static string bounds = "---------------" + DateTime.UtcNow.Ticks.ToString();
         string localFile;
         string name;
+        string mimeType;
         UTF8Encoding encoding;
         byte[] boundary;
         byte[] NEWLINE;
@@ -83,10 +94,11 @@ namespace Diwi {
 
 
 
-        public MediaUploader(string fileName, string n, WalkRoutePage.CallbackHandler cb) {
+        public MediaUploader(string fileName, string n, string mime, WalkRoutePage.CallbackHandler cb) {
             encoding = new UTF8Encoding();
             localFile = fileName;
             name = n;
+            mimeType = mime;
             boundary = encoding.GetBytes(bounds);
             NEWLINE = encoding.GetBytes("\r\n");
             PREFIX = encoding.GetBytes("--");
@@ -166,7 +178,7 @@ namespace Diwi {
             reqStream.Write(inData, 0, inData.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
 
-            t = "Content-Type: image/jpeg";
+            t = "Content-Type: " + mimeType;
             inData = encoding.GetBytes(t);
             reqStream.Write(inData, 0, inData.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);

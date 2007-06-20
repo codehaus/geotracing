@@ -103,11 +103,13 @@ namespace Diwi {
             AppController.sKwxClient.stop();
             AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
             if (AppController.sKwxClient.agentKey != null) {
-             //   FileInfo fi = new FileInfo(@"\test.jpg");
-             //   if( fi.Exists ) 
-             //   new MediaUploader(fi.FullName, "testImage", null);
+                FileInfo fi = new FileInfo(@"\My Documents\Mijn video's\VIDEO_001.MP4");
+                if( fi.Exists ) 
+                    new MediaUploader(fi.FullName, "testVideo", @"video/mp4", null);
                 doTerug(0, null);
             }
+            mServerMess.text = "";
+            draw();
         }
         
         

@@ -132,7 +132,7 @@ namespace Diwi {
             } else {
                 if (messageCallback != null)
                     messageCallback("Kwx login failed: " + xml.getAttributeValue("reason"));
-                throw new Exception("login failed: " + xml.getAttributeValue("reason"));
+                MessageBox.Show("Login failed.", xml.getAttributeValue("reason"));
             }
             return xml;
         }
