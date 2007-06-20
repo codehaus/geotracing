@@ -1,6 +1,7 @@
 #maakroutecontainer {
-	position: absolute;
-	width: 800px;
+	position: relative;
+	width: 597px;
+	height: 600px;
 	top: 0px;
 	left: 0px;
 	z-index: 50;
@@ -11,7 +12,6 @@
 	position: absolute;
 	left: 420px;
 	z-index: 50;
-	width: auto;
 }
 
 .slidercaption {
@@ -30,160 +30,182 @@
 	font-size: 12px;
 }
 
+
+#startpunt-lb {
+	top: 30px;
+	left: 15px;
+}
+
+#eindpunt-lb {
+	top: 30px;
+	left: 145px;
+}
+
+#thema-lb {
+	top: 30px;
+	left: 275px;
+}
+
+#afstand-lb {
+	top: 30px;
+	left: 405px;
+}
+
 #caption1 {
-	top: 223px;
+	top: 123px;
+/*	top: 223px; */
 }
 
 #slider1 {
 	position: absolute;
-	top: 222px;
+	top: 122px;
 	left: 200px;
 	z-index: 50;
 }
 
 #besloten {
-	top: 220px;
+	top: 120px;
 }
 
 #caption2 {
-	top: 253px;
+	top: 153px;
 }
 
 #slider2 {
 	position: absolute;
-	top: 252px;
+	top: 152px;
 	left: 200px;
 	z-index: 50;
 }
 
 #halfopen {
-	top: 250px;
+	top: 150px;
 }
 
 #caption3 {
-	top: 283px;
+	top: 183px;
 }
 
 #slider3 {
 	position: absolute;
-	top: 282px;
+	top: 182px;
 	left: 200px;
 	z-index: 50;
 }
 
 #open {
-	top: 280px;
+	top: 180px;
 }
 
 #caption4 {
-	top: 313px;
+	top: 213px;
 }
 
 #slider4 {
 	position: absolute;
-	top: 312px;
+	top: 212px;
 	left: 200px;
 	z-index: 50;
 }
 
 #bedrijven {
-	top: 310px;
+	top: 210px;
 }
 
 #caption5 {
-	top: 343px;
+	top: 243px;
 }
 
 #slider5 {
 	position: absolute;
-	top: 342px;
+	top: 242px;
 	left: 200px;
 	z-index: 50;
 }
 
 #bewoning {
-	top: 340px;
+	top: 240px;
 }
 
 #caption6 {
-	top: 373px;
+	top: 273px;
 }
 
 #slider6 {
 	position: absolute;
-	top: 372px;
+	top: 272px;
 	left: 200px;
 	z-index: 50;
 }
 
 #bos {
-	top: 370px;
+	top: 270px;
 }
 
 #caption7 {
-	top: 403px;
+	top: 303px;
 }
 
 #slider7 {
 	position: absolute;
-	top: 402px;
+	top: 302px;
 	left: 200px;
 	z-index: 50;
 }
 
 #heide {
-	top: 400px;
+	top: 300px;
 }
 
 #caption8 {
-	top: 433px;
+	top: 333px;
 }
 
 #slider8 {
 	position: absolute;
-	top: 432px;
+	top: 332px;
 	left: 200px;
 	z-index: 50;
 }
 
 #grasland {
-	top: 430px;
+	top: 330px;
 }
 
 #caption9 {
-	top: 463px;
+	top: 363px;
 }
 
 #slider9 {
 	position: absolute;
-	top: 462px;
+	top: 362px;
 	left: 200px;
 	z-index: 50;
 }
 
 #zee {
-	top: 460px;
+	top: 360px;
 }
 
 #caption10 {
-	top: 493px;
+	top: 393px;
 }
 
 #slider10 {
 	position: absolute;
-	top: 492px;
+	top: 392px;
 	left: 200px;
 	z-index: 50;
 }
 
 #sloten {
-	top: 490px;
+	top: 390px;
 }
 
 #butmaakeigenroute {
 	position: absolute;
 	width: 80px;
-	top: 520px;
+	top: 420px;
 	left: 390px;
 	z-index: 60;
 }
@@ -207,7 +229,7 @@
 #radiobuttons {
 	position: absolute;
 	width: auto;
-	top: 530px;
+	top: 430px;
 	left: 220px;
 	z-index: 60;
 }
@@ -229,22 +251,6 @@
 .listboxes p {
 	text-align: center;
 	line-height: 8px;
-}
-
-#startpunt-lb {
-	left: 15px;
-}
-
-#eindpunt-lb {
-	left: 145px;
-}
-
-#thema-lb {
-	left: 275px;
-}
-
-#afstand-lb {
-	left: 405px;
 }
 
 #maakroutebox {
