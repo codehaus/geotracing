@@ -1,6 +1,6 @@
 // JavaScript Document
 
-	document.getElementById("wandelen").checked = true;
+	//document.getElementById("wandelen").checked = true;
 	
 	function selectWandelen() {
 		document.getElementById("wandelen").checked = true;	

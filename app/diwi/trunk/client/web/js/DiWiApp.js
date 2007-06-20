@@ -9,7 +9,7 @@ var DIWI = {
 		// callbacks (2x)
 		// server timeout in minutes
 		// server root path /diwi
-		KW.init(DIWI.onRsp, DIWI.onNegRsp, 1, '/diwi');
+		KW.init(DIWI.onRsp, DIWI.onNegRsp, 60, '/diwi');
 		DIWI.pr('init done');
 	},
 
@@ -27,6 +27,7 @@ var DIWI = {
 		DIWI.pr('login sent');
 		return false;
 	},
+
 	login_neutral: function() {
 		DIWI.pr('login start');
 		var name = 'diwi-web';
@@ -35,6 +36,7 @@ var DIWI = {
 		KW.login(name, password);
 		return false;
 	},
+
 	logout: function() {
 		DIWI.pr('logout start');
 		// KeyWorx client
@@ -50,7 +52,6 @@ var DIWI = {
 
 	getFixedRoutes: function() {
 		SRV.get('q-diwi-routes', DIWI.onFixedRoute, 'type', '0');
-
 	},
 
 	onFixedRoute: function(elm) {
@@ -71,11 +72,12 @@ var DIWI = {
 
 			KW.storeSession();
 			// Show new content, here logout form
-			DH.toggleDisplay(document.getElementById('butmaakroute'));
+			/*DH.toggleDisplay(document.getElementById('butmaakroute'));
 			DH.toggleDisplay(document.getElementById('butmijnpagina'));
 			DH.hide('loginform');
 			toggleLogButton();
-			toggleInlogBox();
+			toggleInlogBox();   */
+			window.location.href = "mypage/mypage.html";
 
 		} else if (elm.tagName == 'logout-rsp') {
 			DIWI.pr('logout OK');
