@@ -31,7 +31,7 @@ import java.util.Vector;
 public class RouteHandler extends DefaultHandler implements Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
-    public final static String ROUTE_INSERT_SERVICE = "route-insert";
+    /*public final static String ROUTE_INSERT_SERVICE = "route-insert";*/
     public final static String ROUTE_GET_SERVICE = "route-get";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
     public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
@@ -56,9 +56,9 @@ public class RouteHandler extends DefaultHandler implements Constants {
 		try {
 			if (service.equals(ROUTE_GENERATE_SERVICE)) {
 				response = generateRoute(anUtopiaReq);
-			} else if (service.equals(ROUTE_INSERT_SERVICE)) {
+			}/* else if (service.equals(ROUTE_INSERT_SERVICE)) {
 				response = insertRoute(anUtopiaReq);
-			} else if (service.equals(ROUTE_GET_SERVICE)) {
+			}*/ else if (service.equals(ROUTE_GET_SERVICE)) {
 				response = getRoute(anUtopiaReq);
 			} else if (service.equals(ROUTE_GETLIST_SERVICE)) {
 				response = getRoutes(anUtopiaReq);
@@ -101,7 +101,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         return response;
 	}
 
-    private JXElement insertRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    /*private JXElement insertRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
         int id = logic.insertRoute(anUtopiaReq.getRequestCommand().getChildByTag(ROUTE_ELM), Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD)));
         
@@ -109,7 +109,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         response.setAttr(ID_FIELD, id);
 
         return response;
-	}
+	}*/
 
     private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
@@ -149,7 +149,6 @@ public class RouteHandler extends DefaultHandler implements Constants {
              <pref name="bebouwing" value="10" type="outdoor-params" />
              <pref name="theme" value="forts" type="theme" />
              <pref name="activity" value="wandelaar" type="activity" />
-
         </route-generate-req>
      */
     protected JXElement generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {

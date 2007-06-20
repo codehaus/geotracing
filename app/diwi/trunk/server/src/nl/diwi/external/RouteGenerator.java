@@ -13,13 +13,11 @@ import java.net.URL;
 
 public class RouteGenerator implements Constants {
 
-	private static String generatorUrl = Amuse.server.getPortal().getProperty(GENERATOR_URL);
+	private static String generatorUrl = Amuse.server.getPortal().getProperty(ROUTING_SERVLET_URL);
 
 	//Query by example? non filled values are 'don't care'
 	public static JXElement generateRoute(Record [] prefs) throws UtopiaException {
-		JXElement resultRoute = null;
-
-		//http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet?request=createroute&omgeving=4&poi=Boerderij&afstand=10000&startx=153966&starty=453437&endx=153966&endy=453437
+		JXElement resultRoute;
 		String url = Amuse.server.getPortal().getProperty(ROUTING_SERVLET_URL);
 		url += "?request=createroute";
 		url = buildUrl(prefs, url);
