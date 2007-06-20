@@ -1,6 +1,8 @@
 // JavaScript Document
 
-//document.getElementById("wandelen").checked = true;
+//
+
+var s1,s2,s3,s4,s5,s6,s7,s8,s9,s10;
 
 function selectWandelen() {
 	document.getElementById("wandelen").checked = true;
@@ -19,7 +21,7 @@ function maakStartpuntForm(elm) {
 	var j;
 	for (i = 0; i < n_start_punt; i++) {
 		j = i + 1;
-		start_punt_string += '<option value=' + j + 'style="width:120px;">';
+		start_punt_string += '<option value="' + j + '" style="width:120px;">';
 		start_punt_string += start_punt_list.item(i).firstChild.nodeValue;
 		start_punt_string += '</option>';
 	}
@@ -113,9 +115,13 @@ function verwerkBigPlaatje(elm) {
 }
 
 function initMakeRouteForm() {
-	maakAfstandForm(0);
+	KW.CMS.getstartpoints(maakStartpuntForm);
+	KW.CMS.getendpoints(maakEindpuntForm);
+	KW.CMS.getthemes(maakThemasForm);
+	maakAfstandForm();
+	DH.getObject("wandelen").checked = true;
 
-	var s1 = new Slider(document.getElementById("slider1"), document.getElementById("s1input"));
+	s1 = new Slider(document.getElementById("slider1"), document.getElementById("s1input"));
 	s1.setMinimum(0);
 	s1.setMaximum(100);
 	s1.onchange = function () {
@@ -123,7 +129,7 @@ function initMakeRouteForm() {
 	};
 	s1.setValue(0);
 
-	var s2 = new Slider(document.getElementById("slider2"), document.getElementById("s2input"));
+	s2 = new Slider(document.getElementById("slider2"), document.getElementById("s2input"));
 	s2.setMinimum(0);
 	s2.setMaximum(100);
 	s2.onchange = function () {
@@ -131,7 +137,7 @@ function initMakeRouteForm() {
 	};
 	s2.setValue(0);
 
-	var s3 = new Slider(document.getElementById("slider3"), document.getElementById("s3input"));
+	s3 = new Slider(document.getElementById("slider3"), document.getElementById("s3input"));
 	s3.setMinimum(0);
 	s3.setMaximum(100);
 	s3.onchange = function () {
@@ -139,7 +145,7 @@ function initMakeRouteForm() {
 	};
 	s3.setValue(0);
 
-	var s4 = new Slider(document.getElementById("slider4"), document.getElementById("s4input"));
+	s4 = new Slider(document.getElementById("slider4"), document.getElementById("s4input"));
 	s4.setMinimum(0);
 	s4.setMaximum(100);
 	s4.onchange = function () {
@@ -147,7 +153,7 @@ function initMakeRouteForm() {
 	};
 	s4.setValue(0);
 
-	var s5 = new Slider(document.getElementById("slider5"), document.getElementById("s5input"));
+	s5 = new Slider(document.getElementById("slider5"), document.getElementById("s5input"));
 	s5.setMinimum(0);
 	s5.setMaximum(100);
 	s5.onchange = function () {
@@ -155,7 +161,7 @@ function initMakeRouteForm() {
 	};
 	s5.setValue(0);
 
-	var s6 = new Slider(document.getElementById("slider6"), document.getElementById("s6input"));
+	s6 = new Slider(document.getElementById("slider6"), document.getElementById("s6input"));
 	s6.setMinimum(0);
 	s6.setMaximum(100);
 	s6.onchange = function () {
@@ -163,7 +169,7 @@ function initMakeRouteForm() {
 	};
 	s6.setValue(0);
 
-	var s7 = new Slider(document.getElementById("slider7"), document.getElementById("s7input"));
+	s7 = new Slider(document.getElementById("slider7"), document.getElementById("s7input"));
 	s7.setMinimum(0);
 	s7.setMaximum(100);
 	s7.onchange = function () {
@@ -171,7 +177,7 @@ function initMakeRouteForm() {
 	};
 	s7.setValue(0);
 
-	var s8 = new Slider(document.getElementById("slider8"), document.getElementById("s8input"));
+	s8 = new Slider(document.getElementById("slider8"), document.getElementById("s8input"));
 	s8.setMinimum(0);
 	s8.setMaximum(100);
 	s8.onchange = function () {
@@ -179,7 +185,7 @@ function initMakeRouteForm() {
 	};
 	s8.setValue(0);
 
-	var s9 = new Slider(document.getElementById("slider9"), document.getElementById("s9input"));
+	s9 = new Slider(document.getElementById("slider9"), document.getElementById("s9input"));
 	s9.setMinimum(0);
 	s9.setMaximum(100);
 	s9.onchange = function () {
@@ -187,7 +193,7 @@ function initMakeRouteForm() {
 	};
 	s9.setValue(0);
 
-	var s10 = new Slider(document.getElementById("slider10"), document.getElementById("s10input"));
+	s10 = new Slider(document.getElementById("slider10"), document.getElementById("s10input"));
 	s10.setMinimum(0);
 	s10.setMaximum(100);
 	s10.onchange = function () {
