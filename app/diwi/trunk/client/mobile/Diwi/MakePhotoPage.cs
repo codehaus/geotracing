@@ -39,7 +39,7 @@ namespace Diwi {
 
 
         void voegToe(int i, string s) {
-            new MediaUploader(currentFilename, mNameBox.Text,   null);
+            new MediaUploader(currentFilename, mNameBox.Text, "image/jpeg", null);
             doTerug(0, null);
         }
 
