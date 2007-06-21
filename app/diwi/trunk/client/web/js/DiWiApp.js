@@ -2,6 +2,15 @@
 var DIWIAPP = {
 	userName: null,
 	fixedRoutes: {},
+	swapImageIndex: 1,
+
+	/** Swap images in top. */
+	imageSwap: function() {
+		DH.getObject('plaatje').src = 'media/images/0' + DIWIAPP.swapImageIndex + '.jpg';
+		if (DIWIAPP.swapImageIndex++ == 6) {
+			DIWIAPP.swapImageIndex = 1;
+		}
+	},
 
 // Initialization of KWClient library
 	init: function() {
@@ -22,11 +31,14 @@ var DIWIAPP = {
 			loginForm.password.value = accData[1];
 			DIWIAPP.login();
 		}
+
+		// Swap images in top (just for fun)
+		window.setInterval(DIWIAPP.imageSwap, 20000);
 	},
 
 // called from form submit
 	login: function() {
-		DIWIAPP.setStatus('inloggen...');
+		DIWIAPP.pr('inloggen...');
 		var loginForm = DH.getObject('loginform');
 		DIWIAPP.userName = loginForm.name.value;
 		var password = loginForm.password.value;
@@ -38,7 +50,7 @@ var DIWIAPP = {
 	},
 
 	logout: function() {
-		DIWIAPP.setStatus('uitloggen...');
+		DIWIAPP.pr('uitloggen...');
 		KW.clearAccount();
 		// KeyWorx client
 		KW.logout();
@@ -114,6 +126,22 @@ var DIWIAPP = {
 
 	},
 
+
+	getBigMap: function() {
+		KW.DIWI.getmap(DIWIAPP.onMapRsp, DIWIAPP.currentGeneratedRouteId, 640, 480);
+	},
+
+	onMapRsp: function(elm) {
+		if (!elm) {
+			return;
+		}
+		verwerkPlaatje(elm);
+		//document.getElementById("maakroutebox").style.display = 'block';
+		// document.getElementById("leguitbox").style.display = 'none';
+		//document.getElementById("leguittext").style.display = 'none';
+		//document.getElementById("leguitbullet").style.display = 'none';
+	},
+
 	onRsp: function(elm) {
 		if (!elm) {
 			DIWIAPP.pr('empty response');
@@ -122,7 +150,7 @@ var DIWIAPP = {
 
 		DIWIAPP.pr('server response ' + elm.tagName);
 		if (elm.tagName == 'login-rsp') {
-			DIWIAPP.setStatus('response ok');
+			DIWIAPP.pr('login response ok');
 			KW.selectApp('geoapp', 'user');
 		} else if (elm.tagName == 'select-app-rsp') {
 
@@ -137,6 +165,7 @@ var DIWIAPP = {
 			DH.getStyleObject('inlogbox').display = 'none';
 			DH.getStyleObject('inlogform').display = 'none';
 			DIWIAPP.setStatus('ingelogd als ' + DIWIAPP.userName);
+			DIWIAPP.pr('ingelogd als ' + DIWIAPP.userName);
 			DIWINAV.buttons['b8'].onSelect();
 		} else if (elm.tagName == 'logout-rsp') {
 			DIWIAPP.pr('logout OK');
@@ -149,6 +178,10 @@ var DIWIAPP = {
 			DIWINAV.buttons['b1'].onSelect();
 		} else if (elm.tagName == 'route-getlist-rsp') {
 			maakVasteRoutesForm(elm);
+		} else if (elm.tagName == 'route-generate-rsp') {
+			DIWIAPP.currentGeneratedRouteId = elm.firstChild.getAttribute('id');
+			KW.DIWI.getmap(DIWIAPP.onMapRsp, DIWIAPP.currentGeneratedRouteId, 240, 180);
+			verwerkGenRoute(elm);
 		} else {
 			DIWIAPP.pr('rsp tag=' + elm.tagName + ' ' + elm);
 		}
@@ -156,16 +189,16 @@ var DIWIAPP = {
 
 // KWClient negative response handler.
 	onNegRsp: function(errorId, error, details) {
-		DIWIAPP.setStatus('server zegt:' + error);
+		DIWIAPP.pr('hmm, de server zegt: "' + error + '" en in bijzonder "' + details + '"');
 	},
 
 // Util for printing/displaying debug output
 	pr: function (s) {
-		// DH.addHTML('result', '<br/>' + s);
+		DH.setHTML('balloontext', s);
 	},
 
 	setStatus: function (s) {
-		DH.setHTML('msg', s);
+		DH.setHTML('status', s);
 	}
 }
 

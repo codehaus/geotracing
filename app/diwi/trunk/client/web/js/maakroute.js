@@ -1,118 +1,4 @@
-// JavaScript Document
-
-//
-
 var s1,s2,s3,s4,s5,s6,s7,s8,s9,s10;
-
-function selectWandelen() {
-	document.getElementById("wandelen").checked = true;
-	document.getElementById("fietsen").checked = false;
-}
-function selectFietsen() {
-	document.getElementById("wandelen").checked = false;
-	document.getElementById("fietsen").checked = true;
-}
-
-function maakStartpuntForm(elm) {
-	var start_punt_string = '<p>Startpunt</p><form ><select style="width:120px;" id="startpunt"><option value="0" selected="selected">geen voorkeur</option>';
-
-	var start_punt_list = elm.getElementsByTagName('name');
-	var n_start_punt = start_punt_list.length;
-	var j;
-	for (i = 0; i < n_start_punt; i++) {
-		j = i + 1;
-		start_punt_string += '<option value="' + j + '" style="width:120px;">';
-		start_punt_string += start_punt_list.item(i).firstChild.nodeValue;
-		start_punt_string += '</option>';
-	}
-	start_punt_string += '</select></form>';
-
-	var ni = document.getElementById('startpunt-lb');
-	ni.innerHTML = start_punt_string;
-
-}
-
-function maakEindpuntForm(elm) {
-	var eind_punt_string = '<p>Eindpunt</p><form><select style="width:120px;" id="eindpunt" ><option value="0" selected="selected">geen voorkeur</option>';
-
-	var eind_punt_list = elm.getElementsByTagName('name');
-	var n_eind_punt = eind_punt_list.length;
-	var j;
-	for (i = 0; i < n_eind_punt; i++) {
-		j = i + 1;
-		eind_punt_string += '<option value=' + j + '>';
-		eind_punt_string += eind_punt_list.item(i).firstChild.nodeValue;
-		eind_punt_string += '</option>';
-	}
-	eind_punt_string += '</select></form>';
-
-	var ni = document.getElementById('eindpunt-lb');
-	ni.innerHTML = eind_punt_string;
-
-}
-
-
-function maakThemasForm(elm) {
-	var themesString = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="0" selected="selected">geen voorkeur</option>';
-	var themes_list = elm.getElementsByTagName('theme');
-	var n_themes = themes_list.length;
-	var j;
-	for (i = 0; i < n_themes; i++) {
-		j = i + 1;
-		themesString += '<option value=' + j + '>';
-		themesString += themes_list.item(i).firstChild.nodeValue;
-		themesString += '</option>';
-	}
-	themesString += '</select></form>';
-
-	var ni = document.getElementById('thema-lb');
-	ni.innerHTML = themesString;
-}
-
-function maakAfstandForm() {
-	var afstandString = '<p>Afstand</p><form><select id="afstand" ><option value="0" selected="selected">geen voorkeur</option><option value="3" >3 km</option><option value="5" >5 km</option><option value="10" >10 km</option><option value="15" >15 km</option><option value="20" >20 km</option></select></form>';
-
-	var ni = document.getElementById('afstand-lb');
-	ni.innerHTML = afstandString;
-}
-
-
-
-function maakGenRoutesList(elm) {
-	generatedString = '';
-	for (i = 1; i < 5; i++) {
-		generatedString += '<p><a href=\"\">' + i + '-de route </a></p>';
-	}
-	var ni = document.getElementById('generated-routes');
-	ni.innerHTML = generatedString;
-}
-
-function verwerkGenRoute(elm) {
-	var route = elm.firstChild;
-	var name = route.getElementsByTagName('name')[0].firstChild.nodeValue;
-	var description = route.getElementsByTagName('description')[0].firstChild.nodeValue;
-	var routeString = '<p>Naam van de route: ' + name + '</p><p>Eigenschappen: </p> <p>' + description + '</p>';
-
-	var ni = document.getElementById('generated-routes');
-	ni.innerHTML = routeString;
-
-}
-
-function verwerkPlaatje(elm) {
-	//	plaatje = unescape(elm.getAttribute('url'));
-	//	imageString = '<a href=' + plaatje + ' rel="lightbox"><img src=' + plaatje + '></a>';
-	imageString = '<a href=\'DIWI.getBigMap();\' ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
-	//	imageString = '<img src=\"' + unescape(elm.getAttribute('url')) + '\">';
-
-	var ni = document.getElementById('generated-routes-image');
-	ni.innerHTML = imageString;
-}
-function verwerkBigPlaatje(elm) {
-	imageString = '<a onClick=";" ><img src=\"' + unescape(elm.getAttribute('url')) + '\"></a>';
-
-	var ni = document.getElementById('generated-routes-image-big');
-	ni.innerHTML = imageString;
-}
 
 function initMakeRouteForm() {
 	KW.CMS.getstartpoints(maakStartpuntForm);
@@ -120,7 +6,7 @@ function initMakeRouteForm() {
 	KW.CMS.getthemes(maakThemasForm);
 	maakAfstandForm();
 	DH.getObject("wandelen").checked = true;
-
+	DIWIAPP.pr('	Stel uw eigen route samen naar uw eigen voorkeuren! Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen. Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.');
 	s1 = new Slider(document.getElementById("slider1"), document.getElementById("s1input"));
 	s1.setMinimum(0);
 	s1.setMaximum(100);
@@ -201,3 +87,110 @@ function initMakeRouteForm() {
 	};
 	s10.setValue(0);
 }
+
+
+function maakStartpuntForm(elm) {
+	var start_punt_string = '<p>Startpunt</p><form ><select style="width:120px;" id="startpunt"><option value="0" selected="selected">geen voorkeur</option>';
+
+	var start_punt_list = elm.getElementsByTagName('name');
+	var n_start_punt = start_punt_list.length;
+	var j;
+	for (i = 0; i < n_start_punt; i++) {
+		j = i + 1;
+		start_punt_string += '<option value="' + j + '" style="width:120px;">';
+		start_punt_string += start_punt_list.item(i).firstChild.nodeValue;
+		start_punt_string += '</option>';
+	}
+	start_punt_string += '</select></form>';
+
+	var ni = document.getElementById('startpunt-lb');
+	ni.innerHTML = start_punt_string;
+
+}
+
+function maakEindpuntForm(elm) {
+	var eind_punt_string = '<p>Eindpunt</p><form><select style="width:120px;" id="eindpunt" ><option value="0" selected="selected">geen voorkeur</option>';
+
+	var eind_punt_list = elm.getElementsByTagName('name');
+	var n_eind_punt = eind_punt_list.length;
+	var j;
+	for (i = 0; i < n_eind_punt; i++) {
+		j = i + 1;
+		eind_punt_string += '<option value=' + j + '>';
+		eind_punt_string += eind_punt_list.item(i).firstChild.nodeValue;
+		eind_punt_string += '</option>';
+	}
+	eind_punt_string += '</select></form>';
+
+	var ni = document.getElementById('eindpunt-lb');
+	ni.innerHTML = eind_punt_string;
+
+}
+
+
+function maakThemasForm(elm) {
+	var themesString = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="0" selected="selected">geen voorkeur</option>';
+	var themes_list = elm.getElementsByTagName('theme');
+	var n_themes = themes_list.length;
+	var j;
+	for (i = 0; i < n_themes; i++) {
+		j = i + 1;
+		themesString += '<option value=' + j + '>';
+		themesString += themes_list.item(i).firstChild.nodeValue;
+		themesString += '</option>';
+	}
+	themesString += '</select></form>';
+
+	var ni = document.getElementById('thema-lb');
+	ni.innerHTML = themesString;
+}
+
+function maakAfstandForm() {
+	var afstandString = '<p>Afstand</p><form><select id="afstand" ><option value="0" selected="selected">geen voorkeur</option><option value="3" >3 km</option><option value="5" >5 km</option><option value="10" >10 km</option><option value="15" >15 km</option><option value="20" >20 km</option></select></form>';
+
+	var ni = document.getElementById('afstand-lb');
+	ni.innerHTML = afstandString;
+}
+
+function selectWandelen() {
+	document.getElementById("wandelen").checked = true;
+	document.getElementById("fietsen").checked = false;
+}
+
+function selectFietsen() {
+	document.getElementById("wandelen").checked = false;
+	document.getElementById("fietsen").checked = true;
+}
+
+
+function maakGenRoutesList(elm) {
+	generatedString = '';
+	for (i = 1; i < 5; i++) {
+		generatedString += '<p><a href=\"\">' + i + '-de route </a></p>';
+	}
+	var ni = document.getElementById('generated-routes');
+	ni.innerHTML = generatedString;
+}
+
+function verwerkGenRoute(elm) {
+	var route = elm.firstChild;
+	var name = route.getElementsByTagName('name')[0].firstChild.nodeValue;
+	var description = route.getElementsByTagName('description')[0].firstChild.nodeValue;
+	var routeString = '<p>Naam van de route: ' + name + '</p><p>Eigenschappen: </p> <p>' + description + '</p>';
+	DIWIAPP.pr(routeString);
+
+}
+
+function verwerkPlaatje(elm) {
+	imageString = '<a href="javascript:DIWIAPP.getBigMap()" ><img src="' + unescape(elm.getAttribute('url')) + '"></a>';
+
+	DH.setHTML('generated-routes-image', imageString);
+}
+
+function verwerkBigPlaatje(elm) {
+	imageString = '<img src="' + unescape(elm.getAttribute('url')) + '">';
+
+	DH.setHTML('generated-routes-image', imageString);
+
+}
+
