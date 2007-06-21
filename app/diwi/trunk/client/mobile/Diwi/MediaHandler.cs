@@ -190,10 +190,10 @@ namespace Diwi {
             FileStream rdr = new FileStream(localFile, FileMode.Open);
 
             int total = 0;
-            int bytesRead = rdr.Read(inData, 0, inData.Length);
+            int bytesRead = rdr.Read(inData, 0, 1024);
             while (bytesRead > 0) {
                 reqStream.Write(inData, 0, bytesRead);
-                bytesRead = rdr.Read(inData, 0, inData.Length);
+                bytesRead = rdr.Read(inData, 0, 1024);
                 total += bytesRead;
             }
 

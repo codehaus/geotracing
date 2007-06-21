@@ -59,13 +59,13 @@ namespace Diwi {
             sKwxClient = KwxClient.instance;
             sGpsReader = GpsReader.instance;
 
-            sBacklight.Activate();
+           // sBacklight.Activate();
         }
 
         public static void deactivate() {
             sGpsReader.stop();
             sKwxClient.stop();
-            sBacklight.Release();
+           // sBacklight.Release();
             Thread.Sleep(1000);
         }
 
