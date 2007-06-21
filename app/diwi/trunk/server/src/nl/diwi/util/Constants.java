@@ -9,6 +9,7 @@ public interface Constants {
     public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
     public final static String TRAFFIC_TABLE = "diwi_traffic";
+    public final static String TRIP_TABLE = "diwi_trip";
     public static final String PERSON_TABLE = "utopia_person";
 
     // Keyworx relationship tags
@@ -33,6 +34,7 @@ public interface Constants {
     public final static String TRAFFIC_ELM = "traffic";
     public final static String THEME_ELM = "theme";
     public final static String POI_HIT_ELM = "poi-hit";
+    public final static String TRIP_ELM = "trip";
 
     public final static String LLB_LAT_ATTR = "llbLat";
     public final static String LLB_LON_ATTR = "llbLon";
@@ -44,6 +46,9 @@ public interface Constants {
     public final static String OWNER_FIELD = "owner";
     public final static String VERSION_FIELD = "version";
     public final static String NAME_FIELD = "name";
+    public final static String EVENTS_FIELD = "events";
+    public final static String START_DATE_FIELD = "startdate";
+    public final static String END_DATE_FIELD = "enddate";
     public final static String DESCRIPTION_FIELD = "description";
     public final static String CATEGORY_FIELD = "category";
     public final static String X_FIELD = "x";
@@ -67,6 +72,10 @@ public interface Constants {
     public final static String HEIGHT_FIELD = "height";
     public final static String WIDTH_FIELD = "width";
     public final static String URL_FIELD = "url";
+
+    // trip states
+	public final static String TRIP_STATE_RUNNING = "running";
+	public final static String TRIP_STATE_DONE = "done";
 
     // poi types
     public final static int POI_BASICPOINT = 1;

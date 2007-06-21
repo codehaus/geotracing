@@ -3,6 +3,7 @@ package nl.diwi.control;
 import nl.diwi.logic.MapLogic;
 import nl.diwi.logic.NavigationLogic;
 import nl.diwi.logic.TrafficLogic;
+import nl.diwi.logic.TripLogic;
 import nl.diwi.util.Constants;
 import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
@@ -130,6 +131,10 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
         // Resume current Track for this user
         trackLogic.resume(HandlerUtil.getUserId(anUtopiaReq), Track.VAL_DAY_TRACK, System.currentTimeMillis());
+
+        // create a trip
+        TripLogic tripLogic = new TripLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        tripLogic.createTrip(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
         // Create and return response with open track id.
         return createResponse(NAV_START);
