@@ -1,0 +1,19 @@
+<media>
+    <medium>
+        <id>23</id>
+        <description>foto van Kazemat
+        </description>
+        <kich-uri>
+            http://simlandscape.alterra.nl/diwimedia/photo1.bmp
+        </kich-uri>
+    </medium>
+    <medium>
+        <id>137</id>
+        <description>verhaal over Kazemat
+        </description>
+
+        <kich-uri>
+            http://simlandscape.alterra.nl/diwimedia/audio1.mp3
+        </kich-uri>
+    </medium>
+</media>
