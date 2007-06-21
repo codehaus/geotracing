@@ -39,7 +39,7 @@ public class KICHHandler extends DefaultHandler implements Constants {
                 response = getMedia(anUtopiaReq);
             } else if (service.equals(KICH_GET_THEMES_SERVICE)) {
                 // get all kich media
-                response = getThemes(anUtopiaReq);            
+                response = getThemes(anUtopiaReq);
             } else if (service.equals(KICH_SYNC_SERVICE)) {
                 // get all kich media
                 response = syncKICH(anUtopiaReq);
@@ -51,7 +51,7 @@ public class KICHHandler extends DefaultHandler implements Constants {
             // store the traffic
             TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
             t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-            
+
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
@@ -67,14 +67,14 @@ public class KICHHandler extends DefaultHandler implements Constants {
 
     private JXElement getThemes(UtopiaRequest anUtopiaReq) {
         JXElement response = createResponse(KICH_GET_THEMES_SERVICE);
-        
+
         response.addTextChild(THEME_ELM, "Forten");
         response.addTextChild(THEME_ELM, "Romeins");
-        
-        return response;
-	}
 
-    private JXElement syncKICH(UtopiaRequest anUtopiaReq) throws UtopiaException{
+        return response;
+    }
+
+    private JXElement syncKICH(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(KICH_SYNC_SERVICE);
         DataSource ds = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
         ds.syncFixedRoutes();

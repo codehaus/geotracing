@@ -1,7 +1,7 @@
 package nl.diwi.util;
 
 public interface Constants {
-	
+
     // tablenames
     public final static String ROUTE_TABLE = "diwi_route";
     public final static String POI_TABLE = "diwi_poi";
@@ -9,19 +9,19 @@ public interface Constants {
     public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
     public final static String TRAFFIC_TABLE = "diwi_traffic";
-	public static final String PERSON_TABLE = "utopia_person";
+    public static final String PERSON_TABLE = "utopia_person";
 
     // Keyworx relationship tags
     public final static String ACTIVE_TAG = "active";
 
     // Keyworx services
-    public final static String NAV_GET_MAP = "nav-get-map";	
-    public final static String NAV_POINT = "nav-point";	
-    public final static String NAV_START = "nav-start";	
-    public final static String NAV_STOP = "nav-stop";	    
-    public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";	    
-    public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";	    
-       
+    public final static String NAV_GET_MAP = "nav-get-map";
+    public final static String NAV_POINT = "nav-point";
+    public final static String NAV_START = "nav-start";
+    public final static String NAV_STOP = "nav-stop";
+    public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";
+    public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";
+
     // xml tags
     public final static String PREF_ELM = "pref";
     public final static String ROUTE_ELM = "route";
@@ -38,7 +38,7 @@ public interface Constants {
     public final static String LLB_LON_ATTR = "llbLon";
     public final static String URL_LAT_ATTR = "urtLat";
     public final static String URT_LON_ATTR = "urtLon";
-    
+
     // table fields
     public final static String ID_FIELD = "id";
     public final static String OWNER_FIELD = "owner";
@@ -67,37 +67,39 @@ public interface Constants {
     public final static String HEIGHT_FIELD = "height";
     public final static String WIDTH_FIELD = "width";
     public final static String URL_FIELD = "url";
-    
+
     // poi types
     public final static int POI_BASICPOINT = 1;
     public final static int POI_STARTPOINT = 2;
     public final static int POI_ENDPOINT = 3;
 
     // route types
-    public final static int ROUTE_TYPE_FIXED = 0;        
-    public final static int ROUTE_TYPE_DIRECT = 1;    
-    public final static int ROUTE_TYPE_GENERATED = 2; 
-    
+    public final static int ROUTE_TYPE_FIXED = 0;
+    public final static int ROUTE_TYPE_DIRECT = 1;
+    public final static int ROUTE_TYPE_GENERATED = 2;
+
     //properties
     public final static String KICH_POST_URL = "kichposturl";
-	public final static String KICH_REST_URL = "kichresturl";
-	public final static String ROUTING_SERVLET_URL = "routingservleturl";
-	public final static String TEST_DATA_URL = "testdataurl";
-	public final static String TEST_DATA_LOCATION = "testdatalocation";
-	public final static String MEDIA_URL = "mediaurl";
+    public final static String KICH_REST_URL = "kichresturl";
+    public final static String ROUTING_SERVLET_URL = "routingservleturl";
+    public final static String TEST_DATA_URL = "testdataurl";
+    public final static String TEST_DATA_LOCATION = "testdatalocation";
+    public final static String MEDIA_URL = "mediaurl";
 
-    //actions
-    public final static String POI_INSERT_ACTION = "insert";
-    public final static String POI_UPDATE_ACTION = "update";
-    public final static String POI_DELETE_ACTION = "delete";
-    
+    //commands for KICH service - POIServlet
+    public final static String POI_INSERT_COMMAND = "insertpois";
+    public final static String POI_UPDATE_COMMAND = "updatepois";
+    public final static String POI_DELETE_COMMAND = "deletepois";
+    public final static String RELATE_MEDIA_COMMAND = "linkmedia";
+    public final static String UNRELATE_MEDIA_COMMAND = "deletelinkmedia";
+
     public static final int EPSG_DUTCH_RD = 28992;
     public static final int EPSG_WGS84 = 4326; //google maps lat lon
-    
-	public static final int DEFAULT_SRID = EPSG_WGS84;
 
-	public static final int SRID_ROUTING_API = EPSG_DUTCH_RD;
-	public static final int SRID_KICH_API = EPSG_DUTCH_RD;
+    public static final int DEFAULT_SRID = EPSG_WGS84;
 
-	public static final int HIT_DISTANCE = 20;
+    public static final int SRID_ROUTING_API = EPSG_DUTCH_RD;
+    public static final int SRID_KICH_API = EPSG_DUTCH_RD;
+
+    public static final int HIT_DISTANCE = 20;
 }

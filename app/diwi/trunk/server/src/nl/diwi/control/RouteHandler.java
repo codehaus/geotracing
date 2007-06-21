@@ -35,71 +35,72 @@ public class RouteHandler extends DefaultHandler implements Constants {
     public final static String ROUTE_GET_SERVICE = "route-get";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
     public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
-    public final static String ROUTE_THEMES_SERVICE = "route-themes";  
-    
-    
+    public final static String ROUTE_THEMES_SERVICE = "route-themes";
+
+
     /**
-	 * Processes the Client Request.
-	 *
-	 * @param anUtopiaReq A UtopiaRequest
-	 * @return A UtopiaResponse.
-	 * @throws UtopiaException standard Utopia exception
-	 */
-	public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		Log log = Logging.getLog(anUtopiaReq);
+     * Processes the Client Request.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws UtopiaException standard Utopia exception
+     */
+    public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        Log log = Logging.getLog(anUtopiaReq);
 
-		// Get the service name for the request
-		String service = anUtopiaReq.getServiceName();
-		log.trace("Handling request for service=" + service);
+        // Get the service name for the request
+        String service = anUtopiaReq.getServiceName();
+        log.trace("Handling request for service=" + service);
 
-		JXElement response;
-		try {
-			if (service.equals(ROUTE_GENERATE_SERVICE)) {
-				response = generateRoute(anUtopiaReq);
-			}/* else if (service.equals(ROUTE_INSERT_SERVICE)) {
+        JXElement response;
+        try {
+            if (service.equals(ROUTE_GENERATE_SERVICE)) {
+                response = generateRoute(anUtopiaReq);
+            }/* else if (service.equals(ROUTE_INSERT_SERVICE)) {
 				response = insertRoute(anUtopiaReq);
-			}*/ else if (service.equals(ROUTE_GET_SERVICE)) {
-				response = getRoute(anUtopiaReq);
-			} else if (service.equals(ROUTE_GETLIST_SERVICE)) {
-				response = getRoutes(anUtopiaReq);
-			} else if (service.equals(ROUTE_GET_MAP_SERVICE)) {
-				response = getMap(anUtopiaReq);
-			} else {
-				// May be overridden in subclass
-				response = unknownReq(anUtopiaReq);
-			}
+			}*/
+            else if (service.equals(ROUTE_GET_SERVICE)) {
+                response = getRoute(anUtopiaReq);
+            } else if (service.equals(ROUTE_GETLIST_SERVICE)) {
+                response = getRoutes(anUtopiaReq);
+            } else if (service.equals(ROUTE_GET_MAP_SERVICE)) {
+                response = getMap(anUtopiaReq);
+            } else {
+                // May be overridden in subclass
+                response = unknownReq(anUtopiaReq);
+            }
 
             // store the traffic
             TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
             t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-            
+
         } catch (UtopiaException ue) {
-			log.warn("Negative response service=" + service, ue);
-			response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
-		} catch (Throwable t) {
-			log.error("Unexpected error service=" + service, t);
-			response = createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request " + t);
-		}
+            log.warn("Negative response service=" + service, ue);
+            response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
+        } catch (Throwable t) {
+            log.error("Unexpected error service=" + service, t);
+            response = createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request " + t);
+        }
 
-		// Always return a response
-		log.trace("Handled service=" + service + " response=" + response.getTag());
-		return new UtopiaResponse(response);
-	}
+        // Always return a response
+        log.trace("Handled service=" + service + " response=" + response.getTag());
+        return new UtopiaResponse(response);
+    }
 
-	private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        RouteLogic logic = createLogic(anUtopiaReq);   
+    private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        RouteLogic logic = createLogic(anUtopiaReq);
         int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
         int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
         int width = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(WIDTH_FIELD));
-		
-		JXElement response = createResponse(ROUTE_GET_MAP_SERVICE);
+
+        JXElement response = createResponse(ROUTE_GET_MAP_SERVICE);
         try {
-			response.setAttr(URL_FIELD, URLEncoder.encode(logic.getMapUrl(routeId, width, height), "UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new UtopiaException("Exception in getMap", e);
-		}
+            response.setAttr(URL_FIELD, URLEncoder.encode(logic.getMapUrl(routeId, width, height), "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new UtopiaException("Exception in getMap", e);
+        }
         return response;
-	}
+    }
 
     /*private JXElement insertRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
@@ -114,22 +115,22 @@ public class RouteHandler extends DefaultHandler implements Constants {
     private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
         JXElement routeElm = logic.getRoute(Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)));
-        
+
         JXElement response = createResponse(ROUTE_GET_SERVICE);
         response.addChild(routeElm);
 
         return response;
-	}
+    }
 
     private JXElement getRoutes(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
         String type = anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD);
         int t = -1;
-        if(type.equals("fixed")){
+        if (type.equals("fixed")) {
             t = ROUTE_TYPE_FIXED;
-        }else if(type.equals("direct")){
+        } else if (type.equals("direct")) {
             t = ROUTE_TYPE_DIRECT;
-        }else if(type.equals("generated")){
+        } else if (type.equals("generated")) {
             t = ROUTE_TYPE_GENERATED;
         }
 
@@ -140,7 +141,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         response.addChildren(routes);
 
         return response;
-	}
+    }
 
     /*
         <route-generate-req >
@@ -155,37 +156,37 @@ public class RouteHandler extends DefaultHandler implements Constants {
         RouteLogic logic = createLogic(anUtopiaReq);
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         // ok so this person is the one generating the routes!!
-        int personId  = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-        
-        JXElement route = logic.generateRoute(reqElm, personId);        
+        int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+
+        JXElement route = logic.generateRoute(reqElm, personId);
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChild(route);
 
         return response;
-	}
+    }
 
     /**
-	 * Get user (Person) id from request.
-	 */
-	protected RouteLogic createLogic(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		return new RouteLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-	}
+     * Get user (Person) id from request.
+     */
+    protected RouteLogic createLogic(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        return new RouteLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+    }
 
     /**
-	 * Default implementation for unknown service request.
-	 * <p/>
-	 * Override this method in extended class for handling additional
-	 * requests.
-	 *
-	 * @param anUtopiaReq A UtopiaRequest
-	 * @return A negative UtopiaResponse.
-	 * @throws org.keyworx.utopia.core.data.UtopiaException
-	 *          Standard Utopia exception
-	 */
-	protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		String service = anUtopiaReq.getServiceName();
-		Logging.getLog(anUtopiaReq).warn("Unknown service " + service);
-		return createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
-	}
+     * Default implementation for unknown service request.
+     * <p/>
+     * Override this method in extended class for handling additional
+     * requests.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A negative UtopiaResponse.
+     * @throws org.keyworx.utopia.core.data.UtopiaException
+     *          Standard Utopia exception
+     */
+    protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        String service = anUtopiaReq.getServiceName();
+        Logging.getLog(anUtopiaReq).warn("Unknown service " + service);
+        return createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);
+    }
 
 }

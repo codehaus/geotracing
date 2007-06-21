@@ -9,9 +9,12 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+
+import java.util.Vector;
 
 
 public class POIHandler extends DefaultHandler implements Constants {
@@ -22,6 +25,8 @@ public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_GET_ENDPOINTS_SERVICE = "poi-get-endpoints";
     public final static String POI_UPDATE_SERVICE = "poi-update";
     public final static String POI_DELETE_SERVICE = "poi-delete";
+    public final static String POI_RELATE_MEDIA_SERVICE = "poi-relate-media";
+    public final static String POI_UNRELATE_MEDIA_SERVICE = "poi-unrelate-media";
 
     private POILogic logic;
 
@@ -65,6 +70,12 @@ public class POIHandler extends DefaultHandler implements Constants {
             } else if (service.equals(POI_GET_ENDPOINTS_SERVICE)) {
                 // get endpoint type pois
                 response = getEndPoints(anUtopiaReq);
+            } else if (service.equals(POI_RELATE_MEDIA_SERVICE)) {
+                // relate media to poi
+                response = relateMediaToPoi(anUtopiaReq);
+            } else if (service.equals(POI_UNRELATE_MEDIA_SERVICE)) {
+                // unrelatye media to poi
+                response = unrelateMediaToPoi(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -73,7 +84,7 @@ public class POIHandler extends DefaultHandler implements Constants {
             // store the traffic
             TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
             t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-            
+
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
@@ -151,6 +162,46 @@ public class POIHandler extends DefaultHandler implements Constants {
     }
 
     /**
+     * relate media to a POI.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws org.keyworx.utopia.core.data.UtopiaException
+     *          Standard Utopia exception
+     */
+    protected JXElement relateMediaToPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+
+        String id = reqElm.getAttr(ID_FIELD);
+        throwOnMissingAttr(ID_FIELD, id);
+
+        Vector media = reqElm.getChildrenByTag(Medium.XML_TAG);
+        logic.relateMedia(Integer.parseInt(id), media);
+
+        return createResponse(POI_RELATE_MEDIA_SERVICE);
+    }
+
+    /**
+     * unrelate media from a POI.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws org.keyworx.utopia.core.data.UtopiaException
+     *          Standard Utopia exception
+     */
+    protected JXElement unrelateMediaToPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+
+        String id = reqElm.getAttr(ID_FIELD);
+        throwOnMissingAttr(ID_FIELD, id);
+
+        Vector media = reqElm.getChildrenByTag(Medium.XML_TAG);
+        logic.unrelateMedia(Integer.parseInt(id), media);
+
+        return createResponse(POI_UNRELATE_MEDIA_SERVICE);
+    }
+
+    /**
      * Gets a poi.
      *
      * @param anUtopiaReq A UtopiaRequest
@@ -162,14 +213,14 @@ public class POIHandler extends DefaultHandler implements Constants {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         String id = reqElm.getAttr(ID_FIELD);
         String kichid = reqElm.getAttr(KICHID_FIELD);
-        if(id!=null && id.length()>0 && Java.isInt(id)){
+        if (id != null && id.length() > 0 && Java.isInt(id)) {
             response.addChild(logic.get(Integer.parseInt(id)));
-        }else if(kichid!=null && kichid.length()>0){
+        } else if (kichid != null && kichid.length() > 0) {
             response.addChild(logic.get(kichid));
         }
         return response;
     }
-    
+
     /**
      * Gets all pois.
      *
@@ -178,7 +229,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @throws UtopiaException standard Utopia exception
      */
     protected JXElement getPoiList(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        JXElement response = createResponse(POI_GETLIST_SERVICE);
+        JXElement response = createResponse(POI_GETLIST_SERVICE);        
         response.addChildren(logic.getList());
         return response;
     }
@@ -280,6 +331,6 @@ public class POIHandler extends DefaultHandler implements Constants {
     protected void throwNegNumAttr(String aName, long aValue) throws UtopiaException {
         if (aValue == -1) {
             throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
-		}
-	}
+        }
+    }
 }

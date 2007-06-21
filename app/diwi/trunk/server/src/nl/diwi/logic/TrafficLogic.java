@@ -34,11 +34,11 @@ public class TrafficLogic implements Constants {
         }
     }
 
-    public Vector getAllTraffic() throws UtopiaException{
+    public Vector getAllTraffic() throws UtopiaException {
         try {
             Record[] recs = oase.getFinder().readAll(TRAFFIC_TABLE);
             Vector result = new Vector(recs.length);
-            for(int i=0;i<recs.length;i++){
+            for (int i = 0; i < recs.length; i++) {
                 JXElement t = recs[i].toXML();
                 t.setTag(TRAFFIC_ELM);
                 result.add(t);
@@ -50,11 +50,11 @@ public class TrafficLogic implements Constants {
         }
     }
 
-    public Vector getTrafficForPerson(String aPersonId) throws UtopiaException{
+    public Vector getTrafficForPerson(String aPersonId) throws UtopiaException {
         try {
             Record[] recs = oase.getRelater().getRelated(oase.getFinder().read(Integer.parseInt(aPersonId)), TRAFFIC_TABLE, null);
             Vector result = new Vector(recs.length);
-            for(int i=0;i<recs.length;i++){
+            for (int i = 0; i < recs.length; i++) {
                 JXElement t = recs[i].toXML();
                 t.setTag(TRAFFIC_ELM);
                 result.add(t);
@@ -67,9 +67,9 @@ public class TrafficLogic implements Constants {
     }
 
     /**
-	 * Properties passed on from Handler.
-	 */
-	public static void setProperty(String propertyName, String propertyValue) {
-		properties.put(propertyName, propertyValue);
-	}
+     * Properties passed on from Handler.
+     */
+    public static void setProperty(String propertyName, String propertyValue) {
+        properties.put(propertyName, propertyValue);
+    }
 }

@@ -1,95 +1,95 @@
 <testset id="route-navigation" clients="1">
 
-	 <!-- Standard KWX login sequence -->
-	<test id="login-selapp">
+    <!-- Standard KWX login sequence -->
+    <test id="login-selapp">
 
-		<send id="client1">
-			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
-			<select-app-req appname="geoapp" rolename="user"/>
-		</send>
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
 
-		<expect id="client1">
+        <expect id="client1">
 
-			<login-rsp/>
+            <login-rsp/>
 
-			<select-app-rsp/>
-		</expect>
-	</test>
-	
-	<!-- setup -->
-	<test id="route-create-1">
-		<send id="client1">
-			<utopia-req>
-				<route-generate-req>
-		             <pref name="bos" value="40"/>
-				</route-generate-req>
-			</utopia-req>
-		</send>
+            <select-app-rsp/>
+        </expect>
+    </test>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<route-generate-rsp>
-					<route id="${route_id}"/>
-				</route-generate-rsp>				
-			</utopia-rsp>
-		</expect>
-	</test>
-	
-	<test id="start-route-1">
-		<send id="client1">
-			<utopia-req>
-				<route-activate-req id="${route_id}"/>
-			</utopia-req>
-		</send>
+    <!-- setup -->
+    <test id="route-create-1">
+        <send id="client1">
+            <utopia-req>
+                <route-generate-req>
+                    <pref name="bos" value="40"/>
+                </route-generate-req>
+            </utopia-req>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<route-activate-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
-	
-	<test id="register-point">
-		<send id="client1">
-			<utopia-req>
-				<diwi-track-point-req lat="52.54" lon="2.43"/>
-			</utopia-req>
-		</send>
+        <expect id="client1">
+            <utopia-rsp>
+                <route-generate-rsp>
+                    <route id="${route_id}"/>
+                </route-generate-rsp>
+            </utopia-rsp>
+        </expect>
+    </test>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<diwi-track-point-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
-	
-	<!-- normal poi hit -->
-	<test id="poi_hit">
-		<send id="client1">
-			<utopia-req>
-				<diwi-track-point-req lat="55.54" lon="2.44"/>
-			</utopia-req>
-		</send>
+    <test id="start-route-1">
+        <send id="client1">
+            <utopia-req>
+                <route-activate-req id="${route_id}"/>
+            </utopia-req>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<diwi-track-point-rsp>
-					<poi-hit id="23"/>
-				</diwi-track-point-rsp>
-			</utopia-rsp>
-		</expect>
-	</test>
+        <expect id="client1">
+            <utopia-rsp>
+                <route-activate-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="register-point">
+        <send id="client1">
+            <utopia-req>
+                <diwi-track-point-req lat="52.54" lon="2.43"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <diwi-track-point-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <!-- normal poi hit -->
+    <test id="poi_hit">
+        <send id="client1">
+            <utopia-req>
+                <diwi-track-point-req lat="55.54" lon="2.44"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <diwi-track-point-rsp>
+                    <poi-hit id="23"/>
+                </diwi-track-point-rsp>
+            </utopia-rsp>
+        </expect>
+    </test>
 
 
-	<test id="logout">
-		<send id="client1">
-			<logout-req/>
-		</send>
+    <test id="logout">
+        <send id="client1">
+            <logout-req/>
+        </send>
 
-		<expect id="client1">
-			<logout-rsp/>
-		</expect>
-	</test>
+        <expect id="client1">
+            <logout-rsp/>
+        </expect>
+    </test>
 
 </testset>
 

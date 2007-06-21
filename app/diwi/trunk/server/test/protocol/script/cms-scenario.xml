@@ -1,62 +1,64 @@
 <testset id="cms-scenario" clients="1">
 
-	 <!-- Standard KWX login sequence -->
-	<test id="login-selapp">
+    <!-- Standard KWX login sequence -->
+    <test id="login-selapp">
 
-		<send id="client1">
-			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
-			<select-app-req appname="geoapp" rolename="user"/>
-		</send>
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
 
-		<expect id="client1">
+        <expect id="client1">
 
-			<login-rsp/>
+            <login-rsp/>
 
-			<select-app-rsp/>
-		</expect>
-	</test>
+            <select-app-rsp/>
+        </expect>
+    </test>
 
     <!--
        ok so here's the CMS scenario:
-       - first fill up the KICH media browser
-       - secondly retrieve all poi's so they can be drawn onto the screen
-       - now add a poi
-       - update that poi
-       - delete that poi    
+       - retrieve media
+       - show medium (http, so not in test here)
+       - get poi list
+       - get poi
+       - create poi
+       - update poi
+       - remove poi       
     -->
 
-	<test id="kich-getlist-req">
-		<send id="client1">
-			<utopia-req>
-				<kich-getlist-req />
-			</utopia-req>
-		</send>
+    <test id="kich-get-media-req">
+        <send id="client1">
+            <utopia-req>
+                <kich-get-media-req/>
+            </utopia-req>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<kich-getlist-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
+        <expect id="client1">
+            <utopia-rsp>
+                <kich-get-media-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
 
     <test id="poi-getlist-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-getlist-req />
-			</utopia-req>
-		</send>
+        <send id="client1">
+            <utopia-req>
+                <poi-getlist-req/>
+            </utopia-req>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-getlist-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
 
     <test id="poi-insert-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-insert-req>
+        <send id="client1">
+            <utopia-req>
+                <poi-insert-req>
                     <poi>
                         <name>poi nummer 1</name>
                         <description>prachtig punt</description>
@@ -70,19 +72,70 @@
                     </poi>
                 </poi-insert-req>
             </utopia-req>
-		</send>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-insert-rsp id="${poiid}"/>
-			</utopia-rsp>
-		</expect>
-	</test>
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-insert-rsp id="${poiid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="poi-relate-media-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-relate-media-req id="${poiid}">
+                    <medium>2</medium>
+                    <medium>3</medium>
+                    <medium>4</medium>
+                </poi-relate-media-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-relate-media-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="poi-unrelate-media-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-unrelate-media-req id="${poiid}">
+                    <medium>2</medium>
+                    <medium>3</medium>
+                    <medium>4</medium>
+                </poi-unrelate-media-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-unrelate-media-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="poi-get-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-get-req id="${poiid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-get-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
 
     <test id="poi-update-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-update-req id="${poiid}">
+        <send id="client1">
+            <utopia-req>
+                <poi-update-req id="${poiid}">
                     <poi>
                         <name>poi nummer 100</name>
                         <description>mooi punt</description>
@@ -96,28 +149,14 @@
                     </poi>
                 </poi-update-req>
             </utopia-req>
-		</send>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-update-rsp />
-			</utopia-rsp>
-		</expect>
-	</test>
-
-    <test id="poi-getlist-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-getlist-req />
-			</utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-getlist-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-update-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
 
     <test id="poi-delete-req">
         <send id="client1">
@@ -132,127 +171,16 @@
             </utopia-rsp>
         </expect>
     </test>
-
-    <test id="poi-insert-startpoint-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-insert-req>
-                    <poi>
-                        <name>poi nummer 1</name>
-                        <description>prachtig punt</description>
-                        <category>fort</category>
-                        <type>1</type>
-                        <x>4.92</x>
-                        <y>52.35</y>
-                        <media>
-                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
-                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
-                        </media>
-                    </poi>
-                </poi-insert-req>
-            </utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-insert-rsp id="${poiid}"/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-    <test id="poi-get-startpoints-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-get-startpoints-req />
-            </utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-get-startpoints-rsp />
-			</utopia-rsp>
-		</expect>
-	</test>
-
-    <test id="poi-delete-req">
-        <send id="client1">
-            <utopia-req>
-                <poi-delete-req id="${poiid}"/>
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <poi-delete-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
-    <test id="poi-insert-endpoint-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-insert-req>
-                    <poi>
-                        <name>poi nummer 1</name>
-                        <description>prachtig punt</description>
-                        <category>fort</category>
-                        <type>2</type>
-                        <x>4.92</x>
-                        <y>52.35</y>
-                        <media>
-                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
-                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
-                        </media>
-                    </poi>
-                </poi-insert-req>
-            </utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-insert-rsp id="${poiid}"/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
-    <test id="poi-get-endpoints-req">
-		<send id="client1">
-			<utopia-req>
-				<poi-get-endpoints-req />
-            </utopia-req>
-		</send>
-
-		<expect id="client1">
-			<utopia-rsp>
-				<poi-get-endpoints-rsp />
-			</utopia-rsp>
-		</expect>
-	</test>
-
-    <test id="poi-delete-req">
-        <send id="client1">
-            <utopia-req>
-                <poi-delete-req id="${poiid}"/>
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <poi-delete-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
 
     <test id="logout">
-		<send id="client1">
-			<logout-req/>
-		</send>
+        <send id="client1">
+            <logout-req/>
+        </send>
 
-		<expect id="client1">
-			<logout-rsp/>
-		</expect>
-	</test>
+        <expect id="client1">
+            <logout-rsp/>
+        </expect>
+    </test>
 
 </testset>
 

@@ -164,6 +164,6 @@ public class TrafficHandler extends DefaultHandler implements Constants {
     protected void throwNegNumAttr(String aName, long aValue) throws UtopiaException {
         if (aValue == -1) {
             throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
-		}
-	}
+        }
+    }
 }
