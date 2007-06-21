@@ -22,6 +22,7 @@ namespace Diwi {
             : base(parent) {
 
             title = "Route: " + AppController.sActiveRoute.getChildValue("name");
+            mMenu.addItem("Voeg Text toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doText));
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
@@ -86,13 +87,15 @@ namespace Diwi {
             }
         }
 
-        void doFoto(int i, string s)
-        {
+        void doFoto(int i, string s) {
             string fileName = AppController.makeFoto();
-            if (fileName != null)
-            {
+            if (fileName != null) {
                 (new MakePhotoPage(this, fileName)).ShowDialog();
             }
+        }
+
+        void doText(int i, string s) {
+            (new MakeTextPage(this, null)).ShowDialog();
         }
 
 

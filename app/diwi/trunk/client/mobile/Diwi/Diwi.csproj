@@ -62,6 +62,9 @@
     <Compile Include="MakePhotoPage.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MakeTextPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="MakeVideoPages.cs">
       <SubType>Form</SubType>
     </Compile>
