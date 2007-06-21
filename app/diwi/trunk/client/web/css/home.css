@@ -92,7 +92,7 @@ p {
 	z-index: 1;
 }
 
-#msg {
+#status {
 	position: absolute;
 	top: -5px;
 	left: 356px;
@@ -168,7 +168,7 @@ p {
 #bovenbutlijn {
 	position: relative;
 	width: auto;
-	top: 0px;
+	top: -5px;
 	left: -7px;
 	z-index: 20;
 }
@@ -176,7 +176,7 @@ p {
 #butinloggen {
 	position: relative;
 	width: auto;
-	top: -5px;
+	top: -10px;
 	left: 0px;
 	z-index: 200;
 }
@@ -184,7 +184,7 @@ p {
 #butuitloggen {
 	position: relative;
 	width: auto;
-	top: -5px;
+	top: -10px;
 	left: 0px;
 	z-index: 200;
 }
@@ -237,12 +237,33 @@ p {
 	z-index: 200;
 }
 
-#videobox {
+#balloon {
 	position: relative;
 	width: auto;
-	top: -5px;
+	top: 45px;
 	left: 10px;
 	z-index: 100;
+}
+
+#balloontext {
+	position: relative;
+	top: -220px;
+	left: 15px;
+	width: 195px;
+	height: 128px;
+	padding: 10px;
+	z-index: 110;
+	font-size: 0.7em;
+	font-style: italic;
+	overflow: auto;
+}
+
+#bullet {
+	position: relative;
+	width: auto;
+	top: 25px;
+	left: 8px;
+	z-index: 50;
 }
 
 #fotovideobox {
@@ -252,6 +273,18 @@ p {
 	left: 25px;
 	z-index: 200;
 }
+
+#generated-routes-image {
+	position: relative;
+	cursor: pointer;
+	width: auto;
+	border: 5px;
+	border-color: white;
+	top: -130px;
+	left: 20px;
+	z-index: 260;
+}
+
 
 #spotmetbox {
 	position: relative;
