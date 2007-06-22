@@ -18,6 +18,8 @@ $Id: build.xml 505 2007-03-14 12:38:15Z just $
 	<property file="${home}/../../build.properties"/>
 
 	<property name="home.external" value="${home}/lib"/>
+	<property name="home.js" value="${home}/js"/>
+	<property name="client.web.js" value="${home}/../web/js"/>
 
 	<!-- The .jar -->
 	<property name="package.name" value="${project.id}-cms-${project.version}"/>
@@ -50,6 +52,13 @@ $Id: build.xml 505 2007-03-14 12:38:15Z just $
 		<echo message="Assembling files..."/>
 
 		<!-- Copy external JS libs. -->
+		
+		<!-- CMS JS client is maintained under DiWi web client. -->
+		<copy todir="${home.js}">
+			<fileset dir="${client.web.js}" >
+				<include name="KWClientCMS.js"/>
+			</fileset>
+		</copy>
 
 		<!-- GeoTracing base JS files. -->
 		<copy todir="${home.external}/gt">
