@@ -34,8 +34,8 @@ var DIWINAV = {
 		}
 	},
 
-	loadPage: function(aPageURL) {
-		DH.setHTML(DIWINAV.PAGE_ID, DH.getURL(aPageURL));
+	loadPage: function(aPageURL, aCallback) {
+		DH.setHTML(DIWINAV.PAGE_ID, DH.getURL(aPageURL, aCallback));
 	}
 }
 
