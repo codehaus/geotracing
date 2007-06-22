@@ -1,4 +1,5 @@
 var s1,s2,s3,s4,s5,s6,s7,s8,s9,s10;
+var genRouteId;
 
 function initMakeRouteForm() {
 	KW.CMS.getstartpoints(maakStartpuntForm);
@@ -173,19 +174,20 @@ function maakGenRoutesList(elm) {
 }
 
 function verwerkGenRoute(elm) {
+	genRouteId = elm.firstChild.getAttribute('id');
 	var route = elm.firstChild;
 	var name = route.getElementsByTagName('name')[0].firstChild.nodeValue;
 	var description = route.getElementsByTagName('description')[0].firstChild.nodeValue;
 	var routeString = 'Naam van de route: ' + name + '<br/>Eigenschappen:' + description;
 	DIWIAPP.pr(routeString);
-	DIWINAV.loadPage('pages/routemap.html');
-	showRouteMap(elm.firstChild.getAttribute('id'));
 }
 
 function verwerkPlaatje(elm) {
-	imageString = '<a href="javascript:DIWIAPP.getBigMap()" ><img src="' + unescape(elm.getAttribute('url')) + '"></a>';
+	DIWINAV.loadPage('pages/routemap.html');
+	showRouteMap(genRouteId);
+//	imageString = '<a href="javascript:DIWIAPP.getBigMap()" ><img src="' + unescape(elm.getAttribute('url')) + '"></a>';
 
-	DH.setHTML('generated-routes-image', imageString);
+//	DH.setHTML('generated-routes-image', imageString);
 }
 
 function verwerkBigPlaatje(elm) {
@@ -211,6 +213,10 @@ function showRouteMap(aRouteId) {
 	//<BoundingBox SRS="EPSG:28992" minx="3944.0000652443" miny="309541.000249053" maxx="276149.999934756"
 	//		 maxy="599336.999750947"/>
 	var mapDiv = DH.getObject('map');
+	if (map != null) {
+		map.destroy();
+		DH.setHTML('map', ' ');
+	}
 	map = new OpenLayers.Map(mapDiv, {
 		controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()],
 		maxExtent: new OpenLayers.Bounds( 4.724717,51.813062,5.752441,52.486596),
