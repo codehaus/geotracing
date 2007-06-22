@@ -116,6 +116,13 @@ p {
 	cursor:pointer;
 }
 
+#map {
+	margin-left: 5px;
+	margin-top: 5px;
+	width: 580px;
+	height: 400px;
+}
+
 #vasteroutes-lb {
 	position: absolute;
 	width: auto;

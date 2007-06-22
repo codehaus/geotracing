@@ -2,7 +2,8 @@
 var DIWIAPP = {
 	userName: null,
 	fixedRoutes: {},
-	swapImageIndex: 1,
+	swapImageIndex: 1+ Math.round(5*Math.random()),
+
 
 	/** Swap images in top. */
 	imageSwap: function() {
@@ -32,6 +33,7 @@ var DIWIAPP = {
 			DIWIAPP.login();
 		}
 
+		DIWIAPP.imageSwap();
 		// Swap images in top (just for fun)
 		window.setInterval(DIWIAPP.imageSwap, 20000);
 	},
@@ -99,10 +101,11 @@ var DIWIAPP = {
 				optionStr += '</option>';
 			}
 		}
-		DH.setHTML('fixed_routes_form', optionStr)
+
+		DH.setHTML('fixed_routes_form', optionStr);
 	},
 
-	showFixedRoute: function showFixedRoute(option) {
+	showFixedRoute: function(option) {
 		if (!option.value) {
 			return;
 		}
@@ -180,7 +183,7 @@ var DIWIAPP = {
 			maakVasteRoutesForm(elm);
 		} else if (elm.tagName == 'route-generate-rsp') {
 			DIWIAPP.currentGeneratedRouteId = elm.firstChild.getAttribute('id');
-			KW.DIWI.getmap(DIWIAPP.onMapRsp, DIWIAPP.currentGeneratedRouteId, 240, 180);
+			// KW.DIWI.getmap(DIWIAPP.onMapRsp, DIWIAPP.currentGeneratedRouteId, 240, 180);
 			verwerkGenRoute(elm);
 		} else {
 			DIWIAPP.pr('rsp tag=' + elm.tagName + ' ' + elm);
