@@ -53,14 +53,13 @@ var DIWIAPP = {
 
 	logout: function() {
 		DIWIAPP.pr('uitloggen...');
-		KW.clearAccount();
+		// KW.clearAccount();
 		// KeyWorx client
 		KW.logout();
 		return false;
 	},
 
 	createRoute: function() {
-		DIWIAPP.pr('maakroute start');
 		var params = new Array();
 		params[KW.DIWI.BESLOTEN_PARAM] = s1.getValue();
 		params[KW.DIWI.HALFOPEN_PARAM] = s2.getValue();
@@ -79,6 +78,8 @@ var DIWIAPP = {
 		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
 
 		KW.DIWI.generateroute(null, params);
+		DIWIAPP.pr('uw route aan het genereren...');
+
 	},
 
 	restoreSession: function() {
@@ -112,9 +113,10 @@ var DIWIAPP = {
 
 		var record = DIWIAPP.fixedRoutes[option.value];
 		var content = '<h2>' + record.getField('name') + '</h2>';
-		content += '<p>' + record.getField('description') + '</p>';
+		content += record.getField('description');
 
-		DH.setHTML('fixed_routes_content', content);
+		DIWIAPP.pr(content);
+		showRouteMap(record.id);
 	},
 
 	prepareLogin: function() {
@@ -183,8 +185,8 @@ var DIWIAPP = {
 			maakVasteRoutesForm(elm);
 		} else if (elm.tagName == 'route-generate-rsp') {
 			DIWIAPP.currentGeneratedRouteId = elm.firstChild.getAttribute('id');
-			// KW.DIWI.getmap(DIWIAPP.onMapRsp, DIWIAPP.currentGeneratedRouteId, 240, 180);
 			verwerkGenRoute(elm);
+			KW.DIWI.getmap(verwerkPlaatje, DIWIAPP.currentGeneratedRouteId, 580, 400);
 		} else {
 			DIWIAPP.pr('rsp tag=' + elm.tagName + ' ' + elm);
 		}
