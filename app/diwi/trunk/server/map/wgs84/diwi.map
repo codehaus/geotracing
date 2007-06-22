@@ -1,0 +1,113 @@
+#
+# Map File for DIWI
+#
+# This file defines layers used by UMN MapServer in WGS 84 (lat/lon).
+#
+# Author: Just van den Broecke
+# $Id:$
+#
+
+NAME TOPNL
+STATUS ON
+# SIZE 600 600
+# TODO: make extent match extent of project area
+EXTENT 4.724717 51.813062 5.752441 52.486596
+# UNITS DEGREES
+SHAPEPATH "data"
+IMAGECOLOR 255 255 255
+
+PROJECTION
+   "init=epsg:4326"
+END
+
+#
+# Start of symbol definitions (we're only using a few)
+#
+SYMBOL
+  NAME 'line'
+  TYPE ELLIPSE
+  POINTS 1 1 END
+  FILLED TRUE
+END
+
+# raster maps NL as indexed geotiff
+LAYER
+  NAME "topnl_raster"
+  EXTENT 4.724717 51.813062 5.752441 52.486596
+  STATUS OFF
+  TILEINDEX "topnl.shp"
+  TILEITEM "Location"
+  TYPE RASTER
+END
+
+WEB
+    IMAGEPATH "/var/keyworx/webapps/diwi/map84/tmp/"
+#    IMAGEURL ...
+END
+
+# maps NL from Alterra
+# http://www.geese.nl/milcon?LAYERS=w&REQUEST=GetMap&SERVICE=WMS&FORMAT=image%2Fpng&HEIGHT=256&VERSION=1.1.1&SRS=EPSG:4326&WIDTH=256&BBOX=4.8,52,5,52.50&TRANSPARENT=FALSE&EXCEPTIONS=application/vnd.ogc.se_inimage
+# LAYER
+#	GROUP topnl
+#	NAME topnl_geese
+#	TYPE RASTER
+#	STATUS ON
+#	CONNECTIONTYPE WMS
+#	CONNECTION "http://www.geese.nl/milcon?"
+#	METADATA
+#		"wms_name" "t250,t50,t25,t10"
+#		"wms_srs" "EPSG:28992"
+#		"wms_server_version" "1.1.1"
+#		"wms_request" "GetMap"
+#		"wms_format" "image/png"
+#		"wms_connectiontimeout" "60"
+#	END
+#END
+
+### DIWI ###
+# http://test.digitalewichelroede.nl/map/?ID=161&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=153929.028192%2C459842.063363%2C158851.133074%2C463123.466618&WIDTH=1200&HEIGHT=800
+
+# All routes from PostGIS
+LAYER
+#	GROUP "Selected"
+	NAME "all_diwi_routes"
+	CONNECTIONTYPE postgis
+	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	DATA "path from (select id,path from diwi_route) as foo using unique id using SRID=4326"
+
+	DEBUG OFF
+	TYPE LINE
+	STATUS OFF
+
+	CLASS
+	  STYLE
+		COLOR 255 0 120
+		SYMBOL "line"
+		SIZE 3
+ 	  END
+	END
+END
+
+# Single route from PostGIS
+LAYER
+#	GROUP "Selected"
+	NAME "single_diwi_route"
+	CONNECTIONTYPE postgis
+	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	DATA "path from (select id,path from diwi_route where id = %ID%) as foo using unique id using SRID=4326"
+#    EXTENT 4.724717 51.813062 5.752441 52.486596
+
+	DEBUG OFF
+	TYPE LINE
+	STATUS OFF
+
+	CLASS
+	  STYLE
+		COLOR 255 0 120
+		SYMBOL "line"
+		SIZE 3
+ 	  END
+	END
+END
+
+END
