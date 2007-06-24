@@ -8,6 +8,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.WindowsMobile.Forms;
+using System.Globalization;
 
 namespace Diwi {
     class MakeTextPage : DiwiPageBase {
@@ -29,7 +30,8 @@ namespace Diwi {
 
 
         void voegToe(int i, string s) {
-            string tFile = @"\tempText.txt";
+            string tFile = @"\t_" + (DateTime.Now).ToString("s", DateTimeFormatInfo.InvariantInfo) + ".txt";
+            tFile = tFile.Replace(':', '_');
             StreamWriter file = new StreamWriter(tFile);
             file.Write(mNameBox.Text);
             file.Close();
