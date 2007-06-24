@@ -188,7 +188,7 @@ namespace Diwi {
             // write content
 
             FileStream rdr = new FileStream(localFile, FileMode.Open);
-
+            inData = new byte[1024];
             int total = 0;
             int bytesRead = rdr.Read(inData, 0, 1024);
             while (bytesRead > 0) {

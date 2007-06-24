@@ -29,9 +29,11 @@ namespace Diwi {
 
 
         void voegToe(int i, string s) {
-            string tFile = @"\tempText";
-            // create file, save & upload.
-            new MediaUploader(tFile, mNameBox.Text, @"text/plain", null);
+            string tFile = @"\tempText.txt";
+            StreamWriter file = new StreamWriter(tFile);
+            file.Write(mNameBox.Text);
+            file.Close();
+            new MediaUploader(tFile, "textComment", @"text/plain", null);
             doTerug(0, null);
         }
 
