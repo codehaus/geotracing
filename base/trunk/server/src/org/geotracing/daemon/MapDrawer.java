@@ -114,7 +114,7 @@ public class  MapDrawer extends Component {
 			ArrayList dirtyTracks = new ArrayList();
 			for (int i = 0; i < trackRecords.length; i++) {
 				// If track has been updated after our last draw add to dirty tracks
-				long endDate = Long.parseLong(trackRecords[i].getChildText("enddate"));
+				long endDate = Long.parseLong(trackRecords[i].getChildText("time"));
 				if (endDate > lastTrackTime || forceDraw) {
 					dirtyTracks.add(trackRecords[i]);
 					if (endDate > newTrackTime) {
@@ -134,7 +134,7 @@ public class  MapDrawer extends Component {
 			if (i > 21) {
 				// continue;
 			}
-			String id = trackRecords[i].getAttr("id");
+			String id = trackRecords[i].getChildText("id");
 			try {
 				p("creating TrackEntry for id= " + id);
 
@@ -767,7 +767,7 @@ public class  MapDrawer extends Component {
 		}
 
 		public long getEndDate() {
-			return Long.parseLong(record.getChildText("enddate"));
+			return Long.parseLong(record.getChildText("time"));
 		}
 
 		public TrackSample[] getSamples() {
