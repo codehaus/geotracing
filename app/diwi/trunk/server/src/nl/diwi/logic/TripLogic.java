@@ -6,24 +6,19 @@ import nl.justobjects.jox.parser.JXBuilder;
 import nl.justobjects.jox.parser.JXBuilderListener;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.Person;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
 import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.FileField;
-import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.store.record.FileFieldImpl;
 import org.geotracing.handler.TrackLogic;
-import org.geotracing.handler.Track;
 import org.geotracing.handler.QueryLogic;
 
 import java.util.Properties;
 import java.util.Vector;
-import java.util.Iterator;
 import java.util.Date;
-import java.util.logging.Formatter;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -56,7 +51,6 @@ public class TripLogic implements Constants {
             trip.setStringField(NAME_FIELD, name);
             trip.setStringField(STATE_FIELD, TRIP_STATE_RUNNING);
             trip.setLongField(START_DATE_FIELD, Sys.now());
-            oase.getModifier().insert(trip);
 
             File emptyFile;
             try {
@@ -66,9 +60,9 @@ public class TripLogic implements Constants {
                 throw new UtopiaException("createTrip exception:" + ioe.getMessage());
             }
             trip.setFileField(EVENTS_FIELD, trip.createFileField(emptyFile));
+            
+            oase.getModifier().insert(trip);
 
-            oase.getModifier().update(trip);
-            oase.getRelater().relate(trip, oase.getFinder().read(Integer.parseInt(aPersonId)));
             return trip;
         } catch (Throwable t) {
             log.error("Exception creating the trip: " + t.toString());
@@ -85,8 +79,9 @@ public class TripLogic implements Constants {
             }
 
             Record[] trips = oase.getRelater().getRelated(person, TRIP_TABLE, null);
-            if(trips.length > 0){
-                Record trip = trips[0];
+
+            for(int i=0;i<trips.length;i++){
+                Record trip = trips[i];
                 trip.setStringField(STATE_FIELD, TRIP_STATE_DONE);
                 oase.getModifier().update(trip);
             }
@@ -105,8 +100,8 @@ public class TripLogic implements Constants {
                 throw new UtopiaException("No person found with id " + aPersonId);
             }
 
-            Record[] trips = oase.getRelater().getRelated(person, TRIP_TABLE, null);
-            Record trip = null;
+            Record[] trips = queryRunningTrips(aPersonId);
+            Record trip;
             if(trips.length == 0){
                 // create a trip if we don't already have one
                 trip = createTrip(aPersonId);
@@ -161,18 +156,28 @@ public class TripLogic implements Constants {
         }
     }
 
-    public Record getActiveTrip(String aPersonId) throws UtopiaException {
+    private Record[] queryRunningTrips(String aPersonId) throws UtopiaException{
         try{
             String tables = "diwi_trip,utopia_person";
             String fields = "diwi_trip.id";
-            String where = "diwi_trip.state=" + TRIP_STATE_RUNNING + " AND utopia_person.id=" + aPersonId;
+            String where = "diwi_trip.state='" + TRIP_STATE_RUNNING + "' AND utopia_person.id=" + aPersonId;
             String relations = "diwi_trip,utopia_person";
             String postCond = null;
-            Record[] trips = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
-            if(trips.length == 0){
-                return oase.getFinder().read(trips[0].getIntField(ID_FIELD), TRIP_TABLE);
-            }else{
+            return QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+        }catch(Throwable t){
+            log.error("Exception in queryRunningTrips: " + t.toString());
+            throw new UtopiaException(t);
+
+        }
+    }
+
+    public Record getActiveTrip(String aPersonId) throws UtopiaException {
+        try{
+            Record[] trips = queryRunningTrips(aPersonId);
+            if(trips == null || trips.length == 0){
                 return createTrip(aPersonId);
+            }else{
+                return oase.getFinder().read(trips[0].getIntField(ID_FIELD), TRIP_TABLE);                
             }
         }catch(Throwable t){
             log.error("Exception retrieving active trip: " + t.toString());

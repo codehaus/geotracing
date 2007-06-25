@@ -67,7 +67,7 @@ public class RouteLogic implements Constants {
             Record person = oase.getFinder().read(personId);
 
             // first delete existing prefs
-            Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, null);
+            Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "route");
             for (int i = 0; i < prefs.length; i++) {
                 oase.getModifier().delete(prefs[i]);
             }
@@ -96,7 +96,7 @@ public class RouteLogic implements Constants {
                 oase.getModifier().insert(pref);
 
                 // relate pref to person
-                oase.getRelater().relate(person, pref);
+                oase.getRelater().relate(person, pref, "route");
             }
 
             //JXElement generated = RouteGenerator.generateRoute(prefs);
