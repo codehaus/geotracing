@@ -61,6 +61,8 @@ public class NavigationHandler extends DefaultHandler implements Constants {
                 response = addMedium(anUtopiaReq);
             } else if (service.equals(NAV_GET_STATE)) {
                 response = getState(anUtopiaReq);
+            } else if (service.equals(NAV_TOGGLE_UGC)) {
+                response = toggleUGC(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -95,6 +97,15 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
         return createResponse(NAV_DEACTIVATE_ROUTE);
     }
+    private JXElement toggleUGC(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        NavigationLogic logic = createLogic(anUtopiaReq);
+        logic.toggleUGC(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+
+        return createResponse(NAV_TOGGLE_UGC);
+    }
+
 
     private JXElement activateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         NavigationLogic logic = createLogic(anUtopiaReq);

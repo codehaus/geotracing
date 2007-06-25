@@ -27,6 +27,7 @@ public interface Constants {
     public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";
     public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";
     public final static String NAV_ADD_MEDIUM = "nav-add-medium";
+    public final static String NAV_TOGGLE_UGC = "nav-toggle-ugc";
 
     // xml tags
     public final static String PREF_ELM = "pref";
@@ -39,6 +40,7 @@ public interface Constants {
     public final static String TRAFFIC_ELM = "traffic";
     public final static String THEME_ELM = "theme";
     public final static String POI_HIT_ELM = "poi-hit";
+    public final static String MSG_ELM = "msg";
     public final static String UGC_HIT_ELM = "ugc-hit";
     public final static String TRIP_ELM = "trip";
 
@@ -119,4 +121,5 @@ public interface Constants {
     public static final int SRID_KICH_API = EPSG_DUTCH_RD;
 
     public static final int HIT_DISTANCE = 20;
+    public static final int ROAM_DISTANCE = 20;
 }

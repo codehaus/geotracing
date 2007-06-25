@@ -264,7 +264,66 @@
 		</expect>
 	</test>
 
-    <!--<test id="medium-insert-req">
+    <test id="poi-insert-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-insert-req>
+                    <poi>
+                        <name>poi-to-hit</name>
+                        <description>prachtig punt</description>
+                        <category>fort</category>
+                        <lat>4.922239780426025</lat>
+                        <lon>52.37717764227816</lon>
+                        <media>
+                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
+                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
+                        </media>
+                    </poi>
+                </poi-insert-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-insert-rsp id="${poiid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-point-req-3">
+		<send id="client1">
+			<utopia-req>
+				<nav-point-req>
+					<pt lon="4.922239780426025" lat="52.37717764227816"/>
+				</nav-point-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-point-rsp>
+                    <pt lon="4.9222398" lat="52.3771776" t="1182771638214" ele="0.0" acc="100" speed="38.23"/>
+                    <poi-hit id="${poiid}" />
+                </nav-point-rsp>
+            </utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="poi-get-req">
+		<send id="client1">
+			<utopia-req>
+				<poi-get-req id="${poiid}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<poi-get-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="medium-insert-req">
 		<send id="client1">
 			<utopia-req>
 				<medium-insert-req personid="${personid}">
@@ -293,10 +352,79 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<nav-add-medium-rsp id="${mediumid1}"/>
+				<nav-add-medium-rsp />
 			</utopia-rsp>
 		</expect>
-	</test>-->
+	</test>
+
+    <test id="nav-toggle-ugc-req">
+		<send id="client1">
+			<utopia-req>
+				<nav-toggle-ugc-req />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-toggle-ugc-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+     <test id="nav-point-req-4">
+		<send id="client1">
+			<utopia-req>
+				<nav-point-req>
+					<pt lon="4.522239780426025" lat="52.87717764227816"/>
+				</nav-point-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-point-rsp>
+                    <pt lon="4.5222398" lat="52.8771776" t="1182771638214" ele="0.0" acc="100" speed="38.23"/>
+                    <msg>roam</msg>
+                </nav-point-rsp>
+            </utopia-rsp>
+		</expect>
+	</test>
+
+
+    <test id="nav-deactivate-route-req">
+		<send id="client1">
+			<utopia-req>
+				<nav-deactivate-route-req id="109"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-deactivate-route-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="nav-point-req-5">
+		<send id="client1">
+			<utopia-req>
+				<nav-point-req>
+					<pt lon="4.922958612442017" lat="52.37865781188822" />
+				</nav-point-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-point-rsp>
+                    <pt llon="4.922958612442017" lat="52.37865781188822" ele="0.0" acc="100" speed="38.23"/>                    
+                </nav-point-rsp>
+            </utopia-rsp>
+		</expect>
+	</test>
+
+
 
     <test id="logout">
         <send id="client1">

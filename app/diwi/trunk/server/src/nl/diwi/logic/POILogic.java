@@ -237,6 +237,10 @@ public class POILogic implements Constants {
             Record poi = oase.getFinder().read(aPOIId);
             JXElement poiElm = poi.toXML();
             poiElm.setTag(POI_ELM);
+
+            // now also provide extra info on routes that are
+            poiElm.addChildren(addRoutesForPoint((Point)poi.getObjectField(POINT_FIELD)));
+
             return poiElm;
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot read poi with id " + aPOIId, oe, ErrorCode.__6006_database_irregularity_error);
@@ -269,7 +273,31 @@ public class POILogic implements Constants {
         Record poi = getRecord(aKICHId);
         JXElement poiElm = poi.toXML();
         poiElm.setTag(POI_ELM);
+
+        // now also provide extra info on routes that are
+        poiElm.addChildren(addRoutesForPoint((Point)poi.getObjectField(POINT_FIELD)));
+
         return poiElm;
+    }
+
+    private Vector addRoutesForPoint(Point aPoint) throws UtopiaException{
+        try {
+            // contains, touches, intersects
+            String queryString = "select id, name from " + ROUTE_TABLE + " where contains(GeomFromEWKT('" + aPoint + "'), path)";            
+            Record[] routes = oase.getFinder().freeQuery(queryString);
+
+            Vector results = new Vector(routes.length);
+            for(int i=0;i<routes.length;i++){
+                Record route = routes[i];
+                JXElement routeElm = route.toXML();
+                routeElm.setTag(ROUTE_ELM);
+                results.add(routeElm);
+            }
+
+            return results;
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
     }
 
     /**
