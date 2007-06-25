@@ -312,7 +312,7 @@
     <test id="poi-get-req">
 		<send id="client1">
 			<utopia-req>
-				<poi-get-req id="${poiid}" />
+				<poi-get-req id="7103" />
 			</utopia-req>
 		</send>
 
