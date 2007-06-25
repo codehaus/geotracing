@@ -38,7 +38,7 @@ public class RouteGenerator implements Constants {
         //build the url
         StringBuffer urlBuffer = new StringBuffer();
         urlBuffer.append(anUrl);
-        if (anUrl.indexOf("?") != -1) {
+        if (anUrl.indexOf("?") == -1) {
             urlBuffer.append("?");
         } else {
             urlBuffer.append("&");

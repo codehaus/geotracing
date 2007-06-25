@@ -10,13 +10,17 @@ import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.handler.HandlerUtil;
 import org.geotracing.handler.Track;
 import org.geotracing.handler.TrackLogic;
+import org.geotracing.handler.Location;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
+import org.keyworx.common.util.Sys;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.oase.api.*;
 import org.postgis.Point;
 
 import java.io.UnsupportedEncodingException;
@@ -24,6 +28,8 @@ import java.net.URLEncoder;
 import java.util.Vector;
 
 public class NavigationHandler extends DefaultHandler implements Constants {
+
+    TripLogic tripLogic;
 
     /**
      * Processes the Client Request.
@@ -51,14 +57,20 @@ public class NavigationHandler extends DefaultHandler implements Constants {
                 response = activateRoute(anUtopiaReq);
             } else if (service.equals(NAV_DEACTIVATE_ROUTE)) {
                 response = deactivateRoute(anUtopiaReq);
+            } else if (service.equals(NAV_ADD_MEDIUM)) {
+                response = addMedium(anUtopiaReq);
+            } else if (service.equals(NAV_GET_STATE)) {
+                response = getState(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
             }
 
             // store the traffic
-            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
+            //TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+            //t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
+
+            tripLogic = new TripLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
@@ -78,9 +90,10 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
         logic.deactivateRoute(personId);
-        JXElement response = createResponse(NAV_DEACTIVATE_ROUTE);
 
-        return response;
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+
+        return createResponse(NAV_DEACTIVATE_ROUTE);
     }
 
     private JXElement activateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
@@ -90,7 +103,21 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
 
         logic.activateRoute(routeId, personId);
-        JXElement response = createResponse(NAV_ACTIVATE_ROUTE);
+
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+        
+        return createResponse(NAV_ACTIVATE_ROUTE);
+    }
+
+    private JXElement getState(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        NavigationLogic logic = createLogic(anUtopiaReq);
+        int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+
+        JXElement response = createResponse(NAV_GET_STATE);
+        Record route = logic.getActiveRoute(personId);
+        if(route!=null){
+            response.setAttr("routeid", route.getId());
+        }
 
         return response;
     }
@@ -105,8 +132,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
         //Get Point from pt elements
         JXElement ptElement = (JXElement) (reqElm.getChildren().get(0));
-        Point point = new Point(Double.parseDouble(ptElement.getAttr(LAT_FIELD)),
-                Double.parseDouble(ptElement.getAttr(LON_FIELD)), 0);
+        Point point = new Point(Double.parseDouble(ptElement.getAttr(LAT_FIELD)), Double.parseDouble(ptElement.getAttr(LON_FIELD)), 0);
         point.setSrid(EPSG_WGS84);
         result.addAll(navLogic.checkPoint(point, HandlerUtil.getUserId(anUtopiaReq)));
 
@@ -121,20 +147,36 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
         // Resume current Track for this user
         trackLogic.suspend(HandlerUtil.getUserId(anUtopiaReq), System.currentTimeMillis());
-
+        // store the event
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+        // close this trip
+        tripLogic.closeTrip(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        
         // Create and return response with open track id.
         return createResponse(NAV_STOP);
     }
 
     private JXElement startNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+        TrackLogic trackLogic = new TrackLogic(oase);
 
         // Resume current Track for this user
-        trackLogic.resume(HandlerUtil.getUserId(anUtopiaReq), Track.VAL_DAY_TRACK, System.currentTimeMillis());
+        Track track = trackLogic.resume(HandlerUtil.getUserId(anUtopiaReq), Track.VAL_DAY_TRACK, System.currentTimeMillis());
 
-        // create a trip
-        TripLogic tripLogic = new TripLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        tripLogic.createTrip(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        // close previous trip
+        tripLogic.closeTrip(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+
+        // and store the request
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+
+        // relate the track to the trip
+        Record trip = tripLogic.getActiveTrip(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        // relate the track to the trip
+        try{
+            oase.getRelater().relate(trip, track.getRecord());
+        }catch(Throwable t){
+            throw new UtopiaException(t);
+        }
 
         // Create and return response with open track id.
         return createResponse(NAV_START);
@@ -172,9 +214,57 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         } catch (UnsupportedEncodingException e) {
             throw new UtopiaException("Exception in getMap", e);
         }
+
+        // and store the request
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+
         return response;
     }
 
+    /*
+        <nav-add-medium-req id="[mediumid]" />
+        <play-add-medium-rsp locationid="[locationid]" />
+    */    
+    public JXElement addMedium(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
+		JXElement requestElement = anUtopiaReq.getRequestCommand();
+		String mediumIdStr = requestElement.getAttr(ID_FIELD);
+		HandlerUtil.throwOnNonNumAttr(ID_FIELD, mediumIdStr);
+
+		Oase oase = HandlerUtil.getOase(anUtopiaReq);
+		Relater relater = oase.getRelater();
+
+		// Create Location for medium and relate to track and location tables
+		Record medium = oase.getFinder().read(Integer.parseInt(mediumIdStr));
+		int mediumId = medium.getId();
+
+		// Person is person related to medium
+		// not neccessarily the person logged in (e.g. admin for email upload)
+		Record person = relater.getRelated(medium, PERSON_TABLE, null)[0];
+		int personId = person.getId();
+
+		// Determine timestamp: we use the time that the medium was sent
+		long timestamp = Sys.now();
+		if (requestElement.hasAttr(TIME_FIELD)) {
+			// if a timestamp was provided we assume we already have the correct creation time
+			timestamp = requestElement.getLongAttr(TIME_FIELD);
+		}
+
+		// First determine medium location and add to track
+		TrackLogic trackLogic = new TrackLogic(oase);
+
+		// Adds medium to track and creates location object for timestamp
+		// (where the player was at that time)
+		Location location = trackLogic.createLocation(personId, mediumId, timestamp, TrackLogic.REL_TAG_MEDIUM);
+
+		// We either have location or an exception here
+		JXElement rsp = createResponse(NAV_ADD_MEDIUM);
+		rsp.setAttr(LOCATION_ID_FIELD, location.getId());
+
+        // store the event        
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), requestElement);
+
+        return rsp;
+	}
 
     protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
         String service = anUtopiaReq.getServiceName();

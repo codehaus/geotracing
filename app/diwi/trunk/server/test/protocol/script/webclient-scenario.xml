@@ -76,7 +76,17 @@
                     <pref name="heide" value="20" type="outdoor-params"/>
                     <pref name="bebouwing" value="10" type="outdoor-params"/>
                     <pref name="theme" value="forts" type="theme"/>
-                    <pref name="activity" value="wandelaar" type="activity"/>
+                    <pref name="distance" value="10000" type="outdoor-params"/>
+                    <pref name="startpoint" value="8C99FC7D-60E4-737D-3962-843D0DB7CF08" type="outdoor-params"/>
+                    <pref name="endpoint" value="285B4A07-6203-CDA8-3E75-4B998B18E95D" type="outdoor-params"/>
+                    <pref name="type" value="walking" type="activity"/>
+                    <pref name="omgeving" value="4" type="outdoor-params"/>
+                    <pref name="poi" value="Boerderij" type="outdoor-params"/>
+                    <pref name="afstand" value="10000" type="outdoor-params"/>
+                    <pref name="startx" value="153966" type="outdoor-params"/>
+                    <pref name="starty" value="453437" type="outdoor-params"/>
+                    <pref name="endx" value="153966" type="outdoor-params"/>
+                    <pref name="endy" value="453437" type="outdoor-params"/>
                 </route-generate-req>
             </utopia-req>
         </send>

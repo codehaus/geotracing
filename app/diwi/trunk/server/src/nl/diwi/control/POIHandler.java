@@ -2,6 +2,7 @@ package nl.diwi.control;
 
 import nl.diwi.logic.POILogic;
 import nl.diwi.logic.TrafficLogic;
+import nl.diwi.logic.TripLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -29,7 +30,7 @@ public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_UNRELATE_MEDIA_SERVICE = "poi-unrelate-media";
 
     private POILogic logic;
-
+    
     /**
      * Processes the Client Request.
      *

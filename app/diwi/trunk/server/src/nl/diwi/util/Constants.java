@@ -5,6 +5,7 @@ public interface Constants {
     // tablenames
     public final static String ROUTE_TABLE = "diwi_route";
     public final static String POI_TABLE = "diwi_poi";
+    public final static String UGC_TABLE = "g_location";
     public final static String PREFS_TABLE = "diwi_prefs";
     public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
@@ -13,15 +14,19 @@ public interface Constants {
     public static final String PERSON_TABLE = "utopia_person";
 
     // Keyworx relationship tags
+    public final static int INACTIVE_STATE = 0;
+    public final static int ACTIVE_STATE = 1;
     public final static String ACTIVE_TAG = "active";
-
+    
     // Keyworx services
+    public final static String NAV_GET_STATE = "nav-get-state";
     public final static String NAV_GET_MAP = "nav-get-map";
     public final static String NAV_POINT = "nav-point";
     public final static String NAV_START = "nav-start";
     public final static String NAV_STOP = "nav-stop";
     public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";
     public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";
+    public final static String NAV_ADD_MEDIUM = "nav-add-medium";
 
     // xml tags
     public final static String PREF_ELM = "pref";
@@ -34,6 +39,7 @@ public interface Constants {
     public final static String TRAFFIC_ELM = "traffic";
     public final static String THEME_ELM = "theme";
     public final static String POI_HIT_ELM = "poi-hit";
+    public final static String UGC_HIT_ELM = "ugc-hit";
     public final static String TRIP_ELM = "trip";
 
     public final static String LLB_LAT_ATTR = "llbLat";
@@ -72,6 +78,8 @@ public interface Constants {
     public final static String HEIGHT_FIELD = "height";
     public final static String WIDTH_FIELD = "width";
     public final static String URL_FIELD = "url";
+    public final static String TIME_FIELD = "time";
+    public final static String LOCATION_ID_FIELD = "locationid";
 
     // trip states
 	public final static String TRIP_STATE_RUNNING = "running";

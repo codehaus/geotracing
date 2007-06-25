@@ -5,8 +5,10 @@ import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.Point;
+import org.geotracing.handler.QueryLogic;
 
 import java.util.Vector;
 
@@ -22,7 +24,11 @@ public class NavigationLogic implements Constants {
     public Vector checkPoint(Point point, int personId) throws UtopiaException {
         Vector result = new Vector();
 
-        return checkPoiHits(point);
+        result.addAll(checkPoiHits(point));
+        result.addAll(checkUGCHits(point));
+
+        return result;
+        
         /*
           if(getActiveRoute(personId) != null) {
               //Record awayFromRouteEvent = checkProximity(activeRoute, point);
@@ -108,7 +114,9 @@ public class NavigationLogic implements Constants {
     private Vector checkPoiHits(Point point) throws UtopiaException {
         Vector result = new Vector();
         try {
-            String queryString = "select id, distance_sphere(GeomFromEWKT('" + point + "') , point) as distance from " + POI_TABLE + " where distance_sphere(GeomFromEWKT('" + point + "') , point) < " + HIT_DISTANCE;
+            String queryString = "select id, distance_sphere(GeomFromEWKT('" + point + "') , point) " +
+                    "as distance from " + POI_TABLE + " where distance_sphere(GeomFromEWKT('" + point + "') , " +
+                    "point) < " + HIT_DISTANCE;
             Record[] poiHits = oase.getFinder().freeQuery(queryString);
 
             for (int i = 0; i < poiHits.length; i++) {
@@ -117,8 +125,34 @@ public class NavigationLogic implements Constants {
                 hit.setAttr(DISTANCE_ATTR, poiHits[i].getField(DISTANCE_FIELD).toString());
                 result.add(hit);
             }
-        } catch (OaseException oe) {
-            throw new UtopiaException("could not determine distance", oe);
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
+
+        return result;
+    }
+
+    private Vector checkUGCHits(Point point) throws UtopiaException {
+        Vector result = new Vector();
+        try {
+            Record[] ugcHits = QueryLogic.queryStore(oase, UGC_TABLE, "id, distance_sphere(GeomFromEWKT('" + point + "') , point) as distance",
+                    "distance_sphere(GeomFromEWKT('" + point + "') ,  point) < " + HIT_DISTANCE, Medium.TABLE_NAME, null);
+
+            //static public Record[] queryStore(Oase oase, String tables, String fields, String where, String relations, String postCond) throws OaseException {
+
+            //String queryString = "select id, distance_sphere(GeomFromEWKT('" + point + "') , point) " +
+            //        "as distance from " + UGC_TABLE + " where distance_sphere(GeomFromEWKT('" + point + "') , " +
+            //        "point) < " + HIT_DISTANCE;
+            //Record[] ugcHits = oase.getFinder().freeQuery(queryString);
+
+            for (int i = 0; i < ugcHits.length; i++) {
+                JXElement hit = new JXElement(UGC_HIT_ELM);
+                hit.setAttr(ID_FIELD, ugcHits[i].getIntField(ID_FIELD));
+                hit.setAttr(DISTANCE_ATTR, ugcHits[i].getField(DISTANCE_FIELD).toString());
+                result.add(hit);
+            }
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
         }
 
         return result;

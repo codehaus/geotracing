@@ -48,10 +48,6 @@ public class KICHHandler extends DefaultHandler implements Constants {
                 response = unknownReq(anUtopiaReq);
             }
 
-            // store the traffic
-            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());

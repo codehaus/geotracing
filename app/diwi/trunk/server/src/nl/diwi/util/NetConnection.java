@@ -71,6 +71,7 @@ public class NetConnection {
 
     public static JXElement getXMLFromREST(String aRESTUrl) {
         try {
+            log.info("GET " + aRESTUrl);
             return new JXBuilder().build(NetUtil.fetchURL(aRESTUrl));
         } catch (Throwable t) {
             log.error("Exception retrieving xml data from " + aRESTUrl, t);

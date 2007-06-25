@@ -3,35 +3,125 @@
     <!-- Standard KWX login sequence -->
     <test id="login-selapp">
 
-        <send id="client1">
-            <login-req name="geoapp-user" password="user" protocolversion="4.0"/>
-            <select-app-req appname="geoapp" rolename="user"/>
-        </send>
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" portalname="diwi" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
 
-        <expect id="client1">
+		<expect id="client1">
 
-            <login-rsp/>
+			<login-rsp>
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
 
-            <select-app-rsp/>
-        </expect>
-    </test>
+						<portalname>diwi
+						</portalname>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
+			</login-rsp>
+
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
+		</expect>
+	</test>
 
     <!--
+     <wpt lon="4.922164678573608" lat="52.37660782924667">
+        <name>13_13</name>
+    </wpt>
+     <wpt lon="4.921724796295166" lat="52.376640577321176">
+        <name>14_14</name>
+    </wpt>
+    <wpt lon="4.922239780426025" lat="52.37717764227816">
+        <name>15_15</name>
+    </wpt>
+    <wpt lon="4.922572374343872" lat="52.37797012863828">
+        <name>16_16</name>
+    </wpt>
+    <wpt lon="4.922958612442017" lat="52.37865781188822">
+        <name>17_17</name>
+    </wpt>
+    <wpt lon="4.923098087310791" lat="52.379037670425085">
+        <name>18_18</name>
+    </wpt>
+    <wpt lon="4.9236345291137695" lat="52.37895253000267">
+        <name>19_19</name>
+    </wpt>
+    -->
+
+    <!--
+        *  ophalen nav state (welke route)
+    * haal vaste en persoonlijke routes op
+    * bekijk routes details & kaart
+    * selecteer vaste/persoonlijke route
+
+        1. start nav:
+        2. verstuur gps data:
+        3. start route:
+        4. log events
+
+    * wijk af van route
+    * ga naar struinmode
+    * geef poi info/media en mogelijke (vaste en persoonlijke) route hervattingsmogelijkheden
+    * maak en upload foto, video, audio, text (vraag: doen we zel allemaal? - wat mij betreft vervalt audio)
+    * toggle user-generated content modus
+    * toon persoonlijke media op een lokatie
+    * hervat route
+    * vraag kortste weg terug
+
+        1. toon nieuwe 'kortste weg terug' - route
+        2. op bevestiging 'eindig route'
+
+    * eindig route
+
+    1. retrieve nav state
     1. retrieve fixed routes
     2. retrieve personal route
     3. retrieve route & details
     4. retrieve route map
-    5. start route (no test)
+    5. start route
     6. retrieve a poi from the route
     7. retrieve media from the poi (no test - use the kich-uri from the poi response)
 
     Note: Test uses fixed id's based on a test db set.
     -->
 
+    <test id="nav-get-state-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-get-state-req />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-get-state-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="route-getlist-req">
         <send id="client1">
             <utopia-req>
-                <route-getlist-req type="0"/>
+                <route-getlist-req type="fixed"/>
             </utopia-req>
         </send>
 
@@ -41,11 +131,41 @@
             </utopia-rsp>
         </expect>
     </test>
+    
+    <!--<test id="route-generate-req">
+        <send id="client1">
+            <utopia-req>
+                <route-generate-req>
+                    --><!--<pref name="bos" value="40" type="outdoor-params"/>
+                    <pref name="heide" value="20" type="outdoor-params"/>
+                    <pref name="bebouwing" value="10" type="outdoor-params"/>
+                    <pref name="theme" value="forts" type="theme"/>
+                    <pref name="distance" value="10000" type="outdoor-params"/>
+                    <pref name="startpoint" value="8C99FC7D-60E4-737D-3962-843D0DB7CF08" type="outdoor-params"/>
+                    <pref name="endpoint" value="285B4A07-6203-CDA8-3E75-4B998B18E95D" type="outdoor-params"/>
+                    <pref name="type" value="walking" type="activity"/>--><!--
+                    <pref name="omgeving" value="4" type="outdoor-params"/>
+                    <pref name="poi" value="Boerderij" type="outdoor-params"/>
+                    <pref name="afstand" value="10000" type="outdoor-params"/>
+                    <pref name="startx" value="153966" type="outdoor-params"/>
+                    <pref name="starty" value="453437" type="outdoor-params"/>
+                    <pref name="endx" value="153966" type="outdoor-params"/>
+                    <pref name="endy" value="453437" type="outdoor-params"/>
+                </route-generate-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <route-generate-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>-->
 
     <test id="route-getlist-req">
         <send id="client1">
             <utopia-req>
-                <route-getlist-req type="2"/>
+                <route-getlist-req type="generated"/>
             </utopia-req>
         </send>
 
@@ -59,7 +179,7 @@
     <test id="route-get-req">
         <send id="client1">
             <utopia-req>
-                <route-get-req id="107"/>
+                <route-get-req id="109"/>
             </utopia-req>
         </send>
 
@@ -73,7 +193,7 @@
     <test id="route-get-map-req">
         <send id="client1">
             <utopia-req>
-                <route-get-map-req id="107" height="240" width="320"/>
+                <route-get-map-req id="109" height="240" width="320"/>
             </utopia-req>
         </send>
 
@@ -84,19 +204,99 @@
         </expect>
     </test>
 
-    <test id="poi-get-req">
-        <send id="client1">
-            <utopia-req>
-                <poi-get-req kichid="1_1"/>
-            </utopia-req>
-        </send>
+    <test id="nav-start-req">
+		<send id="client1">
+			<utopia-req>
+				<nav-start-req />
+			</utopia-req>
+		</send>
 
-        <expect id="client1">
-            <utopia-rsp>
-                <poi-get-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-start-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="nav-point-req-1">
+		<send id="client1">
+			<utopia-req>
+				<nav-point-req>
+					<pt lon="4.922164678573608" lat="52.37660782924667"/>
+				</nav-point-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-point-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="nav-activate-route-req">
+		<send id="client1">
+			<utopia-req>
+				<nav-activate-route-req id="109"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-activate-route-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="nav-point-req-2">
+		<send id="client1">
+			<utopia-req>
+				<nav-point-req>
+					<pt lon="4.921724796295166" lat="52.376640577321176"/>
+				</nav-point-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-point-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <!--<test id="medium-insert-req">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>item1</name>
+						<filename>/var/keyworx/webapps/local.diwi.nl/testresponse/1.jpg</filename>
+						<size>2758</size>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="nav-add-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<nav-add-medium-req id="${mediumid1}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<nav-add-medium-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>-->
 
     <test id="logout">
         <send id="client1">
