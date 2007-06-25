@@ -239,7 +239,7 @@ public class POILogic implements Constants {
             poiElm.setTag(POI_ELM);
 
             // now also provide extra info on routes that are
-            poiElm.addChildren(addRoutesForPoint((Point)poi.getObjectField(POINT_FIELD)));
+            poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(POINT_FIELD)));
 
             return poiElm;
         } catch (OaseException oe) {
@@ -275,12 +275,12 @@ public class POILogic implements Constants {
         poiElm.setTag(POI_ELM);
 
         // now also provide extra info on routes that are
-        poiElm.addChildren(addRoutesForPoint((Point)poi.getObjectField(POINT_FIELD)));
+        poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(POINT_FIELD)));
 
         return poiElm;
     }
 
-    private Vector addRoutesForPoint(Point aPoint) throws UtopiaException{
+    private Vector addRoutesForPoint(PGgeometryLW aPoint) throws UtopiaException{
         try {
             // contains, touches, intersects
             String queryString = "select id, name from " + ROUTE_TABLE + " where contains(GeomFromEWKT('" + aPoint + "'), path)";            
