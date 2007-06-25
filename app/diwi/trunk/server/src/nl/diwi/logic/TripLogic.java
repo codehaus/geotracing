@@ -15,6 +15,9 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.FileField;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.store.record.FileFieldImpl;
+import org.geotracing.handler.TrackLogic;
+import org.geotracing.handler.Track;
+import org.geotracing.handler.QueryLogic;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -30,14 +33,15 @@ public class TripLogic implements Constants {
     private Oase oase;
     private Log log = Logging.getLog("TripLogic");
     private static final Properties properties = new Properties();
+    Format formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
 
     public TripLogic(Oase o) {
         oase = o;
     }
 
-    public Record createTrip(String aPersonId) throws UtopiaException {
+    private Record createTrip(String aPersonId) throws UtopiaException {
         try {
-            Format formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
+            // first check if there's already an active trip, if so return this one.
 
             Record person = oase.getFinder().read(Integer.parseInt(aPersonId));
             if(person == null){
@@ -52,6 +56,7 @@ public class TripLogic implements Constants {
             trip.setStringField(NAME_FIELD, name);
             trip.setStringField(STATE_FIELD, TRIP_STATE_RUNNING);
             trip.setLongField(START_DATE_FIELD, Sys.now());
+            oase.getModifier().insert(trip);
 
             File emptyFile;
             try {
@@ -62,7 +67,7 @@ public class TripLogic implements Constants {
             }
             trip.setFileField(EVENTS_FIELD, trip.createFileField(emptyFile));
 
-            oase.getModifier().insert(trip);
+            oase.getModifier().update(trip);
             oase.getRelater().relate(trip, oase.getFinder().read(Integer.parseInt(aPersonId)));
             return trip;
         } catch (Throwable t) {
@@ -71,9 +76,30 @@ public class TripLogic implements Constants {
         }
     }
 
-    // Store event into trip table.
-	protected void storeEvent(String aPersonId, JXElement anEvent) throws OaseException, UtopiaException {
+    // Close the trip
+	public void closeTrip(String aPersonId) throws UtopiaException {
         try{
+            Record person = oase.getFinder().read(Integer.parseInt(aPersonId));
+            if(person == null){
+                throw new UtopiaException("No person found with id " + aPersonId);
+            }
+
+            Record[] trips = oase.getRelater().getRelated(person, TRIP_TABLE, null);
+            if(trips.length > 0){
+                Record trip = trips[0];
+                trip.setStringField(STATE_FIELD, TRIP_STATE_DONE);
+                oase.getModifier().update(trip);
+            }
+        }catch(Throwable t){
+            log.error("Exception clsoing the trip: " + t.toString());
+            throw new UtopiaException(t);
+        }
+    }
+
+    // Store event into trip table.
+	public void storeEvent(String aPersonId, JXElement anEvent) throws UtopiaException {
+        try{
+            log.info("Storing event " + anEvent);
             Record person = oase.getFinder().read(Integer.parseInt(aPersonId));
             if(person == null){
                 throw new UtopiaException("No person found with id " + aPersonId);
@@ -88,10 +114,33 @@ public class TripLogic implements Constants {
                 trip = trips[0];
             }
 
-            FileField fileField = trip.getFileField(EVENTS_FIELD);
+            // explicitely put a timestamp in
+            anEvent.setAttr("time", System.currentTimeMillis());
+            anEvent.setAttr("date", formatter.format(new Date()));
+
             String eventStr = new String(anEvent.toBytes(false)) + "\n";
-            fileField.append(eventStr.getBytes());
+            trip.getFileField(EVENTS_FIELD).append(eventStr.getBytes());
             oase.getModifier().update(trip);
+            log.info("Storing event done!");
+
+            Record r =oase.getFinder().read(trip.getId());
+            if(r!=null){
+                FileField f = r.getFileField(EVENTS_FIELD);
+                if(f!=null){
+                    byte[] bt = f.getAppendData();
+                    if(bt!=null){
+                        log.info(new String(bt));
+                    }else{
+                        log.info("empty bytearray");
+                    }
+                }else{
+                    log.info("empty filefield");
+                }
+            }else{
+                log.info("no record found");
+            }
+            //log.info("check in the db - " + new String(oase.getFinder().read(trip.getId()).getFileField(EVENTS_FIELD).getAppendData()));
+
         }catch(Throwable t){
             log.error("Exception storing the event: " + t.toString());
             throw new UtopiaException(t);
@@ -108,6 +157,25 @@ public class TripLogic implements Constants {
             return trips;
         }catch(Throwable t){
             log.error("Exception retrieving trips: " + t.toString());
+            throw new UtopiaException(t);
+        }
+    }
+
+    public Record getActiveTrip(String aPersonId) throws UtopiaException {
+        try{
+            String tables = "diwi_trip,utopia_person";
+            String fields = "diwi_trip.id";
+            String where = "diwi_trip.state=" + TRIP_STATE_RUNNING + " AND utopia_person.id=" + aPersonId;
+            String relations = "diwi_trip,utopia_person";
+            String postCond = null;
+            Record[] trips = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+            if(trips.length == 0){
+                return oase.getFinder().read(trips[0].getIntField(ID_FIELD), TRIP_TABLE);
+            }else{
+                return createTrip(aPersonId);
+            }
+        }catch(Throwable t){
+            log.error("Exception retrieving active trip: " + t.toString());
             throw new UtopiaException(t);
         }
     }
@@ -156,7 +224,18 @@ public class TripLogic implements Constants {
 				builder.setMultiDoc(true);
 				builder.build(fileField.getFileInputStream());
 			}
-		} catch (Throwable t) {
+
+            // get the related track
+            Record trackRec = oase.getRelater().getRelated(trip, "g_track", null)[0];
+
+            // now also add the track to the trip output
+            TrackLogic trackLogic = new TrackLogic(oase);
+            JXElement trackElm = trackLogic.export(""+trackRec.getId(), "gtx", null, true, 0, -1);
+
+            tripElm.addChild(trackElm);
+
+
+        } catch (Throwable t) {
 			new UtopiaException("Error query getTripEvents tripId=" + aTripId, t);
 		}
 

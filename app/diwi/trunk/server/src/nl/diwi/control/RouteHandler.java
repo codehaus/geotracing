@@ -6,6 +6,7 @@ package nl.diwi.control;
 
 import nl.diwi.logic.RouteLogic;
 import nl.diwi.logic.TrafficLogic;
+import nl.diwi.logic.TripLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -33,10 +34,12 @@ public class RouteHandler extends DefaultHandler implements Constants {
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
     /*public final static String ROUTE_INSERT_SERVICE = "route-insert";*/
     public final static String ROUTE_GET_SERVICE = "route-get";
+    public final static String ROUTE_GET_TRIP_SERVICE = "route-get-trip";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
     public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
     public final static String ROUTE_THEMES_SERVICE = "route-themes";
 
+    private TripLogic tripLogic;
 
     /**
      * Processes the Client Request.
@@ -65,6 +68,8 @@ public class RouteHandler extends DefaultHandler implements Constants {
                 response = getRoutes(anUtopiaReq);
             } else if (service.equals(ROUTE_GET_MAP_SERVICE)) {
                 response = getMap(anUtopiaReq);
+            } else if (service.equals(ROUTE_GET_TRIP_SERVICE)) {
+                response = getTrip(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -122,6 +127,16 @@ public class RouteHandler extends DefaultHandler implements Constants {
         return response;
     }
 
+    private JXElement getTrip(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        TripLogic logic = new TripLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        JXElement tripElm = logic.getTrip(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
+
+        JXElement response = createResponse(ROUTE_GET_TRIP_SERVICE);
+        response.addChild(tripElm);
+
+        return response;
+    }
+
     private JXElement getRoutes(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
         String type = anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD);
@@ -161,7 +176,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         JXElement route = logic.generateRoute(reqElm, personId);
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChild(route);
-
+        
         return response;
     }
 
