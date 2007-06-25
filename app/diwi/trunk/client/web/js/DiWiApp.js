@@ -25,6 +25,7 @@ var DIWIAPP = {
 		KW.init(DIWIAPP.onRsp, DIWIAPP.onNegRsp, 60, '/diwi');
 		DIWINAV.init();
 		DIWIAPP.pr('init done');
+		// MAP.init();
 		var accData = KW.getAccountData();
 		if (accData != null && accData[0] != '') {
 			var loginForm = DH.getObject('loginform');
@@ -78,7 +79,7 @@ var DIWIAPP = {
 		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
 
 		KW.DIWI.generateroute(null, params);
-		DIWIAPP.pr('uw route aan het genereren...');
+		DIWIAPP.pr('uw persoonlijke route wordt gegenereerd...');
 
 	},
 
@@ -116,19 +117,8 @@ var DIWIAPP = {
 		content += record.getField('description');
 
 		DIWIAPP.pr(content);
-		showRouteMap(record.id);
-	},
-
-	prepareLogin: function() {
-		DH.getStyleObject('inlogbox').display = 'block';
-		DH.getStyleObject('inlogform').display = 'block';
-		var loginForm = DH.getObject('loginform');
-		var accData = KW.getAccountData();
-		if (accData != null) {
-			loginForm.name.value = accData[0];
-			loginForm.password.value = accData[1];
-		}
-
+		MAP.create();
+		MAP.addRouteLayer(record.id);
 	},
 
 
