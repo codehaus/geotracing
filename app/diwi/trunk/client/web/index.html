@@ -17,7 +17,7 @@
 
 	<script type="text/javascript" src="js/KWClientDiWi.js"></script>
 	<script type="text/javascript" src="js/KWClientCMS.js"></script>
-	<script type="text/javascript" src="js/selectstartpage.js"></script>
+	<script type="text/javascript" src="js/DiWiMap.js"></script>
 	<script type="text/javascript" src="js/DiWiNav.js"></script>
 	<script type="text/javascript" src="js/maakroute.js"></script>
 	<script type="text/javascript" src="js/slider.js"></script>
@@ -71,30 +71,34 @@
 	<div id="inlogbox" style="display:none;"><img src="media/images/balloon.gif"/></div>
 
 	<div id="inlogform" class="logform" style="display:none;">
-		<form id="loginform" class="logform" action="javascript:DIWIAPP.login()">
+		<form id="loginform" class="logform" action="#">
 			<p>Loginnaam :<br>
 				<input type="text" name="name">
 			</p>
 
 			<p> Wachtwoord :<br>
-				<input type="password" name="password" onKeyPress="return submitenter(this,event)"><br>
+				<input id="fieldpassword" type="password" name="password"><br>
 
 				<div id="logforminlogbut" style="display:inherit">
-					<img class="button" src="media/buttons/login.gif" onClick="DIWIAPP.login()">
+					<img id="butloginsubmit" class="button" src="media/buttons/login.gif"/>
 				</div>
 			</p>
 		</form>
 	</div>
 
-	<div id="balloon"><img src="media/images/balloon.gif"></div>
-	<div id="bullet"><img src="media/images/bullet.gif" /></div>
+	<div id="balloon"><img src="media/images/balloon.gif"/></div>
+
+	<div id="bullet"><img src="media/images/bullet.gif"/></div>
+
 	<div id="balloontext">
-		Hier allerlei meldingen texten etc. 	De Digitale Wichelroede is een slim apparaat dat een heleboel weet, zodat jij als gebruiker d&iacute;e
-	cultuurhistorische kennis eruit kan halen waarover je graag wat meer te weten wilt komen. Bij het ontwikkelen
+		Hier allerlei meldingen texten etc. De Digitale Wichelroede is een slim apparaat dat een heleboel weet, zodat
+		jij als gebruiker d&iacute;e
+		cultuurhistorische kennis eruit kan halen waarover je graag wat meer te weten wilt komen. Bij het ontwikkelen
 		van het apparaat moet daarom eerst een heleboel kennis verzameld en gedigitaliseerd worden. Deze informatie
 		halen we overal vandaan. Uit boeken, databases, maar ook van historische verenigingen en van mensen die in een
 
 	</div>
+
 	<div id="generated-routes-image">&nbsp;</div>
 
 	<!--	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" ></a> </div> -->
@@ -116,7 +120,7 @@
 	 -->
 </div>
 
-<div id="line"><img src="media/images/lijn.gif"><span id="status">niet ingelogd</span></div>
+<div id="line"><img src="media/images/lijn.gif"/><span id="status">niet ingelogd</span></div>
 
 
 <div id="pagina" class="pagina">
