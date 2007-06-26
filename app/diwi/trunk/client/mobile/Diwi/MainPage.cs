@@ -13,6 +13,7 @@ namespace Diwi {
         private DiwiPageBase testPage = null;
         private DiwiPageBase startPage = null;
         private DiwiPageBase selectRoutePage = null;
+        private DiwiPageBase walkRoutePage = null;
 
         public MainPage(DiwiPageBase parent)
             : base(parent) {
@@ -20,9 +21,9 @@ namespace Diwi {
 
             mMenu.addItem("Uitleg", new DiwiUIMenu.DiwiMenuCallbackHandler(doUitleg));
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute));
+            mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute));
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin));
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS));
-            //mMenu.addItem("Test", new DiwiUIMenu.DiwiMenuCallbackHandler(doTest));
             mMenu.addItem("Quit", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Hoofdmenu";
@@ -33,6 +34,12 @@ namespace Diwi {
             if (uitLegPage == null)
                 uitLegPage = new UitlegPage(this);
             uitLegPage.ShowDialog();
+        }
+
+        void walkRoute(int i, string s) {
+            if (walkRoutePage == null)
+                walkRoutePage = new WalkRoutePage(this);
+            walkRoutePage.ShowDialog();
         }
 
         void doGPS(int i, string s) {
@@ -57,25 +64,29 @@ namespace Diwi {
             if (AppController.sKwxClient.agentKey == null) {
                 doLogin(0,null);
             }
+
             if (AppController.sKwxClient.agentKey != null) {
-                if (AppController.sFixedRoutes == null) {
-                    AppController.sFixedRoutes = AppController.sKwxClient.getRouteList();
+                if (AppController.sRoutes == null) {
+                    AppController.sRoutes = AppController.sKwxClient.getRouteList();
                 }
 
                 if (selectRoutePage == null)
                     selectRoutePage = new SelectRoutePage(this);
                 selectRoutePage.ShowDialog();
 
-                if (AppController.sActiveRoute != null) {
-                    (new WalkRoutePage(this)).ShowDialog();
+                if (AppController.sActiveRouteID != -1) {
+                    walkRoute(0,null);
                 }
             }
         }
 
         void doStruin(int i, string s) {
-        }
-
-        void doMaakRoute(int i, string s) {
+            if (AppController.sActiveRouteID != -1) {
+                AppController.sKwxClient.deActivateRoute();
+                AppController.sActiveRouteID = -1;
+                AppController.sActiveRoute = null;
+            }
+            walkRoute(0, null);
         }
 
         void doLogin(int i, string s) {
@@ -87,6 +98,10 @@ namespace Diwi {
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
             mIsInitialized = true;
+            doLogin(0, null);
+            if (AppController.sActiveRouteID != -1) {
+                walkRoute(0,null);
+            }
         }
         
         protected override void OnResize(EventArgs e) {

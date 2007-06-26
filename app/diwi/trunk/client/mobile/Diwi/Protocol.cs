@@ -16,10 +16,17 @@ namespace Diwi
         public static string SERVICE_UTOPIA = "utopia";
         public static string SERVICE_SELECT_APP = "select-app";
         public static string SERVICE_NAV_START = "nav-start";
-        public static string SERVICE_NAV_STATE = "nav-state";
+        public static string SERVICE_NAV_STATE = "nav-get-state";
         public static string SERVICE_ACTIVATE_ROUTE = "nav-activate-route";
+        public static string SERVICE_DEACTIVATE_ROUTE = "nav-deactivate-route";
         public static string SERVICE_ADD_MEDIUM = "nav-add-medium";
         public static string SERVICE_GET_ROUTELIST = "route-getlist";
+        public static string SERVICE_GET_ROUTE = "route-get";
+        public static string SERVICE_GET_ROUTE_MAP = "route-get-map";
+        public static string SERVICE_NAV_GET_MAP = "nav-get-map";
+        public static string SERVICE_NAV_POINT = "nav-point";
+        
+        
 
 
         public static string TAG_LOGIN_REQ = SERVICE_LOGIN + POSTFIX_REQ;
@@ -29,8 +36,13 @@ namespace Diwi
         public static string TAG_NAV_START_REQ = SERVICE_NAV_START + POSTFIX_REQ;
         public static string TAG_NAV_STATE_REQ = SERVICE_NAV_STATE + POSTFIX_REQ;
         public static string TAG_ACTIVATE_ROUTE_REQ = SERVICE_ACTIVATE_ROUTE + POSTFIX_REQ;
+        public static string TAG_DEACTIVATE_ROUTE_REQ = SERVICE_DEACTIVATE_ROUTE + POSTFIX_REQ;
         public static string TAG_ADD_MEDIUM_REQ = SERVICE_ADD_MEDIUM + POSTFIX_REQ;
         public static string TAG_GET_ROUTELIST_REQ = SERVICE_GET_ROUTELIST + POSTFIX_REQ;
+        public static string TAG_GET_ROUTE_REQ = SERVICE_GET_ROUTE + POSTFIX_REQ;
+        public static string TAG_GET_ROUTE_MAP_REQ = SERVICE_GET_ROUTE_MAP + POSTFIX_REQ;
+        public static string TAG_NAV_GET_MAP_REQ = SERVICE_NAV_GET_MAP + POSTFIX_REQ;
+        public static string TAG_NAV_POINT_REQ = SERVICE_NAV_POINT + POSTFIX_REQ;
 
 
         public static string TAG_LOGIN_RSP = SERVICE_LOGIN + POSTFIX_RSP;
@@ -40,9 +52,14 @@ namespace Diwi
         public static string TAG_NAV_START_RSP = SERVICE_NAV_START + POSTFIX_RSP;
         public static string TAG_NAV_STATE_RSP = SERVICE_NAV_STATE + POSTFIX_RSP;
         public static string TAG_ACTIVATE_ROUTE_RSP = SERVICE_ACTIVATE_ROUTE + POSTFIX_RSP;
+        public static string TAG_DEACTIVATE_ROUTE_RSP = SERVICE_DEACTIVATE_ROUTE + POSTFIX_RSP;
         public static string TAG_ADD_MEDIUM_RSP = SERVICE_ADD_MEDIUM + POSTFIX_RSP;
         public static string TAG_GET_ROUTELIST_RSP = SERVICE_GET_ROUTELIST + POSTFIX_RSP;
-       
+        public static string TAG_GET_ROUTE_RSP = SERVICE_GET_ROUTE + POSTFIX_RSP;
+        public static string TAG_GET_ROUTE_MAP_RSP = SERVICE_GET_ROUTE_MAP + POSTFIX_RSP;
+        public static string TAG_NAV_GET_MAP_RSP = SERVICE_NAV_GET_MAP + POSTFIX_RSP;
+        public static string TAG_NAV_POINT_RSP = SERVICE_NAV_POINT + POSTFIX_RSP;
+      
 
 
 

@@ -103,13 +103,15 @@ namespace Diwi {
             AppController.sKwxClient.stop();
             AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
             if (AppController.sKwxClient.agentKey != null) {
-             //   FileInfo fi = new FileInfo(@"\\testvideo.mp4");
-             //   if( fi.Exists ) 
-             //       new MediaUploader(fi.FullName, "testVideo", @"video/mp4", null);
+                //   FileInfo fi = new FileInfo(@"\\testvideo.mp4");
+                //   if( fi.Exists ) 
+                //       new MediaUploader(fi.FullName, "testVideo", @"video/mp4", null);
                 doTerug(0, null);
+            } else {
+                MessageBox.Show("Check netwerkinstellingen, usernaam en passwoord...", "Login failed");
+                mServerMess.text = "";
+                draw();
             }
-            mServerMess.text = "";
-            draw();
         }
         
         

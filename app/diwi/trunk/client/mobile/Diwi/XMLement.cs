@@ -77,6 +77,14 @@ namespace Diwi {
             return null;
         }
 
+        public XMLement getChildForAttribute(string id, string val) {
+            foreach (XMLement xml in mChildren) {
+                if (xml.getAttributeValue(id) == val )
+                    return xml;
+            }
+            return null;
+        }
+
         public XMLement getChild(int i) {
             if (i < mChildren.Count) return (XMLement)mChildren[i];
             return null;

@@ -73,6 +73,8 @@ namespace Diwi {
                 if (messageCallback != null) {
                     messageCallback("login: succesful!");
                 }
+            } else {
+                return;
             }
 
             x = selectApp();
@@ -83,8 +85,30 @@ namespace Diwi {
                 }
             }
 
+
+            x = getRouteList();
+            if (x != null) {
+                AppController.sRoutes = x;
+                if (messageCallback != null) {
+                    string s = x.toString();
+                    messageCallback("got route list!");
+                }
+            }
+
+
+            AppController.sActiveRoute = null;
             x = navState();
             if (x != null) {
+                string s = x.getAttributeValue("routeid");
+                if (s != null && s != "") {
+                    AppController.sActiveRoute = AppController.sRoutes.getChildForAttribute("id", s);
+                    AppController.sActiveRouteID = int.Parse(s);
+                    AppController.sActiveRouteMapPathHor = null;
+                    AppController.sActiveRouteMapPathVer = null;
+                    if (AppController.sActiveRoute == null) {
+                        AppController.sActiveRouteID = -1;
+                    }
+                }
                 if (messageCallback != null) {
                     messageCallback("get_state: succesful!");
                     ; // do something with nav state
@@ -119,7 +143,7 @@ namespace Diwi {
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            if (xml.tag == Protocol.TAG_NAV_STATE_RSP)
+            if (xml != null && xml.tag == Protocol.TAG_NAV_STATE_RSP)
                 return xml;
             else
                 return null;
@@ -130,7 +154,7 @@ namespace Diwi {
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            if (xml.tag == Protocol.TAG_NAV_START_RSP)
+            if (xml != null && xml.tag == Protocol.TAG_NAV_START_RSP)
                 return xml;
             else
                 return null;
@@ -144,9 +168,21 @@ namespace Diwi {
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            if (xml.tag == Protocol.TAG_ACTIVATE_ROUTE_RSP)
+            if (xml != null && xml.tag == Protocol.TAG_ACTIVATE_ROUTE_RSP)
                 return xml;
-            else 
+            else
+                return null;
+        }
+
+        public XMLement deActivateRoute() {
+            XMLement xml = new XMLement(Protocol.TAG_DEACTIVATE_ROUTE_REQ);
+
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml != null && xml.tag == Protocol.TAG_DEACTIVATE_ROUTE_RSP)
+                return xml;
+            else
                 return null;
         }
 
@@ -158,7 +194,7 @@ namespace Diwi {
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            if (xml.tag == Protocol.TAG_ADD_MEDIUM_RSP)
+            if (xml != null && xml.tag == Protocol.TAG_ADD_MEDIUM_RSP)
                 return xml;
             else
                 return null;
@@ -175,7 +211,7 @@ namespace Diwi {
                 xml = doRequest(xml);
             }
 
-            if (xml.tag == Protocol.TAG_LOGIN_RSP) {
+            if (xml != null && xml.tag == Protocol.TAG_LOGIN_RSP) {
                 mAgentKey = xml.getAttributeValue("agentkey");
                 if (messageCallback != null)
                     messageCallback("Kwx login succes: " + mAgentKey);
@@ -200,7 +236,7 @@ namespace Diwi {
                 req1 = utopiaRequest(req1);
                 req2 = utopiaRequest(req2);
 
-                if ((req1.tag == Protocol.TAG_GET_ROUTELIST_RSP) && (req1.tag == Protocol.TAG_GET_ROUTELIST_RSP)) {
+                if ( req1!=null && req2 != null && (req1.tag == Protocol.TAG_GET_ROUTELIST_RSP) && (req1.tag == Protocol.TAG_GET_ROUTELIST_RSP)) {
                   for (int i = 0; ; i++) {
                     XMLement x = req1.getChild(i);
                     if (x != null) req2.addChild(x);
@@ -215,32 +251,36 @@ namespace Diwi {
 
         public XMLement getRoute(string id) {
             if (mAgentKey != null) {
-                XMLement req = new XMLement("route-get-req");
-                req.addAttribute("id",id);
+                XMLement xml = new XMLement(Protocol.TAG_GET_ROUTE_REQ);
+                xml.addAttribute("id",id);
 
-                req = utopiaRequest(req);
+                xml = utopiaRequest(xml);
 
-                return req;
+                if (xml != null && xml.tag == Protocol.TAG_GET_ROUTE_RSP)
+                    return xml;
+                else
+                    return null;
             }
             return new XMLement("NotLoggedInError");
         }
 
         public string getRouteMap(string id, bool hor) {
-            XMLement req = new XMLement("route-get-map-req");
-            req.addAttribute("id", id);
-            req.addAttribute("height", hor? "240" : "320");
-            req.addAttribute("width",  hor? "320" : "240");
-            req = utopiaRequest(req);
-            if (req.tag == "route-get-map-rsp") {
-                return req.getAttributeValue("url");
-            }
-            return null;
+            XMLement xml = new XMLement(Protocol.TAG_GET_ROUTE_MAP_REQ);
+            xml.addAttribute("id", id);
+            xml.addAttribute("height", hor ? "240" : "320");
+            xml.addAttribute("width", hor ? "320" : "240");
+            xml = utopiaRequest(xml);
+
+            if (xml != null && xml.tag == Protocol.TAG_GET_ROUTE_MAP_RSP)
+                return xml.getAttributeValue("url");
+            else
+                return null;
         }
 
         public string getBoundsMap(int id, float radiusKm, bool hor) {
 
             float urtLat, urtLon, llbLat, llbLon;
-            XMLement req = new XMLement("nav-get-map-req");
+            XMLement req = new XMLement(Protocol.TAG_NAV_GET_MAP_REQ);
 
             if (hor) {
                 urtLat = GpsReader.lat + GpsReader.km2degLat(radiusKm);
@@ -266,17 +306,12 @@ namespace Diwi {
             req.addAttribute("urtLat", urtLat.ToString(mUSFormat));
             req.addAttribute("urtLon", urtLon.ToString(mUSFormat));
 
-
-            string s = req.toString();
-
             req = utopiaRequest(req);
 
-            if ((req!=null) && (req.tag == "nav-get-map-rsp")) {
+            if ((req != null) && (req.tag == Protocol.TAG_NAV_GET_MAP_RSP)) {
                 return req.getAttributeValue("url");
             }
             return null;
-       
-        
         }
 
 	/// <summary>
@@ -307,20 +342,23 @@ namespace Diwi {
         public void sendSample() {
 
             if (mAgentKey != null) {
-                XMLement xml = new XMLement("nav-point-req");
+                XMLement xml = new XMLement(Protocol.TAG_NAV_POINT_REQ);
                 XMLement pt = new XMLement("pt");
                 
-               // pt.addAttribute("lon", GpsReader.lon.ToString());
-               // pt.addAttribute("lat", GpsReader.lat.ToString());
+                pt.addAttribute("lon", GpsReader.lon.ToString());
+                pt.addAttribute("lat", GpsReader.lat.ToString());
 
-                pt.addAttribute("nmea", GpsReader.nmea);
+               // pt.addAttribute("nmea", GpsReader.nmea);
 
                 xml.addChild(pt);
 
                 xml = utopiaRequest(xml);
-                if (poiCallback != null) {
-                    poiCallback(xml, GpsReader.lat, GpsReader.lon);
-                }
+
+                if (xml != null && xml.tag == Protocol.TAG_NAV_POINT_RSP) {
+                    if (poiCallback != null) {
+                        poiCallback(xml, GpsReader.lat, GpsReader.lon);
+                    }
+                } 
             }
         }
 

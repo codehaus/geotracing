@@ -22,11 +22,11 @@ namespace Diwi {
     /// </summary>
     class AppController
     {
-        public static int sActiveRouteID = 0;
+        public static int sActiveRouteID = -1;
         public static XMLement sActiveRoute = null;
         public static string sActiveRouteMapPathHor = null;
         public static string sActiveRouteMapPathVer = null;
-        public static XMLement sFixedRoutes;
+        public static XMLement sRoutes;
         public static StreamWriter sLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;
@@ -35,7 +35,7 @@ namespace Diwi {
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
-        public static Backlight sBacklight = new Backlight();
+        //public static Backlight sBacklight = new Backlight();
 
         private static Sound sPloink;
 
