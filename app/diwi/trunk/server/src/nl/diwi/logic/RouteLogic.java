@@ -99,10 +99,10 @@ public class RouteLogic implements Constants {
                 oase.getRelater().relate(person, pref, "route");
             }
 
-            //JXElement generated = RouteGenerator.generateRoute(prefs);
+            JXElement generated = RouteGenerator.generateRoute(prefs);
             //log.info("dbg 4 " + new String(generated.toBytes(false)));
-            URL url = new URL("http://local.diwi.nl/diwi/testresponse/generateroute1.xml");
-            JXElement generated = new JXBuilder().build(url);
+            /*URL url = new URL("http://local.diwi.nl/diwi/testresponse/generateroute1.xml");
+            JXElement generated = new JXBuilder().build(url);*/
             Record route = null;
 
             if(generated != null && generated.hasChildren() && generated.getChildByTag("rte")!=null && generated.getChildByTag("rte").hasChildren()){

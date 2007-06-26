@@ -140,7 +140,8 @@ public class TripLogic implements Constants {
                 // create a trip if we don't already have one
                 trip = createTrip(aPersonId);
             }else{
-                trip = trips[0];
+                Record r = trips[0];
+                trip = oase.getFinder().read(r.getId());
             }
 
             // explicitely put a timestamp in
@@ -150,7 +151,6 @@ public class TripLogic implements Constants {
             String eventStr = new String(anEvent.toBytes(false)) + "\n";
             trip.getFileField(EVENTS_FIELD).append(eventStr.getBytes());
             oase.getModifier().update(trip);
-            log.info("Storing event done!");
 
         }catch(Throwable t){
             log.error("Exception storing the event: " + t.toString());
@@ -177,7 +177,6 @@ public class TripLogic implements Constants {
             String tables = "diwi_trip,utopia_person";
             String fields = "diwi_trip.id";
             String where = "diwi_trip.state = '" + TRIP_STATE_RUNNING + "' AND utopia_person.id = " + aPersonId;
-            /*String where = "diwi_trip.state = '" + TRIP_STATE_RUNNING + "'";*/
             String relations = "diwi_trip,utopia_person";
             String postCond = null;
             return QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);

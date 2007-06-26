@@ -26,6 +26,25 @@
      7. get route map
     -->
 
+    <test id="user-register-req">
+        <send id="client1">
+            <utopia-req>
+                <user-register-req>
+                    <person>
+                        <firstname>ronald</firstname>
+                        <lastname></lastname>
+                    </person>
+                </user-register-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-get-startpoints-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="poi-get-startpoints-req">
         <send id="client1">
             <utopia-req>
