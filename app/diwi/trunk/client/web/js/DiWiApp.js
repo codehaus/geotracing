@@ -60,29 +60,6 @@ var DIWIAPP = {
 		return false;
 	},
 
-	createRoute: function() {
-		var params = new Array();
-		params[KW.DIWI.BESLOTEN_PARAM] = s1.getValue();
-		params[KW.DIWI.HALFOPEN_PARAM] = s2.getValue();
-		params[KW.DIWI.OPEN_PARAM] = s3.getValue();
-		params[KW.DIWI.BEDRIJVEN_PARAM] = s4.getValue();
-		params[KW.DIWI.BEWONING_PARAM] = s5.getValue();
-		params[KW.DIWI.BOS_PARAM] = s6.getValue();
-		params[KW.DIWI.HEIDE_PARAM] = s7.getValue();
-		params[KW.DIWI.GRASLAND_PARAM] = s8.getValue();
-		params[KW.DIWI.ZEE_PARAM] = s9.getValue();
-		params[KW.DIWI.SLOTEN_PARAM] = s10.getValue();
-		params[KW.DIWI.STARTPUNT_PARAM] = document.getElementById("startpunt").value;
-		params[KW.DIWI.EINDPUNT_PARAM] = document.getElementById("eindpunt").value;
-		params[KW.DIWI.THEMA_PARAM] = document.getElementById("thema").value;
-		params[KW.DIWI.AFSTAND_PARAM] = document.getElementById("afstand").value;
-		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
-
-		KW.DIWI.generateroute(null, params);
-		DIWIAPP.pr('uw persoonlijke route wordt gegenereerd...');
-
-	},
-
 	restoreSession: function() {
 		SRV.init();
 		SRV.url = '/diwi/srv/get.jsp?';
@@ -105,6 +82,7 @@ var DIWIAPP = {
 		}
 
 		DH.setHTML('fixed_routes_form', optionStr);
+		MAP.create();
 	},
 
 	showFixedRoute: function(option) {
@@ -117,7 +95,6 @@ var DIWIAPP = {
 		content += record.getField('description');
 
 		DIWIAPP.pr(content);
-		MAP.create();
 		MAP.addRouteLayer(record.id);
 	},
 

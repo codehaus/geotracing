@@ -121,6 +121,7 @@ p {
 	margin-top: 5px;
 	width: 580px;
 	height: 400px;
+	border: 1px solid black;
 }
 
 #vasteroutes-lb {
