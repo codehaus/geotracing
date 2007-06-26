@@ -106,7 +106,5 @@ namespace Diwi {
         public static void SysBeep() {
             sPloink.Play();
         }
- 
-
     }
 }

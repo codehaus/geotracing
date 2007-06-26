@@ -27,7 +27,11 @@ namespace Diwi {
         void doBekijkRoute(int i, string s) {
             XMLement route = AppController.sFixedRoutes.getChild(i);
             (new RouteInfoPage(this, route)).ShowDialog();
-            if (AppController.sActiveRoute != null) doTerug(0, null);
+            if (AppController.sActiveRoute != null) {
+                // activate route
+                AppController.sKwxClient.activateRoute(AppController.sActiveRouteID, true);
+                doTerug(0, null);
+            }
         } 
 
         protected override void OnLoad(EventArgs e) {
