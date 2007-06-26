@@ -172,7 +172,7 @@ namespace Diwi {
             reqStream.Write(PREFIX, 0, PREFIX.Length);
             reqStream.Write(boundary, 0, boundary.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
-		    // write content header
+            // write content header
             string t = "Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + fi.Name + "\"";
             inData = encoding.GetBytes(t);
             reqStream.Write(inData, 0, inData.Length);
@@ -187,10 +187,15 @@ namespace Diwi {
 
             // write content
 
-            FileStream rdr = new FileStream(localFile, FileMode.Open);
             inData = new byte[1024];
+            inData = new byte[1024];
+            FileStream rdr = File.OpenRead(localFile);
+
+            //FileStream rdr = new FileStream(localFile, FileMode.Open);
+            int bytesRead = (int)rdr.Length;
+
             int total = 0;
-            int bytesRead = rdr.Read(inData, 0, 1024);
+            bytesRead = rdr.Read(inData, 0, 1024);
             while (bytesRead > 0) {
                 reqStream.Write(inData, 0, bytesRead);
                 bytesRead = rdr.Read(inData, 0, 1024);
@@ -204,18 +209,32 @@ namespace Diwi {
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
             reqStream.Write(PREFIX, 0, PREFIX.Length);
             reqStream.Write(boundary, 0, boundary.Length);
- //           reqStream.Write(PREFIX, 0, PREFIX.Length);
+            //           reqStream.Write(PREFIX, 0, PREFIX.Length);
             reqStream.Write(NEWLINE, 0, NEWLINE.Length);
 
             reqStream.Close();
-            
-            HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-            StreamReader sr = new StreamReader(response.GetResponseStream());
-            string pageData = sr.ReadToEnd();
-            sr.Close();
 
-            if (callb != null)
-                callb();
+            try {
+
+                HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+                StreamReader sr = new StreamReader(response.GetResponseStream());
+                string pageData = sr.ReadToEnd();
+                sr.Close();
+
+                XMLement xml = XMLement.createFromRawXml(pageData);
+                if (xml != null) {
+                    if (xml.tag == "medium-insert-rsp") {
+                        xml = AppController.sKwxClient.addMedium(xml.getAttributeValue("id") );
+                    }
+                }
+
+                
+                if (callb != null)
+                    callb();
+
+            } catch (IOException e) {
+            }
+
 
             busy = false;
 

@@ -59,6 +59,10 @@ namespace Diwi {
             mAttribs[key] = val;
         }
 
+        public void addAttribute(string key, int val) {
+            mAttribs[key] = val.ToString();
+        }
+
         public string getChildValue(string childTag) {
             XMLement child = getChildByName(childTag);
             if (child != null) return child.mNodeText;

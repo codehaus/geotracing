@@ -76,10 +76,18 @@ namespace Diwi {
             }
 
             x = selectApp();
-            if (x.tag == "select-app-rsp") {
+            if (x != null) {
                 if (messageCallback != null) {
                     string s = x.toString();
                     messageCallback("select-app: succesful!");
+                }
+            }
+
+            x = navState();
+            if (x != null) {
+                if (messageCallback != null) {
+                    messageCallback("get_state: succesful!");
+                    ; // do something with nav state
                 }
             }
 
@@ -106,12 +114,54 @@ namespace Diwi {
         }
 
 
+        public XMLement navState() {
+            XMLement xml = new XMLement(Protocol.TAG_NAV_STATE_REQ);
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml.tag == Protocol.TAG_NAV_STATE_RSP)
+                return xml;
+            else
+                return null;
+        }
+
         public XMLement doNavStart() {
             XMLement xml = new XMLement(Protocol.TAG_NAV_START_REQ);
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            return xml;
+            if (xml.tag == Protocol.TAG_NAV_START_RSP)
+                return xml;
+            else
+                return null;
+        }
+
+        public XMLement activateRoute(int routeID, bool init) {
+            XMLement xml = new XMLement(Protocol.TAG_ACTIVATE_ROUTE_REQ);
+            xml.addAttribute(Protocol.ATTR_ID, routeID);
+            xml.addAttribute(Protocol.ATTR_INIT, init.ToString());
+
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml.tag == Protocol.TAG_ACTIVATE_ROUTE_RSP)
+                return xml;
+            else 
+                return null;
+        }
+
+        
+        public XMLement addMedium(string id) {
+            XMLement xml = new XMLement(Protocol.TAG_ADD_MEDIUM_REQ);
+            xml.addAttribute(Protocol.ATTR_ID, id);
+
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml.tag == Protocol.TAG_ADD_MEDIUM_RSP)
+                return xml;
+            else
+                return null;
         }
 
 
@@ -125,7 +175,7 @@ namespace Diwi {
                 xml = doRequest(xml);
             }
 
-            if (xml.tag == "login-rsp") {
+            if (xml.tag == Protocol.TAG_LOGIN_RSP) {
                 mAgentKey = xml.getAttributeValue("agentkey");
                 if (messageCallback != null)
                     messageCallback("Kwx login succes: " + mAgentKey);
@@ -142,11 +192,23 @@ namespace Diwi {
         /// </summary>
         public XMLement getRouteList() {
             if (mAgentKey != null) {
-                XMLement req = new XMLement("route-getlist-req");
-                req.addAttribute("type", "fixed");
+                XMLement req1 = new XMLement(Protocol.TAG_GET_ROUTELIST_REQ);
+                XMLement req2 = new XMLement(Protocol.TAG_GET_ROUTELIST_REQ);
+                req1.addAttribute("type", "fixed");
+                req2.addAttribute("type", "generated");
 
-                req = utopiaRequest(req);
-                return req;
+                req1 = utopiaRequest(req1);
+                req2 = utopiaRequest(req2);
+
+                if ((req1.tag == Protocol.TAG_GET_ROUTELIST_RSP) && (req1.tag == Protocol.TAG_GET_ROUTELIST_RSP)) {
+                  for (int i = 0; ; i++) {
+                    XMLement x = req1.getChild(i);
+                    if (x != null) req2.addChild(x);
+                    else break;
+                  }
+                  return req2;
+                } else
+                    return null;
             }
             return new XMLement("NotLoggedInError");
         }
