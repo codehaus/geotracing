@@ -17,7 +17,6 @@ namespace Diwi {
         MapHandler.DownloadCallbackHandler callb;
 
 
-
         public MediaDownloader(string url, string p, MapHandler.DownloadCallbackHandler cb) {
             uri = Uri.UnescapeDataString(url);
             callb = cb;
@@ -36,14 +35,11 @@ namespace Diwi {
             return false;
         }
 
-
-
         private void threadHandler() {
             int n;
             byte[] inBuffer = new byte[1024];
             Stream stream = null;
             
-
             busy = true;
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);

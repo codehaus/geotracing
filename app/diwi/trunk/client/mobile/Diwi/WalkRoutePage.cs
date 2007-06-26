@@ -46,11 +46,12 @@ namespace Diwi {
 
 
         void navPointReceive(XMLement xml, float lat, float lon) {
-                XMLement poi = xml.firstChild();
+                XMLement poi = xml.getChildByName("poi-hit");
                 int x = MapHandler.currentXpixel(horizontal);
                 int y = MapHandler.currentYpixel(horizontal);
                 setPosition(x, y);
                 if (poi != null) {
+                    
                     // stumbled on an intersting point...
                 }
         }
@@ -116,6 +117,12 @@ namespace Diwi {
             mIsInitialized = true;
             MapHandler.active = true;
             setBackGround();
+
+            XMLement x = AppController.sKwxClient.getPOI();
+            PoiViewerPage p = new PoiViewerPage(this);
+            p.setContent(x);
+            p.ShowDialog();
+
         }
 
         void setBackGround() {
