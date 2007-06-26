@@ -25,10 +25,12 @@ namespace Diwi
         public static string SERVICE_GET_ROUTE_MAP = "route-get-map";
         public static string SERVICE_NAV_GET_MAP = "nav-get-map";
         public static string SERVICE_NAV_POINT = "nav-point";
-        
-        
+        public static string SERVICE_POI_GET = "poi-get";
 
 
+
+
+        public static string TAG_POI_GET_REQ = SERVICE_POI_GET + POSTFIX_REQ;
         public static string TAG_LOGIN_REQ = SERVICE_LOGIN + POSTFIX_REQ;
         public static string TAG_LOGOUT_REQ = SERVICE_LOGOUT + POSTFIX_REQ;
         public static string TAG_UTOPIA_REQ = SERVICE_UTOPIA + POSTFIX_REQ;
@@ -45,6 +47,7 @@ namespace Diwi
         public static string TAG_NAV_POINT_REQ = SERVICE_NAV_POINT + POSTFIX_REQ;
 
 
+        public static string TAG_POI_GET_RSP = SERVICE_POI_GET + POSTFIX_RSP;
         public static string TAG_LOGIN_RSP = SERVICE_LOGIN + POSTFIX_RSP;
         public static string TAG_LOGOUT_RSP = SERVICE_LOGOUT + POSTFIX_RSP;
         public static string TAG_UTOPIA_RSP = SERVICE_UTOPIA + POSTFIX_RSP;

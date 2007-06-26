@@ -149,6 +149,19 @@ namespace Diwi {
                 return null;
         }
 
+        public XMLement getPOI() {
+            string id = "22390";
+            XMLement xml = new XMLement(Protocol.TAG_POI_GET_REQ);
+            xml.addAttribute(Protocol.ATTR_ID, id);
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml != null && xml.tag == Protocol.TAG_POI_GET_RSP)
+                return xml;
+            else
+                return null;
+        }
+
         public XMLement doNavStart() {
             XMLement xml = new XMLement(Protocol.TAG_NAV_START_REQ);
             lock (this) {
