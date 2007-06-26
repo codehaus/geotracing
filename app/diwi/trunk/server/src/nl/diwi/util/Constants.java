@@ -82,6 +82,7 @@ public interface Constants {
     public final static String URL_FIELD = "url";
     public final static String TIME_FIELD = "time";
     public final static String LOCATION_ID_FIELD = "locationid";
+    public final static String INIT_FIELD = "init";
 
     // trip states
 	public final static String TRIP_STATE_RUNNING = "running";

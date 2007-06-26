@@ -112,10 +112,15 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
         int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
+        String initString = anUtopiaReq.getRequestCommand().getAttr(INIT_FIELD);
+        boolean init = false;
+        if(initString!=null && initString.toLowerCase().equals("true")){
+            init = true;
+        }
 
-        logic.activateRoute(routeId, personId);
+        logic.activateRoute(routeId, personId, init);
 
-        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());
+        tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm);
         
         return createResponse(NAV_ACTIVATE_ROUTE);
     }
@@ -175,7 +180,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         Track track = trackLogic.resume(HandlerUtil.getUserId(anUtopiaReq), Track.VAL_DAY_TRACK, System.currentTimeMillis());
 
         // close previous trip
-        tripLogic.closeTrip(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+        tripLogic.closeTripByTime(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
         // and store the request
         tripLogic.storeEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand());

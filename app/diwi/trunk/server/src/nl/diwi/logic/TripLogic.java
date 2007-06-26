@@ -63,9 +63,41 @@ public class TripLogic implements Constants {
             
             oase.getModifier().insert(trip);
 
+            // relate person
+            oase.getRelater().relate(trip, person, null);
+
             return trip;
         } catch (Throwable t) {
             log.error("Exception creating the trip: " + t.toString());
+            throw new UtopiaException(t);
+        }
+    }
+
+    // Close the trip
+	public void closeTripByTime(String aPersonId) throws UtopiaException {
+        try{
+            Record person = oase.getFinder().read(Integer.parseInt(aPersonId));
+            if(person == null){
+                throw new UtopiaException("No person found with id " + aPersonId);
+            }
+
+            Record[] trips = oase.getRelater().getRelated(person, TRIP_TABLE, null);
+
+            long now = System.currentTimeMillis();
+
+            for(int i=0;i<trips.length;i++){
+                Record trip = trips[i];
+
+                long startDate = trip.getLongField(START_DATE_FIELD);
+                // we time out after 12 hrs
+                if(now - startDate > 12*60*60){
+                    trip.setStringField(STATE_FIELD, TRIP_STATE_DONE);
+                    trip.setLongField(END_DATE_FIELD, now);
+                    oase.getModifier().update(trip);
+                }
+            }
+        }catch(Throwable t){
+            log.error("Exception closing the trip: " + t.toString());
             throw new UtopiaException(t);
         }
     }
@@ -83,10 +115,12 @@ public class TripLogic implements Constants {
             for(int i=0;i<trips.length;i++){
                 Record trip = trips[i];
                 trip.setStringField(STATE_FIELD, TRIP_STATE_DONE);
+                trip.setLongField(END_DATE_FIELD, System.currentTimeMillis());
                 oase.getModifier().update(trip);
+
             }
         }catch(Throwable t){
-            log.error("Exception clsoing the trip: " + t.toString());
+            log.error("Exception closing the trip: " + t.toString());
             throw new UtopiaException(t);
         }
     }
@@ -118,24 +152,6 @@ public class TripLogic implements Constants {
             oase.getModifier().update(trip);
             log.info("Storing event done!");
 
-            Record r =oase.getFinder().read(trip.getId());
-            if(r!=null){
-                FileField f = r.getFileField(EVENTS_FIELD);
-                if(f!=null){
-                    byte[] bt = f.getAppendData();
-                    if(bt!=null){
-                        log.info(new String(bt));
-                    }else{
-                        log.info("empty bytearray");
-                    }
-                }else{
-                    log.info("empty filefield");
-                }
-            }else{
-                log.info("no record found");
-            }
-            //log.info("check in the db - " + new String(oase.getFinder().read(trip.getId()).getFileField(EVENTS_FIELD).getAppendData()));
-
         }catch(Throwable t){
             log.error("Exception storing the event: " + t.toString());
             throw new UtopiaException(t);
@@ -160,7 +176,8 @@ public class TripLogic implements Constants {
         try{
             String tables = "diwi_trip,utopia_person";
             String fields = "diwi_trip.id";
-            String where = "diwi_trip.state='" + TRIP_STATE_RUNNING + "' AND utopia_person.id=" + aPersonId;
+            String where = "diwi_trip.state = '" + TRIP_STATE_RUNNING + "' AND utopia_person.id = " + aPersonId;
+            /*String where = "diwi_trip.state = '" + TRIP_STATE_RUNNING + "'";*/
             String relations = "diwi_trip,utopia_person";
             String postCond = null;
             return QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
