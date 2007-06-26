@@ -6,7 +6,6 @@ import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
-import org.keyworx.common.util.MailClient;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.*;
@@ -17,13 +16,21 @@ import org.keyworx.utopia.core.util.Core;
 import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.server.ServerConfig;
 
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.Session;
 import java.util.Vector;
+import java.util.Properties;
+import java.util.Date;
 
 public class UserHandler extends DefaultHandler implements Constants {
 
     public final static String USER_GET_PREFERENCES = "user-get-preferences";
     public final static String USER_GET_STATS = "user-get-stats";
     public final static String USER_REGISTER = "user-register";
+    Log log = Logging.getLog("UserHandler");
 
 
     /**
@@ -34,7 +41,6 @@ public class UserHandler extends DefaultHandler implements Constants {
      * @throws UtopiaException standard Utopia exception
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        Log log = Logging.getLog(anUtopiaReq);
         String service = anUtopiaReq.getServiceName();
         log.trace("Handling request for service=" + service);
 
@@ -132,13 +138,45 @@ public class UserHandler extends DefaultHandler implements Constants {
             String host = ServerConfig.getProperty("keyworx.mail.server");
             String recipient = ServerConfig.getProperty("keyworx.mail.recipient");
 
-            MailClient.sendMail(host, "Digitale Wichelroede", recipient, subject, body, null, null, null);
+            /*try{
+                MailClient.sendMail(host, "Digitale Wichelroede", recipient, subject, body, null, null, null);
+            }catch(Throwable t){
+                log.error("Exception sending mail:" + t.getMessage());
+            }*/
+
+            sendMail(host, "", "", recipient, "DigitaleWichelroede", subject, body);
 
             JXElement responseElement = createResponse(USER_REGISTER);
             responseElement.setAttr("id", "" + person.getId());
 
             return responseElement;
         }catch(Throwable t){
+            log.error("Exception in register user: " + t.getMessage());
+            throw new UtopiaException(t);
+        }
+    }
+
+    private void sendMail(String aHost, String aUser, String aPassword, String aRecipient, String aSender, String aSubject, String aBody) throws UtopiaException{
+        try{
+            Properties props = System.getProperties();
+            props.put("mail.host", aHost);
+            props.put("mail.user", aUser);
+            props.put("mail.password", aPassword);
+
+            Session mailSession = Session.getDefaultInstance(props, null);
+            Message msg = new MimeMessage(mailSession);
+
+            msg.setFrom(new InternetAddress(aSender));
+            InternetAddress[] address = {new InternetAddress(aRecipient)};
+            msg.setRecipients(Message.RecipientType.TO, address);
+            msg.setSubject(aSubject);
+            msg.setSentDate(new Date());
+            msg.setText(aBody);
+
+            Transport.send(msg);
+            
+        }catch(Throwable t){
+            log.error("Exception in sendMail:" + t.getMessage());
             throw new UtopiaException(t);
         }
     }
@@ -172,19 +210,23 @@ public class UserHandler extends DefaultHandler implements Constants {
 
                     personElm.addChild(prefElm);
                 }
+                log.info(new String(personElm.toBytes(false)));
 
                 // add the trips
                 Vector trips = tripLogic.getTrips("" + person.getId());
                 for(int j=0;j<trips.size();j++){
                     JXElement trip = (JXElement)trips.elementAt(j);
                     personElm.addChild(tripLogic.getTrip(trip.getAttr(ID_FIELD)));
-
-                }                
+                }
+                log.info(new String(personElm.toBytes(false)));
                 
                 // add the traffic
                 personElm.addChildren(trafficLogic.getTrafficForPerson("" + person.getId()));
+                log.info(new String(personElm.toBytes(false)));
+                response.addChild(personElm);
 
             }
+            System.out.println(new String(response.toBytes(false)));
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }

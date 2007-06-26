@@ -20,13 +20,10 @@
 			<field name="id" />
 			<field name="kichid" />
 			<field name="name" />
-			<field name="description" />
-			<field name="point" />
-            <field name="type" />
+			<field name="type" />
             <field name="state" />
             <field name="category" />
-            <field name="media" />
-            <field name="extra" />
+            <field name="media" />            
           </list>
 
 		<query>

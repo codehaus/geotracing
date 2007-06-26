@@ -4,7 +4,7 @@
     <!--<testset file="routehandler.xml"/>-->
     <!--<testset file="cms-scenario.xml"/>-->
     <!--<testset file="sync-scenario.xml"/>-->
-    <testset file="mobileclient-scenario.xml"/>
-    <!--<testset file="webclient-scenario.xml"/>-->
+    <!--<testset file="mobileclient-scenario.xml"/>-->
+    <testset file="webclient-scenario.xml"/>
 </testsuite>
 

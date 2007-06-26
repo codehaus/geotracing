@@ -32,15 +32,43 @@
                 <user-register-req>
                     <person>
                         <firstname>ronald</firstname>
-                        <lastname></lastname>
+                        <lastname>lenz</lastname>
+                        <street>Van Swietenstraat</street>
+                        <streetnr>58</streetnr>
+                        <zipcode>2518SK</zipcode>
+                        <city>Den Haag</city>
+                        <phonenr>070-3658880</phonenr>
+                        <mobilenr>06-27021204</mobilenr>
+                        <email>ronald@waag.org</email>
+                        <loginname>ronald</loginname>
+                        <password>ronald</password>
                     </person>
+                    <pref name="age" value="33" />
+                    <pref name="gender" value="man" />
+                    <pref name="interests" value="Renswoude" />
+                    <pref name="trip" value="walking" />
+                    <pref name="motivaction" value="kosmopoliet" />
                 </user-register-req>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <poi-get-startpoints-rsp/>
+                <user-register-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="user-get-stats-req">
+        <send id="client1">
+            <utopia-req>
+                <user-get-stats-req />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <user-get-stats-rsp/>
             </utopia-rsp>
         </expect>
     </test>
