@@ -10,7 +10,7 @@ var MAP = {
 	DIV_ID: 'map',
 	IMAGE_FORMAT: 'image/png',
 	MAX_RESOLUTION: 'auto',
-	NUM_ZOOMLEVELS: 10,
+	NUM_ZOOMLEVELS: 20,
 	PROJECTION: 'EPSG:4326',
 	WMS_URL: 'http://test.digitalewichelroede.nl/map84',
 	ZOOM: 12,
@@ -28,7 +28,7 @@ var MAP = {
 
 		var routeLayer = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
-				MAP.WMS_URL + '?ID=' + aRouteId, {layers: 'single_diwi_route', format: MAP.IMAGE_FORMAT, transparent: true});
+				MAP.WMS_URL, {id: aRouteId, layers: 'single_diwi_route', format: MAP.IMAGE_FORMAT, transparent: true});
 		MAP.map.addLayer(routeLayer);
 	},
 
@@ -40,7 +40,7 @@ var MAP = {
 	},
 
 	addGoogleSatLayer: function() {
-		var googles = new OpenLayers.Layer.Google("Google Maps Satelliet", { 'type': G_SATELLITE_MAP });
+		var googles = new OpenLayers.Layer.Google("Google Maps Satelliet", { 'type': G_SATELLITE_MAP, 'maxZoomLevel':18 });
 
 		MAP.map.addLayer(googles);
 	},
@@ -53,7 +53,7 @@ var MAP = {
 			maxExtent: MAP.BOUNDS,
 			projection: MAP.PROJECTION,
 			maxResolution: MAP.MAX_RESOLUTION
-			// numZoomLevels: MAP.NUM_ZOOMLEVELS
+			// 'numZoomLevels': MAP.NUM_ZOOMLEVELS
 		}
 				);
 
@@ -95,6 +95,7 @@ var MAP = {
 	}
 }
 
+/** Load google maps JS for key matching our server URL. */
 MAP.addKey('live',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xSegWNS_BtfE0_SbjkW1pkdsveSEhS9935cVFSC9wEMB5FdZntmVMpl2w',
 		'^https?://www.digitalewichelroede.nl/.*');
