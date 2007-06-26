@@ -123,28 +123,63 @@ public class UserHandler extends DefaultHandler implements Constants {
             }
 
             String subject = "Digitale Wichelroede registration for " + firstName + " " + lastName;
-            String body = "Digitale Wichelroede registration for: \n" +
-                    firstName + " " + lastName + "\n" +
-                    birthDate + "\n" +
-                    street + " " + streetNr + "\n" +
-                    zipcode + " " + city + "\n" +
-                    country + "\n" +
-                    phoneNr + "\n" +
-                    mobileNr + "\n" +
-                    email + "\n" +
-                    loginName + "\n" +
-                    password + "\n";
+            String body = "Digitale Wichelroede registration for: \n";
+            body +="+++++++++++++++++++++++++++++++++++++++++++++\n\n";
+            body += firstName + " " + lastName + "\n";
+            body += "birthdate: \n";
+            if(birthDate!=null && birthDate.length()>0) body += birthDate + "\n";
+            body += "address: \n";
+            if(street!=null && street.length()>0) {
+                body += street;
+            }else{
+                body += "-";
+            }
+            if(streetNr!=null && streetNr.length()>0){
+                body += streetNr;
+            }else{
+                body += "-";
+            }
+            if(zipcode!=null && zipcode.length()>0){
+                body += "\n" + zipcode;
+            }else{
+                body += "-";
+            }
+            if(city!=null && city.length()>0){
+                body += city;
+            }else{
+                body += "-";
+            }
+            body += "email: \n";
+            if(email!=null && email.length()>0){
+                body += email;
+            }else{
+                body += "-";
+            }
+            body += "phonenr: \n";
+            if(phoneNr!=null && phoneNr.length()>0){
+                body += phoneNr;
+            }else{
+                body += "-";
+            }
+            body += "mobilenr: \n";
+            if(mobileNr!=null && mobileNr.length()>0){
+                body += mobileNr;
+            }else{
+                body += "-";
+            }
+            body += "loginname: \n";
+            if(loginName!=null && loginName.length()>0) body += loginName;
+            body += "password: \n";
+            if(password!=null && password.length()>0) body += password;
 
-            String host = ServerConfig.getProperty("keyworx.mail.server");
-            String recipient = ServerConfig.getProperty("keyworx.mail.recipient");
+            body +="\n\n+++++++++++++++++++++++++++++++++++++++++++++";
 
-            /*try{
-                MailClient.sendMail(host, "Digitale Wichelroede", recipient, subject, body, null, null, null);
-            }catch(Throwable t){
-                log.error("Exception sending mail:" + t.getMessage());
-            }*/
+            String mailHost = ServerConfig.getProperty("keyworx.mail.host");
+            String mailRecipient = ServerConfig.getProperty("keyworx.mail.recipient");
+            String mailUser = ServerConfig.getProperty("keyworx.mail.user");
+            String mailPassword = ServerConfig.getProperty("keyworx.mail.password");
 
-            sendMail(host, "", "", recipient, "DigitaleWichelroede", subject, body);
+            sendMail(mailHost, mailUser, mailPassword, mailRecipient, "DigitaleWichelroede", subject, body);
 
             JXElement responseElement = createResponse(USER_REGISTER);
             responseElement.setAttr("id", "" + person.getId());
