@@ -144,7 +144,9 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
         //result contains 'pt' elements with everything filled out if an EMEA string was sent.
-        Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+        //Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));        
+        trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+        Vector result = new Vector(3);
 
         //Get Point from pt elements
         JXElement ptElement = (JXElement) (reqElm.getChildren().get(0));

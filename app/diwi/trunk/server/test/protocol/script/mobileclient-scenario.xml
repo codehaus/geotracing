@@ -395,13 +395,13 @@
     <test id="nav-deactivate-route-req">
 		<send id="client1">
 			<utopia-req>
-				<nav-deactivate-route-req id="109"/>
+				<nav-deactivate-route-req />
 			</utopia-req>
 		</send>
 
 		<expect id="client1">
 			<utopia-rsp>
-				<nav-deactivate-route-rsp/>
+				<nav-deactivate-route-rsp />
 			</utopia-rsp>
 		</expect>
 	</test>

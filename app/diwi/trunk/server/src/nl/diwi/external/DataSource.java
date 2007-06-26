@@ -145,9 +145,7 @@ public class DataSource implements Constants {
 
     // insert a poi in KICH
     public String insertPOI(JXElement aPOIElement) throws UtopiaException {
-        sendToKICHService(POI_INSERT_COMMAND, aPOIElement);
-        // TODO: change this later - just for testing purposes!!!
-        return "12345";
+        return sendToKICHService(POI_INSERT_COMMAND, aPOIElement);
     }
 
     // update a poi in KICH
