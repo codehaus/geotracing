@@ -174,7 +174,12 @@ public class UserHandler extends DefaultHandler implements Constants {
                 }
 
                 // add the trips
-                personElm.addChildren(tripLogic.getTrips("" + person.getId()));
+                Vector trips = tripLogic.getTrips("" + person.getId());
+                for(int j=0;j<trips.size();j++){
+                    JXElement trip = (JXElement)trips.elementAt(j);
+                    personElm.addChild(tripLogic.getTrip(trip.getAttr(ID_FIELD)));
+
+                }                
                 
                 // add the traffic
                 personElm.addChildren(trafficLogic.getTrafficForPerson("" + person.getId()));
