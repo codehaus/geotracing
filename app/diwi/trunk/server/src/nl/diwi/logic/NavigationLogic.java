@@ -128,20 +128,31 @@ public class NavigationLogic implements Constants {
 
     }
 
-    public void activateRoute(int routeId, int personId) throws UtopiaException {
+    public void activateRoute(int aRouteId, int aPersonId, boolean init) throws UtopiaException {
         try {
             //Find the person
-            Record person = oase.getFinder().read(personId);
+            Record person = oase.getFinder().read(aPersonId);
             //Find the Route
-            Record route = oase.getFinder().read(routeId);
+            Record route = oase.getFinder().read(aRouteId);
 
             //If an active route is allready set, deactivate first
-            if (getActiveRoute(personId) != null) {
-                deactivateRoute(personId);
+            if (getActiveRoute(aPersonId) != null) {
+                deactivateRoute(aPersonId);
+            }
+
+            TripLogic tripLogic = new TripLogic(oase);
+            if(init){
+                // now create explicitely close the previous trip
+                tripLogic.closeTrip("" + aPersonId);
             }
 
             //Relate route to person as active route
             oase.getRelater().relate(person, route, ACTIVE_TAG);
+
+            // explicitely relate the route to the trip
+            Record trip = tripLogic.getActiveTrip("" + aPersonId);
+            oase.getRelater().relate(trip, route);
+
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot set active route", oe);
         }
