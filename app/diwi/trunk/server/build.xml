@@ -292,7 +292,9 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 			</filterchain>
 		</concat>
 
-		<!-- Finally make war -->
+        <replace file="${build.war.dir}/WEB-INF/cfg/server.properties" replacefilterfile="${home}/security.properties" summary="true"/>
+
+        <!-- Finally make war -->
 		<jar jarfile="${project.war}">
 			<fileset dir="${build.war.dir}">
 				<include name="**"/>
