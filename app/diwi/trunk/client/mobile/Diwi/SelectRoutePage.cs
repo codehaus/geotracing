@@ -10,8 +10,8 @@ namespace Diwi {
         public SelectRoutePage(DiwiPageBase parent)
             : base(parent) {
             DiwiUIMenu.DiwiMenuCallbackHandler sr = new DiwiUIMenu.DiwiMenuCallbackHandler(doBekijkRoute);
-            if (AppController.sFixedRoutes != null) {
-                foreach (XMLement xml in AppController.sFixedRoutes.children) {
+            if (AppController.sRoutes != null) {
+                foreach (XMLement xml in AppController.sRoutes.children) {
                     mMenu.addItem(xml.getChildValue("name"),sr );
                 }
                 mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
@@ -25,10 +25,9 @@ namespace Diwi {
 
 
         void doBekijkRoute(int i, string s) {
-            XMLement route = AppController.sFixedRoutes.getChild(i);
+            XMLement route = AppController.sRoutes.getChild(i);
             (new RouteInfoPage(this, route)).ShowDialog();
-            if (AppController.sActiveRoute != null) {
-                // activate route
+            if (AppController.sActiveRouteID != -1) {
                 AppController.sKwxClient.activateRoute(AppController.sActiveRouteID, true);
                 doTerug(0, null);
             }

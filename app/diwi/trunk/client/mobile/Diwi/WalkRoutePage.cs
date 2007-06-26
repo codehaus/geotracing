@@ -21,11 +21,11 @@ namespace Diwi {
         public WalkRoutePage(DiwiPageBase parent)
             : base(parent) {
 
-            title = "Route: " + AppController.sActiveRoute.getChildValue("name");
             mMenu.addItem("Voeg Text toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doText));
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             poiCB = new POIHandler(navPointReceive);
 
@@ -100,12 +100,19 @@ namespace Diwi {
 
 
         void doStopRoute(int i, string s) {
+            if (AppController.sActiveRouteID != -1)
+                AppController.sKwxClient.deActivateRoute();
             AppController.sActiveRoute = null;
+            AppController.sActiveRouteID = -1;
             doTerug(0, null);
         } 
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
+            if (AppController.sActiveRoute == null)
+                title = "Struinen...";
+            else
+                title = "Route: " + AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
             MapHandler.active = true;
             setBackGround();
