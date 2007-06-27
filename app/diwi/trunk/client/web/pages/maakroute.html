@@ -1,12 +1,6 @@
 <div id="maakroutecontainer">
 
 <h2>Maak Route</h2>
-
-<div id="radiobuttons" class="radiocaption">
-	<input id="wandelen" name=rb1 type=radio onClick="selectWandelen()"> Wandelen
-	<input id="fietsen" name=rb2 type=radio onClick="selectFietsen()"> Fietsen
-</div>
-
 <div class="listboxes" id="startpunt-lb">
 </div>
 
@@ -24,19 +18,19 @@
 	Besloten agrarisch gebied
 </div>
 
-<div class="slider" id="slider1">
+<div class="slider" id="s1">
 	<input class="slider-input" id="s1input"/>
 </div>
 
 <div class="slidertext" id="besloten">
-	<input id="s1value" size="3" size="3" value="0" onChange="s1.setValue(parseInt(this.value))"/>%
+	<input id="s1value" size="3" value="0" onChange="s1.setValue(parseInt(this.value))"/>%
 </div>
 
 <div class="slidercaption" id="caption2">
 	Halfopen agrarisch gebied
 </div>
 
-<div class="slider" id="slider2">
+<div class="slider" id="s2">
 	<input class="slider-input" id="s2input"/>
 </div>
 
@@ -48,7 +42,7 @@
 	Open agrarisch gebied
 </div>
 
-<div class="slider" id="slider3">
+<div class="slider" id="s3">
 	<input class="slider-input" id="s3input"/>
 </div>
 
@@ -60,7 +54,7 @@
 	Bedrijven en industrie
 </div>
 
-<div class="slider" id="slider4">
+<div class="slider" id="s4">
 	<input class="slider-input" id="s4input"/>
 </div>
 
@@ -72,7 +66,7 @@
 	Bewoningskernen
 </div>
 
-<div class="slider" id="slider5">
+<div class="slider" id="s5">
 	<input class="slider-input" id="s5input"/>
 </div>
 
@@ -84,7 +78,7 @@
 	Bos
 </div>
 
-<div class="slider" id="slider6">
+<div class="slider" id="s6">
 	<input class="slider-input" id="s6input"/>
 </div>
 
@@ -96,7 +90,7 @@
 	Heide zand en duingebied
 </div>
 
-<div class="slider" id="slider7">
+<div class="slider" id="s7">
 	<input class="slider-input" id="s7input"/>
 </div>
 
@@ -108,7 +102,7 @@
 	Natuurlijk grasland, moeras <br>en riet
 </div>
 
-<div class="slider" id="slider8">
+<div class="slider" id="s8">
 	<input class="slider-input" id="s8input"/>
 </div>
 
@@ -120,7 +114,7 @@
 	Zee en grote meren
 </div>
 
-<div class="slider" id="slider9">
+<div class="slider" id="s9">
 	<input class="slider-input" id="s9input"/>
 </div>
 
@@ -132,7 +126,7 @@
 	Sloten, beken, rivieren en <br>plassen
 </div>
 
-<div class="slider" id="slider10">
+<div class="slider" id="s10">
 	<input class="slider-input" id="s10input"/>
 </div>
 
@@ -146,6 +140,12 @@
 
 
 <!--
+
+<div id="radiobuttons" class="radiocaption">
+	<input id="wandelen" name=rb1 type=radio onClick="selectWandelen()"> Wandelen
+	<input id="fietsen" name=rb2 type=radio onClick="selectFietsen()"> Fietsen
+</div>
+
 <div id="maakroutebox" style="display:none"><img src="media/buttons/maakrouteblokken.gif" border="0"></div>
 
 <div id="leguitbox" style="display:block"><img src="media/images/videobox.gif" border="0"></div>

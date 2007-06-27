@@ -45,7 +45,7 @@ KW.DIWI = {
 	STARTPUNT_PARAM:	'startpunt',
 	EINDPUNT_PARAM:		'eindpunt',
 	THEMA_PARAM:		'thema',
-	WANDELAAR_PARAM:	'wandelaar',
+//	WANDELAAR_PARAM:	'wandelaar',
 	AFSTAND_PARAM:		'afstand',
 	
 	/*
