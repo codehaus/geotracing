@@ -9,15 +9,14 @@ public interface Constants {
     public final static String PREFS_TABLE = "diwi_prefs";
     public final static String LOCATION_TABLE = "diwi_poi";
     public final static String MEDIA_TABLE = "base_medium";
-    public final static String TRAFFIC_TABLE = "diwi_traffic";
-    public final static String TRIP_TABLE = "diwi_trip";
+    public final static String LOG_TABLE = "diwi_log";
     public static final String PERSON_TABLE = "utopia_person";
 
     // Keyworx relationship tags
     public final static int INACTIVE_STATE = 0;
     public final static int ACTIVE_STATE = 1;
     public final static String ACTIVE_TAG = "active";
-    
+
     // Keyworx services
     public final static String NAV_GET_STATE = "nav-get-state";
     public final static String NAV_GET_MAP = "nav-get-map";
@@ -84,9 +83,13 @@ public interface Constants {
     public final static String LOCATION_ID_FIELD = "locationid";
     public final static String INIT_FIELD = "init";
 
+    // log types
+    public final static String LOG_TRIP_TYPE = "trip";
+    public final static String LOG_TRAFFIC_TYPE = "traffic";
+
     // trip states
-	public final static String TRIP_STATE_RUNNING = "running";
-	public final static String TRIP_STATE_DONE = "done";
+    public final static String LOG_STATE_OPEN = "open";
+    public final static String LOG_STATE_CLOSED = "closed";
 
     // poi types
     public final static int POI_BASICPOINT = 1;

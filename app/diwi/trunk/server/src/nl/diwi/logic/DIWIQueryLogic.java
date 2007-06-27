@@ -1,7 +1,7 @@
 package nl.diwi.logic;
 
-import nl.justobjects.jox.dom.JXElement;
 import nl.diwi.util.Constants;
+import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.handler.QueryLogic;
 import org.keyworx.utopia.core.data.UtopiaException;
 

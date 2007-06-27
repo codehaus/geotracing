@@ -2,16 +2,16 @@ package nl.diwi.logic;
 
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.handler.QueryLogic;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
-import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.common.log.Logging;
-import org.keyworx.common.log.Log;
 import org.postgis.Point;
-import org.geotracing.handler.QueryLogic;
 
 import java.util.Vector;
 
@@ -29,7 +29,7 @@ public class NavigationLogic implements Constants {
         Vector result = new Vector();
 
         result.addAll(checkPoiHits(aPoint));
-        if(isUserContentEnabled(aPersonId)){
+        if (isUserContentEnabled(aPersonId)) {
             result.addAll(checkUGCHits(aPoint));
         }
         //result.addAll(roamAlert(aPoint));
@@ -37,23 +37,23 @@ public class NavigationLogic implements Constants {
         return result;
     }
 
-    public void toggleUGC(String aPersonId) throws UtopiaException{
-        try{
+    public void toggleUGC(String aPersonId) throws UtopiaException {
+        try {
             Record person = oase.getFinder().read(Integer.parseInt(aPersonId), Person.TABLE_NAME);
-            if(person == null){
+            if (person == null) {
                 throw new UtopiaException("No person found with id " + aPersonId);
             }
 
             Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "ugc");
-            if(prefs!=null && prefs.length>0){
+            if (prefs != null && prefs.length > 0) {
                 Record pref = prefs[0];
-                if(pref.getStringField(VALUE_FIELD).equals("ON")){
+                if (pref.getStringField(VALUE_FIELD).equals("ON")) {
                     pref.setStringField(VALUE_FIELD, "OFF");
-                }else{
+                } else {
                     pref.setStringField(VALUE_FIELD, "ON");
-                }                
+                }
                 oase.getModifier().update(pref);
-            }else{
+            } else {
                 Record pref = oase.getModifier().create(PREFS_TABLE);
                 pref.setIntField(OWNER_FIELD, Integer.parseInt(aPersonId));
                 pref.setStringField(NAME_FIELD, "UGC");
@@ -62,23 +62,23 @@ public class NavigationLogic implements Constants {
 
                 oase.getRelater().relate(person, pref, "ugc");
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             log.error("Exception in toggleUGC: " + t.getMessage());
             throw new UtopiaException(t);
         }
     }
 
     public boolean isUserContentEnabled(int aPersonId) throws UtopiaException {
-        try{
+        try {
             Record person = oase.getFinder().read(aPersonId, Person.TABLE_NAME);
-            if(person == null){
+            if (person == null) {
                 throw new UtopiaException("No person found with id " + aPersonId);
             }
 
             Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "ugc");
-            if(prefs!=null && prefs.length>0){
+            if (prefs != null && prefs.length > 0) {
                 return prefs[0].getStringField(VALUE_FIELD).equals("ON");
-            }else{
+            } else {
                 Record pref = oase.getModifier().create(PREFS_TABLE);
                 pref.setIntField(OWNER_FIELD, aPersonId);
                 pref.setStringField(NAME_FIELD, "UGC");
@@ -88,10 +88,10 @@ public class NavigationLogic implements Constants {
                 oase.getRelater().relate(person, pref, "ugc");
                 return false;
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             log.error("Exception in isUserContentEnabled: " + t.getMessage());
             throw new UtopiaException(t);
-        }        
+        }
     }
 
     public void deactivateRoute(int personId) throws UtopiaException {
@@ -140,17 +140,17 @@ public class NavigationLogic implements Constants {
                 deactivateRoute(aPersonId);
             }
 
-            TripLogic tripLogic = new TripLogic(oase);
-            if(init){
+            LogLogic logLogic = new LogLogic(oase);
+            if (init) {
                 // now create explicitely close the previous trip
-                tripLogic.closeTrip("" + aPersonId);
+                logLogic.closeLogs("" + aPersonId, LOG_TRIP_TYPE);
             }
 
             //Relate route to person as active route
             oase.getRelater().relate(person, route, ACTIVE_TAG);
 
             // explicitely relate the route to the trip
-            Record trip = tripLogic.getActiveTrip("" + aPersonId);
+            Record trip = logLogic.getOpenLog("" + aPersonId, LOG_TRIP_TYPE);
             oase.getRelater().relate(trip, route);
 
         } catch (OaseException oe) {
@@ -179,7 +179,7 @@ public class NavigationLogic implements Constants {
         return result;
     }
 
-     private Vector roamAlert(Point point) throws UtopiaException {
+    private Vector roamAlert(Point point) throws UtopiaException {
         Vector result = new Vector();
         try {
             String queryString = "distance_sphere(GeomFromEWKT('" + point + "') , path) " +

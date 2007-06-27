@@ -4,9 +4,8 @@ package nl.diwi.control;
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
 
+import nl.diwi.logic.LogLogic;
 import nl.diwi.logic.RouteLogic;
-import nl.diwi.logic.TrafficLogic;
-import nl.diwi.logic.TripLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -32,14 +31,10 @@ import java.util.Vector;
 public class RouteHandler extends DefaultHandler implements Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
-    /*public final static String ROUTE_INSERT_SERVICE = "route-insert";*/
     public final static String ROUTE_GET_SERVICE = "route-get";
-    public final static String ROUTE_GET_TRIP_SERVICE = "route-get-trip";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
     public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
     public final static String ROUTE_THEMES_SERVICE = "route-themes";
-
-    private TripLogic tripLogic;
 
     /**
      * Processes the Client Request.
@@ -68,17 +63,10 @@ public class RouteHandler extends DefaultHandler implements Constants {
                 response = getRoutes(anUtopiaReq);
             } else if (service.equals(ROUTE_GET_MAP_SERVICE)) {
                 response = getMap(anUtopiaReq);
-            } else if (service.equals(ROUTE_GET_TRIP_SERVICE)) {
-                response = getTrip(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
             }
-
-            // store the traffic
-            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
@@ -93,6 +81,9 @@ public class RouteHandler extends DefaultHandler implements Constants {
     }
 
     private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
+
         RouteLogic logic = createLogic(anUtopiaReq);
         int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
         int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
@@ -118,6 +109,9 @@ public class RouteHandler extends DefaultHandler implements Constants {
 	}*/
 
     private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
+
         RouteLogic logic = createLogic(anUtopiaReq);
         JXElement routeElm = logic.getRoute(Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)));
 
@@ -127,17 +121,9 @@ public class RouteHandler extends DefaultHandler implements Constants {
         return response;
     }
 
-    private JXElement getTrip(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        TripLogic logic = new TripLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        JXElement tripElm = logic.getTrip(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
-
-        JXElement response = createResponse(ROUTE_GET_TRIP_SERVICE);
-        response.addChild(tripElm);
-
-        return response;
-    }
-
     private JXElement getRoutes(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
         RouteLogic logic = createLogic(anUtopiaReq);
         String type = anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD);
         int t = -1;
@@ -168,6 +154,9 @@ public class RouteHandler extends DefaultHandler implements Constants {
         </route-generate-req>
      */
     protected JXElement generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
+
         RouteLogic logic = createLogic(anUtopiaReq);
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         // ok so this person is the one generating the routes!!
@@ -176,7 +165,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         JXElement route = logic.generateRoute(reqElm, personId);
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChild(route);
-        
+
         return response;
     }
 
