@@ -27,6 +27,20 @@
        - remove poi       
     -->
 
+    <test id="poi-get-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-get-req id="112"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-get-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="kich-get-media-req">
         <send id="client1">
             <utopia-req>

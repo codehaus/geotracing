@@ -64,8 +64,25 @@ public class KICHHandler extends DefaultHandler implements Constants {
     private JXElement getThemes(UtopiaRequest anUtopiaReq) {
         JXElement response = createResponse(KICH_GET_THEMES_SERVICE);
 
-        response.addTextChild(THEME_ELM, "Forten");
-        response.addTextChild(THEME_ELM, "Romeins");
+        response.addTextChild(THEME_ELM, "Kerk en kerkonderdeel");
+        response.addTextChild(THEME_ELM, "Klooster");
+        response.addTextChild(THEME_ELM, "Gedenkteken");
+        response.addTextChild(THEME_ELM, "Brug");
+        response.addTextChild(THEME_ELM, "Gracht");
+        response.addTextChild(THEME_ELM, "Fort en vesting");
+        response.addTextChild(THEME_ELM, "Erfscheiding");
+        response.addTextChild(THEME_ELM, "Industrie- en poldermolen");
+        response.addTextChild(THEME_ELM, "Begraafplaats");
+        response.addTextChild(THEME_ELM, "Kerkelijke dienstwoning");
+        response.addTextChild(THEME_ELM, "Boerderij");
+        response.addTextChild(THEME_ELM, "Militair verblijfsgebouw");
+        response.addTextChild(THEME_ELM, "Waterkering en -doorlaat");
+        response.addTextChild(THEME_ELM, "Gemaal");
+        response.addTextChild(THEME_ELM, "Grensafbakening");
+        response.addTextChild(THEME_ELM, "Kasteel, buitenplaats");
+        response.addTextChild(THEME_ELM, "Kapel");
+        response.addTextChild(THEME_ELM, "Bijgebouwen kastelen");
+        response.addTextChild(THEME_ELM, "Omwalling");
 
         return response;
     }

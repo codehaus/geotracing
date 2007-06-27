@@ -105,17 +105,25 @@ public class UserHandler extends DefaultHandler implements Constants {
                     true, loginName, password, null, roleIdList);
 
             // now store the prefs
+            String prefsString = "";
             Vector prefElms = requestElement.getChildrenByTag(PREF_ELM);
             for (int i = 0; i < prefElms.size(); i++) {
                 JXElement prefElm = (JXElement) prefElms.elementAt(i);
+                String name = prefElm.getAttr(NAME_FIELD);
+                String value = prefElm.getAttr(VALUE_FIELD);
 
                 // create the pref
                 Record pref = oase.getModifier().create(PREFS_TABLE);
                 pref.setIntField(OWNER_FIELD, person.getId());
-                pref.setStringField(NAME_FIELD, prefElm.getAttr(NAME_FIELD));
-                pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
-                pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
-    
+                pref.setStringField(NAME_FIELD, name);
+                pref.setStringField(VALUE_FIELD, value);
+
+                if(i==0){
+                    prefsString = name + "=" + value;
+                }else{
+                    prefsString += ", " + name + "=" + value;
+                }
+
                 oase.getModifier().insert(pref);
 
                 // relate pref to person
@@ -125,9 +133,13 @@ public class UserHandler extends DefaultHandler implements Constants {
             String subject = "Digitale Wichelroede registration for " + firstName + " " + lastName;
             String body = "Digitale Wichelroede registration for: \n";
             body +="+++++++++++++++++++++++++++++++++++++++++++++\n\n";
-            body += firstName + " " + lastName + "\n";
+            body += firstName + " " + lastName + "\n\n";
             body += "birthdate: \n";
-            if(birthDate!=null && birthDate.length()>0) body += birthDate + "\n";
+            if(birthDate!=null && birthDate.length()>0){
+                body += birthDate + "\n";
+            }else{
+                body += "-\n";
+            }
             body += "address: \n";
             if(street!=null && street.length()>0) {
                 body += street;
@@ -135,42 +147,46 @@ public class UserHandler extends DefaultHandler implements Constants {
                 body += "-";
             }
             if(streetNr!=null && streetNr.length()>0){
-                body += streetNr;
+                body += " " + streetNr;
             }else{
-                body += "-";
+                body += " -";
             }
             if(zipcode!=null && zipcode.length()>0){
                 body += "\n" + zipcode;
             }else{
-                body += "-";
+                body += "\n-";
             }
             if(city!=null && city.length()>0){
-                body += city;
+                body += " " + city + "\n";
             }else{
-                body += "-";
+                body += " -\n";
             }
             body += "email: \n";
             if(email!=null && email.length()>0){
-                body += email;
+                body += email + "\n";
             }else{
-                body += "-";
+                body += "-\n";
             }
             body += "phonenr: \n";
             if(phoneNr!=null && phoneNr.length()>0){
-                body += phoneNr;
+                body += phoneNr + "\n";
             }else{
-                body += "-";
+                body += "-\n";
             }
             body += "mobilenr: \n";
             if(mobileNr!=null && mobileNr.length()>0){
-                body += mobileNr;
+                body += mobileNr + "\n";
             }else{
-                body += "-";
+                body += "-\n";
             }
             body += "loginname: \n";
-            if(loginName!=null && loginName.length()>0) body += loginName;
+            if(loginName!=null && loginName.length()>0) body += loginName  + "\n";
             body += "password: \n";
             if(password!=null && password.length()>0) body += password;
+
+            body += "\n\n";
+            body += "preferences:\n";
+            body += prefsString;
 
             body +="\n\n+++++++++++++++++++++++++++++++++++++++++++++";
 
@@ -219,7 +235,7 @@ public class UserHandler extends DefaultHandler implements Constants {
     private JXElement getStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
-        TripLogic tripLogic = new TripLogic(oase);
+            TripLogic tripLogic = new TripLogic(oase);
         TrafficLogic trafficLogic = new TrafficLogic(oase);
         JXElement response = createResponse(USER_GET_STATS);
 
@@ -245,7 +261,7 @@ public class UserHandler extends DefaultHandler implements Constants {
 
                     personElm.addChild(prefElm);
                 }
-                log.info(new String(personElm.toBytes(false)));
+                //log.info(new String(personElm.toBytes(false)));
 
                 // add the trips
                 Vector trips = tripLogic.getTrips("" + person.getId());
@@ -253,7 +269,7 @@ public class UserHandler extends DefaultHandler implements Constants {
                     JXElement trip = (JXElement)trips.elementAt(j);
                     personElm.addChild(tripLogic.getTrip(trip.getAttr(ID_FIELD)));
                 }
-                log.info(new String(personElm.toBytes(false)));
+                //log.info(new String(personElm.toBytes(false)));
                 
                 // add the traffic
                 personElm.addChildren(trafficLogic.getTrafficForPerson("" + person.getId()));
