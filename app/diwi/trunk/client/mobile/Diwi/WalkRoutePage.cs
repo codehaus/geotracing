@@ -81,6 +81,7 @@ namespace Diwi {
 
         void doVideo(int i, string s)
         {
+            mIsActive = false;
             string fileName = AppController.makeVideo();
             if (fileName != null)
             {
@@ -89,13 +90,16 @@ namespace Diwi {
         }
 
         void doFoto(int i, string s) {
+            mIsActive = false;
             string fileName = AppController.makeFoto();
             if (fileName != null) {
-                (new MakePhotoPage(this, fileName)).ShowDialog();
+                //(new MakePhotoPage(this, fileName)).ShowDialog();
+                (new MakePhotoPage(this, @"\poiImage0.jpg")).ShowDialog();
             }
         }
 
         void doText(int i, string s) {
+            mIsActive = false;
             (new MakeTextPage(this, null)).ShowDialog();
         }
 
@@ -119,11 +123,12 @@ namespace Diwi {
             setBackGround();
 
 
-            mIsActive = false;
-            XMLement x = AppController.sKwxClient.getPOI();
-            PoiViewerPage p = new PoiViewerPage(this);
-            p.setContent(x);
-            p.ShowDialog();
+             mIsActive = false;
+             XMLement x = AppController.sKwxClient.getPOI();
+             PoiViewerPage p = new PoiViewerPage(this);
+             p.ShowDialog();
+             p.setContent(x);
+             
 
         }
 

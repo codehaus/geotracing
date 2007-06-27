@@ -31,18 +31,21 @@ namespace Diwi {
 
         void doUitleg(int i,string s)
         {
+            mIsActive = false;
             if (uitLegPage == null)
                 uitLegPage = new UitlegPage(this);
             uitLegPage.ShowDialog();
         }
 
         void walkRoute(int i, string s) {
+            mIsActive = false;
             if (walkRoutePage == null)
                 walkRoutePage = new WalkRoutePage(this);
             walkRoutePage.ShowDialog();
         }
 
         void doGPS(int i, string s) {
+            mIsActive = false;
             if (gpsPage == null)
                 gpsPage = new GpsPage(this);
             gpsPage.ShowDialog();
@@ -50,6 +53,7 @@ namespace Diwi {
 
         void doTest(int i, string s)
         {
+            mIsActive = false;
             if (testPage == null)
                 testPage = new TestPage(this);
             testPage.ShowDialog();
@@ -66,6 +70,8 @@ namespace Diwi {
             }
 
             if (AppController.sKwxClient.agentKey != null) {
+                mIsActive = false;
+
                 if (AppController.sRoutes == null) {
                     AppController.sRoutes = AppController.sKwxClient.getRouteList();
                 }
@@ -81,6 +87,7 @@ namespace Diwi {
         }
 
         void doStruin(int i, string s) {
+            mIsActive = false;
             if (AppController.sActiveRouteID != -1) {
                 AppController.sKwxClient.deActivateRoute();
                 AppController.sActiveRouteID = -1;
@@ -90,6 +97,7 @@ namespace Diwi {
         }
 
         void doLogin(int i, string s) {
+            mIsActive = false;
             if (liPage == null)
                 liPage = new LoginPage(this);
             liPage.ShowDialog();

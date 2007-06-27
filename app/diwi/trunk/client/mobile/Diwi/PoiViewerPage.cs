@@ -47,9 +47,10 @@ namespace Diwi {
         }
 
         void openImage(string fn) {
-            mImage.bitmap = new Bitmap(fn);
-            //mImage.Visible = true;
-            draw();
+            mImage.bitmap = new Bitmap(@"\verMap.jpg");
+            mImage.x = 10;
+            mTextBox.Visible = false;
+            this.Invalidate();
         }
 
         void openAudio(string fn) {
@@ -67,7 +68,7 @@ namespace Diwi {
                 string url = kichUri.nodeText;
                 string type = kichUri.getAttributeValue("type");
                 mTextBox.Visible = false;
-                mImage.Visible = false;
+                mImage.x = 500;
                 switch (type) {
                     case "image":
                         new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ".jpg", new AppController.DownloadCallbackHandler(openImage));
@@ -79,10 +80,9 @@ namespace Diwi {
                         new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ".3gp", new AppController.DownloadCallbackHandler(openVideo));
                         break;
                     case "text":
-                        new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ".txt", new AppController.DownloadCallbackHandler(openText));
+                        new MediaDownloader(url, "poiText" + mMediaIndex.ToString()  + ".txt", new AppController.DownloadCallbackHandler(openText));
                         break;
                 }
-                // image, video, text, audio
             }
         }
 
@@ -101,55 +101,31 @@ namespace Diwi {
         }
 
             
- 
-            /*
-             * - <poi-get-rsp>
-- <poi table="diwi_poi" id="22390">
-  <id>22390</id> 
-  <kichid>5_5</kichid> 
-  <name>poi 5</name> 
-  <description>beschrijving poi 5</description> 
-  <type>1</type> 
-  <state>1</state> 
-  <category>italiaans</category> 
-  <creationdate>1181907022669</creationdate> 
-  <modificationdate>1181907022757</modificationdate> 
-- <media>
-- <media>
-  <kich-uri>http://test.digitalewichelroede.nl/diwi/media.srv?id=22391</kich-uri> 
-  <kich-uri>http://test.digitalewichelroede.nl/diwi/media.srv?id=22393</kich-uri> 
-  </media>
-  </media>
-  <extra /> 
-  <point>SRID=4326;POINT(5.6222532758092845 52.176457223006295)</point> 
-  </poi>
-  </poi-get-rsp>
-             * 
-             * 
-             * */
-
 
 
         private void reOrient() {
             if (horizontal) {
+
                 mImage.x = 4;
-                mImage.y = 40;
+                mImage.y = 48;
                 Size s = new Size(240, 160);
                 mImage.size = s;
 
                 mTextBox.Left = 4;
-                mTextBox.Top = 40;
-                mImage.size = s;
+                mTextBox.Top = 48;
+                mTextBox.Size = s;
 
             } else {
+
                 mImage.x = 4;
-                mImage.y = 40;
+                mImage.y = 48;
                 Size s = new Size(160, 240);
                 mImage.size = s;
 
                 mTextBox.Left = 4;
-                mTextBox.Top = 40;
-                mImage.size = s;
+                mTextBox.Top = 48;
+                mTextBox.Size = s;
+
             }
         }
 

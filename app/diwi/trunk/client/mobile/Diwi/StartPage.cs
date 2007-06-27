@@ -26,6 +26,7 @@ namespace Diwi {
 
         void doTimeout() {
             mSplashTimer.Dispose();
+            mIsActive = false;
             (new MainPage(null)).ShowDialog();
             this.Close();
         }
