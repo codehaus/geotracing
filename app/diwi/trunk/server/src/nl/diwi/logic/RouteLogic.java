@@ -124,29 +124,29 @@ public class RouteLogic implements Constants {
                     route = oase.getModifier().create(ROUTE_TABLE);
                     Format formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
 
-                    String name = person.getStringField(Person.FIRSTNAME_FIELD) + " "
+                    String description = person.getStringField(Person.FIRSTNAME_FIELD) + " "
                             + person.getStringField(Person.LASTNAME_FIELD)
                             + "'s personal route generated at " + formatter.format(new Date())
                             + " -  " + prefString;
 
                     String gpxName = generated.getChildText(NAME_ELM);
                     if(gpxName != null && gpxName.length()>0){
-                        name = gpxName + name;
+                        description = gpxName + description;
                     }
                     //route.setStringField(NAME_FIELD, new String(generated.getChildByTag(NAME_ELM).getCDATA()));
-                    route.setStringField(NAME_FIELD, name);
+                    route.setStringField(NAME_FIELD, "eigen route");
                     //route.setStringField(DESCRIPTION_FIELD, new String(generated.getChildByTag(DESCRIPTION_ELM).getCDATA()));
-                    //route.setStringField(DESCRIPTION_FIELD, generated.getChildText(DESCRIPTION_ELM));
+                    route.setStringField(DESCRIPTION_FIELD, description);
                     route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
                     route.setIntField(STATE_FIELD, ACTIVE_STATE);
 
                     LineString lineString = GPXUtil.GPXRoute2LineString(generated);
-                    log.info(lineString.toString());
+                    // log.info(lineString.toString());
                     // Convert if routing API is in RD
                     //if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
                         lineString = ProjectionConversionUtil.RD2WGS84(lineString);
                     //}
-                    log.info(lineString.toString());
+                    // log.info(lineString.toString());
 
                     PGgeometryLW geom = new PGgeometryLW(lineString);
                     route.setObjectField(PATH_FIELD, geom);
@@ -296,8 +296,12 @@ public class RouteLogic implements Constants {
     }
 
     private int getDistance(Record route) throws OaseException {
-        Record distance = oase.getFinder().freeQuery(
-                "select length2d(path) AS distance from diwi_route where id="
+		// select spatial.Length2d_spheroid( spatial.Makeline( pstart.geometry, pend.geometry  )  , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from RPosition pstart, RPosition as pend where pstart = :pstart and pend = :pend
+		// "select Length2d_spheroid(path , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from diwi_route as distance where id ="
+   		// old: "select length2d(path) AS distance from diwi_route where id="
+
+		Record distance = oase.getFinder().freeQuery(
+				"select length2d_spheroid(path , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) as distance from diwi_route where id =" 
                         + route.getId())[0];
 
         return (int) Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());
