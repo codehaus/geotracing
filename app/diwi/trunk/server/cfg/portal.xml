@@ -21,23 +21,13 @@
 
 	<property name="kichposturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
 	<property name="kichresturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
-    <property name="testdataurl"  host="berlin">http://test.digitalewichelroede.nl/diwi/testresponse</property>
-    <property name="testdatalocation"  host="berlin">/var/keyworx/webapps/diwi/diwi/testresponse</property>
-    <!--<property name="routingservleturl" host="berlin">http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet</property>-->
     <property name="routingservleturl" host="berlin">http://137.224.112.237/diwirouting/RoutingServlet</property>
     <property name="mediaurl" host="berlin">http://simlandscape.alterra.nl/diwimedia</property>
 
-    <property name="kichposturl" >http://local.diwi.nl/diwi/kich.jsp</property>
-    <!--<property name="kichposturl" >http://www.groene-omgeving.nl/diwiservlets/POIServlet</property>-->
-	<property name="kichresturl" >http://local.diwi.nl/diwi/rest.jsp</property>
-	<!--<property name="kichresturl" >http://www.groene-omgeving.nl/diwiservlets/POIServlet</property>-->
-	<property name="testdataurl" >http://local.diwi.nl/diwi/testresponse</property>
-    <property name="testdatalocation">/var/keyworx/webapps/local.diwi.nl/diwi/testresponse</property>
+    <property name="kichposturl">http://137.224.112.237/diwirouting/POIServlet</property>
+	<property name="kichresturl">http://137.224.112.237/diwirouting/POIServlet</property>
     <property name="routingservleturl">http://137.224.112.237/diwirouting/RoutingServlet</property>
-    <!--<property name="routingservleturl">http://local.diwi.nl/diwi/rest.jsp</property>-->
-    <!--<property name="routingservleturl">http://www.groene-omgeving.nl:8080/diwirouting/RoutingServlet</property>-->
-    <property name="mediaurl">http://local.diwi.nl/diwi/media.srv?id=</property>
-    <!--<property name="mediaurl">http://simlandscape.alterra.nl/diwimedia?id=</property>-->
+    <property name="mediaurl">http://simlandscape.alterra.nl/diwimedia</property>
 
     <config>
 		<!-- Oase context file. Context id becomes portal name -->
@@ -62,13 +52,12 @@
 			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
 				<property name="max-file-size">1000000</property>
 			</handler>
-			<handler id="route" class="nl.diwi.control.RouteHandler">
-				<!-- <property name="max-file-size">1000000</property>  -->
-			</handler>
+			<handler id="route" class="nl.diwi.control.RouteHandler" />
             <handler id="poi" class="nl.diwi.control.POIHandler" />
             <handler id="kich" class="nl.diwi.control.KICHHandler" />
 			<handler id="user" class="nl.diwi.control.UserHandler"/>
 			<handler id="nav" class="nl.diwi.control.NavigationHandler"/>
+			<handler id="trip" class="nl.diwi.control.TripHandler"/>
 
 			<!-- Handler for ALL queries -->
 			<handler id="query" class="org.geotracing.handler.QueryHandler">

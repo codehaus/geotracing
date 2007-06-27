@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- trip table definition -->
+<!-- log table definition -->
 <table>
 
     <views>
@@ -13,6 +13,7 @@
 			<field name="id" />
 			<field name="name" />
 			<field name="state" />
+			<field name="type" />
             <field name="startdate" />
 			<field name="enddate" />
 		</list>
@@ -21,6 +22,7 @@
 			<field name="id" />
 			<field name="name" />
 			<field name="state" />
+			<field name="type" />
  		</query>
  	</views>
 
@@ -28,16 +30,17 @@
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true" />
 
-		<!-- trip name -->
-		<field name="name" type="STRING" size="64" required="true" default="trip" />
+		<!-- log name -->
+		<field name="name" type="STRING" size="64" required="true" default="log" />
 
 		<field name="startdate" type="TIMESTAMP"/>
 		<field name="enddate" type="TIMESTAMP"/>
 
 		<!-- 1=scheduled 2=running 3=done -->
         <field name="state" type="STRING" size="12" default="scheduled" required="true" />
-
-		<field name="extra" type="XML" />
+        <field name="type" type="STRING" size="64" required="true" />
+        
+        <field name="extra" type="XML" />
 
 		<!-- Events generated while playing (used e.g. for playback) -->
  		<field name="events" type="FILE"  />
