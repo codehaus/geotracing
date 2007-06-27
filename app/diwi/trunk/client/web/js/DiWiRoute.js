@@ -93,7 +93,7 @@ var ROUTE = {
 //		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
 
 		KW.DIWI.generateroute(ROUTE.onCreateRouteRsp, params);
-		DIWIAPP.pr('uw persoonlijke route wordt gegenereerd...');
+		DIWIAPP.pr('even geduld, uw persoonlijke route wordt gegenereerd...');
 
 	},
 
@@ -156,7 +156,7 @@ var ROUTE = {
 
 	onGetRouteMapRsp: function(xmlRsp) {
 		DIWINAV.loadPage('pages/routemap.html');
-		MAP.create();
+		MAP.show();
 		MAP.addRouteLayer(ROUTE.generatedRouteId);
 	},
 

@@ -82,7 +82,7 @@ var DIWIAPP = {
 		}
 
 		DH.setHTML('fixed_routes_form', optionStr);
-		MAP.create();
+		MAP.show();
 	},
 
 	showFixedRoute: function(option) {
@@ -129,22 +129,22 @@ var DIWIAPP = {
 			KW.storeAccount();
 			KW.storeSession();
 			// Show new content, here logout form
-			DH.getStyleObject('butmaakroute').display = 'block';
-			DH.getStyleObject('butmijnpagina').display = 'block';
-			DH.getStyleObject('butinloggen').display = 'none';
-			DH.getStyleObject('butuitloggen').display = 'block';
+			DH.displayOn('butmaakroute');
+			DH.displayOn('butmijnpagina');
+			DH.displayOff('butinloggen');
+			DH.displayOn('butuitloggen');
 			DH.hide('loginform');
-			DH.getStyleObject('inlogbox').display = 'none';
-			DH.getStyleObject('inlogform').display = 'none';
+			DH.displayOff('inlogbox');
+			DH.displayOff('inlogform');
 			DIWIAPP.setStatus('ingelogd als ' + DIWIAPP.userName);
 			DIWIAPP.pr('ingelogd als ' + DIWIAPP.userName);
 			DIWINAV.buttons['b8'].onSelect();
 		} else if (elm.tagName == 'logout-rsp') {
 			DIWIAPP.pr('logout OK');
-			DH.getStyleObject('butmaakroute').display = 'none';
-			DH.getStyleObject('butmijnpagina').display = 'none';
-			DH.getStyleObject('butinloggen').display = 'block';
-			DH.getStyleObject('butuitloggen').display = 'none';
+			DH.displayOff('butmaakroute');
+			DH.displayOff('butmijnpagina');
+			DH.displayOn('butinloggen');
+			DH.displayOff('butuitloggen');
 			DH.show('loginform');
 			DIWIAPP.setStatus('niet ingelogd');
 			DIWINAV.buttons['b1'].onSelect();
