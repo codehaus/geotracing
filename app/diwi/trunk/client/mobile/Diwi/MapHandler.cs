@@ -32,7 +32,7 @@ namespace Diwi {
 
     class MapHandler {
         public delegate void CallbackHandler();
-        public delegate void DownloadCallbackHandler(string path);
+        
         public static event CallbackHandler sDownloadCallback;
         static MapBounds sHorBounds = new MapBounds();
         static MapBounds sVerBounds = new MapBounds();
@@ -47,7 +47,7 @@ namespace Diwi {
             AppController.sActiveRouteMapPathVer = null;
             string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
             if (mapUrl != null) {
-                new MediaDownloader(mapUrl, @"\horMap.jpg", new DownloadCallbackHandler(mapReceived));
+                new MediaDownloader(mapUrl, @"\horMap.jpg", new AppController.DownloadCallbackHandler(mapReceived));
             }
         }
 
@@ -123,7 +123,7 @@ namespace Diwi {
                 }
                 string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
                 if (mapUrl != null) {
-                    new MediaDownloader(mapUrl, @"\verMap.jpg", new DownloadCallbackHandler(mapReceived));
+                    new MediaDownloader(mapUrl, @"\verMap.jpg", new AppController.DownloadCallbackHandler(mapReceived));
                 }
             } else {
                 AppController.sActiveRouteMapPathVer = path;

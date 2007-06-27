@@ -32,6 +32,8 @@ namespace Diwi {
         public static GpsReader sGpsReader;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
 
+        public delegate void DownloadCallbackHandler(string path);
+
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 

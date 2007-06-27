@@ -14,10 +14,10 @@ namespace Diwi {
         string uri;
         string path;
         bool busy=false;
-        MapHandler.DownloadCallbackHandler callb;
+        AppController.DownloadCallbackHandler callb;
 
 
-        public MediaDownloader(string url, string p, MapHandler.DownloadCallbackHandler cb) {
+        public MediaDownloader(string url, string p, AppController.DownloadCallbackHandler cb) {
             uri = Uri.UnescapeDataString(url);
             callb = cb;
             mThread = new Thread(new ThreadStart(threadHandler));

@@ -23,6 +23,7 @@ namespace Diwi {   // base class for Diwi Pages.
         protected DiwiUIMenu mMenu;
         public static Color sBackgroundColor;
         protected bool mInitializing = true;
+        protected bool mIsActive = true;
         protected DiwiUIText mouseText;
         
         int mYposition = -1;
@@ -228,14 +229,16 @@ namespace Diwi {   // base class for Diwi Pages.
 
         protected override void OnActivated(EventArgs e) {
             base.OnActivated(e);
-            //this.Visible = true;
+            mIsActive = true;
             draw();
         }
 
         protected virtual void doTerug(int i, string s) {
-            //this.Visible = false;
-            if (mParent != null)
+            mIsActive = false;
+            if (mParent != null) {
+                mParent.Activate();
                 mParent.Show();
+            }
             Close();
         }
 
@@ -245,20 +248,24 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public void draw() {
-            offScreenGraphics.Clear(sBackgroundColor);
-            if (mBackImage != null) {
-                mBackImage.draw();
-            }
 
-            if (mXposition != -1 && mYposition != -1) {
-                offScreenGraphics.DrawIcon(sMeIcon, mXposition-8, mYposition-8);
-            }
+            if (mIsActive) {
 
-            foreach (DiwiDrawable d in mDrawableElements) {
-                d.draw();
+                offScreenGraphics.Clear(sBackgroundColor);
+                if (mBackImage != null) {
+                    mBackImage.draw();
+                }
+
+                if (mXposition != -1 && mYposition != -1) {
+                    offScreenGraphics.DrawIcon(sMeIcon, mXposition - 8, mYposition - 8);
+                }
+
+                foreach (DiwiDrawable d in mDrawableElements) {
+                    d.draw();
+                }
+                if (onScreenGraphics == null) onScreenGraphics = this.CreateGraphics();
+                onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
             }
-            if (onScreenGraphics == null) onScreenGraphics = this.CreateGraphics();
-            onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
         }
 
 
