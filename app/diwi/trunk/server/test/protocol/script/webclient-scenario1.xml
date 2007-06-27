@@ -1,0 +1,182 @@
+<testset id="webclient-scenario" clients="1">
+
+    <!-- Standard KWX login sequence -->
+    <test id="login-selapp">
+
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
+
+        <expect id="client1">
+
+            <login-rsp/>
+
+            <select-app-rsp/>
+        </expect>
+    </test>
+
+    <!--
+     0. register
+     1. retrieve start points
+     2. retrieve end points
+     3. retrieve themes
+     4. generate route
+     5. get route list
+     6. get route details
+     7. get route map
+    -->
+
+    <test id="user-register-req">
+        <send id="client1">
+            <utopia-req>
+                <user-register-req>
+                    <person>
+                        <firstname>ronald</firstname>
+                        <lastname>lenz</lastname>
+                        <street>Van Swietenstraat</street>
+                        <streetnr>58</streetnr>
+                        <zipcode>2518SK</zipcode>
+                        <city>Den Haag</city>
+                        <phonenr>070-3658880</phonenr>
+                        <mobilenr>06-27021204</mobilenr>
+                        <email>ronald@waag.org</email>
+                        <loginname>ronald</loginname>
+                        <password>ronald</password>
+                    </person>
+                    <pref name="age" value="33" />
+                    <pref name="gender" value="man" />
+                    <pref name="interests" value="Renswoude" />
+                    <pref name="trip" value="walking" />
+                    <pref name="motivaction" value="kosmopoliet" />
+                </user-register-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <user-register-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="poi-get-startpoints-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-get-startpoints-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-get-startpoints-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="poi-get-endpoints-req">
+        <send id="client1">
+            <utopia-req>
+                <poi-get-endpoints-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <poi-get-endpoints-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="kich-get-themes-req">
+        <send id="client1">
+            <utopia-req>
+                <kich-get-themes-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <kich-get-themes-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="route-generate-req">
+        <send id="client1">
+            <utopia-req>
+                <route-generate-req>
+                    <pref name="bos" value="40" type="outdoor-params"/>
+                    <pref name="theme" value="forts" type="theme"/>
+                    <pref name="type" value="walking" type="activity"/>
+                    <pref name="poi" value="Boerderij" type="outdoor-params"/>
+                    <pref name="afstand" value="10000" type="outdoor-params"/>
+                    <pref name="startx" value="153966" type="outdoor-params"/>
+                    <pref name="starty" value="453437" type="outdoor-params"/>
+                    <pref name="endx" value="153966" type="outdoor-params"/>
+                    <pref name="endy" value="453437" type="outdoor-params"/>
+                </route-generate-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <route-generate-rsp id="${routeid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="route-getlist-req">
+        <send id="client1">
+            <utopia-req>
+                <route-getlist-req type="fixed"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <route-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="route-get-req">
+        <send id="client1">
+            <utopia-req>
+                <route-get-req id="${routeid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <route-get-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="route-get-map-req">
+        <send id="client1">
+            <utopia-req>
+                <route-get-map-req id="${routeid}" height="240" width="320"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <route-get-map-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="logout">
+        <send id="client1">
+            <logout-req/>
+        </send>
+
+        <expect id="client1">
+            <logout-rsp/>
+        </expect>
+    </test>
+
+</testset>
+
