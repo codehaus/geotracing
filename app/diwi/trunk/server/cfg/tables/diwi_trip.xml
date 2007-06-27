@@ -28,8 +28,8 @@
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true" />
 
-		<!-- Gameplay name -->
-		<field name="name" type="STRING" size="64" required="true" default="gameplay" />
+		<!-- trip name -->
+		<field name="name" type="STRING" size="64" required="true" default="trip" />
 
 		<field name="startdate" type="TIMESTAMP"/>
 		<field name="enddate" type="TIMESTAMP"/>
