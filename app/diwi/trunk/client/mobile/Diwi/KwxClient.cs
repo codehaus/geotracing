@@ -28,6 +28,7 @@ namespace Diwi {
         private string mPass = Diwi.Properties.Resources.KwxServerPassword;
         private string mServer;
         private string mAgentKey;
+        private string xmlString;
         private XMLement selectAppRequest;
         string trackId;
 
@@ -156,9 +157,10 @@ namespace Diwi {
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            if (xml != null && xml.tag == Protocol.TAG_POI_GET_RSP)
+            if (xml != null && xml.tag == Protocol.TAG_POI_GET_RSP) {
+                xmlString = xml.toString();
                 return xml;
-            else
+            } else
                 return null;
         }
 

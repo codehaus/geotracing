@@ -118,6 +118,8 @@ namespace Diwi {
             MapHandler.active = true;
             setBackGround();
 
+
+            mIsActive = false;
             XMLement x = AppController.sKwxClient.getPOI();
             PoiViewerPage p = new PoiViewerPage(this);
             p.setContent(x);

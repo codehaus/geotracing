@@ -59,6 +59,11 @@ namespace Diwi {
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
+
+            if (mParent != null) {
+                mParent.Visible = false;
+            }
+
             mNameBox.Width  = 192;
             mNameBox.Height = 24;
             mNameBox.Left = 10;
