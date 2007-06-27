@@ -1,7 +1,11 @@
+/**
+ * Route generation and such.
+ *
+ * author: Just van den Broecke
+ */
 var ROUTE = {
 
 	sliders: new Array(),
-
 	startPOIs: null,
 	endPOIs: null,
 
@@ -43,30 +47,55 @@ var ROUTE = {
 		}
 	},
 
-	createRoute: function() {
+	generateRoute: function() {
+		// http://137.224.112.237/diwirouting/RoutingServlet?request=createroute&startx=166463&starty=470532&endx=169816&endy=447368&poi=Erfscheiding&afstand=20000&besloten=20
 		var params = new Array();
-		params[KW.DIWI.BESLOTEN_PARAM] = ROUTE.sliders['s1'].getValue();
-		params[KW.DIWI.HALFOPEN_PARAM] = ROUTE.sliders['s2'].getValue();
-		params[KW.DIWI.OPEN_PARAM] = ROUTE.sliders['s3'].getValue();
-		params[KW.DIWI.BEDRIJVEN_PARAM] = ROUTE.sliders['s4'].getValue();
-		params[KW.DIWI.BEWONING_PARAM] = ROUTE.sliders['s5'].getValue();
-		params[KW.DIWI.BOS_PARAM] = ROUTE.sliders['s6'].getValue();
-		params[KW.DIWI.HEIDE_PARAM] = ROUTE.sliders['s7'].getValue();
-		params[KW.DIWI.GRASLAND_PARAM] = ROUTE.sliders['s8'].getValue();
-		params[KW.DIWI.ZEE_PARAM] = ROUTE.sliders['s9'].getValue();
-		params[KW.DIWI.SLOTEN_PARAM] = ROUTE.sliders['s10'].getValue();
+		// params['request'] = 'createroute';
 
-		params[KW.DIWI.STARTPUNT_PARAM] = document.getElementById("startpunt").value;
-		params[KW.DIWI.EINDPUNT_PARAM] = document.getElementById("eindpunt").value;
-		params[KW.DIWI.THEMA_PARAM] = document.getElementById("thema").value;
-		params[KW.DIWI.AFSTAND_PARAM] = document.getElementById("afstand").value;
+		// Start-point RD coordinates
+		var i = DH.getObject('startpunt').value;
+		if (i > -1) {
+			params[KW.DIWI.STARTX_PARAM] = Math.round(ROUTE.startPOIs[i].getField('x'));
+			params[KW.DIWI.STARTY_PARAM] = Math.round(ROUTE.startPOIs[i].getField('y'));
+		}
+
+		// End-point RD coordinates
+		i = DH.getObject('eindpunt').value;
+		if (i > -1) {
+			params[KW.DIWI.ENDX_PARAM] = Math.round(ROUTE.endPOIs[i].getField('x'));
+			params[KW.DIWI.ENDY_PARAM] = Math.round(ROUTE.endPOIs[i].getField('y'));
+		}
+
+		// POI theme
+		var themeElm = DH.getObject('thema');
+		if (themeElm.selectedIndex > 0) {
+			// Theme value is value of displayed option in drop down
+			params[KW.DIWI.THEMA_PARAM] = themeElm.options[themeElm.selectedIndex].childNodes[0].nodeValue;
+		}
+
+		// Distance in meters
+		var distance = DH.getObject('afstand').value;
+		if (distance && distance > 0) {
+			params[KW.DIWI.AFSTAND_PARAM] = distance;
+		}
+
+		// All "omgeving" slider values
+		var slider, sliderVal;
+		for (i in ROUTE.sliders) {
+			slider = ROUTE.sliders[i];
+			sliderVal = slider.getValue();
+			if (sliderVal > 0) {
+				params[slider.omgeving] = sliderVal;
+			}
+
+		}
+
 //		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
 
 		KW.DIWI.generateroute(ROUTE.onCreateRouteRsp, params);
 		DIWIAPP.pr('uw persoonlijke route wordt gegenereerd...');
 
 	},
-
 
 	createSlider: function(id) {
 		var slider = new Slider(DH.getObject(id), DH.getObject(id + 'input'));
@@ -78,6 +107,9 @@ var ROUTE = {
 		slider.onchange = function () {
 			sliderValue.value = slider.getValue();
 		}
+
+		// Store "omgevingstype" in slider
+		slider.omgeving = sliderValue.parentNode.id;
 
 		sliderValue.onchange = function () {
 			slider.setValue(parseInt(sliderValue.value));
@@ -100,21 +132,16 @@ var ROUTE = {
 		DH.setHTML('startpunt-lb', formHTML);
 	},
 
-	createThemesForm: function(elm) {
-		var themesString = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="0" selected="selected">geen voorkeur</option>';
-		var themes_list = elm.getElementsByTagName('theme');
-		var n_themes = themes_list.length;
-		var j;
-		for (i = 0; i < n_themes; i++) {
-			j = i + 1;
-			themesString += '<option value=' + j + '>';
-			themesString += themes_list.item(i).firstChild.nodeValue;
-			themesString += '</option>';
+	createThemesForm: function(rspXML) {
+		var formHTML = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="-1" selected="selected">geen voorkeur</option>';
+		var themes = rspXML.getElementsByTagName('theme');
+		for (i = 0; i < themes.length; i++) {
+			formHTML += '<option value="' + i + '">';
+			formHTML += themes[i].firstChild.nodeValue;
+			formHTML += '</option>';
 		}
-		themesString += '</select></form>';
-
-		var ni = DH.getObject('thema-lb');
-		ni.innerHTML = themesString;
+		formHTML += '</select></form>';
+		DH.setHTML('thema-lb', formHTML);
 	},
 
 	onCreateRouteRsp: function(xmlRsp) {
