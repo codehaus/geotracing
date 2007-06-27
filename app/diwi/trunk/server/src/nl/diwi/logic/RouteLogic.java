@@ -8,26 +8,25 @@ import nl.diwi.util.Constants;
 import nl.diwi.util.GPXUtil;
 import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
-import nl.justobjects.jox.parser.JXBuilder;
+import org.geotracing.handler.QueryLogic;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
-import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.data.Person;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.util.XML;
 import org.postgis.LineString;
 import org.postgis.PGbox2d;
 import org.postgis.PGgeometryLW;
-import org.geotracing.handler.QueryLogic;
 
-import java.util.*;
-import java.net.URL;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Handles all logic related to commenting.
@@ -86,10 +85,10 @@ public class RouteLogic implements Constants {
                 pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
                 pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
 
-                if(i==0){
-                    prefString +=prefElm.getAttr(NAME_FIELD) + "=" + prefElm.getAttr(VALUE_FIELD);
-                }else{
-                    prefString +=", " + prefElm.getAttr(NAME_FIELD) + "=" + prefElm.getAttr(VALUE_FIELD);
+                if (i == 0) {
+                    prefString += prefElm.getAttr(NAME_FIELD) + "=" + prefElm.getAttr(VALUE_FIELD);
+                } else {
+                    prefString += ", " + prefElm.getAttr(NAME_FIELD) + "=" + prefElm.getAttr(VALUE_FIELD);
                 }
 
                 prefs[i] = pref;
@@ -105,7 +104,7 @@ public class RouteLogic implements Constants {
             JXElement generated = new JXBuilder().build(url);*/
             Record route = null;
 
-            if(generated != null && generated.hasChildren() && generated.getChildByTag("rte")!=null && generated.getChildByTag("rte").hasChildren()){
+            if (generated != null && generated.hasChildren() && generated.getChildByTag("rte") != null && generated.getChildByTag("rte").hasChildren()) {
                 //make sure all other generated routes are set to 'inactive'
                 String tables = "diwi_route,utopia_person";
                 String fields = "diwi_route.id";
@@ -113,7 +112,7 @@ public class RouteLogic implements Constants {
                 String relations = "diwi_route,utopia_person";
                 String postCond = null;
                 Record[] gens = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
-                for(int i=0;i<gens.length;i++){
+                for (int i = 0; i < gens.length; i++) {
                     Record gen = oase.getFinder().read(gens[i].getIntField(ID_FIELD));
                     gen.setIntField(STATE_FIELD, INACTIVE_STATE);
                     oase.getModifier().update(gen);
@@ -130,7 +129,7 @@ public class RouteLogic implements Constants {
                             + " -  " + prefString;
 
                     String gpxName = generated.getChildText(NAME_ELM);
-                    if(gpxName != null && gpxName.length()>0){
+                    if (gpxName != null && gpxName.length() > 0) {
                         description = gpxName + description;
                     }
                     //route.setStringField(NAME_FIELD, new String(generated.getChildByTag(NAME_ELM).getCDATA()));
@@ -144,7 +143,7 @@ public class RouteLogic implements Constants {
                     // log.info(lineString.toString());
                     // Convert if routing API is in RD
                     //if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
-                        lineString = ProjectionConversionUtil.RD2WGS84(lineString);
+                    lineString = ProjectionConversionUtil.RD2WGS84(lineString);
                     //}
                     // log.info(lineString.toString());
 
@@ -159,9 +158,9 @@ public class RouteLogic implements Constants {
                 }
             }
 
-            if(route == null){
+            if (route == null) {
                 return new JXElement(ROUTE_ELM);
-            }else{
+            } else {
                 //Convert Route record to XML and add to result
                 return getRoute(route);
             }

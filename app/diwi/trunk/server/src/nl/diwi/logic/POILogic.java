@@ -11,8 +11,8 @@ import org.keyworx.common.util.Java;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.ErrorCode;
-import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.data.Medium;
+import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
@@ -241,25 +241,26 @@ public class POILogic implements Constants {
             JXElement poiElm = poi.toXML();
             poiElm.removeChildByTag(MEDIA_FIELD);
             poiElm.addChild(mediaElm);
-            
+
             poiElm.removeAttr("table");
             poiElm.setTag(POI_ELM);
 
             log.info(new String(poiElm.toBytes(false)));
 
-
             // put the type explicitey in the kich-uri
             Vector kichUrisElms = poiElm.getChildByTag(MEDIA_FIELD).getChildren();
-            for(int i=0;i<kichUrisElms.size();i++){
-                JXElement kichUriElm = (JXElement)kichUrisElms.elementAt(i);
+            for (int i = 0; i < kichUrisElms.size(); i++) {
+                JXElement kichUriElm = (JXElement) kichUrisElms.elementAt(i);
                 String kichUri = kichUriElm.getText();
-                if(kichUri.indexOf(".jpg")!=-1 || kichUri.indexOf(".gif")!=-1 || kichUri.indexOf(".bmp")!=-1){
+                if (kichUri.indexOf(".jpg") != -1 || kichUri.indexOf(".gif") != -1 || kichUri.indexOf(".bmp") != -1) {
                     kichUriElm.setAttr(TYPE_FIELD, Medium.IMAGE_KIND);
-                }else if(kichUri.indexOf(".mov")!=-1 || kichUri.indexOf(".avi")!=-1 || kichUri.indexOf(".3gp")!=-1 || kichUri.indexOf(".mp4")!=-1){
+                } else
+                if (kichUri.indexOf(".mov") != -1 || kichUri.indexOf(".avi") != -1 || kichUri.indexOf(".3gp") != -1 || kichUri.indexOf(".mp4") != -1 || kichUri.indexOf(".wmv") != -1) {
                     kichUriElm.setAttr(TYPE_FIELD, Medium.VIDEO_KIND);
-                }else if(kichUri.indexOf(".aiff")!=-1 || kichUri.indexOf(".mp3")!=-1 || kichUri.indexOf(".wav")!=-1){
+                } else
+                if (kichUri.indexOf(".aiff") != -1 || kichUri.indexOf(".mp3") != -1 || kichUri.indexOf(".wav") != -1) {
                     kichUriElm.setAttr(TYPE_FIELD, Medium.AUDIO_KIND);
-                }else if(kichUri.indexOf(".txt")!=-1){
+                } else if (kichUri.indexOf(".txt") != -1) {
                     kichUriElm.setAttr(TYPE_FIELD, Medium.TEXT_KIND);
                 }
             }
@@ -301,14 +302,14 @@ public class POILogic implements Constants {
         return get(poi.getId());
     }
 
-    private Vector addRoutesForPoint(PGgeometryLW aPoint) throws UtopiaException{
+    private Vector addRoutesForPoint(PGgeometryLW aPoint) throws UtopiaException {
         try {
             // contains, touches, intersects
-            String queryString = "select id, name from " + ROUTE_TABLE + " where contains(GeomFromEWKT('" + aPoint + "'), path)";            
+            String queryString = "select id, name from " + ROUTE_TABLE + " where contains(GeomFromEWKT('" + aPoint + "'), path)";
             Record[] routes = oase.getFinder().freeQuery(queryString);
 
             Vector results = new Vector(routes.length);
-            for(int i=0;i<routes.length;i++){
+            for (int i = 0; i < routes.length; i++) {
                 Record route = routes[i];
                 JXElement routeElm = route.toXML();
                 routeElm.setTag(ROUTE_ELM);
@@ -338,7 +339,9 @@ public class POILogic implements Constants {
 
 
     private Vector getPOIList(Record[] pois) throws UtopiaException {
-        Vector results = new Vector(pois.length);        
+        if (pois == null || pois.length == 0) return new Vector(0);
+
+        Vector results = new Vector(pois.length);
         for (int i = 0; i < pois.length; i++) {
             JXElement poiElm = new JXElement();
             poiElm.setTag(POI_ELM);

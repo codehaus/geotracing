@@ -1,8 +1,7 @@
 package nl.diwi.control;
 
+import nl.diwi.logic.LogLogic;
 import nl.diwi.logic.POILogic;
-import nl.diwi.logic.TrafficLogic;
-import nl.diwi.logic.TripLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -30,7 +29,7 @@ public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_UNRELATE_MEDIA_SERVICE = "poi-unrelate-media";
 
     private POILogic logic;
-    
+
     /**
      * Processes the Client Request.
      *
@@ -81,11 +80,6 @@ public class POIHandler extends DefaultHandler implements Constants {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
             }
-
-            // store the traffic
-            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
@@ -210,8 +204,11 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @throws UtopiaException standard Utopia exception
      */
     protected JXElement getPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        JXElement response = createResponse(POI_GET_SERVICE);
         JXElement reqElm = anUtopiaReq.getRequestCommand();
+        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_TRAFFIC_TYPE);
+
+        JXElement response = createResponse(POI_GET_SERVICE);
         String id = reqElm.getAttr(ID_FIELD);
         String kichid = reqElm.getAttr(KICHID_FIELD);
         if (id != null && id.length() > 0 && Java.isInt(id)) {
@@ -230,7 +227,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      * @throws UtopiaException standard Utopia exception
      */
     protected JXElement getPoiList(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        JXElement response = createResponse(POI_GETLIST_SERVICE);        
+        JXElement response = createResponse(POI_GETLIST_SERVICE);
         response.addChildren(logic.getList());
         return response;
     }

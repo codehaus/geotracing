@@ -1,29 +1,28 @@
 package nl.diwi.control;
 
-import nl.diwi.logic.TrafficLogic;
-import nl.diwi.logic.TripLogic;
+import nl.diwi.logic.LogLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
+import org.keyworx.server.ServerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.data.*;
+import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
-import org.keyworx.utopia.core.util.Oase;
 import org.keyworx.utopia.core.util.Core;
-import org.keyworx.utopia.core.logic.PersonLogic;
-import org.keyworx.server.ServerConfig;
+import org.keyworx.utopia.core.util.Oase;
 
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.Message;
-import javax.mail.Transport;
-import javax.mail.Session;
-import java.util.Vector;
-import java.util.Properties;
 import java.util.Date;
+import java.util.Properties;
+import java.util.Vector;
 
 public class UserHandler extends DefaultHandler implements Constants {
 
@@ -56,11 +55,6 @@ public class UserHandler extends DefaultHandler implements Constants {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
             }
-
-            // store the traffic
-            TrafficLogic t = new TrafficLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-            t.storeTraffic(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), response);
-
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
@@ -75,7 +69,7 @@ public class UserHandler extends DefaultHandler implements Constants {
     }
 
     public JXElement register(UtopiaRequest anUtopiaRequest) throws UtopiaException {
-        try{
+        try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
             Application application = (Application) oase.get(Core.APPLICATION, anUtopiaRequest.getUtopiaSession().getContext().getApplicationId());
@@ -118,9 +112,9 @@ public class UserHandler extends DefaultHandler implements Constants {
                 pref.setStringField(NAME_FIELD, name);
                 pref.setStringField(VALUE_FIELD, value);
 
-                if(i==0){
+                if (i == 0) {
                     prefsString = name + "=" + value;
-                }else{
+                } else {
                     prefsString += ", " + name + "=" + value;
                 }
 
@@ -132,63 +126,63 @@ public class UserHandler extends DefaultHandler implements Constants {
 
             String subject = "Digitale Wichelroede registration for " + firstName + " " + lastName;
             String body = "Digitale Wichelroede registration for: \n";
-            body +="+++++++++++++++++++++++++++++++++++++++++++++\n\n";
+            body += "+++++++++++++++++++++++++++++++++++++++++++++\n\n";
             body += firstName + " " + lastName + "\n\n";
             body += "birthdate: \n";
-            if(birthDate!=null && birthDate.length()>0){
+            if (birthDate != null && birthDate.length() > 0) {
                 body += birthDate + "\n";
-            }else{
+            } else {
                 body += "-\n";
             }
             body += "address: \n";
-            if(street!=null && street.length()>0) {
+            if (street != null && street.length() > 0) {
                 body += street;
-            }else{
+            } else {
                 body += "-";
             }
-            if(streetNr!=null && streetNr.length()>0){
+            if (streetNr != null && streetNr.length() > 0) {
                 body += " " + streetNr;
-            }else{
+            } else {
                 body += " -";
             }
-            if(zipcode!=null && zipcode.length()>0){
+            if (zipcode != null && zipcode.length() > 0) {
                 body += "\n" + zipcode;
-            }else{
+            } else {
                 body += "\n-";
             }
-            if(city!=null && city.length()>0){
+            if (city != null && city.length() > 0) {
                 body += " " + city + "\n";
-            }else{
+            } else {
                 body += " -\n";
             }
             body += "email: \n";
-            if(email!=null && email.length()>0){
+            if (email != null && email.length() > 0) {
                 body += email + "\n";
-            }else{
+            } else {
                 body += "-\n";
             }
             body += "phonenr: \n";
-            if(phoneNr!=null && phoneNr.length()>0){
+            if (phoneNr != null && phoneNr.length() > 0) {
                 body += phoneNr + "\n";
-            }else{
+            } else {
                 body += "-\n";
             }
             body += "mobilenr: \n";
-            if(mobileNr!=null && mobileNr.length()>0){
+            if (mobileNr != null && mobileNr.length() > 0) {
                 body += mobileNr + "\n";
-            }else{
+            } else {
                 body += "-\n";
             }
             body += "loginname: \n";
-            if(loginName!=null && loginName.length()>0) body += loginName  + "\n";
+            if (loginName != null && loginName.length() > 0) body += loginName + "\n";
             body += "password: \n";
-            if(password!=null && password.length()>0) body += password;
+            if (password != null && password.length() > 0) body += password;
 
             body += "\n\n";
             body += "preferences:\n";
             body += prefsString;
 
-            body +="\n\n+++++++++++++++++++++++++++++++++++++++++++++";
+            body += "\n\n+++++++++++++++++++++++++++++++++++++++++++++";
 
             String mailHost = ServerConfig.getProperty("keyworx.mail.host");
             String mailRecipient = ServerConfig.getProperty("keyworx.mail.recipient");
@@ -201,14 +195,14 @@ public class UserHandler extends DefaultHandler implements Constants {
             responseElement.setAttr("id", "" + person.getId());
 
             return responseElement;
-        }catch(Throwable t){
+        } catch (Throwable t) {
             log.error("Exception in register user: " + t.getMessage());
             throw new UtopiaException(t);
         }
     }
 
-    private void sendMail(String aHost, String aUser, String aPassword, String aRecipient, String aSender, String aSubject, String aBody) throws UtopiaException{
-        try{
+    private void sendMail(String aHost, String aUser, String aPassword, String aRecipient, String aSender, String aSubject, String aBody) throws UtopiaException {
+        try {
             Properties props = System.getProperties();
             props.put("mail.host", aHost);
             props.put("mail.user", aUser);
@@ -225,8 +219,8 @@ public class UserHandler extends DefaultHandler implements Constants {
             msg.setText(aBody);
 
             Transport.send(msg);
-            
-        }catch(Throwable t){
+
+        } catch (Throwable t) {
             log.error("Exception in sendMail:" + t.getMessage());
             throw new UtopiaException(t);
         }
@@ -235,13 +229,12 @@ public class UserHandler extends DefaultHandler implements Constants {
     private JXElement getStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
-            TripLogic tripLogic = new TripLogic(oase);
-        TrafficLogic trafficLogic = new TrafficLogic(oase);
+        LogLogic logLogic = new LogLogic(oase);
         JXElement response = createResponse(USER_GET_STATS);
 
         try {
             Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
-            for(int i=0;i<people.length;i++){
+            for (int i = 0; i < people.length; i++) {
                 Record person = people[i];
                 JXElement personElm = person.toXML();
                 personElm.setTag(Person.XML_TAG);
@@ -251,7 +244,7 @@ public class UserHandler extends DefaultHandler implements Constants {
                 personElm.removeChildByTag("owner");
 
                 Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "register");
-                for(int j=0;j<prefs.length;j++){
+                for (int j = 0; j < prefs.length; j++) {
                     Record pref = prefs[j];
                     JXElement prefElm = pref.toXML();
                     prefElm.removeChildByTag(Person.CREATION_DATE_FIELD);
@@ -261,21 +254,14 @@ public class UserHandler extends DefaultHandler implements Constants {
 
                     personElm.addChild(prefElm);
                 }
-                //log.info(new String(personElm.toBytes(false)));
 
                 // add the trips
-                Vector trips = tripLogic.getTrips("" + person.getId());
-                for(int j=0;j<trips.size();j++){
-                    JXElement trip = (JXElement)trips.elementAt(j);
-                    personElm.addChild(tripLogic.getTrip(trip.getAttr(ID_FIELD)));
-                }
-                //log.info(new String(personElm.toBytes(false)));
-                
-                // add the traffic
-                personElm.addChildren(trafficLogic.getTrafficForPerson("" + person.getId()));
-                log.info(new String(personElm.toBytes(false)));
-                response.addChild(personElm);
+                personElm.addChildren(logLogic.getLogs("" + person.getId(), LOG_TRIP_TYPE));
 
+                // add the traffic
+                personElm.addChildren(logLogic.getLogs("" + person.getId(), LOG_TRAFFIC_TYPE));
+
+                response.addChild(personElm);
             }
             System.out.println(new String(response.toBytes(false)));
         } catch (Throwable t) {
