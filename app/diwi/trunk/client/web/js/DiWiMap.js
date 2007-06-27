@@ -10,13 +10,13 @@ var MAP = {
 	DIV_ID: 'map',
 	IMAGE_FORMAT: 'image/png',
 	MAX_RESOLUTION: 'auto',
-	NUM_ZOOMLEVELS: 20,
+	NUM_ZOOMLEVELS: 10,
 	PROJECTION: 'EPSG:4326',
 	WMS_URL: 'http://test.digitalewichelroede.nl/map84',
-	ZOOM: 12,
+	ZOOM: 2,
 /** OL map object. */
 	map: null,
-
+	currentRouteLayer: null,
 	keyArray : new Array(),
 
 /** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
@@ -25,11 +25,15 @@ var MAP = {
 	},
 
 	addRouteLayer: function(aRouteId) {
+		if (MAP.map.currentRouteLayer != null) {
+			MAP.map.removeLayer(MAP.map.currentRouteLayer);
+		}
 
 		var routeLayer = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {id: aRouteId, layers: 'single_diwi_route', format: MAP.IMAGE_FORMAT, transparent: true});
 		MAP.map.addLayer(routeLayer);
+		MAP.map.currentRouteLayer = routeLayer;
 	},
 
 	addTOPNLRasterLayer: function() {
@@ -46,21 +50,19 @@ var MAP = {
 	},
 
 	create: function() {
-		MAP.destroy();
-
+		// MAP.destroy();
 		MAP.map = new OpenLayers.Map(DH.getObject(MAP.DIV_ID), {
 			controls: MAP.CONTROLS,
 			maxExtent: MAP.BOUNDS,
 			projection: MAP.PROJECTION,
-			maxResolution: MAP.MAX_RESOLUTION
-			// 'numZoomLevels': MAP.NUM_ZOOMLEVELS
+			maxResolution: MAP.MAX_RESOLUTION,
+			'numZoomLevels': MAP.NUM_ZOOMLEVELS
 		}
 				);
 
-		MAP.addGoogleSatLayer();
+//		MAP.addGoogleSatLayer();
 		MAP.addTOPNLRasterLayer();
 
-		MAP.map.setCenter(MAP.CENTER, MAP.ZOOM);
 	},
 
 	destroy: function() {
@@ -71,8 +73,13 @@ var MAP = {
 		}
 	},
 
-	init: function() {
+	hide: function() {
+		DH.displayOff('map');
+	},
 
+
+	init: function() {
+		MAP.map.setCenter(MAP.CENTER, MAP.ZOOM);
 	},
 
 	loadGoogleMapScript: function(aVersion) {
@@ -92,6 +99,18 @@ var MAP = {
 				break;
 			}
 		}
+	},
+
+	show: function() {
+		DH.displayOn('map');
+		if (MAP.map == null) {
+			MAP.create();
+		}
+
+		MAP.init();
+
+		// Position map absolute based on anchor position
+		DH.setObjectXY('map', DH.getObjectX('mapanchor'), DH.getObjectY('mapanchor'))
 	}
 }
 
@@ -108,4 +127,4 @@ MAP.addKey('local',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xSzCH91z57ocwwUF0G9rnam-69XfBSYstFMYwQaq5OD5kCUatNyH_JFqw',
 		'^https?://local.diwi.nl/.*');
 
-MAP.loadGoogleMapScript();
+// MAP.loadGoogleMapScript();

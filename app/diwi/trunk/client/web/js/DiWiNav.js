@@ -59,6 +59,7 @@ var DIWINAV = {
 	},
 
 	loadPage: function(aPageURL, aCallback) {
+		MAP.hide();
 		DH.setHTML(DIWINAV.PAGE_ID, DH.getURL(aPageURL, aCallback));
 	},
 
