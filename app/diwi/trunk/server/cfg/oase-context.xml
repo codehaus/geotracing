@@ -15,10 +15,9 @@
 
         <!-- DiWi specific tables -->
         <table file="tables/diwi_route.xml"/>
-        <table file="tables/diwi_trip.xml"/>
+        <table file="tables/diwi_log.xml"/>
         <table file="tables/diwi_prefs.xml"/>
-        <table file="tables/diwi_poi.xml"/>
-        <table file="tables/diwi_traffic.xml"/>
+        <table file="tables/diwi_poi.xml"/>        
 
 		<!-- GeoTracing tables, needed for recording tracks. -->
 		<table file="tables/g_track.xml"/>
