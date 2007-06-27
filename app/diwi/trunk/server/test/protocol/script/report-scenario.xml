@@ -1,4 +1,4 @@
-<testset id="webclient-scenario" clients="1">
+<testset id="report-scenario" clients="1">
 
     <!-- Standard KWX login sequence -->
     <test id="login-selapp">
@@ -16,36 +16,16 @@
         </expect>
     </test>
 
-    <!--
-     1. retrieve trips
-     2. retrieve trip
-     2. create comment
-    -->
-
-    <test id="trip-getlist-req">
+    <test id="user-get-stats-req">
         <send id="client1">
             <utopia-req>
-                <trip-getlist-req />
+                <user-get-stats-req />
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <trip-getlist-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
-    <test id="trip-get-req">
-        <send id="client1">
-            <utopia-req>
-                <trip-get-req id="14"/>
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <trip-get-rsp/>
+                <user-get-stats-rsp/>
             </utopia-rsp>
         </expect>
     </test>
