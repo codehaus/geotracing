@@ -38,14 +38,10 @@ namespace Diwi {
             get { return mPicBox; }
         }
 
-        public bool Visible {
-            get { return mPicBox.Left == 500; }
-            set { if (value == false) mPicBox.Left = 500; else mPicBox.Left = _x; }
-        }
 
        public int x {
             get { return _x; }
-            set { _x = value; if(Visible) mPicBox.Left = _x; }
+            set { _x = value; mPicBox.Left = _x; }
         }
 
         public int y {

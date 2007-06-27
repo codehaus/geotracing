@@ -82,9 +82,11 @@ namespace Diwi {
                 if (mIsInitialized) {
                     if (horizontal) {
                         mFoto.y = 36;
+                        mFoto.x = 10;
                         mNameBox.Top = 190;
                     } else {
                         mFoto.y = 120;
+                        mFoto.x = 10;
                         mNameBox.Top = 268;
                     }
                     draw();
