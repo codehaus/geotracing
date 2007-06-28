@@ -25,6 +25,7 @@ namespace Diwi {
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
+            mMenu.addItem("Test POI", new DiwiUIMenu.DiwiMenuCallbackHandler(doTestPoi));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             poiCB = new POIHandler(navPointReceive);
@@ -103,6 +104,16 @@ namespace Diwi {
             (new MakeTextPage(this, null)).ShowDialog();
         }
 
+        void doTestPoi(int i, string s) {
+            mIsActive = false;
+            XMLement x = AppController.sKwxClient.getPOI();
+            if (x != null) {
+                PoiViewerPage p = new PoiViewerPage(this);
+                p.ShowDialog();
+                p.setContent(x);
+            }
+        }
+
 
         void doStopRoute(int i, string s) {
             if (AppController.sActiveRouteID != -1)
@@ -120,16 +131,7 @@ namespace Diwi {
                 title = "Route: " + AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
             MapHandler.active = true;
-            setBackGround();
-
-
-             mIsActive = false;
-             XMLement x = AppController.sKwxClient.getPOI();
-             PoiViewerPage p = new PoiViewerPage(this);
-             p.ShowDialog();
-             p.setContent(x);
-             
-
+            setBackGround();            
         }
 
         void setBackGround() {
