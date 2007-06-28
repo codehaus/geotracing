@@ -14,26 +14,68 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Properties;
 
 public class NetConnection {
     static Log log = Logging.getLog("NetConnection");
 
     public static String postData(String aPostUrl, String thePostBlurb) throws UtopiaException {
         HttpClient client = new HttpClient();
+
+        PostMethod method = new PostMethod(aPostUrl);
+        method.setRequestHeader("User-Agent", "XMLHTTP/1.0");
+        method.setRequestHeader("ontent-type", "application/x-www-form-urlencoded");
+        //method.setParameter("http.useragent", "KICH Client");
+        method.setRequestBody(thePostBlurb);
+/*
+        function sendRequest(url,postData) {
+         var req = createXMLHTTPObject();
+         if (!req) return;
+         var method = (postData) ? "POST" : "GET";
+         // var method = "POST";
+         req.open(method,url,true);
+         req.setRequestHeader( 'User-Agent','XMLHTTP/1.0');
+          if (postData) req.setRequestHeader('Content-type','application/x-www-form-urlencoded');
+          req.onreadystatechange = function () {
+           if (req.readyState != 4) return;
+           if (req.status != 200 && req.status != 304) {
+             // alert('HTTP error ' + req.status);
+            return;
+           }
+           // alert(req.readyState + postData);
+          }
+         req.send(postData);
+            }*/
+         
+        try {
+            int returnCode = client.executeMethod(method);
+            if (returnCode != HttpStatus.SC_OK) {
+                throw new UtopiaException("Posting to " + aPostUrl + " was unsuccesfull! - http status:" + returnCode);
+            }
+
+            return method.getResponseBodyAsString();
+        } catch (Throwable t) {
+            log.error(t.getMessage());
+            throw new UtopiaException("Exception in posting data to " + aPostUrl + ": " + t.toString());
+        } finally {
+            method.releaseConnection();
+        }
+    }
+
+    public static String postData(String aPostUrl, Properties thePostParams) throws UtopiaException {
+        HttpClient client = new HttpClient();
         //BufferedReader br = null;
         PostMethod method = new PostMethod(aPostUrl);
         method.setParameter("http.useragent", "KICH Client");
 
-        /*if (thePostParams != null) {
+        if (thePostParams != null) {
             Enumeration elements = thePostParams.keys();
             while (elements.hasMoreElements()) {
                 String name = (String) elements.nextElement();
                 String value = (String) thePostParams.get(name);
                 method.addParameter(name, value);
             }
-        }*/
-
-        method.setRequestBody(thePostBlurb);
+        }
 
         //StringBuffer sb = new StringBuffer();
         try {

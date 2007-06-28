@@ -54,7 +54,8 @@ public class DataSource implements Constants {
            </pois>
             */
             /*JXElement poisElm = NetConnection.getXMLFromREST(kichRESTUrl);*/
-            String result = postToKICHService("selecpois", "<pois />");
+            String result = postToKICHService("selectpois", "<pois />");
+            log.info(result);
             if(result == null || result.length() == 0){
                 return;
             }
@@ -96,14 +97,14 @@ public class DataSource implements Constants {
                </description>
              </route>
            </routes> */
-            if (routesResultElm != null & routesResultElm.getChildrenByTag(ROUTE_ELM).size() > 0) {
+            if (routesResultElm != null && routesResultElm.getChildrenByTag(ROUTE_ELM).size() > 0) {
                 Vector routes = routesResultElm.getChildrenByTag(ROUTE_ELM);
                 for (int i = 0; i < routes.size(); i++) {
                     JXElement routeElm = (JXElement) routes.elementAt(i);
                     log.info("$$$$$$$$ " + routeElm);
                     String id = routeElm.getChildText(ID_FIELD);
-                    url = routingServletUrl + "?request=GetPredefinedRoute&RouteID=" + id;
-                    JXElement routeResultElm = NetConnection.getXMLFromREST(url);
+                    url = routingServletUrl + "?request=GetPredefinedRoute&routeid=" + id;
+                    routeElm.addChild(NetConnection.getXMLFromREST(url));
                     /*<gpx>
                         <bounds minlon="152779" minlat="453239" maxlon="153925" maxlat="455055" />
                         <name><![CDATA[route 1]]></name>
@@ -124,8 +125,8 @@ public class DataSource implements Constants {
                             <rtept lon="153780" lat="453699"></rtept>
                         </rte>
                     </gpx>*/
-                    if (routeResultElm == null) throw new UtopiaException("No route found with id " + id);
-                    logic.insertRoute(routeResultElm, ROUTE_TYPE_FIXED);
+                    log.info(new String(routeElm.toBytes(false)));
+                    logic.insertRoute(routeElm, ROUTE_TYPE_FIXED);                    
                 }
             }
         } catch (Throwable t) {
