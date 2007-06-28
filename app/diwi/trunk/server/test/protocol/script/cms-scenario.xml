@@ -64,11 +64,7 @@
                         <description>prachtig punt</description>
                         <category>fort</category>
                         <x>4.92</x>
-                        <y>52.35</y>
-                        <media>
-                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
-                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
-                        </media>
+                        <y>52.35</y>                        
                     </poi>
                 </poi-insert-req>
             </utopia-req>
@@ -85,9 +81,9 @@
         <send id="client1">
             <utopia-req>
                 <poi-relate-media-req id="${poiid}">
-                    <medium>2</medium>
-                    <medium>3</medium>
-                    <medium>4</medium>
+                    <medium>1.jpg</medium>
+                    <medium>2.jpg</medium>
+                    <medium>3.jpg</medium>
                 </poi-relate-media-req>
             </utopia-req>
         </send>

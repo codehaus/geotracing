@@ -5,6 +5,7 @@ import nl.diwi.logic.RouteLogic;
 import nl.diwi.util.Constants;
 import nl.diwi.util.NetConnection;
 import nl.justobjects.jox.dom.JXElement;
+import nl.justobjects.jox.parser.JXBuilder;
 import org.keyworx.amuse.core.Amuse;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
@@ -34,8 +35,8 @@ public class DataSource implements Constants {
     public void syncPOIs() throws UtopiaException {
         try {
             POILogic logic = new POILogic(oase);
-            String kichRESTUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);
-            kichRESTUrl += "?command=selectpois";
+            /*String kichRESTUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);
+            kichRESTUrl += "?command=selectpois";*/
             /*
            <pois>
                <poi>
@@ -52,7 +53,13 @@ public class DataSource implements Constants {
                </poi>
            </pois>
             */
-            JXElement poisElm = NetConnection.getXMLFromREST(kichRESTUrl);
+            /*JXElement poisElm = NetConnection.getXMLFromREST(kichRESTUrl);*/
+            String result = postToKICHService("selecpois", "<pois />");
+            if(result == null || result.length() == 0){
+                return;
+            }
+
+            JXElement poisElm = new JXBuilder().build(result);
             if (poisElm != null) {
                 Vector poiElms = poisElm.getChildrenByTag(POI_ELM);
                 for (int i = 0; i < poiElms.size(); i++) {
@@ -66,6 +73,7 @@ public class DataSource implements Constants {
                 }
             }
         } catch (Throwable t) {
+            log.error("Exception in syncPOI's" + t.getMessage());
             throw new UtopiaException(t);
         }
     }
@@ -137,25 +145,34 @@ public class DataSource implements Constants {
      *
      * @return media element
      */
-    public JXElement getKICHMedia() {
-        String kichRestUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);
-        kichRestUrl += "?command=selectmedia<media />";
-        return NetConnection.getXMLFromREST(kichRestUrl);
+    public JXElement getKICHMedia() throws UtopiaException {
+        try{
+        /*String kichRestUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);*/
+            String result = postToKICHService("selectmedia", "<media />");
+            if(result == null || result.length() == 0){
+                return null;
+            }
+            return new JXBuilder().build(result);
+        }catch(Throwable t){
+            throw new UtopiaException(t);
+        }
+        /*kichRestUrl += "?command=selectmedia<media />";
+        return NetConnection.getXMLFromREST(kichRestUrl);*/
     }
 
     // insert a poi in KICH
     public String insertPOI(JXElement aPOIElement) throws UtopiaException {
-        return sendToKICHService(POI_INSERT_COMMAND, aPOIElement);
+        return postToKICHService(POI_INSERT_COMMAND, new String(aPOIElement.toBytes(false)));
     }
 
     // update a poi in KICH
     public String updatePOI(JXElement aPOIElement) throws UtopiaException {
-        return sendToKICHService(POI_UPDATE_COMMAND, aPOIElement);
+        return postToKICHService(POI_UPDATE_COMMAND, new String(aPOIElement.toBytes(false)));
     }
 
     // delete a poi in KICH
     public String deletePOI(JXElement aPOIElement) throws UtopiaException {
-        return sendToKICHService(POI_DELETE_COMMAND, aPOIElement);
+        return postToKICHService(POI_DELETE_COMMAND, new String(aPOIElement.toBytes(false)));
     }
 
     // relate media to poi in KICH
@@ -169,7 +186,7 @@ public class DataSource implements Constants {
             poi.addChild(mediumId);
         }
 
-        return sendToKICHService(RELATE_MEDIA_COMMAND, poi);
+        return postToKICHService(RELATE_MEDIA_COMMAND, new String(poi.toBytes(false)));
     }
 
     // relate media to poi in KICH
@@ -183,19 +200,22 @@ public class DataSource implements Constants {
             poi.addChild(mediumId);
         }
 
-        return sendToKICHService(UNRELATE_MEDIA_COMMAND, poi);
+        return postToKICHService(UNRELATE_MEDIA_COMMAND, new String(poi.toBytes(false)));
     }
 
     // creates, updates and deletes a poi in KICH
-    public String sendToKICHService(String anAction, JXElement aPOIElement) throws UtopiaException {
+    public String postToKICHService(String anAction, String aPostString) throws UtopiaException {
         try {
             String kichPostUrl = Amuse.server.getPortal().getProperty(KICH_POST_URL);
-            Properties postParams = new Properties();
-            postParams.setProperty("command", anAction);
-            postParams.setProperty("xml", aPOIElement.toEscapedString());
-            return NetConnection.postData(kichPostUrl, postParams);
+            kichPostUrl += "?command=" + anAction;
+            //Properties postParams = new Properties();
+            //postParams.setProperty("command", anAction);
+            //postParams.setProperty("xml", aPOIElement.toEscapedString());
+//            /return NetConnection.postData(kichPostUrl, postParams);
+            return NetConnection.postData(kichPostUrl, aPostString);            
         } catch (Throwable t) {
-            throw new UtopiaException("Exception in communcation with KICH service: command=" + anAction + ", xml=" + aPOIElement.toEscapedString(), t);
+            log.error(t.getMessage());
+            throw new UtopiaException("Exception in communcation with KICH service: command=" + anAction + ", data=" + aPostString, t);
         }
     }
 
