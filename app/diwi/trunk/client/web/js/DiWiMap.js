@@ -6,6 +6,8 @@
 var MAP = {
 	BOUNDS: new OpenLayers.Bounds(4.724717, 51.813062, 5.752441, 52.486596),
 	CENTER: new OpenLayers.LonLat(5.3790321, 52.171682),
+//	BOUNDS: new OpenLayers.Bounds(5.087384, 51.813062, 5.389776, 52.486596),
+//	CENTER: new OpenLayers.LonLat(5.23858, 52.171682),
 	CONTROLS: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar(),new OpenLayers.Control.LayerSwitcher(),new OpenLayers.Control.MousePosition()],
 	DIV_ID: 'map',
 	IMAGE_FORMAT: 'image/png',
