@@ -110,7 +110,7 @@ public interface Constants {
     public final static String MEDIA_URL = "mediaurl";
 
     //commands for KICH service - POIServlet
-    public final static String POI_INSERT_COMMAND = "insertpois";
+    public final static String POI_INSERT_COMMAND = "insertpoi";
     public final static String POI_UPDATE_COMMAND = "updatepois";
     public final static String POI_DELETE_COMMAND = "deletepois";
     public final static String RELATE_MEDIA_COMMAND = "linkmedia";

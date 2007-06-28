@@ -174,16 +174,17 @@ public class RouteLogic implements Constants {
         Record route;
         try {
             // fixed routes have unique names so check first
-            String name = new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA());
+            String name = aRouteElement.getChildText(DESCRIPTION_FIELD);
             Record[] recs = oase.getFinder().queryTable(ROUTE_TABLE, NAME_FIELD + "='" + name + "'", null, null);
             if (recs.length > 0) {
                 // do an update
                 route = oase.getFinder().read(recs[0].getId());
-                route.setStringField(NAME_FIELD, new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA()));
-                route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
+                route.setStringField(NAME_FIELD, aRouteElement.getChildText(DESCRIPTION_FIELD));
+                route.setStringField(DESCRIPTION_FIELD, aRouteElement.getChildText(DESCRIPTION_FIELD));
+                //route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
                 route.setIntField(TYPE_FIELD, aRouteType);
 
-                LineString lineString = GPXUtil.GPXRoute2LineString(aRouteElement);
+                LineString lineString = GPXUtil.GPXRoute2LineString(aRouteElement.getChildByTag("gpx"));
                 // Convert if routing API is in RD
                 if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
                     lineString = ProjectionConversionUtil.RD2WGS84(lineString);
@@ -195,11 +196,12 @@ public class RouteLogic implements Constants {
             } else {
                 // do an insert
                 route = oase.getModifier().create(ROUTE_TABLE);
-                route.setStringField(NAME_FIELD, new String(aRouteElement.getChildByTag(NAME_ELM).getCDATA()));
-                route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
+                route.setStringField(NAME_FIELD, aRouteElement.getChildText(DESCRIPTION_FIELD));
+                route.setStringField(DESCRIPTION_FIELD, aRouteElement.getChildText(DESCRIPTION_FIELD));
+                //route.setStringField(DESCRIPTION_FIELD, new String(aRouteElement.getChildByTag(DESCRIPTION_ELM).getCDATA()));
                 route.setIntField(TYPE_FIELD, aRouteType);
 
-                LineString lineString = GPXUtil.GPXRoute2LineString(aRouteElement);
+                LineString lineString = GPXUtil.GPXRoute2LineString(aRouteElement.getChildByTag("gpx"));
                 // Convert if routing API is in RD
                 if (SRID_ROUTING_API == EPSG_DUTCH_RD) {
                     lineString = ProjectionConversionUtil.RD2WGS84(lineString);
