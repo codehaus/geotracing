@@ -94,8 +94,8 @@ namespace Diwi {
             mIsActive = false;
             string fileName = AppController.makeFoto();
             if (fileName != null) {
-                //(new MakePhotoPage(this, fileName)).ShowDialog();
-                (new MakePhotoPage(this, @"\poiImage0.jpg")).ShowDialog();
+                (new MakePhotoPage(this, fileName)).ShowDialog();
+                //(new MakePhotoPage(this, @"\poiImage0.jpg")).ShowDialog();
             }
         }
 
@@ -109,8 +109,8 @@ namespace Diwi {
             XMLement x = AppController.sKwxClient.getPOI();
             if (x != null) {
                 PoiViewerPage p = new PoiViewerPage(this);
-                p.ShowDialog();
                 p.setContent(x);
+                p.ShowDialog();
             }
         }
 

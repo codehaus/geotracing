@@ -28,8 +28,6 @@ namespace Diwi
         public static string SERVICE_POI_GET = "poi-get";
 
 
-
-
         public static string TAG_POI_GET_REQ = SERVICE_POI_GET + POSTFIX_REQ;
         public static string TAG_LOGIN_REQ = SERVICE_LOGIN + POSTFIX_REQ;
         public static string TAG_LOGOUT_REQ = SERVICE_LOGOUT + POSTFIX_REQ;
