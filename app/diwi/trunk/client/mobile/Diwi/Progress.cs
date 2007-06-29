@@ -23,5 +23,11 @@ namespace Diwi {
             if(index > 3 ) index = 0;
             DiwiPageBase.drawMini(mLogo[index]);
         }
+
+        public void reset() {
+            index = 3;
+            bump();
+        }
+
     }
 }
