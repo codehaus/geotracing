@@ -22,12 +22,12 @@
 	<property name="kichposturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
 	<property name="kichresturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
     <property name="routingservleturl" host="berlin">http://137.224.112.237/diwirouting/RoutingServlet</property>
-    <property name="mediaurl" host="berlin">http://simlandscape.alterra.nl/diwimedia</property>
+    <property name="mediaurl" host="berlin">http://simlandscape.alterra.nl/diwimedia/</property>
 
     <property name="kichposturl">http://137.224.112.237/diwirouting/POIServlet</property>
 	<property name="kichresturl">http://137.224.112.237/diwirouting/POIServlet</property>
     <property name="routingservleturl">http://137.224.112.237/diwirouting/RoutingServlet</property>
-    <property name="mediaurl">http://simlandscape.alterra.nl/diwimedia</property>
+    <property name="mediaurl">http://simlandscape.alterra.nl/diwimedia/</property>
 
     <config>
 		<!-- Oase context file. Context id becomes portal name -->

@@ -106,7 +106,8 @@ public class KICHHandler extends DefaultHandler implements Constants {
     protected JXElement getMedia(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(KICH_GET_MEDIA_SERVICE);
         DataSource dataSource = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        response.addChild(dataSource.getKICHMedia());
+        JXElement media = dataSource.getKICHMedia();
+        if(media!=null) response.addChild(media);
         return response;
     }
 
