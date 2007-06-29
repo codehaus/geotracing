@@ -46,17 +46,15 @@ namespace Diwi {
             HttpWebResponse response = (HttpWebResponse)req.GetResponse();
             stream = response.GetResponseStream();
 
+            AppController.sProgBar.bumpUp();
+
             try
             {
-
                 FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
                 do
                 {
                     n = stream.Read(inBuffer, 0, 4096);
                     fstream.Write(inBuffer, 0, n);
-
-                    AppController.sProgBar.bump();
-
                 } while (n > 0);
 
                 fstream.Close();
@@ -66,7 +64,7 @@ namespace Diwi {
                 ; // MessageBox.Show(e.Message, "Error downloading file.");
             }
 
-            AppController.sProgBar.reset();
+            AppController.sProgBar.bumpDown();
 
             stream.Close();
 
@@ -194,6 +192,7 @@ namespace Diwi {
 
             //FileStream rdr = new FileStream(localFile, FileMode.Open);
             int bytesRead = (int)rdr.Length;
+            AppController.sProgBar.bumpUp();
 
             int total = 0;
             bytesRead = rdr.Read(inData, 0, 1024);
@@ -201,12 +200,9 @@ namespace Diwi {
                 reqStream.Write(inData, 0, bytesRead);
                 bytesRead = rdr.Read(inData, 0, 1024);
                 total += bytesRead;
-
-                AppController.sProgBar.bump();
-
             }
 
-            AppController.sProgBar.reset();
+            AppController.sProgBar.bumpDown();
 
             rdr.Close();
 

@@ -13,8 +13,6 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class UitlegPage : DiwiPageBase {
 
-        private DiwiScalingImage mFoto;
-
         public UitlegPage(DiwiPageBase parent)
             : base(parent) {
 
@@ -24,44 +22,7 @@ namespace Diwi {
 
             title = "Uitleg";
 
-            mFoto = new DiwiScalingImage(this);
-            mFoto.size = new Size(180, 135);
-            mFoto.x = 10;
-            mFoto.y = 170;
-            addDrawable(mFoto);
-
-
         }
-
-        private void viewVideoFileInWMP(string fn) {
-            Process process = new Process();
-            process.StartInfo.FileName = fn;
-            process.StartInfo.Verb = "Open";
-            process.StartInfo.UseShellExecute = true;
-            process.Start();
-        }
-
-
-        void doVideo(int i, string s) {
-            CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
-            cameraCaptureDialog.Owner = this;
-            cameraCaptureDialog.Title = "Neem een video";
-            cameraCaptureDialog.Mode = CameraCaptureMode.VideoWithAudio;
-            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
-                viewVideoFileInWMP(cameraCaptureDialog.FileName);
-            }
-        }
-
-
-        void doFoto(int i, string s) {
-            string fileName = AppController.makeFoto();
-            if (fileName != null) {
-                mFoto.bitmap = new Bitmap(fileName);
-                draw();
-            }
-        }
-
-
 
         void doOver(int i, string s) {
         }
@@ -79,11 +40,7 @@ namespace Diwi {
             if (base.doResize(e) == true) {
                 if (mIsInitialized) {
                     if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-                        mFoto.x = 10;
-                        mFoto.y = 100;
                     } else {
-                        mFoto.x = 10;
-                        mFoto.y = 170;
                     }
                     draw();
                 }
