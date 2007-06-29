@@ -265,6 +265,22 @@ public class POILogic implements Constants {
                 }
             }
 
+
+            /*PGgeometryLW geom = (PGgeometryLW)poi.getObjectField(POINT_FIELD);
+            Point point = (Point)geom.getGeometry();
+            double lat = point.getX();
+            double lon = point.getY();
+
+            double xy[];
+            try {
+                xy = Transform.WGS84toRD(lat, lon);
+            } catch (Exception e) {
+                throw new UtopiaException("No valid lat and lon coordinates found");
+            }
+
+            double x = xy[0];
+            double y = xy[1];*/
+
             // now also provide extra info on routes that are
             // TODO: comment this back in later...
             poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(POINT_FIELD)));

@@ -92,16 +92,6 @@
 
     * eindig route
 
-    1. retrieve nav state
-    1. retrieve fixed routes
-    2. retrieve personal route
-    3. retrieve route & details
-    4. retrieve route map
-    5. start route
-    6. retrieve a poi from the route
-    7. retrieve media from the poi (no test - use the kich-uri from the poi response)
-
-    Note: Test uses fixed id's based on a test db set.
     -->
 
     <test id="nav-get-state-req">
@@ -132,7 +122,7 @@
         </expect>
     </test>
     
-    <test id="route-generate-req">
+    <!--<test id="route-generate-req">
         <send id="client1">
             <utopia-req>
                 <route-generate-req>
@@ -150,10 +140,10 @@
 
         <expect id="client1">
             <utopia-rsp>
-                <route-generate-rsp id="${routeid}"/>
+                <route-generate-rsp id="131"/>
             </utopia-rsp>
         </expect>
-    </test>
+    </test>-->
 
     <test id="route-getlist-req">
         <send id="client1">
@@ -172,7 +162,7 @@
     <test id="route-get-req">
         <send id="client1">
             <utopia-req>
-                <route-get-req id="${routeid}"/>
+                <route-get-req id="131"/>
             </utopia-req>
         </send>
 
@@ -186,7 +176,7 @@
     <test id="route-get-map-req">
         <send id="client1">
             <utopia-req>
-                <route-get-map-req id="${routeid}" height="240" width="320"/>
+                <route-get-map-req id="131" height="240" width="320"/>
             </utopia-req>
         </send>
 
@@ -257,7 +247,7 @@
 		</expect>
 	</test>
 
-    <test id="poi-insert-req">
+    <!--<test id="poi-insert-req">
         <send id="client1">
             <utopia-req>
                 <poi-insert-req>
@@ -282,12 +272,12 @@
             </utopia-rsp>
         </expect>
     </test>
-
+-->
     <test id="nav-point-req-3">
 		<send id="client1">
 			<utopia-req>
 				<nav-point-req>
-					<pt lon="4.922239780426025" lat="52.37717764227816"/>
+					<pt lon="5.4751797571781395" lat="52.07066116151116"/>
 				</nav-point-req>
 			</utopia-req>
 		</send>
@@ -305,7 +295,7 @@
     <test id="poi-get-req">
 		<send id="client1">
 			<utopia-req>
-				<poi-get-req id="7103" />
+				<poi-get-req id="132" />
 			</utopia-req>
 		</send>
 
@@ -339,7 +329,7 @@
 	<test id="nav-add-medium-req">
 		<send id="client1">
 			<utopia-req>
-				<nav-add-medium-req id="${mediumid1}" />
+				<nav-add-medium-req id="752" />
 			</utopia-req>
 		</send>
 
@@ -411,13 +401,11 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<nav-point-rsp>
-                    <pt llon="4.922958612442017" lat="52.37865781188822" ele="0.0" acc="100" speed="38.23"/>                    
+                    <pt llon="4.922958612442017" lat="52.37865781188822" ele="0.0" acc="100" speed="38.23"/>
                 </nav-point-rsp>
             </utopia-rsp>
 		</expect>
 	</test>
-
-
 
     <test id="logout">
         <send id="client1">
