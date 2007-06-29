@@ -10,7 +10,8 @@ using System.IO;
 namespace Diwi {   // base class for Diwi Pages.
     // 
     class DiwiPageBase : Form {
-        private enum sKeys { M_UP=38, M_DOWN=40, M_LEFT=37, M_RIGHT=39 };
+        private delegate void DrawMiniCallback(Bitmap p);
+        private enum sKeys { M_UP = 38, M_DOWN = 40, M_LEFT = 37, M_RIGHT = 39 };
         public static Bitmap offScreenBitmap;
         Icon sMeIcon = null;
         public static Graphics offScreenGraphics;
@@ -25,7 +26,7 @@ namespace Diwi {   // base class for Diwi Pages.
         protected bool mInitializing = true;
         protected bool mIsActive = true;
         protected DiwiUIText mouseText;
-        
+        DrawMiniCallback dmcb;
 
         public static DiwiPageBase sCurrentPage;
 
@@ -72,12 +73,28 @@ namespace Diwi {   // base class for Diwi Pages.
 
             setBackground();
 
+
+            dmcb = new DrawMiniCallback(this.ddoDM);
+
             mInitializing = false;
         
         }
 
-        public static void drawMini(Bitmap b) {
+
+        void ddoDM(Bitmap b) {
             sCurrentPage.onScreenGraphics.DrawImage(b, 5, 4);
+        }
+
+        public void doDrawMini(Bitmap b) {
+            if (InvokeRequired) {
+                this.Invoke(dmcb, new object[] { b });
+            } else {
+                ddoDM(b);
+            }
+        }
+
+        public static void drawMini(Bitmap b) {
+            sCurrentPage.doDrawMini(b);
         }
 
         protected void setMenuText(int index, string s) {
@@ -241,13 +258,15 @@ namespace Diwi {   // base class for Diwi Pages.
             base.OnActivated(e);
             sCurrentPage = this;
             mIsActive = true;
+            Visible = true;
             draw();
         }
 
         protected virtual void doTerug(int i, string s) {
             mIsActive = false;
+           // Visible = false;
             if (mParent != null) {
-                mParent.Activate();
+             //   mParent.Activate();
                 mParent.Show();
             }
             Close();
