@@ -71,6 +71,15 @@ namespace Diwi {
             XMLement x = doLogin();
 
             if (x.tag == "login-rsp") {
+                StreamWriter userProps = new StreamWriter(@"\My Documents\DiwiProps.txt");
+                if (userProps != null) {
+                    AppController.sUserName = mUser;
+                    AppController.sUserPass = mPass;
+                    userProps.WriteLine(mUser);
+                    userProps.WriteLine(mPass);
+                    userProps.Close();
+                }
+
                 if (messageCallback != null) {
                     messageCallback("login: succesful!");
                 }
@@ -151,7 +160,7 @@ namespace Diwi {
         }
 
         public XMLement getPOI() {
-            string id = "22390";
+            string id = "705";
             XMLement xml = new XMLement(Protocol.TAG_POI_GET_REQ);
             xml.addAttribute(Protocol.ATTR_ID, id);
             lock (this) {

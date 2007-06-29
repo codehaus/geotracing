@@ -30,6 +30,9 @@ namespace Diwi {
         public static StreamWriter sLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;
+        public static string sUserName = null;
+        public static string sUserPass = null;
+        public static Progress sProgBar;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
 
         public delegate void DownloadCallbackHandler(string path);
@@ -57,6 +60,18 @@ namespace Diwi {
             stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.ploink.wav");
             sPloink = new Sound(stream);
             stream.Close();
+
+            sProgBar = new Progress();
+
+            try {
+                StreamReader userProps = new StreamReader(@"\My Documents\DiwiProps.txt");
+                if (userProps != null) {
+                    sUserName = userProps.ReadLine();
+                    sUserPass = userProps.ReadLine();
+                    userProps.Close();
+                }
+            } catch (IOException) {
+            }
 
             sKwxClient = KwxClient.instance;
             sGpsReader = GpsReader.instance;

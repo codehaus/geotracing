@@ -37,7 +37,7 @@ namespace Diwi {
 
         private void threadHandler() {
             int n;
-            byte[] inBuffer = new byte[1024];
+            byte[] inBuffer = new byte[4096];
             Stream stream = null;
             
             busy = true;
@@ -52,9 +52,12 @@ namespace Diwi {
                 FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
                 do
                 {
-                    n = stream.Read(inBuffer, 0, 1024);
+                    n = stream.Read(inBuffer, 0, 4096);
                     fstream.Write(inBuffer, 0, n);
-                } while (n == 1024);
+
+                    AppController.sProgBar.bump();
+
+                } while (n > 0);
 
                 fstream.Close();
             }

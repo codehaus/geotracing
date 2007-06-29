@@ -84,8 +84,8 @@ namespace Diwi {
             mUserBox.Left = mPassBox.Left = 40;
             mServerMess.x = 4;
 
-            mUserBox.Text = Properties.Resources.KwxServerUsername;
-            mPassBox.Text = Properties.Resources.KwxServerPassword;
+            mUserBox.Text = (AppController.sUserName != null) ? AppController.sUserName : Properties.Resources.KwxServerUsername;
+            mPassBox.Text = (AppController.sUserPass != null) ? AppController.sUserPass : Properties.Resources.KwxServerPassword;
 
             mUserBox.Font = mFont;
             mPassBox.Font = mFont;

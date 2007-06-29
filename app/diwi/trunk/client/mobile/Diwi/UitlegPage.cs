@@ -18,8 +18,6 @@ namespace Diwi {
         public UitlegPage(DiwiPageBase parent)
             : base(parent) {
 
-            mMenu.addItem("Maak en Speel video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
-            mMenu.addItem("Maak foto", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Over DiWi", new DiwiUIMenu.DiwiMenuCallbackHandler(doOver));
             mMenu.addItem("FAQ", new DiwiUIMenu.DiwiMenuCallbackHandler(doFaq));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));

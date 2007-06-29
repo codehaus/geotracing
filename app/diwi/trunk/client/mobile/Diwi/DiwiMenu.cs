@@ -39,6 +39,12 @@ namespace Diwi {
             }
         }
 
+        public void setMenuText(int index, string s) {
+           mItems[index] = s;
+        }
+
+
+
         public void doMouseClick(int x, int y) {
             Point p = new Point(x, y);
             int i = 0;

@@ -26,6 +26,9 @@ namespace Diwi {   // base class for Diwi Pages.
         protected bool mIsActive = true;
         protected DiwiUIText mouseText;
         
+
+        public static DiwiPageBase sCurrentPage;
+
         int mYposition = -1;
         int mXposition = -1;
 
@@ -35,7 +38,6 @@ namespace Diwi {   // base class for Diwi Pages.
         private string mTitle;
 
         public DiwiPageBase(DiwiPageBase parent) {
-
 
             mParent = parent;
             sBackgroundColor = Color.FromArgb(180, 250, 0);
@@ -72,6 +74,14 @@ namespace Diwi {   // base class for Diwi Pages.
 
             mInitializing = false;
         
+        }
+
+        public static void drawMini(Bitmap b) {
+            sCurrentPage.onScreenGraphics.DrawImage(b, 5, 4);
+        }
+
+        protected void setMenuText(int index, string s) {
+            mMenu.setMenuText(index, s);
         }
 
         protected override void OnMouseMove(MouseEventArgs e) {
@@ -229,6 +239,7 @@ namespace Diwi {   // base class for Diwi Pages.
 
         protected override void OnActivated(EventArgs e) {
             base.OnActivated(e);
+            sCurrentPage = this;
             mIsActive = true;
             draw();
         }
