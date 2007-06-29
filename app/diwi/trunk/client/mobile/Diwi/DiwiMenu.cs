@@ -51,6 +51,7 @@ namespace Diwi {
             foreach (Rectangle r in mItemRects) {
                 if (r != null && r.Contains(p)) {
                     mCurrentMenuIndex = i;
+                    AppController.SysClick();
                     mParentForm.draw();
                     DiwiMenuCallbackHandler cb = (DiwiMenuCallbackHandler)mCallbacks[i];
                     if (cb != null) {
@@ -69,6 +70,7 @@ namespace Diwi {
                 if (cb != null) {
                     int i = mCurrentMenuIndex;
                     mCurrentMenuIndex = -1;
+                    AppController.SysClick();
                     cb(i, (string)mItems[i]);
                 }
             }
@@ -108,6 +110,7 @@ namespace Diwi {
             for (int y = r.Y; y < r.Height; y++) {
                 for (int x = r.X; x < r.Width; x++) {
                     c = DiwiPageBase.offScreenBitmap.GetPixel(x, y);
+                    //c = onScreenBitmap.GetPixel(x, y);
                     DiwiPageBase.offScreenBitmap.SetPixel(x, y, Color.FromArgb(
                         min((c.R * 150) / 100, 255), 
                         min((c.G * 150) / 100, 255), 

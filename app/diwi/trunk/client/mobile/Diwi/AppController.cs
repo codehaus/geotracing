@@ -43,6 +43,7 @@ namespace Diwi {
         //public static Backlight sBacklight = new Backlight();
 
         private static Sound sPloink;
+        private static Sound sClick;
 
        // SystemState
 
@@ -59,6 +60,10 @@ namespace Diwi {
 
             stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.ploink.wav");
             sPloink = new Sound(stream);
+            stream.Close();
+
+            stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.click.wav");
+            sClick = new Sound(stream);
             stream.Close();
 
             sProgBar = new Progress();
@@ -120,8 +125,13 @@ namespace Diwi {
             return null;
         }
 
-        public static void SysBeep() {
+        public static void SysBeep()
+        {
             sPloink.Play();
+        }
+        public static void SysClick()
+        {
+            sClick.Play();
         }
     }
 }

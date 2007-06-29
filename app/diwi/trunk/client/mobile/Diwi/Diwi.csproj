@@ -164,6 +164,9 @@
     <EmbeddedResource Include="Resources\minil3.GIF" />
     <EmbeddedResource Include="Resources\minil4.GIF" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\click.wav" />
+  </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
   <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
   <ProjectExtensions>
