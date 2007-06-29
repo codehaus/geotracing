@@ -66,6 +66,8 @@ namespace Diwi {
                 ; // MessageBox.Show(e.Message, "Error downloading file.");
             }
 
+            AppController.sProgBar.reset();
+
             stream.Close();
 
             if (callb != null)
@@ -199,7 +201,12 @@ namespace Diwi {
                 reqStream.Write(inData, 0, bytesRead);
                 bytesRead = rdr.Read(inData, 0, 1024);
                 total += bytesRead;
+
+                AppController.sProgBar.bump();
+
             }
+
+            AppController.sProgBar.reset();
 
             rdr.Close();
 
