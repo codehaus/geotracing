@@ -187,7 +187,6 @@ namespace Diwi {
             // write content
 
             inData = new byte[1024];
-            inData = new byte[1024];
             FileStream rdr = File.OpenRead(localFile);
 
             //FileStream rdr = new FileStream(localFile, FileMode.Open);
@@ -202,7 +201,6 @@ namespace Diwi {
                 total += bytesRead;
             }
 
-            AppController.sProgBar.bumpDown();
 
             rdr.Close();
 
@@ -237,6 +235,7 @@ namespace Diwi {
             } catch (IOException e) {
             }
 
+            AppController.sProgBar.bumpDown();
 
             busy = false;
 

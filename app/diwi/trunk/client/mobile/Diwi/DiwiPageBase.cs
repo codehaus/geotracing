@@ -237,9 +237,11 @@ namespace Diwi {   // base class for Diwi Pages.
                     break;
                 case (int)sKeys.M_LEFT:
                     MapHandler.mapRadius *= 1.5F;
+                    AppController.SysClick();
                     break;
                 case (int)sKeys.M_RIGHT:
                     MapHandler.mapRadius *= 0.75F;
+                    AppController.SysClick();
                     break;
                 case (int)sKeys.M_UP:
                     mMenu.incIndex();
