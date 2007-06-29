@@ -159,8 +159,7 @@ namespace Diwi {
                 return null;
         }
 
-        public XMLement getPOI() {
-            string id = "705";
+        public XMLement getPOI(string id) {
             XMLement xml = new XMLement(Protocol.TAG_POI_GET_REQ);
             xml.addAttribute(Protocol.ATTR_ID, id);
             lock (this) {

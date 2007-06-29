@@ -12,10 +12,11 @@ using Microsoft.WindowsMobile.Forms;
 
 namespace Diwi {
     class WalkRoutePage : DiwiPageBase {
-        
+
         public delegate void CallbackHandler();
         public delegate void POIHandler(XMLement data, float lat, float lon);
-
+        static string sCurrentPOI = null;
+        static PoiViewerPage sPoiPage = null;
         private POIHandler poiCB;
 
         public WalkRoutePage(DiwiPageBase parent)
@@ -47,14 +48,16 @@ namespace Diwi {
 
 
         void navPointReceive(XMLement xml, float lat, float lon) {
-                XMLement poi = xml.getChildByName("poi-hit");
-                int x = MapHandler.currentXpixel(horizontal);
-                int y = MapHandler.currentYpixel(horizontal);
-                setPosition(x, y);
-                if (poi != null) {
-                    
-                    // stumbled on an intersting point...
-                }
+            XMLement poi = xml.getChildByName("poi-hit");
+            int x = MapHandler.currentXpixel(horizontal);
+            int y = MapHandler.currentYpixel(horizontal);
+            setPosition(x, y);
+            if (poi != null) {
+                string poiId = poi.getAttributeValue("id");
+                if (sCurrentPOI != poiId)
+                    doPoi(poiId);
+                // stumbled on an intersting point...
+            }
         }
 
         void navPointMessage(XMLement xml, float lat, float lon) {
@@ -67,25 +70,23 @@ namespace Diwi {
         }
 
         void mapReceived() {
-            if ( (!horizontal && AppController.sActiveRouteMapPathVer != null) || (horizontal && AppController.sActiveRouteMapPathHor != null)) {
+            if ((!horizontal && AppController.sActiveRouteMapPathVer != null) || (horizontal && AppController.sActiveRouteMapPathHor != null)) {
                 setBackGround();
                 draw();
-            } 
+            }
         }
 
         void mapReceivedCB() {
-            if( InvokeRequired ) 
-                Invoke(new CallbackHandler(mapReceived),null );
+            if (InvokeRequired)
+                Invoke(new CallbackHandler(mapReceived), null);
             else
                 mapReceived();
         }
 
-        void doVideo(int i, string s)
-        {
+        void doVideo(int i, string s) {
             mIsActive = false;
             string fileName = AppController.makeVideo();
-            if (fileName != null)
-            {
+            if (fileName != null) {
                 (new MakeVideoPage(this, fileName)).ShowDialog();
             }
         }
@@ -95,7 +96,6 @@ namespace Diwi {
             string fileName = AppController.makeFoto();
             if (fileName != null) {
                 (new MakePhotoPage(this, fileName)).ShowDialog();
-                //(new MakePhotoPage(this, @"\poiImage0.jpg")).ShowDialog();
             }
         }
 
@@ -106,11 +106,24 @@ namespace Diwi {
 
         void doTestPoi(int i, string s) {
             mIsActive = false;
-            XMLement x = AppController.sKwxClient.getPOI();
+            XMLement x = AppController.sKwxClient.getPOI("705");
             if (x != null) {
-                PoiViewerPage p = new PoiViewerPage(this);
-                p.setContent(x);
-                p.ShowDialog();
+                if (sPoiPage == null)
+                    sPoiPage = new PoiViewerPage(this);
+                sPoiPage.setContent(x);
+                sPoiPage.ShowDialog();
+            }
+        }
+
+        void doPoi(string id) {
+            mIsActive = false;
+            XMLement x = AppController.sKwxClient.getPOI(id);
+            if (x != null) {
+                sCurrentPOI = id;
+                if (sPoiPage == null)
+                    sPoiPage = new PoiViewerPage(this);
+                sPoiPage.setContent(x);
+                sPoiPage.ShowDialog();
             }
         }
 
@@ -121,7 +134,7 @@ namespace Diwi {
             AppController.sActiveRoute = null;
             AppController.sActiveRouteID = -1;
             doTerug(0, null);
-        } 
+        }
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
@@ -131,7 +144,7 @@ namespace Diwi {
                 title = "Route: " + AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
             MapHandler.active = true;
-            setBackGround();            
+            setBackGround();
         }
 
         void setBackGround() {
