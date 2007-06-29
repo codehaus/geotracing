@@ -100,7 +100,7 @@ public class LogLogic implements Constants {
             Record[] records = queryOpenLogs(aPersonId, aType);
 
             for (int i = 0; i < records.length; i++) {
-                Record record = records[i];
+                Record record = oase.getFinder().read(records[i].getId(), LOG_TABLE);
 
                 long startDate = record.getLongField(START_DATE_FIELD);
                 // we time out after 12 hrs
@@ -129,7 +129,7 @@ public class LogLogic implements Constants {
             Record[] records = queryOpenLogs(aPersonId, aType);
 
             for (int i = 0; i < records.length; i++) {
-                Record record = records[i];
+                Record record = oase.getFinder().read(records[i].getId(), LOG_TABLE);
                 record.setStringField(STATE_FIELD, LOG_STATE_CLOSED);
                 record.setLongField(END_DATE_FIELD, System.currentTimeMillis());
                 oase.getModifier().update(record);
@@ -157,8 +157,7 @@ public class LogLogic implements Constants {
                 throw new UtopiaException("No person found with id " + aPersonId);
             }
 
-            Record r = getOpenLog(aPersonId, aType);
-            Record record = oase.getFinder().read(r.getIntField(ID_FIELD), LOG_TABLE);
+            Record record = getOpenLog(aPersonId, aType);            
 
             // explicitely put a timestamp in
             anEvent.setAttr("time", System.currentTimeMillis());
@@ -187,7 +186,7 @@ public class LogLogic implements Constants {
             if (recs == null || recs.length == 0) {
                 return createLog(aPersonId, aType);
             }
-            return recs[0];
+            return oase.getFinder().read(recs[0].getId(), LOG_TABLE);
         } catch (Throwable t) {
             log.error("Exception in getOpenLog: " + t.toString());
             throw new UtopiaException(t);

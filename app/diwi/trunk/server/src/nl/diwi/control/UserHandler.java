@@ -245,21 +245,25 @@ public class UserHandler extends DefaultHandler implements Constants {
 
                 Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "register");
                 for (int j = 0; j < prefs.length; j++) {
-                    Record pref = prefs[j];
-                    JXElement prefElm = pref.toXML();
-                    prefElm.removeChildByTag(Person.CREATION_DATE_FIELD);
-                    prefElm.removeChildByTag(Person.MODIFICATION_DATE_FIELD);
-                    prefElm.removeChildByTag(Person.EXTRA_FIELD);
-                    prefElm.removeChildByTag("owner");
-
+                    Record record = prefs[j];
+                    JXElement prefElm = new JXElement(PREF_ELM);
+                    prefElm.setAttr(NAME_FIELD, record.getStringField(NAME_FIELD));
+                    prefElm.setAttr(VALUE_FIELD, record.getStringField(VALUE_FIELD));
                     personElm.addChild(prefElm);
                 }
 
                 // add the trips
-                personElm.addChildren(logLogic.getLogs("" + person.getId(), LOG_TRIP_TYPE));
-
+                Vector tripLogs = logLogic.getLogs("" + person.getId(), LOG_TRIP_TYPE);
+                for(int j=0;j<tripLogs.size();j++){
+                    personElm.addChild(logLogic.getLog(((JXElement)tripLogs.elementAt(j)).getAttr(ID_FIELD)));
+                }
+                
                 // add the traffic
-                personElm.addChildren(logLogic.getLogs("" + person.getId(), LOG_TRAFFIC_TYPE));
+                Vector trafficLogs = logLogic.getLogs("" + person.getId(), LOG_TRAFFIC_TYPE);
+                for(int h=0;h<trafficLogs.size();h++){
+                    log.info(""+h);
+                    personElm.addChild(logLogic.getLog(((JXElement)trafficLogs.elementAt(h)).getAttr(ID_FIELD)));
+                }
 
                 response.addChild(personElm);
             }
