@@ -163,17 +163,23 @@ public class DataSource implements Constants {
 
     // insert a poi in KICH
     public String insertPOI(JXElement aPOIElement) throws UtopiaException {
-        return postToKICHService(POI_INSERT_COMMAND, new String(aPOIElement.toBytes(false)));
+        JXElement pois = new JXElement("pois");
+        pois.addChild(aPOIElement);
+        return postToKICHService(POI_INSERT_COMMAND, new String(pois.toBytes(false)));
     }
 
     // update a poi in KICH
     public String updatePOI(JXElement aPOIElement) throws UtopiaException {
-        return postToKICHService(POI_UPDATE_COMMAND, new String(aPOIElement.toBytes(false)));
+        JXElement pois = new JXElement("pois");
+        pois.addChild(aPOIElement);
+        return postToKICHService(POI_UPDATE_COMMAND, new String(pois.toBytes(false)));
     }
 
     // delete a poi in KICH
     public String deletePOI(JXElement aPOIElement) throws UtopiaException {
-        return postToKICHService(POI_DELETE_COMMAND, new String(aPOIElement.toBytes(false)));
+        JXElement pois = new JXElement("pois");
+        pois.addChild(aPOIElement);
+        return postToKICHService(POI_DELETE_COMMAND, new String(pois.toBytes(false)));        
     }
 
     // relate media to poi in KICH

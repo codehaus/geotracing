@@ -53,7 +53,9 @@ public class NetConnection {
                 throw new UtopiaException("Posting to " + aPostUrl + " was unsuccesfull! - http status:" + returnCode);
             }
 
-            return method.getResponseBodyAsString();
+            String result = method.getResponseBodyAsString();
+            log.info(result);
+            return result;
         } catch (Throwable t) {
             log.error(t.getMessage());
             throw new UtopiaException("Exception in posting data to " + aPostUrl + ": " + t.toString());

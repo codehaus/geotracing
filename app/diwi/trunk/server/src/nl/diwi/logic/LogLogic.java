@@ -157,7 +157,8 @@ public class LogLogic implements Constants {
                 throw new UtopiaException("No person found with id " + aPersonId);
             }
 
-            Record record = getOpenLog(aPersonId, aType);
+            Record r = getOpenLog(aPersonId, aType);
+            Record record = oase.getFinder().read(r.getIntField(ID_FIELD), LOG_TABLE);
 
             // explicitely put a timestamp in
             anEvent.setAttr("time", System.currentTimeMillis());

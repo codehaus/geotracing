@@ -267,7 +267,7 @@ public class POILogic implements Constants {
 
             // now also provide extra info on routes that are
             // TODO: comment this back in later...
-            //poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(POINT_FIELD)));
+            poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(POINT_FIELD)));
 
             return poiElm;
         } catch (OaseException oe) {
@@ -318,7 +318,8 @@ public class POILogic implements Constants {
 
             return results;
         } catch (Throwable t) {
-            throw new UtopiaException(t);
+            //throw new UtopiaException(t);
+            return new Vector(0);
         }
     }
 
@@ -328,8 +329,7 @@ public class POILogic implements Constants {
      * @throws UtopiaException Standard exception
      */
     public Vector getList() throws UtopiaException {
-        try {
-            log.info("poi getlist");
+        try {            
             Record[] pois = oase.getFinder().queryTable(POI_TABLE, null);
             return getPOIList(pois);
         } catch (OaseException oe) {
@@ -461,14 +461,17 @@ public class POILogic implements Constants {
 
             Record record = oase.getFinder().read(aPOIId);
 
-            // first remove the current media
-            record.getXMLField(MEDIA_FIELD).removeChildren();
+            // replace the media
+            JXElement media = new JXElement("media");
 
             for (int i = 0; i < theMediaIds.size(); i++) {
-                JXElement medium = new JXElement("kich-uri");
-                medium.setText(mediaUrl + theMediaIds.elementAt(i).toString());
-                record.getXMLField(MEDIA_FIELD).addChild(medium);
+                JXElement kichuri = new JXElement("kich-uri");
+                String url = mediaUrl + ((JXElement)theMediaIds.elementAt(i)).getText();
+                kichuri.setText(url);
+                media.addChild(kichuri);
             }
+            
+            record.setXMLField(MEDIA_FIELD, media);
 
             oase.getModifier().update(record);
 
@@ -490,14 +493,21 @@ public class POILogic implements Constants {
             dataSource.unrelateMediaFromPoi(aPOIId, theMediaIds);
 
             Record record = oase.getFinder().read(aPOIId);
-            Vector kichURIs = record.getXMLField(MEDIA_FIELD).getChildren();
+            JXElement media = record.getXMLField(MEDIA_FIELD);
+            if(media == null || !media.hasChildren()) return;
+
+            Vector kichURIs = (Vector)media.getChildren().clone();            
             for (int i = 0; i < kichURIs.size(); i++) {
+                JXElement kichUriElm = (JXElement)kichURIs.elementAt(i);
+                String kichUri = kichUriElm.getText();
                 for (int j = 0; j < theMediaIds.size(); j++) {
-                    if (kichURIs.elementAt(i).equals(MEDIA_URL + theMediaIds.elementAt(j))) {
-                        record.getXMLField(MEDIA_FIELD).removeChildAt(i);
+                    String s = mediaUrl + ((JXElement)theMediaIds.elementAt(j)).getText();
+                    if (kichUri.equals(s)) {
+                        media.removeChild(kichUriElm);
                     }
                 }
             }
+            record.setXMLField(MEDIA_FIELD, media);
             oase.getModifier().update(record);
 
         } catch (OaseException oe) {

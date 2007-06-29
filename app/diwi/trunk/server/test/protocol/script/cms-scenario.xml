@@ -80,7 +80,7 @@
     <test id="poi-relate-media-req">
         <send id="client1">
             <utopia-req>
-                <poi-relate-media-req id="${poiid}">
+                <poi-relate-media-req id="673">
                     <medium>1.jpg</medium>
                     <medium>2.jpg</medium>
                     <medium>3.jpg</medium>
@@ -98,10 +98,9 @@
     <test id="poi-unrelate-media-req">
         <send id="client1">
             <utopia-req>
-                <poi-unrelate-media-req id="${poiid}">
-                    <medium>2</medium>
-                    <medium>3</medium>
-                    <medium>4</medium>
+                <poi-unrelate-media-req id="673">
+                    <medium>2.jpg</medium>
+                    <medium>3.jpg</medium>                    
                 </poi-unrelate-media-req>
             </utopia-req>
         </send>
@@ -116,7 +115,7 @@
     <test id="poi-get-req">
         <send id="client1">
             <utopia-req>
-                <poi-get-req id="${poiid}"/>
+                <poi-get-req id="673"/>
             </utopia-req>
         </send>
 
@@ -131,17 +130,13 @@
     <test id="poi-update-req">
         <send id="client1">
             <utopia-req>
-                <poi-update-req id="${poiid}">
+                <poi-update-req id="673">
                     <poi>
                         <name>poi nummer 100</name>
                         <description>mooi punt</description>
                         <category>fort</category>
                         <x>4.92</x>
-                        <y>52.35</y>
-                        <media>
-                            <kich-uri>http://www.kich.nl?id=100</kich-uri>
-                            <kich-uri>http://www.kich.nl?id=200</kich-uri>
-                        </media>
+                        <y>52.35</y>                        
                     </poi>
                 </poi-update-req>
             </utopia-req>
@@ -157,7 +152,7 @@
     <test id="poi-delete-req">
         <send id="client1">
             <utopia-req>
-                <poi-delete-req id="${poiid}"/>
+                <poi-delete-req id="673"/>
             </utopia-req>
         </send>
 
