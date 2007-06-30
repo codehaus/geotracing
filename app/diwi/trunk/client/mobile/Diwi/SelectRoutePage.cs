@@ -6,6 +6,7 @@ using System.Drawing;
 
 namespace Diwi {
     class SelectRoutePage : DiwiPageBase {
+        static RouteInfoPage rInfoPage = null; 
 
         public SelectRoutePage(DiwiPageBase parent)
             : base(parent) {
@@ -26,7 +27,9 @@ namespace Diwi {
 
         void doBekijkRoute(int i, string s) {
             XMLement route = AppController.sRoutes.getChild(i);
-            (new RouteInfoPage(this, route)).ShowDialog();
+            if (rInfoPage == null) rInfoPage = new RouteInfoPage(this);
+            rInfoPage.setContent(route);
+            rInfoPage.ShowDialog();
             if (AppController.sActiveRouteID != -1) {
                 AppController.sKwxClient.activateRoute(AppController.sActiveRouteID, true);
                 doTerug(0, null);

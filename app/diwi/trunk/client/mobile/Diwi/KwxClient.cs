@@ -289,8 +289,13 @@ namespace Diwi {
         public string getRouteMap(string id, bool hor) {
             XMLement xml = new XMLement(Protocol.TAG_GET_ROUTE_MAP_REQ);
             xml.addAttribute("id", id);
-            xml.addAttribute("height", hor ? "240" : "320");
-            xml.addAttribute("width", hor ? "320" : "240");
+            if (hor) {
+                xml.addAttribute("height", "240");
+                xml.addAttribute("width", "320");
+            } else {
+                xml.addAttribute("height", "320");
+                xml.addAttribute("width", "240");
+            }
             xml = utopiaRequest(xml);
 
             if (xml != null && xml.tag == Protocol.TAG_GET_ROUTE_MAP_RSP)

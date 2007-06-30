@@ -6,31 +6,89 @@ using System.Drawing;
 
 namespace Diwi {
     class RouteInfoPage : DiwiPageBase {
-        DiwiUIStaticText desc;
+        mediaCallback mapDownloaded;
+        TextBox mTextBox = new TextBox();
         XMLement route;
+        string mVerMap, mHorMap;
 
-        public RouteInfoPage(DiwiPageBase parent, XMLement r)
+        public RouteInfoPage(DiwiPageBase parent)
             : base(parent) {
-            route = r;
-            title = route.getChildValue("name");
 
+            mapDownloaded = new mediaCallback(this.openMap);
+
+            mMenu.addItem("Verberg beschrijving", new DiwiUIMenu.DiwiMenuCallbackHandler(hideText));
             mMenu.addItem("Loop deze route", new DiwiUIMenu.DiwiMenuCallbackHandler(doLoopRoute));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
+            this.Controls.Add(mTextBox);
 
-            desc = new DiwiUIStaticText(this);
-            desc.size = new Size(200, 200);
-            desc.x = 4;
-            if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-                desc.y = 100;
-            } else {
-                desc.y = 100;
-            }
-            desc.text = route.getChildValue("description") + "\n\r\n\rAfstand is " + route.getChildValue("distance") + "km.";
-            addDrawable(desc);
+            mTextBox.Multiline = true;
+            mTextBox.ReadOnly = true;
+            mTextBox.ScrollBars = ScrollBars.Vertical;
+            mTextBox.ForeColor = Color.Black;
+            mTextBox.BackColor = Color.Transparent;
+
+            reOrient();
 
         }
 
+        public void hideText(int i, string s) {
+            if (mTextBox.Visible == true) {
+                mTextBox.Visible = false;
+                setMenuText(0, "Toon beschrijving");
+                reOrient();
+                draw();
+            } else {
+                mTextBox.Visible = true;
+                setMenuText(0, "Verberg beschrijving");
+                reOrient();
+                draw();
+            }
+        }
+
+        void openMap(string fn) {
+            int n = fn.IndexOf("horMap");
+            if (n >= 0) {
+                if (mVerMap == null) {
+                    string mapUrl = AppController.sKwxClient.getRouteMap(route.getAttributeValue("id"), false);
+                    new MediaDownloader(mapUrl, "verMap.jpg", new AppController.DownloadCallbackHandler(openMapT));
+                }
+                mHorMap = fn;
+                if (horizontal)
+                    setBackGroundFromFile(fn, 320, 240, 0, 0);
+            } else {
+                if (mHorMap == null) {
+                    string mapUrl = AppController.sKwxClient.getRouteMap(route.getAttributeValue("id"), true);
+                    new MediaDownloader(mapUrl, "horMap.jpg", new AppController.DownloadCallbackHandler(openMapT));
+                }
+                mVerMap = fn;
+                if (!horizontal)
+                    setBackGroundFromFile(fn, 240, 320, 0, 0);
+            }
+        }
+
+        void openMapT(string path) {
+            if (InvokeRequired) {
+                this.Invoke(mapDownloaded, new object[] { path });
+            } else {
+                openMap(path);
+            }
+        }
+
+
+        public void setContent(XMLement r) {
+            string mapUrl = AppController.sKwxClient.getRouteMap(r.getAttributeValue("id"),horizontal);
+            if (mapUrl != null) {
+                new MediaDownloader(mapUrl, horizontal ? "horMap.jpg" : "verMap.jpg", new AppController.DownloadCallbackHandler(openMapT));
+            }
+            mVerMap = null;
+            mHorMap = null;
+            route = r;
+            mTextBox.Text = route.getChildValue("description") + "    Afstand is " + route.getChildValue("distance") + "km.";
+            title = route.getChildValue("name");
+            reOrient();
+            draw();
+        }
 
         void doLoopRoute(int i, string s) {
             AppController.sActiveRouteID = int.Parse( route.getAttributeValue("id") );
@@ -45,18 +103,28 @@ namespace Diwi {
             mIsInitialized = true;
         }
 
+        private void reOrient() {
+            mTextBox.Left = 6;
+            mTextBox.Top = 124;
+
+            if (horizontal) {
+                mTextBox.Size = new Size(280, 110);
+            } else {
+                mTextBox.Size = new Size(200, 184);
+            }
+        }
 
 
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (mInitializing) return;
             if (base.doResize(e)) {
-                if (this.ClientRectangle.Width > this.ClientRectangle.Height) {
-                    desc.y = 100;
-                } else {
-                    desc.y = 100;
-                }
-                draw();
+                reOrient();
+                if (horizontal)
+                    setBackGroundFromFile(mHorMap, 240, 320, 0, 0);
+                else
+                    setBackGroundFromFile(mVerMap, 240, 320, 0, 0);
+
             }
         }
     }
