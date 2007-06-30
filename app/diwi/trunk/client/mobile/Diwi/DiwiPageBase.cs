@@ -10,6 +10,7 @@ using System.IO;
 namespace Diwi {   // base class for Diwi Pages.
     // 
     class DiwiPageBase : Form {
+        protected delegate void mediaCallback(string p);
         private delegate void DrawMiniCallback(Bitmap p);
         private enum sKeys { M_UP = 38, M_DOWN = 40, M_LEFT = 37, M_RIGHT = 39 };
         public static Bitmap offScreenBitmap;
@@ -161,8 +162,9 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.x = aX;
                 mBackImage.y = aY;
                 mBackImage.bitmap = new Bitmap(stream);
+                stream.Close();
                 draw();
-            } catch (System.IO.FileNotFoundException e) {
+            } catch (IOException e) {
                 MessageBox.Show(e.Message);
             }
         }
@@ -179,7 +181,7 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.bitmap = new Bitmap(stream);
                 draw();
                 stream.Close();
-            } catch (System.IO.FileNotFoundException e) {
+            } catch (IOException e) {
                 MessageBox.Show(e.Message);
             }
         }

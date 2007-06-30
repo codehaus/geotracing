@@ -14,7 +14,6 @@ namespace Diwi {
 
     class PoiViewerPage : DiwiPageBase {
 
-        private delegate void mediaCallback(string p);
 
         TextBox mTextBox = new TextBox();
         DiwiScalingImage mImage;
@@ -34,6 +33,7 @@ namespace Diwi {
 
 
             mTextBox.Multiline = true;
+            mTextBox.ReadOnly = true;
             mTextBox.ScrollBars = ScrollBars.Vertical;
             mTextBox.ForeColor = Color.Black;
             mTextBox.BackColor = Color.Transparent;

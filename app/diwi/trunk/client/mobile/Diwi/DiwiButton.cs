@@ -46,9 +46,14 @@ namespace Diwi {
             }
         }
 
+        public void setLabel(string t) {
+            mText.text = t;
+        }
+
         public void doMouseClick(int x, int y) {
             Point p = new Point(x, y);
             if (mRect.Contains(p)) {
+                AppController.SysClick();
                 if (mCallback != null) {
                     mCallback();
                     return;
@@ -66,7 +71,7 @@ namespace Diwi {
             mBrush.Color = sButColor;
             DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mRect.X, mRect.Y, mRect.Width, mRect.Height);
 
-            mText.x = mRect.X+5;
+            mText.x = mRect.X + (mRect.Width - mText.width) / 2;
             mText.y = mRect.Y+2;
             mText.color = sTextColor;
             mText.draw();
