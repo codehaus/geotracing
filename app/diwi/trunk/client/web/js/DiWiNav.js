@@ -18,7 +18,7 @@ var DIWINAV = {
 	init: function() {
 		// Setup main menu buttons
 		new Button('b1', 'welkom');
-		new Button('b2', 'routes', DIWIAPP.showFixedRoutes);
+		new Button('b2', 'routes', ROUTE.showFixedRoutes);
 		new Button('b3', 'aanmelden');
 		new Button('b4', 'faq');
 		new Button('b5', 'inloggen', DIWINAV.prepareLogin);
@@ -34,6 +34,33 @@ var DIWINAV = {
 		DH.addEvent(DH.getObject('fieldpassword'), 'keypress', DIWINAV.onPasswordChar, false);
 	},
 
+	/** Callback (from DIWIAPP) when login ok.  */
+	onLogin: function() {
+		// Show new content, here logout form
+		DH.displayOn('butmaakroute');
+		DH.displayOn('butmijnpagina');
+		DH.displayOff('butinloggen');
+		DH.displayOn('butuitloggen');
+		DH.hide('loginform');
+		DH.displayOff('inlogbox');
+		DH.displayOff('inlogform');
+		DIWIAPP.setStatus('ingelogd als ' + DIWIAPP.userName);
+		DIWIAPP.pr('ingelogd als ' + DIWIAPP.userName);
+		DIWINAV.buttons['b8'].onSelect();
+	},
+
+	/** Callback (from DIWIAPP) when logout ok.  */
+	onLogout: function() {
+		// Show new content, here logout form
+		DIWIAPP.pr('logout OK');
+		DH.displayOff('butmaakroute');
+		DH.displayOff('butmijnpagina');
+		DH.displayOn('butinloggen');
+		DH.displayOff('butuitloggen');
+		DH.show('loginform');
+		DIWIAPP.setStatus('niet ingelogd');
+		DIWINAV.buttons['b1'].onSelect();
+	},
 
 	prepareLogin: function() {
 		DH.getStyleObject('inlogbox').display = 'block';
