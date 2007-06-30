@@ -4,11 +4,10 @@
  * author: Just van den Broecke
  */
 var ROUTE = {
-
+	fixedRoutes: null,
 	sliders: new Array(),
 	startPOIs: null,
 	endPOIs: null,
-
 
 	createDistanceForm: function () {
 		var formHTML = '<p>Afstand</p><form><select id="afstand" ><option value="0" selected="selected">geen voorkeur</option><option value="3000" >3 km</option><option value="5000" >5 km</option><option value="10000" >10 km</option><option value="15000" >15 km</option><option value="20000" >20 km</option></select></form>';
@@ -31,6 +30,21 @@ var ROUTE = {
 		DH.setHTML('eindpunt-lb', formHTML);
 	},
 
+	creatFixedRoutesForm: function(records) {
+		var optionStr = ' ';
+		if (records != null) {
+			ROUTE.fixedRoutes = new Array();
+			for (i = 0; i < records.length; i++) {
+				ROUTE.fixedRoutes[records[i].id] = records[i];
+				optionStr += '<option name="fr' + records[i].id +'" value="' + records[i].id + '" onClick="ROUTE.showFixedRoute(this)">';
+				optionStr += records[i].getField('name');
+				optionStr += '</option>';
+			}
+		}
+
+		DH.setHTML('fixed_routes_form', optionStr);
+		MAP.show();
+	},
 
 	createGenerateRouteForm: function () {
 		KW.CMS.getstartpoints(ROUTE.createStartPOIsForm);
@@ -45,6 +59,53 @@ var ROUTE = {
 		for (var i=1; i < 11; i++) {
 			ROUTE.createSlider('s' + i);
 		}
+	},
+
+	createSlider: function(id) {
+		var slider = new Slider(DH.getObject(id), DH.getObject(id + 'input'));
+		slider.setMinimum(0);
+		slider.setMaximum(100);
+		slider.setValue(0);
+
+		var sliderValue = DH.getObject(id + 'value');
+		slider.onchange = function () {
+			sliderValue.value = slider.getValue();
+		}
+
+		// Store "omgevingstype" in slider
+		slider.omgeving = sliderValue.parentNode.id;
+
+		sliderValue.onchange = function () {
+			slider.setValue(parseInt(sliderValue.value));
+		}
+		ROUTE.sliders[id] = slider;
+	},
+
+	createStartPOIsForm: function(rspXML) {
+		var formHTML = '<p>Startpunt</p><form ><select style="width:120px;" id="startpunt"><option value="-1" selected="selected">geen voorkeur</option>';
+
+		ROUTE.startPOIs = ROUTE.rsp2Records(rspXML);
+
+		for (i = 0; i < ROUTE.startPOIs.length; i++) {
+			formHTML += '<option value="' + i + '">';
+			formHTML += ROUTE.startPOIs[i].getField('name');
+			formHTML += '</option>';
+		}
+
+		formHTML += '</select></form>';
+		DH.setHTML('startpunt-lb', formHTML);
+	},
+
+	createThemesForm: function(rspXML) {
+		var formHTML = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="-1" selected="selected">geen voorkeur</option>';
+		var themes = rspXML.getElementsByTagName('theme');
+		for (i = 0; i < themes.length; i++) {
+			formHTML += '<option value="' + i + '">';
+			formHTML += themes[i].firstChild.nodeValue;
+			formHTML += '</option>';
+		}
+		formHTML += '</select></form>';
+		DH.setHTML('thema-lb', formHTML);
 	},
 
 	generateRoute: function() {
@@ -97,53 +158,6 @@ var ROUTE = {
 
 	},
 
-	createSlider: function(id) {
-		var slider = new Slider(DH.getObject(id), DH.getObject(id + 'input'));
-		slider.setMinimum(0);
-		slider.setMaximum(100);
-		slider.setValue(0);
-
-		var sliderValue = DH.getObject(id + 'value');
-		slider.onchange = function () {
-			sliderValue.value = slider.getValue();
-		}
-
-		// Store "omgevingstype" in slider
-		slider.omgeving = sliderValue.parentNode.id;
-
-		sliderValue.onchange = function () {
-			slider.setValue(parseInt(sliderValue.value));
-		}
-		ROUTE.sliders[id] = slider;
-	},
-
-	createStartPOIsForm: function(rspXML) {
-		var formHTML = '<p>Startpunt</p><form ><select style="width:120px;" id="startpunt"><option value="-1" selected="selected">geen voorkeur</option>';
-
-		ROUTE.startPOIs = ROUTE.rsp2Records(rspXML);
-
-		for (i = 0; i < ROUTE.startPOIs.length; i++) {
-			formHTML += '<option value="' + i + '">';
-			formHTML += ROUTE.startPOIs[i].getField('name');
-			formHTML += '</option>';
-		}
-
-		formHTML += '</select></form>';
-		DH.setHTML('startpunt-lb', formHTML);
-	},
-
-	createThemesForm: function(rspXML) {
-		var formHTML = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="-1" selected="selected">geen voorkeur</option>';
-		var themes = rspXML.getElementsByTagName('theme');
-		for (i = 0; i < themes.length; i++) {
-			formHTML += '<option value="' + i + '">';
-			formHTML += themes[i].firstChild.nodeValue;
-			formHTML += '</option>';
-		}
-		formHTML += '</select></form>';
-		DH.setHTML('thema-lb', formHTML);
-	},
-
 	onCreateRouteRsp: function(xmlRsp) {
 		ROUTE.generatedRouteId = xmlRsp.firstChild.getAttribute('id');
 		var route = xmlRsp.firstChild;
@@ -158,6 +172,23 @@ var ROUTE = {
 		DIWINAV.loadPage('pages/routemap.html');
 		MAP.show();
 		MAP.addRouteLayer(ROUTE.generatedRouteId);
+	},
+
+	showFixedRoutes: function() {
+		SRV.get('q-diwi-routes', ROUTE.creatFixedRoutesForm, 'type', '0');
+	},
+
+	showFixedRoute: function(option) {
+		if (!option.value) {
+			return;
+		}
+
+		var record = ROUTE.fixedRoutes[option.value];
+		var content = '<h2>' + record.getField('name') + '</h2>';
+		content += record.getField('description');
+
+		DIWIAPP.pr(content);
+		MAP.addRouteLayer(record.id);
 	},
 
 	rsp2Records: function(anRsp) {

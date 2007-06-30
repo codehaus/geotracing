@@ -1,7 +1,10 @@
-
+/**
+ * Main application: starts all and handles session.
+ *
+ * Author: Just van den Broecke
+ */
 var DIWIAPP = {
 	userName: null,
-	fixedRoutes: {},
 	swapImageIndex: 1+ Math.round(5*Math.random()),
 
 
@@ -13,7 +16,7 @@ var DIWIAPP = {
 		}
 	},
 
-// Initialization of KWClient library
+// Initialization of all KWClient and all application objects.
 	init: function() {
 		DIWIAPP.pr('init...');
 		SRV.init();
@@ -66,54 +69,6 @@ var DIWIAPP = {
 		KW.restoreSession();
 	},
 
-	showFixedRoutes: function() {
-		SRV.get('q-diwi-routes', DIWIAPP.creatFixedRoutesForm, 'type', '0');
-	},
-
-	creatFixedRoutesForm: function(records) {
-		var optionStr = ' ';
-		if (records != null) {
-			for (i = 0; i < records.length; i++) {
-				DIWIAPP.fixedRoutes[records[i].id] = records[i];
-				optionStr += '<option name="fr' + records[i].id +'" value="' + records[i].id + '" onClick="DIWIAPP.showFixedRoute(this)">';
-				optionStr += records[i].getField('name');
-				optionStr += '</option>';
-			}
-		}
-
-		DH.setHTML('fixed_routes_form', optionStr);
-		MAP.show();
-	},
-
-	showFixedRoute: function(option) {
-		if (!option.value) {
-			return;
-		}
-
-		var record = DIWIAPP.fixedRoutes[option.value];
-		var content = '<h2>' + record.getField('name') + '</h2>';
-		content += record.getField('description');
-
-		DIWIAPP.pr(content);
-		MAP.addRouteLayer(record.id);
-	},
-
-
-	getBigMap: function() {
-		KW.DIWI.getmap(DIWIAPP.onMapRsp, DIWIAPP.currentGeneratedRouteId, 640, 480);
-	},
-
-	onMapRsp: function(elm) {
-		if (!elm) {
-			return;
-		}
-		verwerkPlaatje(elm);
-		//document.getElementById("maakroutebox").style.display = 'block';
-		// document.getElementById("leguitbox").style.display = 'none';
-		//document.getElementById("leguittext").style.display = 'none';
-		//document.getElementById("leguitbullet").style.display = 'none';
-	},
-
 	onRsp: function(elm) {
 		if (!elm) {
 			DIWIAPP.pr('empty response');
@@ -128,32 +83,9 @@ var DIWIAPP = {
 
 			KW.storeAccount();
 			KW.storeSession();
-			// Show new content, here logout form
-			DH.displayOn('butmaakroute');
-			DH.displayOn('butmijnpagina');
-			DH.displayOff('butinloggen');
-			DH.displayOn('butuitloggen');
-			DH.hide('loginform');
-			DH.displayOff('inlogbox');
-			DH.displayOff('inlogform');
-			DIWIAPP.setStatus('ingelogd als ' + DIWIAPP.userName);
-			DIWIAPP.pr('ingelogd als ' + DIWIAPP.userName);
-			DIWINAV.buttons['b8'].onSelect();
+			DIWINAV.onLogin();
 		} else if (elm.tagName == 'logout-rsp') {
-			DIWIAPP.pr('logout OK');
-			DH.displayOff('butmaakroute');
-			DH.displayOff('butmijnpagina');
-			DH.displayOn('butinloggen');
-			DH.displayOff('butuitloggen');
-			DH.show('loginform');
-			DIWIAPP.setStatus('niet ingelogd');
-			DIWINAV.buttons['b1'].onSelect();
-		} else if (elm.tagName == 'route-getlist-rsp') {
-			maakVasteRoutesForm(elm);
-		} else if (elm.tagName == 'route-generate-rsp') {
-			DIWIAPP.currentGeneratedRouteId = elm.firstChild.getAttribute('id');
-			verwerkGenRoute(elm);
-			KW.DIWI.getmap(verwerkPlaatje, DIWIAPP.currentGeneratedRouteId, 580, 400);
+			DIWINAV.onLogout();
 		} else {
 			DIWIAPP.pr('rsp tag=' + elm.tagName + ' ' + elm);
 		}
