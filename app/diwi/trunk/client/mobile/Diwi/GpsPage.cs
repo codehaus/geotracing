@@ -121,6 +121,7 @@ namespace Diwi {
 
         private delegate void updateGpsMessage(int m);
         void newGgpsMessage(int m) {
+            if (!mIsActive) return;
             switch (m) {
                 case (int)GpsReader.sMess.M_DEMO:
                     updateDemo();
