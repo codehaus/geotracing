@@ -103,14 +103,15 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         protected override void OnMouseMove(MouseEventArgs e) {
-            Rectangle oldRect = mouseText.rect;
-            mouseText.erase(sBackgroundColor);
+            /*  Rectangle oldRect = mouseText.rect;
+              mouseText.erase(sBackgroundColor);
 
-            mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
-            mouseText.x = 4;
-            mouseText.y = mCurrentRect.Height-18;
-            mouseText.draw();
-            redrawRect(oldRect, mouseText.rect);
+              mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
+              mouseText.x = 4;
+              mouseText.y = mCurrentRect.Height-18;
+              mouseText.draw();
+              redrawRect(oldRect, mouseText.rect);
+          */
         }
 
         public bool horizontal {
