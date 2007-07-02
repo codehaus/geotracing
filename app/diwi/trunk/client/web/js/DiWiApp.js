@@ -5,8 +5,9 @@
  */
 var DIWIAPP = {
 	userName: null,
+	personId: null,
 	swapImageIndex: 1+ Math.round(5*Math.random()),
-
+	hbTimer: null,
 
 	/** Swap images in top. */
 	imageSwap: function() {
@@ -25,7 +26,7 @@ var DIWIAPP = {
 		// callbacks (2x)
 		// server timeout in minutes
 		// server root path /diwi
-		KW.init(DIWIAPP.onRsp, DIWIAPP.onNegRsp, 60, '/diwi');
+		KW.init(DIWIAPP.onRsp, DIWIAPP.onNegRsp, 2, '/diwi');
 		DIWINAV.init();
 		DIWIAPP.pr('init done');
 		// MAP.init();
@@ -69,22 +70,32 @@ var DIWIAPP = {
 		KW.restoreSession();
 	},
 
+/** Send heartbeat. */
+	sendHeartbeat: function() {
+		var doc = KW.createRequest('echo-req');
+		KW.post(DIWIAPP.onRsp, doc);
+	},
+
 	onRsp: function(elm) {
 		if (!elm) {
 			DIWIAPP.pr('empty response');
 			return;
 		}
 
-		DIWIAPP.pr('server response ' + elm.tagName);
+		// DIWIAPP.pr('server response ' + elm.tagName);
 		if (elm.tagName == 'login-rsp') {
 			DIWIAPP.pr('login response ok');
+			DIWIAPP.personId = elm.getElementsByTagName('personid')[0].childNodes[0].nodeValue;
 			KW.selectApp('geoapp', 'user');
 		} else if (elm.tagName == 'select-app-rsp') {
+			DIWIAPP.hbTimer = window.setInterval('DIWIAPP.sendHeartbeat()', 60000)
 
 			KW.storeAccount();
 			KW.storeSession();
 			DIWINAV.onLogin();
+		} else if (elm.tagName == 'echo-rsp') {
 		} else if (elm.tagName == 'logout-rsp') {
+			window.clearInterval(DIWIAPP.hbTimer);
 			DIWINAV.onLogout();
 		} else {
 			DIWIAPP.pr('rsp tag=' + elm.tagName + ' ' + elm);
