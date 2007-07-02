@@ -425,3 +425,10 @@ p {
 	left: 513px;
 	z-index: 100;
 }
+
+#triplist {
+	margin-left: 20px;
+	margin-right: 20px;
+	line-height: 1.2em;
+	font-size: 0.7em;	
+}

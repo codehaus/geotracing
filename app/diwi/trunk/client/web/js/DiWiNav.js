@@ -24,7 +24,7 @@ var DIWINAV = {
 		new Button('b5', 'inloggen', DIWINAV.prepareLogin);
 		new Button('b6', 'uitloggen', DIWIAPP.logout);
 		new Button('b7', 'maakroute', ROUTE.createGenerateRouteForm);
-		new Button('b8', 'mijnpagina');
+		new Button('b8', 'mijnpagina', TRIP.showTrips);
 
 		// Start with loading welcome page
 		DIWINAV.buttons['b1'].onSelect();

@@ -87,6 +87,21 @@ KW.DIWI = {
 		KW.utopia(req, callback);		
 	},
 	
+
+	gettrips: function(callback, personid) {
+		var req = KW.createRequest('trip-getlist-req');
+		if (personid) {
+			req.documentElement.setAttribute('personid', personid);
+		}
+		KW.utopia(req, callback);
+	},
+
+	gettrip: function(callback, id) {
+		var req = KW.createRequest('trip-get-req');
+		req.documentElement.setAttribute('id', id);
+		KW.utopia(req, callback);
+	},
+
 	getmap: function(callback, id, width, height) {
 		var req = KW.createRequest('route-get-map-req');
 
