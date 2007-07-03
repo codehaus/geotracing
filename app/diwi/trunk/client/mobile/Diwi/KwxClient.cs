@@ -371,9 +371,9 @@ namespace Diwi {
             if (mAgentKey != null) {
                 XMLement xml = new XMLement(Protocol.TAG_NAV_POINT_REQ);
                 XMLement pt = new XMLement("pt");
-                
-                pt.addAttribute("lon", GpsReader.lon.ToString());
-                pt.addAttribute("lat", GpsReader.lat.ToString());
+
+                pt.addAttribute("lon", GpsReader.lon.ToString(GpsReader.mUSFormat));
+                pt.addAttribute("lat", GpsReader.lat.ToString(GpsReader.mUSFormat));
 
                // pt.addAttribute("nmea", GpsReader.nmea);
 

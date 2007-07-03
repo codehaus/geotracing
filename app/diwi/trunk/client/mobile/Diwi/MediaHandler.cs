@@ -41,37 +41,39 @@ namespace Diwi {
             int n;
             byte[] inBuffer = new byte[4096];
             Stream stream = null;
-            
-            busy = true;
 
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
-            HttpWebResponse response = (HttpWebResponse)req.GetResponse();
-            stream = response.GetResponseStream();
 
-            AppController.sProgBar.bumpUp();
+            try {
 
-            try
-            {
-                FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-                do
-                {
-                    n = stream.Read(inBuffer, 0, 4096);
-                    fstream.Write(inBuffer, 0, n);
-                } while (n > 0);
+                busy = true;
 
-                fstream.Close();
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
+                HttpWebResponse response = (HttpWebResponse)req.GetResponse();
+                stream = response.GetResponseStream();
+
+                AppController.sProgBar.bumpUp();
+
+                try {
+                    FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+                    do {
+                        n = stream.Read(inBuffer, 0, 4096);
+                        fstream.Write(inBuffer, 0, n);
+                    } while (n > 0);
+
+                    fstream.Close();
+                } catch (IOException e) {
+                    ; // MessageBox.Show(e.Message, "Error downloading file.");
+                }
+
+                AppController.sProgBar.bumpDown();
+
+                stream.Close();
+
+                if (callb != null)
+                    callb(path);
+            } catch (WebException we) { 
+
             }
-            catch (IOException e)
-            {
-                ; // MessageBox.Show(e.Message, "Error downloading file.");
-            }
-
-            AppController.sProgBar.bumpDown();
-
-            stream.Close();
-
-            if (callb != null)
-                callb(path);
 
             busy = false;
 

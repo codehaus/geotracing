@@ -22,7 +22,7 @@ namespace Diwi {
         public event CallbackHandler callback;
 
 
-        private CultureInfo mUSFormat = new CultureInfo(0x0409); // constant voor en-US domain. gebruikt in nummerformat parsing 
+        public static CultureInfo mUSFormat = new CultureInfo(0x0409); // constant voor en-US domain. gebruikt in nummerformat parsing 
         private System.IO.Ports.SerialPort mSerialPort;
         private Thread mReadDataThread = null;
         private Thread mOpenPortThread = null;
