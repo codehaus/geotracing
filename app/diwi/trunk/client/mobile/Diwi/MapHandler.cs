@@ -97,7 +97,7 @@ namespace Diwi {
                 sMapRadius = value;
                 if (sActive) {
                     sDoDownload++;
-                    if (sDoDownload == 1)
+                    if (sDoDownload >= 1)
                         downLoadMaps();
                 }
             }
@@ -130,9 +130,8 @@ namespace Diwi {
                 if (sDownloadCallback != null) {
                     sDownloadCallback();
                 }
-                sDoDownload--;
                 if (sDoDownload > 0) {
-                    sDoDownload = 1;
+                    sDoDownload = 0;
                     downLoadMaps();
                 }
             }

@@ -140,6 +140,7 @@ namespace Diwi {
 
         public XMLement doLogout() {
             XMLement xml = new XMLement(Protocol.TAG_LOGOUT_REQ);
+            AppController.showStatus("logout");
             lock (this) {
                 xml = doRequest(xml);
             }
@@ -161,6 +162,7 @@ namespace Diwi {
 
         public XMLement getPOI(string id) {
             XMLement xml = new XMLement(Protocol.TAG_POI_GET_REQ);
+            AppController.showStatus("getPOI");
             xml.addAttribute(Protocol.ATTR_ID, id);
             lock (this) {
                 xml = utopiaRequest(xml);
@@ -174,6 +176,7 @@ namespace Diwi {
 
         public XMLement doNavStart() {
             XMLement xml = new XMLement(Protocol.TAG_NAV_START_REQ);
+            AppController.showStatus("navStart");
             lock (this) {
                 xml = utopiaRequest(xml);
             }
@@ -185,6 +188,7 @@ namespace Diwi {
 
         public XMLement activateRoute(int routeID, bool init) {
             XMLement xml = new XMLement(Protocol.TAG_ACTIVATE_ROUTE_REQ);
+            AppController.showStatus("activateRoute");
             xml.addAttribute(Protocol.ATTR_ID, routeID);
             xml.addAttribute(Protocol.ATTR_INIT, init.ToString());
 
@@ -199,7 +203,7 @@ namespace Diwi {
 
         public XMLement deActivateRoute() {
             XMLement xml = new XMLement(Protocol.TAG_DEACTIVATE_ROUTE_REQ);
-
+            AppController.showStatus("deActivateRoute");
             lock (this) {
                 xml = utopiaRequest(xml);
             }
@@ -212,6 +216,7 @@ namespace Diwi {
         
         public XMLement addMedium(string id) {
             XMLement xml = new XMLement(Protocol.TAG_ADD_MEDIUM_REQ);
+            AppController.showStatus("addMedium");
             xml.addAttribute(Protocol.ATTR_ID, id);
 
             lock (this) {
@@ -288,6 +293,7 @@ namespace Diwi {
 
         public string getRouteMap(string id, bool hor) {
             XMLement xml = new XMLement(Protocol.TAG_GET_ROUTE_MAP_REQ);
+            AppController.showStatus("getRouteMap");
             xml.addAttribute("id", id);
             if (hor) {
                 xml.addAttribute("height", "240");
@@ -308,6 +314,7 @@ namespace Diwi {
 
             float urtLat, urtLon, llbLat, llbLon;
             XMLement req = new XMLement(Protocol.TAG_NAV_GET_MAP_REQ);
+            AppController.showStatus("getBoundedMap");
 
             if (hor) {
                 urtLat = GpsReader.lat + GpsReader.km2degLat(radiusKm);
@@ -412,6 +419,7 @@ namespace Diwi {
 
         private XMLement doRequest(XMLement anElement) {
             string url = mServer;
+
             if (mAgentKey != null) {
                 url += "?agentkey=" + mAgentKey;
             } else {
@@ -425,6 +433,7 @@ namespace Diwi {
                 UTF8Encoding encoding = new UTF8Encoding();
                 byte[] postBytes = encoding.GetBytes(anElement.toString());
 
+                req.Timeout = 5000;
                 req.Method = "POST";
                 req.ContentType = "text/xml";
                 req.ContentLength = postBytes.Length;
@@ -446,9 +455,12 @@ namespace Diwi {
                 // close the connection
                 resp.Close();
 
+                AppController.showStatus("");
+
                 return XMLement.createFromRawXml(pageData);
 
             } catch (WebException e) {
+                AppController.showStatus("");
                 string str = string.Format("Caught WebException: {0}", e.Status.ToString());
                 AppController.sLog.WriteLine(str);
                 return new XMLement("web-exception");
@@ -475,6 +487,7 @@ namespace Diwi {
                 }
                 */
             } catch (Exception) {
+                AppController.showStatus("");
                 return null;
             }
         }

@@ -102,16 +102,27 @@ namespace Diwi {   // base class for Diwi Pages.
             mMenu.setMenuText(index, s);
         }
 
-        protected override void OnMouseMove(MouseEventArgs e) {
-            /*  Rectangle oldRect = mouseText.rect;
-              mouseText.erase(sBackgroundColor);
+        public void printStatus(string s) {
+             Rectangle oldRect = mouseText.rect;
+             mouseText.erase(sBackgroundColor);
 
-              mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
-              mouseText.x = 4;
-              mouseText.y = mCurrentRect.Height-18;
-              mouseText.draw();
-              redrawRect(oldRect, mouseText.rect);
-          */
+             mouseText.text = s;
+             mouseText.x = 4;
+             mouseText.y = mCurrentRect.Height-18;
+             mouseText.draw();
+             redrawRect(oldRect, mouseText.rect);
+      }
+
+       protected override void OnMouseMove(MouseEventArgs e) {
+           /*  Rectangle oldRect = mouseText.rect;
+             mouseText.erase(sBackgroundColor);
+
+             mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
+             mouseText.x = 4;
+             mouseText.y = mCurrentRect.Height-18;
+             mouseText.draw();
+             redrawRect(oldRect, mouseText.rect);
+         */
         }
 
         public bool horizontal {

@@ -87,6 +87,12 @@ namespace Diwi {
 
         void openAudio(string fn) {
             if (mIsActive == false) return;
+
+            Stream r = new FileStream(fn, FileMode.Open);
+            Sound s = new Sound(r);
+            s.Play();
+            return;
+
             Process process = new Process();
             process.StartInfo.FileName = fn;
             process.StartInfo.Verb = "Open";
