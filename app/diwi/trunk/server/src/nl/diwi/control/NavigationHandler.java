@@ -152,7 +152,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
         //Get Point from pt elements
         JXElement ptElement = (JXElement) (reqElm.getChildren().get(0));
-        Point point = new Point(Double.parseDouble(ptElement.getAttr(LAT_FIELD)), Double.parseDouble(ptElement.getAttr(LON_FIELD)), 0);
+        Point point = new Point(Double.parseDouble(ptElement.getAttr(LON_FIELD)), Double.parseDouble(ptElement.getAttr(LAT_FIELD)), 0);
         point.setSrid(EPSG_WGS84);
         result.addAll(navLogic.checkPoint(point, HandlerUtil.getUserId(anUtopiaReq)));
 

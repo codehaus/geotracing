@@ -34,7 +34,6 @@ public class RouteHandler extends DefaultHandler implements Constants {
     public final static String ROUTE_GET_SERVICE = "route-get";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
     public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
-    public final static String ROUTE_THEMES_SERVICE = "route-themes";
 
     /**
      * Processes the Client Request.
@@ -171,6 +170,9 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
     /**
      * Get user (Person) id from request.
+     * @param anUtopiaReq
+     * @return
+     * @throws UtopiaException
      */
     protected RouteLogic createLogic(UtopiaRequest anUtopiaReq) throws UtopiaException {
         return new RouteLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());

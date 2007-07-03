@@ -27,8 +27,10 @@ public class MapLogic {
             log.error("Exception in deleteRoute: " + e.toString());
             throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
         }
-
-        return "" + MAPPING_URL + "?LAYERS=topnl_raster&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+        
+        //return "" + MAPPING_URL + "?LAYERS=topnl_raster&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+        //return "" + MAPPING_URL + "?LAYERS=topnl_geese&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+        return "" + MAPPING_URL + "?LAYERS=topnl_diwiwms&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
     }
 
     public String getMapURL(int routeId, Point urt, Point llb, double width, double height) throws UtopiaException {
@@ -67,7 +69,7 @@ public class MapLogic {
             throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
         }
 
-        return "" + MAPPING_URL + "?ID=" + routeId + "&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+        return "" + MAPPING_URL + "?ID=" + routeId + "&LAYERS=topnl_diwiwms,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
     }
 
 

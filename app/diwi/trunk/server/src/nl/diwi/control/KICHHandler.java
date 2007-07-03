@@ -60,28 +60,10 @@ public class KICHHandler extends DefaultHandler implements Constants {
         return new UtopiaResponse(response);
     }
 
-    private JXElement getThemes(UtopiaRequest anUtopiaReq) {
+    private JXElement getThemes(UtopiaRequest anUtopiaReq) throws UtopiaException{
         JXElement response = createResponse(KICH_GET_THEMES_SERVICE);
-
-        response.addTextChild(THEME_ELM, "Kerk en kerkonderdeel");
-        response.addTextChild(THEME_ELM, "Klooster, kloosteronderdl");
-        response.addTextChild(THEME_ELM, "Gedenkteken");
-        response.addTextChild(THEME_ELM, "Brug");
-        response.addTextChild(THEME_ELM, "Gracht");
-        response.addTextChild(THEME_ELM, "Fort, vesting en -onderdl");
-        response.addTextChild(THEME_ELM, "Erfscheiding");
-        response.addTextChild(THEME_ELM, "Industrie- en poldermolen");
-        response.addTextChild(THEME_ELM, "Begraafplaats en -onderdl");
-        response.addTextChild(THEME_ELM, "Kerkelijke dienstwoning");
-        response.addTextChild(THEME_ELM, "Boerderij");
-        response.addTextChild(THEME_ELM, "Militair verblijfsgebouw");
-        response.addTextChild(THEME_ELM, "Waterkering en -doorlaat");
-        response.addTextChild(THEME_ELM, "Gemaal");
-        response.addTextChild(THEME_ELM, "Grensafbakening");
-        response.addTextChild(THEME_ELM, "Kasteel, buitenplaats");
-        response.addTextChild(THEME_ELM, "Kapel");
-        response.addTextChild(THEME_ELM, "Bijgebouwen kastelen enz.");
-        response.addTextChild(THEME_ELM, "Omwalling");
+        DataSource ds = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        response.addChildren(ds.getKICHThemes());
 
         return response;
     }

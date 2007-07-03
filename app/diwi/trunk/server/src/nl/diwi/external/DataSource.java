@@ -161,6 +161,45 @@ public class DataSource implements Constants {
         return NetConnection.getXMLFromREST(kichRestUrl);*/
     }
 
+    /**
+     * <media>
+     * <medium>
+     * <naam></naam>
+     * <description></description>
+     * <uri></uri>
+     * </medium>
+     * </media>
+     *
+     * @return media element
+     */
+    public Vector getKICHThemes() throws UtopiaException {
+        try{
+            JXElement result = new JXElement("themes");
+            result.addTextChild(THEME_ELM, "Kerk en kerkonderdeel");
+            result.addTextChild(THEME_ELM, "Klooster, kloosteronderdl");
+            result.addTextChild(THEME_ELM, "Gedenkteken");
+            result.addTextChild(THEME_ELM, "Brug");
+            result.addTextChild(THEME_ELM, "Gracht");
+            result.addTextChild(THEME_ELM, "Fort, vesting en -onderdl");
+            result.addTextChild(THEME_ELM, "Erfscheiding");
+            result.addTextChild(THEME_ELM, "Industrie- en poldermolen");
+            result.addTextChild(THEME_ELM, "Begraafplaats en -onderdl");
+            result.addTextChild(THEME_ELM, "Kerkelijke dienstwoning");
+            result.addTextChild(THEME_ELM, "Boerderij");
+            result.addTextChild(THEME_ELM, "Militair verblijfsgebouw");
+            result.addTextChild(THEME_ELM, "Waterkering en -doorlaat");
+            result.addTextChild(THEME_ELM, "Gemaal");
+            result.addTextChild(THEME_ELM, "Grensafbakening");
+            result.addTextChild(THEME_ELM, "Kasteel, buitenplaats");
+            result.addTextChild(THEME_ELM, "Kapel");
+            result.addTextChild(THEME_ELM, "Bijgebouwen kastelen enz.");
+            result.addTextChild(THEME_ELM, "Omwalling");
+            return result.getChildren();
+        }catch(Throwable t){
+            throw new UtopiaException(t);
+        }
+    }
+    
     // insert a poi in KICH
     public String insertPOI(JXElement aPOIElement) throws UtopiaException {
         JXElement pois = new JXElement("pois");
