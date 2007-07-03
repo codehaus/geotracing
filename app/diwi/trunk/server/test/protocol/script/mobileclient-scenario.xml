@@ -277,7 +277,7 @@
 		<send id="client1">
 			<utopia-req>
 				<nav-point-req>
-					<pt lon="5.4751797571781395" lat="52.07066116151116"/>
+					<pt lon="5.488779349567399" lat="52.07749378704085"/>
 				</nav-point-req>
 			</utopia-req>
 		</send>
@@ -285,7 +285,6 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<nav-point-rsp>
-                    <pt lon="4.9222398" lat="52.3771776" t="1182771638214" ele="0.0" acc="100" speed="38.23"/>
                     <poi-hit id="${poiid}" />
                 </nav-point-rsp>
             </utopia-rsp>
@@ -367,7 +366,6 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<nav-point-rsp>
-                    <pt lon="4.5222398" lat="52.8771776" t="1182771638214" ele="0.0" acc="100" speed="38.23"/>
                     <msg>roam</msg>
                 </nav-point-rsp>
             </utopia-rsp>

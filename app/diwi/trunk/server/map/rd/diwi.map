@@ -44,23 +44,42 @@ WEB
 END
 
 # maps NL from Alterra
-# http://www.geese.nl/milcon?LAYERS=w&REQUEST=GetMap&SERVICE=WMS&FORMAT=image%2Fpng&HEIGHT=256&VERSION=1.1.1&SRS=EPSG:4326&WIDTH=256&BBOX=4.8,52,5,52.50&TRANSPARENT=FALSE&EXCEPTIONS=application/vnd.ogc.se_inimage
+# http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS?request=getmap&service=WMS&version=1.1.1&height=320&width=240&format=image/jpeg&styles=&layers=id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12&SRS=EPSG:4326&bbox=5,52,5.05,52.05
 LAYER
 #	GROUP topnl
-	NAME topnl_geese
+	NAME topnl_diwiwms
 	TYPE RASTER
 	STATUS ON
 	CONNECTIONTYPE WMS
-	CONNECTION "http://www.geese.nl/milcon?"
+	CONNECTION "geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS?"
 	METADATA
-		"wms_name" "t250,t50,t25,t10"
+		"wms_name" "id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12"
 		"wms_srs" "EPSG:28992"
 		"wms_server_version" "1.1.1"
 		"wms_request" "GetMap"
-		"wms_format" "image/png"
+		"wms_format" "image/jpeg"
 		"wms_connectiontimeout" "60"
 	END
 END
+
+# maps NL from Alterra
+# http://www.geese.nl/milcon?LAYERS=w&REQUEST=GetMap&SERVICE=WMS&FORMAT=image%2Fpng&HEIGHT=256&VERSION=1.1.1&SRS=EPSG:4326&WIDTH=256&BBOX=4.8,52,5,52.50&TRANSPARENT=FALSE&EXCEPTIONS=application/vnd.ogc.se_inimage
+#LAYER
+#	GROUP topnl
+#	NAME topnl_geese
+#	TYPE RASTER
+#	STATUS ON
+#	CONNECTIONTYPE WMS
+#	CONNECTION "http://www.geese.nl/milcon?"
+#	METADATA
+#		"wms_name" "t250,t50,t25,t10"
+#		"wms_srs" "EPSG:28992"
+#		"wms_server_version" "1.1.1"
+#		"wms_request" "GetMap"
+#		"wms_format" "image/png"
+#		"wms_connectiontimeout" "60"
+#	END
+#END
 
 ### DIWI ###
 # http://test.digitalewichelroede.nl/map/?ID=161&LAYERS=topnl_raster,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=153929.028192%2C459842.063363%2C158851.133074%2C463123.466618&WIDTH=1200&HEIGHT=800

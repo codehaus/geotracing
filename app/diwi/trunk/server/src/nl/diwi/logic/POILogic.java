@@ -19,6 +19,7 @@ import org.postgis.Point;
 
 import java.util.Properties;
 import java.util.Vector;
+import java.net.URLDecoder;
 
 public class POILogic implements Constants {
     private static final Properties properties = new Properties();
