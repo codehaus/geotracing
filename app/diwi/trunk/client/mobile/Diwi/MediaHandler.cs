@@ -18,11 +18,13 @@ namespace Diwi {
 
 
         public MediaDownloader(string url, string p, AppController.DownloadCallbackHandler cb) {
-            uri = Uri.UnescapeDataString(url);
-            callb = cb;
-            mThread = new Thread(new ThreadStart(threadHandler));
-            path = p;
-            mThread.Start();
+            if (url != null) {
+                uri = Uri.UnescapeDataString(url);
+                callb = cb;
+                mThread = new Thread(new ThreadStart(threadHandler));
+                path = p;
+                mThread.Start();
+            }
         }
 
         public bool doDownload(string url, string p) {
