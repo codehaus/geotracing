@@ -19,6 +19,7 @@ namespace Diwi {
         private delegate void timerTick();
         System.Threading.Timer mTimer;
         static Bitmap[] mLogo = new Bitmap[4];
+        static Bitmap urlReq;
         int index = 0;
         int activeCount = 0;
 
@@ -30,8 +31,21 @@ namespace Diwi {
             mLogo[2] = new Bitmap(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.minil3.GIF"));
             mLogo[3] = new Bitmap(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.minil4.GIF"));
 
+
+            urlReq = new Bitmap(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.UrlReq.gif"));
+
             mTimer = new System.Threading.Timer(new TimerCallback(doTimeoutT), new AutoResetEvent(false), Timeout.Infinite, 1000);
         }
+
+        public void setRequestOut() {
+            DiwiPageBase.drawMini(urlReq);
+        }
+
+        public void setRequestIn() {
+            DiwiPageBase.drawMini(mLogo[0]);
+        }
+
+ 
 
         public void bumpUp() {
             activeCount++;

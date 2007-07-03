@@ -45,7 +45,14 @@ namespace Diwi {
         private static Sound sPloink;
         private static Sound sClick;
 
-       // SystemState
+        public static void showStatus(string s) {
+            DiwiPageBase.sCurrentPage.printStatus(s);
+        }
+
+        public static void setRequestIn() {
+            DiwiPageBase.sCurrentPage.printStatus("");
+        }
+
 
         public static void activate() {
             sLog = File.CreateText("DiwiLog.txt");
