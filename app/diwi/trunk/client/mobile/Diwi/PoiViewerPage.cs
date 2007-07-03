@@ -174,7 +174,7 @@ namespace Diwi {
                     title = name.nodeText;
                 mAllMedia = xml.getChildByName("media");
                 xmlString = mAllMedia.toString();
-                mMediaIndex = -2;
+                mMediaIndex = -1;
                 doNext(0, "");
             }
         }
