@@ -125,6 +125,7 @@ p {
 	width: 580px;
 	height: 420px;
 	border: 1px solid black;
+	cursor:crosshair;
 }
 
 #mapanchor {

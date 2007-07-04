@@ -325,19 +325,22 @@ public class RouteLogic implements Constants {
         return (int) Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());
     }
 
+
+    // TODO: this can now be in RD
     public String getMapUrl(int routeId, double width, double height) throws UtopiaException {
         Record bounds;
         try {
-            bounds = oase.getFinder().freeQuery("select box2d(wgspath) AS bbox from diwi_route where id=" + routeId)[0];
+            bounds = oase.getFinder().freeQuery("select extent(rdpath) AS bbox from diwi_route where id=" + routeId)[0];
         } catch (OaseException e) {
             log.error("Exception in deleteRoute: " + e.toString());
             throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
         }
-        PGbox2d bbox = (PGbox2d) bounds.getObjectField("bbox");
+
+		PGbox2d bbox = (PGbox2d) bounds.getObjectField("bbox");
 
         MapLogic mapLogic = new MapLogic();
 
-        return mapLogic.getMapURL(routeId, ProjectionConversionUtil.WGS842RD(bbox.getURT()), ProjectionConversionUtil.WGS842RD(bbox.getLLB()), width, height);
+        return mapLogic.getMapURL(routeId, bbox.getURT(), bbox.getLLB(), width, height);
     }
 }
 

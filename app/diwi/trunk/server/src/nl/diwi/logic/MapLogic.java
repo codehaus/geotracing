@@ -69,7 +69,7 @@ public class MapLogic {
             throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
         }
 
-        return "" + MAPPING_URL + "?ID=" + routeId + "&LAYERS=topnl_diwiwms,single_diwi_route&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+        return "" + MAPPING_URL + "?ID=" + routeId + "&LAYERS=topnl_diwiwms,single_diwi_route,diwi_pois&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
     }
 
 
