@@ -288,31 +288,41 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         protected override void OnMouseDown(MouseEventArgs e) {
+            if (mDoDrawMenu == false) {
+                mDoDrawMenu = true;
+                blendCount = 4;
+                draw();
+                return;
+            }
+            
             foreach (DiwiDrawable d in mDrawableElements) {
                 d.doMouseClick(e.X, e.Y);
             }
         }
 
         void keydown(Object o, KeyEventArgs e) {
-            if (mDoDrawMenu == false) {
-                mDoDrawMenu = true;
-                blendCount = 4;
-                draw();
-            }
             switch (e.KeyValue) {
                 case (int)sKeys.M_DOWN:
                     mMenu.decIndex();
+                    if (mDoDrawMenu == false) {
+                        mDoDrawMenu = true;
+                        blendCount = 4;
+                    }
                     draw();
                     break;
                 case (int)sKeys.M_LEFT:
-                    MapHandler.mapRadius *= 1.5F;
                     AppController.SysClick();
+                    MapHandler.mapRadius *= 1.5F;
                     break;
                 case (int)sKeys.M_RIGHT:
-                    MapHandler.mapRadius *= 0.75F;
                     AppController.SysClick();
+                    MapHandler.mapRadius *= 0.75F;
                     break;
                 case (int)sKeys.M_UP:
+                    if (mDoDrawMenu == false) {
+                        mDoDrawMenu = true;
+                        blendCount = 4;
+                    }
                     mMenu.incIndex();
                     draw();
                     break;
