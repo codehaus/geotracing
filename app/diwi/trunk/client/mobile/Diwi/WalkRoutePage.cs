@@ -28,6 +28,7 @@ namespace Diwi {
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
             mMenu.addItem("Toon UGC", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC));
+            mMenu.addItem("TestPOI", new DiwiUIMenu.DiwiMenuCallbackHandler(testPoi));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             poiCB = new POIHandler(navPointReceive);
@@ -118,15 +119,8 @@ namespace Diwi {
             (new MakeTextPage(this, null)).ShowDialog();
         }
 
-        void doTestPoi(int i, string s) {
-            mIsActive = false;
-            XMLement x = AppController.sKwxClient.getPOI("705");
-            if (x != null) {
-                if (sPoiPage == null)
-                    sPoiPage = new PoiViewerPage(this);
-                sPoiPage.setContent(x);
-                sPoiPage.ShowDialog();
-            }
+        void testPoi(int i, string s) {
+            doPoi("1505");
         }
 
         void doPoi(string id) {
