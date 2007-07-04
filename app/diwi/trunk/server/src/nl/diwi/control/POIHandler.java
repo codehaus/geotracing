@@ -208,13 +208,15 @@ public class POIHandler extends DefaultHandler implements Constants {
         LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_TRAFFIC_TYPE);
 
+        int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+
         JXElement response = createResponse(POI_GET_SERVICE);
         String id = reqElm.getAttr(ID_FIELD);
         String kichid = reqElm.getAttr(KICHID_FIELD);
         if (id != null && id.length() > 0 && Java.isInt(id)) {
-            response.addChild(logic.get(Integer.parseInt(id)));
+            response.addChild(logic.get(personId, Integer.parseInt(id)));
         } else if (kichid != null && kichid.length() > 0) {
-            response.addChild(logic.get(kichid));
+            response.addChild(logic.get(personId, kichid));
         }
         return response;
     }

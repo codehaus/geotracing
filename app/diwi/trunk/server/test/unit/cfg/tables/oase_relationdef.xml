@@ -4,60 +4,60 @@
 
     <views>
 
-		<insert>
-			<field name="table1" />
-			<field name="table2" />
-			<field name="assoctype" />
-		</insert>
+        <insert>
+            <field name="table1"/>
+            <field name="table2"/>
+            <field name="assoctype"/>
+        </insert>
 
-		<list>
-			<field name="id" />
-			<field name="table1" />
-			<field name="table2"  />
- 			<field name="assoctype" />
-		</list>
+        <list>
+            <field name="id"/>
+            <field name="table1"/>
+            <field name="table2"/>
+            <field name="assoctype"/>
+        </list>
 
-		<query>
-			<field name="id" />
-			<field name="table1" />
-			<field name="table2" />
-			<field name="assoctype" />
-		</query>
- 	</views>
+        <query>
+            <field name="id"/>
+            <field name="table1"/>
+            <field name="table2"/>
+            <field name="assoctype"/>
+        </query>
+    </views>
 
-	<data>
+    <data>
 
-		<field name="id" type="INTEGER" required="true" key="true" />
+        <field name="id" type="INTEGER" required="true" key="true"/>
 
-		<field name="table1" type="STRING" required="true" size="24" />
+        <field name="table1" type="STRING" required="true" size="24"/>
 
-		<field name="table2" type="STRING" required="true" size="24" />
+        <field name="table2" type="STRING" required="true" size="24"/>
 
-		<field name="assoctype" type="INTEGER" required="true" default="1" />
+        <field name="assoctype" type="INTEGER" required="true" default="1"/>
 
-	</data>
+    </data>
 
-	<!--
+    <!--
 
-	CVS log:
+     CVS log:
 
-	$Log: oase_relationdef.xml,v $
-	Revision 1.1  2005/03/16 15:51:06  just
-	*** empty log message ***
-	
-	Revision 1.1.1.1  2005/03/10 21:42:13  just
-	Import of keyworx server
-	
-	Revision 1.2  2003/07/03 13:19:21  justb
-	added relation handling in webapp
-	
-	Revision 1.1.1.1  2003/05/27 21:28:22  justb
-	no message
-	
-	Revision 1.1.1.1  2003/05/15 14:34:02  justb
-	no message
-	
+     $Log: oase_relationdef.xml,v $
+     Revision 1.1  2005/03/16 15:51:06  just
+     *** empty log message ***
 
-	-->
+     Revision 1.1.1.1  2005/03/10 21:42:13  just
+     Import of keyworx server
+
+     Revision 1.2  2003/07/03 13:19:21  justb
+     added relation handling in webapp
+
+     Revision 1.1.1.1  2003/05/27 21:28:22  justb
+     no message
+
+     Revision 1.1.1.1  2003/05/15 14:34:02  justb
+     no message
+
+
+     -->
 
 </table>

@@ -300,18 +300,18 @@
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
             />
-	<!--
-	 Sample cache named sampleCache2
-	 This cache has a maximum of 4000 elements in memory. There is no overflow to disk, so 1000
-	 is also the maximum cache size. Note that when a cache is eternal, timeToLive and
-	 timeToIdle are not used and do not need to be specified.
-	 -->
-	 <cache name="oaserecordcache"
-			maxElementsInMemory="5000"
-			eternal="true"
-			overflowToDisk="false"
-			memoryStoreEvictionPolicy="LRU"
-			 />
+    <!--
+      Sample cache named sampleCache2
+      This cache has a maximum of 4000 elements in memory. There is no overflow to disk, so 1000
+      is also the maximum cache size. Note that when a cache is eternal, timeToLive and
+      timeToIdle are not used and do not need to be specified.
+      -->
+    <cache name="oaserecordcache"
+           maxElementsInMemory="5000"
+           eternal="true"
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LRU"
+            />
 
     <!--
     Sample caches. Following are some example caches. Remove these before use.

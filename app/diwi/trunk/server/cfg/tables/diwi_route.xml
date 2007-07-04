@@ -2,49 +2,49 @@
 
 <!-- Route table definition -->
 <table>
-	<views>
-		<insert>
-			<field name="name"/>
-			<field name="description"/>
+    <views>
+        <insert>
+            <field name="name"/>
+            <field name="description"/>
             <field name="type"/>
             <field name="state"/>
             <field name="extra"/>
-      </insert>
+        </insert>
 
-		<list>
-			<field name="id"/>
-			<field name="name"/>
-			<field name="description"/>
+        <list>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="description"/>
             <field name="type"/>
             <field name="state"/>
             <field name="extra"/>
         </list>
 
-		<query>
-			<field name="id"/>
-			<field name="name"/>
-			<field name="description"/>
+        <query>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="description"/>
             <field name="type"/>
-            <field name="state"/>            
+            <field name="state"/>
             <field name="extra"/>
-       </query>
-	</views>
+        </query>
+    </views>
 
-	<data>
-		<field name="id" type="INTEGER" required="true" key="true"/>
-		<!-- Owner is person id -->
-		<field name="owner" type="INTEGER" required="false" foreignkey="cascade" />
+    <data>
+        <field name="id" type="INTEGER" required="true" key="true"/>
+        <!-- Owner is person id -->
+        <field name="owner" type="INTEGER" required="false" foreignkey="cascade"/>
 
-		<field name="name" type="STRING" size="64" required="true"/>
-        <field name="description" type="TEXT" required="true" />
-        <field name="state" type="INTEGER" default="0" required="true" />
-        <field name="type" type="INTEGER" required="true" />
-        <field name="extra" type="XML" />
+        <field name="name" type="STRING" size="64" required="true"/>
+        <field name="description" type="TEXT" required="true"/>
+        <field name="state" type="INTEGER" default="0" required="true"/>
+        <field name="type" type="INTEGER" required="true"/>
+        <field name="extra" type="XML"/>
 
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
-        <field name="wgspath" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,4326,INDEX_GIST" />
-        <field name="rdpath" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,28992,INDEX_GIST" />
+        <field name="wgspath" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,4326,INDEX_GIST"/>
+        <field name="rdpath" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,28992,INDEX_GIST"/>
     </data>
-	
+
 </table>

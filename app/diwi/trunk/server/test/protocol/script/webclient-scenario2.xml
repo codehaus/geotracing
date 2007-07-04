@@ -25,7 +25,7 @@
     <test id="trip-getlist-req">
         <send id="client1">
             <utopia-req>
-                <trip-getlist-req />
+                <trip-getlist-req/>
             </utopia-req>
         </send>
 

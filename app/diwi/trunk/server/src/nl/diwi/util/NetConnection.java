@@ -10,10 +10,7 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.net.NetUtil;
 import org.keyworx.utopia.core.data.UtopiaException;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.Properties;
 
 public class NetConnection {
@@ -46,7 +43,7 @@ public class NetConnection {
           }
          req.send(postData);
             }*/
-         
+
         try {
             int returnCode = client.executeMethod(method);
             if (returnCode != HttpStatus.SC_OK) {
@@ -113,7 +110,7 @@ public class NetConnection {
     public static JXElement getXMLFromREST(String aRESTUrl) {
         try {
             log.info("GET " + aRESTUrl);
-            return new JXBuilder().build(NetUtil.fetchURL(aRESTUrl));            
+            return new JXBuilder().build(NetUtil.fetchURL(aRESTUrl));
         } catch (Throwable t) {
             log.error("Exception retrieving xml data from " + aRESTUrl, t);
             return null;

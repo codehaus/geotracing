@@ -19,7 +19,7 @@
     <test id="user-get-stats-req">
         <send id="client1">
             <utopia-req>
-                <user-get-stats-req />
+                <user-get-stats-req/>
             </utopia-req>
         </send>
 

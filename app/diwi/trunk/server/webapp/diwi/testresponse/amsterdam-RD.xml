@@ -11,7 +11,7 @@
     <wpt lon="123373.75" lat="487731.42">
         <name>13_13</name>
     </wpt>
-     <wpt lon="123312.48" lat="487747.85">
+    <wpt lon="123312.48" lat="487747.85">
         <name>14_14</name>
     </wpt>
     <wpt lon="123339.34" lat="487835.12">
@@ -30,17 +30,17 @@
         <name>19_19</name>
     </wpt>
     <rte>
-        <rtept lon="154100" lat="464306" />
-        <rtept lon="154121" lat="463936" />
-        <rtept lon="154424" lat="463056" />
-        <rtept lon="156509" lat="461410" />
-        <rtept lon="155166" lat="464954" />
-        <rtept lon="154487" lat="464951" />
-        <rtept lon="154441" lat="464837" />
-        <rtept lon="154408" lat="464759" />
-        <rtept lon="154321" lat="464725" />
-        <rtept lon="154309" lat="464720" />
-        <rtept lon="154114" lat="464317" />
-        <rtept lon="154100" lat="464306" />
+        <rtept lon="154100" lat="464306"/>
+        <rtept lon="154121" lat="463936"/>
+        <rtept lon="154424" lat="463056"/>
+        <rtept lon="156509" lat="461410"/>
+        <rtept lon="155166" lat="464954"/>
+        <rtept lon="154487" lat="464951"/>
+        <rtept lon="154441" lat="464837"/>
+        <rtept lon="154408" lat="464759"/>
+        <rtept lon="154321" lat="464725"/>
+        <rtept lon="154309" lat="464720"/>
+        <rtept lon="154114" lat="464317"/>
+        <rtept lon="154100" lat="464306"/>
     </rte>
 </gpx>

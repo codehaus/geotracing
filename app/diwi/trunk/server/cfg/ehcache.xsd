@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
-    <xs:element name="ehcache" >
+    <xs:element name="ehcache">
         <xs:complexType>
             <xs:sequence>
                 <xs:element ref="diskStore"/>
@@ -17,7 +17,7 @@
     </xs:element>
     <xs:element name="diskStore">
         <xs:complexType>
-            <xs:attribute name="path" use="optional" />
+            <xs:attribute name="path" use="optional"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="cacheManagerEventListenerFactory">

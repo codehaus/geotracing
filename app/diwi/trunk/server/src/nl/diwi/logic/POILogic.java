@@ -4,6 +4,7 @@ import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.gis.Transform;
+import org.geotracing.handler.QueryLogic;
 import org.keyworx.amuse.core.Amuse;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
@@ -211,7 +212,7 @@ public class POILogic implements Constants {
      *
      * @throws UtopiaException Standard exception
      */
-    public JXElement get(int aPOIId) throws UtopiaException {
+    public JXElement get(int aPersonId, int aPOIId) throws UtopiaException {
         try {
             Record poi = oase.getFinder().read(aPOIId);
             JXElement mediaElm = poi.getXMLField(MEDIA_FIELD);
@@ -244,7 +245,7 @@ public class POILogic implements Constants {
             }
 
             // now also provide extra info on routes that are
-            poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(RDPOINT_FIELD)));
+            poiElm.addChildren(addRoutesForPoint(aPersonId, aPOIId));
 
             return poiElm;
         } catch (OaseException oe) {
@@ -274,23 +275,26 @@ public class POILogic implements Constants {
      *
      * @throws UtopiaException Standard exception
      */
-    public JXElement get(String aKICHId) throws UtopiaException {
+    public JXElement get(int aPersonId, String aKICHId) throws UtopiaException {
         Record poi = getRecord(aKICHId);
-        return get(poi.getId());
+        return get(aPersonId, poi.getId());
     }
 
-    // TODO: complete this query!!!!
-    private Vector addRoutesForPoint(PGgeometryLW aPoint) throws UtopiaException {
+    private Vector addRoutesForPoint(int aPersonId, int aPOIId) throws UtopiaException {
         try {
-            // contains, touches, intersects
-            String queryString = "select id, name from " + ROUTE_TABLE + " where contains(path, GeomFromText('" + aPoint + "'))";
-            /*String queryString = "select id, name from " + ROUTE_TABLE + " where touches(GeomFromText('" + aPoint + "'), path)";
-            String queryString = "select id, name from " + ROUTE_TABLE + " where intersects(GeomFromText('" + aPoint + "'), path)";*/
-            Record[] routes = oase.getFinder().freeQuery(queryString);
+            NavigationLogic navLogic = new NavigationLogic(oase);
+            Record activeRoute = navLogic.getActiveRoute(aPersonId);
 
-            Vector results = new Vector(routes.length);
-            for (int i = 0; i < routes.length; i++) {
-                Record route = routes[i];
+            String tables = POI_TABLE + "," + ROUTE_TABLE;
+            String fields = ROUTE_TABLE + "." + ID_FIELD;
+            String where = POI_TABLE + "." + ID_FIELD + "=" + aPOIId + " AND " + ROUTE_TABLE + "." + ID_FIELD + "<>" + activeRoute.getId();
+            String relations = ROUTE_TABLE + "," + POI_TABLE;
+            String postCond = null;
+            Record[] recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+
+            Vector results = new Vector(recs.length);
+            for (int i = 0; i < recs.length; i++) {
+                Record route = recs[i];
                 JXElement routeElm = route.toXML();
                 routeElm.setTag(ROUTE_ELM);
                 results.add(routeElm);
@@ -298,8 +302,7 @@ public class POILogic implements Constants {
 
             return results;
         } catch (Throwable t) {
-            //throw new UtopiaException(t);
-            return new Vector(0);
+            throw new UtopiaException(t);
         }
     }
 
@@ -309,7 +312,7 @@ public class POILogic implements Constants {
      * @throws UtopiaException Standard exception
      */
     public Vector getList() throws UtopiaException {
-        try {            
+        try {
             Record[] pois = oase.getFinder().queryTable(POI_TABLE, null);
             return getPOIList(pois);
         } catch (OaseException oe) {
@@ -441,11 +444,11 @@ public class POILogic implements Constants {
 
             for (int i = 0; i < theMediaIds.size(); i++) {
                 JXElement kichuri = new JXElement("kich-uri");
-                String url = mediaUrl + ((JXElement)theMediaIds.elementAt(i)).getText();
+                String url = mediaUrl + ((JXElement) theMediaIds.elementAt(i)).getText();
                 kichuri.setText(url);
                 media.addChild(kichuri);
             }
-            
+
             record.setXMLField(MEDIA_FIELD, media);
 
             oase.getModifier().update(record);
@@ -469,14 +472,14 @@ public class POILogic implements Constants {
 
             Record record = oase.getFinder().read(aPOIId);
             JXElement media = record.getXMLField(MEDIA_FIELD);
-            if(media == null || !media.hasChildren()) return;
+            if (media == null || !media.hasChildren()) return;
 
-            Vector kichURIs = (Vector)media.getChildren().clone();            
+            Vector kichURIs = (Vector) media.getChildren().clone();
             for (int i = 0; i < kichURIs.size(); i++) {
-                JXElement kichUriElm = (JXElement)kichURIs.elementAt(i);
+                JXElement kichUriElm = (JXElement) kichURIs.elementAt(i);
                 String kichUri = kichUriElm.getText();
                 for (int j = 0; j < theMediaIds.size(); j++) {
-                    String s = mediaUrl + ((JXElement)theMediaIds.elementAt(j)).getText();
+                    String s = mediaUrl + ((JXElement) theMediaIds.elementAt(j)).getText();
                     if (kichUri.equals(s)) {
                         media.removeChild(kichUriElm);
                     }

@@ -1,137 +1,137 @@
 <gpx>
-<bounds minlon="153473" minlat="460779" maxlon="157787" maxlat="465064" />
-<name>
-    <![CDATA[route 2]]>
-</name>
-<desc>
-    <![CDATA[test route 2 (short version of 1)]]>
-</desc>
-<wpt lon="154127" lat="464273">
-</wpt>
-<wpt lon="155252" lat="463123">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155076" lat="462985">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155101" lat="463146">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155049" lat="462987">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155172" lat="463343">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="153446" lat="461700">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="157073" lat="461721">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="154208" lat="462790">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="154871" lat="462590">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="157716" lat="460772">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155194" lat="464983">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="154539" lat="462505">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="154814" lat="462335">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="157779" lat="460978">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155002" lat="462850">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155132" lat="463127">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155121" lat="463172">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155101" lat="463146">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="155077" lat="463012">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<wpt lon="154127" lat="464273">
-<name>
-@@ToDo insert unique ID
-</name>
-</wpt>
-<rte>
-<rtept lon="154100" lat="464306">
-</rtept>
-<rtept lon="154121" lat="463936">
-</rtept>
-<rtept lon="154424" lat="463056">
-</rtept>
-<rtept lon="156509" lat="461410">
-</rtept>
-<rtept lon="155166" lat="464954">
-</rtept>
-<rtept lon="154487" lat="464951">
-</rtept>
-<rtept lon="154441" lat="464837">
-</rtept>
-<rtept lon="154408" lat="464759">
-</rtept>
-<rtept lon="154321" lat="464725">
-</rtept>
-<rtept lon="154309" lat="464720">
-</rtept>
-<rtept lon="154114" lat="464317">
-</rtept>
-<rtept lon="154100" lat="464306">
-</rtept>
-</rte>
+    <bounds minlon="153473" minlat="460779" maxlon="157787" maxlat="465064"/>
+    <name>
+        <![CDATA[route 2]]>
+    </name>
+    <desc>
+        <![CDATA[test route 2 (short version of 1)]]>
+    </desc>
+    <wpt lon="154127" lat="464273">
+    </wpt>
+    <wpt lon="155252" lat="463123">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155076" lat="462985">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155101" lat="463146">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155049" lat="462987">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155172" lat="463343">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="153446" lat="461700">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="157073" lat="461721">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="154208" lat="462790">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="154871" lat="462590">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="157716" lat="460772">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155194" lat="464983">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="154539" lat="462505">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="154814" lat="462335">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="157779" lat="460978">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155002" lat="462850">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155132" lat="463127">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155121" lat="463172">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155101" lat="463146">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="155077" lat="463012">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <wpt lon="154127" lat="464273">
+        <name>
+            @@ToDo insert unique ID
+        </name>
+    </wpt>
+    <rte>
+        <rtept lon="154100" lat="464306">
+        </rtept>
+        <rtept lon="154121" lat="463936">
+        </rtept>
+        <rtept lon="154424" lat="463056">
+        </rtept>
+        <rtept lon="156509" lat="461410">
+        </rtept>
+        <rtept lon="155166" lat="464954">
+        </rtept>
+        <rtept lon="154487" lat="464951">
+        </rtept>
+        <rtept lon="154441" lat="464837">
+        </rtept>
+        <rtept lon="154408" lat="464759">
+        </rtept>
+        <rtept lon="154321" lat="464725">
+        </rtept>
+        <rtept lon="154309" lat="464720">
+        </rtept>
+        <rtept lon="154114" lat="464317">
+        </rtept>
+        <rtept lon="154100" lat="464306">
+        </rtept>
+    </rte>
 </gpx>

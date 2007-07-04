@@ -4,47 +4,47 @@
 
     <views>
 
-		<insert>
-			<field name="lastid" />
-		</insert>
+        <insert>
+            <field name="lastid"/>
+        </insert>
 
-		<list>
-			<field name="id" />
-			<field name="lastid" />
-		</list>
+        <list>
+            <field name="id"/>
+            <field name="lastid"/>
+        </list>
 
-		<query>
-			<field name="id" />
-			<field name="lastid" />
-		</query>
- 	</views>
+        <query>
+            <field name="id"/>
+            <field name="lastid"/>
+        </query>
+    </views>
 
-	<data>
+    <data>
 
-		<field name="id" type="INTEGER" required="true" key="true" />
+        <field name="id" type="INTEGER" required="true" key="true"/>
 
-		<field name="lastid" type="INTEGER" required="true" default="1000" />
+        <field name="lastid" type="INTEGER" required="true" default="1000"/>
 
-	</data>
+    </data>
 
-	<!--
+    <!--
 
-	CVS log:
+     CVS log:
 
-	$Log: oase_lastid.xml,v $
-	Revision 1.1  2005/03/16 15:51:06  just
-	*** empty log message ***
-	
-	Revision 1.1.1.1  2005/03/10 21:42:13  just
-	Import of keyworx server
-	
-	Revision 1.1.1.1  2003/05/27 21:28:22  justb
-	no message
-	
-	Revision 1.1.1.1  2003/05/15 14:34:02  justb
-	no message
-	
+     $Log: oase_lastid.xml,v $
+     Revision 1.1  2005/03/16 15:51:06  just
+     *** empty log message ***
 
-	-->
+     Revision 1.1.1.1  2005/03/10 21:42:13  just
+     Import of keyworx server
+
+     Revision 1.1.1.1  2003/05/27 21:28:22  justb
+     no message
+
+     Revision 1.1.1.1  2003/05/15 14:34:02  justb
+     no message
+
+
+     -->
 
 </table>

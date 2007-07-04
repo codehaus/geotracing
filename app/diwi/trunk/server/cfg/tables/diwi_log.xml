@@ -5,46 +5,46 @@
 
     <views>
 
-		<insert>
-			<field name="name" />
-		</insert>
+        <insert>
+            <field name="name"/>
+        </insert>
 
-		<list>
-			<field name="id" />
-			<field name="name" />
-			<field name="state" />
-			<field name="type" />
-            <field name="startdate" />
-			<field name="enddate" />
-		</list>
+        <list>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="state"/>
+            <field name="type"/>
+            <field name="startdate"/>
+            <field name="enddate"/>
+        </list>
 
-		<query>
-			<field name="id" />
-			<field name="name" />
-			<field name="state" />
-			<field name="type" />
- 		</query>
- 	</views>
+        <query>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="state"/>
+            <field name="type"/>
+        </query>
+    </views>
 
-	<!--{data -->
-	<data>
-		<field name="id" type="INTEGER" required="true" key="true" />
+    <!--{data -->
+    <data>
+        <field name="id" type="INTEGER" required="true" key="true"/>
 
-		<!-- log name -->
-		<field name="name" type="STRING" size="64" required="true" default="log" />
+        <!-- log name -->
+        <field name="name" type="STRING" size="64" required="true" default="log"/>
 
-		<field name="startdate" type="TIMESTAMP"/>
-		<field name="enddate" type="TIMESTAMP"/>
+        <field name="startdate" type="TIMESTAMP"/>
+        <field name="enddate" type="TIMESTAMP"/>
 
-		<!-- 1=scheduled 2=running 3=done -->
-        <field name="state" type="STRING" size="12" default="scheduled" required="true" />
-        <field name="type" type="STRING" size="64" required="true" />
-        
-        <field name="extra" type="XML" />
+        <!-- 1=scheduled 2=running 3=done -->
+        <field name="state" type="STRING" size="12" default="scheduled" required="true"/>
+        <field name="type" type="STRING" size="64" required="true"/>
 
-		<!-- Events generated while playing (used e.g. for playback) -->
- 		<field name="events" type="FILE"  />
-		<field name="modificationdate" type="TIMESTAMP"/>
-	</data>
-	<!--}data -->
+        <field name="extra" type="XML"/>
+
+        <!-- Events generated while playing (used e.g. for playback) -->
+        <field name="events" type="FILE"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+    </data>
+    <!--}data -->
 </table>

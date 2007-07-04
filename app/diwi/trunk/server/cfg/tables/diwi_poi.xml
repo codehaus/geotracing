@@ -4,52 +4,52 @@
 
     <views>
 
-		<insert>
-			<field name="kichid" />
-			<field name="name" />
-			<field name="description" />
-            <field name="type" />
-            <field name="state" />
-            <field name="category" />
-            <field name="media" />
-            <field name="extra" />
+        <insert>
+            <field name="kichid"/>
+            <field name="name"/>
+            <field name="description"/>
+            <field name="type"/>
+            <field name="state"/>
+            <field name="category"/>
+            <field name="media"/>
+            <field name="extra"/>
         </insert>
 
-		<list>
-			<field name="id" />
-			<field name="kichid" />
-			<field name="name" />
-			<field name="type" />
-            <field name="state" />
-            <field name="category" />
-            <field name="media" />            
-          </list>
+        <list>
+            <field name="id"/>
+            <field name="kichid"/>
+            <field name="name"/>
+            <field name="type"/>
+            <field name="state"/>
+            <field name="category"/>
+            <field name="media"/>
+        </list>
 
-		<query>
-			<field name="id" />
-			<field name="kichid" />
-			<field name="name" />
-			<field name="description" />			
-            <field name="type" />
-            <field name="state" />
-            <field name="category" />
-            <field name="media" />
-            <field name="extra" />
-   		</query>
- 	</views>
+        <query>
+            <field name="id"/>
+            <field name="kichid"/>
+            <field name="name"/>
+            <field name="description"/>
+            <field name="type"/>
+            <field name="state"/>
+            <field name="category"/>
+            <field name="media"/>
+            <field name="extra"/>
+        </query>
+    </views>
 
-	<data>
-		<field name="id" type="INTEGER" required="true" key="true" />
-		<field name="kichid" type="STRING" size="64" required="true" />
-		<field name="name" type="STRING" size="64" required="false" />
-		<field name="description" type="TEXT" required="false" />
-        <field name="type" type="INTEGER" default="1" required="false" />
-		<field name="state" type="INTEGER" default="1" required="false" />
-        <field name="category" type="STRING" size="64" required="false" />
+    <data>
+        <field name="id" type="INTEGER" required="true" key="true"/>
+        <field name="kichid" type="STRING" size="64" required="true"/>
+        <field name="name" type="STRING" size="64" required="false"/>
+        <field name="description" type="TEXT" required="false"/>
+        <field name="type" type="INTEGER" default="1" required="false"/>
+        <field name="state" type="INTEGER" default="1" required="false"/>
+        <field name="category" type="STRING" size="64" required="false"/>
         <field name="creationdate" type="TIMESTAMP"/>
-		<field name="modificationdate" type="TIMESTAMP"/>
-		<field name="media" type="XML" required="false"/>
-		<field name="extra" type="XML" required="false"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+        <field name="media" type="XML" required="false"/>
+        <field name="extra" type="XML" required="false"/>
         <!-- spec="<TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]" -->
         <field name="wgspoint" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/>
         <field name="rdpoint" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,28992,INDEX_GIST"/>

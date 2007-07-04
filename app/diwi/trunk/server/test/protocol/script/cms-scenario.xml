@@ -64,7 +64,7 @@
                         <description>prachtig punt</description>
                         <category>fort</category>
                         <x>4.92</x>
-                        <y>52.35</y>                        
+                        <y>52.35</y>
                     </poi>
                 </poi-insert-req>
             </utopia-req>
@@ -100,7 +100,7 @@
             <utopia-req>
                 <poi-unrelate-media-req id="673">
                     <medium>2.jpg</medium>
-                    <medium>3.jpg</medium>                    
+                    <medium>3.jpg</medium>
                 </poi-unrelate-media-req>
             </utopia-req>
         </send>
@@ -136,7 +136,7 @@
                         <description>mooi punt</description>
                         <category>fort</category>
                         <x>4.92</x>
-                        <y>52.35</y>                        
+                        <y>52.35</y>
                     </poi>
                 </poi-update-req>
             </utopia-req>
