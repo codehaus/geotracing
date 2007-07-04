@@ -230,7 +230,8 @@ namespace Diwi {
             XMLement xml = new XMLement(Protocol.TAG_ADD_MEDIUM_REQ);
             AppController.showStatus("addMedium");
             xml.addAttribute(Protocol.ATTR_ID, id);
-
+            xml.addAttribute("lat", AppController.sGpsReader.storedLattitude);
+            xml.addAttribute("lon", AppController.sGpsReader.storedLongtitude);
             lock (this) {
                 xml = utopiaRequest(xml);
             }
