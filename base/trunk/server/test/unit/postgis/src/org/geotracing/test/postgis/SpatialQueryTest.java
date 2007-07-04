@@ -160,6 +160,28 @@ public class SpatialQueryTest extends PGTestCase {
 		}
 	}
 
+	public void testLineStringNearness() {
+		try {
+
+			int id = insertTestLinestring();
+
+			// within 1000
+			String query = "SELECT * from g_route where id=" + id ;
+			query += " AND distance(GeomFromText('POINT(40 40)',4326),route_geom)  < 1000";
+			Record[] records = getFinder().freeQuery(query);
+			assertEquals("result not equal ", 1, records.length);
+
+			// not within 1
+			query = "SELECT * from g_route where id=" + id ;
+			query += " AND distance(GeomFromText('POINT(40 40)',4326),route_geom)  < 1";
+			records = getFinder().freeQuery(query);
+			assertEquals("result not equal ", 0, records.length);
+			// get middle
+		} catch (Throwable t) {
+			failTest("testSelectPointsInBBox: ", t);
+		}
+	}
+
 	protected void fillGLocation() {
 		try {
 		/*	String queryCount = "SELECT count(id) as count from g_location";
@@ -217,5 +239,20 @@ public class SpatialQueryTest extends PGTestCase {
 		}
 	}
 
+
+	protected int insertTestLinestring() throws Exception {
+		String line = "LINESTRING(1 2 3,5 6 7,9 10 11)";
+		String lineWGS = "SRID=4326;" + line;
+		String lineRD = "SRID=28992;" + line;
+		// Simple: create and update and commit.
+		Record record = getModifier().create(ROUTE_TABLE_NAME);
+		assertNotNull("table.create()", record);
+
+		record.setStringField("name", "track1");
+		record.setField("route_geom", lineWGS);
+		record.setField("rd_route_geom", lineRD);
+		getModifier().insert(record);
+		return record.getId();
+	}
 
 }
