@@ -28,6 +28,10 @@ namespace Diwi {
             mCallback = cb;
         }
 
+        public bool IsMenu() {
+            return false;
+        }
+
         public int x {
             get {
                 return mRect.X;

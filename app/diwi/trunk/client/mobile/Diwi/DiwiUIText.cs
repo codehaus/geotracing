@@ -95,6 +95,10 @@ namespace Diwi {
         public void doMouseClick(int x, int y) {
         }
 
+        public bool IsMenu() {
+            return false;
+        }
+
         public int width {
             get {
                 return (int)DiwiPageBase.offScreenGraphics.MeasureString(mText, mFont).Width;

@@ -39,6 +39,11 @@ namespace Diwi {
             }
         }
 
+        public bool IsMenu() {
+            return true;
+        }
+
+
         public void setMenuText(int index, string s) {
            mItems[index] = s;
         }
