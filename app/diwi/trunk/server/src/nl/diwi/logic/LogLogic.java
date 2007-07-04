@@ -6,6 +6,7 @@ import nl.justobjects.jox.parser.JXBuilder;
 import nl.justobjects.jox.parser.JXBuilderListener;
 import org.geotracing.handler.QueryLogic;
 import org.geotracing.handler.TrackLogic;
+import org.geotracing.gis.Transform;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
@@ -312,8 +313,10 @@ public class LogLogic implements Constants {
 
                 // now also add the track to the log output
                 TrackLogic trackLogic = new TrackLogic(oase);
-                JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", null, true, 0, -1);
-
+                // TODO : needs to be converted to RD!!!!
+                //JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", null, true, 0, -1);
+                JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", null, true, 20, 1000);
+                // add hit poi's, ugc and routes
                 logElm.addChild(trackElm);
             }
         } catch (Throwable t) {

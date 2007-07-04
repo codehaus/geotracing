@@ -9,6 +9,7 @@ import org.keyworx.amuse.core.Protocol;
 import org.keyworx.utopia.core.data.UtopiaException;
 
 import java.util.Map;
+import java.util.Vector;
 
 public class DIWIQueryLogic extends QueryLogic implements Constants {
 
@@ -50,21 +51,21 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
     private JXElement queryThemes(Map theParms) throws UtopiaException {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         DataSource ds = new DataSource(getOase());
-        result.addChildren(ds.getKICHThemes());
+        result.addChildren(convertToRecordElms(ds.getKICHThemes()));
         return result;
     }
 
     private JXElement queryStartPoints(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         POILogic logic = new POILogic(getOase());
-        result.addChildren(logic.getStartPoints());
+        result.addChildren(convertToRecordElms(logic.getStartPoints()));
         return result;
     }
 
     private JXElement queryEndPoints(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         POILogic logic = new POILogic(getOase());
-        result.addChildren(logic.getEndPoints());
+        result.addChildren(convertToRecordElms(logic.getEndPoints()));
         return result;
     }
 
@@ -73,7 +74,7 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
         String personId = getParameter(theParms, "personid", null);
         String type = getParameter(theParms, "type", null);
         RouteLogic logic = new RouteLogic(getOase());
-        result.addChildren(logic.getRoutes(type, personId));
+        result.addChildren(convertToRecordElms(logic.getRoutes(type, personId)));
         return result;
     }
 
@@ -81,7 +82,9 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         String id = (String) theParms.get("id");
         LogLogic logic = new LogLogic(getOase());
-        result.addChild(logic.getLog(id));
+        JXElement elm = logic.getLog(id);
+        elm.setTag("record");
+        result.addChild(elm);
         return result;
     }
 
@@ -90,9 +93,15 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
         String personId = (String) theParms.get("personid");
         String type = (String) theParms.get("type");
         LogLogic logic = new LogLogic(getOase());
-        result.addChildren(logic.getLogs(personId, type));
+        result.addChildren(convertToRecordElms(logic.getLogs(personId, type)));
         return result;
     }
 
+    private Vector convertToRecordElms(Vector theElements){
+        for(int i=0;i<theElements.size();i++){
+            ((JXElement)theElements.elementAt(i)).setTag("record");
+        }
+        return theElements;
+    }    
 
 }
