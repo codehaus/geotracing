@@ -152,6 +152,7 @@ namespace Diwi {
                 title = "Route: " + AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
             MapHandler.active = true;
+            mBlendTimer.Change(0, 3000);
             setBackGround();
         }
 

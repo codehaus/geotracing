@@ -10,6 +10,12 @@ using System.IO;
 namespace Diwi {   // base class for Diwi Pages.
     // 
     class DiwiPageBase : Form {
+
+        private delegate void timerTick();
+        static protected System.Threading.Timer mBlendTimer=null;
+        private delegate void BlendTimerCallback();
+        BlendTimerCallback sBTCB;
+       
         public delegate bool CallbackHandler();
         protected delegate void mediaCallback(string p);
         private delegate void DrawMiniCallback(Bitmap p);
@@ -29,6 +35,8 @@ namespace Diwi {   // base class for Diwi Pages.
         protected bool mIsActive = true;
         protected DiwiUIText mouseText;
         DrawMiniCallback dmcb;
+        int blendCount;
+        bool mDoDrawMenu = true;
 
         public static DiwiPageBase sCurrentPage;
 
@@ -44,6 +52,10 @@ namespace Diwi {   // base class for Diwi Pages.
 
             mParent = parent;
             sBackgroundColor = Color.FromArgb(180, 250, 0);
+
+            if (mBlendTimer == null)
+                mBlendTimer = new System.Threading.Timer(new TimerCallback(doTimeoutT), new AutoResetEvent(false), Timeout.Infinite, 3000);
+            sBTCB = new BlendTimerCallback(blendTimout);
 
             mCurrentRect = this.ClientRectangle;
 
@@ -79,9 +91,33 @@ namespace Diwi {   // base class for Diwi Pages.
             dmcb = new DrawMiniCallback(this.ddoDM);
 
             mInitializing = false;
-        
+
         }
 
+
+
+
+        void blendTimout() {
+            blendCount--;
+            if (blendCount <= 0) {
+                if (mDoDrawMenu == true) {
+                    mDoDrawMenu = false;
+                    draw();
+                }
+            } 
+        }
+
+        void blendLocalTimeout() {
+            if (InvokeRequired) {
+                this.Invoke(sBTCB, null);
+            } else {
+                blendTimout();
+            }
+        }
+
+        static void doTimeoutT(Object stateInfo) {
+            sCurrentPage.blendLocalTimeout();
+        }
 
         void ddoDM(Bitmap b) {
             sCurrentPage.onScreenGraphics.DrawImage(b, 5, 4);
@@ -115,6 +151,11 @@ namespace Diwi {   // base class for Diwi Pages.
       }
 
        protected override void OnMouseMove(MouseEventArgs e) {
+           if (mDoDrawMenu == false) {
+               mDoDrawMenu = true;
+               blendCount = 4;
+               draw();
+           }
            /*  Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);
 
@@ -253,6 +294,11 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         void keydown(Object o, KeyEventArgs e) {
+            if (mDoDrawMenu == false) {
+                mDoDrawMenu = true;
+                blendCount = 4;
+                draw();
+            }
             switch (e.KeyValue) {
                 case (int)sKeys.M_DOWN:
                     mMenu.decIndex();
@@ -284,12 +330,15 @@ namespace Diwi {   // base class for Diwi Pages.
             sCurrentPage = this;
             mIsActive = true;
             Visible = true;
+            mDoDrawMenu = true;
+            blendCount = 4;
             draw();
         }
 
         protected virtual void doTerug(int i, string s) {
             mIsActive = false;
            // Visible = false;
+            mBlendTimer.Change(Timeout.Infinite, Timeout.Infinite);
             if (mParent != null) {
              //   mParent.Activate();
                 mParent.Show();
@@ -316,8 +365,10 @@ namespace Diwi {   // base class for Diwi Pages.
                 }
 
                 foreach (DiwiDrawable d in mDrawableElements) {
-                    d.draw();
+                    if( (d.IsMenu() && mDoDrawMenu) || (!d.IsMenu()) )
+                        d.draw();
                 }
+
                 if (onScreenGraphics == null) onScreenGraphics = this.CreateGraphics();
                 onScreenGraphics.DrawImage(offScreenBitmap, 0, 0, this.ClientRectangle, GraphicsUnit.Pixel);
             }

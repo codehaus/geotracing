@@ -23,6 +23,11 @@ namespace Diwi {
         private PictureBox mPicBox;
         private Form mParentForm;
 
+        public bool IsMenu() {
+            return false;
+        }
+
+
         public DiwiScalingImage(Form form) {
             mParentForm = form;
             mPicBox = new PictureBox();
@@ -87,6 +92,11 @@ namespace Diwi {
         private Size mSize;
         private Bitmap mBitmap = null;
         private Form mParentForm;
+
+        public bool IsMenu() {
+            return false;
+        }
+
 
         public DiwiImage(Form form) {
             mParentForm = form;

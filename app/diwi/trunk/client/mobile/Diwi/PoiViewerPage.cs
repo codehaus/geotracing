@@ -11,9 +11,7 @@ using Microsoft.WindowsMobile.Forms;
 
 namespace Diwi {
 
-
     class PoiViewerPage : DiwiPageBase {
-
 
         TextBox mTextBox = new TextBox();
         DiwiScalingImage mImage;
@@ -199,7 +197,7 @@ namespace Diwi {
                 for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
                 if (mAllMedia.getChild(0) != null) {
                     doNext(0, "");
-                }s else {
+                } else {
                     setMenuText(0, "Terug");
                 }
             }

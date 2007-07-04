@@ -12,5 +12,6 @@ namespace Diwi {
     {
         void draw();
         void doMouseClick(int x, int y);
+        bool IsMenu();
     }
 }

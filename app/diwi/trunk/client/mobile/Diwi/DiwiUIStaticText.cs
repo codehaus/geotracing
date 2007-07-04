@@ -24,6 +24,11 @@ namespace Diwi {
             form.Controls.Add(mTextBox);
         }
 
+        public bool IsMenu() {
+            return false;
+        }
+
+
         public void kill() {
             mParentForm.Controls.Remove(mTextBox);
         }
