@@ -87,7 +87,28 @@ END
 # All routes from PostGIS
 LAYER
 #	GROUP "Selected"
-	NAME "all_diwi_routes"
+	NAME "all_routes"
+	CONNECTIONTYPE postgis
+	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	DATA "path from (select id,path from diwi_route) as foo using unique id using SRID=28992"
+
+	DEBUG OFF
+	TYPE LINE
+	STATUS OFF
+
+	CLASS
+	  STYLE
+		COLOR 255 0 120
+		SYMBOL "line"
+		SIZE 3
+ 	  END
+	END
+END
+
+# All fixed routes from PostGIS
+LAYER
+#	GROUP "Selected"
+	NAME "all_fixed_routes"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
 	DATA "path from (select id,path from diwi_route) as foo using unique id using SRID=28992"

@@ -4,8 +4,10 @@
  * author: Just van den Broecke
  */
 var MAP = {
-	BOUNDS: new OpenLayers.Bounds(4.724717, 51.813062, 5.752441, 52.486596),
-	CENTER: new OpenLayers.LonLat(5.3790321, 52.171682),
+//	BOUNDS: new OpenLayers.Bounds(4.724717, 51.813062, 5.752441, 52.486596),
+//	CENTER: new OpenLayers.LonLat(5.3790321, 52.171682),
+	BOUNDS: new OpenLayers.Bounds(152000,440000,181000,461000),
+	CENTER: new OpenLayers.LonLat(167000,450000),
 //	BOUNDS: new OpenLayers.Bounds(5.087384, 51.813062, 5.389776, 52.486596),
 //	CENTER: new OpenLayers.LonLat(5.23858, 52.171682),
 	CONTROLS: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar(),new OpenLayers.Control.LayerSwitcher(),new OpenLayers.Control.MousePosition()],
@@ -13,10 +15,10 @@ var MAP = {
 	IMAGE_FORMAT: 'image/png',
 	MAX_RESOLUTION: 'auto',
 	NUM_ZOOMLEVELS: 10,
-	PROJECTION: 'EPSG:4326',
+	PROJECTION: 'EPSG:28992',
 	WMS_URL: 'http://test.digitalewichelroede.nl/map84',
 	WMS_URL_WUR: 'http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS',
-	ZOOM: 2,
+	ZOOM: 0,
 /** OL map object. */
 	map: null,
 	currentRouteLayer: null,
@@ -41,8 +43,8 @@ var MAP = {
 
 	addTOPNLRasterLayer: function() {
 		var topNLLayer = new OpenLayers.Layer.WMS.Untiled("Topografische Kaart",
-//				MAP.WMS_URL_WUR, {layers: 'id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12', format: MAP.IMAGE_FORMAT});
-				MAP.WMS_URL, {layers: 'topnl_raster', format: MAP.IMAGE_FORMAT});
+				MAP.WMS_URL_WUR, {layers: 'id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id13', format: MAP.IMAGE_FORMAT});
+				//MAP.WMS_URL, {layers: 'topnl_raster', format: MAP.IMAGE_FORMAT});
 
 		MAP.map.addLayer(topNLLayer);
 	},
@@ -118,7 +120,8 @@ var MAP = {
 	}
 }
 
-/** Load google maps JS for key matching our server URL. */
+/** Load google maps JS for key matching our server URL.
+NOT RELEVANT FOR RD
 MAP.addKey('live',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xSegWNS_BtfE0_SbjkW1pkdsveSEhS9935cVFSC9wEMB5FdZntmVMpl2w',
 		'^https?://www.digitalewichelroede.nl/.*');
@@ -131,4 +134,4 @@ MAP.addKey('local',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xSzCH91z57ocwwUF0G9rnam-69XfBSYstFMYwQaq5OD5kCUatNyH_JFqw',
 		'^https?://local.diwi.nl/.*');
 
-/// MAP.loadGoogleMapScript();
+MAP.loadGoogleMapScript();   */
