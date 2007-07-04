@@ -168,20 +168,16 @@ namespace Diwi {
 
         void doNext(int i, string s) {
             mMediaIndex++;
-            if (mMediaIndex == -1) {
-                openText(@"\DemoNMEA.txt");
-                return;
-            }
             XMLement kichUri = mAllMedia.getChild(mMediaIndex);
-            if (kichUri == null) {
-                doTerug(0, "");
-            } else {
+            if (kichUri != null) {
                 mTextBox.Visible = false;
                 mImage.x = 500;
                 if (dnlFileNames[mMediaIndex] != null) {
                     openFile(dnlFileNames[mMediaIndex]);
                 } else
                     doDownloadMedium(mMediaIndex);
+            } else {
+                doTerug(0, "");
             }
             if (mAllMedia.getChild(mMediaIndex + 1) == null) {
                 setMenuText(0, "Terug");
@@ -201,7 +197,11 @@ namespace Diwi {
                 mMediaIndex = -1;
                 mDownloadIndex = -1;
                 for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
-                doNext(0, "");
+                if (mAllMedia.getChild(0) != null) {
+                    doNext(0, "");
+                }s else {
+                    setMenuText(0, "Terug");
+                }
             }
         }
 
