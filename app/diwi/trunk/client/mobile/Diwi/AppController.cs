@@ -32,6 +32,7 @@ namespace Diwi {
         public static GpsReader sGpsReader;
         public static string sUserName = null;
         public static string sUserPass = null;
+        public static string sUserProps = null; 
         public static Progress sProgBar;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
 
@@ -76,7 +77,11 @@ namespace Diwi {
             sProgBar = new Progress();
 
             try {
-                StreamReader userProps = new StreamReader(@"\My Documents\DiwiProps.txt");
+                string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                sUserProps = myDocumentsPath + "DiwiProps.txt";
+
+
+                StreamReader userProps = new StreamReader(sUserProps);
                 if (userProps != null) {
                     sUserName = userProps.ReadLine();
                     sUserPass = userProps.ReadLine();

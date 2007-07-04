@@ -10,6 +10,7 @@ using System.IO;
 namespace Diwi {   // base class for Diwi Pages.
     // 
     class DiwiPageBase : Form {
+        public delegate bool CallbackHandler();
         protected delegate void mediaCallback(string p);
         private delegate void DrawMiniCallback(Bitmap p);
         private enum sKeys { M_UP = 38, M_DOWN = 40, M_LEFT = 37, M_RIGHT = 39 };
@@ -125,11 +126,19 @@ namespace Diwi {   // base class for Diwi Pages.
          */
         }
 
+        public bool invHorizontal() {
+            return (this.ClientRectangle.Width > this.ClientRectangle.Height);
+        }
+
         public bool horizontal {
-            get { 
-                if (this.ClientRectangle.Width > this.ClientRectangle.Height) 
-                    return true; 
-                return false; 
+            get {
+                if(InvokeRequired) {
+                    return (bool) Invoke(new CallbackHandler(invHorizontal), null);
+                } else {
+                    if (this.ClientRectangle.Width > this.ClientRectangle.Height)
+                        return true;
+                    return false;
+                }
             }
         }
         

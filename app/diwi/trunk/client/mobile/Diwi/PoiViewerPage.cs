@@ -21,12 +21,15 @@ namespace Diwi {
         XMLement mAllMedia;
         int mMediaIndex = 0;
         string xmlString;
+        int mDownloadIndex=-1;
+        string[] dnlFileNames = new string[10];
+
 
         public PoiViewerPage(DiwiPageBase parent)
             : base(parent) {
 
 
-            mMenu.addItem("Next", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext));
+            mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext));
 
             this.Controls.Add(mTextBox);
             mImage = new DiwiScalingImage(this);
@@ -56,14 +59,6 @@ namespace Diwi {
             process.Start();
         }
 
-        void openVideoT(string path) {
-            if (InvokeRequired) {
-                this.Invoke(new mediaCallback(this.openVideo), new object[] { path });
-            } else {
-                openVideo(path);
-            }
-        }
-
 
 
         void openImage(string fn) {
@@ -76,19 +71,9 @@ namespace Diwi {
             draw();
         }
 
-        void openImageT(string path) {
-            if (InvokeRequired) {
-                this.Invoke(new mediaCallback(this.openImage), new object[] { path });
-            } else {
-                openImage(path);
-            }
-        }
-
 
         void openAudio(string fn) {
             if (mIsActive == false) return;
-
-            Process p = Process.GetCurrentProcess();
 
             Process process = new Process();
             process.StartInfo.FileName = fn;
@@ -96,15 +81,7 @@ namespace Diwi {
             process.StartInfo.UseShellExecute = true;
             process.Start();
 
-            p.Start();
-        }
-
-        void openAudioT(string path) {
-            if (InvokeRequired) {
-                this.Invoke(new mediaCallback(this.openAudio), new object[] { path });
-            } else {
-                openAudio(path);
-            }
+            DiwiPageBase.sCurrentPage.Show();
         }
 
 
@@ -118,16 +95,77 @@ namespace Diwi {
             mImage.x = 500;
         }
 
-        void openTextT(string path) {
-            if (InvokeRequired) {
-                this.Invoke(new mediaCallback(this.openText), new object[] { path });
-            } else {
+        void openFile(string path) {
+            int n = path.IndexOf("Image");
+            if (n >= 0) {
+                openImage(path);
+                return;
+            }
+
+            n = path.IndexOf("Sound");
+            if (n >= 0) {
+                openAudio(path);
+                return;
+            }
+
+            n = path.IndexOf("Video");
+            if (n >= 0) {
+                openVideo(path);
+                return;
+            }
+
+            n = path.IndexOf("Text");
+            if (n >= 0) {
                 openText(path);
+                return;
+            }
+
+        
+        }
+
+
+        void dnlDoneT(string path) {
+
+            dnlFileNames[mDownloadIndex] = path;
+            if (mDownloadIndex == mMediaIndex) {
+                if (InvokeRequired) {
+                    this.Invoke(new mediaCallback(this.openFile), new object[] { path });
+                } else {
+                    openFile(path);
+                }
+            }
+
+            if (mAllMedia.getChild(1 + mDownloadIndex) != null) {
+                mDownloadIndex = mDownloadIndex + 1;
+                doDownloadMedium(mDownloadIndex);
+            }
+
+        }
+
+        void doDownloadMedium(int index) {
+            XMLement kichUri = mAllMedia.getChild(index);
+            mDownloadIndex = index;
+            if (kichUri != null) {
+                string url = kichUri.nodeText;
+                string ext = url.Substring(url.LastIndexOf('.'));
+                string type = kichUri.getAttributeValue("type");
+                switch (type) {
+                    case "image":
+                        new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                    case "audio":
+                        new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                    case "video":
+                        new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                    case "text":
+                        new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                }
             }
         }
 
-        
-        
         void doNext(int i, string s) {
             mMediaIndex++;
             if (mMediaIndex == -1) {
@@ -138,34 +176,21 @@ namespace Diwi {
             if (kichUri == null) {
                 doTerug(0, "");
             } else {
-                string url = kichUri.nodeText;
-                string ext = url.Substring(url.LastIndexOf('.'));
-                string type = kichUri.getAttributeValue("type");
                 mTextBox.Visible = false;
                 mImage.x = 500;
-                switch (type) {
-                    case "image":
-                        new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(openImageT));
-                        break;
-                    case "audio":
-                        new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(openAudioT));
-                        break;
-                    case "video":
-                        new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(openVideoT));
-                        break;
-                    case "text":
-                        new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(openTextT));
-                        break;
-                }
+                if (dnlFileNames[mMediaIndex] != null) {
+                    openFile(dnlFileNames[mMediaIndex]);
+                } else
+                    doDownloadMedium(mMediaIndex);
             }
-            if ( mAllMedia.getChild(mMediaIndex + 1) == null) {
+            if (mAllMedia.getChild(mMediaIndex + 1) == null) {
                 setMenuText(0, "Terug");
             }
             draw();
         }
 
         public void setContent(XMLement xml) {
-            setMenuText(0, "Next");
+            setMenuText(0, "Volgende");
             xml = xml.getChildByName("poi");
             if (xml != null) {
                 XMLement name = xml.getChildByName("name");
@@ -174,12 +199,11 @@ namespace Diwi {
                 mAllMedia = xml.getChildByName("media");
                 xmlString = mAllMedia.toString();
                 mMediaIndex = -1;
+                mDownloadIndex = -1;
+                for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
                 doNext(0, "");
             }
         }
-
-
-
 
         private void reOrient() {
             if (horizontal) {
