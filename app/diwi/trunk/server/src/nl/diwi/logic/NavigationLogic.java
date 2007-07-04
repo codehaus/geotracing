@@ -9,6 +9,7 @@ import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.Point;
 
@@ -28,10 +29,14 @@ public class NavigationLogic implements Constants {
         Vector result = new Vector();
 
         result.addAll(checkPoiHits(aPersonId, aPoint));
-        if (isUserContentEnabled(aPersonId)) {
-            result.addAll(checkUGCHits(aPoint));
+        if(result.size() == 0){
+            // no poi hit - so let's check if we're roaming
+            JXElement roam = roamAlert(aPersonId, aPoint);
+            if(roam != null) result.add(roam);
         }
-        result.addAll(roamAlert(aPersonId, aPoint));
+        if (isUserContentEnabled(aPersonId)) {
+            result.addAll(checkUGCHits(aPersonId, aPoint));
+        }
 
         return result;
     }
@@ -194,12 +199,11 @@ public class NavigationLogic implements Constants {
         }
     }
 
-    private Vector roamAlert(int aPersonId, Point aPoint) throws UtopiaException {
-        Vector result = new Vector();
+    private JXElement roamAlert(int aPersonId, Point aPoint) throws UtopiaException {
         try {
             // first get the active route
             Record route = getActiveRoute(aPersonId);
-            if (route == null) return new Vector(0);
+            if (route == null) return null;
 
             String query = "SELECT * from " + ROUTE_TABLE + " where " + ID_FIELD + "=" + route.getId();
             query += " AND distance(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")'," + EPSG_DUTCH_RD + ")," + RDPATH_FIELD + ")  < " + ROAM_DISTANCE;
@@ -208,33 +212,42 @@ public class NavigationLogic implements Constants {
             if (records.length == 0) {
                 JXElement msg = new JXElement(MSG_ELM);
                 msg.setText("roam");
-                result.add(msg);
+                return msg;
             }
-
+            return null;
 
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
-
-        return result;
     }
 
-    private Vector checkUGCHits(Point aPoint) throws UtopiaException {
+    private Vector checkUGCHits(int aPersonId, Point aPoint) throws UtopiaException {
         try {
             Vector result = new Vector();
 
             String distanceClause = "distance(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")'," + EPSG_DUTCH_RD + "), " + RDPOINT_FIELD + ")";
             String tables = UGC_TABLE;
             String fields = ID_FIELD;
-            String where = distanceClause + " < " + HIT_DISTANCE;
+            String where = TYPE_FIELD + "=1 AND " + distanceClause + " < " + HIT_DISTANCE;
             String relations = null;
             String postCond = null;
             Record[] recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
 
             for (int i = 0; i < recs.length; i++) {
-                JXElement hit = new JXElement(UGC_HIT_ELM);
-                hit.setAttr(ID_FIELD, recs[i].getIntField(ID_FIELD));
-                result.add(hit);
+                // make sure we don't find our own media!!!
+                Record rec = recs[i];
+                Record[] media = oase.getRelater().getRelated(rec, Medium.TABLE_NAME, "medium");
+                for(int j=0;j<media.length;j++){
+                    Record medium = media[j];
+                    Record[] people = oase.getRelater().getRelated(medium, Person.TABLE_NAME, null);
+                    for(int k=0;k<people.length;k++){
+                        if(people[k].getId() != aPersonId){
+                            JXElement hit = new JXElement(UGC_HIT_ELM);
+                            hit.setAttr(ID_FIELD, recs[i].getIntField(ID_FIELD));
+                            result.add(hit);
+                        }
+                    }
+                }
             }
             return result;
         } catch (Throwable t) {

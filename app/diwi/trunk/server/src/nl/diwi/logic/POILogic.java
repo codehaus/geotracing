@@ -204,7 +204,10 @@ public class POILogic implements Constants {
         PGgeometryLW rdGeom = new PGgeometryLW(rdPoint);
         aPOI.setObjectField(RDPOINT_FIELD, rdGeom);
 
-        aPOI.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+        JXElement media = aPOIElement.getChildByTag(MEDIA_FIELD);
+        if(media!=null && media.hasChildren()){
+            aPOI.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
+        }
     }
 
     /**

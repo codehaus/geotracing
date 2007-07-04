@@ -7,6 +7,7 @@ import nl.diwi.util.Constants;
 import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.gis.Transform;
+import org.geotracing.gis.PostGISUtil;
 import org.geotracing.handler.HandlerUtil;
 import org.geotracing.handler.Location;
 import org.geotracing.handler.Track;
@@ -24,6 +25,7 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.Point;
+import org.postgis.PGgeometryLW;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -155,7 +157,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         double lat = Double.parseDouble(ptElement.getAttr(LAT_FIELD));
         double xy[];
         try {
-            xy = Transform.WGS84toRD(lat, lon);
+            xy = Transform.WGS84toRD(lon, lat);
         } catch (Exception e) {
             throw new UtopiaException("No valid lat and lon coordinates found");
         }
@@ -165,7 +167,9 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         ptElement.setAttr(X_FIELD, x);
         ptElement.setAttr(Y_FIELD, y);
 
+        // write to track
         trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+
         Vector result = new Vector(3);
 
         Point point = new Point(x, y);
@@ -258,39 +262,44 @@ public class NavigationHandler extends DefaultHandler implements Constants {
     }
 
     /*
-        <nav-add-medium-req id="[mediumid]" />
+        <nav-add-medium-req id="[mediumid]" lon="" lat="" />
         <play-add-medium-rsp locationid="[locationid]" />
     */
     public JXElement addMedium(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
         JXElement requestElement = anUtopiaReq.getRequestCommand();
         String mediumIdStr = requestElement.getAttr(ID_FIELD);
         HandlerUtil.throwOnNonNumAttr(ID_FIELD, mediumIdStr);
+        int mediumId = Integer.parseInt(mediumIdStr);
+        String lon = requestElement.getAttr(LON_FIELD);
+        String lat = requestElement.getAttr(LAT_FIELD);
 
         Oase oase = HandlerUtil.getOase(anUtopiaReq);
         Relater relater = oase.getRelater();
 
-        // Create Location for medium and relate to track and location tables
-        Record medium = oase.getFinder().read(Integer.parseInt(mediumIdStr));
-        int mediumId = medium.getId();
-
-        // Person is person related to medium
-        // not neccessarily the person logged in (e.g. admin for email upload)
-        Record person = relater.getRelated(medium, PERSON_TABLE, null)[0];
-        int personId = person.getId();
-
-        // Determine timestamp: we use the time that the medium was sent
-        long timestamp = Sys.now();
-        if (requestElement.hasAttr(TIME_FIELD)) {
-            // if a timestamp was provided we assume we already have the correct creation time
-            timestamp = requestElement.getLongAttr(TIME_FIELD);
-        }
+        int personId = HandlerUtil.getUserId(anUtopiaReq);
 
         // First determine medium location and add to track
         TrackLogic trackLogic = new TrackLogic(oase);
 
-        // Adds medium to track and creates location object for timestamp
-        // (where the player was at that time)
-        Location location = trackLogic.createLocation(personId, mediumId, timestamp, TrackLogic.REL_TAG_MEDIUM);
+        // Adds medium to track
+        Point wgsPoint = PostGISUtil.createPoint(lon, lat);
+        Track track = trackLogic.getActiveTrack(personId);
+        Location location = trackLogic.addLocation(track, wgsPoint, mediumId, "medium");
+
+        double xy[];
+        try {
+            xy = Transform.WGS84toRD(Double.parseDouble(lon), Double.parseDouble(lat));
+        } catch (Exception e) {
+            throw new UtopiaException("No valid lat and lon coordinates found");
+        }
+
+        double x = xy[0];
+        double y = xy[1];
+
+        // now store the rdpoint
+        Point rdPoint = PostGISUtil.createPoint(EPSG_DUTCH_RD, x, y, 0.0, System.currentTimeMillis());
+        location.getRecord().setObjectField(RDPOINT_FIELD, new PGgeometryLW(rdPoint));
+        location.saveUpdate();
 
         // We either have location or an exception here
         JXElement rsp = createResponse(NAV_ADD_MEDIUM);
