@@ -8,7 +8,6 @@
 			<field name="description"/>
             <field name="type"/>
             <field name="state"/>
-            <field name="path"/>
             <field name="extra"/>
       </insert>
 
@@ -18,7 +17,6 @@
 			<field name="description"/>
             <field name="type"/>
             <field name="state"/>
-            <field name="path"/>
             <field name="extra"/>
         </list>
 
@@ -27,13 +25,11 @@
 			<field name="name"/>
 			<field name="description"/>
             <field name="type"/>
-            <field name="state"/>
-            <field name="path"/>
+            <field name="state"/>            
             <field name="extra"/>
        </query>
 	</views>
 
-	<!--{data -->
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true"/>
 		<!-- Owner is person id -->
@@ -41,14 +37,14 @@
 
 		<field name="name" type="STRING" size="64" required="true"/>
         <field name="description" type="TEXT" required="true" />
+        <field name="state" type="INTEGER" default="0" required="true" />
         <field name="type" type="INTEGER" required="true" />
         <field name="extra" type="XML" />
 
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
-        <field name="path" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,4326,INDEX_GIST" />
-		<field name="state" type="INTEGER" default="0" required="true" />
+        <field name="wgspath" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,4326,INDEX_GIST" />
+        <field name="rdpath" type="OBJECT" class="org.postgis.PGgeometryLW" spec="LINESTRING,3,28992,INDEX_GIST" />
     </data>
-	<!--}data -->
-
+	
 </table>

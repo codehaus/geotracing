@@ -28,11 +28,11 @@ public class NavigationLogic implements Constants {
     public Vector checkPoint(Point aPoint, int aPersonId) throws UtopiaException {
         Vector result = new Vector();
 
-        result.addAll(checkPoiHits(aPoint));
+        result.addAll(checkPoiHits(aPersonId, aPoint));
         if (isUserContentEnabled(aPersonId)) {
             result.addAll(checkUGCHits(aPoint));
         }
-        result.addAll(roamAlert(aPoint));
+        result.addAll(roamAlert(aPersonId, aPoint));
 
         return result;
     }
@@ -158,28 +158,36 @@ public class NavigationLogic implements Constants {
         }
     }
 
-    private Vector checkPoiHits(Point aPoint) throws UtopiaException {
+    // TODO: complete/change this query
+    private Vector checkPoiHits(int aPersonId, Point aPoint) throws UtopiaException {
         try {
+            // first get the active route
+            Record route = getActiveRoute(aPersonId);
+
             Vector result = new Vector();
+            Record[] recs = null;
 
-            /*String queryString = "select id, distance_sphere(GeomFromEWKT('" + aPoint + "') , point) " +
-                    "as distance from " + POI_TABLE + " where distance_sphere(GeomFromEWKT('" + aPoint + "') , " +
-                    "point) < " + HIT_DISTANCE;
-            Record[] poiHits = oase.getFinder().freeQuery(queryString);*/
+            String distanceClause = "distance(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")'," + EPSG_DUTCH_RD + "), " + RDPOINT_FIELD + ")";
+            if(route == null) {
+                // struinen!!!
+                String tables = "diwi_poi";
+                String fields = "id";
+                String where = distanceClause + " < " + HIT_DISTANCE;
+                String relations = null;
+                String postCond = null;
+                recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+            }else{
+                String tables = "diwi_poi,diwi_route";
+                String fields = "diwi_poi.id";
+                String where = distanceClause + " < " + HIT_DISTANCE + " AND diwi_route.id=" + route.getId();
+                String relations = "diwi_route,diwi_poi";
+                String postCond = null;
+                recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+            }
 
-            String distanceClause = "distance_sphere(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")',4326),point)";
-			String tables = POI_TABLE;
-			String fields = ID_FIELD;
-			//String fields = POI_TABLE + "." + ID_FIELD;
-			//String fields = ID_FIELD + "," + distanceClause + " as distance";
-			String where = distanceClause + " < " + HIT_DISTANCE;
-			String relations = null;
-			String postCond = null;
-			Record[] recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
             for (int i = 0; i < recs.length; i++) {
                 JXElement hit = new JXElement(POI_HIT_ELM);
                 hit.setAttr(ID_FIELD, recs[i].getIntField(ID_FIELD));
-                //hit.setAttr(DISTANCE_ATTR, poiHits[i].getField(DISTANCE_FIELD).toString());
                 result.add(hit);
             }
             return result;
@@ -188,21 +196,17 @@ public class NavigationLogic implements Constants {
 		}        
     }
 
-    private Vector roamAlert(Point aPoint) throws UtopiaException {
+    private Vector roamAlert(int aPersonId, Point aPoint) throws UtopiaException {
         Vector result = new Vector();
         try {
-            /*String queryString = "distance_sphere(GeomFromEWKT('" + aPoint + "') , path) " +
-                    "as distance from " + ROUTE_TABLE + " where distance_sphere(GeomFromEWKT('" + aPoint + "') , " +
-                    "path) > " + ROAM_DISTANCE;
-            Record[] recs = oase.getFinder().freeQuery(queryString);*/
+            // first get the active route
+            Record route = getActiveRoute(aPersonId);
+            if(route == null) return new Vector(0);
 
-            String distanceClause = "distance_sphere(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")',4326),path)";
-			String tables = ROUTE_TABLE;
-			String fields = ID_FIELD;
-			String where = distanceClause + " > " + ROAM_DISTANCE;
-			String relations = null;
-			String postCond = null;
-			Record[] recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+            String queryString = "distance_sphere(GeomFromText('" + aPoint + "') , path) " +
+                    "as distance from diwi_route where distance_sphere(GeomFromText('" + aPoint + "'), " +
+                    "path) > " + ROAM_DISTANCE + " AND id=" + route.getId();
+            Record[] recs = oase.getFinder().freeQuery(queryString);
 
             for (int i = 0; i < recs.length; i++) {
                 JXElement msg = new JXElement(MSG_ELM);

@@ -121,6 +121,20 @@
             </utopia-rsp>
         </expect>
     </test>
+
+    <test id="query-q-diwi-routes">
+        <send id="client1">
+            <utopia-req>
+                <query-store-req cmd="q-diwi-routes" type="fixed"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <query-store-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
     
     <!--<test id="route-generate-req">
         <send id="client1">
@@ -220,7 +234,7 @@
     <test id="nav-activate-route-req">
 		<send id="client1">
 			<utopia-req>
-				<nav-activate-route-req id="109"/>
+				<nav-activate-route-req id="131"/>
 			</utopia-req>
 		</send>
 

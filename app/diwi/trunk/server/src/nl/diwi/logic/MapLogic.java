@@ -24,7 +24,7 @@ public class MapLogic {
         try {
             boxString = URLEncoder.encode("" + llb.x + "," + llb.y + "," + urt.x + "," + urt.y, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            log.error("Exception in deleteRoute: " + e.toString());
+            log.error("Exception in getMapURL: " + e.toString());
             throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
         }
         

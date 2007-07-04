@@ -8,7 +8,6 @@
 			<field name="kichid" />
 			<field name="name" />
 			<field name="description" />
-			<field name="point" />
             <field name="type" />
             <field name="state" />
             <field name="category" />
@@ -30,8 +29,7 @@
 			<field name="id" />
 			<field name="kichid" />
 			<field name="name" />
-			<field name="description" />
-			<field name="point" />
+			<field name="description" />			
             <field name="type" />
             <field name="state" />
             <field name="category" />
@@ -53,6 +51,7 @@
 		<field name="media" type="XML" required="false"/>
 		<field name="extra" type="XML" required="false"/>
         <!-- spec="<TYPE>,<DIMENSION>,<SRID>,[INDEX_GIST]" -->
-        <field name="point" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/>
+        <field name="wgspoint" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,4326,INDEX_GIST"/>
+        <field name="rdpoint" type="OBJECT" class="org.postgis.PGgeometryLW" spec="POINT,2,28992,INDEX_GIST"/>
     </data>
 </table>

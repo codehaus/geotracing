@@ -10,6 +10,7 @@ import org.geotracing.handler.HandlerUtil;
 import org.geotracing.handler.Location;
 import org.geotracing.handler.Track;
 import org.geotracing.handler.TrackLogic;
+import org.geotracing.gis.Transform;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
@@ -43,6 +44,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         Log log = Logging.getLog(anUtopiaReq);
         String service = anUtopiaReq.getServiceName();
         log.trace("Handling request for service=" + service);
+        log.info("###### NAV request:" + new String(anUtopiaReq.getRequestCommand().toBytes(false)));
 
         JXElement response;
         try {
@@ -74,7 +76,8 @@ public class NavigationHandler extends DefaultHandler implements Constants {
             l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
 
             logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-
+            log.info("###### NAV response:" + new String(response.toBytes(false)));
+            
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());
@@ -146,14 +149,27 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
         //result contains 'pt' elements with everything filled out if an EMEA string was sent.
-        //Vector result = trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));        
+        // add x and y field before sending it to TrackLogic
+        JXElement ptElement = (JXElement) (reqElm.getChildren().get(0));
+        double lon = Double.parseDouble(ptElement.getAttr(LON_FIELD));
+        double lat = Double.parseDouble(ptElement.getAttr(LAT_FIELD));
+        double xy[];
+        try {
+            xy = Transform.WGS84toRD(lat, lon);
+        } catch (Exception e) {
+            throw new UtopiaException("No valid lat and lon coordinates found");
+        }
+
+        double x = xy[0];
+        double y = xy[1];
+        ptElement.setAttr(X_FIELD, x);
+        ptElement.setAttr(Y_FIELD, y);
+
         trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
         Vector result = new Vector(3);
 
-        //Get Point from pt elements
-        JXElement ptElement = (JXElement) (reqElm.getChildren().get(0));
-        Point point = new Point(Double.parseDouble(ptElement.getAttr(LON_FIELD)), Double.parseDouble(ptElement.getAttr(LAT_FIELD)), 0);
-        point.setSrid(EPSG_WGS84);
+        Point point = new Point(x, y);
+        point.setSrid(EPSG_DUTCH_RD);
         result.addAll(navLogic.checkPoint(point, HandlerUtil.getUserId(anUtopiaReq)));
 
         JXElement response = createResponse(NAV_POINT);

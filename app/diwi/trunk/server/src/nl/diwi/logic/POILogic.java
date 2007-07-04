@@ -19,7 +19,6 @@ import org.postgis.Point;
 
 import java.util.Properties;
 import java.util.Vector;
-import java.net.URLDecoder;
 
 public class POILogic implements Constants {
     private static final Properties properties = new Properties();
@@ -91,47 +90,6 @@ public class POILogic implements Constants {
         }
     }
 
-    /*private void processTestMedia(JXElement aPOIElement, Record aPOI) throws UtopiaException {
-            try {
-                String mediaUrl = Amuse.server.getPortal().getProperty(MEDIA_URL);
-                // now check if there's is media present so we can add these
-                JXElement media = aPOIElement.getChildByTag("media");
-                if (media != null) {
-                    Vector uris = media.getChildrenByTag(KICH_URI_ELM);
-                    for (int i = 0; i < uris.size(); i++) {
-                        JXElement uri = (JXElement) uris.elementAt(i);
-                        String mediumFileName = uri.getAttr("medium");
-                        if (mediumFileName != null && mediumFileName.length() > 0) {
-                            //File f = new File(TEST_DATA_URL + "/" + mediumFileName);
-                            File f = new File(Amuse.server.getPortal().getProperty(TEST_DATA_LOCATION) + "/" + mediumFileName);
-                            if (f.exists()) {
-                                log.info("create the medium!!:" + mediumFileName);
-                                HashMap attrs = new HashMap(3);
-                                attrs.put(MediaFiler.FIELD_FILENAME, mediumFileName);
-                                if (mediumFileName.indexOf("3gp") != -1) {
-                                    attrs.put(MediaFiler.FIELD_MIME, "video/3gpp");
-                                }
-                                Record medium = oase.getMediaFiler().insert(f, attrs);
-                                oase.getRelater().relate(aPOI, medium);
-
-                                uri.setText(mediaUrl + medium.getId());
-                                uri.removeAttr("medium");
-                            } else {
-                                log.info("could not find the file!!!:" + mediumFileName);
-                            }
-                        }
-                    }
-                    // update the poi
-                    aPOI.setXMLField(MEDIA_FIELD, media);
-                    oase.getModifier().update(aPOI);
-                }
-            } catch (Throwable t) {
-                log.error("Exception in processTestMedia:" + t.toString());
-                throw new UtopiaException("Exception in processTestMedia:" + t.toString(), t);
-
-            }
-        }
-    */
     /**
      * Updates a poi.
      * <p/>
@@ -202,8 +160,9 @@ public class POILogic implements Constants {
             aPOI.setStringField(CATEGORY_FIELD, category);
         }
 
-        // Create and set location: assume default SRID (4326)
-        Point point = null;
+        // Create and set locations
+        Point wgsPoint;
+        Point rdPoint;
         if (lat == null || lat.length() == 0 || lon == null || lon.length() == 0) {
             //let's try if we got RD coords
             String x = aPOIElement.getChildText(X_FIELD);
@@ -212,19 +171,37 @@ public class POILogic implements Constants {
             if (x == null || x.length() == 0 || y == null || y.length() == 0) {
                 throw new UtopiaException("No valid lat and lon coordinates found");
             }
-            double xy[];
+
+            rdPoint = new Point(Double.parseDouble(x), Double.parseDouble(y));
+
+            double latlon[];
             try {
-                xy = Transform.RDtoWGS84(Double.parseDouble(x), Double.parseDouble(y));
+                latlon = Transform.RDtoWGS84(Double.parseDouble(x), Double.parseDouble(y));
             } catch (Exception e) {
                 throw new UtopiaException("No valid lat and lon coordinates found");
             }
-            point = new Point(xy[0], xy[1]);
+            wgsPoint = new Point(latlon[0], latlon[1]);
         } else {
-            point = new Point(Double.parseDouble(lat), Double.parseDouble(lon));
+            wgsPoint = new Point(Double.parseDouble(lon), Double.parseDouble(lat));
+
+            double xy[];
+            try {
+                xy = Transform.WGS84toRD(Double.parseDouble(lon), Double.parseDouble(lat));
+            } catch (Exception e) {
+                throw new UtopiaException("No valid lat and lon coordinates found");
+            }
+            rdPoint = new Point(xy[0], xy[1]);
         }
-        point.setSrid(DEFAULT_SRID);
-        PGgeometryLW geom = new PGgeometryLW(point);
-        aPOI.setObjectField(POINT_FIELD, geom);
+
+        // wgs 84 point
+        wgsPoint.setSrid(EPSG_WGS84);
+        PGgeometryLW wgsGeom = new PGgeometryLW(wgsPoint);
+        aPOI.setObjectField(WGSPOINT_FIELD, wgsGeom);
+
+        // rd point
+        rdPoint.setSrid(EPSG_DUTCH_RD);
+        PGgeometryLW rdGeom = new PGgeometryLW(rdPoint);
+        aPOI.setObjectField(RDPOINT_FIELD, rdGeom);
 
         aPOI.setXMLField(MEDIA_FIELD, aPOIElement.getChildByTag(MEDIA_FIELD));
     }
@@ -266,25 +243,8 @@ public class POILogic implements Constants {
                 }
             }
 
-
-            /*PGgeometryLW geom = (PGgeometryLW)poi.getObjectField(POINT_FIELD);
-            Point point = (Point)geom.getGeometry();
-            double lat = point.getX();
-            double lon = point.getY();
-
-            double xy[];
-            try {
-                xy = Transform.WGS84toRD(lat, lon);
-            } catch (Exception e) {
-                throw new UtopiaException("No valid lat and lon coordinates found");
-            }
-
-            double x = xy[0];
-            double y = xy[1];*/
-
             // now also provide extra info on routes that are
-            // TODO: comment this back in later...
-            poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(POINT_FIELD)));
+            poiElm.addChildren(addRoutesForPoint((PGgeometryLW)poi.getObjectField(RDPOINT_FIELD)));
 
             return poiElm;
         } catch (OaseException oe) {
@@ -319,10 +279,13 @@ public class POILogic implements Constants {
         return get(poi.getId());
     }
 
+    // TODO: complete this query!!!!
     private Vector addRoutesForPoint(PGgeometryLW aPoint) throws UtopiaException {
         try {
             // contains, touches, intersects
-            String queryString = "select id, name from " + ROUTE_TABLE + " where contains(GeomFromEWKT('" + aPoint + "'), path)";
+            String queryString = "select id, name from " + ROUTE_TABLE + " where contains(path, GeomFromText('" + aPoint + "'))";
+            /*String queryString = "select id, name from " + ROUTE_TABLE + " where touches(GeomFromText('" + aPoint + "'), path)";
+            String queryString = "select id, name from " + ROUTE_TABLE + " where intersects(GeomFromText('" + aPoint + "'), path)";*/
             Record[] routes = oase.getFinder().freeQuery(queryString);
 
             Vector results = new Vector(routes.length);
@@ -373,19 +336,14 @@ public class POILogic implements Constants {
             poiElm.addText(pois[i].getStringField(MEDIA_FIELD));
 
             //Insert lat/lon fields
-            Point point = (Point) ((PGgeometryLW) pois[i].getObjectField(POINT_FIELD)).getGeometry();
+            Point wgsPoint = (Point) ((PGgeometryLW) pois[i].getObjectField(WGSPOINT_FIELD)).getGeometry();
+            poiElm.addTextChild(LON_FIELD, "" + wgsPoint.x);
+            poiElm.addTextChild(LAT_FIELD, "" + wgsPoint.y);
 
-            poiElm.addTextChild(LAT_FIELD, "" + point.x);
-            poiElm.addTextChild(LON_FIELD, "" + point.y);
-
-            double xy[];
-            try {
-                xy = Transform.WGS84toRD(point.x, point.y);
-            } catch (Exception e) {
-                throw new UtopiaException("No valid lat and lon coordinates found");
-            }
-            poiElm.addTextChild(X_FIELD, "" + xy[0]);
-            poiElm.addTextChild(Y_FIELD, "" + xy[1]);
+            //Insert x/y fields
+            Point rdPoint = (Point) ((PGgeometryLW) pois[i].getObjectField(RDPOINT_FIELD)).getGeometry();
+            poiElm.addTextChild(X_FIELD, "" + rdPoint.x);
+            poiElm.addTextChild(Y_FIELD, "" + rdPoint.y);
 
             results.add(poiElm);
         }
