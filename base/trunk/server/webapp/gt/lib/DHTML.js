@@ -945,6 +945,22 @@ var DH = {
 		}
 	}
 	,
+// Set the display style property of an object to visible
+	displayOn: function(obj) {
+		var theObj = DH.getStyleObject(obj);
+		if (theObj != null) {
+			theObj.display = 'block';
+		}
+	}
+	,
+// Set the display style property of an object to invisible
+	displayOff: function(obj) {
+		var theObj = DH.getStyleObject(obj);
+		if (theObj != null) {
+			theObj.display = 'none';
+		}
+	}
+	,
 
 // Set the visibility of an object to hidden
 	hide: function(obj) {
