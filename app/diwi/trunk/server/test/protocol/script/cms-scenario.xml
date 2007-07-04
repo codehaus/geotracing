@@ -63,8 +63,8 @@
                         <name>poi nummer 1</name>
                         <description>prachtig punt</description>
                         <category>fort</category>
-                        <x>4.92</x>
-                        <y>52.35</y>
+                        <x>161031.999531</x>
+                        <y>453601.0</y>
                     </poi>
                 </poi-insert-req>
             </utopia-req>
@@ -135,8 +135,8 @@
                         <name>poi nummer 100</name>
                         <description>mooi punt</description>
                         <category>fort</category>
-                        <x>4.92</x>
-                        <y>52.35</y>
+                        <x>161031.999531</x>
+                        <y>453601.0</y>
                     </poi>
                 </poi-update-req>
             </utopia-req>
