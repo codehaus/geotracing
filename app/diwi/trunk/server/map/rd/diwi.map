@@ -157,7 +157,7 @@ LAYER
 	END
 END
 
-# Single routes from PostGIS
+# DIWI POIs
 LAYER
 #	GROUP "Selected"
 	NAME "diwi_pois"
@@ -166,13 +166,34 @@ LAYER
 	DATA "rdpoint from (select id,rdpoint from diwi_poi) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
-	TYPE LINE
+	TYPE POINT
 	STATUS OFF
 
 	CLASS
 	  STYLE
 		COLOR 255 0 0
-		SYMBOL "point"
+		SYMBOL "poi"
+		SIZE 5
+ 	  END
+	END
+END
+
+# User media (UGC)
+LAYER
+#	GROUP "Selected"
+	NAME "diwi_ugc"
+	CONNECTIONTYPE postgis
+	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	DATA "rdpoint from (select id,rdpoint from g_location) as foo using unique id using SRID=28992"
+
+	DEBUG OFF
+	TYPE POINT
+	STATUS OFF
+
+	CLASS
+	  STYLE
+		COLOR 0 0 255
+		SYMBOL "poi"
 		SIZE 5
  	  END
 	END

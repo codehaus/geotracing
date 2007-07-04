@@ -31,7 +31,7 @@ var ROUTE = {
 	},
 
 	creatFixedRoutesForm: function(records) {
-		var optionStr = ' ';
+		var optionStr = '<option name="frnone" value="-1" >Kies een route...</option>';
 		if (records != null) {
 			ROUTE.fixedRoutes = new Array();
 			for (i = 0; i < records.length; i++) {
@@ -44,6 +44,9 @@ var ROUTE = {
 
 		DH.setHTML('fixed_routes_form', optionStr);
 		MAP.show();
+		MAP.addPOILayer();
+		MAP.addUGCLayer();
+		DIWIAPP.pr('Selecteer hiernaast een van de vaste routes. De rode punten zijn Points of Interest (POIs), de blauwe punten media van gebruikers.')
 	},
 
 	createGenerateRouteForm: function () {

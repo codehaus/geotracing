@@ -16,17 +16,38 @@ var MAP = {
 	MAX_RESOLUTION: 'auto',
 	NUM_ZOOMLEVELS: 10,
 	PROJECTION: 'EPSG:28992',
-	WMS_URL: 'http://test.digitalewichelroede.nl/map84',
+	WMS_URL: 'http://test.digitalewichelroede.nl/map',
 	WMS_URL_WUR: 'http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS',
 	ZOOM: 0,
 /** OL map object. */
 	map: null,
 	currentRouteLayer: null,
+	poiLayer: null,
 	keyArray : new Array(),
 
 /** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
 	addKey: function(aName, aKey, aURLRegExp) {
 		MAP.keyArray[aName] = { key: aKey, reg: aURLRegExp };
+	},
+
+	addPOILayer: function() {
+		if (MAP.poiLayer != null) {
+			return;
+		}
+		MAP.poiLayer = new OpenLayers.Layer.WMS.Untiled('Points of Interest (POIs)',
+				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
+				MAP.WMS_URL, {layers: 'diwi_pois', format: MAP.IMAGE_FORMAT, transparent: true});
+		MAP.map.addLayer(MAP.poiLayer);
+	},
+
+	addUGCLayer: function() {
+		if (MAP.ugcLayer != null) {
+			return;
+		}
+		MAP.ugcLayer = new OpenLayers.Layer.WMS.Untiled('Media van gebruikers',
+				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
+				MAP.WMS_URL, {layers: 'diwi_ugc', format: MAP.IMAGE_FORMAT, transparent: true});
+		MAP.map.addLayer(MAP.ugcLayer);
 	},
 
 	addRouteLayer: function(aRouteId) {
