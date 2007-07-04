@@ -29,6 +29,16 @@ SYMBOL
   FILLED TRUE
 END
 
+#
+# Start of symbol definitions (we're only using a few)
+#
+SYMBOL
+  NAME 'poi'
+  TYPE ELLIPSE
+  POINTS 3 3 END
+  FILLED TRUE
+END
+
 # raster maps NL as indexed geotiff
 LAYER
   NAME "topnl_raster"
@@ -90,7 +100,7 @@ LAYER
 	NAME "all_routes"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
-	DATA "path from (select id,path from diwi_route) as foo using unique id using SRID=28992"
+	DATA "rdpath from (select id,rdpath from diwi_route) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
 	TYPE LINE
@@ -111,7 +121,7 @@ LAYER
 	NAME "all_fixed_routes"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
-	DATA "path from (select id,path from diwi_route) as foo using unique id using SRID=28992"
+	DATA "rdpath from (select id,rdpath from diwi_route where type = 0) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
 	TYPE LINE
@@ -132,7 +142,7 @@ LAYER
 	NAME "single_diwi_route"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
-	DATA "path from (select id,path from diwi_route where id = %ID%) as foo using unique id using SRID=28992"
+	DATA "rdpath from (select id,rdpath from diwi_route where id = %ID%) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
 	TYPE LINE
@@ -143,6 +153,27 @@ LAYER
 		COLOR 255 0 120
 		SYMBOL "line"
 		SIZE 3
+ 	  END
+	END
+END
+
+# Single routes from PostGIS
+LAYER
+#	GROUP "Selected"
+	NAME "diwi_pois"
+	CONNECTIONTYPE postgis
+	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	DATA "rdpoint from (select id,rdpoint from diwi_poi) as foo using unique id using SRID=28992"
+
+	DEBUG OFF
+	TYPE LINE
+	STATUS OFF
+
+	CLASS
+	  STYLE
+		COLOR 255 0 0
+		SYMBOL "point"
+		SIZE 5
  	  END
 	END
 END
