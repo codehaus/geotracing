@@ -15,7 +15,6 @@ namespace Diwi {   // base class for Diwi Pages.
         static protected System.Threading.Timer mBlendTimer=null;
         private delegate void BlendTimerCallback();
         BlendTimerCallback sBTCB;
-       
         public delegate bool CallbackHandler();
         protected delegate void mediaCallback(string p);
         private delegate void DrawMiniCallback(Bitmap p);
@@ -55,8 +54,9 @@ namespace Diwi {   // base class for Diwi Pages.
 
             if (mBlendTimer == null)
                 mBlendTimer = new System.Threading.Timer(new TimerCallback(doTimeoutT), new AutoResetEvent(false), Timeout.Infinite, 3000);
+            
             sBTCB = new BlendTimerCallback(blendTimout);
-
+            
             mCurrentRect = this.ClientRectangle;
 
             if (sMeIcon == null) {
