@@ -24,7 +24,7 @@ namespace Diwi {
             mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute));
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin));
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS));
-            mMenu.addItem("Quit", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Stop", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             title = "Hoofdmenu";
         }

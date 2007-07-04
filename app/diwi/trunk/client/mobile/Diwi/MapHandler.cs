@@ -32,22 +32,35 @@ namespace Diwi {
 
     class MapHandler {
         public delegate void CallbackHandler();
-        
+
         public static event CallbackHandler sDownloadCallback;
+
+        static AppController.DownloadCallbackHandler sMapDnl = new AppController.DownloadCallbackHandler(mapReceived);
+ 
         static MapBounds sHorBounds = new MapBounds();
         static MapBounds sVerBounds = new MapBounds();
 
-        static float sMapRadius = 0.2F;
+        static float sMapRadius = 0.1F;
         static bool sActive = false;
+        static int sDownloadingVersion = 0;
 
         static int sDoDownload = 0;
 
         static void downLoadMaps() {
             AppController.sActiveRouteMapPathHor = null;
             AppController.sActiveRouteMapPathVer = null;
-            string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
-            if (mapUrl != null) {
-                new MediaDownloader(mapUrl, @"\horMap.jpg", new AppController.DownloadCallbackHandler(mapReceived));
+            sDownloadingVersion = 0;
+
+            if(DiwiPageBase.sCurrentPage.horizontal) {
+                string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
+                if (mapUrl != null) {
+                    new MediaDownloader(mapUrl, @"\horMap.jpg", sMapDnl);
+                }
+            } else {
+                string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
+                if (mapUrl != null) {
+                    new MediaDownloader(mapUrl, @"\verMap.jpg", sMapDnl);
+                }
             }
         }
 
@@ -97,7 +110,7 @@ namespace Diwi {
                 sMapRadius = value;
                 if (sActive) {
                     sDoDownload++;
-                    if (sDoDownload >= 1)
+                    if (sDoDownload == 1)
                         downLoadMaps();
                 }
             }
@@ -116,24 +129,38 @@ namespace Diwi {
         }
 
         static void mapReceived(string path) {
-            if (AppController.sActiveRouteMapPathHor == null) {
+            int n = path.IndexOf("horMap");
+            if (n >= 0) {
                 AppController.sActiveRouteMapPathHor = path;
                 if (sDownloadCallback != null) {
                     sDownloadCallback();
                 }
-                string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
-                if (mapUrl != null) {
-                    new MediaDownloader(mapUrl, @"\verMap.jpg", new AppController.DownloadCallbackHandler(mapReceived));
+                if (sDownloadingVersion == 0) {
+                    sDownloadingVersion = 1;
+                    string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
+                    if (mapUrl != null) {
+                        new MediaDownloader(mapUrl, @"\verMap.jpg", sMapDnl);
+                    }
+                    return;
                 }
             } else {
                 AppController.sActiveRouteMapPathVer = path;
                 if (sDownloadCallback != null) {
                     sDownloadCallback();
                 }
-                if (sDoDownload > 0) {
-                    sDoDownload = 0;
-                    downLoadMaps();
-                }
+                if (sDownloadingVersion == 0) {
+                    sDownloadingVersion = 1;
+                    string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
+                    if (mapUrl != null) {
+                        new MediaDownloader(mapUrl, @"\horMap.jpg", sMapDnl);
+                    }
+                    return;
+                } 
+            }
+
+            if (sDoDownload > 0) {
+                sDoDownload = 0;
+                downLoadMaps();
             }
         }
     }

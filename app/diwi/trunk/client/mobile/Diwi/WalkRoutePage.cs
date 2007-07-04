@@ -17,6 +17,7 @@ namespace Diwi {
         public delegate void POIHandler(XMLement data, float lat, float lon);
         static string sCurrentPOI = null;
         static PoiViewerPage sPoiPage = null;
+        static bool sShowUGC = false;
         private POIHandler poiCB;
 
         public WalkRoutePage(DiwiPageBase parent)
@@ -26,7 +27,7 @@ namespace Diwi {
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
-            mMenu.addItem("Test POI", new DiwiUIMenu.DiwiMenuCallbackHandler(doTestPoi));
+            mMenu.addItem("Toon UGC", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             poiCB = new POIHandler(navPointReceive);
@@ -88,6 +89,16 @@ namespace Diwi {
             string fileName = AppController.makeVideo();
             if (fileName != null) {
                 (new MakeVideoPage(this, fileName)).ShowDialog();
+            }
+        }
+
+        void doUGC(int i, string s) {
+            sShowUGC = !sShowUGC;
+            AppController.sKwxClient.navUGC(sShowUGC);
+            if (sShowUGC == true) {
+                setMenuText(4, "Verberg UGC");
+            } else {
+                setMenuText(4, "Toon UGC");
             }
         }
 

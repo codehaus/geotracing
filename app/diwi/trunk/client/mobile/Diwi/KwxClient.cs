@@ -71,7 +71,7 @@ namespace Diwi {
             XMLement x = doLogin();
 
             if (x.tag == "login-rsp") {
-                StreamWriter userProps = new StreamWriter(@"\My Documents\DiwiProps.txt");
+                StreamWriter userProps = new StreamWriter(AppController.sUserProps);
                 if (userProps != null) {
                     AppController.sUserName = mUser;
                     AppController.sUserPass = mPass;
@@ -155,6 +155,18 @@ namespace Diwi {
                 xml = utopiaRequest(xml);
             }
             if (xml != null && xml.tag == Protocol.TAG_NAV_STATE_RSP)
+                return xml;
+            else
+                return null;
+        }
+
+        public XMLement navUGC(bool ugc) {
+            XMLement xml = new XMLement(Protocol.TAG_NAV_UGC_REQ);
+            xml.addAttribute("visible", (ugc) ? "true" : "false");
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml != null && xml.tag == Protocol.TAG_NAV_UGC_RSP)
                 return xml;
             else
                 return null;
@@ -433,7 +445,8 @@ namespace Diwi {
                 UTF8Encoding encoding = new UTF8Encoding();
                 byte[] postBytes = encoding.GetBytes(anElement.toString());
 
-                req.Timeout = 5000;
+                req.KeepAlive = true;
+                req.Timeout = 20000;
                 req.Method = "POST";
                 req.ContentType = "text/xml";
                 req.ContentLength = postBytes.Length;
