@@ -44,11 +44,11 @@
                         <loginname>ronald</loginname>
                         <password>ronald</password>
                     </person>
-                    <pref name="age" value="33" />
-                    <pref name="gender" value="man" />
-                    <pref name="interests" value="Renswoude" />
-                    <pref name="trip" value="walking" />
-                    <pref name="motivaction" value="kosmopoliet" />
+                    <pref name="age" value="33"/>
+                    <pref name="gender" value="man"/>
+                    <pref name="interests" value="Renswoude"/>
+                    <pref name="trip" value="walking"/>
+                    <pref name="motivaction" value="kosmopoliet"/>
                 </user-register-req>
             </utopia-req>
         </send>

@@ -60,7 +60,7 @@ public class KICHHandler extends DefaultHandler implements Constants {
         return new UtopiaResponse(response);
     }
 
-    private JXElement getThemes(UtopiaRequest anUtopiaReq) throws UtopiaException{
+    private JXElement getThemes(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(KICH_GET_THEMES_SERVICE);
         DataSource ds = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
         response.addChildren(ds.getKICHThemes());
@@ -89,7 +89,7 @@ public class KICHHandler extends DefaultHandler implements Constants {
         JXElement response = createResponse(KICH_GET_MEDIA_SERVICE);
         DataSource dataSource = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
         JXElement media = dataSource.getKICHMedia();
-        if(media!=null) response.addChild(media);
+        if (media != null) response.addChild(media);
         return response;
     }
 

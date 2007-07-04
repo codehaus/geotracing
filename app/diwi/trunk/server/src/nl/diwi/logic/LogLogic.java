@@ -11,10 +11,10 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
 import org.keyworx.oase.api.Record;
 import org.keyworx.oase.store.record.FileFieldImpl;
+import org.keyworx.server.ServerConfig;
 import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
-import org.keyworx.server.ServerConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class LogLogic implements Constants {
      * Creates a new log
      *
      * @param aPersonId log for this person
-     * @param aType 'trip' or 'traffic' is used
+     * @param aType     'trip' or 'traffic' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -88,7 +88,7 @@ public class LogLogic implements Constants {
      * Closes the logs after a certain period set in server.properties
      *
      * @param aPersonId log for this person
-     * @param aType 'trip' or 'traffic' is used
+     * @param aType     'trip' or 'traffic' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -120,7 +120,7 @@ public class LogLogic implements Constants {
      * Explicitely closes all open logs
      *
      * @param aPersonId log for this person
-     * @param aType 'trip' or 'traffic' is used
+     * @param aType     'trip' or 'traffic' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -145,8 +145,8 @@ public class LogLogic implements Constants {
      * Stores an event into the open log
      *
      * @param aPersonId log for this person
-     * @param aType 'trip' or 'traffic' is used
-     * @param anEvent the event to store
+     * @param aType     'trip' or 'traffic' is used
+     * @param anEvent   the event to store
      * @throws UtopiaException standard exception
      */
     public void storeLogEvent(String aPersonId, JXElement anEvent, String aType) throws UtopiaException {
@@ -157,7 +157,7 @@ public class LogLogic implements Constants {
                 throw new UtopiaException("No person found with id " + aPersonId);
             }
 
-            Record record = getOpenLog(aPersonId, aType);            
+            Record record = getOpenLog(aPersonId, aType);
 
             // explicitely put a timestamp in
             anEvent.setAttr("time", System.currentTimeMillis());
@@ -176,7 +176,7 @@ public class LogLogic implements Constants {
      * Gets the open log to write the events to.
      *
      * @param aPersonId log for this person
-     * @param aType 'trip' or 'traffic' is used
+     * @param aType     'trip' or 'traffic' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -196,6 +196,7 @@ public class LogLogic implements Constants {
 
     /**
      * retrieves all open logs.
+     *
      * @param aPersonId
      * @param aType
      * @return

@@ -53,7 +53,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         try {
             if (service.equals(ROUTE_GENERATE_SERVICE)) {
                 response = generateRoute(anUtopiaReq);
-            }else if (service.equals(ROUTE_GET_SERVICE)) {
+            } else if (service.equals(ROUTE_GET_SERVICE)) {
                 response = getRoute(anUtopiaReq);
             } else if (service.equals(ROUTE_GETLIST_SERVICE)) {
                 response = getRoutes(anUtopiaReq);
@@ -158,6 +158,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
     /**
      * Get user (Person) id from request.
+     *
      * @param anUtopiaReq
      * @return
      * @throws UtopiaException

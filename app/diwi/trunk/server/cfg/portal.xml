@@ -1,75 +1,74 @@
 <portal name="diwi">
 
-	<!-- Standard host-dependent container properties
-	Get a property with e.g.
-	Amuse.server.getPortal().getProperty("webappurl");
-	-->
-	<property name="siteurl" host="amber">http://local.diwi.nl</property>
-	<property name="webappurl" host="amber">http://local.diwi.nl/diwi</property>
+    <!-- Standard host-dependent container properties
+     Get a property with e.g.
+     Amuse.server.getPortal().getProperty("webappurl");
+     -->
+    <property name="siteurl" host="amber">http://local.diwi.nl</property>
+    <property name="webappurl" host="amber">http://local.diwi.nl/diwi</property>
 
-	<property name="siteurl" host="suwa">http://local.diwi.nl</property>
-	<property name="webappurl" host="suwa">http://local.diwi.nl/diwi</property>
+    <property name="siteurl" host="suwa">http://local.diwi.nl</property>
+    <property name="webappurl" host="suwa">http://local.diwi.nl/diwi</property>
 
     <property name="siteurl" host="ronald">http://local.diwi.nl</property>
-	<property name="webappurl" host="ronald">http://local.diwi.nl/diwi</property>
+    <property name="webappurl" host="ronald">http://local.diwi.nl/diwi</property>
 
     <!-- for testing only. -->
-	<property name="siteurl" host="berlin">http://test.digitalewichelroede.nl</property>
-	<property name="webappurl" host="berlin">http://test.digitalewichelroede.nl/diwi</property>
+    <property name="siteurl" host="berlin">http://test.digitalewichelroede.nl</property>
+    <property name="webappurl" host="berlin">http://test.digitalewichelroede.nl/diwi</property>
 
-	<!-- for testing only. -->
+    <!-- for testing only. -->
 
-	<property name="kichposturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
-	<property name="kichresturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
+    <property name="kichposturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
+    <property name="kichresturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
     <property name="routingservleturl" host="berlin">http://137.224.112.237/diwirouting/RoutingServlet</property>
     <property name="mediaurl" host="berlin">http://simlandscape.alterra.nl/diwimedia/</property>
 
     <property name="kichposturl">http://137.224.112.237/diwirouting/POIServlet</property>
-	<property name="kichresturl">http://137.224.112.237/diwirouting/POIServlet</property>
+    <property name="kichresturl">http://137.224.112.237/diwirouting/POIServlet</property>
     <property name="routingservleturl">http://137.224.112.237/diwirouting/RoutingServlet</property>
     <property name="mediaurl">http://simlandscape.alterra.nl/diwimedia/</property>
 
     <config>
-		<!-- Oase context file. Context id becomes portal name -->
-		<context file="oase-context.xml"/>
-	</config>
+        <!-- Oase context file. Context id becomes portal name -->
+        <context file="oase-context.xml"/>
+    </config>
 
 
-	<!-- Connectors -->
-	<connectors>
-		<connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
-			<property name="port">5515</property>
-			<property name="pongTimeoutMillis">30000</property>
-		</connector>
-	</connectors>
+    <!-- Connectors -->
+    <connectors>
+        <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+            <property name="port">5515</property>
+            <property name="pongTimeoutMillis">30000</property>
+        </connector>
+    </connectors>
 
 
-	<!-- Application context -->
-	<application name="geoapp" organisation="Waag">
+    <!-- Application context -->
+    <application name="geoapp" organisation="Waag">
 
-		<!-- Utopia protocol handlers -->
-		<handlers>
-			<handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
-				<property name="max-file-size">1000000</property>
-			</handler>
-			<handler id="route" class="nl.diwi.control.RouteHandler" />
-            <handler id="poi" class="nl.diwi.control.POIHandler" />
-            <handler id="kich" class="nl.diwi.control.KICHHandler" />
-			<handler id="user" class="nl.diwi.control.UserHandler"/>
-			<handler id="nav" class="nl.diwi.control.NavigationHandler"/>
-			<handler id="trip" class="nl.diwi.control.TripHandler"/>
+        <!-- Utopia protocol handlers -->
+        <handlers>
+            <handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+                <property name="max-file-size">1000000</property>
+            </handler>
+            <handler id="route" class="nl.diwi.control.RouteHandler"/>
+            <handler id="poi" class="nl.diwi.control.POIHandler"/>
+            <handler id="kich" class="nl.diwi.control.KICHHandler"/>
+            <handler id="user" class="nl.diwi.control.UserHandler"/>
+            <handler id="nav" class="nl.diwi.control.NavigationHandler"/>
+            <handler id="trip" class="nl.diwi.control.TripHandler"/>
 
-			<!-- Handler for ALL queries -->
-			<handler id="query" class="org.geotracing.handler.QueryHandler">
-				<property name="logic">nl.diwi.logic.DIWIQueryLogic</property>
-			</handler>
- 
+            <!-- Handler for ALL queries -->
+            <handler id="query" class="org.geotracing.handler.QueryHandler">
+                <property name="logic">nl.diwi.logic.DIWIQueryLogic</property>
+            </handler>
+
         </handlers>
-        
 
 
-		<daemons>
+        <daemons>
 
-		</daemons>
-	</application>
+        </daemons>
+    </application>
 </portal>

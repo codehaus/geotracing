@@ -3,46 +3,46 @@
 <!-- Prefs table definition -->
 <table>
 
-	<views>
+    <views>
 
-		<insert>
-			<field name="name"/>
-			<field name="value"/>
+        <insert>
+            <field name="name"/>
+            <field name="value"/>
             <field name="type"/>
             <field name="extra"/>
-      </insert>
+        </insert>
 
-		<list>
-			<field name="id"/>
-			<field name="name"/>
-			<field name="value"/>
+        <list>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="value"/>
             <field name="type"/>
             <field name="extra"/>
         </list>
 
-		<query>
-			<field name="id"/>
-			<field name="name"/>
-			<field name="value"/>
+        <query>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="value"/>
             <field name="type"/>
             <field name="extra"/>
-       </query>
-	</views>
+        </query>
+    </views>
 
-	<!--{data -->
-	<data>
-		<field name="id" type="INTEGER" required="true" key="true"/>
-		<!-- Owner is person id -->
-		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" />
+    <!--{data -->
+    <data>
+        <field name="id" type="INTEGER" required="true" key="true"/>
+        <!-- Owner is person id -->
+        <field name="owner" type="INTEGER" required="true" foreignkey="cascade"/>
 
-		<field name="name" type="STRING" size="128" required="true"/>
-        <field name="value" type="STRING"  size="128" required="true"/>
-        <field name="type" type="INTEGER" />
-        <field name="extra" type="XML" />
-        
+        <field name="name" type="STRING" size="128" required="true"/>
+        <field name="value" type="STRING" size="128" required="true"/>
+        <field name="type" type="INTEGER"/>
+        <field name="extra" type="XML"/>
+
         <field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
-	</data>
-	<!--}data -->
+    </data>
+    <!--}data -->
 
 </table>

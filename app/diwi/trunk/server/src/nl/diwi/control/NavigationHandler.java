@@ -6,11 +6,11 @@ import nl.diwi.logic.NavigationLogic;
 import nl.diwi.util.Constants;
 import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.gis.Transform;
 import org.geotracing.handler.HandlerUtil;
 import org.geotracing.handler.Location;
 import org.geotracing.handler.Track;
 import org.geotracing.handler.TrackLogic;
-import org.geotracing.gis.Transform;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
@@ -77,7 +77,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
             logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
             log.info("###### NAV response:" + new String(response.toBytes(false)));
-            
+
         } catch (UtopiaException ue) {
             log.warn("Negative response service=" + service, ue);
             response = createNegativeResponse(service, ue.getErrorCode(), ue.getMessage());

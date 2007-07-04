@@ -254,15 +254,15 @@ public class UserHandler extends DefaultHandler implements Constants {
 
                 // add the trips
                 Vector tripLogs = logLogic.getLogs("" + person.getId(), LOG_TRIP_TYPE);
-                for(int j=0;j<tripLogs.size();j++){
-                    personElm.addChild(logLogic.getLog(((JXElement)tripLogs.elementAt(j)).getAttr(ID_FIELD)));
+                for (int j = 0; j < tripLogs.size(); j++) {
+                    personElm.addChild(logLogic.getLog(((JXElement) tripLogs.elementAt(j)).getAttr(ID_FIELD)));
                 }
-                
+
                 // add the traffic
                 Vector trafficLogs = logLogic.getLogs("" + person.getId(), LOG_TRAFFIC_TYPE);
-                for(int h=0;h<trafficLogs.size();h++){
-                    log.info(""+h);
-                    personElm.addChild(logLogic.getLog(((JXElement)trafficLogs.elementAt(h)).getAttr(ID_FIELD)));
+                for (int h = 0; h < trafficLogs.size(); h++) {
+                    log.info("" + h);
+                    personElm.addChild(logLogic.getLog(((JXElement) trafficLogs.elementAt(h)).getAttr(ID_FIELD)));
                 }
 
                 response.addChild(personElm);

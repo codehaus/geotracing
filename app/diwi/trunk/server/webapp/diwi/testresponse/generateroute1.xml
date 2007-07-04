@@ -1,30 +1,30 @@
 <gpx>
-<bounds minlon="152779" minlat="453239" maxlon="153925" maxlat="455055" />
-<wpt lon="152781" lat="453254">
-<name>
-28_508983
-</name>
-</wpt>
-<rte>
-<rtept lon="153925" lat="453397">
-</rtept>
-<rtept lon="153915" lat="453406">
-</rtept>
-<rtept lon="153901" lat="453448">
-</rtept>
-<rtept lon="153879" lat="453513">
-</rtept>
-<rtept lon="153877" lat="453520">
-</rtept>
-<rtept lon="153861" lat="453562">
-</rtept>
-<rtept lon="153836" lat="453624">
-</rtept>
-<rtept lon="153810" lat="453678">
-</rtept>
-<rtept lon="153802" lat="453688">
-</rtept>
-<rtept lon="153780" lat="453699">
-</rtept>
-</rte>
+    <bounds minlon="152779" minlat="453239" maxlon="153925" maxlat="455055"/>
+    <wpt lon="152781" lat="453254">
+        <name>
+            28_508983
+        </name>
+    </wpt>
+    <rte>
+        <rtept lon="153925" lat="453397">
+        </rtept>
+        <rtept lon="153915" lat="453406">
+        </rtept>
+        <rtept lon="153901" lat="453448">
+        </rtept>
+        <rtept lon="153879" lat="453513">
+        </rtept>
+        <rtept lon="153877" lat="453520">
+        </rtept>
+        <rtept lon="153861" lat="453562">
+        </rtept>
+        <rtept lon="153836" lat="453624">
+        </rtept>
+        <rtept lon="153810" lat="453678">
+        </rtept>
+        <rtept lon="153802" lat="453688">
+        </rtept>
+        <rtept lon="153780" lat="453699">
+        </rtept>
+    </rte>
 </gpx>

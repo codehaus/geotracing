@@ -13,7 +13,6 @@ import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 
-import java.util.Properties;
 import java.util.Vector;
 
 /**
@@ -56,7 +55,7 @@ public class DataSource implements Constants {
             /*JXElement poisElm = NetConnection.getXMLFromREST(kichRESTUrl);*/
             String result = postToKICHService("selectpois", "<pois />");
             log.info(result);
-            if(result == null || result.length() == 0){
+            if (result == null || result.length() == 0) {
                 return;
             }
 
@@ -126,7 +125,7 @@ public class DataSource implements Constants {
                         </rte>
                     </gpx>*/
                     log.info(new String(routeElm.toBytes(false)));
-                    logic.insertRoute(routeElm, ROUTE_TYPE_FIXED);                    
+                    logic.insertRoute(routeElm, ROUTE_TYPE_FIXED);
                 }
             }
         } catch (Throwable t) {
@@ -147,14 +146,14 @@ public class DataSource implements Constants {
      * @return media element
      */
     public JXElement getKICHMedia() throws UtopiaException {
-        try{
-        /*String kichRestUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);*/
+        try {
+            /*String kichRestUrl = Amuse.server.getPortal().getProperty(KICH_REST_URL);*/
             String result = postToKICHService("selectmedia", "<media />");
-            if(result == null || result.length() == 0){
+            if (result == null || result.length() == 0) {
                 return null;
             }
             return new JXBuilder().build(result);
-        }catch(Throwable t){
+        } catch (Throwable t) {
             throw new UtopiaException(t);
         }
         /*kichRestUrl += "?command=selectmedia<media />";
@@ -173,7 +172,7 @@ public class DataSource implements Constants {
      * @return media element
      */
     public Vector getKICHThemes() throws UtopiaException {
-        try{
+        try {
             JXElement result = new JXElement("themes");
             result.addTextChild(THEME_ELM, "Kerk en kerkonderdeel");
             result.addTextChild(THEME_ELM, "Klooster, kloosteronderdl");
@@ -195,11 +194,11 @@ public class DataSource implements Constants {
             result.addTextChild(THEME_ELM, "Bijgebouwen kastelen enz.");
             result.addTextChild(THEME_ELM, "Omwalling");
             return result.getChildren();
-        }catch(Throwable t){
+        } catch (Throwable t) {
             throw new UtopiaException(t);
         }
     }
-    
+
     // insert a poi in KICH
     public String insertPOI(JXElement aPOIElement) throws UtopiaException {
         JXElement pois = new JXElement("pois");
@@ -218,7 +217,7 @@ public class DataSource implements Constants {
     public String deletePOI(JXElement aPOIElement) throws UtopiaException {
         JXElement pois = new JXElement("pois");
         pois.addChild(aPOIElement);
-        return postToKICHService(POI_DELETE_COMMAND, new String(pois.toBytes(false)));        
+        return postToKICHService(POI_DELETE_COMMAND, new String(pois.toBytes(false)));
     }
 
     // relate media to poi in KICH
@@ -258,7 +257,7 @@ public class DataSource implements Constants {
             //postParams.setProperty("command", anAction);
             //postParams.setProperty("xml", aPOIElement.toEscapedString());
 //            /return NetConnection.postData(kichPostUrl, postParams);
-            return NetConnection.postData(kichPostUrl, aPostString);            
+            return NetConnection.postData(kichPostUrl, aPostString);
         } catch (Throwable t) {
             log.error(t.getMessage());
             throw new UtopiaException("Exception in communcation with KICH service: command=" + anAction + ", data=" + aPostString, t);

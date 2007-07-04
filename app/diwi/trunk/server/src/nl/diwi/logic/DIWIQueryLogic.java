@@ -1,13 +1,12 @@
 package nl.diwi.logic;
 
-import nl.diwi.util.Constants;
 import nl.diwi.external.DataSource;
+import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
-import org.geotracing.handler.QueryLogic;
 import org.geotracing.handler.QueryHandler;
-import org.keyworx.utopia.core.data.UtopiaException;
-import org.keyworx.oase.api.OaseException;
+import org.geotracing.handler.QueryLogic;
 import org.keyworx.amuse.core.Protocol;
+import org.keyworx.utopia.core.data.UtopiaException;
 
 import java.util.Map;
 
@@ -26,15 +25,15 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
         try {
             if (aQueryName.equals(CMD_QUERY_ROUTES)) {
                 return queryRoutes(theParms);
-            }else if (aQueryName.equals(CMD_QUERY_THEMES)) {
+            } else if (aQueryName.equals(CMD_QUERY_THEMES)) {
                 return queryThemes(theParms);
-            }else if (aQueryName.equals(CMD_QUERY_STARTPOINTS)) {
+            } else if (aQueryName.equals(CMD_QUERY_STARTPOINTS)) {
                 return queryStartPoints(theParms);
-            }else if (aQueryName.equals(CMD_QUERY_ENDPOINTS)) {
+            } else if (aQueryName.equals(CMD_QUERY_ENDPOINTS)) {
                 return queryEndPoints(theParms);
-            }else if (aQueryName.equals(CMD_QUERY_TRIP)) {
+            } else if (aQueryName.equals(CMD_QUERY_TRIP)) {
                 return queryTrip(theParms);
-            }else if (aQueryName.equals(CMD_QUERY_TRIPS)) {
+            } else if (aQueryName.equals(CMD_QUERY_TRIPS)) {
                 return queryTrips(theParms);
             }
 
@@ -72,15 +71,15 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
     private JXElement queryRoutes(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         String personId = getParameter(theParms, "personid", null);
-        String type = getParameter(theParms, "type", null);        
-        RouteLogic logic = new RouteLogic(getOase());        
+        String type = getParameter(theParms, "type", null);
+        RouteLogic logic = new RouteLogic(getOase());
         result.addChildren(logic.getRoutes(type, personId));
-        return result;        
+        return result;
     }
 
     private JXElement queryTrip(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-        String id = (String)theParms.get("id");
+        String id = (String) theParms.get("id");
         LogLogic logic = new LogLogic(getOase());
         result.addChild(logic.getLog(id));
         return result;
@@ -88,8 +87,8 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 
     private JXElement queryTrips(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-        String personId = (String)theParms.get("personid");
-        String type = (String)theParms.get("type");
+        String personId = (String) theParms.get("personid");
+        String type = (String) theParms.get("type");
         LogLogic logic = new LogLogic(getOase());
         result.addChildren(logic.getLogs(personId, type));
         return result;

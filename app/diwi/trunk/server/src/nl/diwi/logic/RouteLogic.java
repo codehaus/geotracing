@@ -177,13 +177,13 @@ public class RouteLogic implements Constants {
             // fixed routes have unique names so check first
             String name = aRouteElement.getChildText(DESCRIPTION_FIELD);
             Record[] recs = oase.getFinder().queryTable(ROUTE_TABLE, NAME_FIELD + "='" + name + "'", null, null);
-            
+
             // get or create the record
             if (recs.length > 0) {
                 // do an update
                 route = oase.getFinder().read(recs[0].getId());
                 insert = false;
-            }else{
+            } else {
                 route = oase.getModifier().create(ROUTE_TABLE);
             }
 
@@ -202,19 +202,19 @@ public class RouteLogic implements Constants {
             route.setObjectField(WGSPATH_FIELD, wgsGeom);
 
             // do the actual insert or update
-            if(insert){
+            if (insert) {
                 oase.getModifier().insert(route);
-            }else{
+            } else {
                 oase.getModifier().update(route);
             }
 
             // now relate all poi's to the route
             Vector wpts = aRouteElement.getChildByTag("gpx").getChildrenByTag("wpt");
-            for(int i=0;i<wpts.size();i++){
-                JXElement wpt = (JXElement)wpts.elementAt(i);
+            for (int i = 0; i < wpts.size(); i++) {
+                JXElement wpt = (JXElement) wpts.elementAt(i);
                 String kichId = wpt.getChildText(NAME_FIELD);
                 Record[] pois = oase.getFinder().queryTable(POI_TABLE, KICHID_FIELD + "='" + kichId.trim() + "'", null, null);
-                if(pois.length == 1){
+                if (pois.length == 1) {
                     // create relation
                     oase.getRelater().relate(route, pois[0]);
                 }
@@ -308,12 +308,12 @@ public class RouteLogic implements Constants {
     }
 
     private int getDistance(Record route) throws OaseException {
-		// select spatial.Length2d_spheroid( spatial.Makeline( pstart.geometry, pend.geometry  )  , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from RPosition pstart, RPosition as pend where pstart = :pstart and pend = :pend
-		// "select Length2d_spheroid(path , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from diwi_route as distance where id ="
-   		// old: "select length2d(path) AS distance from diwi_route where id="
+        // select spatial.Length2d_spheroid( spatial.Makeline( pstart.geometry, pend.geometry  )  , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from RPosition pstart, RPosition as pend where pstart = :pstart and pend = :pend
+        // "select Length2d_spheroid(path , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from diwi_route as distance where id ="
+        // old: "select length2d(path) AS distance from diwi_route where id="
 
-		Record distance = oase.getFinder().freeQuery(
-				"select length2d_spheroid(wgspath , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) as distance from diwi_route where id ="
+        Record distance = oase.getFinder().freeQuery(
+                "select length2d_spheroid(wgspath , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) as distance from diwi_route where id ="
                         + route.getId())[0];
 
         return (int) Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());
