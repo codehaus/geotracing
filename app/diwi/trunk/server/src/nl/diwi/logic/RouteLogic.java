@@ -152,6 +152,11 @@ public class RouteLogic implements Constants {
 
                     // now relate the route to the person
                     oase.getRelater().relate(person, route);
+
+                    // now update the distance
+                    Record r = oase.getFinder().read(route.getId());
+                    r.setIntField(DISTANCE_FIELD, getDistance(r));
+                    oase.getModifier().update(r);
                 } catch (OaseException e) {
                     e.printStackTrace();
                 }
@@ -208,6 +213,11 @@ public class RouteLogic implements Constants {
                 oase.getModifier().update(route);
             }
 
+            // now update the distance
+            Record r = oase.getFinder().read(route.getId());
+            r.setIntField(DISTANCE_FIELD, getDistance(r));
+            oase.getModifier().update(r);
+
             // now relate all poi's to the route
             Vector wpts = aRouteElement.getChildByTag("gpx").getChildrenByTag("wpt");
             for (int i = 0; i < wpts.size(); i++) {
@@ -244,10 +254,6 @@ public class RouteLogic implements Constants {
             routeElm = XML.createElementFromRecord(ROUTE_ELM, aRoute);
             routeElm.removeChildByTag(WGSPATH_FIELD);
             routeElm.removeChildByTag(RDPATH_FIELD);
-
-            JXElement lengthElm = new JXElement(DISTANCE_FIELD);
-            lengthElm.setText("" + getDistance(aRoute));
-            routeElm.addChild(lengthElm);
         } catch (Throwable t) {
             log.error("Exception in getRoute: " + t.toString());
             throw new UtopiaException("Error in getRoute", t, ErrorCode.__6006_database_irregularity_error);
@@ -319,8 +325,6 @@ public class RouteLogic implements Constants {
         return (int) Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());
     }
 
-
-    // TODO: this can now be in RD
     public String getMapUrl(int routeId, double width, double height) throws UtopiaException {
         Record bounds;
         try {
