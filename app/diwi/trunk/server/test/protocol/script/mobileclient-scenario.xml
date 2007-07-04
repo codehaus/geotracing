@@ -108,6 +108,20 @@
         </expect>
     </test>
 
+    <test id="nav-deactivate-route-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-deactivate-route-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-deactivate-route-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="route-getlist-req">
         <send id="client1">
             <utopia-req>
@@ -154,7 +168,7 @@
 
         <expect id="client1">
             <utopia-rsp>
-                <route-generate-rsp id="131"/>
+                <route-generate-rsp id="685"/>
             </utopia-rsp>
         </expect>
     </test>-->
@@ -176,7 +190,7 @@
     <test id="route-get-req">
         <send id="client1">
             <utopia-req>
-                <route-get-req id="131"/>
+                <route-get-req id="685"/>
             </utopia-req>
         </send>
 
@@ -190,7 +204,7 @@
     <test id="route-get-map-req">
         <send id="client1">
             <utopia-req>
-                <route-get-map-req id="131" height="240" width="320"/>
+                <route-get-map-req id="685" height="240" width="320"/>
             </utopia-req>
         </send>
 
@@ -231,16 +245,46 @@
         </expect>
     </test>
 
+    <test id="struinen - step on poi">
+        <send id="client1">
+            <utopia-req>
+                <nav-point-req>
+                    <pt lon="5.546723005843067" lat="52.07175435251452"/>
+                </nav-point-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-point-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="nav-activate-route-req">
         <send id="client1">
             <utopia-req>
-                <nav-activate-route-req id="131"/>
+                <nav-activate-route-req id="685"/>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
                 <nav-activate-route-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-get-map-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-get-map-req height="240" llbLat="52.07703" llbLon="5.487456" width="320" urtLon="5.490385" urtLat="52.07973" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-get-map-rsp/>
             </utopia-rsp>
         </expect>
     </test>
@@ -287,11 +331,11 @@
         </expect>
     </test>
 -->
-    <test id="nav-point-req-3">
+    <test id="step on poi for route 685">
         <send id="client1">
             <utopia-req>
                 <nav-point-req>
-                    <pt lon="5.488779349567399" lat="52.07749378704085"/>
+                    <pt lon="5.546723005843067" lat="52.07175435251452"/>
                 </nav-point-req>
             </utopia-req>
         </send>
@@ -308,7 +352,7 @@
     <test id="poi-get-req">
         <send id="client1">
             <utopia-req>
-                <poi-get-req id="132"/>
+                <poi-get-req id="273"/>
             </utopia-req>
         </send>
 
@@ -342,13 +386,29 @@
     <test id="nav-add-medium-req">
         <send id="client1">
             <utopia-req>
-                <nav-add-medium-req id="752"/>
+                <nav-add-medium-req id="736" lon="5.546723005843067" lat="52.07175435251452" />               
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
                 <nav-add-medium-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="step on ugc">
+        <send id="client1">
+            <utopia-req>
+                <nav-point-req>
+                    <pt lon="5.546723005843067" lat="52.07175435251452"/>
+                </nav-point-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-point-rsp />
             </utopia-rsp>
         </expect>
     </test>
@@ -386,7 +446,6 @@
         </expect>
     </test>
 
-
     <test id="nav-deactivate-route-req">
         <send id="client1">
             <utopia-req>
@@ -412,9 +471,53 @@
 
         <expect id="client1">
             <utopia-rsp>
-                <nav-point-rsp>
-                    <pt llon="4.922958612442017" lat="52.37865781188822" ele="0.0" acc="100" speed="38.23"/>
-                </nav-point-rsp>
+                <nav-point-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-activate-route-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-activate-route-req id="671"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-activate-route-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-point-req-6">
+        <send id="client1">
+            <utopia-req>
+                <nav-point-req>
+                    <pt lon="4.9236345291137695" lat="52.37895253000267"/>
+                </nav-point-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-point-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="step on poi for route 685">
+        <send id="client1">
+            <utopia-req>
+                <nav-point-req>
+                    <pt lon="5.546723005843067" lat="52.07175435251452"/>
+                </nav-point-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-point-rsp />
             </utopia-rsp>
         </expect>
     </test>
