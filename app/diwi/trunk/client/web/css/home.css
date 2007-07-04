@@ -249,7 +249,7 @@ p {
 #logforminlogbut {
 	position: relative;
 	width: auto;
-	top: -7px;
+	top: 0px;
 	left: 20px;
 	z-index: 200;
 }

@@ -175,7 +175,7 @@ var ROUTE = {
 	},
 
 	showFixedRoutes: function() {
-		SRV.get('q-diwi-routes', ROUTE.creatFixedRoutesForm, 'type', '0');
+		SRV.get('q-diwi-routes', ROUTE.creatFixedRoutesForm, 'type', 'fixed');
 	},
 
 	showFixedRoute: function(option) {

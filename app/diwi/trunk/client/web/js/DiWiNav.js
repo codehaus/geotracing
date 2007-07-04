@@ -31,7 +31,7 @@ var DIWINAV = {
 
 		// Listen to login button and password field
 		DH.addEvent(DH.getObject('butloginsubmit'), 'click', DIWIAPP.login, false);
-		DH.addEvent(DH.getObject('fieldpassword'), 'keypress', DIWINAV.onPasswordChar, false);
+		// DH.addEvent(DH.getObject('fieldpassword'), 'keypress', DIWINAV.onPasswordChar, false);
 	},
 
 	/** Callback (from DIWIAPP) when login ok.  */
