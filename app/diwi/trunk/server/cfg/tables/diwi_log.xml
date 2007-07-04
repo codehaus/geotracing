@@ -31,7 +31,7 @@
         <field name="id" type="INTEGER" required="true" key="true"/>
 
         <!-- log name -->
-        <field name="name" type="STRING" size="64" required="true" default="log"/>
+        <field name="name" type="STRING" size="256" required="true" default="log"/>
 
         <field name="startdate" type="TIMESTAMP"/>
         <field name="enddate" type="TIMESTAMP"/>
