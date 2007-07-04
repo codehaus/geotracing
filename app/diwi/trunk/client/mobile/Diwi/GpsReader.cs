@@ -40,6 +40,7 @@ namespace Diwi {
         private bool  mDemo = false;
         private bool  mHasFix = false;
         private float mBearing, mSpeed, mLat, mLon, mPrecision;
+        private float storedLat, storedLon;
         private int   mNumSats, mSoundCount;
 
         #region properties
@@ -128,6 +129,23 @@ namespace Diwi {
 
 #endregion
 
+
+        public void storeLocation() {
+            storedLat = mLat;
+            storedLon = mLon;
+        }
+
+        public string storedLattitude {
+            get {
+                return storedLat.ToString(mUSFormat);
+            }
+        }
+
+        public string storedLongtitude {
+            get {
+                return storedLon.ToString(mUSFormat);
+            }
+        }
 
         public static GpsReader instance {
             get {

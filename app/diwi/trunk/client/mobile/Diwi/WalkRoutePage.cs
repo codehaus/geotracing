@@ -86,6 +86,7 @@ namespace Diwi {
 
         void doVideo(int i, string s) {
             mIsActive = false;
+            AppController.sGpsReader.storeLocation();
             string fileName = AppController.makeVideo();
             if (fileName != null) {
                 (new MakeVideoPage(this, fileName)).ShowDialog();
@@ -104,6 +105,7 @@ namespace Diwi {
 
         void doFoto(int i, string s) {
             mIsActive = false;
+            AppController.sGpsReader.storeLocation();
             string fileName = AppController.makeFoto();
             if (fileName != null) {
                 (new MakePhotoPage(this, fileName)).ShowDialog();
@@ -112,6 +114,7 @@ namespace Diwi {
 
         void doText(int i, string s) {
             mIsActive = false;
+            AppController.sGpsReader.storeLocation();
             (new MakeTextPage(this, null)).ShowDialog();
         }
 
