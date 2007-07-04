@@ -66,6 +66,45 @@ public class TrackLogic {
 	}
 
 	/**
+	 * Add location for given track, point, target record and person.
+	 *
+	 * @param aTrack	target track
+	 * @param aPoint	the point
+	 * @param aRecordId target object to bind to Point
+	 * @param aRelTag   relation tag to use
+	 * @throws org.keyworx.utopia.core.data.UtopiaException
+	 *          Standard exception
+	 */
+	public Location addLocation(Track aTrack, Point aPoint, int aRecordId, String aRelTag) throws UtopiaException {
+		Transaction transaction = oase.startTransaction();
+		try {
+			// Relate record to Track
+			aTrack.createRelation(aRecordId, aRelTag);
+
+			// Create and relate location record
+			Location location = Location.create(oase);
+			location.setPoint(aPoint);
+			location.setStringValue(Location.FIELD_NAME, "Location for " + aRelTag);
+
+			location.saveInsert();
+
+			// Create relation between target record and location
+			location.createRelation(aRecordId, aRelTag);
+			transaction.commit();
+			log.trace("Related Location " + location.getId() + " and Track " + aTrack.getId() + " to Record " + aRecordId + " tag=" + aRelTag);
+
+			return location;
+		} catch (UtopiaException ue) {
+			oase.cancelTransaction(transaction);
+			throw ue;
+		} catch (Throwable t) {
+			oase.cancelTransaction(transaction);
+			throw new UtopiaException("Error in addLocation() track=" + aTrack.getId() + " record id=" + aRecordId + " tag=" + aRelTag, t);
+		}
+
+	}
+
+	/**
 	 * Creates an track
 	 *
 	 * @param aPersonId The person id
@@ -129,52 +168,29 @@ public class TrackLogic {
 	 *          Standard exception
 	 */
 	public Location createLocation(int aPersonId, int aRecordId, long aDate, String aTag) throws UtopiaException {
-		Transaction transaction = oase.startTransaction();
-		try {
-			// Find the Track(s) for the timestamp
-			Track track = getTrackByDateAndPerson(aDate, aPersonId);
+		// Find the Track(s) for the timestamp
+		Track track = getTrackByDateAndPerson(aDate, aPersonId);
+		if (track == null) {
+			// Not in any track, try active Track
+			track = getActiveTrack(aPersonId);
+
+			// Check if active track found
 			if (track == null) {
-				// Not in any track, try active Track
-				track = getActiveTrack(aPersonId);
-
-				// Check if active track found
-				if (track == null) {
-					throw new UtopiaException("Cannot find any Track for date and person");
-				}
+				throw new UtopiaException("Cannot find any Track for date and person");
 			}
-
-			// OK a track found
-
-			// Find nearest point in time within track
-			Point point = getPointByDate(track, aDate);
-			if (point == null) {
-				log.warn("Cannot find GeoPoint for person=" + aPersonId + " record=" + aRecordId + " tag=" + aTag);
-				throw new UtopiaException("Cannot find GeoPoint for record=" + aRecordId + " tag=" + aTag);
-			}
-
-			// OK point found
-
-			// Relate record to Track
-			track.createRelation(aRecordId, aTag);
-
-			// Create and relate location record
-			Location location = Location.create(oase);
-			location.setPoint(point);
-			location.setStringValue(Location.FIELD_NAME, "Location for " + aTag);
-
-			location.saveInsert();
-			location.createRelation(aRecordId, aTag);
-			transaction.commit();
-			log.trace("Related Location " + location.getId() + " and Track " + track.getId() + " to Record " + aRecordId + " tag=" + aTag);
-
-			return location;
-		} catch (UtopiaException ue) {
-			oase.cancelTransaction(transaction);
-			throw ue;
-		} catch (Throwable t) {
-			oase.cancelTransaction(transaction);
-			throw new UtopiaException("Error in createLocation() time=" + new Date(aDate) + " record id=" + aRecordId + " tag=" + aTag, t);
 		}
+
+		// OK a track found
+
+		// Find nearest point in time within track
+		Point point = getPointByDate(track, aDate);
+		if (point == null) {
+			log.warn("Cannot find GeoPoint for person=" + aPersonId + " record=" + aRecordId + " tag=" + aTag);
+			throw new UtopiaException("Cannot find GeoPoint for record=" + aRecordId + " tag=" + aTag);
+		}
+
+		// OK point found, add with record to track
+		return addLocation(track, point, aRecordId, aTag);
 	}
 
 	/**
@@ -734,7 +750,7 @@ public class TrackLogic {
 			// Go through all waypoints, if we fail just skip over
 			// TODO: make more robust, now we just skip to the next waypt on error
 			for (int i = 0; i < wptElms.size(); i++) {
-				Transaction transaction=null;
+				Transaction transaction = null;
 				try {
 					transaction = oase.startTransaction();
 					// Next wpt
@@ -808,7 +824,6 @@ public class TrackLogic {
 					if (timeMillis > 0) {
 						medium.setTimestampField(MediaFiler.FIELD_CREATIONDATE, new Timestamp(timeMillis));
 					}
-
 
 					// Ok medium record inserted link to person,track and location
 
@@ -889,8 +904,8 @@ public class TrackLogic {
 	/**
 	 * Update last user location.
 	 *
-	 * @param aPerson   a person
-	 * @param aPoint location
+	 * @param aPerson a person
+	 * @param aPoint  location
 	 * @throws org.keyworx.utopia.core.data.UtopiaException
 	 *          Standard exception
 	 */
