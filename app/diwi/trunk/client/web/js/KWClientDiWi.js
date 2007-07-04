@@ -114,8 +114,8 @@ KW.DIWI = {
 	
 	getfixedroutes: function(callback) {
 		var req = KW.createRequest('route-getlist-req');
-        req.documentElement.setAttribute('type', 'fixed');
-        KW.utopia(req, callback);
+        req.documentElement.setAttribute('type', '0');
+       KW.utopia(req, callback);
 	},
 	
 	getgeneratedroute: function(callback, personid) {

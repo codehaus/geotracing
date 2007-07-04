@@ -15,6 +15,7 @@ var MAP = {
 	NUM_ZOOMLEVELS: 10,
 	PROJECTION: 'EPSG:4326',
 	WMS_URL: 'http://test.digitalewichelroede.nl/map84',
+	WMS_URL_WUR: 'http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS',
 	ZOOM: 2,
 /** OL map object. */
 	map: null,
@@ -40,6 +41,7 @@ var MAP = {
 
 	addTOPNLRasterLayer: function() {
 		var topNLLayer = new OpenLayers.Layer.WMS.Untiled("Topografische Kaart",
+//				MAP.WMS_URL_WUR, {layers: 'id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12', format: MAP.IMAGE_FORMAT});
 				MAP.WMS_URL, {layers: 'topnl_raster', format: MAP.IMAGE_FORMAT});
 
 		MAP.map.addLayer(topNLLayer);
@@ -129,4 +131,4 @@ MAP.addKey('local',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xSzCH91z57ocwwUF0G9rnam-69XfBSYstFMYwQaq5OD5kCUatNyH_JFqw',
 		'^https?://local.diwi.nl/.*');
 
-// MAP.loadGoogleMapScript();
+/// MAP.loadGoogleMapScript();
