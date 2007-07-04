@@ -78,7 +78,7 @@ namespace Diwi {
 
             try {
                 string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                sUserProps = myDocumentsPath + "DiwiProps.txt";
+                sUserProps = myDocumentsPath + "\\DiwiProps.txt";
 
 
                 StreamReader userProps = new StreamReader(sUserProps);
