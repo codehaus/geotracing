@@ -64,13 +64,15 @@ public interface Constants {
     public final static String LON_FIELD = "lon";
     public final static String STATE_FIELD = "state";
     public final static String VALUE_FIELD = "value";
-    public final static String PATH_FIELD = "path";
+    public final static String WGSPATH_FIELD = "wgspath";
+    public final static String RDPATH_FIELD = "rdpath";
     public final static String TYPE_FIELD = "type";
     public final static String STARTDATE_FIELD = "startdate";
     public final static String ENDDATE_FIELD = "enddate";
     public final static String PLAYERS_FIELD = "players";
     public final static String MEDIA_FIELD = "media";
-    public final static String POINT_FIELD = "point";
+    public final static String WGSPOINT_FIELD = "wgspoint";
+    public final static String RDPOINT_FIELD = "rdpoint";
     public final static String KICHID_FIELD = "kichid";
     public final static String REQUEST_FIELD = "request";
     public final static String RESPONSE_FIELD = "response";
@@ -119,7 +121,8 @@ public interface Constants {
     public static final int EPSG_DUTCH_RD = 28992;
     public static final int EPSG_WGS84 = 4326; //google maps lat lon
 
-    public static final int DEFAULT_SRID = EPSG_WGS84;
+    //public static final int DEFAULT_SRID = EPSG_WGS84;
+    public static final int DEFAULT_SRID = EPSG_DUTCH_RD;
 
     public static final int SRID_ROUTING_API = EPSG_DUTCH_RD;
     public static final int SRID_KICH_API = EPSG_DUTCH_RD;

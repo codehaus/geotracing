@@ -53,10 +53,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         try {
             if (service.equals(ROUTE_GENERATE_SERVICE)) {
                 response = generateRoute(anUtopiaReq);
-            }/* else if (service.equals(ROUTE_INSERT_SERVICE)) {
-				response = insertRoute(anUtopiaReq);
-			}*/
-            else if (service.equals(ROUTE_GET_SERVICE)) {
+            }else if (service.equals(ROUTE_GET_SERVICE)) {
                 response = getRoute(anUtopiaReq);
             } else if (service.equals(ROUTE_GETLIST_SERVICE)) {
                 response = getRoutes(anUtopiaReq);
@@ -125,17 +122,8 @@ public class RouteHandler extends DefaultHandler implements Constants {
         l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
         RouteLogic logic = createLogic(anUtopiaReq);
         String type = anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD);
-        int t = -1;
-        if (type.equals("fixed")) {
-            t = ROUTE_TYPE_FIXED;
-        } else if (type.equals("direct")) {
-            t = ROUTE_TYPE_DIRECT;
-        } else if (type.equals("generated")) {
-            t = ROUTE_TYPE_GENERATED;
-        }
-
         String personId = anUtopiaReq.getUtopiaSession().getContext().getUserId();
-        Vector routes = logic.getRoutes(t, personId);
+        Vector routes = logic.getRoutes(type, personId);
 
         JXElement response = createResponse(ROUTE_GETLIST_SERVICE);
         response.addChildren(routes);

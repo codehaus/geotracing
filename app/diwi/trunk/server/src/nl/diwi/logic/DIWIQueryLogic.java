@@ -71,9 +71,9 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 
     private JXElement queryRoutes(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
-        String personId = (String)theParms.get("personid");
-        int type = Integer.parseInt((String)theParms.get("type"));
-        RouteLogic logic = new RouteLogic(getOase());
+        String personId = getParameter(theParms, "personid", null);
+        String type = getParameter(theParms, "type", null);        
+        RouteLogic logic = new RouteLogic(getOase());        
         result.addChildren(logic.getRoutes(type, personId));
         return result;        
     }

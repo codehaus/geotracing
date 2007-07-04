@@ -71,8 +71,8 @@ public class KICHHandler extends DefaultHandler implements Constants {
     private JXElement syncKICH(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(KICH_SYNC_SERVICE);
         DataSource ds = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        ds.syncFixedRoutes();
         ds.syncPOIs();
+        ds.syncFixedRoutes();
 
         return response;
     }
