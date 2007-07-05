@@ -72,7 +72,7 @@ public class NavigationLogic implements Constants {
         }
     }
 
-    public boolean isUserContentEnabled(int aPersonId) throws UtopiaException {
+	public boolean isUserContentEnabled(int aPersonId) throws UtopiaException {
         try {
             Record person = oase.getFinder().read(aPersonId, Person.TABLE_NAME);
             if (person == null) {
