@@ -280,6 +280,7 @@ public class POILogic implements Constants {
         try {
             NavigationLogic navLogic = new NavigationLogic(oase);
             Record activeRoute = navLogic.getActiveRoute(aPersonId);
+            if(activeRoute == null) return new Vector(0);
 
             String tables = POI_TABLE + "," + ROUTE_TABLE;
             String fields = ROUTE_TABLE + "." + ID_FIELD;
@@ -298,6 +299,7 @@ public class POILogic implements Constants {
 
             return results;
         } catch (Throwable t) {
+            log.error("Exception in addRoutesForPoint:" + t.getMessage());
             throw new UtopiaException(t);
         }
     }
