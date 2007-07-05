@@ -107,6 +107,9 @@ public interface Constants {
     public final static int ROUTE_TYPE_DIRECT = 1;
     public final static int ROUTE_TYPE_GENERATED = 2;
 
+    public final static String GENERATE_PREFS_ROUTE = "personal route";
+    public final static String GENERATE_HOME_ROUTE = "home route";
+
     //properties
     public final static String KICH_POST_URL = "kichposturl";
     public final static String KICH_REST_URL = "kichresturl";

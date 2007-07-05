@@ -54,7 +54,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         try {
             if (service.equals(ROUTE_GENERATE_SERVICE)) {
                 response = generateRoute(anUtopiaReq);
-            } else if (service.equals(ROUTE_GENERATE_SERVICE)) {
+            } else if (service.equals(ROUTE_GOHOME_SERVICE)) {
                 response = generateHomeRoute(anUtopiaReq);
             } else if (service.equals(ROUTE_GET_SERVICE)) {
                 response = getRoute(anUtopiaReq);
@@ -152,7 +152,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         // ok so this person is the one generating the routes!!
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
-        JXElement route = logic.generateRoute(reqElm, personId, "route");
+        JXElement route = logic.generateRoute(reqElm, personId, GENERATE_PREFS_ROUTE);
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChild(route);
 
@@ -168,7 +168,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         // ok so this person is the one generating the routes!!
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
-        JXElement route = logic.generateRoute(reqElm, personId, "home");
+        JXElement route = logic.generateRoute(reqElm, personId, GENERATE_HOME_ROUTE);
         JXElement response = createResponse(ROUTE_GOHOME_SERVICE);
         response.addChild(route);
 

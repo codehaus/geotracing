@@ -106,7 +106,8 @@ public class NavigationLogic implements Constants {
             Record activeRoute = getActiveRoute(personId);
 
             if (activeRoute == null) {
-                throw new UtopiaException("No active route set!");
+                //throw new UtopiaException("No active route set!");
+                return;
             }
             //Unrelate
             oase.getRelater().unrelate(person, activeRoute);
