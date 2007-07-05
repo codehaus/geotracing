@@ -346,6 +346,7 @@ public class POILogic implements Constants {
         Point rdPoint = (Point) ((PGgeometryLW) aPoi.getObjectField(RDPOINT_FIELD)).getGeometry();
         poiElm.addTextChild(X_FIELD, "" + rdPoint.x);
         poiElm.addTextChild(Y_FIELD, "" + rdPoint.y);
+        return poiElm;
     }
 
     /**
