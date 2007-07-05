@@ -22,12 +22,28 @@ var MAP = {
 /** OL map object. */
 	map: null,
 	currentRouteLayer: null,
+	markerLayer: null,
 	poiLayer: null,
 	keyArray : new Array(),
 
 /** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
 	addKey: function(aName, aKey, aURLRegExp) {
 		MAP.keyArray[aName] = { key: aKey, reg: aURLRegExp };
+	},
+
+	addMarker: function(x,y,iconImg, w,h) {
+		var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x,y), new OpenLayers.Icon(iconImg, new OpenLayers.Size(w,h) ));
+ 		MAP.markerLayer.addMarker(marker);
+	},
+
+	addMarkerLayer: function() {
+		if (MAP.markerLayer != null) {
+			MAP.map.removeLayer(MAP.markerLayer);
+		}
+
+		MAP.markerLayer = new OpenLayers.Layer.Markers("Markers");
+
+		MAP.map.addLayer(MAP.markerLayer);
 	},
 
 	addPOILayer: function() {
@@ -51,15 +67,15 @@ var MAP = {
 	},
 
 	addRouteLayer: function(aRouteId) {
-		if (MAP.map.currentRouteLayer != null) {
-			MAP.map.removeLayer(MAP.map.currentRouteLayer);
+		if (MAP.currentRouteLayer != null) {
+			MAP.map.removeLayer(MAP.currentRouteLayer);
 		}
 
-		var routeLayer = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
+		MAP.currentRouteLayer = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {id: aRouteId, layers: 'single_diwi_route', format: MAP.IMAGE_FORMAT, transparent: true});
-		MAP.map.addLayer(routeLayer);
-		MAP.map.currentRouteLayer = routeLayer;
+
+		MAP.map.addLayer(MAP.currentRouteLayer);
 	},
 
 	addTOPNLRasterLayer: function() {

@@ -87,6 +87,7 @@ var DIWINAV = {
 
 	loadPage: function(aPageURL, aCallback) {
 		MAP.hide();
+//		DIWIAPP.pr('&nbsp;');
 		DH.setHTML(DIWINAV.PAGE_ID, DH.getURL(aPageURL, aCallback));
 	},
 
