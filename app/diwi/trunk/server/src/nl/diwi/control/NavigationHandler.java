@@ -175,7 +175,13 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		point.setSrid(EPSG_DUTCH_RD);
 		result.addAll(navLogic.checkPoint(point, HandlerUtil.getUserId(anUtopiaReq)));
 
-		JXElement response = createResponse(NAV_POINT);
+        // store all poi-hit, ugc-hit and roam messages
+        for(int i=0;i<result.size();i++){
+            JXElement elm = (JXElement)result.elementAt(i);
+            logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), elm, LOG_TRIP_TYPE);            
+        }
+        
+        JXElement response = createResponse(NAV_POINT);
 		response.addChildren(result);
 
 		return response;
