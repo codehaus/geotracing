@@ -37,8 +37,7 @@ namespace Diwi {
             title = "Hoofdmenu";
         }
 
-        void doVideo(int i,string s)
-        {
+        void doVideo(int i, string s) {
             Process process = new Process();
             process.StartInfo.FileName = AppController.sVideoFileName;
             process.StartInfo.Verb = "Open";

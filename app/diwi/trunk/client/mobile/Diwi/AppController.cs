@@ -100,7 +100,8 @@ namespace Diwi {
         public static void deactivate() {
             sGpsReader.stop();
             sKwxClient.stop();
-           // sBacklight.Release();
+            MediaDownloader.sQuitting = true;
+            MediaUploader.sQuitting = true;
             Thread.Sleep(1000);
         }
 

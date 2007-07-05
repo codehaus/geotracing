@@ -62,6 +62,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DiwiUIStaticText.cs" />
+    <Compile Include="ll.cs" />
     <Compile Include="MakePhotoPage.cs">
       <SubType>Form</SubType>
     </Compile>

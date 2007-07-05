@@ -12,7 +12,7 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
 
     class PoiViewerPage : DiwiPageBase {
-
+        MediaDownloader mMediaDnl = null;
         TextBox mTextBox = new TextBox();
         DiwiScalingImage mImage;
         Bitmap mImageBitmap;
@@ -32,7 +32,7 @@ namespace Diwi {
             this.Controls.Add(mTextBox);
             mImage = new DiwiScalingImage(this);
 
-
+            mTextBox.Font = new Font("Arial", 12, FontStyle.Bold);
             mTextBox.Multiline = true;
             mTextBox.ReadOnly = true;
             mTextBox.ScrollBars = ScrollBars.Vertical;
@@ -124,6 +124,8 @@ namespace Diwi {
 
         void dnlDoneT(string path) {
 
+            mMediaDnl = null;
+
             dnlFileNames[mDownloadIndex] = path;
             if (mDownloadIndex == mMediaIndex) {
                 if (InvokeRequired) {
@@ -149,16 +151,16 @@ namespace Diwi {
                 string type = kichUri.getAttributeValue("type");
                 switch (type) {
                     case "image":
-                        new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        mMediaDnl = new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                     case "audio":
-                        new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        mMediaDnl = new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                     case "video":
-                        new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        mMediaDnl = new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                     case "text":
-                        new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        mMediaDnl = new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                 }
             }
@@ -175,6 +177,8 @@ namespace Diwi {
                 } else
                     doDownloadMedium(mMediaIndex);
             } else {
+                if (mMediaDnl != null)
+                    mMediaDnl.abort();
                 doTerug(0, "");
             }
             if (mAllMedia.getChild(mMediaIndex + 1) == null) {
@@ -194,6 +198,12 @@ namespace Diwi {
                 xmlString = mAllMedia.toString();
                 mMediaIndex = -1;
                 mDownloadIndex = -1;
+                mImage.x = 500;
+                XMLement desc = xml.getChildByName("description");
+                if (desc != null) {
+                    mTextBox.Text = desc.nodeText;
+                    mTextBox.Visible = true;
+                }
                 for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
                 if (mAllMedia.getChild(0) != null) {
                     doNext(0, "");
@@ -244,9 +254,6 @@ namespace Diwi {
 
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-
-            AppController.SysBeep();
-            AppController.SysBeep();
             if (mParent != null) {
                 mParent.Visible = false;
             }
