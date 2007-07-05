@@ -1,6 +1,7 @@
 package nl.diwi.logic;
 
 import nl.diwi.util.Constants;
+import nl.diwi.control.NavigationHandler;
 import nl.justobjects.jox.dom.JXElement;
 import nl.justobjects.jox.parser.JXBuilder;
 import nl.justobjects.jox.parser.JXBuilderListener;
@@ -15,6 +16,7 @@ import org.keyworx.oase.store.record.FileFieldImpl;
 import org.keyworx.server.ServerConfig;
 import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.util.Oase;
 
 import java.io.File;
@@ -343,12 +345,51 @@ public class LogLogic implements Constants {
 
                 // now add poi en ugc hits
                 JXElement hits = new JXElement("hits");
+                Vector poiHitElms = logElm.getChildrenByTag(POI_HIT_ELM);
+                for(int i=0;i<poiHitElms.size();i++){
+                    JXElement poiHitElm = (JXElement)poiHitElms.elementAt(i);
+                    String id = poiHitElm.getAttr(ID_FIELD);
+                    String query = "SELECT * from " + POI_TABLE + " WHERE " + ID_FIELD + "=" + id;
+                    Record[] records = oase.getFinder().freeQuery(query);
+                    JXElement e = records[0].toXML();
+                    e.setAttr("time", poiHitElm.getAttr("time"));
+                    e.setAttr("date", poiHitElm.getAttr("date"));
+                    e.addChild(e);
+                }
+                Vector ugcHitElms = logElm.getChildrenByTag(UGC_HIT_ELM);
+                for(int i=0;i<ugcHitElms.size();i++){
+                    JXElement ugcHitElm = (JXElement)ugcHitElms.elementAt(i);
+                    String id = ugcHitElm.getAttr(ID_FIELD);
+                    String tables = UGC_TABLE + "," + Medium.TABLE_NAME;
+                    String fields = Medium.TABLE_NAME + "." + ID_FIELD + "," + Medium.TABLE_NAME + "." + NAME_FIELD  + "," + Medium.TABLE_NAME + "." + DESCRIPTION_FIELD;
+                    String where = UGC_TABLE + "." + ID_FIELD + "=" + id;
+                    String relations = UGC_TABLE + "," + Medium.TABLE_NAME + ",medium";
+                    String postCond = null;
+                    Record[] records = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+                    JXElement e = records[0].toXML();
+                    e.setAttr("time", ugcHitElm.getAttr("time"));
+                    e.setAttr("date", ugcHitElm.getAttr("date"));
+                    e.addChild(e);
+                }
+                tripElm.addChild(hits);
+
                 // now add routes
-                JXElement routes = new JXElement("routes");
                 // <nav-activate-route-req id="685"/>
+                JXElement routes = new JXElement("routes");
+                Vector routeMsgs = logElm.getChildrenByTag(NAV_ACTIVATE_ROUTE + "-req");
+                for(int i=0;i<routeMsgs.size();i++){
+                    JXElement routeMsg = (JXElement)routeMsgs.elementAt(i);
+                    String id = routeMsg.getAttr(ID_FIELD);
+                    String query = "SELECT id,name,description from " + ROUTE_TABLE + " WHERE " + ID_FIELD + "=" + id;
+                    Record[] records = oase.getFinder().freeQuery(query);
+                    JXElement e = records[0].toXML();
+                    e.setAttr("time", routeMsg.getAttr("time"));
+                    e.setAttr("date", routeMsg.getAttr("date"));
+                    routes.addChild(e);
+                }
+                tripElm.addChild(routes);
 
-
-                logElm.addChild(trackElm);
+                return tripElm;
             }
         } catch (Throwable t) {
             new UtopiaException("Error query getLogEvents logId=" + aLogId, t);

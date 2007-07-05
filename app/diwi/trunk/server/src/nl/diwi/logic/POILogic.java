@@ -221,8 +221,10 @@ public class POILogic implements Constants {
             JXElement mediaElm = poi.getXMLField(MEDIA_FIELD);
 
             JXElement poiElm = poi.toXML();
-            poiElm.removeChildByTag(MEDIA_FIELD);
-            poiElm.addChild(mediaElm);
+            if(mediaElm!=null){
+                poiElm.removeChildByTag(MEDIA_FIELD);
+                poiElm.addChild(mediaElm);
+            }
 
             poiElm.removeAttr("table");
             poiElm.setTag(POI_ELM);
