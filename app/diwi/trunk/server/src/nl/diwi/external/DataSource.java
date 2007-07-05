@@ -15,13 +15,6 @@ import org.keyworx.utopia.core.util.Oase;
 
 import java.util.Vector;
 
-/**
- * Created by IntelliJ IDEA.
- * User: ronald
- * Date: Mar 29, 2007
- * Time: 12:07:46 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DataSource implements Constants {
     private Oase oase;
     private Log log = Logging.getLog("DataSource");

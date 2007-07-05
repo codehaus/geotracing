@@ -23,6 +23,7 @@ public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_GET_SERVICE = "poi-get";
     public final static String POI_GET_STARTPOINTS_SERVICE = "poi-get-startpoints";
     public final static String POI_GET_ENDPOINTS_SERVICE = "poi-get-endpoints";
+    public final static String POI_GET_STARTENDPOINTS_SERVICE = "poi-get-startendpoints";
     public final static String POI_UPDATE_SERVICE = "poi-update";
     public final static String POI_DELETE_SERVICE = "poi-delete";
     public final static String POI_RELATE_MEDIA_SERVICE = "poi-relate-media";
@@ -70,6 +71,9 @@ public class POIHandler extends DefaultHandler implements Constants {
             } else if (service.equals(POI_GET_ENDPOINTS_SERVICE)) {
                 // get endpoint type pois
                 response = getEndPoints(anUtopiaReq);
+            } else if (service.equals(POI_GET_STARTENDPOINTS_SERVICE)) {
+                // get startendpoint type pois
+                response = getStartEndPoints(anUtopiaReq);
             } else if (service.equals(POI_RELATE_MEDIA_SERVICE)) {
                 // relate media to poi
                 response = relateMediaToPoi(anUtopiaReq);
@@ -243,7 +247,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getStartPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_STARTPOINTS_SERVICE);
-        response.addChildren(logic.getStartPoints());
+        response.addChildren(logic.getPoisByType(POI_STARTPOINT));
         return response;
     }
 
@@ -256,7 +260,20 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getEndPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_ENDPOINTS_SERVICE);
-        response.addChildren(logic.getEndPoints());
+        response.addChildren(logic.getPoisByType(POI_ENDPOINT));
+        return response;
+    }
+
+    /**
+     * Gets all endpoint pois.
+     *
+     * @param anUtopiaReq A UtopiaRequest
+     * @return A UtopiaResponse.
+     * @throws UtopiaException standard Utopia exception
+     */
+    protected JXElement getStartEndPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(POI_GET_STARTENDPOINTS_SERVICE);
+        response.addChildren(logic.getPoisByType(POI_START_AND_ENDPOINT));
         return response;
     }
 

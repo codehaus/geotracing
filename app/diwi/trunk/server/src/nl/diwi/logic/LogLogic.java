@@ -246,6 +246,25 @@ public class LogLogic implements Constants {
         return v;
     }
 
+    /*public void relatePoiToTrip(int aPersonId, int aPoiId, String aState) throws UtopiaException{
+        try{
+            Record trip = getOpenLog("" + aPersonId, LOG_TRIP_TYPE);
+            Record poi = oase.getFinder().read(aPoiId);
+
+            // check if it's already related
+            if(oase.getRelater().isRelated(trip, poi)){
+                String tag = oase.getRelater().getTag(trip, poi);
+                if(tag!=null && !tag.equals(aState)){
+                    oase.getRelater().setTag(trip, poi, aState);
+                }                
+            }else{
+                oase.getRelater().relate(trip, oase.getFinder().read(aPoiId), aState);    
+            }
+        }catch(Throwable t){
+            throw new UtopiaException(t);
+        }
+    }*/
+
     public JXElement getLog(String aLogId) throws UtopiaException {
         final JXElement logElm;
         Record record;
@@ -308,15 +327,27 @@ public class LogLogic implements Constants {
             }
 
             if (type.equals(LOG_TRIP_TYPE)) {
+                JXElement tripElm = new JXElement(LOG_TRIP_TYPE);
+
                 // get the related track
                 Record trackRec = oase.getRelater().getRelated(record, "g_track", null)[0];
 
                 // now also add the track to the log output
                 TrackLogic trackLogic = new TrackLogic(oase);
-                // TODO : needs to be converted to RD!!!!
-                //JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", null, true, 0, -1);
-                JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", null, true, 20, 1000);
+                JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", "x,y,t", true, 20, 1000);
+                log.info(new String(trackElm.toBytes(false)));
+
                 // add hit poi's, ugc and routes
+                // first the contents of the gtx
+                tripElm.addChildren(trackElm.getChildren());
+
+                // now add poi en ugc hits
+                JXElement hits = new JXElement("hits");
+                // now add routes
+                JXElement routes = new JXElement("routes");
+                // <nav-activate-route-req id="685"/>
+
+
                 logElm.addChild(trackElm);
             }
         } catch (Throwable t) {

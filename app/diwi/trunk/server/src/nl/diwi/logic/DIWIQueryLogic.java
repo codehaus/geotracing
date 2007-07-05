@@ -17,6 +17,7 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
     public static final String CMD_QUERY_THEMES = "q-diwi-themes";
     public static final String CMD_QUERY_STARTPOINTS = "q-diwi-startpoints";
     public static final String CMD_QUERY_ENDPOINTS = "q-diwi-endpoints";
+    public static final String CMD_QUERY_STARTENDPOINTS = "q-diwi-startendpoints";
     public static final String CMD_QUERY_TRIP = "q-diwi-trip";
     public static final String CMD_QUERY_TRIPS = "q-diwi-trips";
 
@@ -32,6 +33,8 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
                 return queryStartPoints(theParms);
             } else if (aQueryName.equals(CMD_QUERY_ENDPOINTS)) {
                 return queryEndPoints(theParms);
+            } else if (aQueryName.equals(CMD_QUERY_STARTENDPOINTS)) {
+                return queryStartEndPoints(theParms);
             } else if (aQueryName.equals(CMD_QUERY_TRIP)) {
                 return queryTrip(theParms);
             } else if (aQueryName.equals(CMD_QUERY_TRIPS)) {
@@ -58,14 +61,21 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
     private JXElement queryStartPoints(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         POILogic logic = new POILogic(getOase());
-        result.addChildren(convertToRecordElms(logic.getStartPoints()));
+        result.addChildren(convertToRecordElms(logic.getPoisByType(POI_STARTPOINT)));
         return result;
     }
 
     private JXElement queryEndPoints(Map theParms) throws Exception {
         JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
         POILogic logic = new POILogic(getOase());
-        result.addChildren(convertToRecordElms(logic.getEndPoints()));
+        result.addChildren(convertToRecordElms(logic.getPoisByType(POI_ENDPOINT)));
+        return result;
+    }
+
+    private JXElement queryStartEndPoints(Map theParms) throws Exception {
+        JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+        POILogic logic = new POILogic(getOase());
+        result.addChildren(convertToRecordElms(logic.getPoisByType(POI_START_AND_ENDPOINT)));
         return result;
     }
 

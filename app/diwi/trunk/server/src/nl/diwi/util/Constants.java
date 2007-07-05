@@ -97,6 +97,10 @@ public interface Constants {
     public final static int POI_BASICPOINT = 1;
     public final static int POI_STARTPOINT = 2;
     public final static int POI_ENDPOINT = 3;
+    public final static int POI_START_AND_ENDPOINT = 4;
+
+    /*public final static String POI_TRIP_STATE_HIT = "hit";
+    public final static String POI_TRIP_STATE_READ = "read";*/
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;
