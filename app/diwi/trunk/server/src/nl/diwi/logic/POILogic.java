@@ -218,16 +218,7 @@ public class POILogic implements Constants {
     public JXElement get(int aPersonId, int aPOIId) throws UtopiaException {
         try {
             Record poi = oase.getFinder().read(aPOIId);
-            JXElement mediaElm = poi.getXMLField(MEDIA_FIELD);
-
-            JXElement poiElm = poi.toXML();
-            if(mediaElm!=null){
-                poiElm.removeChildByTag(MEDIA_FIELD);
-                poiElm.addChild(mediaElm);
-            }
-
-            poiElm.removeAttr("table");
-            poiElm.setTag(POI_ELM);
+            JXElement poiElm = poiToXML(poi);
 
             log.info(new String(poiElm.toBytes(false)));
 
@@ -331,32 +322,30 @@ public class POILogic implements Constants {
 
         Vector results = new Vector(pois.length);
         for (int i = 0; i < pois.length; i++) {
-            JXElement poiElm = new JXElement();
-            poiElm.setTag(POI_ELM);
-
-            //name + description
-            poiElm.addTextChild(ID_FIELD, pois[i].getIdString());
-            poiElm.addTextChild(NAME_FIELD, pois[i].getStringField(NAME_FIELD));
-            poiElm.addTextChild(DESCRIPTION_FIELD, pois[i].getStringField(DESCRIPTION_FIELD));
-            poiElm.addTextChild(TYPE_FIELD, "" + pois[i].getIntField(TYPE_FIELD));
-            poiElm.addTextChild(CATEGORY_FIELD, pois[i].getStringField(CATEGORY_FIELD));
-
-            poiElm.addText(pois[i].getStringField(MEDIA_FIELD));
-
-            //Insert lat/lon fields
-            Point wgsPoint = (Point) ((PGgeometryLW) pois[i].getObjectField(WGSPOINT_FIELD)).getGeometry();
-            poiElm.addTextChild(LON_FIELD, "" + wgsPoint.x);
-            poiElm.addTextChild(LAT_FIELD, "" + wgsPoint.y);
-
-            //Insert x/y fields
-            Point rdPoint = (Point) ((PGgeometryLW) pois[i].getObjectField(RDPOINT_FIELD)).getGeometry();
-            poiElm.addTextChild(X_FIELD, "" + rdPoint.x);
-            poiElm.addTextChild(Y_FIELD, "" + rdPoint.y);
-
-            results.add(poiElm);
+            results.add(poiToXML(pois[i]));
         }
 
         return results;
+    }
+
+    private JXElement poiToXML(Record aPoi) throws UtopiaException {
+        JXElement poiElm = aPoi.toXML();
+        JXElement mediaElm = aPoi.getXMLField(MEDIA_FIELD);
+        if(mediaElm!=null){
+            poiElm.removeChildByTag(MEDIA_FIELD);
+            poiElm.addChild(mediaElm);
+        }
+        poiElm.setTag(POI_ELM);
+
+        //Insert lat/lon fields
+        Point wgsPoint = (Point) ((PGgeometryLW) aPoi.getObjectField(WGSPOINT_FIELD)).getGeometry();
+        poiElm.addTextChild(LON_FIELD, "" + wgsPoint.x);
+        poiElm.addTextChild(LAT_FIELD, "" + wgsPoint.y);
+
+        //Insert x/y fields
+        Point rdPoint = (Point) ((PGgeometryLW) aPoi.getObjectField(RDPOINT_FIELD)).getGeometry();
+        poiElm.addTextChild(X_FIELD, "" + rdPoint.x);
+        poiElm.addTextChild(Y_FIELD, "" + rdPoint.y);
     }
 
     /**
