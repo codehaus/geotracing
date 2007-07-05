@@ -17,8 +17,10 @@ namespace Diwi {
         public delegate void POIHandler(XMLement data, float lat, float lon);
         static string sCurrentPOI = null;
         static PoiViewerPage sPoiPage = null;
+        static CheckStruinPage chckStruinPage = null;
         static bool sShowUGC = false;
         private POIHandler poiCB;
+        bool checkStruinWithUser;
 
         public WalkRoutePage(DiwiPageBase parent)
             : base(parent) {
@@ -28,7 +30,7 @@ namespace Diwi {
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
             mMenu.addItem("Toon UGC", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC));
-            mMenu.addItem("TestPOI", new DiwiUIMenu.DiwiMenuCallbackHandler(testPoi));
+            //mMenu.addItem("TestPOI", new DiwiUIMenu.DiwiMenuCallbackHandler(doCheckStruin));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
             poiCB = new POIHandler(navPointReceive);
@@ -60,6 +62,24 @@ namespace Diwi {
                     doPoi(poiId);
                 // stumbled on an intersting point...
             }
+            XMLement msg = xml.getChildByName("msg");
+            if (msg != null) {
+                string text = msg.nodeText;
+                if (text == "roam" && checkStruinWithUser == true) {
+                    checkStruinWithUser = false;
+                    doCheckStruin(0, "");
+                }
+            } else {
+                checkStruinWithUser = (AppController.sActiveRoute != null);
+            }
+        }
+
+
+        void doCheckStruin(int i, string s) {
+            if (chckStruinPage == null) {
+                chckStruinPage = new CheckStruinPage(this);
+            }
+            chckStruinPage.ShowDialog();
         }
 
         void navPointMessage(XMLement xml, float lat, float lon) {
@@ -126,8 +146,8 @@ namespace Diwi {
         void doPoi(string id) {
             mIsActive = false;
             XMLement x = AppController.sKwxClient.getPOI(id);
+            sCurrentPOI = id;
             if (x != null) {
-                sCurrentPOI = id;
                 if (sPoiPage == null)
                     sPoiPage = new PoiViewerPage(this);
                 sPoiPage.setContent(x);
@@ -153,6 +173,7 @@ namespace Diwi {
             mIsInitialized = true;
             MapHandler.active = true;
             mBlendTimer.Change(0, 3000);
+            checkStruinWithUser = (AppController.sActiveRoute != null);
             setBackGround();
         }
 
