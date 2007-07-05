@@ -358,32 +358,19 @@ public class POILogic implements Constants {
     }
 
     /**
-     * Gets all start point pois.
+     * Gets all typed point pois.
      *
      * @throws UtopiaException Standard exception
      */
-    public Vector getStartPoints() throws UtopiaException {
+    public Vector getPoisByType(int aPoiType) throws UtopiaException {
         try {
-            Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + POI_STARTPOINT + "'", null, null);
+            Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + aPoiType + "'", null, null);
             return getPOIList(pois);
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
         }
     }
 
-    /**
-     * Gets all start point pois.
-     *
-     * @throws UtopiaException Standard exception
-     */
-    public Vector getEndPoints() throws UtopiaException {
-        try {
-            Record[] pois = oase.getFinder().queryTable(POI_TABLE, TYPE_FIELD + "='" + POI_ENDPOINT + "'", null, null);
-            return getPOIList(pois);
-        } catch (OaseException oe) {
-            throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
-        }
-    }
 
     /**
      * Delete a poi.

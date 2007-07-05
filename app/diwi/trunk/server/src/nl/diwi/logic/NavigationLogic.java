@@ -72,7 +72,7 @@ public class NavigationLogic implements Constants {
         }
     }
 
-	public boolean isUserContentEnabled(int aPersonId) throws UtopiaException {
+    public boolean isUserContentEnabled(int aPersonId) throws UtopiaException {
         try {
             Record person = oase.getFinder().read(aPersonId, Person.TABLE_NAME);
             if (person == null) {
@@ -164,6 +164,8 @@ public class NavigationLogic implements Constants {
 
     private Vector checkPoiHits(int aPersonId, Point aPoint) throws UtopiaException {
         try {
+            LogLogic logLogic = new LogLogic(oase);
+
             // first get the active route
             Record route = getActiveRoute(aPersonId);
 
@@ -190,8 +192,13 @@ public class NavigationLogic implements Constants {
 
             for (int i = 0; i < recs.length; i++) {
                 JXElement hit = new JXElement(POI_HIT_ELM);
-                hit.setAttr(ID_FIELD, recs[i].getIntField(ID_FIELD));
+                int id = recs[i].getIntField(ID_FIELD);
+                hit.setAttr(ID_FIELD, id);
                 result.add(hit);
+
+                // relate poi to trip
+                //logLogic.relatePoiToTrip(aPersonId, id, POI_TRIP_STATE_HIT);
+
             }
             return result;
         } catch (Throwable t) {
