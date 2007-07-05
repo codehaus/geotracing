@@ -11,6 +11,7 @@ import org.keyworx.utopia.core.util.Oase;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
 import org.geotracing.gis.PostGISUtil;
+import org.geotracing.gis.Transform;
 
 /**
  * The Location data object
@@ -52,6 +53,12 @@ public class Location extends BaseImpl {
 	public static final String FIELD_TYPE = "type";
 	public static final String FIELD_EXTRA = "extra";
 	public static final String FIELD_POINT = "point";
+
+	/**
+	 * Dutch RD.
+	 */
+	public static final String FIELD_RDPOINT = "rdpoint";
+	public static final int EPSG_DUTCH_RD = 28992;
 
 	public static final int VAL_TYPE_MEDIUM = 1;
 	public static final int VAL_TYPE_TRACK_PT = 2;
@@ -106,8 +113,8 @@ public class Location extends BaseImpl {
 
 	/**
 	 * Get Point object from location record.
-	 * @return a Point
 	 *
+	 * @return a Point
 	 */
 	static public Point getPoint(Record aLocationRecord) {
 		PGgeometryLW geom = (PGgeometryLW) aLocationRecord.getObjectField(FIELD_POINT);
@@ -145,6 +152,21 @@ public class Location extends BaseImpl {
 
 		// Update geometry column using PostGIS Geometry wrapper
 		getRecord().setObjectField(FIELD_POINT, new PGgeometryLW(aPoint));
+
+		// A bit of a hack, but some projects add an "rdpoint" field to g_location
+		// this is a Dutch projection (RD). Only for those cases also update the "rdpoint" column.
+		if (getRecord().hasField(FIELD_RDPOINT)) {
+			double xy[];
+			try {
+				xy = Transform.WGS84toRD(aPoint.x, aPoint.y);
+			} catch (Exception e) {
+				throw new UtopiaException("No valid lat and lon coordinates found");
+			}
+
+			// now store the rdpoint
+			Point rdPoint = PostGISUtil.createPoint(EPSG_DUTCH_RD, xy[0], xy[1], aPoint.z, (long) aPoint.m);
+			getRecord().setObjectField(FIELD_RDPOINT, new PGgeometryLW(rdPoint));
+		}
 	}
 
 	/**
