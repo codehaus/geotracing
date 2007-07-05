@@ -89,6 +89,11 @@ KW.CMS = {
 		KW.utopia(req, callback);
 	},
 
+	getstartendpoints: function(callback) {
+		var req = KW.createRequest('poi-get-startendpoints-req');
+
+		KW.utopia(req, callback);
+	},
 /**
  * Delete poi.
  * @param callback - user callback function or null
@@ -136,7 +141,7 @@ KW.CMS = {
 		var req = KW.createRequest('poi-relate-media-req');
 		KW.UTIL.setAttr(req, 'id', poiId);
 
-		for (var i=0; i < kichURIs.length; i++) {
+		for (var i = 0; i < kichURIs.length; i++) {
 			KW.UTIL.addTextElement(req, 'medium', kichURIs[i]);
 		}
 
@@ -163,7 +168,7 @@ KW.CMS = {
 		var req = KW.createRequest('poi-unrelate-media-req');
 		KW.UTIL.setAttr(req, 'id', poiId);
 
-		for (var i=0; i < mediaIds.length; i++) {
+		for (var i = 0; i < mediaIds.length; i++) {
 			KW.UTIL.addTextElement(req, 'medium', mediaIds[i]);
 		}
 
