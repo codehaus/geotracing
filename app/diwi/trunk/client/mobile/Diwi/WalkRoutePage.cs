@@ -144,10 +144,13 @@ namespace Diwi {
         }
 
         void doPoi(string id) {
-            mIsActive = false;
             XMLement x = AppController.sKwxClient.getPOI(id);
+            AppController.SysBeep();
+            AppController.SysBeep();
             sCurrentPOI = id;
+
             if (x != null) {
+                mIsActive = false;
                 if (sPoiPage == null)
                     sPoiPage = new PoiViewerPage(this);
                 sPoiPage.setContent(x);

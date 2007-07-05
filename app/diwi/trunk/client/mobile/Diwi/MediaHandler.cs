@@ -10,6 +10,7 @@ namespace Diwi {
 
 
     class MediaDownloader {
+        public static bool sQuitting = false;
         private Thread mThread;
         string uri;
         string path;
@@ -25,6 +26,11 @@ namespace Diwi {
                 path = p;
                 mThread.Start();
             }
+        }
+
+        public void abort() {
+            mThread.Abort();
+            AppController.sProgBar.bumpDown();
         }
 
         public bool doDownload(string url, string p) {
@@ -69,7 +75,7 @@ namespace Diwi {
 
                 stream.Close();
 
-                if (callb != null)
+                if ((sQuitting == false) && callb != null)
                     callb(path);
             } catch (WebException we) { 
 
@@ -81,6 +87,7 @@ namespace Diwi {
     }
 
     class MediaUploader {
+        public static bool sQuitting = false;
         private static string bounds = "---------------" + DateTime.UtcNow.Ticks.ToString();
         string localFile;
         string name;
@@ -228,18 +235,17 @@ namespace Diwi {
                 XMLement xml = XMLement.createFromRawXml(pageData);
                 if (xml != null) {
                     if (xml.tag == "medium-insert-rsp") {
-                        xml = AppController.sKwxClient.addMedium(xml.getAttributeValue("id") );
+                        xml = AppController.sKwxClient.addMedium(xml.getAttributeValue("id"));
                     }
                 }
 
-                
-                if (callb != null)
-                    callb();
+
+                if ((sQuitting == false) && callb != null) callb();
 
             } catch (IOException e) {
             }
 
-            AppController.sProgBar.bumpDown();
+            if (sQuitting == false) AppController.sProgBar.bumpDown();
 
             busy = false;
 
