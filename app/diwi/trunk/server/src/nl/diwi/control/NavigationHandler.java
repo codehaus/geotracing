@@ -146,8 +146,9 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
 	private JXElement handlePoint(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
-		TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-		NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+        TrackLogic trackLogic = new TrackLogic(oase);
+		NavigationLogic navLogic = new NavigationLogic(oase);
 
 		//result contains 'pt' elements with everything filled out if an EMEA string was sent.
 		// add x and y field before sending it to TrackLogic
@@ -167,9 +168,30 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		ptElement.setAttr(Y_FIELD, y);
 
 		// write to track
-		trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
+        trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
 
-		Vector result = new Vector(3);
+/*
+        Track track = trackLogic.getActiveTrack(Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId()));
+        try{
+        if(track!=null){
+            Record[] recs1 = oase.getRelater().getRelated(track.getRecord(), "g_location", "lastpt");
+            if(recs1.length == 1){
+                Record r = setRDPoint(recs1[0], ptElement.getAttr(LON_FIELD), ptElement.getAttr(LAT_FIELD));
+                oase.getModifier().update(r);
+            }
+
+            Record[] recs2 = oase.getRelater().getRelated(oase.getFinder().read(Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId())), "g_location", "lastloc");
+            if(recs2.length == 1){
+                Record r = setRDPoint(recs2[0], ptElement.getAttr(LON_FIELD), ptElement.getAttr(LAT_FIELD));
+                oase.getModifier().update(r);
+            }
+        }
+        }catch(Throwable t){
+
+        }
+*/
+
+        Vector result = new Vector(3);
 
 		Point point = new Point(x, y);
 		point.setSrid(EPSG_DUTCH_RD);
@@ -296,20 +318,8 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		Track track = trackLogic.getActiveTrack(personId);
 		Location location = trackLogic.addLocation(track, wgsPoint, mediumId, "medium");
 
-		double xy[];
-		try {
-			xy = Transform.WGS84toRD(Double.parseDouble(lon), Double.parseDouble(lat));
-		} catch (Exception e) {
-			throw new UtopiaException("No valid lat and lon coordinates found");
-		}
-
-		double x = xy[0];
-		double y = xy[1];
-
-		// now store the rdpoint
-		Point rdPoint = PostGISUtil.createPoint(EPSG_DUTCH_RD, x, y, 0.0, System.currentTimeMillis());
-		location.getRecord().setObjectField(RDPOINT_FIELD, new PGgeometryLW(rdPoint));
-		location.saveUpdate();
+        /*Record r = setRDPoint(location.getRecord(), lon, lat);
+        oase.getModifier().update(r);*/
 
 		// We either have location or an exception here
 		JXElement rsp = createResponse(NAV_ADD_MEDIUM);
@@ -321,7 +331,24 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		return rsp;
 	}
 
-	protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    /*private Record setRDPoint(Record aLocationRecord, String aLon, String aLat) throws UtopiaException{
+        double xy[];
+		try {
+			xy = Transform.WGS84toRD(Double.parseDouble(aLon), Double.parseDouble(aLat));
+		} catch (Exception e) {
+			throw new UtopiaException("No valid lat and lon coordinates found");
+		}
+
+		double x = xy[0];
+		double y = xy[1];
+
+		// now store the rdpoint
+		Point rdPoint = PostGISUtil.createPoint(EPSG_DUTCH_RD, x, y, 0.0, System.currentTimeMillis());
+		aLocationRecord.setObjectField(RDPOINT_FIELD, new PGgeometryLW(rdPoint));
+		return aLocationRecord;
+    }*/
+
+    protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		String service = anUtopiaReq.getServiceName();
 		Logging.getLog(anUtopiaReq).warn("Unknown service " + service);
 		return createNegativeResponse(service, ErrorCode.__6000_Unknown_command, "unknown service: " + service);

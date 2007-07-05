@@ -245,6 +245,22 @@
         </expect>
     </test>
 
+    <test id="route-gohome-req">
+        <send id="client1">
+            <utopia-req>
+                <route-gohome-req>
+                    <pref name="type" value="walking" type="activity"/>
+                </route-gohome-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <route-gohome-rsp id="${routeid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="struinen - step on poi">
         <send id="client1">
             <utopia-req>

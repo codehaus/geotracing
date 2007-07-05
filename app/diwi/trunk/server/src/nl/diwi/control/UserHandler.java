@@ -232,6 +232,53 @@ public class UserHandler extends DefaultHandler implements Constants {
         LogLogic logLogic = new LogLogic(oase);
         JXElement response = createResponse(USER_GET_STATS);
 
+        String personId = anUtopiaReq.getRequestCommand().getAttr("id");
+        try {
+
+            Record person = oase.getFinder().read(Integer.parseInt(personId));
+            JXElement personElm = person.toXML();
+            personElm.setTag(Person.XML_TAG);
+            personElm.removeChildByTag(Person.CREATION_DATE_FIELD);
+            personElm.removeChildByTag(Person.MODIFICATION_DATE_FIELD);
+            personElm.removeChildByTag(Person.EXTRA_FIELD);
+            personElm.removeChildByTag("owner");
+
+            Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "register");
+            for (int j = 0; j < prefs.length; j++) {
+                Record record = prefs[j];
+                JXElement prefElm = new JXElement(PREF_ELM);
+                prefElm.setAttr(NAME_FIELD, record.getStringField(NAME_FIELD));
+                prefElm.setAttr(VALUE_FIELD, record.getStringField(VALUE_FIELD));
+                personElm.addChild(prefElm);
+            }
+
+            // add the trips
+            Vector tripLogs = logLogic.getLogs("" + person.getId(), LOG_TRIP_TYPE);
+            for (int j = 0; j < tripLogs.size(); j++) {
+                personElm.addChild(logLogic.getLog(((JXElement) tripLogs.elementAt(j)).getAttr(ID_FIELD)));
+            }
+
+            // add the traffic
+            Vector trafficLogs = logLogic.getLogs("" + person.getId(), LOG_TRAFFIC_TYPE);
+            for (int h = 0; h < trafficLogs.size(); h++) {
+                log.info("" + h);
+                personElm.addChild(logLogic.getLog(((JXElement) trafficLogs.elementAt(h)).getAttr(ID_FIELD)));
+            }
+
+            response.addChild(personElm);            
+            System.out.println(new String(response.toBytes(false)));
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
+        return response;
+    }
+
+    private JXElement getAllStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+
+        LogLogic logLogic = new LogLogic(oase);
+        JXElement response = createResponse(USER_GET_STATS);
+
         try {
             Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
             for (int i = 0; i < people.length; i++) {

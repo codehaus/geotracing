@@ -9,6 +9,8 @@ import nl.diwi.util.GPXUtil;
 import nl.diwi.util.ProjectionConversionUtil;
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.handler.QueryLogic;
+import org.geotracing.handler.TrackLogic;
+import org.geotracing.handler.Track;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
@@ -21,6 +23,7 @@ import org.keyworx.utopia.core.util.XML;
 import org.postgis.LineString;
 import org.postgis.PGbox2d;
 import org.postgis.PGgeometryLW;
+import org.postgis.Point;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -70,6 +73,40 @@ public class RouteLogic implements Constants {
             for (int i = 0; i < prefs.length; i++) {
                 oase.getModifier().delete(prefs[i]);
             }
+
+            if(aType.equals(GENERATE_HOME_ROUTE)){
+                // now add the start and end point coordinates
+                TrackLogic trackLogic = new TrackLogic(oase);
+                Track track = trackLogic.getActiveTrack(aPersonId);
+                if(track == null) return new JXElement("route");
+                
+                Record[] firstRecs = track.getRelatedRecords("g_location", "firstpt");
+                Point rdPointStart = (Point) ((PGgeometryLW) firstRecs[0].getObjectField(RDPOINT_FIELD)).getGeometry();
+
+                JXElement pref1 = new JXElement(PREF_ELM);
+                pref1.setAttr(NAME_FIELD, "startx");
+                pref1.setAttr(VALUE_FIELD, rdPointStart.x);
+                reqElm.addChild(pref1);
+
+                JXElement pref2 = new JXElement(PREF_ELM);
+                pref2.setAttr(NAME_FIELD, "starty");
+                pref2.setAttr(VALUE_FIELD, rdPointStart.y);
+                reqElm.addChild(pref2);
+
+                Record[] lastRecs = oase.getRelater().getRelated(person, "g_location", "lastloc");
+                Point rdPointEnd = (Point) ((PGgeometryLW) lastRecs[0].getObjectField(RDPOINT_FIELD)).getGeometry();
+
+                JXElement pref3 = new JXElement(PREF_ELM);
+                pref3.setAttr(NAME_FIELD, "endx");
+                pref3.setAttr(VALUE_FIELD, rdPointEnd.x);
+                reqElm.addChild(pref3);
+
+                JXElement pref4 = new JXElement(PREF_ELM);
+                pref4.setAttr(NAME_FIELD, "endy");
+                pref4.setAttr(VALUE_FIELD, rdPointEnd.y);
+                reqElm.addChild(pref4);                                
+            }
+
 
             // now store the prefs
             String prefString = "";
@@ -125,7 +162,7 @@ public class RouteLogic implements Constants {
 
                     String description = person.getStringField(Person.FIRSTNAME_FIELD) + " "
                             + person.getStringField(Person.LASTNAME_FIELD)
-                            + "'s personal route generated at " + formatter.format(new Date())
+                            + "'s " + aType + " generated at " + formatter.format(new Date())
                             + " -  " + prefString;
 
                     String gpxName = generated.getChildText(NAME_ELM);
@@ -133,8 +170,8 @@ public class RouteLogic implements Constants {
                         description = gpxName + description;
                     }
 
-                    if(aType.equals("route")){
-                        route.setStringField(NAME_FIELD, "eigen route");
+                    if(aType.equals(GENERATE_PREFS_ROUTE)){
+                        route.setStringField(NAME_FIELD, "persoonlijke route");
                     }else{
                         route.setStringField(NAME_FIELD, "route terug");
                     }                    
