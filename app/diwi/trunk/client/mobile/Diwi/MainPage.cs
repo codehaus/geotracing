@@ -4,6 +4,14 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Diagnostics;
+using Microsoft.WindowsMobile.Forms;
+
+
+
 namespace Diwi {
     class MainPage : DiwiPageBase {
 
@@ -19,7 +27,7 @@ namespace Diwi {
             : base(parent) {
 
 
-            mMenu.addItem("Uitleg", new DiwiUIMenu.DiwiMenuCallbackHandler(doUitleg));
+            mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute));
             mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute));
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin));
@@ -29,12 +37,14 @@ namespace Diwi {
             title = "Hoofdmenu";
         }
 
-        void doUitleg(int i,string s)
+        void doVideo(int i,string s)
         {
-            mIsActive = false;
-            if (uitLegPage == null)
-                uitLegPage = new UitlegPage(this);
-            uitLegPage.ShowDialog();
+            Process process = new Process();
+            process.StartInfo.FileName = AppController.sVideoFileName;
+            process.StartInfo.Verb = "Open";
+            process.StartInfo.UseShellExecute = true;
+            process.Start();
+
         }
 
         void walkRoute(int i, string s) {

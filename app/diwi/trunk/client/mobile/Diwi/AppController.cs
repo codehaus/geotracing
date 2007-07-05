@@ -32,7 +32,8 @@ namespace Diwi {
         public static GpsReader sGpsReader;
         public static string sUserName = null;
         public static string sUserPass = null;
-        public static string sUserProps = null; 
+        public static string sUserProps = null;
+        public static string sVideoFileName = null;
         public static Progress sProgBar;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
 
@@ -79,7 +80,7 @@ namespace Diwi {
             try {
                 string myDocumentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
                 sUserProps = myDocumentsPath + "\\DiwiProps.txt";
-
+                sVideoFileName = myDocumentsPath + "\\diwi-concept.3gp";
 
                 StreamReader userProps = new StreamReader(sUserProps);
                 if (userProps != null) {
