@@ -31,6 +31,7 @@ import java.util.Vector;
 public class RouteHandler extends DefaultHandler implements Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
+    public final static String ROUTE_GOHOME_SERVICE = "route-gohome";
     public final static String ROUTE_GET_SERVICE = "route-get";
     public final static String ROUTE_GETLIST_SERVICE = "route-getlist";
     public final static String ROUTE_GET_MAP_SERVICE = "route-get-map";
@@ -53,6 +54,8 @@ public class RouteHandler extends DefaultHandler implements Constants {
         try {
             if (service.equals(ROUTE_GENERATE_SERVICE)) {
                 response = generateRoute(anUtopiaReq);
+            } else if (service.equals(ROUTE_GENERATE_SERVICE)) {
+                response = generateHomeRoute(anUtopiaReq);
             } else if (service.equals(ROUTE_GET_SERVICE)) {
                 response = getRoute(anUtopiaReq);
             } else if (service.equals(ROUTE_GETLIST_SERVICE)) {
@@ -141,6 +144,22 @@ public class RouteHandler extends DefaultHandler implements Constants {
         </route-generate-req>
      */
     protected JXElement generateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
+
+        RouteLogic logic = createLogic(anUtopiaReq);
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+        // ok so this person is the one generating the routes!!
+        int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
+
+        JXElement route = logic.generateRoute(reqElm, personId);
+        JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
+        response.addChild(route);
+
+        return response;
+    }
+
+    protected JXElement generateHomeRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
         LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
 

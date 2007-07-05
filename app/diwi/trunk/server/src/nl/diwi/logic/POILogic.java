@@ -424,7 +424,7 @@ public class POILogic implements Constants {
             Record record = oase.getFinder().read(aPOIId);
 
             // replace the media
-            JXElement media = new JXElement("media");
+            JXElement media = record.getXMLField(MEDIA_FIELD);
 
             for (int i = 0; i < theMediaIds.size(); i++) {
                 JXElement kichuri = new JXElement("kich-uri");
