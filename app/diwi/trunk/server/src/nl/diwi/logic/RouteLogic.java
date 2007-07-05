@@ -174,6 +174,119 @@ public class RouteLogic implements Constants {
         }
     }
 
+    public JXElement generateRouteHome(JXElement reqElm, int personId) throws UtopiaException {
+        try {
+            Record person = oase.getFinder().read(personId);
+
+            // first delete existing prefs
+            Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "route");
+            for (int i = 0; i < prefs.length; i++) {
+                oase.getModifier().delete(prefs[i]);
+            }
+
+            // now store the prefs
+            String prefString = "";
+            Vector prefElms = reqElm.getChildrenByTag(PREF_ELM);
+            prefs = new Record[prefElms.size()];
+            for (int i = 0; i < prefElms.size(); i++) {
+                JXElement prefElm = (JXElement) prefElms.elementAt(i);
+
+                // create the pref
+                Record pref = oase.getModifier().create(PREFS_TABLE);
+                pref.setIntField(OWNER_FIELD, personId);
+                pref.setStringField(NAME_FIELD, prefElm.getAttr(NAME_FIELD));
+                pref.setStringField(VALUE_FIELD, prefElm.getAttr(VALUE_FIELD));
+                pref.setIntField(TYPE_FIELD, prefElm.getIntAttr(TYPE_FIELD));
+
+                if (i == 0) {
+                    prefString += prefElm.getAttr(NAME_FIELD) + "=" + prefElm.getAttr(VALUE_FIELD);
+                } else {
+                    prefString += ", " + prefElm.getAttr(NAME_FIELD) + "=" + prefElm.getAttr(VALUE_FIELD);
+                }
+
+                prefs[i] = pref;
+                oase.getModifier().insert(pref);
+
+                // relate pref to person
+                oase.getRelater().relate(person, pref, "route");
+            }
+
+            JXElement generated = RouteGenerator.generateRoute(prefs);
+            //log.info("dbg 4 " + new String(generated.toBytes(false)));
+            /*URL url = new URL("http://local.diwi.nl/diwi/testresponse/generateroute1.xml");
+            JXElement generated = new JXBuilder().build(url);*/
+            Record route = null;
+
+            if (generated != null && generated.hasChildren() && generated.getChildByTag("rte") != null && generated.getChildByTag("rte").hasChildren()) {
+                //make sure all other generated routes are set to 'inactive'
+                String tables = "diwi_route,utopia_person";
+                String fields = "diwi_route.id";
+                String where = "diwi_route.type=" + ROUTE_TYPE_GENERATED + " AND utopia_person.id=" + personId;
+                String relations = "diwi_route,utopia_person";
+                String postCond = null;
+                Record[] gens = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+                for (int i = 0; i < gens.length; i++) {
+                    Record gen = oase.getFinder().read(gens[i].getIntField(ID_FIELD));
+                    gen.setIntField(STATE_FIELD, INACTIVE_STATE);
+                    oase.getModifier().update(gen);
+                }
+                log.info("now inserting route.");
+                //Process the GPX into datastructures
+                try {
+                    route = oase.getModifier().create(ROUTE_TABLE);
+                    Format formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
+
+                    String description = person.getStringField(Person.FIRSTNAME_FIELD) + " "
+                            + person.getStringField(Person.LASTNAME_FIELD)
+                            + "'s personal route generated at " + formatter.format(new Date())
+                            + " -  " + prefString;
+
+                    String gpxName = generated.getChildText(NAME_ELM);
+                    if (gpxName != null && gpxName.length() > 0) {
+                        description = gpxName + description;
+                    }
+                    route.setStringField(NAME_FIELD, "eigen route");
+                    route.setStringField(DESCRIPTION_FIELD, description);
+                    route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+                    route.setIntField(STATE_FIELD, ACTIVE_STATE);
+
+                    // we receive the gpx file in RD
+                    LineString rdLineString = GPXUtil.GPXRoute2LineString(generated);
+                    PGgeometryLW rdGeom = new PGgeometryLW(rdLineString);
+                    route.setObjectField(RDPATH_FIELD, rdGeom);
+
+                    // but also store it in WGS84
+                    LineString wgsLineString = GPXUtil.GPXRoute2LineString(generated);
+                    wgsLineString = ProjectionConversionUtil.RD2WGS84(wgsLineString);
+                    PGgeometryLW wgsGeom = new PGgeometryLW(wgsLineString);
+                    route.setObjectField(WGSPATH_FIELD, wgsGeom);
+
+                    oase.getModifier().insert(route);
+
+                    // now relate the route to the person
+                    oase.getRelater().relate(person, route);
+
+                    // now update the distance
+                    Record r = oase.getFinder().read(route.getId());
+                    r.setIntField(DISTANCE_FIELD, getDistance(r));
+                    oase.getModifier().update(r);
+                } catch (OaseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (route == null) {
+                return new JXElement(ROUTE_ELM);
+            } else {
+                //Convert Route record to XML and add to result
+                return getRoute(route);
+            }
+        } catch (Throwable t) {
+            log.error("Exception in generateRoute: " + t.toString());
+            throw new UtopiaException("Error in generateRoute", t, ErrorCode.__6006_database_irregularity_error);
+        }
+    }
+
     public int insertRoute(JXElement aRouteElement, int aRouteType) throws UtopiaException {
         Record route;
         POILogic poiLogic = new POILogic(oase);
