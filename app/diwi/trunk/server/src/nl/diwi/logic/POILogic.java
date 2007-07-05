@@ -425,6 +425,7 @@ public class POILogic implements Constants {
 
             // replace the media
             JXElement media = record.getXMLField(MEDIA_FIELD);
+            if(media == null) media = new JXElement(MEDIA_FIELD);
 
             for (int i = 0; i < theMediaIds.size(); i++) {
                 JXElement kichuri = new JXElement("kich-uri");

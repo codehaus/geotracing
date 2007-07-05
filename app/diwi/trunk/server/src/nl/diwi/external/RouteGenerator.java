@@ -30,7 +30,21 @@ public class RouteGenerator implements Constants {
 		return resultRoute;
 	}
 
-	/** Build URL from prefs */
+    /** Generate route from preferences using external generator. */
+	public static JXElement generateRoute(String theNameValuePairs) throws UtopiaException {
+		JXElement resultRoute;
+
+		//Get the GPX
+		String url=null;
+		try {
+			resultRoute = new JXBuilder().build(new URL(GENERATOR_URL + "?" + theNameValuePairs));
+		} catch (Throwable t) {
+			throw new UtopiaException("Exception generating route from " + url, t);
+		}
+		return resultRoute;
+	}
+
+    /** Build URL from prefs */
 	private static String buildUrl(Record[] thePrefs, String anUrl) throws UnsupportedEncodingException {
 		//build the url
 		StringBuffer urlBuffer = new StringBuffer();
@@ -41,14 +55,14 @@ public class RouteGenerator implements Constants {
 			urlBuffer.append("&");
 		}
 		for (int i = 0; i < thePrefs.length; i++) {
-			urlBuffer.append(thePrefs[i].getStringField(NAME_FIELD));
+			urlBuffer.append(URLEncoder.encode(thePrefs[i].getStringField(NAME_FIELD), "UTF-8"));
 			urlBuffer.append('=');
-			urlBuffer.append(thePrefs[i].getStringField(VALUE_FIELD));
+			urlBuffer.append(URLEncoder.encode(thePrefs[i].getStringField(VALUE_FIELD), "UTF-8"));
 			if (i < thePrefs.length - 1) {
 				urlBuffer.append('&');
 			}
 		}
-		return URLEncoder.encode(urlBuffer.toString(), "UTF-8");
+		return urlBuffer.toString();
 	}
 
 }

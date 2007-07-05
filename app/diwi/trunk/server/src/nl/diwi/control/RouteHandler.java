@@ -152,7 +152,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
         // ok so this person is the one generating the routes!!
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
-        JXElement route = logic.generateRoute(reqElm, personId);
+        JXElement route = logic.generateRoute(reqElm, personId, "route");
         JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
         response.addChild(route);
 
@@ -168,8 +168,8 @@ public class RouteHandler extends DefaultHandler implements Constants {
         // ok so this person is the one generating the routes!!
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
-        JXElement route = logic.generateRoute(reqElm, personId);
-        JXElement response = createResponse(ROUTE_GENERATE_SERVICE);
+        JXElement route = logic.generateRoute(reqElm, personId, "home");
+        JXElement response = createResponse(ROUTE_GOHOME_SERVICE);
         response.addChild(route);
 
         return response;
