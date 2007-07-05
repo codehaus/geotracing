@@ -30,7 +30,7 @@
 	font-size: 12px;
 }
 
-
+/*
 #startpunt-lb {
 	top: 30px;
 	left: 15px;
@@ -39,16 +39,21 @@
 #eindpunt-lb {
 	top: 30px;
 	left: 145px;
+} */
+
+#starteindpunt-lb {
+	top: 30px;
+	left: 35px;
 }
 
 #thema-lb {
 	top: 30px;
-	left: 275px;
+	left: 165px;
 }
 
 #afstand-lb {
 	top: 30px;
-	left: 405px;
+	left: 295px;
 }
 
 #caption1 {

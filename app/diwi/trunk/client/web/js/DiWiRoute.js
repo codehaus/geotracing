@@ -50,8 +50,8 @@ var ROUTE = {
 	},
 
 	createGenerateRouteForm: function () {
-		KW.CMS.getstartpoints(ROUTE.createStartPOIsForm);
-		KW.CMS.getendpoints(ROUTE.createEndPOIsForm);
+		// KW.CMS.getstartendpoints(ROUTE.createStartPOIsForm);
+		KW.CMS.getstartendpoints(ROUTE.createStartEndPOIsForm);
 		KW.CMS.getthemes(ROUTE.createThemesForm);
 		ROUTE.createDistanceForm();
 
@@ -99,6 +99,21 @@ var ROUTE = {
 		DH.setHTML('startpunt-lb', formHTML);
 	},
 
+	createStartEndPOIsForm: function(rspXML) {
+		var formHTML = '<p>Start/Eindpunt</p><form ><select style="width:120px;" id="starteindpunt"><option value="-1" selected="selected">kies...</option>';
+
+		ROUTE.startEndPOIs = ROUTE.rsp2Records(rspXML);
+
+		for (i = 0; i < ROUTE.startEndPOIs.length; i++) {
+			formHTML += '<option value="' + i + '">';
+			formHTML += ROUTE.startEndPOIs[i].getField('name');
+			formHTML += '</option>';
+		}
+
+		formHTML += '</select></form>';
+		DH.setHTML('starteindpunt-lb', formHTML);
+	},
+
 	createThemesForm: function(rspXML) {
 		var formHTML = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="-1" selected="selected">geen voorkeur</option>';
 		var themes = rspXML.getElementsByTagName('theme');
@@ -117,17 +132,12 @@ var ROUTE = {
 		// params['request'] = 'createroute';
 
 		// Start-point RD coordinates
-		var i = DH.getObject('startpunt').value;
+		var i = DH.getObject('starteindpunt').value;
 		if (i > -1) {
-			params[KW.DIWI.STARTX_PARAM] = Math.round(ROUTE.startPOIs[i].getField('x'));
-			params[KW.DIWI.STARTY_PARAM] = Math.round(ROUTE.startPOIs[i].getField('y'));
-		}
-
-		// End-point RD coordinates
-		i = DH.getObject('eindpunt').value;
-		if (i > -1) {
-			params[KW.DIWI.ENDX_PARAM] = Math.round(ROUTE.endPOIs[i].getField('x'));
-			params[KW.DIWI.ENDY_PARAM] = Math.round(ROUTE.endPOIs[i].getField('y'));
+			params[KW.DIWI.STARTX_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('x'));
+			params[KW.DIWI.STARTY_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('y'));
+			params[KW.DIWI.ENDX_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('x'));
+			params[KW.DIWI.ENDY_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('y'));
 		}
 
 		// POI theme
