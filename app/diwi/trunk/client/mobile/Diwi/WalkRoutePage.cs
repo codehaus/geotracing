@@ -111,41 +111,34 @@ namespace Diwi {
             int x = MapHandler.currentXpixel(horizontal);
             int y = MapHandler.currentYpixel(horizontal);
             setPosition(x, y);
-
-            if (poi != null) {
-                List<string> pois = new List<string>();
-                for (int i = 0; ; i++) {
-                    XMLement t = xml.getChild(i);
-                    if (t == null) break;
-                    if (t.tag == "poi-hit") {
-                        string poiId = t.getAttributeValue("id");
-                        if (!mHitPOI.Contains(poiId)) {
-                            mHitPOI.Add(poiId);
-                            pois.Add(poiId);
+            if (mIsActive) {
+                if (poi != null) {
+                    List<string> pois = new List<string>();
+                    for (int i = 0; ; i++) {
+                        XMLement t = xml.getChild(i);
+                        if (t == null) break;
+                        if (t.tag == "poi-hit") {
+                            string poiId = t.getAttributeValue("id");
+                            if (!mHitPOI.Contains(poiId)) {
+                                mHitPOI.Add(poiId);
+                                pois.Add(poiId);
+                            }
                         }
                     }
+                    if (pois.Count > 0) {
+                        doPoi(pois);
+                    }
                 }
-                if( pois.Count > 0) {
-                    doPoi(pois);
+                XMLement msg = xml.getChildByName("msg");
+                if (msg != null) {
+                    string text = msg.nodeText;
+                    if (text == "roam" && checkStruinWithUser == true) {
+                        checkStruinWithUser = false;
+                        doCheckStruin(0, "");
+                    }
+                } else {
+                    checkStruinWithUser = (AppController.sActiveRoute != null);
                 }
-            }
-/*
-            if (poi != null) {
-                string poiId = poi.getAttributeValue("id");
-                if ( !mHitPOI.Contains(poiId) )
-                    doPoi(poiId);
-                // stumbled on an intersting point...
-            }
- */
-            XMLement msg = xml.getChildByName("msg");
-            if (msg != null) {
-                string text = msg.nodeText;
-                if (text == "roam" && checkStruinWithUser == true) {
-                    checkStruinWithUser = false;
-                    doCheckStruin(0, "");
-                }
-            } else {
-                checkStruinWithUser = (AppController.sActiveRoute != null);
             }
         }
 
@@ -187,6 +180,8 @@ namespace Diwi {
             if (fileName != null) {
                 (new MakeVideoPage(this, fileName)).ShowDialog();
             }
+            mIsActive = true;
+            mBlendTimer.Change(0, 3000);
         }
 
         void doUGC(int i, string s) {
@@ -206,12 +201,16 @@ namespace Diwi {
             if (fileName != null) {
                 (new MakePhotoPage(this, fileName)).ShowDialog();
             }
+            mIsActive = true;
+            mBlendTimer.Change(0, 3000);
         }
 
         void doText(int i, string s) {
             mIsActive = false;
             AppController.sGpsReader.storeLocation();
             (new MakeTextPage(this, null)).ShowDialog();
+            mIsActive = true;
+            mBlendTimer.Change(0, 3000);
         }
 
 
