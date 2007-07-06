@@ -144,10 +144,15 @@ namespace Diwi {
 
 
         void doCheckStruin(int i, string s) {
+            mIsActive = false;
             if (chckStruinPage == null) {
                 chckStruinPage = new CheckStruinPage(this);
             }
             chckStruinPage.ShowDialog();
+            mIsActive = true;
+            mBlendTimer.Change(0, 3000);
+            if (AppController.sActiveRoute == null)
+                title = "Struinen...";
         }
 
         void navPointMessage(XMLement xml, float lat, float lon) {
