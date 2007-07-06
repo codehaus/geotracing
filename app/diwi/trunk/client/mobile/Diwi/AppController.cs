@@ -101,6 +101,7 @@ namespace Diwi {
             sKwxClient = KwxClient.instance;
             sGpsReader = GpsReader.instance;
 
+
            // sBacklight.Activate();
         }
 

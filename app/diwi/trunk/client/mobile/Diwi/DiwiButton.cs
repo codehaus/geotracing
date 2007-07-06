@@ -50,6 +50,12 @@ namespace Diwi {
             }
         }
 
+        public int width {
+            get {
+                return mRect.Width;
+            }
+        }
+
         public void setLabel(string t) {
             mText.text = t;
         }

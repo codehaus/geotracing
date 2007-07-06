@@ -18,8 +18,11 @@ namespace Diwi {
         static PoiSelectPage sPoiSelectPage = null;
         static CheckStruinPage chckStruinPage = null;
         static bool sShowUGC = false;
+        private DiwiUIText gpsText;
         private POIHandler poiCB;
         bool checkStruinWithUser;
+        DiwiUIButton mZoomIn;
+        DiwiUIButton mZoomOut;
         List<string> mHitPOI = new List<string>(10);
 
         public WalkRoutePage(DiwiPageBase parent)
@@ -38,7 +41,57 @@ namespace Diwi {
             AppController.sKwxClient.poiCallback += new KwxClient.POICallback(navPointMessage);
             MapHandler.sDownloadCallback += new MapHandler.CallbackHandler(mapReceivedCB);
 
+            mZoomIn    = new DiwiUIButton(offScreenGraphics, 146, 170, "Zoom+", buttonZoomIn, this);
+            mZoomOut   = new DiwiUIButton(offScreenGraphics, 146, 170, "Zoom-", buttonZoomOut, this);
+
+            addDrawable(mZoomIn);
+            addDrawable(mZoomOut);
+
+            gpsText = new DiwiUIText(Color.Black, "Geen GPS", new Font("Arial", 12, FontStyle.Bold));
+            AppController.sGpsReader.callback += new GpsReader.CallbackHandler(gpsMessage);
+
+            addDrawable(gpsText);
+
+            reOrient();
+
             mIsMapPage = true;
+        }
+
+        private delegate void updateGpsMessage(int m);
+        void gpsMessage(int m) {
+            if (InvokeRequired) {
+                this.Invoke(new updateGpsMessage(updateGPS), new object[] { m });
+            } else {
+                updateGPS(m);
+            }
+        }
+
+
+        void updateGPS(int m) {
+            if (m == (int)GpsReader.sMess.M_DEMO || m == (int)GpsReader.sMess.M_FIX) {
+                Rectangle oldRect = gpsText.rect;
+                if (GpsReader.up) {
+                    gpsText.color = Color.Black;
+                    gpsText.draw("GPS Actief");
+                } else if (GpsReader.present) {
+                    gpsText.color = Color.Red;
+                    gpsText.draw("GPS Inactief");
+                } else {
+                    gpsText.color = Color.Red;
+                    gpsText.draw("Geen GPS");
+                }
+                redrawRect(oldRect, gpsText.rect);
+            }
+        }
+
+
+
+        public void buttonZoomOut() {
+            MapHandler.mapRadius *= 1.5F;
+        }
+
+        public void buttonZoomIn() {
+            MapHandler.mapRadius *= 0.75F;
         }
 
         void drawPos(int x, int y) {
@@ -190,6 +243,7 @@ namespace Diwi {
                 title = AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
             MapHandler.active = true;
+            updateGPS((int)GpsReader.sMess.M_DEMO);
             mBlendTimer.Change(0, 3000);
             checkStruinWithUser = (AppController.sActiveRoute != null);
             setBackGround();
@@ -209,10 +263,29 @@ namespace Diwi {
             }
         }
 
+        private void reOrient() {
+            int h = this.ClientRectangle.Height;
+            int w = this.ClientRectangle.Width;
+
+            mZoomIn.x = w - mZoomOut.width;
+            mZoomIn.y = h - 24;
+
+            mZoomOut.x = 0;
+            mZoomOut.y = h - 24;
+
+            gpsText.x = mZoomOut.x + mZoomOut.width + 8;
+            gpsText.y = this.ClientRectangle.Height - 22;
+
+
+        }
+
+
+
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (mInitializing) return;
             if (base.doResize(e)) {
+                reOrient();
                 setBackGround();
                 draw();
             }

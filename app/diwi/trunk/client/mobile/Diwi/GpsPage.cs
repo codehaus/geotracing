@@ -13,18 +13,20 @@ namespace Diwi {
         private DiwiUIText demoText;
         private DiwiUIText speedText;
 
+        Font gpsFont = new Font("Arial", 12, FontStyle.Bold);
+
 
         public GpsPage(DiwiPageBase parent)
             : base(parent) {
 
             Rectangle r = this.ClientRectangle;
 
-            latLonText = new DiwiUIText(Color.Black);
-            numSatText = new DiwiUIText(Color.Black);
-            speedText = new DiwiUIText(Color.Black);
-            hDopText = new DiwiUIText(Color.Black);
-            demoText = new DiwiUIText(Color.Red);
-            fixText = new DiwiUIText(Color.Black);
+            latLonText = new DiwiUIText(Color.Black, "",gpsFont);
+            numSatText = new DiwiUIText(Color.Black, "", gpsFont);
+            speedText = new DiwiUIText(Color.Black, "", gpsFont);
+            hDopText = new DiwiUIText(Color.Black, "", gpsFont);
+            demoText = new DiwiUIText(Color.Black, "", gpsFont);
+            fixText = new DiwiUIText(Color.Black, "", gpsFont);
 
             addDrawable(latLonText);
             addDrawable(numSatText);
@@ -43,26 +45,27 @@ namespace Diwi {
        
         protected override void OnLoad(EventArgs e) {
             base.OnLoad(e);
-            int y = this.ClientRectangle.Height - 4;
-            latLonText.x = 8; latLonText.y = y -= 20;
-            numSatText.x = 8; numSatText.y = y -= 20;
-            hDopText.x = 8; hDopText.y = y -= 20;
-            speedText.x = 8; speedText.y = y -= 20;
-            demoText.x = 8; demoText.y = y -= 20;
-            fixText.x = 8; fixText.y = y -= 20;
+            int y = this.ClientRectangle.Height - 20;
+            numSatText.x = 8; numSatText.y = y -= 24;
+            fixText.x = 8; fixText.y = y -= 24;
+            hDopText.x = 8; hDopText.y = y -= 24;
+            speedText.x = 8; speedText.y = y -= 24;
+            latLonText.x = 8; latLonText.y = y -= 34;
+            demoText.x = 8; demoText.y = y -= 30;
+            updateDemo();
             mIsInitialized = true;
         }
 
        protected override void OnResize(EventArgs e) {
            if (mInitializing) return;
            if (base.doResize(e)) {
-                int y = this.ClientRectangle.Height - 4;
-                latLonText.x = 8; latLonText.y = y -= 20;
-                numSatText.x = 8; numSatText.y = y -= 20;
-                hDopText.x = 8; hDopText.y = y -= 20;
-                speedText.x = 8; speedText.y = y -= 20;
-                demoText.x = 8; demoText.y = y -= 20;
-                fixText.x = 8; fixText.y = y -= 20;
+                int y = this.ClientRectangle.Height - 20;
+                numSatText.x = 8; numSatText.y = y -= 24;
+                fixText.x = 8; fixText.y = y -= 24;
+                hDopText.x = 8; hDopText.y = y -= 24;
+                speedText.x = 8; speedText.y = y -= 24;
+                latLonText.x = 8; latLonText.y = y -= 34;
+                demoText.x = 8; demoText.y = y -= 30;
                 draw();
             }
         }
@@ -75,14 +78,20 @@ namespace Diwi {
         void updatePrecision() {
             Rectangle oldRect = hDopText.rect;
             hDopText.erase(sBackgroundColor);
-            hDopText.draw("HDOP: " + GpsReader.precision.ToString());
+            if (GpsReader.up)
+                hDopText.draw("Precision: " + GpsReader.precision.ToString());
+            else
+                hDopText.draw("Precision: -" );
             redrawRect(oldRect, hDopText.rect);
         }
 
         void updatePosition() {
             Rectangle oldRect = latLonText.rect;
             latLonText.erase(sBackgroundColor);
-            latLonText.draw(GpsReader.latitude + "; " + GpsReader.longtitude);
+            if (GpsReader.up)
+                latLonText.draw(GpsReader.latitude + "; " + GpsReader.longtitude);
+            else
+                latLonText.draw("");
             redrawRect(oldRect, latLonText.rect);
         }
 
@@ -90,7 +99,10 @@ namespace Diwi {
         void updateNumSats() {
             Rectangle oldRect = numSatText.rect;
             numSatText.erase(sBackgroundColor);
-            numSatText.draw("sattelites in view: " + GpsReader.numSats.ToString());
+            if (!GpsReader.demo || GpsReader.demoFile)
+                numSatText.draw("Sattelites in view: " + GpsReader.numSats.ToString());
+            else
+                numSatText.draw("Sattelites in view: -");
             redrawRect(oldRect, numSatText.rect);
         }
 
@@ -98,7 +110,13 @@ namespace Diwi {
         void updateFix() {
             Rectangle oldRect = fixText.rect;
             fixText.erase(sBackgroundColor);
-            fixText.draw(GpsReader.fix ? "found fix" : "no fix");
+            if (!GpsReader.demo || GpsReader.demoFile)
+                fixText.draw(GpsReader.fix ? "Sattelite fix: found" : "Sattelite fix: no");
+            else
+                fixText.draw("Sattelite fix: -");
+            updateSpeed();
+            updatePosition();
+            updatePrecision();
             redrawRect(oldRect, fixText.rect);
         }
 
@@ -106,7 +124,10 @@ namespace Diwi {
         void updateSpeed() {
             Rectangle oldRect = speedText.rect;
             speedText.erase(sBackgroundColor);
-            speedText.draw("speed: " + GpsReader.speed.ToString() + " kph.");
+            if (GpsReader.up)
+                speedText.draw("Speed: " + GpsReader.speed.ToString() + " kph.");
+            else
+                speedText.draw("Speed: -");
             redrawRect(oldRect, speedText.rect);
         }
 
@@ -114,8 +135,20 @@ namespace Diwi {
         void updateDemo() {
             Rectangle oldRect = demoText.rect;
             demoText.erase(sBackgroundColor);
-            demoText.draw(GpsReader.demo ? "GPS Demo Mode!" : "");
+            if (GpsReader.demo) {
+                if (GpsReader.demoFile)
+                    demoText.draw("GPS Found (simulation)");
+                else
+                    demoText.draw("GPS not found");
+            } else {
+                demoText.draw("GPS Found.");
+            }
             redrawRect(oldRect, demoText.rect);
+            updateSpeed();
+            updateFix();
+            updateNumSats();
+            updatePosition();
+            updatePrecision();
         }
 
 

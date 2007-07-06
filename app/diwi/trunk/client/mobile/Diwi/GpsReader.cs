@@ -49,6 +49,24 @@ namespace Diwi {
             return (degrees * (float)Math.PI) / 180.0f;
         }
 
+        public static bool up {
+            get {
+                return GpsReader.fix && (!GpsReader.demo || GpsReader.demoFile);
+            }
+        }
+
+        public static bool present {
+            get {
+                return (!GpsReader.demo || GpsReader.demoFile);
+            }
+        }
+
+        static public bool demoFile {
+            get {
+                return (sGPS.nmeaDemoFile != null);
+            }
+        }
+
         static public string nmea {
             get { return sGPS.mNMEA; }
         }
@@ -168,6 +186,7 @@ namespace Diwi {
                 try {
                     nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
                 } catch (FileNotFoundException) {
+                    nmeaDemoFile = null;
                     mCanDemo = false;
                 }
             }
@@ -250,7 +269,7 @@ namespace Diwi {
                     try {
                         mSerialPort.Open();
                         mDemo = false;
-                        if (mCanDemo && callback != null) {
+                        if (callback != null) {
                             callback((int)sMess.M_DEMO);
                         }
                     } catch (IOException) {
@@ -284,6 +303,7 @@ namespace Diwi {
 
                             } else {
                                 nmeaDemoFile.Close();
+                                nmeaDemoFile = null;
                                 try {
                                     nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
                                 } catch (Exception) {
@@ -308,7 +328,7 @@ namespace Diwi {
                         if (mSerialPort.IsOpen) {
                             mSerialPort.Close();
                             mDemo = true;
-                            if (mCanDemo && callback != null) {
+                            if (callback != null) {
                                 callback((int)sMess.M_DEMO);
                             }
                         }
