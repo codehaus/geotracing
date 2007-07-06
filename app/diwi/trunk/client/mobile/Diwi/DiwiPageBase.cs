@@ -10,7 +10,6 @@ using System.IO;
 namespace Diwi {   // base class for Diwi Pages.
     // 
     class DiwiPageBase : Form {
-
         private delegate void timerTick();
         static protected System.Threading.Timer mBlendTimer=null;
         private delegate void BlendTimerCallback();
@@ -60,6 +59,7 @@ namespace Diwi {   // base class for Diwi Pages.
             
             mCurrentRect = this.ClientRectangle;
 
+
             if (sMeIcon == null) {
                 sMeIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.mypos.ico"));
             }
@@ -94,8 +94,6 @@ namespace Diwi {   // base class for Diwi Pages.
             mInitializing = false;
 
         }
-
-
 
 
         void blendTimout() {
@@ -141,6 +139,7 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public void printStatus(string s) {
+            return;
              Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);
 
@@ -411,7 +410,6 @@ namespace Diwi {   // base class for Diwi Pages.
                 bool didResize = baseResize(mCurrentRect);
 
                 onScreenGraphics = this.CreateGraphics();
-
 
                 if (mIsInitialized) {
                     mMenu.resize(this.ClientRectangle);
