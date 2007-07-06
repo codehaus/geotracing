@@ -18,6 +18,7 @@ namespace Diwi {
         public static Color sTextColor = Color.Black;
         public static Color sSelTextColor = Color.FromArgb(180, 180, 180);
         static Bitmap mMiniLogo = null;
+        static DateTime sLastHit = DateTime.Now;
         private SolidBrush mBrush = new SolidBrush(Color.Red);
         private DiwiUIText mText = new DiwiUIText(Color.Black,"",new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
@@ -52,6 +53,10 @@ namespace Diwi {
 
         public void doMouseClick(int x, int y) {
             Point p = new Point(x, y);
+            DateTime now = DateTime.Now;
+            //AppController.sEventLog.WriteLine("seconds: {0}",(now - sLastHit).Seconds);
+            if ((now - sLastHit).Seconds < 1) return;
+            sLastHit = now;
             int i = 0;
             foreach (Rectangle r in mItemRects) {
                 if (r != null && r.Contains(p)) {

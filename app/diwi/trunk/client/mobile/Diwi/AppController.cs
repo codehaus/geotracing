@@ -27,7 +27,8 @@ namespace Diwi {
         public static string sActiveRouteMapPathHor = null;
         public static string sActiveRouteMapPathVer = null;
         public static XMLement sRoutes;
-        public static StreamWriter sLog;
+        public static StreamWriter sTrackLog;
+        public static StreamWriter sEventLog;
         public static KwxClient sKwxClient;
         public static GpsReader sGpsReader;
         public static string sUserName = null;
@@ -46,6 +47,7 @@ namespace Diwi {
 
         private static Sound sPloink;
         private static Sound sClick;
+        private static Sound sPOI;
 
         public static void showStatus(string s) {
             DiwiPageBase.sCurrentPage.printStatus(s);
@@ -57,7 +59,8 @@ namespace Diwi {
 
 
         public static void activate() {
-            sLog = File.CreateText("DiwiLog.txt");
+            sTrackLog = File.CreateText("DiwiTrackLog.txt");
+            sEventLog = File.CreateText("DiwiEventLog.txt");
 
             Stream stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_horz.gif");
             backgroundHorBitmap = new Bitmap(stream);
@@ -73,6 +76,10 @@ namespace Diwi {
 
             stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.click.wav");
             sClick = new Sound(stream);
+            stream.Close();
+
+            stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.horns.wav");
+            sPOI = new Sound(stream);
             stream.Close();
 
             sProgBar = new Progress();
@@ -102,6 +109,8 @@ namespace Diwi {
             sKwxClient.stop();
             MediaDownloader.sQuitting = true;
             MediaUploader.sQuitting = true;
+            sTrackLog.Close();
+            sEventLog.Close();
             Thread.Sleep(1000);
         }
 
@@ -139,8 +148,10 @@ namespace Diwi {
             return null;
         }
 
-        public static void SysBeep()
-        {
+        public static void poiHit() {
+            sPOI.Play();
+        }
+        public static void SysBeep() {
             sPloink.Play();
         }
         public static void SysClick()

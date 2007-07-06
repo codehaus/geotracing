@@ -18,7 +18,7 @@ namespace Diwi {
         Bitmap mImageBitmap;
         XMLement mAllMedia;
         int mMediaIndex = 0;
-        string xmlString;
+        string xmlString, mDnlUrl;
         int mDownloadIndex=-1;
         string[] dnlFileNames = new string[10];
 
@@ -46,6 +46,13 @@ namespace Diwi {
 
             title = "";
 
+        }
+
+        public void abortDownload() {
+            if (mMediaDnl != null) {
+                mMediaDnl.abort();
+                mMediaDnl = null;
+            }
         }
 
         void openVideo(string fn) {
@@ -126,6 +133,8 @@ namespace Diwi {
 
             mMediaDnl = null;
 
+            AppController.sEventLog.WriteLine("\tdownloaded url: {0}", mDnlUrl);
+
             dnlFileNames[mDownloadIndex] = path;
             if (mDownloadIndex == mMediaIndex) {
                 if (InvokeRequired) {
@@ -143,23 +152,28 @@ namespace Diwi {
         }
 
         void doDownloadMedium(int index) {
+            char[] trimChars = { '\t', ' ', '\n', '\r' };
             XMLement kichUri = mAllMedia.getChild(index);
             mDownloadIndex = index;
             if (kichUri != null) {
                 string url = kichUri.nodeText;
-                string ext = url.Substring(url.LastIndexOf('.'));
+                string ext = (url.Substring(url.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = kichUri.getAttributeValue("type");
                 switch (type) {
                     case "image":
+                        mDnlUrl = url;
                         mMediaDnl = new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                     case "audio":
+                        mDnlUrl = url;
                         mMediaDnl = new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                     case "video":
+                        mDnlUrl = url;
                         mMediaDnl = new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                     case "text":
+                        mDnlUrl = url;
                         mMediaDnl = new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
                         break;
                 }
@@ -174,11 +188,11 @@ namespace Diwi {
                 mImage.x = 500;
                 if (dnlFileNames[mMediaIndex] != null) {
                     openFile(dnlFileNames[mMediaIndex]);
-                } else
-                    doDownloadMedium(mMediaIndex);
+                } 
             } else {
                 if (mMediaDnl != null)
                     mMediaDnl.abort();
+                reset();
                 doTerug(0, "");
             }
             if (mAllMedia.getChild(mMediaIndex + 1) == null) {
@@ -187,29 +201,31 @@ namespace Diwi {
             draw();
         }
 
+        void reset() {
+            mMediaIndex = -1;
+            if (mAllMedia.getChild(1) != null) {
+                setMenuText(0, "Volgende");
+            }
+        }
+ 
         public void setContent(XMLement xml) {
             setMenuText(0, "Volgende");
-            xml = xml.getChildByName("poi");
-            if (xml != null) {
-                XMLement name = xml.getChildByName("name");
-                if (name != null)
-                    title = name.nodeText;
-                mAllMedia = xml.getChildByName("media");
-                xmlString = mAllMedia.toString();
-                mMediaIndex = -1;
-                mDownloadIndex = -1;
-                mImage.x = 500;
-                XMLement desc = xml.getChildByName("description");
-                if (desc != null) {
-                    mTextBox.Text = desc.nodeText;
-                    mTextBox.Visible = true;
-                }
-                for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
-                if (mAllMedia.getChild(0) != null) {
-                    doNext(0, "");
-                } else {
-                    setMenuText(0, "Terug");
-                }
+            abortDownload();
+            XMLement name = xml.getChildByName("name");
+            if (name != null)
+                title = name.nodeText;
+            mAllMedia = xml.getChildByName("media");
+            xmlString = mAllMedia.toString();
+            mMediaIndex = -1;
+            mDownloadIndex = -1;
+            mImage.x = 500;
+
+            for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
+            if (mAllMedia.getChild(0) != null) {
+                doDownloadMedium(0);
+                //doNext(0, "");
+            } else {
+                setMenuText(0, "Terug");
             }
         }
 
@@ -259,6 +275,8 @@ namespace Diwi {
             }
             
             reOrient();
+
+            if (mMediaIndex == -1) doNext(0, "");
 
             mIsInitialized = true;
         }
