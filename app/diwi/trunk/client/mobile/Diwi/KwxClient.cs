@@ -475,7 +475,7 @@ namespace Diwi {
             } catch (WebException e) {
                 AppController.showStatus("");
                 string str = string.Format("Caught WebException: {0}", e.Status.ToString());
-                AppController.sLog.WriteLine(str);
+                AppController.sEventLog.WriteLine(str);
                 return new XMLement("web-exception");
                 /*
                 HttpWebResponse resp = (HttpWebResponse)e.Response;

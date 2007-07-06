@@ -60,7 +60,7 @@ namespace Diwi {
                 AppController.sProgBar.bumpUp();
 
                 try {
-                    FileStream fstream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+                    FileStream fstream = new FileStream(path, FileMode.Create, FileAccess.Write);
                     do {
                         n = stream.Read(inBuffer, 0, 4096);
                         fstream.Write(inBuffer, 0, n);

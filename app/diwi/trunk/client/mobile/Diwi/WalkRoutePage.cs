@@ -15,12 +15,12 @@ namespace Diwi {
 
         public delegate void CallbackHandler();
         public delegate void POIHandler(XMLement data, float lat, float lon);
-        static string sCurrentPOI = null;
-        static PoiViewerPage sPoiPage = null;
+        static PoiSelectPage sPoiSelectPage = null;
         static CheckStruinPage chckStruinPage = null;
         static bool sShowUGC = false;
         private POIHandler poiCB;
         bool checkStruinWithUser;
+        List<string> mHitPOI = new List<string>(10);
 
         public WalkRoutePage(DiwiPageBase parent)
             : base(parent) {
@@ -29,7 +29,7 @@ namespace Diwi {
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
             mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
-            mMenu.addItem("Toon UGC", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC));
+            mMenu.addItem("Toon Volksmond", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC));
             //mMenu.addItem("TestPOI", new DiwiUIMenu.DiwiMenuCallbackHandler(doCheckStruin));
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
 
@@ -37,6 +37,8 @@ namespace Diwi {
 
             AppController.sKwxClient.poiCallback += new KwxClient.POICallback(navPointMessage);
             MapHandler.sDownloadCallback += new MapHandler.CallbackHandler(mapReceivedCB);
+
+            mIsMapPage = true;
         }
 
         void drawPos(int x, int y) {
@@ -56,12 +58,32 @@ namespace Diwi {
             int x = MapHandler.currentXpixel(horizontal);
             int y = MapHandler.currentYpixel(horizontal);
             setPosition(x, y);
+
+            if (poi != null) {
+                List<string> pois = new List<string>();
+                for (int i = 0; ; i++) {
+                    XMLement t = xml.getChild(i);
+                    if (t == null) break;
+                    if (t.tag == "poi-hit") {
+                        string poiId = t.getAttributeValue("id");
+                        if (!mHitPOI.Contains(poiId)) {
+                            mHitPOI.Add(poiId);
+                            pois.Add(poiId);
+                        }
+                    }
+                }
+                if( pois.Count > 0) {
+                    doPoi(pois);
+                }
+            }
+/*
             if (poi != null) {
                 string poiId = poi.getAttributeValue("id");
-                if (sCurrentPOI != poiId)
+                if ( !mHitPOI.Contains(poiId) )
                     doPoi(poiId);
                 // stumbled on an intersting point...
             }
+ */
             XMLement msg = xml.getChildByName("msg");
             if (msg != null) {
                 string text = msg.nodeText;
@@ -139,22 +161,15 @@ namespace Diwi {
             (new MakeTextPage(this, null)).ShowDialog();
         }
 
-        void testPoi(int i, string s) {
-            doPoi("1505");
-        }
 
-        void doPoi(string id) {
-            XMLement x = AppController.sKwxClient.getPOI(id);
-            AppController.SysBeep();
-            AppController.SysBeep();
-            sCurrentPOI = id;
-
-            if (x != null) {
+        void doPoi(List<string> pois) {
+            AppController.poiHit();
+            AppController.sEventLog.WriteLine("hit {0} pois:", pois.Count);
+            if (sPoiSelectPage == null)
+                sPoiSelectPage = new PoiSelectPage(this);
+            if (sPoiSelectPage.setContent(pois)) {
                 mIsActive = false;
-                if (sPoiPage == null)
-                    sPoiPage = new PoiViewerPage(this);
-                sPoiPage.setContent(x);
-                sPoiPage.ShowDialog();
+                sPoiSelectPage.ShowDialog();
             }
         }
 
@@ -172,7 +187,7 @@ namespace Diwi {
             if (AppController.sActiveRoute == null)
                 title = "Struinen...";
             else
-                title = "Route: " + AppController.sActiveRoute.getChildValue("name");
+                title = AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
             MapHandler.active = true;
             mBlendTimer.Change(0, 3000);

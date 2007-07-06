@@ -36,6 +36,7 @@ namespace Diwi {   // base class for Diwi Pages.
         DrawMiniCallback dmcb;
         int blendCount;
         bool mDoDrawMenu = true;
+        protected bool mIsMapPage = false;
 
         public static DiwiPageBase sCurrentPage;
 
@@ -99,7 +100,7 @@ namespace Diwi {   // base class for Diwi Pages.
 
         void blendTimout() {
             blendCount--;
-            if (blendCount <= 0) {
+            if (mIsMapPage && blendCount <= 0) {
                 if (mDoDrawMenu == true) {
                     mDoDrawMenu = false;
                     draw();

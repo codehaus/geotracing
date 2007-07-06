@@ -339,7 +339,7 @@ namespace Diwi {
             string[] words;
 
             if (mIsLogging) {
-                AppController.sLog.WriteLine(sentence);
+                AppController.sTrackLog.WriteLine(sentence);
             }
 
             mNMEA = sentence;

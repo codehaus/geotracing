@@ -55,11 +55,15 @@ namespace Diwi {
                 string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
                 if (mapUrl != null) {
                     new MediaDownloader(mapUrl, @"\horMap.jpg", sMapDnl);
+                } else {
+                    AppController.sEventLog.WriteLine("Dit not get MapURI");
                 }
             } else {
                 string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
                 if (mapUrl != null) {
                     new MediaDownloader(mapUrl, @"\verMap.jpg", sMapDnl);
+                } else {
+                    AppController.sEventLog.WriteLine("Dit not get MapURI");
                 }
             }
         }

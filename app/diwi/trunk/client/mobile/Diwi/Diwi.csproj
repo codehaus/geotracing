@@ -62,7 +62,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DiwiUIStaticText.cs" />
-    <Compile Include="ll.cs" />
     <Compile Include="MakePhotoPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,6 +73,9 @@
     </Compile>
     <Compile Include="MapHandler.cs" />
     <Compile Include="MediaHandler.cs" />
+    <Compile Include="poiSelectPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PoiViewerPage.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,6 +172,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\click.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\horns.wav" />
   </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
   <Import Condition="'$(TargetFrameworkVersion)' == 'v2.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
