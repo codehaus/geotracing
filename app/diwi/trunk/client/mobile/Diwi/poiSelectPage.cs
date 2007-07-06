@@ -25,8 +25,8 @@ namespace Diwi {
             mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext));
 
             this.Controls.Add(mTextBox);
-            
-            mTextBox.Font = new Font("Arial", 12, FontStyle.Bold);
+
+            mTextBox.Font = new Font("Tahoma", 12, FontStyle.Regular);
             //mTextBox.Multiline = true;
             //mTextBox.ReadOnly = true;
             //mTextBox.ScrollBars = ScrollBars.Vertical;

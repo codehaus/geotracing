@@ -72,12 +72,12 @@ namespace Diwi {
             int x;
             if (hor) {
                 x = sHorBounds.pixX(320);
-                if (x < 30 || x > 270) {
+                if (x < 50 || x > 250) {
                     downLoadMaps();
                 }
             } else {
                 x = sVerBounds.pixX(240);
-                if (x < 30 || x > 190) {
+                if (x < 50 || x > 170) {
                     downLoadMaps();
                 }
             }
@@ -88,12 +88,12 @@ namespace Diwi {
             int y;
             if (hor) {
                 y = sHorBounds.pixY(240);
-                if (y < 30 || y > 210) {
+                if (y < 50 || y > 190) {
                     downLoadMaps();
                 }
             } else {
                 y = sVerBounds.pixY(320);
-                if (y < 30 || y > 290) {
+                if (y < 50 || y > 250) {
                     downLoadMaps();
                 }
             }

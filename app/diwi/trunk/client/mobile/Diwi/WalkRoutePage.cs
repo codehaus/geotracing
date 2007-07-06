@@ -223,6 +223,7 @@ namespace Diwi {
             if (sPoiSelectPage.setContent(pois)) {
                 mIsActive = false;
                 sPoiSelectPage.ShowDialog();
+                mBlendTimer.Change(0, 3000);
             }
         }
 
@@ -273,7 +274,9 @@ namespace Diwi {
             mZoomOut.x = 0;
             mZoomOut.y = h - 24;
 
-            gpsText.x = mZoomOut.x + mZoomOut.width + 8;
+
+
+            gpsText.x = (w - gpsText.width) / 2;
             gpsText.y = this.ClientRectangle.Height - 22;
 
 
