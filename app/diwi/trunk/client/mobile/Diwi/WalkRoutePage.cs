@@ -69,7 +69,7 @@ namespace Diwi {
 
         void updateGPS(int m) {
             if (m == (int)GpsReader.sMess.M_DEMO || m == (int)GpsReader.sMess.M_FIX) {
-                Rectangle oldRect = gpsText.rect;
+               
                 if (GpsReader.up) {
                     gpsText.color = Color.Black;
                     gpsText.draw("GPS Actief");
@@ -80,7 +80,7 @@ namespace Diwi {
                     gpsText.color = Color.Red;
                     gpsText.draw("Geen GPS");
                 }
-                redrawRect(oldRect, gpsText.rect);
+                draw();
             }
         }
 
@@ -193,9 +193,9 @@ namespace Diwi {
             sShowUGC = !sShowUGC;
             AppController.sKwxClient.navUGC(sShowUGC);
             if (sShowUGC == true) {
-                setMenuText(4, "Verberg UGC");
+                setMenuText(4, "Verberg Volksmond");
             } else {
-                setMenuText(4, "Toon UGC");
+                setMenuText(4, "Toon Volksmond");
             }
         }
 
