@@ -17,7 +17,7 @@ namespace Diwi {   // base class for Diwi Pages.
         public delegate bool CallbackHandler();
         protected delegate void mediaCallback(string p);
         private delegate void DrawMiniCallback(Bitmap p);
-        private enum sKeys { M_UP = 38, M_DOWN = 40, M_LEFT = 37, M_RIGHT = 39 };
+        private enum sKeys { M_UP = 38, M_DOWN = 40, S_LEFT=112, S_RIGHT=113, M_LEFT = 37, M_RIGHT = 39 };
         public static Bitmap offScreenBitmap;
         Icon sMeIcon = null;
         public static Graphics offScreenGraphics;
@@ -226,7 +226,7 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.bitmap = new Bitmap(stream);
                 stream.Close();
                 draw();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 MessageBox.Show(e.Message);
             }
         }
@@ -243,7 +243,7 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.bitmap = new Bitmap(stream);
                 draw();
                 stream.Close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 MessageBox.Show(e.Message);
             }
         }
@@ -311,12 +311,18 @@ namespace Diwi {   // base class for Diwi Pages.
                     draw();
                     break;
                 case (int)sKeys.M_LEFT:
-                    AppController.SysClick();
-                    MapHandler.mapRadius *= 1.5F;
+                case (int)sKeys.S_LEFT:
+                    if (mIsMapPage) {
+                        AppController.SysClick();
+                        MapHandler.mapRadius *= 1.5F;
+                    }
                     break;
                 case (int)sKeys.M_RIGHT:
-                    AppController.SysClick();
-                    MapHandler.mapRadius *= 0.75F;
+                case (int)sKeys.S_RIGHT:
+                    if (mIsMapPage) {
+                        AppController.SysClick();
+                        MapHandler.mapRadius *= 0.75F;
+                    }
                     break;
                 case (int)sKeys.M_UP:
                     if (mDoDrawMenu == false) {

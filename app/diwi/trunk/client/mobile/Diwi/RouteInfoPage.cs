@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Diwi {
     class RouteInfoPage : DiwiPageBase {
         mediaCallback mapDownloaded;
-        TextBox mTextBox = new TextBox();
+        Label mTextBox = new Label();
         XMLement route;
         string mVerMap, mHorMap;
 
@@ -22,11 +22,12 @@ namespace Diwi {
 
             this.Controls.Add(mTextBox);
 
-            mTextBox.Multiline = true;
-            mTextBox.ReadOnly = true;
-            mTextBox.ScrollBars = ScrollBars.Vertical;
+           // mTextBox.Multiline = true;
+           // mTextBox.ReadOnly = true;
+            mTextBox.Font = mTextBox.Font = new Font("Tahoma", 11, FontStyle.Bold);
+           // mTextBox.ScrollBars = ScrollBars.Vertical;
             mTextBox.ForeColor = Color.Black;
-            mTextBox.BackColor = Color.Transparent;
+            mTextBox.BackColor = Color.GreenYellow;
 
             reOrient();
 
@@ -84,7 +85,7 @@ namespace Diwi {
             mVerMap = null;
             mHorMap = null;
             route = r;
-            mTextBox.Text = route.getChildValue("description") + "    Afstand is " + route.getChildValue("distance") + "km.";
+            mTextBox.Text = route.getChildValue("description") + "\n\n" +"Afstand is " + int.Parse(route.getChildValue("distance"))/1000 + "km.";
             title = route.getChildValue("name");
             reOrient();
             draw();
