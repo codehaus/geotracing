@@ -16,7 +16,7 @@ var MAP = {
 	MAX_RESOLUTION: 'auto',
 	NUM_ZOOMLEVELS: 10,
 	PROJECTION: 'EPSG:28992',
-	WMS_URL: 'http://test.digitalewichelroede.nl/map',
+	WMS_URL: '/map',
 	WMS_URL_WUR: 'http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS',
 	ZOOM: 0,
 /** OL map object. */
@@ -105,7 +105,7 @@ var MAP = {
 
 //		MAP.addGoogleSatLayer();
 		MAP.addTOPNLRasterLayer();
-
+		MAP.map.events.register("click", MAP.map, MAP.onClick);
 	},
 
 	destroy: function() {
@@ -123,6 +123,11 @@ var MAP = {
 
 	init: function() {
 		MAP.map.setCenter(MAP.CENTER, MAP.ZOOM);
+	},
+
+	onClick: function(e) {
+		var pt = MAP.map.getLonLatFromViewPortPx(e.xy);
+		alert('click ' + pt);
 	},
 
 	loadGoogleMapScript: function(aVersion) {
