@@ -27,6 +27,7 @@ namespace Diwi {
         ArrayList mItems;
         ArrayList mCallbacks;
         ArrayList mItemRects;
+        ArrayList mIcons;
         Rectangle mParentRect;
 
         public DiwiUIMenu(DiwiPageBase form) {
@@ -35,6 +36,7 @@ namespace Diwi {
             mItems = new ArrayList();
             mCallbacks = new ArrayList();
             mItemRects = new ArrayList();
+            mIcons = new ArrayList();
             if (mMiniLogo == null) {
                 mMiniLogo = new Bitmap(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.minis.gif"));
             }
@@ -46,7 +48,11 @@ namespace Diwi {
 
 
         public void setMenuText(int index, string s) {
-           mItems[index] = s;
+            mItems[index] = s;
+        }
+
+        public void setMenuIcon(int index, Icon s) {
+            mIcons[index] = s;
         }
 
 
@@ -86,10 +92,14 @@ namespace Diwi {
             }
         }
 
-        public void addItem(string text, DiwiMenuCallbackHandler cb) {
+        public void addItem(string text, DiwiMenuCallbackHandler cb, Icon icon) {
             mItems.Add(text);
             mCallbacks.Add(cb);
             mItemRects.Add(null);
+            if (icon == null)
+                mIcons.Add(AppController.sEmptyIcon);
+            else
+                mIcons.Add(icon);
         }
 
         public void resize(Rectangle n) {
@@ -158,6 +168,7 @@ namespace Diwi {
             foreach (string item in mItems) {
                 mBrush.Color = sSelColor;
                 DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 24, 24);
+                DiwiPageBase.offScreenGraphics.DrawIcon((Icon)mIcons[index], x + 1, y + 1);
                 mText.text = item;
                 mText.x = x - 10 - mText.width;
                 mText.y = y+2;

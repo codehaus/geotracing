@@ -16,9 +16,9 @@ namespace Diwi {
         public UitlegPage(DiwiPageBase parent)
             : base(parent) {
 
-            mMenu.addItem("Over DiWi", new DiwiUIMenu.DiwiMenuCallbackHandler(doOver));
-            mMenu.addItem("FAQ", new DiwiUIMenu.DiwiMenuCallbackHandler(doFaq));
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Over DiWi", new DiwiUIMenu.DiwiMenuCallbackHandler(doOver),null);
+            mMenu.addItem("FAQ", new DiwiUIMenu.DiwiMenuCallbackHandler(doFaq),null);
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             title = "Uitleg";
 

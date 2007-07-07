@@ -16,9 +16,9 @@ namespace Diwi {
         public TestPage(DiwiPageBase parent)
             : base(parent) {
 
-            mMenu.addItem("GetRouteList", new DiwiUIMenu.DiwiMenuCallbackHandler(doGRL));
-            mMenu.addItem("GetRoute", new DiwiUIMenu.DiwiMenuCallbackHandler(doGR));
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("GetRouteList", new DiwiUIMenu.DiwiMenuCallbackHandler(doGRL),null);
+            mMenu.addItem("GetRoute", new DiwiUIMenu.DiwiMenuCallbackHandler(doGR),null);
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),null);
 
             title = "Test";
 

@@ -49,6 +49,8 @@ namespace Diwi {
         private static Sound sClick;
         private static Sound sPOI;
 
+        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sTextIcon,sVolgIcon;
+
         public static void showStatus(string s) {
             DiwiPageBase.sCurrentPage.printStatus(s);
         }
@@ -81,6 +83,13 @@ namespace Diwi {
             stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.horns.wav");
             sPOI = new Sound(stream);
             stream.Close();
+
+            sTerugIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug.ico"));
+            sEmptyIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.empty.ico"));
+            sUGCIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.ugc.ico"));
+            sFotoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.foto.ico"));
+            sTextIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.text.ico"));
+            sVolgIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.volgende.ico"));
 
             sProgBar = new Progress();
 
