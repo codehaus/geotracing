@@ -1,0 +1,29 @@
+<!--
+
+ANT Build file for Diwi maps stuff.
+
+$Id$
+-->
+<project name="diwi-maps" default="deploy-local" basedir=".">
+
+	<!-- Initialization of properties (dirs, files) -->
+
+	<property file="../../build.properties"/>
+
+
+	<target name="deploy-local">
+		<copy todir="${deploy.local.dir}/map">
+			<fileset dir="rd"/>
+		</copy>
+		<chmod file="${deploy.local.dir}/map/index.cgi" perm="ugo+rx"/>
+		<mkdir dir="${deploy.local.dir}/map/tmp"/>
+	</target>
+
+	<target name="deploy-berlin">
+		<exec executable="scp">
+			<arg line="rd/diwi.map"/>
+			<arg line="${deploy.test.server}:/var/keyworx/webapps/diwi/map"/>
+		</exec>
+	</target>
+
+</project>
