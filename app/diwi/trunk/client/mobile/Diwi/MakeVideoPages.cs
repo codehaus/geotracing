@@ -20,10 +20,10 @@ namespace Diwi
             : base(parent)
         {
 
-            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe));
-            mMenu.addItem("Speel af", new DiwiUIMenu.DiwiMenuCallbackHandler(doPlay));
-            mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),null);
+            mMenu.addItem("Speel af", new DiwiUIMenu.DiwiMenuCallbackHandler(doPlay),null);
+            mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),null);
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             title = "Maak Video";
             currentFilename = fileName;

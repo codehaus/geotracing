@@ -13,12 +13,12 @@ namespace Diwi {
             DiwiUIMenu.DiwiMenuCallbackHandler sr = new DiwiUIMenu.DiwiMenuCallbackHandler(doBekijkRoute);
             if (AppController.sRoutes != null) {
                 foreach (XMLement xml in AppController.sRoutes.children) {
-                    mMenu.addItem(xml.getChildValue("name"),sr );
+                    mMenu.addItem(xml.getChildValue("name"),sr,null );
                 }
-                mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+                mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             } else {
-                mMenu.addItem("Geen Routes", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+                mMenu.addItem("Geen Routes", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
             }
             AppController.sActiveRoute = null;
             title = "Kies Route";

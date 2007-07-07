@@ -138,6 +138,10 @@ namespace Diwi {   // base class for Diwi Pages.
             mMenu.setMenuText(index, s);
         }
 
+        protected void setMenuIcon(int index, Icon s) {
+            mMenu.setMenuIcon(index, s);
+        }
+
         public void printStatus(string s) {
             return;
              Rectangle oldRect = mouseText.rect;

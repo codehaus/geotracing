@@ -19,7 +19,7 @@ namespace Diwi {
         public LoginPage(DiwiPageBase parent)
             : base(parent) {
 
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
             mOkButton = new DiwiUIButton(offScreenGraphics, 146, 170, "Login", buttonOK, this);
 
             AppController.sKwxClient.messageCallback += new KwxClient.MessageCallback(serverMessage);

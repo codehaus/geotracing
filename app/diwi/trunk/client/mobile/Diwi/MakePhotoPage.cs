@@ -18,9 +18,9 @@ namespace Diwi {
         public MakePhotoPage(DiwiPageBase parent, string fileName)
             : base(parent) {
 
-            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe));
-            mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),null);
+            mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto), AppController.sFotoIcon);
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             title = "Maak Foto";
             currentFilename = fileName;
@@ -48,8 +48,9 @@ namespace Diwi {
         void doFoto(int i, string s) {
             FileInfo fi = new FileInfo(currentFilename);
             fi.Delete();
-
+            mIsActive = false;
             currentFilename = AppController.makeFoto();
+            mIsActive = true;
             if (currentFilename != null) {
                 mFoto.bitmap = new Bitmap(currentFilename);
                 draw();

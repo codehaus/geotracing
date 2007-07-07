@@ -21,8 +21,8 @@ namespace Diwi {
             : base(parent) {
 
 
-            mMenu.addItem("Toon Inhoud", new DiwiUIMenu.DiwiMenuCallbackHandler(doView));
-            mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext));
+            mMenu.addItem("Toon Inhoud", new DiwiUIMenu.DiwiMenuCallbackHandler(doView),null);
+            mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext),AppController.sVolgIcon);
 
             this.Controls.Add(mTextBox);
 
@@ -53,6 +53,7 @@ namespace Diwi {
                     poiIDs.Remove(id);
                     if (poiIDs.Count == 0) {
                         setMenuText(1, "Terug");
+                        setMenuIcon(0, AppController.sTerugIcon);
                     }
                     bool n = offerPOI(id);
                     if (!n) {
@@ -126,8 +127,10 @@ namespace Diwi {
             }
             if (poiIDs.Count == 0) {
                 setMenuText(1, "Terug");
+                setMenuIcon(0, AppController.sTerugIcon);
             } else {
                 setMenuText(1, "Volgende");
+                setMenuIcon(0, AppController.sVolgIcon);
             }
             reOrient();
             mIsInitialized = true;

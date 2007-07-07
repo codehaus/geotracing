@@ -28,13 +28,12 @@ namespace Diwi {
         public WalkRoutePage(DiwiPageBase parent)
             : base(parent) {
 
-            mMenu.addItem("Voeg Text toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doText));
-            mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto));
-            mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo));
-            mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute));
-            mMenu.addItem("Toon Volksmond", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC));
-            //mMenu.addItem("TestPOI", new DiwiUIMenu.DiwiMenuCallbackHandler(doCheckStruin));
-            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("Voeg Text toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doText),AppController.sTextIcon);
+            mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto),AppController.sFotoIcon);
+            mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),null);
+            mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute),null);
+            mMenu.addItem("Toon Volksmond", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC),AppController.sUGCIcon);
+            mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             poiCB = new POIHandler(navPointReceive);
 

@@ -35,7 +35,7 @@ namespace Diwi {
             addDrawable(demoText);
             addDrawable(fixText);
 
-            mMenu.addItem("terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug));
+            mMenu.addItem("terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             title = "Gps Status";
 

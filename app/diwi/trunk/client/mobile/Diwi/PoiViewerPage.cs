@@ -27,7 +27,7 @@ namespace Diwi {
             : base(parent) {
 
 
-            mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext));
+            mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext),AppController.sVolgIcon);
 
             this.Controls.Add(mTextBox);
             mImage = new DiwiScalingImage(this);
@@ -197,6 +197,7 @@ namespace Diwi {
             }
             if (mAllMedia.getChild(mMediaIndex + 1) == null) {
                 setMenuText(0, "Terug");
+                setMenuIcon(0, AppController.sTerugIcon);
             }
             draw();
         }
@@ -205,11 +206,13 @@ namespace Diwi {
             mMediaIndex = -1;
             if (mAllMedia.getChild(1) != null) {
                 setMenuText(0, "Volgende");
+                setMenuIcon(0, AppController.sVolgIcon);
             }
         }
  
         public void setContent(XMLement xml) {
             setMenuText(0, "Volgende");
+            setMenuIcon(0, AppController.sVolgIcon);
             abortDownload();
             XMLement name = xml.getChildByName("name");
             if (name != null)
@@ -226,6 +229,7 @@ namespace Diwi {
                 //doNext(0, "");
             } else {
                 setMenuText(0, "Terug");
+                setMenuIcon(0, AppController.sTerugIcon);
             }
         }
 
