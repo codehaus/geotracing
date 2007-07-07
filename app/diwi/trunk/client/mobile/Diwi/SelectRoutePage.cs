@@ -13,7 +13,7 @@ namespace Diwi {
             DiwiUIMenu.DiwiMenuCallbackHandler sr = new DiwiUIMenu.DiwiMenuCallbackHandler(doBekijkRoute);
             if (AppController.sRoutes != null) {
                 foreach (XMLement xml in AppController.sRoutes.children) {
-                    mMenu.addItem(xml.getChildValue("name"),sr,null );
+                    mMenu.addItem(xml.getChildValue("name"), sr, AppController.sInfoIcon);
                 }
                 mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 

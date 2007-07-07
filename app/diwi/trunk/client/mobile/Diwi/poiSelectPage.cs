@@ -53,7 +53,7 @@ namespace Diwi {
                     poiIDs.Remove(id);
                     if (poiIDs.Count == 0) {
                         setMenuText(1, "Terug");
-                        setMenuIcon(0, AppController.sTerugIcon);
+                        setMenuIcon(1, AppController.sTerugIcon);
                     }
                     bool n = offerPOI(id);
                     if (!n) {
@@ -127,10 +127,10 @@ namespace Diwi {
             }
             if (poiIDs.Count == 0) {
                 setMenuText(1, "Terug");
-                setMenuIcon(0, AppController.sTerugIcon);
+                setMenuIcon(1, AppController.sTerugIcon);
             } else {
                 setMenuText(1, "Volgende");
-                setMenuIcon(0, AppController.sVolgIcon);
+                setMenuIcon(1, AppController.sVolgIcon);
             }
             reOrient();
             mIsInitialized = true;

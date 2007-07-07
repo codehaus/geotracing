@@ -22,7 +22,7 @@ namespace Diwi
 
             mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),null);
             mMenu.addItem("Speel af", new DiwiUIMenu.DiwiMenuCallbackHandler(doPlay),null);
-            mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),null);
+            mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo), AppController.sVideoIcon);
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             title = "Maak Video";

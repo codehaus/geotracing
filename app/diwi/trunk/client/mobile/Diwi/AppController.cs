@@ -49,7 +49,8 @@ namespace Diwi {
         private static Sound sClick;
         private static Sound sPOI;
 
-        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sTextIcon,sVolgIcon;
+        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sInfoIcon;
+        public static Icon sTextIcon, sVolgIcon, sVideoIcon, sKiesIcon, sStruinIcon, sCheckIcon;
 
         public static void showStatus(string s) {
             DiwiPageBase.sCurrentPage.printStatus(s);
@@ -90,6 +91,11 @@ namespace Diwi {
             sFotoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.foto.ico"));
             sTextIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.text.ico"));
             sVolgIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.volgende.ico"));
+            sVideoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.video.ico"));
+            sKiesIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.kiesroute.ico"));
+            sStruinIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.struin.ico"));
+            sInfoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.routeinfo.ico"));
+            sCheckIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.check.ico"));
 
             sProgBar = new Progress();
 

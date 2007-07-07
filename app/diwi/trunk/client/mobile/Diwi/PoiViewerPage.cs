@@ -44,6 +44,8 @@ namespace Diwi {
 
             addDrawable(mImage);
 
+            setPbackGround();
+
             title = "";
 
         }
@@ -285,11 +287,21 @@ namespace Diwi {
             mIsInitialized = true;
         }
 
+        void setPbackGround() {
+            if (horizontal) {
+                setBackGroundImg(@"Diwi.Resources.back_horz_p.gif", 320, 240, 0, 0);
+            } else {
+                setBackGroundImg(@"Diwi.Resources.back_vert_p.gif", 240, 320, 0, 0);
+            }
+        }
+
+
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (base.doResize(e) == true) {
                 if (mIsInitialized) {
                     reOrient();
+                    setPbackGround();
                     draw();
                 }
             }

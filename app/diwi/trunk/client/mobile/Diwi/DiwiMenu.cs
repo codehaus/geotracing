@@ -152,10 +152,11 @@ namespace Diwi {
             DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 30, mParentRect.Height);
 
             DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, 5, 4);
+            DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, mParentRect.Width - 28 , 4);
 
             mBrush.Color = sSelColor;
             DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, 32, 4, mParentRect.Width - 32 - 4 - 30, 24);
-            DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mParentRect.Width - 27, 4, 24, 24);
+            // DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mParentRect.Width - 27, 4, 24, 24);
             mText.text = mParentForm.title;
             mText.x = 36;
             mText.y = 5;
@@ -175,9 +176,11 @@ namespace Diwi {
                 mItemRects[index] = r = new Rectangle(mText.x - 6, y , mText.width + 10 + 28, 26);
                 if (index == mCurrentMenuIndex) {
                     DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, r.X, r.Y, r.Width - 26, 24);
-                    mText.color = sSelTextColor;
+                    mText.color = Color.WhiteSmoke;
+//                    mText.color = sSelTextColor;
                     mBrush.Color = sSelTextColor;
-                    DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x + 3, y + 3, 18, 18);
+                    DiwiPageBase.offScreenGraphics.DrawIcon(AppController.sCheckIcon, x + 1, y + 1);
+                    //DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x + 3, y + 3, 18, 18);
                 } else {
                     mText.color = sTextColor;
                 }

@@ -119,7 +119,8 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         void ddoDM(Bitmap b) {
-            sCurrentPage.onScreenGraphics.DrawImage(b, 5, 4);
+            //sCurrentPage.onScreenGraphics.DrawImage(b, 5, 4);
+            sCurrentPage.onScreenGraphics.DrawImage(b, this.ClientRectangle.Width - 28, 4);
         }
 
         public void doDrawMini(Bitmap b) {
