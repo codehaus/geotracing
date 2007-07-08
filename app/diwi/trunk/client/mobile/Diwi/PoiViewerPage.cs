@@ -14,6 +14,7 @@ namespace Diwi {
     class PoiViewerPage : DiwiPageBase {
         MediaDownloader mMediaDnl = null;
         TextBox mTextBox = new TextBox();
+        Label mDnlMess = new Label();
         DiwiScalingImage mImage;
         Bitmap mImageBitmap;
         XMLement mAllMedia;
@@ -39,12 +40,16 @@ namespace Diwi {
             mTextBox.ForeColor = Color.Black;
             mTextBox.BackColor = Color.Transparent;
 
+            mDnlMess.Font = new Font("Tahoma", 14, FontStyle.Regular);
+            mDnlMess.ForeColor = Color.Black;
+            mDnlMess.BackColor = Color.GreenYellow;
+            mDnlMess.Text = "Media worden opgehaald...\n\nEen ogenlik, aub.";
+            mDnlMess.Visible = false;
+
+
             reOrient();
 
-
             addDrawable(mImage);
-
-            setPbackGround();
 
             title = "";
 
@@ -99,10 +104,12 @@ namespace Diwi {
             r.Close();
             mTextBox.Text = s;
             mTextBox.Visible = true;
-            mImage.x = 500;
+            mImage.x = 800;
         }
 
         void openFile(string path) {
+            mDnlMess.Visible = false;
+
             int n = path.IndexOf("Image");
             if (n >= 0) {
                 openImage(path);
@@ -190,7 +197,12 @@ namespace Diwi {
                 mImage.x = 500;
                 if (dnlFileNames[mMediaIndex] != null) {
                     openFile(dnlFileNames[mMediaIndex]);
-                } 
+                } else {
+                    mDnlMess.Visible = true;
+                    mTextBox.Visible = false;
+                    mImage.x = 800;
+                    draw();
+                }
             } else {
                 if (mMediaDnl != null)
                     mMediaDnl.abort();
@@ -253,6 +265,12 @@ namespace Diwi {
                 mTextBox.Top = 56;
                 mTextBox.Size = new Size(280, 180);
 
+                mDnlMess.Left = 4;
+                mDnlMess.Top = 56;
+                mDnlMess.Size = new Size(280, 60);
+            
+
+
             } else {
 
                 mImage.x = 4;
@@ -269,6 +287,11 @@ namespace Diwi {
                 mTextBox.Left = 4;
                 mTextBox.Top = 56;
                 mTextBox.Size = new Size(200, 260);
+
+                mDnlMess.Left = 4;
+                mDnlMess.Top = 56;
+                mDnlMess.Size = new Size(200, 60);
+            
 
             }
         }
@@ -287,21 +310,12 @@ namespace Diwi {
             mIsInitialized = true;
         }
 
-        void setPbackGround() {
-            if (horizontal) {
-                setBackGroundImg(@"Diwi.Resources.back_horz_p.gif", 320, 240, 0, 0);
-            } else {
-                setBackGroundImg(@"Diwi.Resources.back_vert_p.gif", 240, 320, 0, 0);
-            }
-        }
-
 
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (base.doResize(e) == true) {
                 if (mIsInitialized) {
                     reOrient();
-                    setPbackGround();
                     draw();
                 }
             }

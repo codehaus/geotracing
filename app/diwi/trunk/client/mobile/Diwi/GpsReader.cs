@@ -280,6 +280,27 @@ namespace Diwi {
             }
         }
 
+        string readDemoLine() {
+
+            string s = nmeaDemoFile.ReadLine();
+            if (s != null) {
+                parse(s, false);
+                s = nmeaDemoFile.ReadLine();
+                if (s != null) {
+                    parse(s, false);
+                }
+
+            } else {
+                nmeaDemoFile.Close();
+                nmeaDemoFile = null;
+                try {
+                    nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
+                } catch (Exception) {
+                    mCanDemo = false;
+                }
+            }
+        }
+
         /// <summary>
         /// thread sun loop reading GPS, or trying.
         /// </summary>
