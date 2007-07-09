@@ -14,6 +14,7 @@ var MAP = {
 	DIV_ID: 'map',
 	IMAGE_FORMAT: 'image/png',
 	MAX_RESOLUTION: 'auto',
+	UNITS: 'meters',
 	NUM_ZOOMLEVELS: 10,
 	PROJECTION: 'EPSG:28992',
 	WMS_URL: '/map',
@@ -21,10 +22,13 @@ var MAP = {
 	ZOOM: 0,
 /** OL map object. */
 	map: null,
-	currentRouteLayer: null,
+
+/*	currentRouteLayer: null,
 	markerLayer: null,
 	poiLayer: null,
+	*/
 	keyArray : new Array(),
+	overlays: new Object(),
 
 /** Add Google Map key and reg exp for regexp URL, e.g. "^https?://www.geotracing.com/.*" */
 	addKey: function(aName, aKey, aURLRegExp) {
@@ -33,49 +37,55 @@ var MAP = {
 
 	addMarker: function(x,y,iconImg, w,h) {
 		var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x,y), new OpenLayers.Icon(iconImg, new OpenLayers.Size(w,h) ));
- 		MAP.markerLayer.addMarker(marker);
+ 		MAP.overlays['markers'].addMarker(marker);
 	},
 
-	addMarkerLayer: function() {
-		if (MAP.markerLayer != null) {
-			MAP.map.removeLayer(MAP.markerLayer);
+	addMarkerLayer: function(name) {
+		if (MAP.hasOverlay('markers')) {
+			MAP.removeOverlay('markers');
 		}
 
-		MAP.markerLayer = new OpenLayers.Layer.Markers("Markers");
+		MAP.overlays['markers'] = new OpenLayers.Layer.Markers(name);
 
-		MAP.map.addLayer(MAP.markerLayer);
+		MAP.map.addLayer(MAP.overlays['markers']);
 	},
 
 	addPOILayer: function() {
-		if (MAP.poiLayer != null) {
+		if (MAP.hasOverlay('pois')) {
 			return;
 		}
-		MAP.poiLayer = new OpenLayers.Layer.WMS.Untiled('Points of Interest (POIs)',
+
+		MAP.overlays['pois'] = new OpenLayers.Layer.WMS.Untiled('Points of Interest (POIs)',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {layers: 'diwi_pois', format: MAP.IMAGE_FORMAT, transparent: true});
-		MAP.map.addLayer(MAP.poiLayer);
+		MAP.map.addLayer(MAP.overlays['pois']);
+
+		MAP.overlays['startendpoints']  = new OpenLayers.Layer.WMS.Untiled('Start -en eindpunten',
+				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
+				MAP.WMS_URL, {layers: 'diwi_startendpoints', format: MAP.IMAGE_FORMAT, transparent: true});
+		MAP.map.addLayer(MAP.overlays['startendpoints']);
 	},
 
 	addUGCLayer: function() {
-		if (MAP.ugcLayer != null) {
+		if (MAP.hasOverlay('ugc')) {
 			return;
 		}
-		MAP.ugcLayer = new OpenLayers.Layer.WMS.Untiled('Media van gebruikers',
+		MAP.overlays['ugc'] = new OpenLayers.Layer.WMS.Untiled('Media van gebruikers',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {layers: 'diwi_ugc', format: MAP.IMAGE_FORMAT, transparent: true});
-		MAP.map.addLayer(MAP.ugcLayer);
+		MAP.map.addLayer(MAP.overlays['ugc']);
 	},
 
 	addRouteLayer: function(aRouteId) {
-		if (MAP.currentRouteLayer != null) {
-			MAP.map.removeLayer(MAP.currentRouteLayer);
+		if (MAP.hasOverlay('route')) {
+			MAP.removeOverlay('route');
 		}
 
-		MAP.currentRouteLayer = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
+		MAP.overlays['route'] = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {id: aRouteId, layers: 'single_diwi_route', format: MAP.IMAGE_FORMAT, transparent: true});
 
-		MAP.map.addLayer(MAP.currentRouteLayer);
+		MAP.map.addLayer(MAP.overlays['route'] );
 	},
 
 	addTOPNLRasterLayer: function() {
@@ -98,14 +108,20 @@ var MAP = {
 			controls: MAP.CONTROLS,
 			maxExtent: MAP.BOUNDS,
 			projection: MAP.PROJECTION,
+			units: MAP.UNITS,
 			maxResolution: MAP.MAX_RESOLUTION,
 			'numZoomLevels': MAP.NUM_ZOOMLEVELS
 		}
-				);
+		);
 
 //		MAP.addGoogleSatLayer();
 		MAP.addTOPNLRasterLayer();
 		MAP.map.events.register("click", MAP.map, MAP.onClick);
+		MAP.overlays['markers'] = null;
+		MAP.overlays['ugc'] = null;
+		MAP.overlays['pois'] = null;
+		MAP.overlays['startendpoints'] = null;
+		MAP.overlays['route'] = null;
 	},
 
 	destroy: function() {
@@ -116,6 +132,10 @@ var MAP = {
 		}
 	},
 
+	hasOverlay: function(id) {
+		return MAP.overlays[id] && MAP.overlays[id] != null;
+	},
+
 	hide: function() {
 		DH.displayOff('map');
 	},
@@ -123,6 +143,7 @@ var MAP = {
 
 	init: function() {
 		MAP.map.setCenter(MAP.CENTER, MAP.ZOOM);
+		MAP.removeOverlays();
 	},
 
 	onClick: function(e) {
@@ -149,6 +170,20 @@ var MAP = {
 		}
 	},
 
+	removeOverlay: function(id) {
+		if (!MAP.hasOverlay(id)) {
+			return;
+		}
+		MAP.map.removeLayer(MAP.overlays[id]);
+		MAP.overlays[id] = null;
+	},
+
+	removeOverlays: function() {
+		for (o in MAP.overlays) {
+			MAP.removeOverlay(o);
+		}
+	},
+
 	show: function() {
 		DH.displayOn('map');
 		if (MAP.map == null) {
@@ -159,6 +194,7 @@ var MAP = {
 
 		// Position map absolute based on anchor position
 		DH.setObjectXY('map', DH.getObjectX('mapanchor'), DH.getObjectY('mapanchor'))
+		// DH.setObjectWH('pagina', DH.getObjectWidth('pagina'), DH.getObjectHeight('map') + 50)
 	}
 }
 
