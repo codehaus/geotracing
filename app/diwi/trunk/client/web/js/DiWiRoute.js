@@ -31,18 +31,18 @@ var ROUTE = {
 	},
 
 	creatFixedRoutesForm: function(records) {
-		var optionStr = '<option name="frnone" value="-1" >Kies een route...</option>';
+		var formHTML = '<form><select onChange="ROUTE.showFixedRoute(this.value)"><option name="frnone" value="-1" selected="selected" >Kies een route...</option>';
 		if (records != null) {
 			ROUTE.fixedRoutes = new Array();
 			for (i = 0; i < records.length; i++) {
 				ROUTE.fixedRoutes[records[i].id] = records[i];
-				optionStr += '<option name="fr' + records[i].id +'" value="' + records[i].id + '" onClick="ROUTE.showFixedRoute(this)">';
-				optionStr += records[i].getField('name');
-				optionStr += '</option>';
+				formHTML += '<option name="fr' + records[i].id +'" value="' + records[i].id + '" >';
+				formHTML += records[i].getField('name');
+				formHTML += '</option>';
 			}
 		}
-
-		DH.setHTML('fixed_routes_form', optionStr);
+		formHTML += '</select></form>';
+		DH.setHTML('vasteroutes', formHTML);
 		MAP.show();
 		MAP.addPOILayer();
 		MAP.addUGCLayer();
@@ -191,12 +191,12 @@ var ROUTE = {
 		SRV.get('q-diwi-routes', ROUTE.creatFixedRoutesForm, 'type', 'fixed');
 	},
 
-	showFixedRoute: function(option) {
-		if (!option.value) {
+	showFixedRoute: function(optionValue) {
+		if (!optionValue || optionValue == -1) {
 			return;
 		}
 
-		var record = ROUTE.fixedRoutes[option.value];
+		var record = ROUTE.fixedRoutes[optionValue];
 		var content = '<h2>' + record.getField('name') + '</h2>';
 		content += record.getField('description');
 

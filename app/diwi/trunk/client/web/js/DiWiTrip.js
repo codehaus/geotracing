@@ -9,7 +9,7 @@ var TRIP = {
 	onShowTrip: function(rsp) {
 		DH.displayOff('triplist');
 		MAP.show();
-		MAP.addMarkerLayer();
+		MAP.addMarkerLayer('Mijn trip');
 		TRIP.showTrace(rsp.getElementsByTagName('pt'));
 	},
 
