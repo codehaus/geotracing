@@ -282,23 +282,25 @@ namespace Diwi {
 
         string readDemoLine() {
 
-            string s = nmeaDemoFile.ReadLine();
-            if (s != null) {
-                parse(s, false);
-                s = nmeaDemoFile.ReadLine();
+            while (mCanDemo) {
+                string s = nmeaDemoFile.ReadLine();
                 if (s != null) {
-                    parse(s, false);
-                }
-
-            } else {
-                nmeaDemoFile.Close();
-                nmeaDemoFile = null;
-                try {
-                    nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
-                } catch (Exception) {
-                    mCanDemo = false;
+                    if (s.Length > 10) {
+                        string nm = s.Substring(0, 6);
+                        if (nm == "$GPRMC" || nm == "$GPGGA")
+                            return s;
+                    }
+                } else {
+                    nmeaDemoFile.Close();
+                    nmeaDemoFile = null;
+                    try {
+                        nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
+                    } catch (Exception) {
+                        mCanDemo = false;
+                    }
                 }
             }
+            return null;
         }
 
         /// <summary>
@@ -313,24 +315,9 @@ namespace Diwi {
 
                     if (mDemo) {
                         if (mCanDemo) {
-                            // read from file
-                            string s = nmeaDemoFile.ReadLine();
-                            if (s != null) {
-                                parse(s, false);
-                                s = nmeaDemoFile.ReadLine();
-                                if (s != null) {
-                                    parse(s, false);
-                                }
-
-                            } else {
-                                nmeaDemoFile.Close();
-                                nmeaDemoFile = null;
-                                try {
-                                    nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
-                                } catch (Exception) {
-                                    mCanDemo = false;
-                                }
-                            }
+                           // read from file
+                            parse( readDemoLine(), false );
+                            parse( readDemoLine(), false );
                         }
                     } else {
                         break;
@@ -375,26 +362,29 @@ namespace Diwi {
         /// parse NMEA string received.
         /// currently only RMC and GGA strings are processed
         /// </summary>
-        public bool parse(string sentence,bool real)
-        {
-            string[] words;
+        public bool parse(string sentence, bool real) {
 
-            if (mIsLogging) {
-                AppController.sTrackLog.WriteLine(sentence);
+            if (sentence != null) {
+                string[] words;
+                if (mIsLogging) {
+                    AppController.sTrackLog.WriteLine(sentence);
+                }
+
+                mNMEA = sentence;
+
+                words = sentence.Split(',');
+
+                switch (words[0]) {
+                    case "$GPRMC":
+                        return ParseGPRMC(words, real);
+                    case "$GPGGA":
+                        return ParseGPGGA(words, real);
+                    default:
+                        return false;
+                }
             }
 
-            mNMEA = sentence;
-
-            words = sentence.Split(',');
-
-            switch (words[0]) {
-                case "$GPRMC":                  
-                    return ParseGPRMC(words,real);
-                case "$GPGGA":
-                    return ParseGPGGA(words,real);
-                default:
-                    return false;
-            }
+            return false;
         }
 
 
@@ -471,6 +461,5 @@ namespace Diwi {
             return true;
         }
         #endregion
-
     }
 }
