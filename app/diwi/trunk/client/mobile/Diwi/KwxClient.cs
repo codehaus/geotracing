@@ -18,7 +18,7 @@ namespace Diwi {
 
     class KwxClient {
         private CultureInfo mUSFormat = new CultureInfo(0x0409);
-
+        static HttpWebRequest sKwxWebRequest;
         public delegate void MessageCallback(string mess);
         public delegate void POICallback(XMLement mess, float lat, float lon);
         public event MessageCallback messageCallback;
@@ -439,23 +439,30 @@ namespace Diwi {
                 url += "?timeout=" + Diwi.Properties.Resources.KwxServerTimeout;
             }
 
+            if (sKwxWebRequest == null) {
+                sKwxWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            }
+
             try {
                 // create the web request
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                
                 UTF8Encoding encoding = new UTF8Encoding();
                 byte[] postBytes = encoding.GetBytes(anElement.toString());
 
-                req.KeepAlive = true;
-                req.Timeout = 20000;
-                req.Method = "POST";
-                req.ContentType = "text/xml";
-                req.ContentLength = postBytes.Length;
-                Stream postStream = req.GetRequestStream();
+                sKwxWebRequest.KeepAlive = true;
+                sKwxWebRequest.Timeout = 20000;
+                sKwxWebRequest.Method = "POST";
+                sKwxWebRequest.ContentType = "text/xml";
+                sKwxWebRequest.ContentLength = postBytes.Length;
+                Stream postStream = sKwxWebRequest.GetRequestStream();
                 postStream.Write(postBytes, 0, postBytes.Length);
                 postStream.Close();
 
                 // make the connect
-                HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
+                HttpWebResponse resp = (HttpWebResponse)sKwxWebRequest.GetResponse();
+
+                if (mAgentKey == null)
+                    sKwxWebRequest = null;
 
                 // get the page data
                 StreamReader sr = new StreamReader(resp.GetResponseStream());
