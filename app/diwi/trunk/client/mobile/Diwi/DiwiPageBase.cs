@@ -280,6 +280,11 @@ namespace Diwi {   // base class for Diwi Pages.
             }
         }
 
+        public void resetMenu() {
+            mMenu.reset();
+            draw();
+        }
+
         public void redrawRect(Rectangle oldR, Rectangle newR)
         {
             if (oldR.Width > newR.Width)

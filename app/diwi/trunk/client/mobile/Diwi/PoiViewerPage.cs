@@ -207,7 +207,8 @@ namespace Diwi {
                 if (mMediaDnl != null)
                     mMediaDnl.abort();
                 reset();
-                doTerug(0, "");
+                if (mIsInitialized)
+                    doTerug(0, "");
             }
             if (mAllMedia.getChild(mMediaIndex + 1) == null) {
                 setMenuText(0, "Terug");
@@ -224,7 +225,7 @@ namespace Diwi {
             }
         }
  
-        public void setContent(XMLement xml) {
+        public bool setContent(XMLement xml) {
             setMenuText(0, "Volgende");
             setMenuIcon(0, AppController.sVolgIcon);
             abortDownload();
@@ -240,11 +241,12 @@ namespace Diwi {
             for (int i = 0; i < 10; i++) dnlFileNames[i] = null;
             if (mAllMedia.getChild(0) != null) {
                 doDownloadMedium(0);
-                //doNext(0, "");
             } else {
                 setMenuText(0, "Terug");
                 setMenuIcon(0, AppController.sTerugIcon);
+                return false;
             }
+            return true;
         }
 
         private void reOrient() {

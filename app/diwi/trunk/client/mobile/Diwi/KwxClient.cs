@@ -334,15 +334,15 @@ namespace Diwi {
                 llbLat = GpsReader.lat - GpsReader.km2degLat(radiusKm);
                 urtLon = GpsReader.lon + GpsReader.km2degLon((float)(radiusKm * 1.5));
                 llbLon = GpsReader.lon - GpsReader.km2degLon((float)(radiusKm * 1.5));
-                req.addAttribute("height", "320");
-                req.addAttribute("width", "240");
+                req.addAttribute("height", "240");
+                req.addAttribute("width", "320");
             } else {
                 urtLat = GpsReader.lat + GpsReader.km2degLat((float)(radiusKm * 1.5));
                 llbLat = GpsReader.lat - GpsReader.km2degLat((float)(radiusKm * 1.5));
                 urtLon = GpsReader.lon + GpsReader.km2degLon(radiusKm);
                 llbLon = GpsReader.lon - GpsReader.km2degLon(radiusKm);
-                req.addAttribute("height", "240");
-                req.addAttribute("width", "320");
+                req.addAttribute("height", "320");
+                req.addAttribute("width", "240");
             }
 
             MapHandler.setBounds(hor, urtLat, urtLon, llbLat, llbLon);

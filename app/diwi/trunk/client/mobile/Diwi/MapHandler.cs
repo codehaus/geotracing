@@ -46,7 +46,7 @@ namespace Diwi {
 
         static int sDoDownload = 0;
 
-        static void downLoadMaps() {
+        static public void downLoadMaps() {
             AppController.sActiveRouteMapPathHor = null;
             AppController.sActiveRouteMapPathVer = null;
             sDownloadingVersion = 0;

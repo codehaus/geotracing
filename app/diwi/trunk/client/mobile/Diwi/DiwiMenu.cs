@@ -106,6 +106,11 @@ namespace Diwi {
             mParentRect = n;
         }
 
+        public void reset() {
+            mCurrentMenuIndex = -1;
+            draw();
+        }
+
         public void incIndex() {
             mCurrentMenuIndex -= 1;
             if (mCurrentMenuIndex < -1 )
@@ -148,8 +153,8 @@ namespace Diwi {
             int y = mParentRect.Y;
 
             // draw yellow bar on the side
-            mBrush.Color = sBarColor;
-            DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 30, mParentRect.Height);
+           // mBrush.Color = sBarColor;
+           // DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 30, mParentRect.Height);
 
             DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, 5, 4);
             DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, mParentRect.Width - 28 , 4);

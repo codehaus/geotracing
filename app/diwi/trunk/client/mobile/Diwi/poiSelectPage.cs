@@ -16,6 +16,7 @@ namespace Diwi {
         Label mTextBox = new Label();
         List<string> poiIDs;
         XMLement mCurrentPOI;
+        bool mHasContent = false;
 
         public PoiSelectPage(DiwiPageBase parent)
             : base(parent) {
@@ -42,8 +43,13 @@ namespace Diwi {
         }
 
         void doView(int i, string s) {
-            mIsActive = false;
-            sPoiPage.ShowDialog();
+
+            if (mHasContent) {
+                mIsActive = false;
+                sPoiPage.ShowDialog();
+            } else {
+                resetMenu();
+            }
         }
 
         void doNext(int i, string s) {
@@ -89,7 +95,12 @@ namespace Diwi {
                         mTextBox.Text = desc_xml.nodeText;
                     }
                     mTextBox.Visible = true;
-                    sPoiPage.setContent(x);
+                    mHasContent = sPoiPage.setContent(x);
+                    if (mHasContent) {
+                        setMenuText(0, "Toon Media");
+                    } else {
+                        setMenuText(0, "Geen Media");
+                    }
                     return true;
                 }
             }
