@@ -148,14 +148,14 @@ public class NavigationLogic implements Constants {
             LogLogic logLogic = new LogLogic(oase);
             if (init) {
                 // now create explicitely close the previous trip
-                logLogic.closeLogs("" + aPersonId, LOG_TRIP_TYPE);
+                logLogic.closeLogs("" + aPersonId, LOG_MOBILE_TYPE);
             }
 
             //Relate route to person as active route
             oase.getRelater().relate(person, route, ACTIVE_TAG);
 
             // explicitely relate the route to the trip
-            Record trip = logLogic.getOpenLog("" + aPersonId, LOG_TRIP_TYPE);
+            Record trip = logLogic.getOpenLog("" + aPersonId, LOG_MOBILE_TYPE);
             oase.getRelater().relate(trip, route);
 
         } catch (OaseException oe) {
