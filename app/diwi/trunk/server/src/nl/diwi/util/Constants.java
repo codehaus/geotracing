@@ -17,17 +17,6 @@ public interface Constants {
     public final static int ACTIVE_STATE = 1;
     public final static String ACTIVE_TAG = "active";
 
-    // Keyworx services
-    public final static String NAV_GET_STATE = "nav-get-state";
-    public final static String NAV_GET_MAP = "nav-get-map";
-    public final static String NAV_POINT = "nav-point";
-    public final static String NAV_START = "nav-start";
-    public final static String NAV_STOP = "nav-stop";
-    public final static String NAV_ACTIVATE_ROUTE = "nav-activate-route";
-    public final static String NAV_DEACTIVATE_ROUTE = "nav-deactivate-route";
-    public final static String NAV_ADD_MEDIUM = "nav-add-medium";
-    public final static String NAV_TOGGLE_UGC = "nav-toggle-ugc";
-
     // xml tags
     public final static String PREF_ELM = "pref";
     public final static String ROUTE_ELM = "route";
@@ -36,12 +25,13 @@ public interface Constants {
     public final static String NAME_ELM = "name";
     public final static String DISTANCE_ATTR = "distance";
     public final static String KICH_URI_ELM = "kich-uri";
-    public final static String TRAFFIC_ELM = "traffic";
     public final static String THEME_ELM = "theme";
     public final static String POI_HIT_ELM = "poi-hit";
     public final static String MSG_ELM = "msg";
     public final static String UGC_HIT_ELM = "ugc-hit";
-    public final static String TRIP_ELM = "trip";
+
+    public final static String WEB_ELM = "web";
+    public final static String MOBILE_ELM = "mobile";
 
     public final static String LLB_LAT_ATTR = "llbLat";
     public final static String LLB_LON_ATTR = "llbLon";
@@ -86,8 +76,8 @@ public interface Constants {
     public final static String INIT_FIELD = "init";
 
     // log types
-    public final static String LOG_TRIP_TYPE = "trip";
-    public final static String LOG_TRAFFIC_TYPE = "traffic";
+    public final static String LOG_MOBILE_TYPE = "mobile";
+    public final static String LOG_WEB_TYPE = "web";
 
     // trip states
     public final static String LOG_STATE_OPEN = "open";
@@ -98,9 +88,6 @@ public interface Constants {
     public final static int POI_STARTPOINT = 2;
     public final static int POI_ENDPOINT = 3;
     public final static int POI_START_AND_ENDPOINT = 4;
-
-    /*public final static String POI_TRIP_STATE_HIT = "hit";
-    public final static String POI_TRIP_STATE_READ = "read";*/
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;
