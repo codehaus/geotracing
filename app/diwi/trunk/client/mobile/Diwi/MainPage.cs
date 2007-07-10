@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-
+using System.IO;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -29,9 +29,13 @@ namespace Diwi {
 
             mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),AppController.sVideoIcon);
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute), AppController.sKiesIcon);
-            mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute),null);
+            mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute),
+                new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug-r.ico"))
+            );
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin), AppController.sStruinIcon);
-            mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS),null);
+            mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS),
+                new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.gps.ico"))
+            );
             mMenu.addItem("Stop", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop.ico"))
             );
@@ -40,11 +44,16 @@ namespace Diwi {
         }
 
         void doVideo(int i, string s) {
-            Process process = new Process();
-            process.StartInfo.FileName = AppController.sVideoFileName;
-            process.StartInfo.Verb = "Open";
-            process.StartInfo.UseShellExecute = true;
-            process.Start();
+            FileInfo fi = new FileInfo(AppController.sVideoFileName);
+            if (fi.Exists) {
+                Process process = new Process();
+                process.StartInfo.FileName = AppController.sVideoFileName;
+                process.StartInfo.Verb = "Open";
+                process.StartInfo.UseShellExecute = true;
+                process.Start();
+            } else {
+                MessageBox.Show("Zorg dat \"diwi-concept.3gp\" in de 'My Documents' folder aanwezig is...", "Video not found");
+            }
 
         }
 

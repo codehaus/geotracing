@@ -191,6 +191,7 @@ namespace Diwi {
         void doUGC(int i, string s) {
             sShowUGC = !sShowUGC;
             AppController.sKwxClient.navUGC(sShowUGC);
+            MapHandler.downLoadMaps();
             if (sShowUGC == true) {
                 setMenuText(4, "Verberg Volksmond");
             } else {
