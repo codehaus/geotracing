@@ -412,8 +412,7 @@ namespace Diwi {
         /// <summary>
         /// Encapsulate request in utopia request.
         /// </summary>
-        public XMLement utopiaRequest(XMLement anElement)
-        {
+        public XMLement utopiaRequest(XMLement anElement) {
             XMLement req = new XMLement();
             req.tag = Protocol.TAG_UTOPIA_REQ;
             req.addChild(anElement);
@@ -439,13 +438,9 @@ namespace Diwi {
                 url += "?timeout=" + Diwi.Properties.Resources.KwxServerTimeout;
             }
 
-            if (sKwxWebRequest == null) {
-                sKwxWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            }
-
             try {
                 // create the web request
-                
+                sKwxWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 UTF8Encoding encoding = new UTF8Encoding();
                 byte[] postBytes = encoding.GetBytes(anElement.toString());
 
@@ -460,9 +455,6 @@ namespace Diwi {
 
                 // make the connect
                 HttpWebResponse resp = (HttpWebResponse)sKwxWebRequest.GetResponse();
-
-                if (mAgentKey == null)
-                    sKwxWebRequest = null;
 
                 // get the page data
                 StreamReader sr = new StreamReader(resp.GetResponseStream());

@@ -21,13 +21,9 @@ namespace Diwi {
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             this.Controls.Add(mTextBox);
-
-           // mTextBox.Multiline = true;
-           // mTextBox.ReadOnly = true;
             mTextBox.Font = mTextBox.Font = new Font("Tahoma", 11, FontStyle.Bold);
-           // mTextBox.ScrollBars = ScrollBars.Vertical;
             mTextBox.ForeColor = Color.Black;
-            mTextBox.BackColor = Color.GreenYellow;
+            mTextBox.BackColor = Color.FromArgb(198, 255, 0);
 
             reOrient();
 

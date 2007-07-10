@@ -27,7 +27,7 @@ namespace Diwi {
 
             mTextBox.Font = new Font("Tahoma", 12, FontStyle.Regular);
             mTextBox.ForeColor = Color.Black;
-            mTextBox.BackColor = Color.GreenYellow;
+            mTextBox.BackColor = Color.FromArgb(198,255,0);
             mTextBox.Text = "U bent een flink eind van uw route afgeweken... \n\nWilt u gaan struinen?\nOf wilt u de route vervolgen?";
             reOrient();
         }

@@ -161,15 +161,16 @@ namespace Diwi {   // base class for Diwi Pages.
                blendCount = 4;
                draw();
            }
-           /*  Rectangle oldRect = mouseText.rect;
+
+             Color c = DiwiPageBase.offScreenBitmap.GetPixel(e.X, e.Y);
+             Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);
 
-             mouseText.text = "m: " + e.X.ToString() + ", " + e.Y.ToString();
+             mouseText.text = "c: " + c.R + "; " + c.G + "; " + c.B; 
              mouseText.x = 4;
              mouseText.y = mCurrentRect.Height-18;
              mouseText.draw();
              redrawRect(oldRect, mouseText.rect);
-         */
         }
 
         public bool invHorizontal() {
