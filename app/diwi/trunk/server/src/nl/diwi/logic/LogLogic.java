@@ -7,7 +7,6 @@ import nl.justobjects.jox.parser.JXBuilder;
 import nl.justobjects.jox.parser.JXBuilderListener;
 import org.geotracing.handler.QueryLogic;
 import org.geotracing.handler.TrackLogic;
-import org.geotracing.gis.Transform;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
@@ -41,7 +40,7 @@ public class LogLogic implements Constants {
      * Creates a new log
      *
      * @param aPersonId log for this person
-     * @param aType     'trip' or 'traffic' is used
+     * @param aType 'mobile' or 'web' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -91,7 +90,7 @@ public class LogLogic implements Constants {
      * Closes the logs after a certain period set in server.properties
      *
      * @param aPersonId log for this person
-     * @param aType     'trip' or 'traffic' is used
+     * @param aType     'mobile' or 'web' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -123,7 +122,7 @@ public class LogLogic implements Constants {
      * Explicitely closes all open logs
      *
      * @param aPersonId log for this person
-     * @param aType     'trip' or 'traffic' is used
+     * @param aType     'mobile' or 'web' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -148,7 +147,7 @@ public class LogLogic implements Constants {
      * Stores an event into the open log
      *
      * @param aPersonId log for this person
-     * @param aType     'trip' or 'traffic' is used
+     * @param aType     'mobile' or 'web' is used
      * @param anEvent   the event to store
      * @throws UtopiaException standard exception
      */
@@ -179,7 +178,7 @@ public class LogLogic implements Constants {
      * Gets the open log to write the events to.
      *
      * @param aPersonId log for this person
-     * @param aType     'trip' or 'traffic' is used
+     * @param aType     'mobile' or 'web' is used
      * @return log record
      * @throws UtopiaException standard exception
      */
@@ -250,7 +249,7 @@ public class LogLogic implements Constants {
 
     /*public void relatePoiToTrip(int aPersonId, int aPoiId, String aState) throws UtopiaException{
         try{
-            Record trip = getOpenLog("" + aPersonId, LOG_TRIP_TYPE);
+            Record trip = getOpenLog("" + aPersonId, LOG_MOBILE_TYPE);
             Record poi = oase.getFinder().read(aPoiId);
 
             // check if it's already related
@@ -279,10 +278,10 @@ public class LogLogic implements Constants {
             throw new UtopiaException("No log found for id:" + aLogId);
         }
 
-        if (type.equals(LOG_TRIP_TYPE)) {
-            logElm = new JXElement(TRIP_ELM);
+        if (type.equals(LOG_MOBILE_TYPE)) {
+            logElm = new JXElement(MOBILE_ELM);
         } else {
-            logElm = new JXElement(TRAFFIC_ELM);
+            logElm = new JXElement(WEB_ELM);
         }
 
         try {
@@ -328,8 +327,8 @@ public class LogLogic implements Constants {
                 builder.build(fileField.getFileInputStream());
             }
 
-            if (type.equals(LOG_TRIP_TYPE)) {
-                JXElement tripElm = new JXElement(LOG_TRIP_TYPE);
+            if (type.equals(LOG_MOBILE_TYPE)) {
+                JXElement tripElm = new JXElement(LOG_MOBILE_TYPE);
 
                 // get the related track
                 Record trackRec = oase.getRelater().getRelated(record, "g_track", null)[0];
@@ -376,7 +375,7 @@ public class LogLogic implements Constants {
                 // now add routes
                 // <nav-activate-route-req id="685"/>
                 JXElement routes = new JXElement("routes");
-                Vector routeMsgs = logElm.getChildrenByTag(NAV_ACTIVATE_ROUTE + "-req");
+                Vector routeMsgs = logElm.getChildrenByTag(NavigationHandler.NAV_ACTIVATE_ROUTE_SERVICE + "-req");
                 for(int i=0;i<routeMsgs.size();i++){
                     JXElement routeMsg = (JXElement)routeMsgs.elementAt(i);
                     String id = routeMsg.getAttr(ID_FIELD);
