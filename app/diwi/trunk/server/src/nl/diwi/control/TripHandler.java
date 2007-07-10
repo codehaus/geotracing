@@ -66,7 +66,7 @@ public class TripHandler extends DefaultHandler implements Constants {
 
     private JXElement getTrip(UtopiaRequest anUtopiaReq) throws UtopiaException {
         LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_WEB_TYPE);
 
         LogLogic logic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         JXElement tripElm = logic.getLog(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
@@ -79,7 +79,7 @@ public class TripHandler extends DefaultHandler implements Constants {
 
     private JXElement getTripList(UtopiaRequest anUtopiaReq) throws UtopiaException {
         LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_TRAFFIC_TYPE);
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_WEB_TYPE);
 
         // in case we are on somebody else's page we want to use their personid to retrieve the trips.
         String personId = anUtopiaReq.getRequestCommand().getAttr("personid");
@@ -88,7 +88,7 @@ public class TripHandler extends DefaultHandler implements Constants {
         }
 
         LogLogic logic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        Vector trips = logic.getLogs(personId, LOG_TRIP_TYPE);
+        Vector trips = logic.getLogs(personId, LOG_MOBILE_TYPE);
 
         JXElement response = createResponse(TRIP_GETLIST_SERVICE);
         response.addChildren(trips);
