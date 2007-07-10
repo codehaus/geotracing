@@ -42,7 +42,7 @@ namespace Diwi {
 
             mDnlMess.Font = new Font("Tahoma", 14, FontStyle.Regular);
             mDnlMess.ForeColor = Color.Black;
-            mDnlMess.BackColor = Color.GreenYellow;
+            mDnlMess.BackColor = mTextBox.BackColor = Color.FromArgb(198, 255, 0);
             mDnlMess.Text = "Media worden opgehaald...\n\nEen ogenlik, aub.";
             mDnlMess.Visible = false;
 

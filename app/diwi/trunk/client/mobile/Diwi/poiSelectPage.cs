@@ -31,7 +31,7 @@ namespace Diwi {
             //mTextBox.ReadOnly = true;
             //mTextBox.ScrollBars = ScrollBars.Vertical;
             mTextBox.ForeColor = Color.Black;
-            mTextBox.BackColor = Color.GreenYellow;
+            mTextBox.BackColor = mTextBox.BackColor = Color.FromArgb(198, 255, 0);
 
             reOrient();
 
