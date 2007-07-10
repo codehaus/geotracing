@@ -137,13 +137,13 @@ LAYER
 	END
 END
 
-# Single routes from PostGIS
+# One or more routes by id(s) from PostGIS
 LAYER
 #	GROUP "Selected"
-	NAME "single_diwi_route"
+	NAME "diwi_routes_sel"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
-	DATA "rdpath from (select id,rdpath from diwi_route where id = %ID%) as foo using unique id using SRID=28992"
+	DATA "rdpath from (select id,rdpath from diwi_route where id in (%ID%) ) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
 	TYPE LINE
@@ -176,25 +176,26 @@ LAYER
 	  EXPRESSION "1"
 	  STYLE
 		SYMBOL "poi"
-		OUTLINECOLOR 0 0 0
-		COLOR 255 0 0
-		SIZE 6
+		OUTLINECOLOR 5 5 5
+		COLOR 200 0 0
+		SIZE 7
+		ANTIALIAS TRUE
  	  END
 	END
 
-	CLASS
-	  NAME "StartEndPoints"
-	  EXPRESSION "4"
-	  STYLE
-		SYMBOL "poi"
-		OUTLINECOLOR 0 0 0
-		COLOR 255 102 0
-		SIZE 10
- 	  END
-	END
+#	CLASS
+#	  NAME "StartEndPoints"
+#	  EXPRESSION "4"
+#	  STYLE
+#		SYMBOL "poi"
+#		OUTLINECOLOR 0 0 0
+#		COLOR 255 102 0
+#		SIZE 10
+# 	  END
+#	END
 END
 
-# DIWI POIs
+# DIWI start end point POIs
 LAYER
 #	GROUP "Selected"
 	NAME "diwi_startendpoints"
@@ -212,9 +213,11 @@ LAYER
 	  NAME "StartEndPoints"
 	  EXPRESSION "4"
 	  STYLE
-		COLOR 255 102 0
 		SYMBOL "poi"
-		SIZE 8
+		OUTLINECOLOR 0 0 0
+		COLOR 255 102 0
+		SIZE 10
+		ANTIALIAS TRUE
  	  END
 	END
 END
@@ -225,18 +228,23 @@ LAYER
 	NAME "diwi_ugc"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
-	DATA "rdpoint from (select id,rdpoint from g_location) as foo using unique id using SRID=28992"
+	DATA "rdpoint from (select id,rdpoint,type from g_location) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
 	TYPE POINT
 	STATUS OFF
 
+	CLASSITEM "type"
+
 	CLASS
+	  NAME "User Media"
+	  EXPRESSION "1"
 	  STYLE
 		SYMBOL "poi"
 		OUTLINECOLOR 0 0 0
 		COLOR 0 0 255
-		SIZE 6
+		SIZE 7
+		ANTIALIAS TRUE
  	  END
 	END
 END

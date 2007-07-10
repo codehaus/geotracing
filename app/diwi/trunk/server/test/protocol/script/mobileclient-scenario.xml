@@ -204,7 +204,7 @@
     <test id="route-get-map-req">
         <send id="client1">
             <utopia-req>
-                <route-get-map-req id="685" height="240" width="320"/>
+                <route-get-map-req id="663" height="240" width="320"/>
             </utopia-req>
         </send>
 
