@@ -46,7 +46,7 @@ var ROUTE = {
 		MAP.show();
 		MAP.addPOILayer();
 		MAP.addUGCLayer();
-		DIWIAPP.pr('Selecteer hiernaast een van de vaste routes. De rode punten zijn Points of Interest (POIs), de blauwe punten media van gebruikers.')
+		DIWIAPP.pr('Selecteer hiernaast een van de vaste routes. Punten:<br/>rood: Points of Interest<br/>oranje: start/eindpunten<br/>blauw: media van gebruikers.');
 	},
 
 	createGenerateRouteForm: function () {

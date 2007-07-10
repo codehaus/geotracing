@@ -274,10 +274,14 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		Record route = navLogic.getActiveRoute(personId);
 		if (route != null) {
 			// Following a route
-			mapURL = mapLogic.getMapURL(route.getId(), urt, llb, height, width);
+			mapURL = mapLogic.getMapURL(route.getId(), navLogic.isUserContentEnabled(personId), llb, urt, width, height);
 		} else {
-			// Roaming
-			mapURL = mapLogic.getMapURL(urt, llb, height, width);
+			// Roaming (struinen): show map with everything
+			String layers = "topnl_diwiwms,diwi_pois";
+			if (navLogic.isUserContentEnabled(personId)) {
+				layers += ",diwi_ugc";
+			}
+			mapURL = mapLogic.getMapURL(layers, llb, urt, width, height);
 		}
 
 		JXElement response = createResponse(NAV_GET_MAP);
@@ -285,7 +289,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 			response.setAttr(URL_FIELD, URLEncoder.encode(mapURL, "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			throw new UtopiaException("Exception in getMap", e);
-		}
+		} 
 
 		// and store the request
 		logLogic.storeLogEvent(personId+"", anUtopiaReq.getRequestCommand(), LOG_TRIP_TYPE);

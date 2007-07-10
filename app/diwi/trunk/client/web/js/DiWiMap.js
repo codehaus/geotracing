@@ -6,8 +6,10 @@
 var MAP = {
 //	BOUNDS: new OpenLayers.Bounds(4.724717, 51.813062, 5.752441, 52.486596),
 //	CENTER: new OpenLayers.LonLat(5.3790321, 52.171682),
-	BOUNDS: new OpenLayers.Bounds(152000,440000,181000,461000),
-	CENTER: new OpenLayers.LonLat(167000,450000),
+	BOUNDS: new OpenLayers.Bounds(110000,440000,184000,500000),
+//	BOUNDS: new OpenLayers.Bounds(152000,440000,181000,461000),   ORIGINAL
+//	CENTER: new OpenLayers.LonLat(167000,450000), ORIGINAL
+	CENTER: new OpenLayers.LonLat(152000,460000),
 //	BOUNDS: new OpenLayers.Bounds(5.087384, 51.813062, 5.389776, 52.486596),
 //	CENTER: new OpenLayers.LonLat(5.23858, 52.171682),
 	CONTROLS: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar(),new OpenLayers.Control.LayerSwitcher(),new OpenLayers.Control.MousePosition()],
@@ -83,7 +85,7 @@ var MAP = {
 
 		MAP.overlays['route'] = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
-				MAP.WMS_URL, {id: aRouteId, layers: 'single_diwi_route', format: MAP.IMAGE_FORMAT, transparent: true});
+				MAP.WMS_URL, {id: aRouteId, layers: 'diwi_routes_sel', format: MAP.IMAGE_FORMAT, transparent: true});
 
 		MAP.map.addLayer(MAP.overlays['route'] );
 	},

@@ -7,6 +7,9 @@ import org.geotracing.handler.QueryHandler;
 import org.geotracing.handler.QueryLogic;
 import org.keyworx.amuse.core.Protocol;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.utopia.core.data.ErrorCode;
+import org.keyworx.oase.api.OaseException;
+import org.keyworx.oase.api.Record;
 
 import java.util.Map;
 import java.util.Vector;
@@ -14,6 +17,7 @@ import java.util.Vector;
 public class DIWIQueryLogic extends QueryLogic implements Constants {
 
     public static final String CMD_QUERY_ROUTES = "q-diwi-routes";
+	public static final String CMD_QUERY_ROUTE_INFO = "q-diwi-route-info";
     public static final String CMD_QUERY_THEMES = "q-diwi-themes";
     public static final String CMD_QUERY_STARTPOINTS = "q-diwi-startpoints";
     public static final String CMD_QUERY_ENDPOINTS = "q-diwi-endpoints";
@@ -26,22 +30,32 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 
         try {
             if (aQueryName.equals(CMD_QUERY_ROUTES)) {
-                return queryRoutes(theParms);
-            } else if (aQueryName.equals(CMD_QUERY_THEMES)) {
-                return queryThemes(theParms);
-            } else if (aQueryName.equals(CMD_QUERY_STARTPOINTS)) {
-                return queryStartPoints(theParms);
-            } else if (aQueryName.equals(CMD_QUERY_ENDPOINTS)) {
-                return queryEndPoints(theParms);
-            } else if (aQueryName.equals(CMD_QUERY_STARTENDPOINTS)) {
-                return queryStartEndPoints(theParms);
-            } else if (aQueryName.equals(CMD_QUERY_TRIP)) {
-                return queryTrip(theParms);
-            } else if (aQueryName.equals(CMD_QUERY_TRIPS)) {
-                return queryTrips(theParms);
-            }
+                result = queryRoutes(theParms);
+			} else if (aQueryName.equals(CMD_QUERY_ROUTE_INFO)) {
+				String id = getParameter(theParms, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, id);
+				Record route = getOase().getFinder().freeQuery(
+		//				"select id,name,description,type,distance,extent(rdpath) AS bbox from diwi_route where id=" + id)[0];
+				"select id,astext(extent(rdpath)) AS bbox from diwi_route where id=" + id)[0];
+				JXElement routeElm = route.toXML();
 
-            return super.doQuery(aQueryName, theParms);
+				result = Protocol.createResponse(CMD_QUERY_ROUTE_INFO);
+				result.addChild(routeElm);
+			} else if (aQueryName.equals(CMD_QUERY_THEMES)) {
+                result = queryThemes(theParms);
+            } else if (aQueryName.equals(CMD_QUERY_STARTPOINTS)) {
+                result = queryStartPoints(theParms);
+            } else if (aQueryName.equals(CMD_QUERY_ENDPOINTS)) {
+                result = queryEndPoints(theParms);
+            } else if (aQueryName.equals(CMD_QUERY_STARTENDPOINTS)) {
+                result = queryStartEndPoints(theParms);
+            } else if (aQueryName.equals(CMD_QUERY_TRIP)) {
+                result = queryTrip(theParms);
+            } else if (aQueryName.equals(CMD_QUERY_TRIPS)) {
+                result = queryTrips(theParms);
+            } else {
+				result = super.doQuery(aQueryName, theParms);
+			}
         } catch (Throwable ue) {
             result = new JXElement(TAG_ERROR);
             result.setText("Unexpected Error during query " + ue);
