@@ -113,9 +113,12 @@ public class POILogic implements Constants {
     public void update(int aPOIId, JXElement aPOIElement) throws UtopiaException {
         try {
             // first update the KICH db
+            Record poi = oase.getFinder().read(aPOIId);
+            // add the KICH id for remote updating
+            aPOIElement.addTextChild(ID_FIELD, poi.getStringField(KICHID_FIELD));
+
             dataSource.updatePOI(aPOIElement);
 
-            Record poi = oase.getFinder().read(aPOIId);
             updateInKWXOnly(poi, aPOIElement);
 
         } catch (OaseException oe) {
