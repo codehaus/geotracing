@@ -210,7 +210,7 @@ public class POIHandler extends DefaultHandler implements Constants {
     protected JXElement getPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_TRAFFIC_TYPE);
+        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_WEB_TYPE);
 
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
