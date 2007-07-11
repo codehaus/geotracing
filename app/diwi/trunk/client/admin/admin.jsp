@@ -6,18 +6,19 @@
 <%@ page import="org.keyworx.oase.api.Record" %>
 <%@ page import="java.util.Vector" %>
 <%@ page import="nl.diwi.util.Constants" %>
+
 <%
-    System.out.println("dbg 1");
     String personId = request.getParameter("person");
     System.out.println("Person: " + personId);
-    System.out.println("dbg 2");
 
     HttpConnector.login(session, "diwi", "geoapp", "user", "geoapp-user", "user", null);
-    System.out.println("dbg 3");
+
     // first get the users
+
     OaseSession oase = Oase.createSession("diwi");
+    String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
+    //Record[] people = oase.getFinder().freeQuery(query);
     Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
-    System.out.println("dbg 4");
 
     JXElement rsp = new JXElement("");
     if(personId!=null && personId.length()>0){
