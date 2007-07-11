@@ -92,6 +92,12 @@ public class POIHandler extends DefaultHandler implements Constants {
             response = createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request " + t);
         }
 
+        // log the event
+        LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        JXElement req = anUtopiaReq.getRequestCommand();
+        req.addChild(response);
+        logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), req, LOG_WEB_TYPE);
+
         // Always return a response
         log.trace("Handled service=" + service + " response=" + response.getTag());
         return new UtopiaResponse(response);
@@ -209,8 +215,6 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
-        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_WEB_TYPE);
 
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
@@ -315,13 +319,6 @@ public class POIHandler extends DefaultHandler implements Constants {
     }
 
     /**
-     * Get user (Person) id from request.
-     */
-    protected int getPersonId(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        return Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-    }
-
-    /**
      * Throw exception when attribute empty or not present.
      */
     protected void throwOnMissingAttr(String aName, String aValue) throws UtopiaException {
@@ -330,24 +327,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         }
     }
 
-    /**
-     * Throw exception when numeric attribute empty or not present.
-     */
-    protected void throwOnNonNumAttr(String aName, String aValue) throws UtopiaException {
-        throwOnMissingAttr(aName, aValue);
-        try {
-            Long.parseLong(aValue);
-        } catch (Throwable t) {
-            throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
-        }
-    }
 
-    /**
-     * Throw exception when numeric attribute empty or not present.
-     */
-    protected void throwNegNumAttr(String aName, long aValue) throws UtopiaException {
-        if (aValue == -1) {
-            throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
-        }
-    }
+
+
 }

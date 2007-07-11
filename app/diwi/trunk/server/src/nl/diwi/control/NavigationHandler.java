@@ -92,12 +92,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 				response = unknownReq(anUtopiaReq);
 			}
 
-			// store the traffic
-			LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-			l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_WEB_TYPE);
-
-			logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-			log.info("###### NAV response:" + new String(response.toBytes(false)));
+            log.info("###### NAV response:" + new String(response.toBytes(false)));
 
 		} catch (UtopiaException ue) {
 			log.warn("Negative response service=" + service, ue);
@@ -107,15 +102,19 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 			response = createNegativeResponse(service, ErrorCode.__6005_Unexpected_error, "Unexpected error in request " + t);
 		}
 
-		// Always return a response
+        LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        if(!service.equals(NAV_POINT_SERVICE)){
+            JXElement req = anUtopiaReq.getRequestCommand();
+            req.addChild(response);
+            logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), req, LOG_MOBILE_TYPE);
+        }
+
+        // Always return a response
 		log.trace("Handled service=" + service + " response=" + response.getTag());
 		return new UtopiaResponse(response);
 	}
 
     protected JXElement getRouteHome(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
-
         RouteLogic logic = new RouteLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         JXElement reqElm = anUtopiaReq.getRequestCommand();
         // ok so this person is the one generating the routes!!
@@ -137,8 +136,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getPoi(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement reqElm = anUtopiaReq.getRequestCommand();
-        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_MOBILE_TYPE);
         POILogic poiLogic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
         int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
@@ -150,9 +147,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
     }
 
     private JXElement getRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
-
         RouteLogic logic = new RouteLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         JXElement routeElm = logic.getRoute(Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD)));
 
@@ -163,8 +157,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
     }
 
     private JXElement getRoutes(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        LogLogic l = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        l.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_WEB_TYPE);
         RouteLogic logic = new RouteLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         String type = anUtopiaReq.getRequestCommand().getAttr(TYPE_FIELD);
         String personId = anUtopiaReq.getUtopiaSession().getContext().getUserId();
@@ -177,12 +169,10 @@ public class NavigationHandler extends DefaultHandler implements Constants {
     }
 
     private JXElement deactivateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		NavigationLogic logic = createLogic(anUtopiaReq);
+        NavigationLogic logic = createLogic(anUtopiaReq);
 		int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 
 		logic.deactivateRoute(personId);
-
-		logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
 
 		return createResponse(NAV_DEACTIVATE_ROUTE_SERVICE);
 	}
@@ -190,8 +180,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	private JXElement toggleUGC(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		NavigationLogic logic = createLogic(anUtopiaReq);
 		logic.toggleUGC(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-
-		logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
 
 		return createResponse(NAV_TOGGLE_UGC_SERVICE);
 	}
@@ -210,8 +198,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
 		logic.activateRoute(routeId, personId, init);
 
-		logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), reqElm, LOG_MOBILE_TYPE);
-
 		return createResponse(NAV_ACTIVATE_ROUTE_SERVICE);
 	}
 
@@ -225,7 +211,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 			response.setAttr("routeid", route.getId());
 		}
 
-		return response;
+        return response;
 	}
 
 	private JXElement handlePoint(UtopiaRequest anUtopiaReq) throws UtopiaException {
@@ -254,27 +240,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		// write to track
         trackLogic.write(reqElm.getChildren(), HandlerUtil.getUserId(anUtopiaReq));
 
-/*
-        Track track = trackLogic.getActiveTrack(Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId()));
-        try{
-        if(track!=null){
-            Record[] recs1 = oase.getRelater().getRelated(track.getRecord(), "g_location", "lastpt");
-            if(recs1.length == 1){
-                Record r = setRDPoint(recs1[0], ptElement.getAttr(LON_FIELD), ptElement.getAttr(LAT_FIELD));
-                oase.getModifier().update(r);
-            }
-
-            Record[] recs2 = oase.getRelater().getRelated(oase.getFinder().read(Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId())), "g_location", "lastloc");
-            if(recs2.length == 1){
-                Record r = setRDPoint(recs2[0], ptElement.getAttr(LON_FIELD), ptElement.getAttr(LAT_FIELD));
-                oase.getModifier().update(r);
-            }
-        }
-        }catch(Throwable t){
-
-        }
-*/
-
         Vector result = new Vector(3);
 
 		Point point = new Point(x, y);
@@ -298,8 +263,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
 		// Resume current Track for this user
 		trackLogic.suspend(HandlerUtil.getUserId(anUtopiaReq), System.currentTimeMillis());
-		// store the event
-		logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
 		// close this trip
 		logLogic.closeLogs(anUtopiaReq.getUtopiaSession().getContext().getUserId(), LOG_MOBILE_TYPE);
 
@@ -316,9 +279,6 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 
 		// close previous trip
 		logLogic.closeLogByTime(anUtopiaReq.getUtopiaSession().getContext().getUserId(), LOG_MOBILE_TYPE);
-
-		// and store the request
-		logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
 
 		// relate the track to the trip
 		Record trip = logLogic.getOpenLog(anUtopiaReq.getUtopiaSession().getContext().getUserId(), LOG_MOBILE_TYPE);
@@ -371,16 +331,13 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 			throw new UtopiaException("Exception in getMap", e);
 		}
 
-		// and store the request
-		logLogic.storeLogEvent(personId+"", anUtopiaReq.getRequestCommand(), LOG_MOBILE_TYPE);
-
 		return response;
 	}
 
-	/*
-			<nav-add-medium-req id="[mediumid]" lon="" lat="" />
-			<play-add-medium-rsp locationid="[locationid]" />
-		*/
+    /*
+    <nav-add-medium-req id="[mediumid]" lon="" lat="" />
+    <play-add-medium-rsp locationid="[locationid]" />
+    */
 	public JXElement addMedium(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 		JXElement requestElement = anUtopiaReq.getRequestCommand();
 		String mediumIdStr = requestElement.getAttr(ID_FIELD);
@@ -409,28 +366,8 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		JXElement rsp = createResponse(NAV_ADD_MEDIUM_SERVICE);
 		rsp.setAttr(LOCATION_ID_FIELD, location.getId());
 
-		// store the event
-		logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), requestElement, LOG_MOBILE_TYPE);
-
 		return rsp;
 	}
-
-    /*private Record setRDPoint(Record aLocationRecord, String aLon, String aLat) throws UtopiaException{
-        double xy[];
-		try {
-			xy = Transform.WGS84toRD(Double.parseDouble(aLon), Double.parseDouble(aLat));
-		} catch (Exception e) {
-			throw new UtopiaException("No valid lat and lon coordinates found");
-		}
-
-		double x = xy[0];
-		double y = xy[1];
-
-		// now store the rdpoint
-		Point rdPoint = PostGISUtil.createPoint(EPSG_DUTCH_RD, x, y, 0.0, System.currentTimeMillis());
-		aLocationRecord.setObjectField(RDPOINT_FIELD, new PGgeometryLW(rdPoint));
-		return aLocationRecord;
-    }*/
 
     protected JXElement unknownReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		String service = anUtopiaReq.getServiceName();
