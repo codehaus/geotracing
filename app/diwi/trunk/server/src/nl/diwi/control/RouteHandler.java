@@ -6,6 +6,8 @@ package nl.diwi.control;
 
 import nl.diwi.logic.LogLogic;
 import nl.diwi.logic.RouteLogic;
+import nl.diwi.logic.MapLogic;
+import nl.diwi.logic.NavigationLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -15,6 +17,8 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.postgis.PGbox2d;
+import org.geotracing.handler.HandlerUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -84,16 +88,23 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
     private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
         RouteLogic logic = createLogic(anUtopiaReq);
-        int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
-        int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
-        int width = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(WIDTH_FIELD));
+		int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
+		int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
+		int width = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(WIDTH_FIELD));
 
-        JXElement response = createResponse(ROUTE_GET_MAP_SERVICE);
-        try {
-            response.setAttr(URL_FIELD, URLEncoder.encode(logic.getMapUrl(routeId, width, height), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new UtopiaException("Exception in getMap", e);
-        }
+		JXElement response = createResponse(ROUTE_GET_MAP_SERVICE);
+		MapLogic mapLogic = new MapLogic();
+		PGbox2d bbox = logic.getBBox(routeId);
+		int personId = HandlerUtil.getUserId(anUtopiaReq);
+
+		NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+		String url = mapLogic.getMapURL(routeId, navLogic.isUserContentEnabled(personId), bbox.getLLB(), bbox.getURT(), width, height);
+
+		try {
+			response.setAttr(URL_FIELD, URLEncoder.encode(url, "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+			throw new UtopiaException("Exception in getMap", e);
+		}
         return response;
     }
 
