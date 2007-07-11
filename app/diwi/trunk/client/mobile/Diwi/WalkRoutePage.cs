@@ -220,6 +220,7 @@ namespace Diwi {
 
 
         void doPoi(List<string> pois) {
+            AppController.doVibrate();
             AppController.poiHit();
             AppController.sEventLog.WriteLine("hit {0} pois:", pois.Count);
             if (sPoiSelectPage == null)
