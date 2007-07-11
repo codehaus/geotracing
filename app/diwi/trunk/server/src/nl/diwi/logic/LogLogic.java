@@ -151,6 +151,10 @@ public class LogLogic implements Constants {
      * @param anEvent   the event to store
      * @throws UtopiaException standard exception
      */
+    /*
+    add the response as a child
+    <service-req> <service-rsp /> </service-req>    
+     */
     public void storeLogEvent(String aPersonId, JXElement anEvent, String aType) throws UtopiaException {
         try {
             log.info("Storing event " + anEvent);

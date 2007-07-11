@@ -14,6 +14,7 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Core;
 import org.keyworx.utopia.core.util.Oase;
+import org.geotracing.handler.QueryLogic;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -26,9 +27,10 @@ import java.util.Vector;
 
 public class UserHandler extends DefaultHandler implements Constants {
 
-    public final static String USER_GET_PREFERENCES = "user-get-preferences";
-    public final static String USER_GET_STATS = "user-get-stats";
-    public final static String USER_REGISTER = "user-register";
+    public final static String USER_GET_PREFERENCES_SERVICE = "user-get-preferences";
+    public final static String USER_GET_STATS_SERVICE = "user-get-stats";
+    public final static String USER_GETLIST_SERVICE = "user-getlist";
+    public final static String USER_REGISTER_SERVICE = "user-register";
     Log log = Logging.getLog("UserHandler");
 
 
@@ -45,12 +47,14 @@ public class UserHandler extends DefaultHandler implements Constants {
 
         JXElement response;
         try {
-            if (service.equals(USER_GET_PREFERENCES)) {
+            if (service.equals(USER_GET_PREFERENCES_SERVICE)) {
                 response = getPreferences(anUtopiaReq);
-            } else if (service.equals(USER_REGISTER)) {
+            } else if (service.equals(USER_REGISTER_SERVICE)) {
                 response = register(anUtopiaReq);
-            } else if (service.equals(USER_GET_STATS)) {
+            } else if (service.equals(USER_GET_STATS_SERVICE)) {
                 response = getStats(anUtopiaReq);
+            } else if (service.equals(USER_GETLIST_SERVICE)) {
+                response = getUsers(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -191,7 +195,7 @@ public class UserHandler extends DefaultHandler implements Constants {
 
             sendMail(mailHost, mailUser, mailPassword, mailRecipient, "DigitaleWichelroede", subject, body);
 
-            JXElement responseElement = createResponse(USER_REGISTER);
+            JXElement responseElement = createResponse(USER_REGISTER_SERVICE);
             responseElement.setAttr("id", "" + person.getId());
 
             return responseElement;
@@ -226,11 +230,27 @@ public class UserHandler extends DefaultHandler implements Constants {
         }
     }
 
+    private JXElement getUsers(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+
+        JXElement response = createResponse(USER_GETLIST_SERVICE);
+
+        try {
+            /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE " + ID_FIELD + "=" + id;
+                    Record[] records = oase.getFinder().freeQuery(query);
+*/
+            System.out.println(new String(response.toBytes(false)));
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
+        return response;
+    }
+
     private JXElement getStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
         LogLogic logLogic = new LogLogic(oase);
-        JXElement response = createResponse(USER_GET_STATS);
+        JXElement response = createResponse(USER_GET_STATS_SERVICE);
 
         String personId = anUtopiaReq.getRequestCommand().getAttr("id");
         try {
@@ -258,15 +278,14 @@ public class UserHandler extends DefaultHandler implements Constants {
                 personElm.addChild(logLogic.getLog(((JXElement) tripLogs.elementAt(j)).getAttr(ID_FIELD)));
             }
 
-            // add the traffic
-            Vector trafficLogs = logLogic.getLogs("" + person.getId(), LOG_WEB_TYPE);
-            for (int h = 0; h < trafficLogs.size(); h++) {
+            // add the weblog
+            Vector webLogs = logLogic.getLogs("" + person.getId(), LOG_WEB_TYPE);
+            for (int h = 0; h < webLogs.size(); h++) {
                 log.info("" + h);
-                personElm.addChild(logLogic.getLog(((JXElement) trafficLogs.elementAt(h)).getAttr(ID_FIELD)));
+                personElm.addChild(logLogic.getLog(((JXElement) webLogs.elementAt(h)).getAttr(ID_FIELD)));
             }
 
-            response.addChild(personElm);            
-            System.out.println(new String(response.toBytes(false)));
+            response.addChild(personElm);
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
@@ -277,7 +296,7 @@ public class UserHandler extends DefaultHandler implements Constants {
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
         LogLogic logLogic = new LogLogic(oase);
-        JXElement response = createResponse(USER_GET_STATS);
+        JXElement response = createResponse(USER_GET_STATS_SERVICE);
 
         try {
             Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
@@ -305,11 +324,11 @@ public class UserHandler extends DefaultHandler implements Constants {
                     personElm.addChild(logLogic.getLog(((JXElement) tripLogs.elementAt(j)).getAttr(ID_FIELD)));
                 }
 
-                // add the traffic
-                Vector trafficLogs = logLogic.getLogs("" + person.getId(), LOG_WEB_TYPE);
-                for (int h = 0; h < trafficLogs.size(); h++) {
+                // add the web
+                Vector webLogs = logLogic.getLogs("" + person.getId(), LOG_WEB_TYPE);
+                for (int h = 0; h < webLogs.size(); h++) {
                     log.info("" + h);
-                    personElm.addChild(logLogic.getLog(((JXElement) trafficLogs.elementAt(h)).getAttr(ID_FIELD)));
+                    personElm.addChild(logLogic.getLog(((JXElement) webLogs.elementAt(h)).getAttr(ID_FIELD)));
                 }
 
                 response.addChild(personElm);
@@ -325,7 +344,7 @@ public class UserHandler extends DefaultHandler implements Constants {
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
         String personId = anUtopiaReq.getUtopiaSession().getContext().getUserId();
         Record person;
-        JXElement response = createResponse(USER_GET_PREFERENCES);
+        JXElement response = createResponse(USER_GET_PREFERENCES_SERVICE);
 
         try {
             person = oase.getFinder().read(Integer.parseInt(personId));
