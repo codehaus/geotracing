@@ -245,18 +245,18 @@
         </expect>
     </test>
 
-    <test id="route-gohome-req">
+    <test id="nav-route-home-req">
         <send id="client1">
             <utopia-req>
-                <route-gohome-req>
+                <nav-route-home-req>
                     <pref name="type" value="walking" type="activity"/>
-                </route-gohome-req>
+                </nav-route-home-req>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <route-gohome-rsp id="${routeid}"/>
+                <nav-route-home-rsp id="${routeid}"/>
             </utopia-rsp>
         </expect>
     </test>
@@ -365,16 +365,16 @@
         </expect>
     </test>
 
-    <test id="poi-get-req">
+    <test id="nav-poi-get-req">
         <send id="client1">
             <utopia-req>
-                <poi-get-req id="273"/>
+                <nav-poi-get-req id="273"/>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <poi-get-rsp/>
+                <nav-poi-get-rsp/>
             </utopia-rsp>
         </expect>
     </test>

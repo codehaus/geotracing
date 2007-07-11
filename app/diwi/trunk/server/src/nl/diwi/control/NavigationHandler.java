@@ -44,9 +44,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
     public final static String NAV_ROUTE_GETLIST_SERVICE = "nav-route-getlist";
     public final static String NAV_ROUTE_HOME_SERVICE = "nav-route-home";
 
-    LogLogic logLogic;
-
-	/**
+    /**
 	 * Processes the Client Request.
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
@@ -215,7 +213,9 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	}
 
 	private JXElement handlePoint(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		JXElement reqElm = anUtopiaReq.getRequestCommand();
+        LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
         TrackLogic trackLogic = new TrackLogic(oase);
 		NavigationLogic navLogic = new NavigationLogic(oase);
@@ -259,7 +259,9 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	}
 
 	private JXElement stopNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+
+        TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
 		// Resume current Track for this user
 		trackLogic.suspend(HandlerUtil.getUserId(anUtopiaReq), System.currentTimeMillis());
@@ -271,7 +273,9 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	}
 
 	private JXElement startNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+        LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        
+        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 		TrackLogic trackLogic = new TrackLogic(oase);
 
 		// Resume current Track for this user
