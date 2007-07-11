@@ -161,7 +161,7 @@ namespace Diwi {   // base class for Diwi Pages.
                blendCount = 4;
                draw();
            }
-
+           return;
              Color c = DiwiPageBase.offScreenBitmap.GetPixel(e.X, e.Y);
              Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);
