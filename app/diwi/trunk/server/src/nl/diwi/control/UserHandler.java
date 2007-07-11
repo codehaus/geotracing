@@ -236,7 +236,7 @@ public class UserHandler extends DefaultHandler implements Constants {
         JXElement response = createResponse(USER_GETLIST_SERVICE);
 
         try {
-            String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE %geoapp% AND firstname NOT LIKE %admin%";
+            String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
             Record[] recs = oase.getFinder().freeQuery(query);
             for(int i=0;i<recs.length;i++){
                 JXElement e = recs[i].toXML();
