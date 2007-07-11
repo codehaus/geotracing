@@ -10,6 +10,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
+import org.postgis.PGbox2d;
 
 import java.util.Map;
 import java.util.Vector;
@@ -34,13 +35,16 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 			} else if (aQueryName.equals(CMD_QUERY_ROUTE_INFO)) {
 				String id = getParameter(theParms, PAR_ID, null);
 				throwOnMissingParm(PAR_ID, id);
-				Record route = getOase().getFinder().freeQuery(
-		//				"select id,name,description,type,distance,extent(rdpath) AS bbox from diwi_route where id=" + id)[0];
-				"select id,astext(extent(rdpath)) AS bbox from diwi_route where id=" + id)[0];
-				JXElement routeElm = route.toXML();
+				Record bboxRec = getOase().getFinder().freeQuery(
+				"select extent(rdpath) AS bbox from diwi_route where id=" + id)[0];
+				PGbox2d pgBox = (PGbox2d) bboxRec.getObjectField("bbox");
+				String bbox = (int) pgBox.getLLB().x + "," + (int) pgBox.getLLB().y + "," + (int) pgBox.getURT().x + "," + (int) pgBox.getURT().y;
 
-				result = Protocol.createResponse(CMD_QUERY_ROUTE_INFO);
-				result.addChild(routeElm);
+				Record[] routeRec = getOase().getFinder().freeQuery(
+				"select id,name,description,type,distance from diwi_route where id=" + id);
+
+				result = createResponse(routeRec);
+				result.getChildAt(0).addTextChild("bbox", bbox);
 			} else if (aQueryName.equals(CMD_QUERY_THEMES)) {
                 result = queryThemes(theParms);
             } else if (aQueryName.equals(CMD_QUERY_STARTPOINTS)) {
