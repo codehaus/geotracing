@@ -318,10 +318,14 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 		Record route = navLogic.getActiveRoute(personId);
 		if (route != null) {
 			// Following a route
-			mapURL = mapLogic.getMapURL(route.getId(), urt, llb, height, width);
+			mapURL = mapLogic.getMapURL(route.getId(), navLogic.isUserContentEnabled(personId), llb, urt, width, height);
 		} else {
 			// Roaming
-			mapURL = mapLogic.getMapURL(urt, llb, height, width);
+			String layers = "topnl_diwiwms,diwi_pois";
+			if (navLogic.isUserContentEnabled(personId)) {
+				layers += ",diwi_ugc";
+			}
+			mapURL = mapLogic.getMapURL(layers, llb, urt, width, height);
 		}
 
 		JXElement response = createResponse(NAV_GET_MAP_SERVICE);
