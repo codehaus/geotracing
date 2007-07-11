@@ -236,10 +236,13 @@ public class UserHandler extends DefaultHandler implements Constants {
         JXElement response = createResponse(USER_GETLIST_SERVICE);
 
         try {
-            /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE " + ID_FIELD + "=" + id;
-                    Record[] records = oase.getFinder().freeQuery(query);
-*/
-            System.out.println(new String(response.toBytes(false)));
+            String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE %geoapp% AND firstname NOT LIKE %admin%";
+            Record[] recs = oase.getFinder().freeQuery(query);
+            for(int i=0;i<recs.length;i++){
+                JXElement e = recs[i].toXML();
+                e.setTag(Person.XML_TAG);
+                response.addChild(e);
+            } 
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
