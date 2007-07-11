@@ -158,9 +158,10 @@ namespace Diwi {
                     if (mapUrl != null) {
                         new MediaDownloader(mapUrl, @"\horMap.jpg", sMapDnl);
                     }
-                    return;
                 } 
             }
+
+            if (sDoDownload > 0) sDoDownload--;
 
             if (sDoDownload > 0) {
                 sDoDownload = 0;

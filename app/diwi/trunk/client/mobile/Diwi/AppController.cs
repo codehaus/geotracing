@@ -15,6 +15,7 @@ using System.Data;
 using System.Diagnostics;
 
 
+
 namespace Diwi {
     /// <summary>
     /// central controller for main components in the app.
@@ -173,6 +174,14 @@ namespace Diwi {
         public static void SysClick()
         {
             sClick.Play();
+        }
+
+
+        [DllImportAttribute("aygshell")]
+
+        extern public static int Vibrate(uint cvn/*0*/, IntPtr rgvn/*null*/, uint fRepeat, uint dwTimeout);
+        public static void doVibrate() {
+            Vibrate(0, IntPtr.Zero, 1, 500);
         }
     }
 }
