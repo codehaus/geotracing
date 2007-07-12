@@ -168,7 +168,7 @@
 
         <expect id="client1">
             <utopia-rsp>
-                <route-generate-rsp id="685"/>
+                <route-generate-rsp id="705"/>
             </utopia-rsp>
         </expect>
     </test>-->
@@ -190,7 +190,7 @@
     <test id="route-get-req">
         <send id="client1">
             <utopia-req>
-                <route-get-req id="685"/>
+                <route-get-req id="705"/>
             </utopia-req>
         </send>
 
@@ -201,19 +201,19 @@
         </expect>
     </test>
 
-    <test id="route-get-map-req">
+    <!--<test id="nav-get-map-req">
         <send id="client1">
             <utopia-req>
-                <route-get-map-req id="663" height="240" width="320"/>
+                <nav-get-map-req  height="240" llbLat="52.07703" llbLon="5.487456" width="320" urtLon="5.490385" urtLat="52.07973" />
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <route-get-map-rsp/>
+                <nav-get-map-rsp/>
             </utopia-rsp>
         </expect>
-    </test>
+    </test>-->
 
     <test id="nav-start-req">
         <send id="client1">
@@ -245,11 +245,11 @@
         </expect>
     </test>
 
-    <test id="nav-route-home-req">
+    <!--<test id="nav-route-home-req">
         <send id="client1">
             <utopia-req>
                 <nav-route-home-req>
-                    <pref name="type" value="walking" type="activity"/>
+                    <pref name="type" value="walking" />
                 </nav-route-home-req>
             </utopia-req>
         </send>
@@ -259,7 +259,7 @@
                 <nav-route-home-rsp id="${routeid}"/>
             </utopia-rsp>
         </expect>
-    </test>
+    </test>-->
 
     <test id="struinen - step on poi">
         <send id="client1">
@@ -280,7 +280,7 @@
     <test id="nav-activate-route-req">
         <send id="client1">
             <utopia-req>
-                <nav-activate-route-req id="685"/>
+                <nav-activate-route-req id="705"/>
             </utopia-req>
         </send>
 
@@ -347,7 +347,7 @@
         </expect>
     </test>
 -->
-    <test id="step on poi for route 685">
+    <test id="step on poi for route 705">
         <send id="client1">
             <utopia-req>
                 <nav-point-req>
@@ -385,7 +385,7 @@
                 <medium-insert-req personid="${personid}">
                     <medium>
                         <name>item1</name>
-                        <filename>/var/keyworx/webapps/local.diwi.nl/testresponse/1.jpg</filename>
+                        <filename>/var/keyworx/webapps/diwi/testresponse/1.jpg</filename>
                         <size>2758</size>
                     </medium>
                 </medium-insert-req>
@@ -495,7 +495,7 @@
     <test id="nav-activate-route-req">
         <send id="client1">
             <utopia-req>
-                <nav-activate-route-req id="671"/>
+                <nav-activate-route-req id="677"/>
             </utopia-req>
         </send>
 
@@ -522,7 +522,7 @@
         </expect>
     </test>
 
-    <test id="step on poi for route 685">
+    <test id="step on poi for route 705">
         <send id="client1">
             <utopia-req>
                 <nav-point-req>
