@@ -221,7 +221,7 @@ public class DataSource implements Constants {
         poi.addChild(id);
         for (int i = 0; i < theMediaIds.size(); i++) {
             JXElement mediumId = new JXElement("media_id");
-            mediumId.setText(theMediaIds.elementAt(i).toString());
+            mediumId.setText(((JXElement)theMediaIds.elementAt(i)).getText());
             poi.addChild(mediumId);
         }
 
@@ -236,7 +236,7 @@ public class DataSource implements Constants {
         poi.addChild(id);
         for (int i = 0; i < theMediaIds.size(); i++) {
             JXElement mediumId = new JXElement("media_id");
-            mediumId.setText(theMediaIds.elementAt(i).toString());
+            mediumId.setText(((JXElement)theMediaIds.elementAt(i)).getText());
             poi.addChild(mediumId);
         }
 
