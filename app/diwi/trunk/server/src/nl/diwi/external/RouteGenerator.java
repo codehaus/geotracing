@@ -6,6 +6,9 @@ import nl.justobjects.jox.parser.JXBuilder;
 import org.keyworx.amuse.core.Amuse;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.common.log.Logging;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.util.Sys;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -14,6 +17,7 @@ import java.net.URLEncoder;
 public class RouteGenerator implements Constants {
 
 	private static String GENERATOR_URL = Amuse.server.getPortal().getProperty(ROUTING_SERVLET_URL) + "?request=createroute";
+	private static Log log = Logging.getLog("RouteGenerator");
 
 	/** Generate route from preferences using external generator. */
 	public static JXElement generateRoute(Record[] prefs) throws UtopiaException {
@@ -23,9 +27,13 @@ public class RouteGenerator implements Constants {
 		String url=null;
 		try {
 			url = buildUrl(prefs, GENERATOR_URL);
+			long t1;
+			t1= Sys.now();
+			log.info("Generating route: url=" + url);
 			resultRoute = new JXBuilder().build(new URL(url));
+			log.info("Generated route dT=" + (Sys.now() - t1)/1000 + " sec");
 		} catch (Throwable t) {
-			throw new UtopiaException("Exception generating route from " + url, t);
+			throw new UtopiaException("Exception generating route", t);
 		}
 		return resultRoute;
 	}

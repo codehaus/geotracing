@@ -44,7 +44,26 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 				"select id,name,description,type,distance from diwi_route where id=" + id);
 
 				result = createResponse(routeRec);
+
+				// Add bounding box
 				result.getChildAt(0).addTextChild("bbox", bbox);
+
+				// Add comma-separated list of poi ids
+				String tables = "diwi_route,diwi_poi";
+				String fields = "diwi_poi.id";
+				String where = "diwi_route.id=" + id;
+				String relations = "diwi_route,diwi_poi";
+				String postCond = null;
+				Record[] poiRecs = queryStore(getOase(), tables, fields, where, relations, postCond);
+				log.info("poirecs.length=" + poiRecs.length);
+				if (poiRecs.length > 0) {
+					String poiIds = "", nextPrefix;
+					for (int i=0; i < poiRecs.length; i++) {
+						nextPrefix = i == 0 ? "" : ",";
+						poiIds = poiIds + nextPrefix + poiRecs[i].getId();
+					}
+					result.getChildAt(0).addTextChild("pois", poiIds);
+				}
 			} else if (aQueryName.equals(CMD_QUERY_THEMES)) {
                 result = queryThemes(theParms);
             } else if (aQueryName.equals(CMD_QUERY_STARTPOINTS)) {

@@ -78,16 +78,29 @@ var MAP = {
 		MAP.map.addLayer(MAP.overlays['ugc']);
 	},
 
-	addRouteLayer: function(aRouteId) {
-		if (MAP.hasOverlay('route')) {
-			MAP.removeOverlay('route');
-		}
+	addRouteLayer: function(routeRec) {
+		var id = routeRec.getField('id');
+		var bboxArr = routeRec.getField('bbox').split(',');
+		var bounds = new OpenLayers.Bounds(bboxArr[0], bboxArr[1], bboxArr[2], bboxArr[3]);
+		MAP.map.zoomToExtent(bounds);
+		MAP.removeOverlays();
 
-		MAP.overlays['route'] = new OpenLayers.Layer.WMS.Untiled('Route (#' + aRouteId + ')',
+		MAP.overlays['route'] = new OpenLayers.Layer.WMS.Untiled('Route (#' + id + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
-				MAP.WMS_URL, {id: aRouteId, layers: 'diwi_routes_sel', format: MAP.IMAGE_FORMAT, transparent: true});
+				MAP.WMS_URL, {id: id, layers: 'diwi_routes_sel', format: MAP.IMAGE_FORMAT, transparent: true});
 
 		MAP.map.addLayer(MAP.overlays['route'] );
+
+		var pois = routeRec.getField('pois');
+		if (pois != null) {
+			MAP.overlays['routepois'] = new OpenLayers.Layer.WMS.Untiled('Route POIs',
+					// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
+					MAP.WMS_URL, {id: pois, layers: 'diwi_pois_sel', format: MAP.IMAGE_FORMAT, transparent: true});
+
+			MAP.map.addLayer(MAP.overlays['routepois'] );
+		}
+
+		MAP.addUGCLayer();
 	},
 
 	addTOPNLRasterLayer: function() {
