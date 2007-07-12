@@ -39,6 +39,8 @@ public class NavigationHandler extends DefaultHandler implements Constants {
     public final static String NAV_DEACTIVATE_ROUTE_SERVICE = "nav-deactivate-route";
     public final static String NAV_ADD_MEDIUM_SERVICE = "nav-add-medium";
     public final static String NAV_TOGGLE_UGC_SERVICE = "nav-toggle-ugc";
+    public final static String NAV_UGC_ON_SERVICE = "nav-ugc-on";
+    public final static String NAV_UGC_OFF_SERVICE = "nav-ugc-off";
     public final static String NAV_POI_GET_SERVICE = "nav-poi-get";
     public final static String NAV_ROUTE_GET_SERVICE = "nav-route-get";
     public final static String NAV_ROUTE_GETLIST_SERVICE = "nav-route-getlist";
@@ -77,6 +79,10 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 				response = getState(anUtopiaReq);
 			} else if (service.equals(NAV_TOGGLE_UGC_SERVICE)) {
 				response = toggleUGC(anUtopiaReq);
+			} else if (service.equals(NAV_UGC_ON_SERVICE)) {
+				response = UGCOn(anUtopiaReq);
+			} else if (service.equals(NAV_UGC_OFF_SERVICE)) {
+				response = UGCOff(anUtopiaReq);
 			} else if (service.equals(NAV_POI_GET_SERVICE)) {
 				response = getPoi(anUtopiaReq);
 			} else if (service.equals(NAV_ROUTE_GET_SERVICE)) {
@@ -178,12 +184,22 @@ public class NavigationHandler extends DefaultHandler implements Constants {
 	private JXElement toggleUGC(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		NavigationLogic logic = createLogic(anUtopiaReq);
 		logic.toggleUGC(anUtopiaReq.getUtopiaSession().getContext().getUserId());
-
 		return createResponse(NAV_TOGGLE_UGC_SERVICE);
 	}
 
+    private JXElement UGCOn(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		NavigationLogic logic = createLogic(anUtopiaReq);
+		logic.setUGC(anUtopiaReq.getUtopiaSession().getContext().getUserId(), true);
+		return createResponse(NAV_UGC_ON_SERVICE);
+	}
 
-	private JXElement activateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    private JXElement UGCOff(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		NavigationLogic logic = createLogic(anUtopiaReq);
+		logic.setUGC(anUtopiaReq.getUtopiaSession().getContext().getUserId(), false);
+		return createResponse(NAV_UGC_OFF_SERVICE);
+	}
+
+    private JXElement activateRoute(UtopiaRequest anUtopiaReq) throws UtopiaException {
 		NavigationLogic logic = createLogic(anUtopiaReq);
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		int personId = Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());

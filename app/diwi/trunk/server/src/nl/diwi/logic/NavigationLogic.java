@@ -72,6 +72,41 @@ public class NavigationLogic implements Constants {
         }
     }
 
+    public void setUGC(String aPersonId, boolean turnOn) throws UtopiaException {
+        try {
+            Record person = oase.getFinder().read(Integer.parseInt(aPersonId), Person.TABLE_NAME);
+            if (person == null) {
+                throw new UtopiaException("No person found with id " + aPersonId);
+            }
+
+            Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "ugc");
+            if (prefs != null && prefs.length > 0) {
+                Record pref = prefs[0];
+                if(turnOn){
+                    pref.setStringField(VALUE_FIELD, "ON");
+                }else{
+                    pref.setStringField(VALUE_FIELD, "OFF");
+                }
+                oase.getModifier().update(pref);
+            } else {
+                Record pref = oase.getModifier().create(PREFS_TABLE);
+                pref.setIntField(OWNER_FIELD, Integer.parseInt(aPersonId));
+                pref.setStringField(NAME_FIELD, "UGC");
+                if(turnOn){
+                    pref.setStringField(VALUE_FIELD, "ON");
+                }else{
+                    pref.setStringField(VALUE_FIELD, "OFF");
+                }                                
+                oase.getModifier().insert(pref);
+
+                oase.getRelater().relate(person, pref, "ugc");
+            }
+        } catch (Throwable t) {
+            log.error("Exception in setUGC: " + t.getMessage());
+            throw new UtopiaException(t);
+        }
+    }
+
     public boolean isUserContentEnabled(int aPersonId) throws UtopiaException {
         try {
             Record person = oase.getFinder().read(aPersonId, Person.TABLE_NAME);
