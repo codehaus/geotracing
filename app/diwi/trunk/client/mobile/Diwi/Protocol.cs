@@ -28,8 +28,11 @@ namespace Diwi
         public static string SERVICE_NAV_UGC = "nav-toggle-ugc";
         public static string SERVICE_POI_GET = "nav-poi-get";
         public static string SERVICE_HOME_GET = "nav-route-home";
+        public static string SERVICE_UGCON_GET = "nav-ugc-on";
+        public static string SERVICE_UGCOFF_GET = "nav-ugc-off";
 
-
+        public static string TAG_UGC_ON_REQ = SERVICE_UGCON_GET + POSTFIX_REQ;
+        public static string TAG_UGC_OFF_REQ = SERVICE_UGCOFF_GET + POSTFIX_REQ;
         public static string TAG_NAV_HOME_REQ = SERVICE_HOME_GET + POSTFIX_REQ;
         public static string TAG_NAV_UGC_REQ = SERVICE_NAV_UGC + POSTFIX_REQ;
         public static string TAG_POI_GET_REQ = SERVICE_POI_GET + POSTFIX_REQ;
@@ -49,6 +52,8 @@ namespace Diwi
         public static string TAG_NAV_POINT_REQ = SERVICE_NAV_POINT + POSTFIX_REQ;
 
 
+        public static string TAG_UGC_ON_RSP = SERVICE_UGCON_GET + POSTFIX_RSP;
+        public static string TAG_UGC_OFF_RSP = SERVICE_UGCOFF_GET + POSTFIX_RSP;
         public static string TAG_NAV_HOME_RSP = SERVICE_HOME_GET + POSTFIX_RSP;
         public static string TAG_NAV_UGC_RSP = SERVICE_NAV_UGC + POSTFIX_RSP;
         public static string TAG_POI_GET_RSP = SERVICE_POI_GET + POSTFIX_RSP;

@@ -31,6 +31,8 @@ namespace Diwi {
         private string xmlString;
         private XMLement selectAppRequest;
         string trackId;
+        private bool mUGCState = false;
+
 
         static private KwxClient sKwxC = null;
 
@@ -44,6 +46,12 @@ namespace Diwi {
         public string agentKey {
             get {
                 return mAgentKey;
+            }
+        }
+
+        public bool ugcState {
+            get {
+                return mUGCState;
             }
         }
 
@@ -95,6 +103,12 @@ namespace Diwi {
                 }
             }
 
+            XMLement xml = new XMLement(Protocol.TAG_UGC_OFF_REQ);
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+
+
 
             x = getRouteList();
             if (x != null) {
@@ -136,7 +150,26 @@ namespace Diwi {
             }
         }
 
+        public bool toggleUGC() {
+            if (mUGCState) {
+                XMLement xml = new XMLement(Protocol.TAG_UGC_OFF_REQ);
+                lock (this) {
+                    xml = utopiaRequest(xml);
+                }
+                if (xml != null && xml.tag == Protocol.TAG_UGC_OFF_RSP)
+                    return mUGCState = false;
 
+            } else {
+                XMLement xml = new XMLement(Protocol.TAG_UGC_ON_REQ);
+                lock (this) {
+                    xml = utopiaRequest(xml);
+                }
+                if (xml != null && xml.tag == Protocol.TAG_UGC_ON_RSP)
+                    return mUGCState = true;
+
+            }
+            return false;
+        }
 
         public XMLement doLogout() {
             XMLement xml = new XMLement(Protocol.TAG_LOGOUT_REQ);

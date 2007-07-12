@@ -31,7 +31,7 @@ namespace Diwi {
             mMenu.addItem("Voeg Text toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doText),AppController.sTextIcon);
             mMenu.addItem("Voeg Foto toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto),AppController.sFotoIcon);
             mMenu.addItem("Voeg Video toe", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),AppController.sVideoIcon);
-            mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute),null);
+            mMenu.addItem("Stop Route", new DiwiUIMenu.DiwiMenuCallbackHandler(doStopRoute), AppController.sStopRIcon);
             mMenu.addItem("Toon Volksmond", new DiwiUIMenu.DiwiMenuCallbackHandler(doUGC),AppController.sUGCIcon);
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
@@ -189,10 +189,9 @@ namespace Diwi {
         }
 
         void doUGC(int i, string s) {
-            sShowUGC = !sShowUGC;
-            AppController.sKwxClient.navUGC(sShowUGC);
+            AppController.sKwxClient.toggleUGC();
             MapHandler.downLoadMaps();
-            if (sShowUGC == true) {
+            if (AppController.sKwxClient.ugcState == true) {
                 setMenuText(4, "Verberg Volksmond");
             } else {
                 setMenuText(4, "Toon Volksmond");

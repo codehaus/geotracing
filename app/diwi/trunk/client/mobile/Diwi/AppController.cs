@@ -50,7 +50,7 @@ namespace Diwi {
         private static Sound sClick;
         private static Sound sPOI;
 
-        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sInfoIcon;
+        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sInfoIcon, sStopRIcon;
         public static Icon sTextIcon, sVolgIcon, sVideoIcon, sKiesIcon, sStruinIcon, sCheckIcon;
 
         public static void showStatus(string s) {
@@ -86,18 +86,19 @@ namespace Diwi {
             sPOI = new Sound(stream);
             stream.Close();
 
-            sTerugIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug.ico"));
-            sEmptyIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.empty.ico"));
-            sUGCIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.ugc.ico"));
-            sFotoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.foto.ico"));
-            sTextIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.text.ico"));
-            sVolgIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.volgende.ico"));
-            sVideoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.video.ico"));
-            sKiesIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.kiesroute.ico"));
+            sTerugIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug.ico"));
+            sEmptyIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.empty.ico"));
+            sUGCIcon =    new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.ugc.ico"));
+            sFotoIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.foto.ico"));
+            sTextIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.text.ico"));
+            sVolgIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.volgende.ico"));
+            sVideoIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.video.ico"));
+            sKiesIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.kiesroute.ico"));
             sStruinIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.struin.ico"));
-            sInfoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.routeinfo.ico"));
-            sCheckIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.check.ico"));
-
+            sInfoIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.routeinfo.ico"));
+            sCheckIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.check.ico"));
+            sStopRIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop-r.ico"));
+             
             sProgBar = new Progress();
 
             try {
