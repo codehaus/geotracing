@@ -142,6 +142,7 @@ var ROUTE = {
 
 		// POI theme
 		var themeElm = DH.getObject('thema');
+		params[KW.DIWI.THEMA_PARAM] = 'niets';
 		if (themeElm.selectedIndex > 0) {
 			// Theme value is value of displayed option in drop down
 			params[KW.DIWI.THEMA_PARAM] = themeElm.options[themeElm.selectedIndex].childNodes[0].nodeValue;
@@ -161,7 +162,6 @@ var ROUTE = {
 			if (sliderVal > 0) {
 				params[slider.omgeving] = sliderVal;
 			}
-
 		}
 
 //		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
@@ -174,17 +174,27 @@ var ROUTE = {
 	onCreateRouteRsp: function(xmlRsp) {
 		ROUTE.generatedRouteId = xmlRsp.firstChild.getAttribute('id');
 		var route = xmlRsp.firstChild;
-		var name = route.getElementsByTagName('name')[0].firstChild.nodeValue;
-		var description = route.getElementsByTagName('description')[0].firstChild.nodeValue;
-		var routeString = '<h2>' + name + '</h2>' + description;
-		DIWIAPP.pr(routeString);
-		KW.DIWI.getmap(ROUTE.onGetRouteMapRsp, ROUTE.generatedRouteId, 580, 400);
+		if (!route || route.childNodes.length == 0) {
+			DIWIAPP.pr('Helaas, er kon geen route gemaakt worden met de door u ingebrachte gegevens. Probeert u het nog een keer met andere gegevens.');
+			return;
+		}
+		SRV.get('q-diwi-route-info', ROUTE.onQueryRouteInfo, 'id', ROUTE.generatedRouteId);
+		// KW.DIWI.getmap(ROUTE.onGetRouteMapRsp, ROUTE.generatedRouteId, 580, 400);
 	},
 
 	onGetRouteMapRsp: function(xmlRsp) {
 		DIWINAV.loadPage('pages/routemap.html');
 		MAP.show();
 		MAP.addRouteLayer(ROUTE.generatedRouteId);
+	},
+
+	onQueryRouteInfo: function(records) {
+		var routeRec = records[0];
+		var name = routeRec.getField('name');
+		var description = routeRec.getField('description');
+		var routeString = '<h2>' + name + '</h2>' + description + '<br/>afstand: ' + routeRec.getField('distance') / 1000 + ' km';
+		DIWIAPP.pr(routeString);
+		MAP.addRouteLayer(routeRec);
 	},
 
 	showFixedRoutes: function() {
@@ -201,7 +211,7 @@ var ROUTE = {
 		content += record.getField('description');
 
 		DIWIAPP.pr(content);
-		MAP.addRouteLayer(record.id);
+		SRV.get('q-diwi-route-info', ROUTE.onQueryRouteInfo, 'id', record.id);
 	},
 
 	rsp2Records: function(anRsp) {
