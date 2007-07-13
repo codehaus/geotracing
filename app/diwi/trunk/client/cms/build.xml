@@ -108,10 +108,4 @@ $Id: build.xml 505 2007-03-14 12:38:15Z just $
 		</copy>
 	</target>
 
-	<target name="deploy-local-diwi-only" depends="assemble">
-		<copy todir="${deploy.local.dir}/cms" overwrite="true">
-			<fileset dir="${home}" excludes="ext/**/*"/>
-		</copy>
-	</target>
-
 </project>
