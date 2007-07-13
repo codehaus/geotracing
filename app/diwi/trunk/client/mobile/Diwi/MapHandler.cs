@@ -6,8 +6,8 @@ namespace Diwi {
 
 
     class MapBounds {
-        float urLat, urLon;
-        float blLat, blLon;
+        public float urLat, urLon;
+        public float blLat, blLon;
 
         public void setBounds(float ura, float uro, float bla, float blo) {
             urLat = ura;
@@ -36,9 +36,12 @@ namespace Diwi {
         public static event CallbackHandler sDownloadCallback;
 
         static AppController.DownloadCallbackHandler sMapDnl = new AppController.DownloadCallbackHandler(mapReceived);
- 
+
         static MapBounds sHorBounds = new MapBounds();
         static MapBounds sVerBounds = new MapBounds();
+
+        static MapBounds sHorTempBounds = new MapBounds();
+        static MapBounds sVerTempBounds = new MapBounds();
 
         static float sMapRadius = 0.1F;
         static bool sActive = false;
@@ -66,6 +69,11 @@ namespace Diwi {
                     AppController.sEventLog.WriteLine("Dit not get MapURI");
                 }
             }
+        }
+
+        public static void copyBounds() {
+            sHorBounds.setBounds(sHorTempBounds.urLat, sHorTempBounds.urLon, sHorTempBounds.blLat, sHorTempBounds.blLon);
+            sVerBounds.setBounds(sVerTempBounds.urLat, sVerTempBounds.urLon, sVerTempBounds.blLat, sVerTempBounds.blLon);
         }
 
         public static int currentXpixel(bool hor) {
@@ -100,11 +108,11 @@ namespace Diwi {
             return y;
         }
 
-        public static void setBounds(bool hor, float urLat, float urLon, float blLat, float blLon) {
+        public static void setTempBounds(bool hor, float urLat, float urLon, float blLat, float blLon) {
             if (hor) {
-                sHorBounds.setBounds(urLat, urLon, blLat, blLon);
+                sHorTempBounds.setBounds(urLat, urLon, blLat, blLon);
             } else {
-                sVerBounds.setBounds(urLat, urLon, blLat, blLon);
+                sVerTempBounds.setBounds(urLat, urLon, blLat, blLon);
             }
         }
 

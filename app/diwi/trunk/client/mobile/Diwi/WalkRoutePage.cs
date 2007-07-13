@@ -80,6 +80,8 @@ namespace Diwi {
                     gpsText.draw("Geen GPS");
                 }
                 draw();
+            } else if (m == (int)GpsReader.sMess.M_POS) {
+                setPosition(true);
             }
         }
 
@@ -107,9 +109,6 @@ namespace Diwi {
 
         void navPointReceive(XMLement xml, float lat, float lon) {
             XMLement poi = xml.getChildByName("poi-hit");
-            int x = MapHandler.currentXpixel(horizontal);
-            int y = MapHandler.currentYpixel(horizontal);
-            setPosition(x, y);
             if (mIsActive) {
                 if (poi != null) {
                     List<string> pois = new List<string>();
@@ -166,6 +165,8 @@ namespace Diwi {
         void mapReceived() {
             if ((!horizontal && AppController.sActiveRouteMapPathVer != null) || (horizontal && AppController.sActiveRouteMapPathHor != null)) {
                 setBackGround();
+                MapHandler.copyBounds();
+                setPosition(false);
                 draw();
             }
         }

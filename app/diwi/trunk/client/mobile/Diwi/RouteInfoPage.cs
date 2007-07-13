@@ -16,8 +16,8 @@ namespace Diwi {
 
             mapDownloaded = new mediaCallback(this.openMap);
 
-            mMenu.addItem("Verberg beschrijving", new DiwiUIMenu.DiwiMenuCallbackHandler(hideText),null);
-            mMenu.addItem("Loop deze route", new DiwiUIMenu.DiwiMenuCallbackHandler(doLoopRoute),null);
+            mMenu.addItem("Verberg beschrijving", new DiwiUIMenu.DiwiMenuCallbackHandler(hideText), AppController.sTextIcon);
+            mMenu.addItem("Loop deze route", new DiwiUIMenu.DiwiMenuCallbackHandler(doLoopRoute), AppController.sStruinIcon);
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             this.Controls.Add(mTextBox);
