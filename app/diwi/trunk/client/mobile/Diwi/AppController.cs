@@ -49,8 +49,10 @@ namespace Diwi {
         private static Sound sClick;
         private static Sound sPOI;
 
-        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sInfoIcon, sStopRIcon;
-        public static Icon sTextIcon, sVolgIcon, sVideoIcon, sKiesIcon, sStruinIcon, sCheckIcon;
+        public static bool sSipVisible = false;
+
+        public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sInfoIcon, sStopRIcon, sVoegToeIcon;
+        public static Icon sTextIcon, sVolgIcon, sVideoIcon, sKiesIcon, sStruinIcon, sCheckIcon, sTerugRIcon;
 
         public static void showStatus(string s) {
             DiwiPageBase.sCurrentPage.printStatus(s);
@@ -97,7 +99,8 @@ namespace Diwi {
             sInfoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.routeinfo.ico"));
             sCheckIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.check.ico"));
             sStopRIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop-r.ico"));
-
+            sVoegToeIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.voegtoe.ico"));
+            sTerugRIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug-r.ico"));
             sProgBar = new Progress();
 
             try {
@@ -191,7 +194,7 @@ namespace Diwi {
         const int SIPF_OFF = 0;
 
         public static int ShowSIP(Boolean ShowIt) {
-
+            sSipVisible = ShowIt;
             return SipShowIM(ShowIt ? SIPF_ON : SIPF_OFF);
 
         }

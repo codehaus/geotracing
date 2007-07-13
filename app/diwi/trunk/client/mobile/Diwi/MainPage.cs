@@ -29,9 +29,6 @@ namespace Diwi {
 
             mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),AppController.sVideoIcon);
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute), AppController.sKiesIcon);
-            mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute),
-                new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug-r.ico"))
-            );
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin), AppController.sStruinIcon);
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS),
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.gps.ico"))
@@ -39,11 +36,8 @@ namespace Diwi {
             mMenu.addItem("Stop", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop.ico"))
             );
-
-            mMenu.addItem("SIP", new DiwiUIMenu.DiwiMenuCallbackHandler(doSIP), null);
-
-                 
-                 title = "Hoofdmenu";
+               
+            title = "Hoofdmenu";
         }
 
         void doSIP(int i, string s) {
