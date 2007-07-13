@@ -21,8 +21,7 @@ namespace Diwi {
     /// central controller for main components in the app.
     /// KwxServer, GpsReader, MapReader, access to resources
     /// </summary>
-    class AppController
-    {
+    class AppController {
         public static int sActiveRouteID = -1;
         public static XMLement sActiveRoute = null;
         public static string sActiveRouteMapPathHor = null;
@@ -86,19 +85,19 @@ namespace Diwi {
             sPOI = new Sound(stream);
             stream.Close();
 
-            sTerugIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug.ico"));
-            sEmptyIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.empty.ico"));
-            sUGCIcon =    new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.ugc.ico"));
-            sFotoIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.foto.ico"));
-            sTextIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.text.ico"));
-            sVolgIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.volgende.ico"));
-            sVideoIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.video.ico"));
-            sKiesIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.kiesroute.ico"));
+            sTerugIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug.ico"));
+            sEmptyIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.empty.ico"));
+            sUGCIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.ugc.ico"));
+            sFotoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.foto.ico"));
+            sTextIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.text.ico"));
+            sVolgIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.volgende.ico"));
+            sVideoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.video.ico"));
+            sKiesIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.kiesroute.ico"));
             sStruinIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.struin.ico"));
-            sInfoIcon =   new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.routeinfo.ico"));
-            sCheckIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.check.ico"));
-            sStopRIcon =  new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop-r.ico"));
-             
+            sInfoIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.routeinfo.ico"));
+            sCheckIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.check.ico"));
+            sStopRIcon = new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop-r.ico"));
+
             sProgBar = new Progress();
 
             try {
@@ -119,7 +118,7 @@ namespace Diwi {
             sGpsReader = GpsReader.instance;
 
 
-           // sBacklight.Activate();
+            // sBacklight.Activate();
         }
 
         public static void deactivate() {
@@ -132,8 +131,7 @@ namespace Diwi {
             Thread.Sleep(1000);
         }
 
-        public static void playVideo(string fn)
-        {
+        public static void playVideo(string fn) {
             Process process = new Process();
             process.StartInfo.FileName = fn;
             process.StartInfo.Verb = "Open";
@@ -152,14 +150,12 @@ namespace Diwi {
             return null;
         }
 
-        public static string makeVideo()
-        {
+        public static string makeVideo() {
             CameraCaptureDialog cameraCaptureDialog = new CameraCaptureDialog();
             cameraCaptureDialog.Owner = null;
             cameraCaptureDialog.Title = "Neem een video";
             cameraCaptureDialog.Mode = CameraCaptureMode.VideoWithAudio;
-            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0)
-            {
+            if (cameraCaptureDialog.ShowDialog() == DialogResult.OK && cameraCaptureDialog.FileName.Length > 0) {
                 return cameraCaptureDialog.FileName;
                 // viewVideoFileInWMP(cameraCaptureDialog.FileName);
             }
@@ -172,10 +168,11 @@ namespace Diwi {
         public static void SysBeep() {
             sPloink.Play();
         }
-        public static void SysClick()
-        {
+        public static void SysClick() {
             sClick.Play();
         }
+
+
 
 
         [DllImportAttribute("aygshell")]
@@ -184,5 +181,20 @@ namespace Diwi {
         public static void doVibrate() {
             Vibrate(0, IntPtr.Zero, 1, 500);
         }
+
+
+        [DllImport("coredll.dll", SetLastError = true)]
+        extern static int SipShowIM(int dwFlag);
+
+        const int SIPF_ON = 1;
+
+        const int SIPF_OFF = 0;
+
+        public static int ShowSIP(Boolean ShowIt) {
+
+            return SipShowIM(ShowIt ? SIPF_ON : SIPF_OFF);
+
+        }
+
     }
 }
