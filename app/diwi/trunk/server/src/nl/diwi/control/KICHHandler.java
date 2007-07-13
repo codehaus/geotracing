@@ -2,7 +2,10 @@ package nl.diwi.control;
 
 import nl.diwi.external.DataSource;
 import nl.diwi.util.Constants;
+import nl.diwi.util.NetConnection;
+import nl.diwi.logic.POILogic;
 import nl.justobjects.jox.dom.JXElement;
+import nl.justobjects.jox.parser.JXBuilder;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.control.DefaultHandler;
@@ -10,11 +13,17 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.oase.api.Record;
+import org.keyworx.amuse.core.Amuse;
+
+import java.util.Vector;
 
 public class KICHHandler extends DefaultHandler implements Constants {
     public final static String KICH_GET_MEDIA_SERVICE = "kich-get-media";
     public final static String KICH_GET_THEMES_SERVICE = "kich-get-themes";
     public final static String KICH_SYNC_SERVICE = "kich-sync";
+    public final static String KICH_SYNC_MEDIA_SERVICE = "kich-sync-media";
 
     /**
      * Processes the Client Request.
@@ -42,6 +51,9 @@ public class KICHHandler extends DefaultHandler implements Constants {
             } else if (service.equals(KICH_SYNC_SERVICE)) {
                 // get all kich media
                 response = syncKICH(anUtopiaReq);
+            } else if (service.equals(KICH_SYNC_MEDIA_SERVICE)) {
+                // get all kich media
+                response = syncMediaForPois(anUtopiaReq);
             } else {
                 // May be overridden in subclass
                 response = unknownReq(anUtopiaReq);
@@ -73,6 +85,43 @@ public class KICHHandler extends DefaultHandler implements Constants {
         DataSource ds = new DataSource(anUtopiaReq.getUtopiaSession().getContext().getOase());
         ds.syncPOIs();
         ds.syncFixedRoutes();
+
+        return response;
+    }
+
+    private JXElement syncMediaForPois(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(KICH_SYNC_MEDIA_SERVICE);
+        try {
+            Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+            POILogic poiLogic = new POILogic(oase);
+            Record[] pois = oase.getFinder().readAll(POI_TABLE);
+            for(int i=0;i<pois.length;i++){
+                Record poi = pois[i];
+                JXElement media = poi.getXMLField(MEDIA_FIELD);
+                if(media!=null){
+                    Vector kichUris = media.getChildrenByTag("kich-uri");
+                    Vector mediumList = new Vector(kichUris.size());
+                    for(int j=0;j<kichUris.size();j++){
+                        JXElement kichUri = (JXElement)kichUris.elementAt(j);
+                        String s = kichUri.getText();
+                        String fileName = s.substring(s.lastIndexOf("/") + 1, s.length());
+                        JXElement medium = new JXElement("medium");
+                        medium.setText(fileName);
+                        mediumList.add(medium);
+                    }
+                    int id = poi.getId();
+
+                    // now first unrelate the media from the pois to start clean
+                    poiLogic.unrelateMedia(id, mediumList);
+
+                    // now relate them all again
+                    poiLogic.relateMedia(id, mediumList);
+                }
+            }
+
+        } catch (Throwable t) {
+            throw new UtopiaException(t);
+        }
 
         return response;
     }
