@@ -9,7 +9,9 @@
 
 <%
     String personId = request.getParameter("person");
+    String sync = request.getParameter("sync");
     System.out.println("Person: " + personId);
+    System.out.println("Sync: " + sync);
 
     HttpConnector.login(session, "diwi", "geoapp", "user", "geoapp-user", "user", null);
 
@@ -27,6 +29,13 @@
         rsp = HttpConnector.executeRequest(session, req);
         System.out.println(new String(rsp.toBytes(false)));
     }
+    
+    if(sync!=null && sync.length()>0){
+        JXElement syncReq = new JXElement("kich-sync-media-req");
+        System.out.println("go and sync man!!!");
+        JXElement syncRsp = HttpConnector.executeRequest(session, syncReq);
+        System.out.println(new String(syncRsp.toBytes(false)));
+    }
 %>
 
 <html>
@@ -35,7 +44,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
     </head>
     <body>
-        <p>Selecteer een gebruiker</p>
+        <h1>Sync Media</h1>
+        <p>
+            <form id="mediaform" name="mediaform" method="post" action="">
+                <input type="hidden" name="sync" value="sync" />
+                <input type="submit" name="Submit" value="Sync Media" />
+            </form>
+        </p>
+        <h1>Selecteer een gebruiker</h1>
         <p>
             <form id="userform" name="userform" method="post" action="">
                 <select name="person">
@@ -121,7 +137,7 @@
             <%--<%=new String(rsp.toEscapedString())%>--%>
             <table>
                 <tr>
-                    <td><strong>persoonsgegevens</strong></td>
+                    <td><h2>persoonsgegevens</h2></td>
                     <td></td>
                 </tr>
                 <tr>
@@ -161,7 +177,7 @@
                     <td><%=person.getChildText(Person.EMAIL_FIELD)%></td>
                 </tr>
                 <tr>
-                    <td colspan="2"><strong>Mobiel gedrag</strong></td>
+                    <td colspan="2"><h2>Mobiel gedrag</h2></td>
                 </tr>
                 <tr>
                     <td><strong>aantal wandelingen</strong></td>
@@ -259,7 +275,7 @@
                     %><tr><td colspan="2"><%=((JXElement)routeHomeMsgs.elementAt(i)).getAttr("date")%></td></tr><%
                 }%>
                 <tr>
-                    <td colspan="2"><strong>Web gedrag</strong></td>
+                    <td colspan="2"><h2>Web gedrag</h2></td>
                 </tr>
                 <tr>
                     <td><strong>aantal keren routelijst bekijken</strong></td>
@@ -302,5 +318,8 @@
             %>
 
         </p>
+    <p>
+        <a href="<%=new String(rsp.getChildAt(0).toBytes(false))%>" target="_new">Download the file</a>
+    </p>
     </body>
 </html>
