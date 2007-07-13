@@ -215,32 +215,41 @@ public class DataSource implements Constants {
 
     // relate media to poi in KICH
     public String relateMediaToPoi(int aPOIId, Vector theMediaIds) throws UtopiaException {
-        JXElement poi = new JXElement(POI_ELM);
-        JXElement id = new JXElement(ID_FIELD);
-        id.setText("" + aPOIId);
-        poi.addChild(id);
-        for (int i = 0; i < theMediaIds.size(); i++) {
-            JXElement mediumId = new JXElement("media_id");
-            mediumId.setText(((JXElement)theMediaIds.elementAt(i)).getText());
-            poi.addChild(mediumId);
+        try{
+            JXElement poi = new JXElement(POI_ELM);
+            JXElement id = new JXElement(ID_FIELD);
+            id.setText(oase.getFinder().read(aPOIId).getStringField(KICHID_FIELD));
+            poi.addChild(id);
+            for (int i = 0; i < theMediaIds.size(); i++) {
+                JXElement mediumId = new JXElement("media_id");
+                mediumId.setText(((JXElement)theMediaIds.elementAt(i)).getText());
+                poi.addChild(mediumId);
+            }
+            return postToKICHService(RELATE_MEDIA_COMMAND, new String(poi.toBytes(false)));
+        }catch(Throwable t){
+            log.error("Exception in relateMediaToPoi:" + t.getMessage());
+            throw new UtopiaException(t);
         }
-
-        return postToKICHService(RELATE_MEDIA_COMMAND, new String(poi.toBytes(false)));
     }
 
     // relate media to poi in KICH
     public String unrelateMediaFromPoi(int aPOIId, Vector theMediaIds) throws UtopiaException {
-        JXElement poi = new JXElement(POI_ELM);
-        JXElement id = new JXElement(ID_FIELD);
-        id.setText("" + aPOIId);
-        poi.addChild(id);
-        for (int i = 0; i < theMediaIds.size(); i++) {
-            JXElement mediumId = new JXElement("media_id");
-            mediumId.setText(((JXElement)theMediaIds.elementAt(i)).getText());
-            poi.addChild(mediumId);
-        }
+        try{
+            JXElement poi = new JXElement(POI_ELM);
+            JXElement id = new JXElement(ID_FIELD);
+            id.setText(oase.getFinder().read(aPOIId).getStringField(KICHID_FIELD));
+            poi.addChild(id);
+            for (int i = 0; i < theMediaIds.size(); i++) {
+                JXElement mediumId = new JXElement("media_id");
+                mediumId.setText(((JXElement)theMediaIds.elementAt(i)).getText());
+                poi.addChild(mediumId);
+            }
 
-        return postToKICHService(UNRELATE_MEDIA_COMMAND, new String(poi.toBytes(false)));
+            return postToKICHService(UNRELATE_MEDIA_COMMAND, new String(poi.toBytes(false)));
+        }catch(Throwable t){
+            log.error("Exception in relateMediaToPoi:" + t.getMessage());
+            throw new UtopiaException(t);
+        }
     }
 
     // creates, updates and deletes a poi in KICH
