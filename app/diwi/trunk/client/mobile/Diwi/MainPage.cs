@@ -27,8 +27,11 @@ namespace Diwi {
             : base(parent) {
 
 
-            mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo),AppController.sVideoIcon);
+            mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo), AppController.sVideoIcon);
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute), AppController.sKiesIcon);
+            mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute),
+               new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug-r.ico"))
+            );
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin), AppController.sStruinIcon);
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS),
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.gps.ico"))
@@ -36,7 +39,7 @@ namespace Diwi {
             mMenu.addItem("Stop", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop.ico"))
             );
-               
+
             title = "Hoofdmenu";
         }
 
@@ -78,8 +81,7 @@ namespace Diwi {
             gpsPage.ShowDialog();
         }
 
-        void doTest(int i, string s)
-        {
+        void doTest(int i, string s) {
             mIsActive = false;
             if (testPage == null)
                 testPage = new TestPage(this);
@@ -93,7 +95,7 @@ namespace Diwi {
 
         void doKiesRoute(int i, string s) {
             if (AppController.sKwxClient.agentKey == null) {
-                doLogin(0,null);
+                doLogin(0, null);
             }
 
             if (AppController.sKwxClient.agentKey != null) {
@@ -108,7 +110,7 @@ namespace Diwi {
                 selectRoutePage.ShowDialog();
 
                 if (AppController.sActiveRouteID != -1) {
-                    walkRoute(0,null);
+                    walkRoute(0, null);
                 }
             }
         }
@@ -135,14 +137,14 @@ namespace Diwi {
             mIsInitialized = true;
             doLogin(0, null);
             if (AppController.sActiveRouteID != -1) {
-                walkRoute(0,null);
+                walkRoute(0, null);
             }
         }
-        
+
         protected override void OnResize(EventArgs e) {
             // change location of stuff
             if (mInitializing) return;
-            if( base.doResize(e) ) {
+            if (base.doResize(e)) {
                 draw();
             }
         }
