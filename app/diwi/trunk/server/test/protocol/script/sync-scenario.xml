@@ -16,6 +16,20 @@
         </expect>
     </test>
 
+    <test id="kich-sync-media-req">
+        <send id="client1">
+            <utopia-req>
+                <kich-sync-media-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <kich-sync-media-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
     <test id="kich-sync-req">
         <send id="client1">
             <utopia-req>
@@ -29,6 +43,7 @@
             </utopia-rsp>
         </expect>
     </test>
+
 
     <test id="logout">
         <send id="client1">
