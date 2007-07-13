@@ -378,7 +378,7 @@ namespace Diwi {
                 req.addAttribute("width", "240");
             }
 
-            MapHandler.setBounds(hor, urtLat, urtLon, llbLat, llbLon);
+            MapHandler.setTempBounds(hor, urtLat, urtLon, llbLat, llbLon);
 
             req.addAttribute("llbLat", llbLat.ToString(mUSFormat));
             req.addAttribute("llbLon", llbLon.ToString(mUSFormat));
@@ -435,6 +435,7 @@ namespace Diwi {
 
                 if (xml != null && xml.tag == Protocol.TAG_NAV_POINT_RSP) {
                     if (poiCallback != null) {
+                        if( (xml.getChildByName("poi-hit") != null) || (xml.getChildByName("msg") != null ) )
                         poiCallback(xml, GpsReader.lat, GpsReader.lon);
                     }
                 } 

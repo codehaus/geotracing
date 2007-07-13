@@ -47,9 +47,11 @@ namespace Diwi {
             if (mHasContent) {
                 mIsActive = false;
                 sPoiPage.ShowDialog();
+                if (poiIDs.Count <= 0) doTerug(0, "");
             } else {
                 resetMenu();
             }
+
         }
 
         void doNext(int i, string s) {

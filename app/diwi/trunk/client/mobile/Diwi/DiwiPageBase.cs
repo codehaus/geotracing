@@ -213,8 +213,11 @@ namespace Diwi {   // base class for Diwi Pages.
             }
         }
 
-        protected void setPosition(int x, int y) {
-            bool redraw = ( x != mXposition || y != mYposition);
+        protected void setPosition(bool redraw) {
+            int x = MapHandler.currentXpixel(horizontal);
+            int y = MapHandler.currentYpixel(horizontal);
+
+            redraw = redraw && (x != mXposition || y != mYposition);
             mXposition = x;
             mYposition = y;
             if (redraw) draw();
@@ -249,8 +252,8 @@ namespace Diwi {   // base class for Diwi Pages.
                 mBackImage.bitmap = new Bitmap(stream);
                 draw();
                 stream.Close();
-            } catch (Exception e) {
-                MessageBox.Show(e.Message);
+            } catch (Exception) {
+                AppController.sEventLog.WriteLine("Error setting background image ({0}).",path);
             }
         }
 
