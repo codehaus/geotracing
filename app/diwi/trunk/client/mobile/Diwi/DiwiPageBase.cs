@@ -364,7 +364,8 @@ namespace Diwi {   // base class for Diwi Pages.
 
         protected virtual void doTerug(int i, string s) {
             mIsActive = false;
-           // Visible = false;
+           if( AppController.sSipVisible )
+               AppController.ShowSIP(false);
             mBlendTimer.Change(Timeout.Infinite, Timeout.Infinite);
             if (mParent != null) {
              //   mParent.Activate();

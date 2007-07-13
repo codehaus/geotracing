@@ -17,7 +17,7 @@ namespace Diwi {
         public MakeTextPage(DiwiPageBase parent, string fileName)
             : base(parent) {
 
-            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),AppController.sTextIcon);
+            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),AppController.sVoegToeIcon);
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
             title = "Commentaar bij locatie";
@@ -49,12 +49,15 @@ namespace Diwi {
                 mNameBox.Width = 260;
                 mNameBox.Top = 94;
             } else {
-                mNameBox.Height = 220;
+                mNameBox.Height = 134;
                 mNameBox.Width = 196;
                 mNameBox.Top = 94;
             }
-            
-            
+
+            if (!horizontal) {
+                AppController.ShowSIP(true);
+            }
+       
             mNameBox.Focus();
 
             mIsInitialized = true;
@@ -65,13 +68,15 @@ namespace Diwi {
             if (base.doResize(e) == true) {
                 if (mIsInitialized) {
                     if (horizontal) {
-                        mNameBox.Height = 140;
+                        mNameBox.Height = 100;
                         mNameBox.Width = 260;
                         mNameBox.Top = 94;
                     } else {
-                        mNameBox.Height = 220;
+                        mNameBox.Height = 134;
                         mNameBox.Width = 196;
                         mNameBox.Top = 94;
+                        AppController.ShowSIP(false);
+                        AppController.ShowSIP(true);
                     }
                     draw();
                     mNameBox.Focus();

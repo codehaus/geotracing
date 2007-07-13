@@ -68,6 +68,7 @@ namespace Diwi {
 
         public void draw() {
             if (mText != null) {
+                mTextBox.Top = _y; 
                 mTextBox.Text = mText;
             }
         }

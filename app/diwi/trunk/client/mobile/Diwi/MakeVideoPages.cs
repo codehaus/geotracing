@@ -20,8 +20,8 @@ namespace Diwi
             : base(parent)
         {
 
-            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),null);
-            mMenu.addItem("Speel af", new DiwiUIMenu.DiwiMenuCallbackHandler(doPlay),null);
+            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe), AppController.sVoegToeIcon);
+            mMenu.addItem("Speel af", new DiwiUIMenu.DiwiMenuCallbackHandler(doPlay), AppController.sTerugRIcon);
             mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo), AppController.sVideoIcon);
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
@@ -37,6 +37,7 @@ namespace Diwi
         void doPlay(int i, string s)
         {
             AppController.playVideo(currentFilename);
+           if(!horizontal) AppController.ShowSIP(true);
             draw();
         }
 
@@ -64,11 +65,12 @@ namespace Diwi
             mNameBox.Height = 24;
             mNameBox.Left = 10;
             if (horizontal)
-                mNameBox.Top = 190;
+                mNameBox.Top = 100;
             else
-                mNameBox.Top = 268;
+                mNameBox.Top = 160;
             mNameBox.Focus();
 
+            if (!horizontal) AppController.ShowSIP(true);
             mIsInitialized = true;
         }
 
@@ -85,7 +87,9 @@ namespace Diwi
                     }
                     else
                     {
-                        mNameBox.Top = 268;
+                        mNameBox.Top = 160;
+                        AppController.ShowSIP(false);
+                        AppController.ShowSIP(true);
                     }
                     draw();
                 }

@@ -76,6 +76,7 @@ namespace Diwi {
 
         public void draw() {
             if (mBitmap != null) {
+                mPicBox.Top = _y; 
                 mPicBox.Image = mBitmap;
             }
         }

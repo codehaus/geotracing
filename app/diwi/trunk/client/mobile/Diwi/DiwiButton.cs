@@ -82,7 +82,7 @@ namespace Diwi {
             DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mRect.X, mRect.Y, mRect.Width, mRect.Height);
 
             mText.x = mRect.X + (mRect.Width - mText.width) / 2;
-            mText.y = mRect.Y+2;
+            mText.y = mRect.Y + 2;
             mText.color = sTextColor;
             mText.draw();
         }

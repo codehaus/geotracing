@@ -14,11 +14,11 @@ namespace Diwi {
         private DiwiScalingImage mFoto;
         string currentFilename = null;
         TextBox mNameBox = new TextBox();
-
+        
         public MakePhotoPage(DiwiPageBase parent, string fileName)
             : base(parent) {
 
-            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe),null);
+            mMenu.addItem("Voeg toe", new DiwiUIMenu.DiwiMenuCallbackHandler(voegToe), AppController.sVoegToeIcon);
             mMenu.addItem("Opnieuw", new DiwiUIMenu.DiwiMenuCallbackHandler(doFoto), AppController.sFotoIcon);
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
@@ -32,6 +32,7 @@ namespace Diwi {
             addDrawable(mFoto);
 
             this.Controls.Add(mNameBox);
+            
 
             mFoto.bitmap = new Bitmap(currentFilename);
 
@@ -54,6 +55,9 @@ namespace Diwi {
             if (currentFilename != null) {
                 mFoto.bitmap = new Bitmap(currentFilename);
                 draw();
+                if (!horizontal) {
+                    AppController.ShowSIP(true);
+                }
             }
         }
 
@@ -65,15 +69,15 @@ namespace Diwi {
                 mParent.Visible = false;
             }
 
-            mNameBox.Width  = 192;
+            mNameBox.Width = 150;
             mNameBox.Height = 24;
             mNameBox.Left = 10;
-            if( horizontal )
-                mNameBox.Top = 190;
-            else
-                mNameBox.Top = 268;
+            mNameBox.Top = mFoto.y - 24;
+            if( !horizontal ) {
+                AppController.ShowSIP(true);
+            }
+            
             mNameBox.Focus();
-
             mIsInitialized = true;
         }
 
@@ -88,7 +92,9 @@ namespace Diwi {
                     } else {
                         mFoto.y = 120;
                         mFoto.x = 10;
-                        mNameBox.Top = 268;
+                        mNameBox.Top = mFoto.y - 24;
+                        AppController.ShowSIP(false);
+                        AppController.ShowSIP(true);
                     }
                     draw();
                 }
