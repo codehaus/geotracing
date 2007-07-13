@@ -22,7 +22,7 @@ namespace Diwi {
         private DiwiPageBase startPage = null;
         private DiwiPageBase selectRoutePage = null;
         private DiwiPageBase walkRoutePage = null;
-
+        private bool sip = false;
         public MainPage(DiwiPageBase parent)
             : base(parent) {
 
@@ -40,7 +40,20 @@ namespace Diwi {
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.stop.ico"))
             );
 
-            title = "Hoofdmenu";
+            mMenu.addItem("SIP", new DiwiUIMenu.DiwiMenuCallbackHandler(doSIP), null);
+
+                 
+                 title = "Hoofdmenu";
+        }
+
+        void doSIP(int i, string s) {
+            if (sip) {
+                AppController.ShowSIP(false);
+                sip = false;
+            } else {
+                AppController.ShowSIP(true);
+                sip = true;
+            }
         }
 
         void doVideo(int i, string s) {
