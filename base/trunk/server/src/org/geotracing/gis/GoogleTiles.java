@@ -23,7 +23,7 @@ import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
 /**
- * A utility class to assist in encoding and decoding google tile references
+ * A utility class to assist in working with google tiles.
  * <p/>
  * For reasons of my own longitude is treated as being between -180 and +180
  * and internally latitude is treated as being from -1 to +1 and then converted to a mercator projection
@@ -45,6 +45,110 @@ public class GoogleTiles {
 	 */
 	private GoogleTiles() {
 		super();
+	}
+
+	/**
+	 * Returns keyhole string for adjacent tile in gives direction.
+	 *
+	 * @param aKHRef the keyhole string to return adjacent keyhole string for.
+	 * @param aDirection adjacency direction, one of : "n", "s", "e", "w", "nw", "ne", "sw", "se".
+	 * @return a keyhole ref of adjacent tile
+	 */
+	public static String getAdjacentKeyholeRef(String aKHRef, String aDirection) {
+		int length = aKHRef.length();
+
+		// Get keyhole chars in array for manipulation
+		char[] khChars = new char[length];
+		aKHRef.getChars(0, length, khChars, 0);
+
+		// First get north or south (first char)
+		char dir = aDirection.charAt(0);
+		if (dir == 'n' || dir == 's') {
+			khChars = getAdjacentKeyholeRefNS(khChars, dir, length-1);
+		} else {
+			khChars = getAdjacentKeyholeRefEW(khChars, dir , length-1);
+		}
+
+		// If two chars the second is an additional "e" or "w"
+		khChars = aDirection.length() == 2 ? getAdjacentKeyholeRefEW(khChars, aDirection.charAt(1),length-1) : khChars;
+		return new String(khChars);
+	}
+
+	/**
+	 * Returns keyhole string for adjacent tile in E or W.
+	 *
+	 * @param khChars the keyhole string to return adjacent keyhole string for.
+	 * @param aEW adjacency direction, one of : "e", "w".
+	 * @param index index into khchars array.
+	 * @return a keyhole ref of adjacent tile
+	 */
+	public static char[] getAdjacentKeyholeRefEW(char[] khChars, char aEW, int index) {
+		char c = khChars[index];
+
+		// Get neighbour tile
+		switch (c) {
+			case 'q':
+				khChars[index] = 'r';
+				break;
+			case 'r':
+				khChars[index] = 'q';
+				break;
+			case 's':
+				khChars[index] = 't';
+				break;
+			case 't':
+				khChars[index] = 's';
+				break;
+		}
+
+		// Possible recursion into higher zoom if going into tile outside current 4 qrst
+		if (aEW == 'e' && (c == 'r' || c == 's')) {
+			return getAdjacentKeyholeRefEW(khChars, aEW, index-1);
+		}
+
+		if (aEW == 'w' && (c == 't' || c == 'q')) {
+			return getAdjacentKeyholeRefEW(khChars, aEW, index-1);
+		}
+
+		return khChars;
+
+	}
+
+	/**
+	 * Returns keyhole string for adjacent tile in N or S.
+	 *
+	 * @param khChars the keyhole string to return adjacent keyhole string for.
+	 * @param aNS adjacency direction, one of : "n", "s".
+	 * @param index index into khchars array.
+	 * @return a keyhole ref of adjacent tile
+	 */
+	public static char[] getAdjacentKeyholeRefNS(char[] khChars, char aNS, int index) {
+		char c = khChars[index];
+		switch (c) {
+			case 'q':
+				khChars[index] = 't';
+				break;
+			case 'r':
+				khChars[index] = 's';
+				break;
+			case 's':
+				khChars[index] = 'r';
+				break;
+			case 't':
+				khChars[index] = 'q';
+				break;
+		}
+
+		// Possible recursion into higher zoom if going into tile outside current 4 qrst
+		if (aNS == 'n' && (c == 'q' || c == 'r')) {
+			return getAdjacentKeyholeRefNS(khChars, aNS, index-1);
+		}
+
+		if (aNS == 's' && (c == 't' || c == 's')) {
+			return getAdjacentKeyholeRefNS(khChars, aNS, index-1);
+		}
+
+		return khChars;
 	}
 
 	/**
