@@ -39,6 +39,7 @@
 		return value.trim();
 	}
 
+
 %>
 <%
 	String format = getParameter(request, "format", "imageplot");
@@ -47,14 +48,18 @@
 	double lat = Double.parseDouble(getParameter(request, "lat", "0"));
 	int zoom = Integer.parseInt(getParameter(request, "zoom", "10"));
 	String mapType = getParameter(request, "type", "sat");
+	String adjacent = getParameter(request, "adj", null);
 
 	String tileRef = null;
 	String fileRef = null;
-	// Rectangle2D.Double llBox = null;
 	String tileURL = null;
 
 	String khRef = GoogleTiles.getKeyholeRef(lon, lat, zoom);
-
+	if (adjacent != null) {
+		log.info("khref1=" + khRef);
+		khRef = GoogleTiles.getAdjacentKeyholeRef(khRef, adjacent);
+		log.info("khref2=" + khRef);
+	}
 	File file = null;
 
 	if (mapType.equals("sat")) {
@@ -118,22 +123,27 @@
 
 		String size = getParameter(request, "size", "256x256");
 
-		File resultFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
+		File resultFile = file ;
+		if (!size.equals("256x256")) {
+			resultFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
 
-		String[] command = {"convert", "-resize", size +"!", file.getAbsolutePath(), resultFile.getAbsolutePath()};
+			String[] command = {"convert", "-resize", size +"!", file.getAbsolutePath(), resultFile.getAbsolutePath()};
 
-		StringBuffer stdout = new StringBuffer(24);
-		StringBuffer stderr = new StringBuffer(24);
-		int exitCode = Sys.execute(command, stdout, stderr);
+			StringBuffer stdout = new StringBuffer(24);
+			StringBuffer stderr = new StringBuffer(24);
+			int exitCode = Sys.execute(command, stdout, stderr);
 
-		if (exitCode == 0) {
-			// log.info("drawloc returned " + exitCode);
-		} else {
-			log.warn("convert returned " + exitCode + " stderr=" + stderr.toString());
+			if (exitCode == 0) {
+				// log.info("drawloc returned " + exitCode);
+			} else {
+				log.warn("convert returned " + exitCode + " stderr=" + stderr.toString());
+			}
 		}
 		Servlets.sendFile(request, response, resultFile.getAbsolutePath(), "image/jpeg", false);
-		file.delete();
 		resultFile.delete();
+		if (resultFile != file) {
+			file.delete();
+		}
 	} else if (format.equals("xml")) {
 
 		response.setContentType("text/xml;charset=utf-8");
