@@ -10,12 +10,14 @@
 				 javax.servlet.ServletRequest" %>
 <%@ page import="java.io.File" %>
 <%@ page import="java.io.Writer" %>
+<%@ page import="org.keyworx.common.util.IO"%>
 <%!
 	private static Log log;
-	public static final String CACHE_DIR = "/tmp/wms/";
+	public static final String CACHE_DIR = System.getProperty("java.io.tmpdir") + "/";
 
 	static {// Make exif script executable
 		log = Logging.getLog("GoogleTile");
+		// IO.mkdir(CACHE_DIR);
 	}
 
 	String getParameter(ServletRequest req, String name, String defaultValue) {
@@ -31,7 +33,7 @@
 		return value.trim();
 	}
 
-	String getKeyholeRef(LonLat ll, int zoom) {
+	String getKeyholeRef(GoogleTiles.LonLat ll, int zoom) {
 		return GoogleTiles.getKeyholeRef(ll.lon, ll.lat, zoom);
 	}
 
@@ -82,51 +84,44 @@
 		return zoom;
 	}
 
-	class LonLat {
-		public double lon;
-		public double lat;
-
-		public LonLat(String aLon, String aLat) {
-			this(Double.parseDouble(aLon), Double.parseDouble(aLat));
-		}
-
-		public LonLat(double aLon, double aLat) {
-			lon = aLon;
-			lat = aLat;
-		}
-	}
 
 	class BBox {
-		LonLat nw, sw, ne, se;
+		GoogleTiles.LonLat nw, sw, ne, se;
 
 		public BBox(String aBBox) {
 			String[] bboxArr = aBBox.split(",");
-			nw = new LonLat(bboxArr[0], bboxArr[3]);
-			sw = new LonLat(bboxArr[0], bboxArr[1]);
-			ne = new LonLat(bboxArr[2], bboxArr[3]);
-			se = new LonLat(bboxArr[2], bboxArr[1]);
+			nw = new GoogleTiles.LonLat(bboxArr[0], bboxArr[3]);
+			sw = new GoogleTiles.LonLat(bboxArr[0], bboxArr[1]);
+			ne = new GoogleTiles.LonLat(bboxArr[2], bboxArr[3]);
+			se = new GoogleTiles.LonLat(bboxArr[2], bboxArr[1]);
 		}
-	}
-
-	class XY {
-		public int x;
-		public int y;
 	}
 
 	class Tile {
 		public String khRef;
-		public LonLat ll;
-		public GoogleTiles.XY xy;
+		public GoogleTiles.XY tileRef;
+		public GoogleTiles.LonLat ll;
+		public GoogleTiles.XY pxy;
 		public String type;
 		public File file;
 		public int zoom;
+		private String url;
 
-		public Tile(String aType, String aKHRef, LonLat aLL) {
+
+		public Tile(String aType, String aKHRef, GoogleTiles.LonLat aLL) {
 			type = aType;
 			khRef = aKHRef;
 			ll = aLL;
 			zoom = GoogleTiles.getTileZoom(khRef);
-			xy = GoogleTiles.getPixelXY(ll.lon, ll.lat, zoom);
+			setPoint(aLL);
+		}
+
+		public Tile(String aType, String aKHRef) {
+			this(aType, aKHRef, null);
+		}
+
+		public Tile(String aType, GoogleTiles.LonLat aLL, int aZoom) {
+			this(aType, GoogleTiles.getKeyholeRef(aLL.lon, aLL.lat, aZoom), aLL);
 		}
 
 		public void clear() {
@@ -136,35 +131,55 @@
 			}
 		}
 
-		public void fetchFile() throws Exception {
-			String tileURL=null;
-			String tileRef = null;
-			String fileRef = null;
-			if (type.equals("sat")) {
-				fileRef = tileRef = khRef;
-				tileURL = "http://kh1.google.com/kh?v=10&t=" + khRef;
-				file = new File(CACHE_DIR + fileRef + Rand.randomString(3) + ".jpg");
-				// llBox = GoogleTiles.getBoundingBox(khRef);
-			} else if (type.equals("map")) {
-				GoogleTiles.XY xy = GoogleTiles.getTileXY(khRef);
+		public void fetch() throws Exception {
+			Net.fetchURL(getURL(), getFile());
+		}
 
-				// Hmm, somehow we need to request one zoomlevel lower...
-				// zoom -= 1;
-
-				tileRef = "x=" + xy.x + "&y=" + xy.y + "&zoom=" + (17 - zoom);
-				fileRef = xy.x + "-" + xy.y + "-" + zoom;
-				file = new File(CACHE_DIR + fileRef + Rand.randomString(3) + ".png");
-
-				// e.g. http://mt.google.com/mt?v=.1&x=480&y=-109&zoom=5;
-				// v=ap.31
-				tileURL = "http://mt" + GoogleTiles.getTileServerNo(xy.x, xy.y) + ".google.com/mt?" + tileRef;
-				// llBox = GoogleTiles.getBoundingBox(xy.x, xy.y, zoom);
+		public File getFile() {
+			if (file == null) {
+				if (type.equals("sat")) {
+					file = new File(CACHE_DIR + khRef + Rand.randomString(3) + ".jpg");
+				} else if (type.equals("map")) {
+					String fileRef = getTileRef().x + "-" + getTileRef().y + "-" + zoom;
+					file = new File(CACHE_DIR + fileRef + Rand.randomString(3) + ".png");
+				}
 			}
-			Net.fetchURL(tileURL, file);
+			return file;
 		}
 
 		public String getFilePath() {
-			return file.getAbsolutePath();
+			return getFile().getAbsolutePath();
+		}
+
+		public GoogleTiles.XY getTileRef() {
+			if (tileRef == null) {
+				tileRef = GoogleTiles.getTileXY(khRef);
+			}
+			return tileRef;
+		}
+
+		public String getTileRefStr() {
+			return "x=" + getTileRef().x + "&y=" + getTileRef().y + "&zoom=" + (17 - zoom);
+		}
+
+		public String getURL() {
+			if (url == null) {
+				if (type.equals("sat")) {
+					url = "http://kh1.google.com/kh?v=10&t=" + khRef;
+				} else if (type.equals("map")) {
+					// e.g. http://mt.google.com/mt?v=.1&x=480&y=-109&zoom=5;
+					// v=ap.31
+					url = "http://mt" + GoogleTiles.getTileServerNo(getTileRef().x, getTileRef().y) + ".google.com/mt?" + getTileRefStr();
+				}
+
+			}
+			return url;
+		}
+
+		public void setPoint(GoogleTiles.LonLat aLL) {
+			if (aLL != null) {
+				pxy = GoogleTiles.getPixelXY(ll.lon, ll.lat, zoom);
+			}
 		}
 	}
 
@@ -176,7 +191,7 @@
 		public int type;
 		public int zoom;
 		public BBox bbox;
-		public File file,fileCrop;
+		public File file, fileCrop;
 		public String layer;
 		public int width;
 		public int height;
@@ -189,10 +204,10 @@
 			height = aHeight;
 			zoom = getZoom(aBBox);
 			layer = aLayer;
-			nw = new Tile(layer, getKeyholeRef(bbox.nw, zoom), bbox.nw);
-			ne = new Tile(layer, getKeyholeRef(bbox.ne, zoom), bbox.ne);
-			sw = new Tile(layer, getKeyholeRef(bbox.sw, zoom), bbox.sw);
-			se = new Tile(layer, getKeyholeRef(bbox.se, zoom), bbox.se);
+			nw = new Tile(layer, bbox.nw, zoom);
+			ne = new Tile(layer, bbox.ne, zoom);
+			sw = new Tile(layer, bbox.sw, zoom);
+			se = new Tile(layer, bbox.se, zoom);
 
 			type = 3;
 			if (nw.khRef.equals(ne.khRef)) {
@@ -225,38 +240,38 @@
 
 			// 153600_610800.png -geometry +0+0 -composite
 			String[] command = null;
-			switch(type) {
+			switch (type) {
 				// n-s composite
 				case 1:
-					nw.fetchFile();
-					sw.fetchFile();
+					nw.fetch();
+					sw.fetch();
 					// , "-crop", "100x100+10+20"
-					 cropWidth = ne.xy.x - nw.xy.x;
-					 cropHeight = 256 + sw.xy.y - nw.xy.y;
-					cropStr = cropWidth + "x" + cropHeight + "+" + nw.xy.x + "+" + nw.xy.y;
+					cropWidth = ne.pxy.x - nw.pxy.x;
+					cropHeight = 256 + sw.pxy.y - nw.pxy.y;
+					cropStr = cropWidth + "x" + cropHeight + "+" + nw.pxy.x + "+" + nw.pxy.y;
 					String[] c1 = {"convert", "-size", "256x512", "xc:skyblue", nw.getFilePath(), "-geometry", "+0+0", "-composite", sw.getFilePath(), "-geometry", "+0+256", "-composite", "-crop", cropStr, fileCrop.getAbsolutePath()};
 					command = c1;
 					break;
-				// e-w composite
+					// e-w composite
 				case 2:
-					nw.fetchFile();
-					ne.fetchFile();
-					cropWidth = 256 + ne.xy.x - nw.xy.x;
-					cropHeight = sw.xy.y - nw.xy.y;
-				    cropStr = cropWidth + "x" + cropHeight + "+" + nw.xy.x + "+" + nw.xy.y;
-					String[] c2 = {"convert", "-size", "512x256",  "xc:skyblue", nw.getFilePath(), "-geometry", "+0+0", "-composite", ne.getFilePath(), "-geometry", "+256+0", "-composite", "-crop", cropStr, fileCrop.getAbsolutePath()};
+					nw.fetch();
+					ne.fetch();
+					cropWidth = 256 + ne.pxy.x - nw.pxy.x;
+					cropHeight = sw.pxy.y - nw.pxy.y;
+					cropStr = cropWidth + "x" + cropHeight + "+" + nw.pxy.x + "+" + nw.pxy.y;
+					String[] c2 = {"convert", "-size", "512x256", "xc:skyblue", nw.getFilePath(), "-geometry", "+0+0", "-composite", ne.getFilePath(), "-geometry", "+256+0", "-composite", "-crop", cropStr, fileCrop.getAbsolutePath()};
 					command = c2;
 					break;
 				case 3:
-					nw.fetchFile();
-					ne.fetchFile();
-					sw.fetchFile();
-					se.fetchFile();
+					nw.fetch();
+					ne.fetch();
+					sw.fetch();
+					se.fetch();
 					// , "-crop", "100x100+10+20"
-					 cropWidth = 256 + ne.xy.x - nw.xy.x;
-					 cropHeight = 256 + sw.xy.y - nw.xy.y;
-					 cropStr = cropWidth + "x" + cropHeight + "+" + nw.xy.x + "+" + nw.xy.y;
-					String[] c3 = {"convert", "-size", "512x512",  "xc:skyblue", nw.getFilePath(), "-geometry", "+0+0", "-composite", ne.getFilePath(), "-geometry", "+256+0", "-composite", sw.getFilePath(), "-geometry", "+0+256", "-composite", se.getFilePath(), "-geometry", "+256+256", "-composite", "-crop", cropStr, fileCrop.getAbsolutePath()};
+					cropWidth = 256 + ne.pxy.x - nw.pxy.x;
+					cropHeight = 256 + sw.pxy.y - nw.pxy.y;
+					cropStr = cropWidth + "x" + cropHeight + "+" + nw.pxy.x + "+" + nw.pxy.y;
+					String[] c3 = {"convert", "-size", "512x512", "xc:skyblue", nw.getFilePath(), "-geometry", "+0+0", "-composite", ne.getFilePath(), "-geometry", "+256+0", "-composite", sw.getFilePath(), "-geometry", "+0+256", "-composite", se.getFilePath(), "-geometry", "+256+256", "-composite", "-crop", cropStr, fileCrop.getAbsolutePath()};
 					command = c3;
 					break;
 			}
@@ -267,7 +282,7 @@
 			int exitCode = Sys.execute(command, stdout, stderr);
 
 			if (exitCode == 0) {
-				 // log.info("createFile returned " + exitCode);
+				// log.info("createFile returned " + exitCode);
 			} else {
 				log.warn("convert returned " + exitCode + " stderr=" + stderr.toString());
 			}
@@ -311,19 +326,19 @@
 	if (format.equals("xml")) {
 		response.setContentType("text/xml;charset=utf-8");
 		JXElement rsp = new JXElement("gmap");
-	//	rsp.setAttr("url", tileURL);
-	//	rsp.setAttr("cropWidth", cropWidth);
-	//	rsp.setAttr("cropHeight", cropHeight);
+		//	rsp.setAttr("url", tileURL);
+		//	rsp.setAttr("cropWidth", cropWidth);
+		//	rsp.setAttr("cropHeight", cropHeight);
 //		rsp.setAttr("x", xySE.x);
 //		rsp.setAttr("y", xySE.y);
 //		rsp.setAttr("khref", khRef);
 //		rsp.setAttr("zoom", zoom);
 		rsp.setAttr("zoomComp", tileComp.zoom);
 		rsp.setAttr("nw", tileComp.nw.khRef);
-		rsp.setAttr("sw",  tileComp.sw.khRef);
-		rsp.setAttr("ne",  tileComp.ne.khRef);
-		rsp.setAttr("se",  tileComp.se.khRef);
-		rsp.setAttr("type",  tileComp.type);
+		rsp.setAttr("sw", tileComp.sw.khRef);
+		rsp.setAttr("ne", tileComp.ne.khRef);
+		rsp.setAttr("se", tileComp.se.khRef);
+		rsp.setAttr("type", tileComp.type);
 		try {
 			Writer writer = response.getWriter();
 			writer.write(rsp.toFormattedString());
