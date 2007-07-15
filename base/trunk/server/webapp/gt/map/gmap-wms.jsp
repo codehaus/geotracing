@@ -6,17 +6,20 @@
 				 org.keyworx.common.util.Sys,
 				 org.keyworx.oase.util.Net,
 				 org.keyworx.oase.util.Servlets,
-				 org.keyworx.server.ServerConfig,
-				 javax.servlet.ServletRequest" %>
-<%@ page import="java.io.File" %>
+				 javax.servlet.ServletRequest,
+				 java.io.File" %>
 <%@ page import="java.io.Writer" %>
-<%@ page import="org.keyworx.common.util.IO"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Map"%>
 <%!
 	private static Log log;
 	public static final String CACHE_DIR = System.getProperty("java.io.tmpdir") + "/";
-
+	public static final Map IMG_FORMATS = new HashMap(3);
 	static {// Make exif script executable
 		log = Logging.getLog("GoogleTile");
+		IMG_FORMATS.put("image/jpeg", ".jpg");
+		IMG_FORMATS.put("image/png", ".png");
+		IMG_FORMATS.put("image/gif", ".gif");
 		// IO.mkdir(CACHE_DIR);
 	}
 
@@ -37,11 +40,11 @@
 		return GoogleTiles.getKeyholeRef(ll.lon, ll.lat, zoom);
 	}
 
-	String getKeyholeRef(BBox aBBox) {
+	String getEnclosingKeyholeRef(BBox aBBox) {
 		String result = null;
 		String khRef = null;
 		for (int zoom = 0; zoom < 18; zoom++) {
-			khRef = getKeyholeRef(aBBox, zoom);
+			khRef = getEnclosingKeyholeRef(aBBox, zoom);
 			if (khRef != null) {
 				result = khRef;
 			} else {
@@ -51,7 +54,7 @@
 		return result;
 	}
 
-	String getKeyholeRef(BBox aBBox, int aZoom) {
+	String getEnclosingKeyholeRef(BBox aBBox, int aZoom) {
 		String result = null;
 		String[] khRef = new String[4];
 		khRef[0] = getKeyholeRef(aBBox.nw, aZoom);
@@ -70,16 +73,49 @@
 	}
 
 	int getZoom(BBox aBBox) {
-		String result = null;
 		String khRef = null;
 		int zoom = 0;
 		for (zoom = 0; zoom < 18; zoom++) {
-			khRef = getKeyholeRef(aBBox, zoom);
-			if (khRef != null) {
-				result = khRef;
-			} else {
+			khRef = getEnclosingKeyholeRef(aBBox, zoom);
+			if (khRef == null) {
+				// First zoom level where bbox not fits in tile
 				break;
 			}
+		}
+
+		// First zoomlevel where bbox is completely enclosed
+		// try to find optimal zoomlevel ozoom from here.
+		String nw,ne,se,sw;
+
+		// Bbox already in adjacent tiles in zoom, increase optimal zoom.
+		for (int ozoom = zoom+1; ozoom < 18; ozoom++) {
+			nw = getKeyholeRef(aBBox.nw, ozoom);
+			ne = getKeyholeRef(aBBox.ne, ozoom);
+			sw = getKeyholeRef(aBBox.sw, ozoom);
+			se = getKeyholeRef(aBBox.se, ozoom);
+
+			// Check if bbox is enclosed in adjacent tiles
+			// if so we can increase zoomlevel
+			if (GoogleTiles.getAdjacentKeyholeRef(nw, "se").equals(se)  && GoogleTiles.getAdjacentKeyholeRef(sw, "ne").equals(ne) ) {
+				continue;
+			}
+			if (GoogleTiles.getAdjacentKeyholeRef(nw, "e").equals(ne) && nw.equals(sw)) {
+				continue;
+			}
+			if (GoogleTiles.getAdjacentKeyholeRef(sw, "e").equals(se) && sw.equals(nw)) {
+				continue;
+			}
+			if (GoogleTiles.getAdjacentKeyholeRef(nw, "s").equals(sw) && nw.equals(ne)) {
+				continue;
+			}
+			if (GoogleTiles.getAdjacentKeyholeRef(ne, "s").equals(se) && ne.equals(nw)) {
+				continue;
+			}
+
+			// Break: at this zoomlevel we have no adjacency for bbox
+			// decrease to previous and return below.
+			zoom = ozoom -1;
+			break;
 		}
 		return zoom;
 	}
@@ -197,22 +233,32 @@
 		public int height;
 		String cropStr = null;
 		int cropWidth, cropHeight;
+		String format;
 
-		public TileComp(String aLayer, BBox aBBox, int aWidth, int aHeight) {
+		public TileComp(String aLayer, BBox aBBox, int aWidth, int aHeight, String aFormat) {
 			bbox = aBBox;
 			width = aWidth;
 			height = aHeight;
-			zoom = getZoom(aBBox);
+			format = aFormat;
 			layer = aLayer;
+			zoom = getZoom(bbox);
+			init();
+		}
+
+
+		public void init() {
 			nw = new Tile(layer, bbox.nw, zoom);
 			ne = new Tile(layer, bbox.ne, zoom);
 			sw = new Tile(layer, bbox.sw, zoom);
 			se = new Tile(layer, bbox.se, zoom);
 
+			// default: bbox contained in 4 tiles
 			type = 3;
-			if (nw.khRef.equals(ne.khRef)) {
+			if (nw.khRef.equals(ne.khRef) || sw.khRef.equals(se.khRef)) {
+				// 2 tiles n-s
 				type = 1;
-			} else if (nw.khRef.equals(sw.khRef)) {
+			} else if (nw.khRef.equals(sw.khRef)  || ne.khRef.equals(se.khRef) ) {
+				// 2 tiles e-w
 				type = 2;
 			}
 		}
@@ -233,10 +279,10 @@
 		}
 
 		public void createFile() throws Exception {
-			String ext = layer.equals("sat") ? ".jpg" : ".png";
+			String ext = (String) IMG_FORMATS.get(format);
 
-			file = new File(CACHE_DIR + Rand.randomString(8) + "-wms.jpg");
-			fileCrop = new File(CACHE_DIR + Rand.randomString(8) + "-wmsc.jpg");
+			file = new File(CACHE_DIR + Rand.randomString(8) + "-wms" + ext);
+			fileCrop = new File(CACHE_DIR + Rand.randomString(8) + "-wmsc" + ext);
 
 			// 153600_610800.png -geometry +0+0 -composite
 			String[] command = null;
@@ -321,7 +367,7 @@
 
 	BBox bbox = new BBox(bboxParm);
 // http://test.geotracing.com/gt/map/gmap-wms.jsp?LAYERS=map&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A4326&BBOX=4.532386%2C46.489192%2C7.344886%2C49.301692&WIDTH=512&HEIGHT=512
-	TileComp tileComp = new TileComp(layers, bbox, width, height);
+	TileComp tileComp = new TileComp(layers, bbox, width, height, format);
 
 	if (format.equals("xml")) {
 		response.setContentType("text/xml;charset=utf-8");
@@ -362,7 +408,7 @@
 		try {
 			Servlets.sendFile(request, response, tileComp.getFilePath(), "image/jpeg", false);
 		} catch (Throwable t) {
-			log.error("error sending composite file", t);
+			log.warn("error sending composite file" + t);
 		} finally {
 			tileComp.clear();
 		}

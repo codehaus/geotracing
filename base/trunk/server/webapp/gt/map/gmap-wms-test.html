@@ -1,0 +1,68 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <style type="text/css">
+        #map {
+            width: 256px;
+            height: 256px;
+            border: 1px solid black;
+        }
+    </style>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script type="text/javascript">
+        <!--
+        var lon = 5;
+        var lat = 40;
+        var zoom = 5;
+        var map, layer, glayerRoads, glayerSat;
+		var BOUNDS= new OpenLayers.Bounds(4,50,10,54);
+
+		var RESOLUTIONS = [1.40625,0.703125,0.3515625,0.17578125,0.087890625,0.0439453125,0.02197265625,0.010986328125,0.0054931640625,0.00274658203125,0.001373291015625,0.0006866455078125,0.00034332275390625,0.000171661376953125,0.0000858306884765625,0.00004291534423828125,.00002145767211914062,.00001072883605957031,.00000536441802978515,.00000268220901489257];
+		var CONTROLS = [new OpenLayers.Control.PanZoom(),new OpenLayers.Control.MouseDefaults(),new OpenLayers.Control.LayerSwitcher(),new OpenLayers.Control.MousePosition()];
+
+        function init(){
+            map = new OpenLayers.Map( 'map', {
+			maxResolution: 'auto',
+			'numZoomLevels': 17,
+
+			controls: CONTROLS,
+				maxExtent: BOUNDS
+		}
+		);
+			layer = new OpenLayers.Layer.WMS.Untiled("OpenLayers Kaart",
+					"http://labs.metacarta.com/wms/vmap0", {layers: 'basic','transparent':true, format: 'png'});
+            /* layer = new new OpenLayers.Layer.WMS.Untiled( "OpenLayers WMS",
+                    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'},
+                    {gutter: 15});  */
+  			glayerRoads = new OpenLayers.Layer.WMS.Untiled("Gmap Roads",
+					"http://test.geotracing.com/gt/map/gmap-wms.jsp", {layers: 'map', format: "image/jpeg"});
+			glayerRoads.ratio = 1;
+
+			glayerSat = new OpenLayers.Layer.WMS.Untiled("Gmap Sat",
+					"http://test.geotracing.com/gt/map/gmap-wms.jsp", {layers: 'sat'});
+
+			var twms = new OpenLayers.Layer.WMS( "World Map",
+				"http://world.freemap.in/cgi-bin/mapserv?",
+				{ map: '/www/freemap.in/world/map/factbooktrans.map',
+				  transparent: 'true', layers: 'factbook',
+				  format: 'png'} );
+
+			map.addLayer(glayerRoads);
+			//map.addLayer(glayerSat);
+			//map.addLayer(layer);
+			//twms.display("none");
+			// map.addLayer(twms);
+
+            map.setCenter(new OpenLayers.LonLat(lon, lat), zoom);
+            map.addControl( new OpenLayers.Control.LayerSwitcher() );
+			var bounds = new OpenLayers.Bounds(3,51,5,57);
+			map.zoomToExtent(BOUNDS);
+		}
+
+        // -->
+    </script>
+  </head>
+  <body onload="init()">
+    <div id="map"></div>
+
+  </body>
+</html>
