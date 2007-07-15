@@ -8,9 +8,9 @@
 				 org.keyworx.oase.util.Servlets,
 				 org.keyworx.server.ServerConfig,
 				 javax.servlet.ServletRequest" %>
-<%@ page import="java.io.File"%>
-<%@ page import="java.io.Writer"%>
-<%@ page import="java.awt.geom.Rectangle2D"%>
+<%@ page import="java.io.File" %>
+<%@ page import="java.io.Writer" %>
+<%@ page import="java.awt.geom.Rectangle2D" %>
 <%!
 	public static final String DRAW_LOC_SCRIPT = ServerConfig.getConfigDir() + "/../bin/drawloc.sh";
 	private static Log log;
@@ -45,8 +45,8 @@
 <%
 	String format = getParameter(request, "format", "imageplot");
 
-	double lon = Double.parseDouble(getParameter(request, "lon", "0"));
-	double lat = Double.parseDouble(getParameter(request, "lat", "0"));
+	double lon = Double.parseDouble(getParameter(request, "lon", "4.85285"));
+	double lat = Double.parseDouble(getParameter(request, "lat", "52.31226"));
 	int zoom = Integer.parseInt(getParameter(request, "zoom", "10"));
 	String mapType = getParameter(request, "type", "sat");
 	String adjacent = getParameter(request, "adj", null);
@@ -119,16 +119,16 @@
 		Servlets.sendFile(request, response, locFile.getAbsolutePath(), "image/jpeg", false);
 		file.delete();
 		locFile.delete();
-	} else 	if (format.equals("image")) {
+	} else if (format.equals("image")) {
 		Net.fetchURL(tileURL, file);
 
 		String size = getParameter(request, "size", "256x256");
 
-		File resultFile = file ;
+		File resultFile = file;
 		if (!size.equals("256x256")) {
 			resultFile = new File(CACHE_DIR + Rand.randomString(8) + "-loc.jpg");
 
-			String[] command = {"convert", "-resize", size +"!", file.getAbsolutePath(), resultFile.getAbsolutePath()};
+			String[] command = {"convert", "-resize", size + "!", file.getAbsolutePath(), resultFile.getAbsolutePath()};
 
 			StringBuffer stdout = new StringBuffer(24);
 			StringBuffer stderr = new StringBuffer(24);
@@ -157,14 +157,14 @@
 
 		rsp.setAttr("bbox", bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + "," + bbox.getMaxY());
 
-		 try {
-			 Writer writer = response.getWriter();
-			 writer.write(rsp.toFormattedString());
-			 writer.flush();
-			 writer.close();
-		 } catch (Throwable th) {
-	  		 log.info("error gmap writing response");
-		 }
+		try {
+			Writer writer = response.getWriter();
+			writer.write(rsp.toFormattedString());
+			writer.flush();
+			writer.close();
+		} catch (Throwable th) {
+			log.info("error gmap writing response");
+		}
 	}
 %>
 

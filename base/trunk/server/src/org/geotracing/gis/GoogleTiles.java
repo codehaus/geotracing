@@ -34,6 +34,20 @@ import java.text.DecimalFormat;
 public class GoogleTiles {
 	public static final double TILE_SIZE = 256.0D;
 
+	public static class LonLat {
+		public double lon;
+		public double lat;
+
+		public LonLat(String aLon, String aLat) {
+			this(Double.parseDouble(aLon), Double.parseDouble(aLat));
+		}
+
+		public LonLat(double aLon, double aLat) {
+			lon = aLon;
+			lat = aLat;
+		}
+	}
+
 	/* Convenience struct x,y pixel coords. */
 	public static class XY {
 		public int x;
