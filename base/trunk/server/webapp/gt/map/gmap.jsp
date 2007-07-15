@@ -10,6 +10,7 @@
 				 javax.servlet.ServletRequest" %>
 <%@ page import="java.io.File"%>
 <%@ page import="java.io.Writer"%>
+<%@ page import="java.awt.geom.Rectangle2D"%>
 <%!
 	public static final String DRAW_LOC_SCRIPT = ServerConfig.getConfigDir() + "/../bin/drawloc.sh";
 	private static Log log;
@@ -152,6 +153,10 @@
 		rsp.setAttr("x", xy.x);
 		rsp.setAttr("y", xy.y);
 		rsp.setAttr("khref", khRef);
+		Rectangle2D.Double bbox = GoogleTiles.getBoundingBox(khRef);
+
+		rsp.setAttr("bbox", bbox.getMinX() + "," + bbox.getMinY() + "," + bbox.getMaxX() + "," + bbox.getMaxY());
+
 		 try {
 			 Writer writer = response.getWriter();
 			 writer.write(rsp.toFormattedString());
