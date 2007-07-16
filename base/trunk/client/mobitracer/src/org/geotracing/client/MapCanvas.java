@@ -13,10 +13,8 @@ import java.io.IOException;
 public class MapCanvas extends GameCanvas implements CommandListener {
 	private Displayable prevScreen;
 	private String tileBaseURL;
-	private GoogleMap.XY xy, prevXY;
-	private String tileRef="";
+	private GoogleMap.XY xy;
 	private Image mapImage;
-	private MFloat tileScale;
 	private int zoom = 12;
 	private Command zoomIn;
 	private Command zoomOut;
@@ -25,8 +23,10 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 	private MIDlet midlet;
 	private Image redDot;
 	private String mapType = "map";
-	private String lon = "0", lat = "0";
+	private GoogleMap.LonLat lonLat;
+	private GoogleMap.BBox bbox;
 	private boolean active;
+	private int OFF_MAP_TOLERANCE = 15;
 
 	public MapCanvas() {
 		super(false);
@@ -45,11 +45,10 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 
 	public void activate(MIDlet aMidlet) {
 		midlet = aMidlet;
-		tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
+		tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp";
 		prevScreen = Display.getDisplay(aMidlet).getCurrent();
 		Display.getDisplay(midlet).setCurrent(this);
 		active = true;
-		fetchTileInfo();
 		show();
 	}
 
@@ -58,23 +57,36 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 			active = false;
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (c == zoomIn) {
-			zoom++;
-			fetchTileInfo();
-			show();
+			zoomIn();
 		} else if (c == zoomOut) {
-			zoom--;
-			fetchTileInfo();
-			show();
+			zoomOut();
 		} else if (c == toggleMapType) {
 			mapType = mapType.equals("sat") ? "map" : "sat";
-			fetchTileInfo();
-			mapImage = null;
+			resetMap();
 			show();
 		}
 	}
 
 	public boolean hasLocation() {
-		return !lon.equals(("0")) && !lat.equals("0");
+		return lonLat != null;
+	}
+
+	/**
+	 * Handles all key actions.
+	 *
+	 * @param key The Key that was hit.
+	 */
+	public void keyPressed(int key) {
+
+		switch (getGameAction(key)) {
+			case UP:
+				zoomOut();
+				break;
+			case DOWN:
+			case FIRE:
+				zoomIn();
+				break;
+		}
 	}
 
 	/**
@@ -83,6 +95,9 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 	 * @param g The graphics object.
 	 */
 	public void paint(Graphics g) {
+		if (!active) {
+			return;
+		}
 		int w = getWidth();
 		// Defeat Nokia bug ?
 		if (w == 0) {
@@ -99,48 +114,69 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 		g.setColor(100, 100, 100);
 
 		try {
-
-			if (tileScale == null) {
-				tileScale = new MFloat(w).Div(GoogleMap.I_GMAP_TILE_SIZE);
+			// No use proceeding if we don't have location
+			if (!hasLocation()) {
+				g.drawString("No location (yet)", 10, 10, Graphics.TOP | Graphics.LEFT);
+				return;
 			}
 
-			if (hasLocation() && mapImage == null) {
-				try {
-					String tileSize = w + "x" + w;
-					String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
-					g.drawString("fetching mapImage...", 10, 10, Graphics.TOP | Graphics.LEFT);
+			// ASSERT: we have a valid location
 
-					// Get Google Tile image and draw on mapImage
-					Image tileImage = Util.getImage(tileURL);
-					mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
-					mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+			// Create bbox if not present
+			if (bbox == null) {
+				resetMap();
+
+				// Create bbox around our location for given zoom and w,h
+				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
+				g.drawString("fetching map image...", 10, 10, Graphics.TOP | Graphics.LEFT);
+				repaint();
+				return;
+			}
+
+			// Should we fetch new map image ?
+			if (mapImage == null) {
+				try {
+					// Create WMS URL and fetch image
+					String mapURL = GoogleMap.createWMSURL(tileBaseURL, bbox, mapType, w, h, "image/jpeg");
+					Image wmsImage = Util.getImage(mapURL);
+
+					// Create offscreen image
+					mapImage = Image.createImage(wmsImage.getWidth(), wmsImage.getHeight());
+					mapImage.getGraphics().drawImage(wmsImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 				} catch (Throwable t) {
 					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
 					return;
 				}
 			}
 
-			if (xy != null) {
+			// Draw location and trace.
+			GoogleMap.XY prevXY = xy;
+			xy = bbox.getPixelXY(lonLat);
 
-				// If we have previous point: draw line from there to current
-				if (prevXY != null) {
-					Graphics mapGraphics = mapImage.getGraphics();
-					mapGraphics.setColor(0, 0, 255);
-					mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
-					mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
-				}
+			// System.out.println("xy=" + xy);
+			// If we have previous point: draw line from there to current
+			if (prevXY != null) {
+				// Draw trace
+				Graphics mapGraphics = mapImage.getGraphics();
+				mapGraphics.setColor(0, 0, 255);
+				mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
+				mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
+			}
 
-				// Draw background map
-				g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+			// Draw background map
+			g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-				// Draw current location
-				if (redDot == null) {
-					redDot = Image.createImage("/red_dot.png");
-				}
+			// Draw current location
+			if (redDot == null) {
+				redDot = Image.createImage("/red_dot.png");
+			}
 
-				g.drawImage(redDot, xy.x-(redDot.getWidth())/2, xy.y-(redDot.getHeight())/2, Graphics.TOP | Graphics.LEFT);
-			} else {
-				g.drawString("No location (yet)", 10, 10, Graphics.TOP | Graphics.LEFT);
+			g.drawImage(redDot, xy.x - (redDot.getWidth()) / 2, xy.y - (redDot.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+
+			// If moving off map refresh
+			if (xy.x < OFF_MAP_TOLERANCE || w - xy.x < OFF_MAP_TOLERANCE || xy.y < OFF_MAP_TOLERANCE || h - xy.y < OFF_MAP_TOLERANCE)
+			{
+				resetMap();
 			}
 		} catch (IOException ioe) {
 			g.drawString("cannot get mapimage", 10, 10, Graphics.TOP | Graphics.LEFT);
@@ -151,65 +187,32 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 		}
 	}
 
+	protected void resetMap() {
+		bbox = null;
+		mapImage = null;
+	}
+
 	public void setLocation(String aLon, String aLat) {
-		lon = aLon;
-		lat = aLat;
-		fetchTileInfo();
+		lonLat = new GoogleMap.LonLat(aLon, aLat);
 		show();
 	}
 
-	protected void fetchTileInfo() {
-		if (!hasLocation() || !active) {
-			return;
-		}
-
-		try {
-			//String tileInfoURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=xml";
-			//JXElement sTile = Util.getXML(tileInfoURL);
-			//String serverKHRef = sTile.getAttr("khref");
-			//System.out.println("svKHRef=" + serverKHRef);
-			//System.out.println("mtKHRef=" + );
-
-			// Get pixel offset into GMap 256x256 tile
-			GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
-
-			// Get unique tile ref (keyhole string)
-			String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
-
-			// System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
-
-			// Force refresh of mapImage when
-			// no tile info (initial)
-			// OR map keyhole ref changed (when zoom or moving off tile)
-			if (!tileRef.equals(newTileRef)) {
-				// System.out.println("refresh");
-				mapImage = null;
-				xy = prevXY = null;
-				tileRef = newTileRef;
-			}
-
-			// Scale x,y to scaled tile image
- 			if (tileScale != null) {
-				// Correct pixel offset with tile scale
-				// Scale x,y offset of our location in mapImage
-				newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
-				newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
-
-				// Remember previous (scaled) location
-				prevXY = xy;
-
-				// Set current location
-				xy = newTileXY;
-			}
-
-		} catch (Throwable t) {
-			Log.log("error: MapCanvas: t=" + t + " m=" + t.getMessage());
-		}
-	}
 
 	private void show() {
 		if (active) {
 			repaint();
 		}
+	}
+
+	protected void zoomIn() {
+		zoom++;
+		resetMap();
+		show();
+	}
+
+	protected void zoomOut() {
+		zoom--;
+		resetMap();
+		show();
 	}
 }
