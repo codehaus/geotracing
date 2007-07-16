@@ -24,6 +24,7 @@ public class GoogleMap {
 	 */
 	final public static int I_GMAP_TILE_SIZE = 256;
 	final public static MFloat F_GMAP_TILE_SIZE = new MFloat(256L);
+	final public static MFloat F_GMAP_HALF_TILE_SIZE = new MFloat(128L);
 	final static public MFloat MINUS_ONE = new MFloat(-1L);
 	final static public MFloat ZERO = MFloat.ZERO;
 	final static public MFloat HALF = new MFloat(2L, -1L);
@@ -41,21 +42,123 @@ public class GoogleMap {
 	public static class XY {
 		public int x;
 		public int y;
+
+		public XY(MFloat anX, MFloat anY) {
+			this((int) anX.toLong(), (int) anY.toLong());
+		}
+
+		public XY(int anX, int anY) {
+			x = anX;
+			y = anY;
+		}
+
+		public String toString() {
+			return x + "," + y;
+		}
 	}
 
+	public static class LonLat {
+		public MFloat lon;
+		public MFloat lat;
 
-	public static class BoundingBox {
+		public LonLat(MFloat aLon, MFloat aLat) {
+			lon = aLon;
+			lat = aLat;
+		}
+
+		public LonLat(String aLon, String aLat) {
+			this(MFloat.parse(aLon, 10), MFloat.parse(aLat, 10));
+		}
+	}
+
+	public static class BBox {
 		public String keyholeRef;
-		public MFloat lonSW;
-		public MFloat latSW;
-		public MFloat lonNE;
-		public MFloat latNE;
+		public LonLat sw;
+		public LonLat ne;
+		public MFloat width = F_GMAP_TILE_SIZE;
+		public MFloat height = F_GMAP_TILE_SIZE;
+		/** Resolution in pixels/lon */
+		private MFloat resolX;
+
+		/** Resolution in pixels/lat */
+		private MFloat resolY;
+
+		public BBox(LonLat aSW, LonLat aNE) {
+			this(aSW, aNE, F_GMAP_TILE_SIZE, F_GMAP_TILE_SIZE);
+		}
+
+		public BBox(LonLat aSW, LonLat aNE, int aWidth, int aHeight) {
+			this(aSW, aNE, new MFloat(aWidth), new MFloat(aHeight));
+		}
+
+		public BBox(LonLat aSW, LonLat aNE, MFloat aWidth, MFloat aHeight) {
+			sw = aSW;
+			ne = aNE;
+			width = aWidth;
+			height = aHeight;
+		}
+
+		public MFloat getLatHeight() {
+			return ne.lat.Sub(sw.lat);
+		}
+
+		public MFloat getLonWidth() {
+			return ne.lon.Sub(sw.lon);
+		}
+
+		public XY getPixelXY(LonLat aLonLat) {
+			return new XY(getResolX().Mul(aLonLat.lon.Sub(sw.lon)), getResolY().Mul(ne.lat.Sub(aLonLat.lat)));
+		}
+
+		public MFloat getResolX() {
+			if (resolX == null) {
+				resolX = width.Div(getLonWidth());
+			}
+			return resolX;
+		}
+
+		public MFloat getResolY() {
+			if (resolY == null) {
+				resolY = height.Div(getLatHeight());
+			}
+			return resolY;
+		}
+
+		public String toString() {
+			return sw.lon + "," + sw.lat + "," + ne.lon + "," + ne.lat;
+		}
+	}
+
+	/**
+	 * Create OGC WMS request.
+	 */
+	public static BBox createCenteredBBox(LonLat aLonLat, int aZoom) {
+		return createCenteredBBox(aLonLat, aZoom, I_GMAP_TILE_SIZE, I_GMAP_TILE_SIZE);
+	}
+
+	/**
+	 * Create OGC WMS request.
+	 */
+	public static BBox createCenteredBBox(LonLat aLonLat, int aZoom, int aWidth, int aHeight) {
+		BBox bboxStd = getBBox(getKeyholeRef(aLonLat, aZoom));
+		MFloat halfTileWidth = bboxStd.getLonWidth().Div(2L);
+		MFloat halfTileHeight = bboxStd.getLatHeight().Div(2L);
+		LonLat sw = new LonLat(aLonLat.lon.Sub(halfTileWidth), aLonLat.lat.Sub(halfTileHeight));
+		LonLat ne = new LonLat(aLonLat.lon.Add(halfTileWidth), aLonLat.lat.Add(halfTileHeight));
+		return new BBox(sw, ne, aWidth, aHeight);
+	}
+
+	/**
+	 * Create OGC WMS request.
+	 */
+	public static String createWMSURL(String wmsBaseURL, BBox bbox, String mapType, int w, int h, String format) {
+		return wmsBaseURL + "?service=WMS&request=GetMap&bbox=" + bbox + "&layers=" + mapType + "&width=" + w + "&height=" + h +"&format=" + format;
 	}
 
 	/**
 	 * Get Tile with x = lon, y = lat, width=lonSpan, height=latSpan for a keyhole string.
 	 */
-	public static BoundingBox getBoundingBox(String keyholeStr) {
+	public static BBox getBBox(String keyholeStr) {
 		// must start with "t"
 		if ((keyholeStr == null) || (keyholeStr.length() == 0) || (keyholeStr.charAt(0) != 't')) {
 			throw new RuntimeException("Keyhole string must start with 't'");
@@ -130,11 +233,9 @@ public class GoogleMap {
 			latHeight = latHeight.Neg();
 		}
 
-		BoundingBox bbox = new BoundingBox();
-		bbox.lonSW = lon;
-		bbox.latSW = lat;
-		bbox.lonNE = lon.Add(lonWidth);
-		bbox.latNE = lat.Add(latHeight);
+		BBox bbox = new BBox(new LonLat(lon, lat), new LonLat(lon, lat));
+		bbox.ne.lon = bbox.sw.lon.Add(lonWidth);
+		bbox.ne.lat = bbox.sw.lat.Add(latHeight);
 		return bbox;
 	}
 
@@ -204,10 +305,15 @@ public class GoogleMap {
 		// System.out.println("y3=" + yf + " tilesYOffset =" + tilesYOffset);
 
 		// Construct result
-		GoogleMap.XY xy = new GoogleMap.XY();
-		xy.x = x;
-		xy.y = y;
-		return xy;
+		return new XY(x, y);
+	}
+
+	/**
+	 * Returns keyhole ttring given lon,lat,zoom.
+	 * see http://cfis.savagexi.com/articles/2006/05/03/google-maps-deconstructed
+	 */
+	public static String getKeyholeRef(LonLat aLonLat, int aZoom) {
+		return getKeyholeRef(aLonLat.lon, aLonLat.lat, aZoom);
 	}
 
 	/**
