@@ -201,7 +201,8 @@
 		public String getURL() {
 			if (url == null) {
 				if (type.equals("sat")) {
-					url = "http://kh1.google.com/kh?v=10&t=" + khRef;
+					int num = Rand.randomInt(0,3);
+					url = "http://kh" + num + ".google.com/kh?v=10&t=" + khRef;
 				} else if (type.equals("map")) {
 					// e.g. http://mt.google.com/mt?v=.1&x=480&y=-109&zoom=5;
 					// v=ap.31
