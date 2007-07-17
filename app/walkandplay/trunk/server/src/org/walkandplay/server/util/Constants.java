@@ -6,7 +6,7 @@ import org.geotracing.handler.Track;
 public interface Constants {
 	// tablenames
 	public final static String VERSION_TABLE = "wp_version";
-	public final static String SCHEDULE_TABLE = "wp_schedule";
+	public final static String GAMEROUND_TABLE = "wp_gameround";
 	public final static String GAMEPLAY_TABLE = "wp_gameplay";
 	public final static String TASK_TABLE = "wp_task";
 	public final static String GAME_TABLE = "wp_game";
