@@ -6,11 +6,11 @@
 				 org.keyworx.common.util.Sys,
 				 org.keyworx.oase.util.Net,
 				 org.keyworx.oase.util.Servlets,
-				 javax.servlet.ServletRequest,
-				 java.io.File" %>
-<%@ page import="java.io.Writer" %>
+				 javax.servlet.ServletRequest" %>
 <%@ page import="java.util.HashMap"%>
 <%@ page import="java.util.Map"%>
+<%@ page import="org.keyworx.oase.api.OaseException"%>
+<%@ page import="java.io.*"%>
 <%!
 	private static Log log;
 	public static final String CACHE_DIR = System.getProperty("java.io.tmpdir") + "/";
@@ -395,7 +395,7 @@
 			log.info("error gmap writing response");
 		}
 	} else {
-
+		// Create and send image
 		try {
 			tileComp.createFile();
 		} catch (Throwable t) {
