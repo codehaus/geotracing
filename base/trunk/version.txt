@@ -1,5 +1,8 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
+2.0.4 - 17.jul.2007
+- MobiTracer:  improvements to Map view (e.g. now your loc is centered)
+
 2.0.3 - 26.apr.2007
 - both get.jsp and QueryHandler.java handle same queries
 - extensible QueryLogic class can be configured with QueryHandler
