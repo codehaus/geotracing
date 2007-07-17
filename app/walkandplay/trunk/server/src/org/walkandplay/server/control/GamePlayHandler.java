@@ -156,7 +156,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Record game = getGameForGamePlay(oase, gamePlay.getId());
 		Point point = location.getPoint();
 		Record task = getTaskHitForGame(oase, point, game.getId());
-		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+		Record round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
 
 		// Use account related to medium (request may come from admin when email medium upload)
 		String accountName = relater.getRelated(person, "utopia_account", null)[0].getStringField("loginname"); //HandlerUtil.getAccountName(anUtopiaReq);
@@ -265,7 +265,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		// Always set outcome of answer
 		taskResult.setField(ANSWER_FIELD, playerAnswer);
 		taskResult.setField(ANSWER_STATE_FIELD, answerState);
-		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+		Record round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
 
 		// Send event: answer submit
 		storeEvent(oase, gamePlay, WPEventPublisher.answerSubmit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId(), playerAnswer, answerState));
@@ -461,7 +461,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 						hit.setAttr(MEDIA_STATE_FIELD, taskResult.getStringField(MEDIA_STATE_FIELD));
 
 						// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aTaskId, int aTaskResultId
-						round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+						round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
 						storeEvent(oase, gamePlay, WPEventPublisher.taskHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), task.getId(), taskResult.getId()));
 						break;
 
@@ -500,7 +500,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 						hit.setAttr(ID_FIELD, medium.getId());
 						hit.setAttr(STATE_FIELD, VAL_HIT);
 						// int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int aMediumId, int aMediumResultId
-						round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+						round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
 						storeEvent(oase, gamePlay, WPEventPublisher.mediumHit(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId(), lastMediumId, mediumResult.getId()));
 						break;
 					default:
@@ -631,7 +631,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		initGamePlayResults(oase, gamePlay);
 
 		// playStart(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
-		Record round = relater.getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+		Record round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
 		storeEvent(oase, gamePlay, WPEventPublisher.playStart(personId, HandlerUtil.getAccountName(anUtopiaReq), round.getId(), gamePlay.getId()));
 		return createResponse(PLAY_START_SERVICE);
 	}
@@ -753,7 +753,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 
 	protected Record getGameRoundForGamePlay(Oase anOase, Record aGamePlay) throws OaseException, UtopiaException {
 		try {
-			return anOase.getRelater().getRelated(aGamePlay, SCHEDULE_TABLE, null)[0];
+			return anOase.getRelater().getRelated(aGamePlay, GAMEROUND_TABLE, null)[0];
 		} catch (Throwable t) {
 			log.warn("Error query getTaskResultsForGamePlay gamePlayId=" + aGamePlay.getId(), t);
 			throw new UtopiaException("Error in getTaskResultsForGamePlay aGamePlayId=" + aGamePlay.getId(), t);
@@ -840,7 +840,7 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 		Record game = null;
 		try {
 			Record gamePlay = anOase.getFinder().read(aGamePlayId, GAMEPLAY_TABLE);
-			Record schedule = anOase.getRelater().getRelated(gamePlay, SCHEDULE_TABLE, null)[0];
+			Record schedule = anOase.getRelater().getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
 			game = anOase.getRelater().getRelated(schedule, GAME_TABLE, null)[0];
 		} catch (Throwable t) {
 			log.warn("Error query getGameForGamePlay gamePlayId=" + aGamePlayId, t);

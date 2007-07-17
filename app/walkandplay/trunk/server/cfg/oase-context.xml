@@ -22,7 +22,7 @@
 		<!-- walkandplay tables -->
 		<table file="tables/wp_game.xml"/>
 		<table file="tables/wp_task.xml"/>
-		<table file="tables/wp_schedule.xml"/>
+		<table file="tables/wp_gameround.xml"/>
 		<table file="tables/wp_gameplay.xml"/>
 		<table file="tables/wp_taskresult.xml"/>
 		<table file="tables/wp_mediumresult.xml"/>

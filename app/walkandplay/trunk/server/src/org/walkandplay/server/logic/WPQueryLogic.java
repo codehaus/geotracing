@@ -62,15 +62,15 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 					throw new IllegalArgumentException("Cannot find game with id=" + id);
 				}
 
-				Record[] gameRounds = getOase().getRelater().getRelated(game, SCHEDULE_TABLE, null);
+				Record[] gameRounds = getOase().getRelater().getRelated(game, GAMEROUND_TABLE, null);
 				result = createResponse(gameRounds);
 			} else if ("q-gameplays".equals(aQueryName)) {
 				String id = getParameter(theParms, "roundid", null);
 				throwOnMissingParm("roundid", id);
-				String tables = "utopia_person,wp_gameplay,wp_schedule";
+				String tables = "utopia_person,wp_gameplay,wp_gameround";
 				String fields = "wp_gameplay.id,wp_gameplay.state";
-				String where = "wp_schedule.id = " + id;
-				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_schedule;wp_schedule,utopia_person";
+				String where = "wp_gameround.id = " + id;
+				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,utopia_person";
 				String postCond = null;
 				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
 				addUserAttrs(result, GAMEPLAY_TABLE);
@@ -144,10 +144,10 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
 				Record person = getPersonForLoginName(getOase(), loginName);
-				String tables = "utopia_person,wp_gameplay,wp_schedule,wp_game";
-				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_schedule.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
+				String tables = "utopia_person,wp_gameplay,wp_gameround,wp_game";
+				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_gameround.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
 				String where = "utopia_person.id = " + person.getId();
-				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_schedule;wp_schedule,wp_game";
+				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,wp_game";
 				String postCond = null;
 				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
 
