@@ -45,6 +45,7 @@
 		<!-- Events generated while playing (used e.g. for playback) -->
  		<field name="events" type="FILE"  />
 		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="creationdate" type="TIMESTAMP"/>
 	</data>
 	<!--}data -->
 </table>

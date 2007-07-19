@@ -1,6 +1,7 @@
 package org.walkandplay.server.control;
 
 import nl.justobjects.jox.dom.JXElement;
+import org.geotracing.handler.HandlerUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.MailClient;
@@ -17,7 +18,6 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
-import org.geotracing.handler.HandlerUtil;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import java.util.List;
  * @version $Id$
  */
 public class GameScheduleHandler extends DefaultHandler implements Constants {
-
+	// NOT YET USED
     public final static String TOUR_SEND_INVITATION_SERVICE = "schedule-send-invitation";
     public final static String TOUR_CONFIRM_INVITATION_SERVICE = "schedule-confirm-invitation";
 	public final static String SCHEDULE_CREATE_SERVICE = "schedule-create";
