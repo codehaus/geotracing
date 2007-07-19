@@ -213,7 +213,11 @@ wpLocation.prototype.enable = function(enable,expand)
 		this.play_score = '';
 	}
 	
-	if (expand) this.expand();
+	if (expand)
+	{
+		if (wp_location_expanded && wp_location_expanded.id==this.id) return;
+		else this.expand();
+	}
 }
 
 wpLocation.prototype.zoomTo = function()
