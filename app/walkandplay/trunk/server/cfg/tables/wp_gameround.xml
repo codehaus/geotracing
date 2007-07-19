@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<!-- Player table definition -->
+<!-- Gameround table definition -->
 <table>
 
 	<views>
@@ -12,6 +12,7 @@
 		<list>
 			<field name="id"/>
 			<field name="name"/>
+			<field name="owner"/>
 			<field name="state"/>
         </list>
 
@@ -22,24 +23,12 @@
          </query>
 	</views>
 
-	<!--{data -->
 	<data>
 		<field name="id" type="INTEGER" required="true" key="true"/>
-		<field name="name" type="STRING" size="64" required="true" default="schedule for game"/>
+		<field name="name" type="STRING" size="64" required="true" default="gameround for game"/>
 
-		<!-- Related game record id
-		<field name="gameid" type="INTEGER" required="true" foreignkey="cascade" default="-1"/> -->
-
-	<!--
-	      Not required right now....
-		<field name="invitation" type="TEXT" required="false" default="You are invited"/>
-		<field name="startdate" type="TIMESTAMP"/>
-		<field name="enddate" type="TIMESTAMP"/>  -->
-        <field name="creationdate" type="TIMESTAMP"/>
-        <field name="modificationdate" type="TIMESTAMP"/>
 		<!-- 1=open 2=running 3=done  -->
         <field name="state" type="INTEGER" default="1" required="true" />
+		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" default="-1"/>
 	</data>
-	<!--}data -->
-
 </table>

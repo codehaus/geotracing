@@ -6,6 +6,7 @@ import org.geotracing.handler.Track;
 public interface Constants {
 	// tablenames
 	public final static String VERSION_TABLE = "wp_version";
+	public final static String ACCOUNT_TABLE = "utopia_account";
 	public final static String GAMEROUND_TABLE = "wp_gameround";
 	public final static String GAMEPLAY_TABLE = "wp_gameplay";
 	public final static String TASK_TABLE = "wp_task";
@@ -39,6 +40,7 @@ public interface Constants {
 	public final static String ANSWER_FIELD = "answer";
 	public final static String ANSWER_STATE_FIELD = "answerstate";
 	public final static String END_DATE_FIELD = "enddate";
+	public final static String GAME_ID_FIELD = "gameid";
 	public final static String ID_FIELD = "id";
 	public final static String OWNER_FIELD = "owner";
 	public final static String VERSION_FIELD = "version";
@@ -47,6 +49,7 @@ public interface Constants {
 	public final static String STATE_FIELD = "state";
 	public final static String TYPE_FIELD = "type";
 	public final static String KIND_FIELD = "kind";
+	public final static String LOGINNAME_FIELD = "loginname";
 	public final static String LOCATION_FIELD = "location";
 	public final static String LOCATION_ID_FIELD = "locationid";
 	public final static String TAG_FIELD = "tag";
@@ -60,6 +63,7 @@ public interface Constants {
 	public final static String MEDIA_STATE_FIELD = "mediastate";
 	public final static String MEDIUM_ID_FIELD = "mediumid";
 	public final static String MEDIUM_RESULT_ID_FIELD = "mediumresultid";
+	public final static String PLAYER_IDS_FIELD = "playerids";
 	public final static String SCORE_FIELD = "score";
 	public final static String LON_FIELD = "lon";
 	public final static String LAT_FIELD = "lat";

@@ -30,10 +30,11 @@ public class VersionLogic {
 
 	public VersionLogic(Oase o) {
 		oase = o;
-        try{
-            createVersion("1.0", "Initial release", ACTIVE_STATE);
-        }catch(Throwable ignore){}
-    }
+		try {
+			createVersion("1.0", "Initial release", ACTIVE_STATE);
+		} catch (Throwable ignore) {
+		}
+	}
 
 	/**
 	 * Return the current version of the mobile application.
@@ -53,20 +54,20 @@ public class VersionLogic {
 		}
 	}
 
-    private JXElement toXML(Record aVersionRecord){
-        JXElement version = new JXElement("vesion");
-        version.setAttr(Constants.VERSION_FIELD, aVersionRecord.getStringField(Constants.VERSION_FIELD));
-        version.setAttr(Constants.VERSION_FIELD, aVersionRecord.getStringField(Constants.DESCRIPTION_FIELD));
-        version.setAttr(Constants.STATE_FIELD, aVersionRecord.getIntField(Constants.STATE_FIELD));
-        return version;
-    }
+	private JXElement toXML(Record aVersionRecord) {
+		JXElement version = new JXElement("vesion");
+		version.setAttr(Constants.VERSION_FIELD, aVersionRecord.getStringField(Constants.VERSION_FIELD));
+		version.setAttr(Constants.VERSION_FIELD, aVersionRecord.getStringField(Constants.DESCRIPTION_FIELD));
+		version.setAttr(Constants.STATE_FIELD, aVersionRecord.getIntField(Constants.STATE_FIELD));
+		return version;
+	}
 
-    /**
+	/**
 	 * Creates an application version.
 	 *
-	 * @param aVersionNr The version nr.
+	 * @param aVersionNr   The version nr.
 	 * @param aDescription The description.
-	 * @param aState The state.
+	 * @param aState	   The state.
 	 * @throws UtopiaException
 	 */
 	public void createVersion(String aVersionNr, String aDescription, int aState) throws UtopiaException {
