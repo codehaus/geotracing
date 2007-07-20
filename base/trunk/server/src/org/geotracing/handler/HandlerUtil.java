@@ -124,6 +124,16 @@ public class HandlerUtil {
 	}
 
 	/**
+	 * Throw exception when attribute empty or not present.
+	 */
+	public static void throwOnMissingAttr(JXElement anElm, String aName) throws UtopiaException {
+		String value = anElm.getAttr(aName);
+		if (value == null || value.length() == 0) {
+			throw new UtopiaException("Missing attribute name=" + aName, ErrorCode.__6002_Required_attribute_missing);
+		}
+	}
+
+	/**
 	 * Throw exception when child element empty not present.
 	 */
 	public static void throwOnMissingChildElement(JXElement aParentElement, String aChildTag) throws UtopiaException {
@@ -145,6 +155,17 @@ public class HandlerUtil {
 	}
 
 	/**
+	 * Throw exception when numeric attribute empty or not present or invalid numvalue.
+	 */
+	public static void throwOnNonNumAttr(JXElement anElm, String aName) throws UtopiaException {
+		throwOnMissingAttr(anElm, aName);
+		try {
+			Long.parseLong(anElm.getAttr(aName));
+		} catch (Throwable t) {
+			throw new UtopiaException("Invalid numvalue name=" + aName, ErrorCode.__6004_Invalid_attribute_value);
+		}
+	}
+	/**
 	 * Throw exception when numeric attribute empty or not present.
 	 */
 	public static void throwOnNegNumAttr(String aName, long aValue) throws UtopiaException {
@@ -152,6 +173,4 @@ public class HandlerUtil {
 			throw new UtopiaException("Invalid numvalue name=" + aName + " value=" + aValue, ErrorCode.__6004_Invalid_attribute_value);
 		}
 	}
-
-
 }
