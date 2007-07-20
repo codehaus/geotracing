@@ -833,6 +833,23 @@ public class QueryLogic {
 	 * <p/>
 	 * Static method to allow usage from different contexts, like REST requests.
 	 *
+	 * @param tables	one or more comma-separated tables
+	 * @param fields	one or more comma-separated fields
+	 * @param where	 the WHERE clause (without WHERE)
+	 * @param relations one or more relations e.g. utopia_person,utopia_medium
+	 * @param postCond  query post fix string (ORDER BY, LIMIT etc)
+	 * @return Record[] size >= 0
+	 * @throws OaseException Standard Oase exception
+	 */
+	static public Record[] queryStore(String tables, String fields, String where, String relations, String postCond) throws OaseException {
+		return queryStore(getOase(),  tables,  fields,  where,  relations,  postCond);
+	}
+
+	/**
+	 * Executes an full Oase sql query.
+	 * <p/>
+	 * Static method to allow usage from different contexts, like REST requests.
+	 *
 	 * @param oase	  Oase session object
 	 * @param tables	one or more comma-separated tables
 	 * @param fields	one or more comma-separated fields
