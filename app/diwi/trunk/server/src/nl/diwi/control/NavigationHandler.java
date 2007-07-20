@@ -109,7 +109,7 @@ public class NavigationHandler extends DefaultHandler implements Constants {
         LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         if(!service.equals(NAV_POINT_SERVICE)){
             JXElement req = anUtopiaReq.getRequestCommand();
-            req.addChild(response);
+            //req.addChild(response);
             logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), req, LOG_MOBILE_TYPE);
         }
 

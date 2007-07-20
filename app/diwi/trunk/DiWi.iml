@@ -6,9 +6,8 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/server/src" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7rc9/server/src">
-      <sourceFolder url="file://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7rc9/server/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7rc9/server/src/org" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7/server/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7/server/src" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../../../base/trunk/server">
       <sourceFolder url="file://$MODULE_DIR$/../../../base/trunk/server/src" isTestSource="false" />
@@ -19,7 +18,7 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7rc4/build/server/keyworx.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../base/trunk/external/keyworx-1.0.7/build/server/keyworx.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -52,7 +51,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/../../../base/trunk/server/build/lib/geotracing.jar!/" />

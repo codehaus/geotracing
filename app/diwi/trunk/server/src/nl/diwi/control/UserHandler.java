@@ -29,9 +29,10 @@ public class UserHandler extends DefaultHandler implements Constants {
 
     public final static String USER_GET_PREFERENCES_SERVICE = "user-get-preferences";
     public final static String USER_GET_STATS_SERVICE = "user-get-stats";
+    public final static String USER_GET_ALLSTATS_SERVICE = "user-get-allstats";
     public final static String USER_GETLIST_SERVICE = "user-getlist";
     public final static String USER_REGISTER_SERVICE = "user-register";
-    Log log = Logging.getLog("UserHandler");
+
 
 
     /**
@@ -43,6 +44,7 @@ public class UserHandler extends DefaultHandler implements Constants {
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
         String service = anUtopiaReq.getServiceName();
+        Log log = Logging.getLog(anUtopiaReq);
         log.trace("Handling request for service=" + service);
 
         JXElement response;
@@ -53,6 +55,8 @@ public class UserHandler extends DefaultHandler implements Constants {
                 response = register(anUtopiaReq);
             } else if (service.equals(USER_GET_STATS_SERVICE)) {
                 response = getStats(anUtopiaReq);
+            } else if (service.equals(USER_GET_ALLSTATS_SERVICE)) {
+                response = getAllStats(anUtopiaReq);
             } else if (service.equals(USER_GETLIST_SERVICE)) {
                 response = getUsers(anUtopiaReq);
             } else {
@@ -73,6 +77,7 @@ public class UserHandler extends DefaultHandler implements Constants {
     }
 
     public JXElement register(UtopiaRequest anUtopiaRequest) throws UtopiaException {
+        Log log = Logging.getLog("UserHandler.register");
         try {
             JXElement requestElement = anUtopiaRequest.getRequestCommand();
             Oase oase = anUtopiaRequest.getUtopiaSession().getContext().getOase();
@@ -206,6 +211,7 @@ public class UserHandler extends DefaultHandler implements Constants {
     }
 
     private void sendMail(String aHost, String aUser, String aPassword, String aRecipient, String aSender, String aSubject, String aBody) throws UtopiaException {
+        Log log = Logging.getLog("UserHandler.sendMail");
         try {
             Properties props = System.getProperties();
             props.put("mail.host", aHost);
@@ -249,16 +255,10 @@ public class UserHandler extends DefaultHandler implements Constants {
         return response;
     }
 
-    private JXElement getStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
-
-        LogLogic logLogic = new LogLogic(oase);
-        JXElement response = createResponse(USER_GET_STATS_SERVICE);
-
-        String personId = anUtopiaReq.getRequestCommand().getAttr("id");
+    private JXElement processStat(Oase anOase, String aPersonId) throws UtopiaException{
         try {
-
-            Record person = oase.getFinder().read(Integer.parseInt(personId));
+            Log log = Logging.getLog("UserHandler.processStat");
+            Record person = anOase.getFinder().read(Integer.parseInt(aPersonId));
             JXElement personElm = person.toXML();
             personElm.setTag(Person.XML_TAG);
             personElm.removeChildByTag(Person.CREATION_DATE_FIELD);
@@ -266,7 +266,9 @@ public class UserHandler extends DefaultHandler implements Constants {
             personElm.removeChildByTag(Person.EXTRA_FIELD);
             personElm.removeChildByTag("owner");
 
-            Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "register");
+            LogLogic logLogic = new LogLogic(anOase);
+
+            Record[] prefs = anOase.getRelater().getRelated(person, PREFS_TABLE, "register");
             for (int j = 0; j < prefs.length; j++) {
                 Record record = prefs[j];
                 JXElement prefElm = new JXElement(PREF_ELM);
@@ -288,55 +290,47 @@ public class UserHandler extends DefaultHandler implements Constants {
                 personElm.addChild(logLogic.getLog(((JXElement) webLogs.elementAt(h)).getAttr(ID_FIELD)));
             }
 
-            response.addChild(personElm);
+            return personElm;
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
+    }
+
+    private JXElement getStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        JXElement response = createResponse(USER_GET_STATS_SERVICE);
+        String personId = anUtopiaReq.getRequestCommand().getAttr("id");
+        response.addChild(processStat(anUtopiaReq.getUtopiaSession().getContext().getOase(), personId));
+
         return response;
     }
 
     private JXElement getAllStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
+        Log log = Logging.getLog("UserHandler.getAllStats");
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
+        String start = anUtopiaReq.getRequestCommand().getAttr("start");
+        String end = anUtopiaReq.getRequestCommand().getAttr("end");
+
         LogLogic logLogic = new LogLogic(oase);
-        JXElement response = createResponse(USER_GET_STATS_SERVICE);
+        JXElement response = createResponse(USER_GET_ALLSTATS_SERVICE);
 
         try {
-            Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
+            Record[] people = new Record[0];
+            if(start!=null && start.length()>0 && end!=null & end.length()>0){
+                String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
+                people = oase.getFinder().freeQuery(query);
+            }else{
+                // get all
+                String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
+                people = oase.getFinder().freeQuery(query);
+            }
+
+
             for (int i = 0; i < people.length; i++) {
                 Record person = people[i];
-                JXElement personElm = person.toXML();
-                personElm.setTag(Person.XML_TAG);
-                personElm.removeChildByTag(Person.CREATION_DATE_FIELD);
-                personElm.removeChildByTag(Person.MODIFICATION_DATE_FIELD);
-                personElm.removeChildByTag(Person.EXTRA_FIELD);
-                personElm.removeChildByTag("owner");
-
-                Record[] prefs = oase.getRelater().getRelated(person, PREFS_TABLE, "register");
-                for (int j = 0; j < prefs.length; j++) {
-                    Record record = prefs[j];
-                    JXElement prefElm = new JXElement(PREF_ELM);
-                    prefElm.setAttr(NAME_FIELD, record.getStringField(NAME_FIELD));
-                    prefElm.setAttr(VALUE_FIELD, record.getStringField(VALUE_FIELD));
-                    personElm.addChild(prefElm);
-                }
-
-                // add the trips
-                Vector tripLogs = logLogic.getLogs("" + person.getId(), LOG_MOBILE_TYPE);
-                for (int j = 0; j < tripLogs.size(); j++) {
-                    personElm.addChild(logLogic.getLog(((JXElement) tripLogs.elementAt(j)).getAttr(ID_FIELD)));
-                }
-
-                // add the web
-                Vector webLogs = logLogic.getLogs("" + person.getId(), LOG_WEB_TYPE);
-                for (int h = 0; h < webLogs.size(); h++) {
-                    log.info("" + h);
-                    personElm.addChild(logLogic.getLog(((JXElement) webLogs.elementAt(h)).getAttr(ID_FIELD)));
-                }
-
-                response.addChild(personElm);
+                response.addChild(processStat(anUtopiaReq.getUtopiaSession().getContext().getOase(), "" + person.getId()));
             }
-            System.out.println(new String(response.toBytes(false)));
+            //System.out.println(new String(response.toBytes(false)));
         } catch (Throwable t) {
             throw new UtopiaException(t);
         }
