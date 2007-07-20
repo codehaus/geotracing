@@ -365,56 +365,6 @@ public class GameCreateHandler extends DefaultHandler implements Constants {
 			int id = requestElement.getIntAttr(ID_FIELD);
 			contentLogic.updateContent(id, gameElm);
 
-			// add intro and outro
-			/* List mediumElms = requestElement.getChildrenByTag(Medium.TABLE_NAME);
-			if (mediumElms != null) {
-				for (int i = 0; i < mediumElms.size(); i++) {
-					JXElement mediumElm = (JXElement) mediumElms.get(i);
-					int mediumId = mediumElm.getIntAttr(Medium.ID_FIELD);
-					String type = mediumElm.getAttr(TYPE_FIELD);
-					if (mediumId != -1) {
-						if (type != null && type.length() > 0) {
-							if (type.equals(RELTAG_INTRO)) {
-								relateLogic.unrelate(id, Medium.TABLE_NAME, RELTAG_INTRO);
-								relateLogic.relate(id, mediumId, RELTAG_INTRO);
-							} else if (type.equals(RELTAG_OUTRO)) {
-								relateLogic.unrelate(id, Medium.TABLE_NAME, RELTAG_OUTRO);
-								relateLogic.relate(id, mediumId, RELTAG_OUTRO);
-							}
-						}
-					}
-				}
-			}
-
-			// add tags
-			List tagElms = requestElement.getChildrenByTag(TAG_FIELD);
-			String[] tags = new String[tagElms.size()];
-			for (int i = 0; i < tagElms.size(); i++) {
-				tags[i] = ((JXElement) tagElms.get(i)).getText();
-			}
-
-			if (tags.length > 0) {
-				TagLogic tagLogic = new TagLogic(HandlerUtil.getOase(anUtopiaRequest).getOaseSession());
-				int taggerId = Integer.parseInt(anUtopiaRequest.getUtopiaSession().getContext().getUserId());
-				int[] items = {id};
-				tagLogic.tag(taggerId, items, tags, org.keyworx.plugin.tagging.util.Constants.MODE_REPLACE);
-			} */
-
-			// add gameplay
-			/*List gameplayElms = requestElement.getChildrenByTag(GAMEPLAY_TABLE);
-						   if (gameplayElms != null) {
-							   RelateLogic relateLogic = new RelateLogic(oase, null);
-							   // first unrelate the current gameplay
-							   relateLogic.unrelate(gameId, GAMEPLAY_TABLE, null);
-							   for (int i = 0; i < gameplayElms.size(); i++) {
-								   JXElement gameplayElm = (JXElement) gameplayElms.get(i);
-								   String gameplayId = gameplayElm.getAttr(ID_FIELD);
-								   if (gameplayId != null && gameplayId.length() > 0 && Java.isInt(gameplayId)) {
-									   relateLogic.relate(gameId, Integer.parseInt(gameplayId), null);
-								   }
-							   }
-						   }*/
-
 			return createResponse(GAME_UPDATE_SERVICE);
 		} catch (UtopiaException ue) {
 			throw ue;

@@ -92,7 +92,7 @@ public class GameRoundHandler extends DefaultHandler implements Constants {
 
 
 		JXElement response = createResponse(ROUND_CREATE_SERVICE);
-		response.setAttr(ROUND_ID_FIELD, gameRound.getId());
+		response.setAttr(ID_FIELD, gameRound.getId());
 		return response;
 	}
 

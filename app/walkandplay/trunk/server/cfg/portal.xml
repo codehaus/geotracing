@@ -56,6 +56,8 @@
                 <property name="config">content-config.xml</property>
             </handler>
 
+			<handler id="round" class="org.walkandplay.server.control.GameRoundHandler"/>
+
 			<handler id="play" class="org.walkandplay.server.control.GamePlayHandler">
 				<property name="verbose">false</property>				
 			</handler>
