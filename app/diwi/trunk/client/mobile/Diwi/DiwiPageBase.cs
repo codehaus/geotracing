@@ -37,6 +37,11 @@ namespace Diwi {   // base class for Diwi Pages.
         bool mDoDrawMenu = true;
         protected bool mIsMapPage = false;
 
+
+        private System.Windows.Forms.MainMenu mainMenu1 = null;
+        private System.Windows.Forms.MenuItem menuItem1;
+        private System.Windows.Forms.MenuItem menuItem2;
+
         public static DiwiPageBase sCurrentPage;
 
         int mYposition = -1;
@@ -95,6 +100,31 @@ namespace Diwi {   // base class for Diwi Pages.
 
         }
 
+        protected void initMenu() {
+            this.mainMenu1 = new System.Windows.Forms.MainMenu();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.SuspendLayout();
+            // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.Add(this.menuItem1);
+            this.mainMenu1.MenuItems.Add(this.menuItem2);
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Text = " ";
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Text = " ";
+            // 
+            // Form1
+            // 
+            this.Menu = this.mainMenu1;
+
+            AppController.ShowSIP(true);
+        }
 
         void blendTimout() {
             blendCount--;
@@ -367,8 +397,13 @@ namespace Diwi {   // base class for Diwi Pages.
 
         protected virtual void doTerug(int i, string s) {
             mIsActive = false;
-           if( AppController.sSipVisible )
-               AppController.ShowSIP(false);
+
+            if (mainMenu1 != null) {
+                AppController.ShowSIP(false);
+                mainMenu1.Dispose();
+                mainMenu1 = null;
+            }
+            
             mBlendTimer.Change(Timeout.Infinite, Timeout.Infinite);
             if (mParent != null) {
              //   mParent.Activate();

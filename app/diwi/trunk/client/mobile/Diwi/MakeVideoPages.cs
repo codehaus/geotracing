@@ -37,7 +37,6 @@ namespace Diwi
         void doPlay(int i, string s)
         {
             AppController.playVideo(currentFilename);
-           if(!horizontal) AppController.ShowSIP(true);
             draw();
         }
 
@@ -70,7 +69,8 @@ namespace Diwi
                 mNameBox.Top = 160;
             mNameBox.Focus();
 
-            if (!horizontal) AppController.ShowSIP(true);
+            initMenu();
+
             mIsInitialized = true;
         }
 
@@ -88,8 +88,6 @@ namespace Diwi
                     else
                     {
                         mNameBox.Top = 160;
-                        AppController.ShowSIP(false);
-                        AppController.ShowSIP(true);
                     }
                     draw();
                 }

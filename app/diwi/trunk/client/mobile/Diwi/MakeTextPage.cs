@@ -54,9 +54,7 @@ namespace Diwi {
                 mNameBox.Top = 94;
             }
 
-            if (!horizontal) {
-                AppController.ShowSIP(true);
-            }
+            initMenu();
        
             mNameBox.Focus();
 
@@ -75,8 +73,6 @@ namespace Diwi {
                         mNameBox.Height = 134;
                         mNameBox.Width = 196;
                         mNameBox.Top = 94;
-                        AppController.ShowSIP(false);
-                        AppController.ShowSIP(true);
                     }
                     draw();
                     mNameBox.Focus();
