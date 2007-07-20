@@ -14,6 +14,7 @@ namespace Diwi {
         TextBox mUserBox = new TextBox();
         TextBox mPassBox = new TextBox();
         DiwiUIButton mOkButton;
+       // DiwiUIButton mSipButton;
         private Font mFont = new Font("Tahoma", 11, FontStyle.Bold);
 
         public LoginPage(DiwiPageBase parent)
@@ -21,6 +22,7 @@ namespace Diwi {
 
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
             mOkButton = new DiwiUIButton(offScreenGraphics, 146, 170, "Login", buttonOK, this);
+        //    mSipButton = new DiwiUIButton(offScreenGraphics, 146, 170, "Toetsen...", buttonSip, this);
 
             AppController.sKwxClient.messageCallback += new KwxClient.MessageCallback(serverMessage);
 
@@ -31,10 +33,12 @@ namespace Diwi {
             addDrawable(mUserText);
             addDrawable(mPassText);
             addDrawable(mOkButton);
+      //      addDrawable(mSipButton);
             addDrawable(mServerMess);
 
             this.Controls.Add(mUserBox);
             this.Controls.Add(mPassBox);
+            
 
             reOrient();
 
@@ -57,6 +61,11 @@ namespace Diwi {
         }
 
         private void reOrient() {
+
+          //  mSipButton.x = (mCurrentRect.Width - mSipButton.width) / 2;
+         //   mSipButton.y = mCurrentRect.Height - 24;
+
+            
             if (!horizontal) { //vertical
                 mOkButton.x = 146;
                 mOkButton.y = 170;
@@ -64,7 +73,9 @@ namespace Diwi {
                 mUserBox.Top = 100;
                 mPassBox.Top = 130;
                 mUserText.y = 110;
-                mPassText.y = 134; 
+                mPassText.y = 134;
+
+
             } else { // horizontal
                 mOkButton.x = 146;
                 mOkButton.y = 130;
@@ -96,6 +107,9 @@ namespace Diwi {
             reOrient();
             
             mUserBox.Focus();
+
+            initMenu();
+
             mIsInitialized = true;
         }
 
@@ -113,6 +127,7 @@ namespace Diwi {
                 draw();
             }
         }
+
         
         
         protected override void OnResize(EventArgs e) {

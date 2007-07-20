@@ -55,9 +55,6 @@ namespace Diwi {
             if (currentFilename != null) {
                 mFoto.bitmap = new Bitmap(currentFilename);
                 draw();
-                if (!horizontal) {
-                    AppController.ShowSIP(true);
-                }
             }
         }
 
@@ -73,10 +70,9 @@ namespace Diwi {
             mNameBox.Height = 24;
             mNameBox.Left = 10;
             mNameBox.Top = mFoto.y - 24;
-            if( !horizontal ) {
-                AppController.ShowSIP(true);
-            }
-            
+
+            initMenu();
+
             mNameBox.Focus();
             mIsInitialized = true;
         }
@@ -93,8 +89,6 @@ namespace Diwi {
                         mFoto.y = 120;
                         mFoto.x = 10;
                         mNameBox.Top = mFoto.y - 24;
-                        AppController.ShowSIP(false);
-                        AppController.ShowSIP(true);
                     }
                     draw();
                 }
