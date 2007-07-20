@@ -1,0 +1,109 @@
+<testset id="game-round" clients="1">
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp>
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
+
+						<portalname>walkandplay
+						</portalname>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
+			</login-rsp>
+
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
+		</expect>
+	</test>
+
+	<test id="game-create-req">
+		<send id="client1">
+			<utopia-req>
+				<game-create-req>
+					<game>
+						<name>mygame</name>
+						<description>description of my game</description>
+						<intro>introductie van mijn game</intro>
+						<outro>de outro van de game</outro>
+					</game>
+				</game-create-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-create-rsp id="${gameid}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-create">
+		<send id="client1">
+			<utopia-req>
+				<round-create-req gameid="${gameid}" name="myround"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-create-rsp id="${roundid}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-delete">
+		<send id="client1">
+			<utopia-req>
+				<round-delete-req id="${roundid}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-delete-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-delete-req">
+		<send id="client1">
+			<utopia-req>
+				<game-delete-req id="${gameid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-delete-rsp id="${gameid}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+</testset>
+

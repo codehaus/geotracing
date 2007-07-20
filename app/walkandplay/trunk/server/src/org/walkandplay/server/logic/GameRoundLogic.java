@@ -52,6 +52,7 @@ public class GameRoundLogic implements Constants {
 		Record gameRound;
 
 		try {
+			transaction.begin();
 			gameRound = modifier.create(GAMEROUND_TABLE);
 
 			// Set ourselves as owner
@@ -115,6 +116,8 @@ public class GameRoundLogic implements Constants {
 		Transaction transaction = oase.getOaseSession().createTransaction();
 		Record gamePlay, player;
 		try {
+			transaction.begin();
+			
 			for (int i = 0; i < playerIds.length; i++) {
 				player = finder.read(Integer.parseInt(playerIds[i]), PERSON_TABLE);
 				gamePlay = modifier.create(GAMEPLAY_TABLE);
