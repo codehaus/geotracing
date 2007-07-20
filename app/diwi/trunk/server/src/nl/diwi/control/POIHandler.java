@@ -29,8 +29,6 @@ public class POIHandler extends DefaultHandler implements Constants {
     public final static String POI_RELATE_MEDIA_SERVICE = "poi-relate-media";
     public final static String POI_UNRELATE_MEDIA_SERVICE = "poi-unrelate-media";
 
-    private POILogic logic;
-
     /**
      * Processes the Client Request.
      *
@@ -41,8 +39,6 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
         Log log = Logging.getLog(anUtopiaReq);
-
-        logic = createLogic(anUtopiaReq);
 
         // Get the service name for the request
         String service = anUtopiaReq.getServiceName();
@@ -95,7 +91,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         // log the event
         LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         JXElement req = anUtopiaReq.getRequestCommand();
-        req.addChild(response);
+        //req.addChild(response);
         logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), req, LOG_WEB_TYPE);
 
         // Always return a response
@@ -117,7 +113,7 @@ public class POIHandler extends DefaultHandler implements Constants {
 
         // Insert poi object
         JXElement poiElement = reqElm.getChildByTag(Constants.POI_ELM);
-
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         int id = logic.insert(poiElement);
 
         // Create and return response with poi id.
@@ -142,6 +138,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         JXElement poiElement = reqElm.getChildByTag(POI_ELM);
         String id = reqElm.getAttr(ID_FIELD);
         throwOnMissingAttr(ID_FIELD, id);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         logic.update(Integer.parseInt(id), poiElement);
 
         return createResponse(POI_UPDATE_SERVICE);
@@ -161,6 +158,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         // delete poi object
         String id = reqElm.getAttr(ID_FIELD);
         throwOnMissingAttr(ID_FIELD, id);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         logic.delete(Integer.parseInt(id));
 
         return createResponse(POI_DELETE_SERVICE);
@@ -181,6 +179,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         throwOnMissingAttr(ID_FIELD, id);
 
         Vector media = reqElm.getChildrenByTag(Medium.XML_TAG);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         logic.relateMedia(Integer.parseInt(id), media);
 
         return createResponse(POI_RELATE_MEDIA_SERVICE);
@@ -201,6 +200,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         throwOnMissingAttr(ID_FIELD, id);
 
         Vector media = reqElm.getChildrenByTag(Medium.XML_TAG);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         logic.unrelateMedia(Integer.parseInt(id), media);
 
         return createResponse(POI_UNRELATE_MEDIA_SERVICE);
@@ -221,6 +221,7 @@ public class POIHandler extends DefaultHandler implements Constants {
         JXElement response = createResponse(POI_GET_SERVICE);
         String id = reqElm.getAttr(ID_FIELD);
         String kichid = reqElm.getAttr(KICHID_FIELD);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         if (id != null && id.length() > 0 && Java.isInt(id)) {
             response.addChild(logic.get(personId, Integer.parseInt(id)));
         } else if (kichid != null && kichid.length() > 0) {
@@ -238,6 +239,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getPoiList(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GETLIST_SERVICE);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         response.addChildren(logic.getList());
         return response;
     }
@@ -251,6 +253,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getStartPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_STARTPOINTS_SERVICE);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         response.addChildren(logic.getPoisByType(POI_STARTPOINT));
         return response;
     }
@@ -264,6 +267,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getEndPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_ENDPOINTS_SERVICE);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         response.addChildren(logic.getPoisByType(POI_ENDPOINT));
         return response;
     }
@@ -277,6 +281,7 @@ public class POIHandler extends DefaultHandler implements Constants {
      */
     protected JXElement getStartEndPoints(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GET_STARTENDPOINTS_SERVICE);
+        POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         response.addChildren(logic.getPoisByType(POI_START_AND_ENDPOINT));
         return response;
     }

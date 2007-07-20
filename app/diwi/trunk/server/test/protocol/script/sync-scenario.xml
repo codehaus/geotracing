@@ -30,7 +30,7 @@
         </expect>
     </test>
 
-    <test id="kich-sync-req">
+    <!--<test id="kich-sync-req">
         <send id="client1">
             <utopia-req>
                 <kich-sync-req/>
@@ -43,7 +43,7 @@
             </utopia-rsp>
         </expect>
     </test>
-
+-->
 
     <test id="logout">
         <send id="client1">

@@ -78,7 +78,7 @@ public class RouteHandler extends DefaultHandler implements Constants {
 
         LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
         JXElement req = anUtopiaReq.getRequestCommand();
-        req.addChild(response);
+        //req.addChild(response);
         logLogic.storeLogEvent(anUtopiaReq.getUtopiaSession().getContext().getUserId(), req, LOG_WEB_TYPE);
 
         // Always return a response
