@@ -85,6 +85,11 @@ public class GameRoundLogic implements Constants {
 		Relater relater = oase.getRelater();
 		Record gameRound = finder.read(aRoundId, GAMEROUND_TABLE);
 		Record[] gamePlays = relater.getRelated(gameRound, GAMEPLAY_TABLE, null);
+		GamePlayLogic gamePlayLogic = new GamePlayLogic(oase);
+		for (int i = 0; i < gamePlays.length; i++) {
+			gamePlayLogic.delete(gamePlays[i]);
+		}
+		modifier.delete(gameRound);
 
 	}
 
@@ -117,13 +122,14 @@ public class GameRoundLogic implements Constants {
 		Record gamePlay, player;
 		try {
 			transaction.begin();
-			
+
 			for (int i = 0; i < playerIds.length; i++) {
 				player = finder.read(Integer.parseInt(playerIds[i]), PERSON_TABLE);
 				gamePlay = modifier.create(GAMEPLAY_TABLE);
 				modifier.insert(gamePlay);
 
 				// Relate player to gameround and gameplay
+				relater.relate(aGameRound, gamePlay);
 				relater.relate(player, aGameRound);
 				relater.relate(player, gamePlay);
 			}
@@ -159,15 +165,15 @@ public class GameRoundLogic implements Constants {
 		String[] playerIds = somePlayerIds.split(",");
 		Record player;
 		String tables = "wp_gameround,wp_gameplay,utopia_person";
-		String fields = "wp_gameplay.id as gameplayid";
-		String where = "utopia_person.id in (" + somePlayerIds + ") AND wp_gameround.id = " + aGameRound;
+		String fields = "wp_gameplay.id";
+		String where = "utopia_person.id in (" + somePlayerIds + ") AND wp_gameround.id = " + aGameRound.getId();
 		String relations = "wp_gameround,wp_gameplay;wp_gameround,utopia_person;wp_gameplay,utopia_person";
 		String postCond = null;
 		Record[] gamePlays = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
 
 		GamePlayLogic gamePlayLogic = new GamePlayLogic(oase);
 		for (int i = 0; i < gamePlays.length; i++) {
-			gamePlayLogic.delete(gamePlays[i].getIntField("gameplayid"));
+			gamePlayLogic.delete(gamePlays[i].getIntField(ID_FIELD));
 		}
 
 		for (int i = 0; i < playerIds.length; i++) {

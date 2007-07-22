@@ -38,9 +38,12 @@ public class GamePlayLogic implements Constants {
 	}
 
 	public void delete(int aGamePlayId) throws OaseException, UtopiaException {
-		Record gamePlay = oase.getFinder().read(aGamePlayId, GAMEPLAY_TABLE);
-		reset(gamePlay);
-		oase.getModifier().delete(gamePlay);
+		delete(oase.getFinder().read(aGamePlayId, GAMEPLAY_TABLE));
+	}
+
+	public void delete(Record aGamePlay) throws OaseException, UtopiaException {
+		reset(aGamePlay);
+		oase.getModifier().delete(aGamePlay);
 	}
 
 	public JXElement addMedium(int aMediumId, long aTime) throws OaseException, UtopiaException {
