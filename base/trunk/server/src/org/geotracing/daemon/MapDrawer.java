@@ -174,7 +174,8 @@ public class  MapDrawer extends Component {
 		ArrayList trackSamples = new ArrayList(128);
 		try {
 			// Get the track GTX file
-			String gtxURL = getProperty(properties, "baseURL") + "/" + getProperty(properties, "getTrack") + aTrackId;
+//			String gtxURL = getProperty(properties, "baseURL") + "/" + getProperty(properties, "getTrack") + aTrackId;
+			String gtxURL = getProperty(properties, "baseURL") + "/srv/get.jsp?cmd=get-track&mindist=10&attrs=t,lon,lat,rr&id=" + aTrackId;
 			JXElement gtxElement = new JXBuilder().build(new URL(gtxURL));
 
 			// Get all points in track
