@@ -158,8 +158,8 @@ KW.WP = {
 	 * @param callback - user callback function or null
 	 */
 	playHeartbeat: function(callback) {
-			var req = KW.createRequest('play-hb-req');
-			KW.utopia(req, callback);
+		var req = KW.createRequest('play-hb-req');
+		KW.utopia(req, callback);
 	}
 
 

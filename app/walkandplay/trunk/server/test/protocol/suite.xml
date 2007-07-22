@@ -3,24 +3,6 @@
    testset file="license.xml" / -->
     <testset file="game-create.xml"/>
 	<testset file="game-round.xml"/>
-	<!--  <testset file="game-play.xml"/>
-    <testset file="tourschedule.xml"/> -->
-    <!--<testset file="content.xml" />-->
-    <!--<testset file="assignment.xml" />-->
-    <!--<testset file="answer.xml" />
-     <testset file="gps.xml"/>
-     <testset file="medium.xml"/>
-     <testset file="submit-answer.xml"/>
-     <testset file="game-get-set.xml"/>
-     <testset file="team.xml"/>
-     <testset file="reset-teams.xml"/>
-     <testset file="connect.xml"/>
-     <testset file="connect-two.xml"/>
-     <testset file="location-tracking.xml"/>
-     <testset file="boobytrap.xml"/>
-     <testset file="zone.xml"/>
-     <testset file="cloak.xml"/>
-     <testset file="confrontation.xml"/>
-     <testset file="gameplay.xml"/>-->
+	 <testset file="game-play.xml"/>
 </testsuite>
 

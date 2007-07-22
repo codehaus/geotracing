@@ -1,4 +1,4 @@
-<testset id="game" clients="1">
+<testset id="gamecreate" clients="1">
 
 	<test id="login-selapp">
 
