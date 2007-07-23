@@ -50,7 +50,7 @@ END
 # END
 
 WEB
-    IMAGEPATH "/var/keyworx/webapps/diwi/map/tmp/"
+    IMAGEPATH "/var/keyworx/webapps/$[portal.name]/map/tmp/"
 #    IMAGEURL ...
 END
 
@@ -100,7 +100,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "all_routes"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpath from (select id,rdpath from diwi_route) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
@@ -121,7 +121,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "all_fixed_routes"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpath from (select id,rdpath from diwi_route where type = 0) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
@@ -142,7 +142,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "diwi_routes_sel"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpath from (select id,rdpath from diwi_route where id in (%ID%) ) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
@@ -163,7 +163,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "diwi_pois"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpoint from (select id,rdpoint,type from diwi_poi) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
@@ -200,7 +200,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "diwi_pois_sel"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpoint from (select id,rdpoint,type from diwi_poi where id in (%ID%) ) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
@@ -237,7 +237,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "diwi_startendpoints"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpoint from (select id,rdpoint,type from diwi_poi) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
@@ -264,7 +264,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "diwi_ugc"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "rdpoint from (select id,rdpoint,type from g_location) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
