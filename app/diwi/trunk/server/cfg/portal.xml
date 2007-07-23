@@ -1,4 +1,4 @@
-<portal name="diwi">
+<portal name="$[portal.name]">
 
     <!-- Standard host-dependent container properties
      Get a property with e.g.
@@ -13,21 +13,12 @@
     <property name="siteurl" host="ronald">http://local.diwi.nl</property>
     <property name="webappurl" host="ronald">http://local.diwi.nl/diwi</property>
 
-    <!-- for testing only. -->
-    <property name="siteurl" host="berlin">http://test.digitalewichelroede.nl</property>
-    <property name="webappurl" host="berlin">http://test.digitalewichelroede.nl/diwi</property>
-
-    <!-- for testing only. -->
-
-    <property name="kichposturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
-    <property name="kichresturl" host="berlin">http://137.224.112.237/diwirouting/POIServlet</property>
-    <property name="routingservleturl" host="berlin">http://137.224.112.237/diwirouting/RoutingServlet</property>
-    <property name="mediaurl" host="berlin">http://simlandscape.alterra.nl/diwimedia/</property>
-
-    <property name="kichposturl">http://137.224.112.237/diwirouting/POIServlet</property>
-    <property name="kichresturl">http://137.224.112.237/diwirouting/POIServlet</property>
-    <property name="routingservleturl">http://137.224.112.237/diwirouting/RoutingServlet</property>
-    <property name="mediaurl">http://simlandscape.alterra.nl/diwimedia/</property>
+    <property name="siteurl">$[siteurl.name]</property>
+    <property name="webappurl">$[webappurl.name]</property>
+    
+    <property name="kichservleturl">$[kichservleturl.name]</property>
+    <property name="routingservleturl">$[routingservleturl.name]</property>
+    <property name="mediaurl">$[mediaurl.name]</property>
 
     <config>
         <!-- Oase context file. Context id becomes portal name -->
@@ -38,7 +29,7 @@
     <!-- Connectors -->
     <connectors>
         <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
-            <property name="port">5515</property>
+            <property name="port">$[tcpconnector.port]</property>
             <property name="pongTimeoutMillis">30000</property>
         </connector>
     </connectors>

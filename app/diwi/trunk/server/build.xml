@@ -15,6 +15,13 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
     <property file="${geotracing.external.dir}/build.properties"/>
 
     <property file="${keyworx.dir}/build.properties"/>
+
+    <property name="runtime.properties" value="runtime.test.properties" />
+    <property file="${runtime.properties}" />
+
+    <property name="security.properties" value="security.properties" />
+    <property file="${security.properties}" />
+
     <!-- Use server utopia config as base config -->
     <property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
 
@@ -292,8 +299,24 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
             </filterchain>
         </concat>
 
-        <replace file="${build.war.dir}/WEB-INF/cfg/server.properties" replacefilterfile="${home}/security.properties"
-                 summary="true"/>
+        <!-- Now insert the proper variables based on the runtime properies -->
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[portal.name]" value="${portal.name}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[keyworx.log.level]" value="${keyworx.log.level}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[keyworx.log.dir]" value="${keyworx.log.dir}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[tcpconnector.port]" value="${tcpconnector.port}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[siteurl.name]" value="${siteurl.name}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[webappurl.name]" value="${webappurl.name}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[kichservleturl.name]" value="${kichservleturl.name}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[routingservleturl.name]" value="${routingservleturl.name}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mediaurl.name]" value="${mediaurl.name}"/>
+
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.host]" value="${mail.host}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.recipient]" value="${mail.recipient}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.username]" value="${mail.username}"/>
+        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.password]" value="${mail.password}"/>
+
+        <!--<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${runtime.properties}" summary="true"/>
+        <replace file="${build.war.dir}/WEB-INF/cfg/server.properties" replacefilterfile="${security.properties}" summary="true"/>-->
 
         <!-- Finally make war -->
         <jar jarfile="${project.war}">

@@ -255,7 +255,7 @@ public class DataSource implements Constants {
     // creates, updates and deletes a poi in KICH
     public String postToKICHService(String anAction, String aPostString) throws UtopiaException {
         try {
-            String kichPostUrl = Amuse.server.getPortal().getProperty(KICH_POST_URL);
+            String kichPostUrl = Amuse.server.getPortal().getProperty(KICH_SERVLET_URL);
             kichPostUrl += "?command=" + anAction;
             //Properties postParams = new Properties();
             //postParams.setProperty("command", anAction);
