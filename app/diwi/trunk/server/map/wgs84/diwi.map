@@ -41,7 +41,7 @@ LAYER
 END
 
 WEB
-    IMAGEPATH "/var/keyworx/webapps/diwi/map84/tmp/"
+    IMAGEPATH "/var/keyworx/webapps/$[portal.name]/map84/tmp/"
 #    IMAGEURL ...
 END
 
