@@ -32,16 +32,26 @@
  * Diwi portal functions.
  */
 KW.DIWI = {
+		/* - besloten (integer, >= 0)
+- halfopen (integer, >= 0)
+- open (integer, >= 0)
+- industrie (integer, >= 0)
+- bebouwd (integer, >= 0)
+- bos (integer, >= 0)
+- heizand (integer, >= 0)
+- natuurgras (integer, >= 0)
+- grootwater (integer, >= 0)
+- kleinwater  (integer, >= 0) */
 	BESLOTEN_PARAM:		'besloten',
 	HALFOPEN_PARAM:		'halfopen',
 	OPEN_PARAM:			'open',
-	BEDRIJVEN_PARAM:	'bedrijven',
-	BEWONING_PARAM:		'bewoning',
+	BEDRIJVEN_PARAM:	'industrie',
+	BEWONING_PARAM:		'bebouwd',
 	BOS_PARAM:          'bos',
-	HEIDE_PARAM: 		'heide',
-	GRASLAND_PARAM:		'grasland',
-	ZEE_PARAM:			'zee',
-	SLOTEN_PARAM:		'sloten',
+	HEIDE_PARAM: 		'heizand',
+	GRASLAND_PARAM:		'natuurgras',
+	ZEE_PARAM:			'grootwater',
+	SLOTEN_PARAM:		'kleinwater',
 	STARTX_PARAM:		'startx',
 	STARTY_PARAM:		'starty',
 	ENDX_PARAM:			'endx',
@@ -63,12 +73,12 @@ KW.DIWI = {
 		var req = KW.createRequest('route-generate-req');
 		var key;
 		for (key in params) {
-			if(params[key] != null && params[key] != "") {
+			//if (params[key] != null && params[key] != "") {
 				var pref = req.createElement('pref');
 				pref.setAttribute('name', key);
 				pref.setAttribute('value', params[key]);			
 				req.documentElement.appendChild(pref);
-			}
+			//}
 		} 
 
 		KW.utopia(req, callback);

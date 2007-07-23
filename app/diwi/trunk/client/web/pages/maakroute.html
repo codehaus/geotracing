@@ -4,13 +4,28 @@
 <div class="listboxes" id="starteindpunt-lb">
 </div>
 
-<div class="listboxes" id="thema-lb">
+
+<div id="radiobuttons" class="radiocaption">
+	<input id="wandelen" name="rb1" type="radio" onClick="ROUTE.selectWandelen()"> Wandelen
+	<input id="fietsen" name="rb2" type="radio" onClick="ROUTE.selectFietsen()"> Fietsen
 </div>
+
+<!-- <div class="listboxes" id="thema-lb">
+</div>      -->
 
 <div class="listboxes" id="afstand-lb">
 </div>
-
-
+<!--
+- besloten (integer, >= 0)
+- halfopen (integer, >= 0)
+- open (integer, >= 0)
+- industrie (integer, >= 0)
+- bebouwd (integer, >= 0)
+- bos (integer, >= 0)
+- heizand (integer, >= 0)
+- natuurgras (integer, >= 0)
+- grootwater (integer, >= 0)
+- kleinwater  (integer, >= 0) -->
 <div class="slidercaption" id="caption1">
 	Besloten agrarisch gebied
 </div>
@@ -55,7 +70,7 @@
 	<input class="slider-input" id="s4input"/>
 </div>
 
-<div class="slidertext" id="bedrijven">
+<div class="slidertext" id="industrie">
 	<input id="s4value" size="3" value="0" />%
 </div>
 
@@ -67,7 +82,7 @@
 	<input class="slider-input" id="s5input"/>
 </div>
 
-<div class="slidertext" id="bewoning">
+<div class="slidertext" id="bebouwd">
 	<input id="s5value" size="3" value="0" />%
 </div>
 
@@ -91,7 +106,7 @@
 	<input class="slider-input" id="s7input"/>
 </div>
 
-<div class="slidertext" id="heide">
+<div class="slidertext" id="heizand">
 	<input id="s7value" size="3" value="0" />%
 </div>
 
@@ -103,7 +118,7 @@
 	<input class="slider-input" id="s8input"/>
 </div>
 
-<div class="slidertext" id="grasland">
+<div class="slidertext" id="natuurgras">
 	<input id="s8value" size="3" value="0" />%
 </div>
 
@@ -115,7 +130,7 @@
 	<input class="slider-input" id="s9input"/>
 </div>
 
-<div class="slidertext" id="zee">
+<div class="slidertext" id="grootwater">
 	<input id="s9value" size="3" value="0" />%
 </div>
 
@@ -127,7 +142,7 @@
 	<input class="slider-input" id="s10input"/>
 </div>
 
-<div class="slidertext" id="sloten">
+<div class="slidertext" id="kleinwater">
 	<input id="s10value" size="3" value="0" />%
 </div>
 
@@ -138,10 +153,6 @@
 
 <!--
 
-<div id="radiobuttons" class="radiocaption">
-	<input id="wandelen" name=rb1 type=radio onClick="selectWandelen()"> Wandelen
-	<input id="fietsen" name=rb2 type=radio onClick="selectFietsen()"> Fietsen
-</div>
 
 <div id="maakroutebox" style="display:none"><img src="media/buttons/maakrouteblokken.gif" border="0"></div>
 
@@ -162,4 +173,3 @@
 -->
 
 </div>
-
