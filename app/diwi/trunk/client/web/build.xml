@@ -86,6 +86,14 @@ $Id$
 	<!-- Build all clean. -->
 	<target name="build" depends="package"/>
 
+	<target name="deploy-live" depends="assemble">
+		<exec executable="rsync">
+			<arg line="-alzvx --delete -e ssh "/>
+			<arg line="${home}/"/>
+			<arg line="${deploy.live.dir}/web/" />
+		</exec>
+	</target>
+
 	<target name="deploy-test" depends="assemble">
 		<exec executable="rsync">
 			<arg line="-alzvx --delete -e ssh "/>
@@ -95,13 +103,13 @@ $Id$
 	</target>
 
 	<target name="deploy-local" depends="assemble">
-		<copy todir="${deploy.local.dir}/web" overwrite="true">
+		<copy todir="${deploy.local.dir}/diwi/web" overwrite="true">
 			<fileset dir="${home}" />
 		</copy>
 	</target>
 
 	<target name="deploy-local-diwi-only" depends="assemble">
-		<copy todir="${deploy.local.dir}/web" overwrite="true">
+		<copy todir="${deploy.local.dir}/diwi/web" overwrite="true">
 			<fileset dir="${home}" excludes="ext/**/*"/>
 		</copy>
 	</target>

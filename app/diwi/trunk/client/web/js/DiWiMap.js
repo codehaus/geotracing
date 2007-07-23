@@ -131,7 +131,7 @@ var MAP = {
 
 //		MAP.addGoogleSatLayer();
 		MAP.addTOPNLRasterLayer();
-		MAP.map.events.register("click", MAP.map, MAP.onClick);
+		// MAP.map.events.register("click", MAP.map, MAP.onClick);
 		MAP.overlays['markers'] = null;
 		MAP.overlays['ugc'] = null;
 		MAP.overlays['pois'] = null;

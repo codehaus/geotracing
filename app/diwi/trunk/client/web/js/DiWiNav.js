@@ -17,10 +17,10 @@ var DIWINAV = {
 
 	init: function() {
 		// Setup main menu buttons
-		new Button('b1', 'welkom');
+		new Button('b1', 'welkom', DIWINAV.showVideoLink);
 		new Button('b2', 'routes', ROUTE.showFixedRoutes);
-		new Button('b3', 'aanmelden');
-		new Button('b4', 'faq');
+		new Button('b3', 'aanmelden', DIWINAV.showVideoLink);
+		new Button('b4', 'faq', DIWINAV.showVideoLink);
 		new Button('b5', 'inloggen', DIWINAV.prepareLogin);
 		new Button('b6', 'uitloggen', DIWIAPP.logout);
 		new Button('b7', 'maakroute', ROUTE.createGenerateRouteForm);
@@ -32,6 +32,13 @@ var DIWINAV = {
 		// Listen to login button and password field
 		DH.addEvent(DH.getObject('butloginsubmit'), 'click', DIWIAPP.login, false);
 		// DH.addEvent(DH.getObject('fieldpassword'), 'keypress', DIWINAV.onPasswordChar, false);
+	},
+
+
+	loadPage: function(aPageURL, aCallback) {
+		MAP.hide();
+//		DIWIAPP.pr('&nbsp;');
+		DH.setHTML(DIWINAV.PAGE_ID, DH.getURL(aPageURL, aCallback));
 	},
 
 	/** Callback (from DIWIAPP) when login ok.  */
@@ -62,6 +69,16 @@ var DIWINAV = {
 		DIWINAV.buttons['b1'].onSelect();
 	},
 
+	onPasswordChar: function(e) {
+		var event = DH.getEvent(e);
+		var keyCode = event.which ? event.which : event.keyCode;
+
+		if (keyCode == 13) {
+			DIWIAPP.login();
+		}
+		return false;
+	},
+
 	prepareLogin: function() {
 		DH.getStyleObject('inlogbox').display = 'block';
 		DH.getStyleObject('inlogform').display = 'block';
@@ -73,8 +90,8 @@ var DIWINAV = {
 		}
 	},
 
-	select: function(aButton) {
-		DIWINAV.selectedButtonId = aButton.id;
+	showVideoLink: function() {
+		DIWIAPP.pr('Wat is de "Digitale Wichelroede" en wat kun je er allemaal mee ? <p>&nbsp;</p><a href="media/video/diwi-promo.swf"><strong>Bekijk de introductie-video.</strong></a>');
 	},
 
 	reset: function() {
@@ -85,23 +102,9 @@ var DIWINAV = {
 		}
 	},
 
-	loadPage: function(aPageURL, aCallback) {
-		MAP.hide();
-//		DIWIAPP.pr('&nbsp;');
-		DH.setHTML(DIWINAV.PAGE_ID, DH.getURL(aPageURL, aCallback));
-	},
-
-
-	onPasswordChar: function(e) {
-		var event = DH.getEvent(e);
-		var keyCode = event.which ? event.which : event.keyCode;
-
-		if (keyCode == 13) {
-			DIWIAPP.login();
-		}
-		return false;
+	select: function(aButton) {
+		DIWINAV.selectedButtonId = aButton.id;
 	}
-
 }
 
 // Class representing single main menu button and its state.

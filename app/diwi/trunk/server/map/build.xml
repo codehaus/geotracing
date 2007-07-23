@@ -26,6 +26,7 @@ $Id$
 
     <target name="deploy-berlin">
 		<exec executable="scp">
+			<arg line="rd/index.cgi"/>
 			<arg line="rd/diwi.map"/>
 			<arg line="${deploy.test.server}:/var/keyworx/webapps/${portal.name}/map"/>
 		</exec>
