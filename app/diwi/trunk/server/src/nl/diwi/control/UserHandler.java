@@ -33,8 +33,6 @@ public class UserHandler extends DefaultHandler implements Constants {
     public final static String USER_GETLIST_SERVICE = "user-getlist";
     public final static String USER_REGISTER_SERVICE = "user-register";
 
-
-
     /**
      * Processes the Client Request.
      *
@@ -193,10 +191,10 @@ public class UserHandler extends DefaultHandler implements Constants {
 
             body += "\n\n+++++++++++++++++++++++++++++++++++++++++++++";
 
-            String mailHost = ServerConfig.getProperty("keyworx.mail.host");
-            String mailRecipient = ServerConfig.getProperty("keyworx.mail.recipient");
-            String mailUser = ServerConfig.getProperty("keyworx.mail.user");
-            String mailPassword = ServerConfig.getProperty("keyworx.mail.password");
+            String mailHost = ServerConfig.getProperty("mail.host");
+            String mailRecipient = ServerConfig.getProperty("mail.recipient");
+            String mailUser = ServerConfig.getProperty("mail.user");
+            String mailPassword = ServerConfig.getProperty("mail.password");
 
             sendMail(mailHost, mailUser, mailPassword, mailRecipient, "DigitaleWichelroede", subject, body);
 
