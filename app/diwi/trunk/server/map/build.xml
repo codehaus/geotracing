@@ -10,20 +10,25 @@ $Id$
 
 	<property file="../../build.properties"/>
 
+    <property name="runtime.properties" value="../runtime.test.properties" />
+    <property file="${runtime.properties}" />
 
-	<target name="deploy-local">
-		<copy todir="${deploy.local.dir}/map">
+    <target name="deploy-local">
+		<copy todir="${deploy.local.dir}/${portal.name}/map">
 			<fileset dir="rd"/>
 		</copy>
-		<chmod file="${deploy.local.dir}/map/index.cgi" perm="ugo+rx"/>
-		<mkdir dir="${deploy.local.dir}/map/tmp"/>
+
+        <replace dir="${deploy.local.dir}/${portal.name}/map" token="$[portal.name]" value="${portal.name}"/>        
+
+        <chmod file="${deploy.local.dir}/${portal.name}/map/index.cgi" perm="ugo+rx"/>
+		<mkdir dir="${deploy.local.dir}/${portal.name}/map/tmp"/>
 	</target>
 
-	<target name="deploy-berlin">
+    <target name="deploy-berlin">
 		<exec executable="scp">
 			<arg line="rd/diwi.map"/>
-			<arg line="${deploy.test.server}:/var/keyworx/webapps/diwi/map"/>
+			<arg line="${deploy.test.server}:/var/keyworx/webapps/${portal.name}/map"/>
 		</exec>
 	</target>
-
+    
 </project>
