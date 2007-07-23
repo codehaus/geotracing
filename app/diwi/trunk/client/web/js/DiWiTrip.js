@@ -6,6 +6,12 @@
 var TRIP = {
 	trips: null,
 	mediumPopup: null,
+	curTrip: {
+		points: null,
+		media: null,
+		poiHits: null,
+		ugcHits: null
+	},
 
 	onShowTrip: function(rsp) {
 		DH.displayOff('triplist');
@@ -13,8 +19,14 @@ var TRIP = {
 		DH.displayOn('triplistbacklink');
 		MAP.show();
 		MAP.addMarkerLayer('Mijn trip');
-		TRIP.showTrace(rsp.getElementsByTagName('pt'));
-		TRIP.showTraceMedia(rsp.getElementsByTagName('medium'));
+
+		TRIP.curTrip.points = rsp.getElementsByTagName('pt');
+		TRIP.curTrip.media = rsp.getElementsByTagName('medium');
+		TRIP.curTrip.poiHits = null;
+		TRIP.curTrip.ugcHits = null;
+
+		TRIP.showTripPoints();
+		TRIP.showTripMedia();
 	},
 
 	onShowTrips: function(rsp) {
@@ -31,48 +43,65 @@ var TRIP = {
 		DIWIAPP.pr('Hiernaast een lijst van uw gemaakte tochten.');
 	},
 
-  	showTraceMedia: function(theMedia) {
+	showTripMedia: function() {
 		var x,y,img,w,h,medium;
 		img = 'media/images/icon-trace.png';
 		w = 10;
 		h = 10;
 
-		for (var i = 0; i < theMedia.length; i++) {
-			medium = theMedia[i];
-			// alert('medium');
-			x = medium.getAttribute('x');
-			y = medium.getAttribute('y');
-			var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x,y));
-			marker.events.register('mousedown', marker, function(evt) { TRIP.showMedium(medium); Event.stop(evt); });
-			MAP.overlays['markers'].addMarker(marker);
-			//MAP.map.addPopup(popup);
+		for (var i = 0; i < TRIP.curTrip.media.length; i++) {
+			TRIP.showTripMediumMarker(i);
+
 			//MAP.addMarker(x, y, img, w, h);
 		}
 	},
 
-	showMedium: function(medium) {
+	showTripMediumMarker: function(index) {
+		// alert('medium');
+		var medium = TRIP.curTrip.media[index];
 		var x = medium.getAttribute('x');
-		var	y = medium.getAttribute('y');
-		var id = medium.getAttribute('id');
-		if (TRIP.mediumPopup == null) {
-			var popup = new OpenLayers.Popup("mediumpop"+i,
-				   new OpenLayers.LonLat(x,y),
-				   new OpenLayers.Size(320,240),
-				   "here is medium id=" + id,
-				   false);
-		}
-		popup.show();
-		
+		var y = medium.getAttribute('y');
+		var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x, y));
+		this.fun = function(evt) {
+			TRIP.showMedium(index);
+			Event.stop(evt);
+		};
+
+		marker.events.register('mousedown', marker, this.fun);
+		MAP.overlays['markers'].addMarker(marker);
 	},
 
-	showTrace: function(thePts) {
-		var x,y,img,w,h,pt,xsw=0,ysw=0,xne=0,yne=0;
+	showMedium: function(index) {
+		// alert('medium');
+		var medium = TRIP.curTrip.media[index];
+		var x = medium.getAttribute('x');
+		var y = medium.getAttribute('y');
+		var id = medium.getAttribute('id');
+		var kind = medium.getAttribute('kind');
+		var name = medium.getAttribute('name');
+		var html = '<img src="/diwi/media.srv?id=' + id + '&resize=240" /><br/>' + name;
+		if (kind == 'video') {
+			html = '<a href="/diwi/media.srv?id=' + id + '" target="_new" >view video: ' + name + '</a>';
+		} else if (kind == 'text') {
+			html = name + '<br/><i>'+ DH.getURL('/diwi/media.srv?id=' + id) + '</i>';
+		}
+		var mediumPopup = new OpenLayers.Popup("mediumpopup",
+				new OpenLayers.LonLat(x, y),
+				new OpenLayers.Size(320, 240),
+				html,
+				true);
+		MAP.map.addPopup(mediumPopup);
+
+	},
+
+	showTripPoints: function() {
+		var x,y,img,w,h,pt,xsw = 0,ysw = 0,xne = 0,yne = 0;
 		img = 'media/images/icon-trace.png';
 		w = 10;
 		h = 10;
 
-		for (var i = 0; i < thePts.length; i++) {
-			pt = thePts[i];
+		for (var i = 0; i < TRIP.curTrip.points.length; i++) {
+			pt = TRIP.curTrip.points[i];
 			x = pt.getAttribute('x');
 			y = pt.getAttribute('y');
 			if (i == 0) {
@@ -91,7 +120,7 @@ var TRIP = {
 				}
 			}
 
-			MAP.addMarker(x,y,img,w,h);
+			MAP.addMarker(x, y, img, w, h);
 		}
 
 		if (xsw != 0 & xne != 0 && xne != xsw) {
@@ -101,7 +130,7 @@ var TRIP = {
 	},
 
 	showTrips: function() {
- 		DH.displayOff('triplistbacklink');
+		DH.displayOff('triplistbacklink');
 		KW.DIWI.gettrips(TRIP.onShowTrips, DIWIAPP.personId);
 		MAP.hide();
 	},
