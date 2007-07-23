@@ -279,7 +279,7 @@ public class NavigationLogic implements Constants {
             for (int i = 0; i < recs.length; i++) {
                 // make sure we don't find our own media!!!
                 Record rec = recs[i];
-                Record[] media = oase.getRelater().getRelated(rec, Medium.TABLE_NAME, "medium");
+                Record[] media = oase.getRelater().getRelated(oase.getFinder().read(rec.getId()), Medium.TABLE_NAME, "medium");
                 for(int j=0;j<media.length;j++){
                     Record medium = media[j];
                     Record[] people = oase.getRelater().getRelated(medium, Person.TABLE_NAME, null);
@@ -287,6 +287,7 @@ public class NavigationLogic implements Constants {
                         if(people[k].getId() != aPersonId){
                             JXElement hit = new JXElement(UGC_HIT_ELM);
                             hit.setAttr(ID_FIELD, recs[i].getIntField(ID_FIELD));
+                            hit.addChild(medium.toXML());                            
                             result.add(hit);
                         }
                     }
