@@ -231,6 +231,19 @@ namespace Diwi {
                 return null;
         }
 
+        public XMLement routeHome() {
+            XMLement xml = new XMLement(Protocol.TAG_NAV_HOME_REQ);
+            AppController.showStatus("route to start");
+
+            lock (this) {
+                xml = utopiaRequest(xml);
+            }
+            if (xml != null && xml.tag == Protocol.TAG_NAV_HOME_RSP)
+                return xml;
+            else
+                return null;
+        }
+
         public XMLement activateRoute(int routeID, bool init) {
             XMLement xml = new XMLement(Protocol.TAG_ACTIVATE_ROUTE_REQ);
             AppController.showStatus("activateRoute");
