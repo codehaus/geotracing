@@ -91,7 +91,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "all_diwi_routes"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "path from (select id,path from diwi_route) as foo using unique id using SRID=4326"
 
 	DEBUG OFF
@@ -112,7 +112,7 @@ LAYER
 #	GROUP "Selected"
 	NAME "single_diwi_route"
 	CONNECTIONTYPE postgis
-	CONNECTION "user=oaseuser password=oase dbname=diwi host=localhost"
+	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
 	DATA "path from (select id,path from diwi_route where id = %ID%) as foo using unique id using SRID=4326"
 #    EXTENT 4.724717 51.813062 5.752441 52.486596
 
