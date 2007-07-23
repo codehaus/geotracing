@@ -28,11 +28,14 @@ namespace Diwi {
 
 
             mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo), AppController.sVideoIcon);
+            mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin), AppController.sStruinIcon);
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute), AppController.sKiesIcon);
             mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute),
                new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.terug-r.ico"))
             );
-            mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin), AppController.sStruinIcon);
+            mMenu.addItem("Terug naar start", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerugStart),
+                new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.home.ico"))
+            );
             mMenu.addItem("GPS Status", new DiwiUIMenu.DiwiMenuCallbackHandler(doGPS),
                 new Icon(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.gps.ico"))
             );
@@ -52,6 +55,20 @@ namespace Diwi {
                 sip = true;
             }
         }
+
+        void doTerugStart(int i, string s) {
+            XMLement xml = AppController.sKwxClient.routeHome();
+            if (xml != null) {
+                AppController.sActiveRouteID = int.Parse(xml.getAttributeValue("id"));
+                AppController.sActiveRoute = xml;
+                AppController.sActiveRouteMapPathHor = null;
+                AppController.sActiveRouteMapPathVer = null;
+                walkRoute(0, "");
+            } else {
+                resetMenu();
+            }
+        }
+
 
         void doVideo(int i, string s) {
             FileInfo fi = new FileInfo(AppController.sVideoFileName);
