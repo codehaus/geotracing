@@ -15,6 +15,7 @@ import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.Point;
+import org.postgis.PGgeometryLW;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -131,6 +132,16 @@ public class TrackExport {
 							mediumElm.setAttr("lon", nextPoint.x+"");
 							mediumElm.setAttr("lat", nextPoint.y+"");
 							mediumElm.setAttr("time", (long) nextPoint.m + "");
+
+							// Hack for RD stuff
+							if (nextLocations[0].hasField("rdpoint")) {
+								PGgeometryLW geom = (PGgeometryLW) nextLocations[0].getObjectField("rdpoint");
+								Point xy = (Point) geom.getGeometry();
+								mediumElm.setAttr("x", xy.x);
+								mediumElm.setAttr("y", xy.y);
+								mediumElm.removeAttr("lon");
+								mediumElm.removeAttr("lat");
+							}
 						}
 
 						// Sort media by timestamp
