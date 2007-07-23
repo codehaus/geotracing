@@ -20,10 +20,11 @@ namespace Diwi {
         static bool sShowUGC = false;
         private DiwiUIText gpsText;
         private POIHandler poiCB;
-        bool checkStruinWithUser;
+        public static bool checkStruinWithUser;
         DiwiUIButton mZoomIn;
         DiwiUIButton mZoomOut;
         List<string> mHitPOI = new List<string>(10);
+        List<string> mHitUGC = new List<string>(10);
 
         public WalkRoutePage(DiwiPageBase parent)
             : base(parent) {
@@ -79,6 +80,7 @@ namespace Diwi {
                     gpsText.color = Color.Red;
                     gpsText.draw("Geen GPS");
                 }
+                gpsText.x = (this.ClientRectangle.Width - gpsText.width) / 2;
                 draw();
             } else if (m == (int)GpsReader.sMess.M_POS) {
                 setPosition(true);
@@ -108,8 +110,12 @@ namespace Diwi {
 
 
         void navPointReceive(XMLement xml, float lat, float lon) {
-            XMLement poi = xml.getChildByName("poi-hit");
+
             if (mIsActive) {
+                
+                XMLement poi = xml.getChildByName("poi-hit");
+                XMLement ugc = xml.getChildByName("ugc-hit");
+
                 if (poi != null) {
                     List<string> pois = new List<string>();
                     for (int i = 0; ; i++) {
@@ -127,6 +133,26 @@ namespace Diwi {
                         doPoi(pois);
                     }
                 }
+
+                if (ugc != null) {
+                    List<XMLement> ugcs = new List<XMLement>();
+                    for (int i = 0; ; i++) {
+                        XMLement t = xml.getChild(i);
+                        if (t == null) break;
+                        if (t.tag == "ugc-hit") {
+                            string ugcId = t.getAttributeValue("id");
+                            if (!mHitUGC.Contains(ugcId)) {
+                                mHitUGC.Add(ugcId);
+                                ugcs.Add(t);
+                            }
+                        }
+                    }
+                    if (ugcs.Count > 0) {
+                        doUgcs(ugcs);
+                    }
+                }
+
+
                 XMLement msg = xml.getChildByName("msg");
                 if (msg != null) {
                     string text = msg.nodeText;
@@ -134,9 +160,7 @@ namespace Diwi {
                         checkStruinWithUser = false;
                         doCheckStruin(0, "");
                     }
-                } else {
-                    checkStruinWithUser = (AppController.sActiveRoute != null);
-                }
+                } 
             }
         }
 
@@ -232,6 +256,28 @@ namespace Diwi {
             }
         }
 
+        void doUgcs(List<XMLement> ugcs) {
+            AppController.poiHit();
+            AppController.sEventLog.WriteLine("hit {0} ugc:", ugcs.Count);
+            if (sPoiSelectPage == null)
+                sPoiSelectPage = new PoiSelectPage(this);
+
+            XMLement raw = XMLement.createFromRawXml("<poi><name>VolksMond</name><description>Door andere gebruikers gemaakte media</description></poi>");
+            XMLement mmd = new XMLement("media");
+
+            foreach (XMLement x in ugcs) {
+                mmd.addChild(x);
+            }
+
+            raw.addChild(mmd);
+
+            if (PoiSelectPage.sPoiPage.setContent(raw)) {
+                mIsActive = false;
+                PoiSelectPage.sPoiPage.ShowDialog();
+                mBlendTimer.Change(0, 3000);
+            }
+        }
+
 
         void doStopRoute(int i, string s) {
             if (AppController.sActiveRouteID != -1)
@@ -279,12 +325,8 @@ namespace Diwi {
             mZoomOut.x = 0;
             mZoomOut.y = h - 24;
 
-
-
             gpsText.x = (w - gpsText.width) / 2;
             gpsText.y = this.ClientRectangle.Height - 22;
-
-
         }
 
 

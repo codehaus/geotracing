@@ -92,6 +92,7 @@ namespace Diwi {
             AppController.sActiveRoute = route;
             AppController.sActiveRouteMapPathHor = null;
             AppController.sActiveRouteMapPathVer = null;
+            WalkRoutePage.checkStruinWithUser = true;
             doTerug(0, null);
         }
 
