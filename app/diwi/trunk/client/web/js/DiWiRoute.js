@@ -1,16 +1,44 @@
 /**
  * Route generation and such.
  *
+ * createroute command:
+ - startx (integer, RD)
+ - starty (integer, RD)
+ - endx (integer, RD)
+ - endy (integer, RD)
+ - type ('cycling'of 'walking')
+ - afstand (integer; mogelijke waardes:
+ * 3000,5000 (=wandelen)
+ * 10000,15000,20000(=fietsen)
+ - besloten (integer, >= 0)
+ - halfopen (integer, >= 0)
+ - open (integer, >= 0)
+ - industrie (integer, >= 0)
+ - bebouwd (integer, >= 0)
+ - bos (integer, >= 0)
+ - heizand (integer, >= 0)
+ - natuurgras (integer, >= 0)
+ - grootwater (integer, >= 0)
+ - kleinwater  (integer, >= 0)
+ - poi (mag achterwege gelaten worden, wordt niets mee gedaan.
+ Gehandhaafd voor toekomstig gebruik)
+
+ De parameters startx, starty, endx, endy en type zijn verplicht;
+ Als er een afstand wordt opgegeven dan moeten alle omgevingstypen een
+ waarde hebben (>=0).
+ *
  * author: Just van den Broecke
  */
 var ROUTE = {
 	fixedRoutes: null,
 	sliders: new Array(),
+	startEndPOIs: null,
+	selectedStartEndPOI: null,
 	startPOIs: null,
 	endPOIs: null,
 
 	createDistanceForm: function () {
-		var formHTML = '<p>Afstand</p><form><select id="afstand" ><option value="0" selected="selected">geen voorkeur</option><option value="3000" >3 km</option><option value="5000" >5 km</option><option value="10000" >10 km</option><option value="15000" >15 km</option><option value="20000" >20 km</option></select></form>';
+		var formHTML = '<p>Afstand</p><form><select id="afstand" ><option value="-1" selected="selected">kies...</option><option value="3000" >3 km</option><option value="5000" >5 km</option><option value="10000" >10 km</option><option value="15000" >15 km</option><option value="20000" >20 km</option></select></form>';
 
 		DH.setHTML('afstand-lb', formHTML);
 	},
@@ -36,7 +64,7 @@ var ROUTE = {
 			ROUTE.fixedRoutes = new Array();
 			for (i = 0; i < records.length; i++) {
 				ROUTE.fixedRoutes[records[i].id] = records[i];
-				formHTML += '<option name="fr' + records[i].id +'" value="' + records[i].id + '" >';
+				formHTML += '<option name="fr' + records[i].id + '" value="' + records[i].id + '" >';
 				formHTML += records[i].getField('name');
 				formHTML += '</option>';
 			}
@@ -52,14 +80,17 @@ var ROUTE = {
 	createGenerateRouteForm: function () {
 		// KW.CMS.getstartendpoints(ROUTE.createStartPOIsForm);
 		KW.CMS.getstartendpoints(ROUTE.createStartEndPOIsForm);
-		KW.CMS.getthemes(ROUTE.createThemesForm);
+		//KW.CMS.getthemes(ROUTE.createThemesForm);
 		ROUTE.createDistanceForm();
 
-	//	DH.getObject("wandelen").checked = true;
+		DH.getObject("wandelen").checked = true;
+		DH.getObject("fietsen").checked = false;
+
+		//	DH.getObject("wandelen").checked = true;
 		DIWIAPP.pr('Maak uw eigen route naar uw eigen voorkeuren! Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen. Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.');
 
 		// Create and configure the sliders
-		for (var i=1; i < 11; i++) {
+		for (var i = 1; i < 11; i++) {
 			ROUTE.createSlider('s' + i);
 		}
 	},
@@ -133,23 +164,32 @@ var ROUTE = {
 
 		// Start-point RD coordinates
 		var i = DH.getObject('starteindpunt').value;
-		if (i > -1) {
-			params[KW.DIWI.STARTX_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('x'));
-			params[KW.DIWI.STARTY_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('y'));
-			params[KW.DIWI.ENDX_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('x'));
-			params[KW.DIWI.ENDY_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('y'));
+		if (i < 0) {
+			DIWIAPP.pr('U dient een start/eindpunt te kiezen.');
+			return;
 		}
 
+		ROUTE.selectedStartEndPOI = ROUTE.startEndPOIs[i];
+		params[KW.DIWI.STARTX_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('x'));
+		params[KW.DIWI.STARTY_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('y'));
+		params[KW.DIWI.ENDX_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('x'));
+		params[KW.DIWI.ENDY_PARAM] = Math.round(ROUTE.startEndPOIs[i].getField('y'));
+
 		// POI theme
-		var themeElm = DH.getObject('thema');
+		/* var themeElm = DH.getObject('thema');
 		params[KW.DIWI.THEMA_PARAM] = 'niets';
 		if (themeElm.selectedIndex > 0) {
 			// Theme value is value of displayed option in drop down
 			params[KW.DIWI.THEMA_PARAM] = themeElm.options[themeElm.selectedIndex].childNodes[0].nodeValue;
-		}
+		} */
 
 		// Distance in meters
 		var distance = DH.getObject('afstand').value;
+		if (!distance || distance < 0) {
+			DIWIAPP.pr('U dient een afstand te kiezen.');
+			return;
+		}
+
 		if (distance && distance > 0) {
 			params[KW.DIWI.AFSTAND_PARAM] = distance;
 		}
@@ -159,12 +199,14 @@ var ROUTE = {
 		for (i in ROUTE.sliders) {
 			slider = ROUTE.sliders[i];
 			sliderVal = slider.getValue();
+			params[slider.omgeving] = 0;
 			if (sliderVal > 0) {
 				params[slider.omgeving] = sliderVal;
 			}
 		}
 
-//		params[KW.DIWI.WANDELAAR_PARAM] = document.getElementById("wandelen").checked;
+
+		params['type'] = DH.getObject("wandelen").checked == true ? 'walking' : 'cycling';
 
 		KW.DIWI.generateroute(ROUTE.onCreateRouteRsp, params);
 		DIWIAPP.pr('even geduld, uw persoonlijke route wordt gegenereerd...');
@@ -178,6 +220,9 @@ var ROUTE = {
 			DIWIAPP.pr('Helaas, er kon geen route gemaakt worden met de door u ingebrachte gegevens. Probeert u het nog een keer met andere gegevens.');
 			return;
 		}
+		DIWINAV.loadPage('pages/routemap.html');
+		MAP.show();
+
 		SRV.get('q-diwi-route-info', ROUTE.onQueryRouteInfo, 'id', ROUTE.generatedRouteId);
 		// KW.DIWI.getmap(ROUTE.onGetRouteMapRsp, ROUTE.generatedRouteId, 580, 400);
 	},
@@ -195,6 +240,16 @@ var ROUTE = {
 		var routeString = '<h2>' + name + '</h2>' + description + '<br/>afstand: ' + routeRec.getField('distance') / 1000 + ' km';
 		DIWIAPP.pr(routeString);
 		MAP.addRouteLayer(routeRec);
+	},
+
+	selectWandelen: function() {
+		DH.getObject("wandelen").checked = true;
+		DH.getObject("fietsen").checked = false;
+	},
+
+	selectFietsen: function() {
+		DH.getObject("wandelen").checked = false;
+		DH.getObject("fietsen").checked = true;
 	},
 
 	showFixedRoutes: function() {
@@ -226,13 +281,3 @@ var ROUTE = {
 	}
 }
 
-/*
-function selectWandelen() {
-	DH.getObject("wandelen").checked = true;
-	DH.getObject("fietsen").checked = false;
-}
-
-function selectFietsen() {
-	DH.getObject("wandelen").checked = false;
-	DH.getObject("fietsen").checked = true;
-} */
