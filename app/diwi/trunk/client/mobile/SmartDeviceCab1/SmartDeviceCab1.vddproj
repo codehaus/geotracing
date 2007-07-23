@@ -521,6 +521,15 @@
                 {
                 }
             }
+            "{F6DFDB62-1DD1-498B-89B7-27BAC542EE5A}:_A74AF0BDC6084C56A5258E2A11D6EBF3"
+            {
+            "Name" = "8:#1919"
+            "Condition" = "8:"
+            "Property" = "8:%CE17%"
+                "Folders"
+                {
+                }
+            }
             "{F6DFDB62-1DD1-498B-89B7-27BAC542EE5A}:_E3854B2FD31C4694AD6681ABA401B5BD"
             {
             "Name" = "8:#1911"
@@ -606,6 +615,16 @@
         }
         "Shortcut"
         {
+            "{971D45E9-E38C-49AC-B36E-4C5BEA533350}:_B4D61E033D874E83A6DC2C9CC874D6A8"
+            {
+            "Name" = "8:Diwi"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "Target" = "8:_93D39817915A459AA110C7311B106D00"
+            "Folder" = "8:_A74AF0BDC6084C56A5258E2A11D6EBF3"
+            "WorkingFolder" = "8:_E3854B2FD31C4694AD6681ABA401B5BD"
+            }
         }
     }
 }
