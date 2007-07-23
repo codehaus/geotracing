@@ -286,7 +286,7 @@ public class POILogic implements Constants {
             if(activeRoute == null) return new Vector(0);
 
             String tables = POI_TABLE + "," + ROUTE_TABLE;
-            String fields = ROUTE_TABLE + "." + ID_FIELD;
+            String fields = ROUTE_TABLE + "." + ID_FIELD + "," + ROUTE_TABLE + "." + NAME_FIELD;
             String where = POI_TABLE + "." + ID_FIELD + "=" + aPOIId + " AND " + ROUTE_TABLE + "." + ID_FIELD + "<>" + activeRoute.getId();
             String relations = ROUTE_TABLE + "," + POI_TABLE;
             String postCond = null;
