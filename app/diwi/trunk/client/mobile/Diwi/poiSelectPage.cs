@@ -12,7 +12,7 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
 
     class PoiSelectPage : DiwiPageBase {
-        static PoiViewerPage sPoiPage = null;
+        public static PoiViewerPage sPoiPage = null;
         Label mTextBox = new Label();
         List<string> poiIDs;
         XMLement mCurrentPOI;

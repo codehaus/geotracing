@@ -440,15 +440,12 @@ namespace Diwi {
                 pt.addAttribute("lon", GpsReader.lon.ToString(GpsReader.mUSFormat));
                 pt.addAttribute("lat", GpsReader.lat.ToString(GpsReader.mUSFormat));
 
-               // pt.addAttribute("nmea", GpsReader.nmea);
-
                 xml.addChild(pt);
 
                 xml = utopiaRequest(xml);
 
                 if (xml != null && xml.tag == Protocol.TAG_NAV_POINT_RSP) {
                     if (poiCallback != null) {
-                        if( (xml.getChildByName("poi-hit") != null) || (xml.getChildByName("msg") != null ) )
                         poiCallback(xml, GpsReader.lat, GpsReader.lon);
                     }
                 } 

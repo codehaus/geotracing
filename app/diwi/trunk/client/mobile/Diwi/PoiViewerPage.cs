@@ -163,11 +163,45 @@ namespace Diwi {
         void doDownloadMedium(int index) {
             char[] trimChars = { '\t', ' ', '\n', '\r' };
             XMLement kichUri = mAllMedia.getChild(index);
+            if (kichUri.tag == "ugc-hit") {
+                doDownloadUGC(index);
+                return;
+            }
             mDownloadIndex = index;
             if (kichUri != null) {
                 string url = kichUri.nodeText;
                 string ext = (url.Substring(url.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = kichUri.getAttributeValue("type");
+                switch (type) {
+                    case "image":
+                        mDnlUrl = url;
+                        mMediaDnl = new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                    case "audio":
+                        mDnlUrl = url;
+                        mMediaDnl = new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                    case "video":
+                        mDnlUrl = url;
+                        mMediaDnl = new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                    case "text":
+                        mDnlUrl = url;
+                        mMediaDnl = new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        break;
+                }
+            }
+        }
+ 
+        void doDownloadUGC(int index) {
+            char[] trimChars = { '\t', ' ', '\n', '\r' };
+            XMLement ugc = mAllMedia.getChild(index);
+            mDownloadIndex = index;
+            if (ugc != null) {
+                string filename = ugc.getAttributeValue("filename");
+                string url = Diwi.Properties.Resources.KwxMediaServerUrl + "?id=\"" + ugc.getAttributeValue("id") + "\"";
+                string ext = (filename.Substring(filename.LastIndexOf('.'))).TrimEnd(trimChars);
+                string type = ugc.getAttributeValue("kind");
                 switch (type) {
                     case "image":
                         mDnlUrl = url;
@@ -198,10 +232,11 @@ namespace Diwi {
                 if (dnlFileNames[mMediaIndex] != null) {
                     openFile(dnlFileNames[mMediaIndex]);
                 } else {
-                    mDnlMess.Visible = true;
                     mTextBox.Visible = false;
                     mImage.x = 800;
+                    mDnlMess.Visible = true;
                     draw();
+                    mDnlMess.Visible = true;
                 }
             } else {
                 if (mMediaDnl != null)
@@ -233,7 +268,8 @@ namespace Diwi {
             if (name != null)
                 title = name.nodeText;
             mAllMedia = xml.getChildByName("media");
-            xmlString = mAllMedia.toString();
+            AppController.sEventLog.WriteLine(mAllMedia.toString());
+
             mMediaIndex = -1;
             mDownloadIndex = -1;
             mImage.x = 500;
