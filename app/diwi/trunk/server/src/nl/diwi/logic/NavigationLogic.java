@@ -286,9 +286,9 @@ public class NavigationLogic implements Constants {
                     for(int k=0;k<people.length;k++){
                         if(people[k].getId() != aPersonId){
                             JXElement hit = new JXElement(UGC_HIT_ELM);
-                            hit.setAttr(ID_FIELD, recs[i].getIntField(ID_FIELD));
-                            hit.setAttr(Medium.FILENAME_FIELD, recs[i].getStringField(Medium.FILENAME_FIELD));
-                            hit.setAttr(Medium.KIND_FIELD, recs[i].getStringField(Medium.KIND_FIELD));
+                            hit.setAttr(ID_FIELD, medium.getIntField(ID_FIELD));
+                            hit.setAttr(Medium.FILENAME_FIELD, medium.getStringField(Medium.FILENAME_FIELD));
+                            hit.setAttr(Medium.KIND_FIELD, medium.getStringField(Medium.KIND_FIELD));
                             result.add(hit);
                         }
                     }

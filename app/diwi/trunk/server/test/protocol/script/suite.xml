@@ -1,7 +1,7 @@
 <testsuite>
     <!--<testset file="test.xml"/>-->
-    <!--<testset file="ugchit-scenario.xml"/>-->
-    <testset file="registration-scenario.xml"/>
+    <testset file="ugchit-scenario.xml"/>
+    <!--<testset file="registration-scenario.xml"/>-->
     <!--<testset file="sync-scenario.xml"/>-->
     <!--<testset file="cms-scenario.xml"/>-->
     <!--<testset file="webclient-scenario1.xml"/>-->
