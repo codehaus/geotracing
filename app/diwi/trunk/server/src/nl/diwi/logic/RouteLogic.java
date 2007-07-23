@@ -105,7 +105,12 @@ public class RouteLogic implements Constants {
 				pref4.setAttr(NAME_FIELD, "endy");
 				pref4.setAttr(VALUE_FIELD, rdPointEnd.y);
 				reqElm.addChild(pref4);
-			}
+
+                JXElement pref5 = new JXElement(PREF_ELM);
+				pref5.setAttr(NAME_FIELD, "type");
+				pref5.setAttr(VALUE_FIELD, "walking");
+				reqElm.addChild(pref5);
+            }
 
 			// now store the prefs
 			String prefString = "";

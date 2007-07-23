@@ -98,8 +98,7 @@ public interface Constants {
     public final static String GENERATE_HOME_ROUTE = "home route";
 
     //properties
-    public final static String KICH_POST_URL = "kichposturl";
-    public final static String KICH_REST_URL = "kichresturl";
+    public final static String KICH_SERVLET_URL = "kichservleturl";
     public final static String ROUTING_SERVLET_URL = "routingservleturl";
     public final static String TEST_DATA_URL = "testdataurl";
     public final static String TEST_DATA_LOCATION = "testdatalocation";
