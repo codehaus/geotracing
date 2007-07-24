@@ -1,0 +1,24 @@
+<stress portal="mapserver" >
+
+	<preamble>
+
+		<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+        <select-app-req appname="geoapp" rolename="user"/>
+
+	</preamble>
+
+	<loop sleepMin="1000" sleepMax="2000">
+
+		<utopia-req reqid="1">
+            <nav-get-map-req  height="240" llbLat="52.07703" llbLon="5.487456" width="320" urtLon="5.490385" urtLat="52.07973" />            
+		</utopia-req>
+
+	</loop>
+
+	<postamble>
+
+		<logout-req/>
+
+	</postamble>
+
+</stress>
