@@ -12,7 +12,7 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
 
     class PoiSelectPage : DiwiPageBase {
-        public static PoiViewerPage sPoiPage = null;
+        static PoiViewerPage sPoiPage = null;
         Label mTextBox = new Label();
         List<string> poiIDs;
         XMLement mCurrentPOI;
@@ -138,7 +138,7 @@ namespace Diwi {
             if (mParent != null) {
                 mParent.Visible = false;
             }
-            if (poiIDs.Count == 0) {
+            if (poiIDs == null || poiIDs.Count == 0) {
                 setMenuText(1, "Terug");
                 setMenuIcon(1, AppController.sTerugIcon);
             } else {

@@ -69,7 +69,7 @@ namespace Diwi {
             if (!horizontal) { //vertical
                 mOkButton.x = 146;
                 mOkButton.y = 170;
-                mServerMess.y = 286;
+                mServerMess.y = 266;
                 mUserBox.Top = 100;
                 mPassBox.Top = 130;
                 mUserText.y = 110;
@@ -79,7 +79,7 @@ namespace Diwi {
             } else { // horizontal
                 mOkButton.x = 146;
                 mOkButton.y = 130;
-                mServerMess.y = 206;
+                mServerMess.y = 186;
                 mUserBox.Top = 60;
                 mPassBox.Top = 90;
                 mUserText.y = 70;

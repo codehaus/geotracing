@@ -16,6 +16,7 @@ namespace Diwi {
         public delegate void CallbackHandler();
         public delegate void POIHandler(XMLement data, float lat, float lon);
         static PoiSelectPage sPoiSelectPage = null;
+        static PoiViewerPage sUgcViewerPage = null;
         static CheckStruinPage chckStruinPage = null;
         static bool sShowUGC = false;
         private DiwiUIText gpsText;
@@ -258,9 +259,7 @@ namespace Diwi {
 
         void doUgcs(List<XMLement> ugcs) {
             AppController.poiHit();
-            AppController.sEventLog.WriteLine("hit {0} ugc:", ugcs.Count);
-            if (sPoiSelectPage == null)
-                sPoiSelectPage = new PoiSelectPage(this);
+            
 
             XMLement raw = XMLement.createFromRawXml("<poi><name>VolksMond</name><description>Door andere gebruikers gemaakte media</description></poi>");
             XMLement mmd = new XMLement("media");
@@ -271,9 +270,15 @@ namespace Diwi {
 
             raw.addChild(mmd);
 
-            if (PoiSelectPage.sPoiPage.setContent(raw)) {
+            AppController.sEventLog.WriteLine("hit {0} ugc:", ugcs.Count);
+            AppController.sEventLog.WriteLine("\t", raw.toString());
+
+            if( sUgcViewerPage == null )
+                sUgcViewerPage = new PoiViewerPage(this);
+
+            if (sUgcViewerPage.setContent(raw)) {
                 mIsActive = false;
-                PoiSelectPage.sPoiPage.ShowDialog();
+                sUgcViewerPage.ShowDialog();
                 mBlendTimer.Change(0, 3000);
             }
         }

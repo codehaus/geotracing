@@ -172,8 +172,28 @@ namespace Diwi {
             }
         }
 
+
+        void findGpsPort() {
+            mSerialPort = new System.IO.Ports.SerialPort("COM9");
+            try {
+                mSerialPort.Open();
+                mPort = "COM9"; // internal GPS on HTC
+            } catch (IOException) {
+                mPort = "COM0";
+            }
+
+            try {
+                mSerialPort.Close();
+            } catch (IOException) {
+                ;
+            }
+
+            mSerialPort = null;
+        }
+
+
         private GpsReader() {
-            mPort = Diwi.Properties.Resources.GpsSerialPort;
+            findGpsPort();
             start();
         }
 
