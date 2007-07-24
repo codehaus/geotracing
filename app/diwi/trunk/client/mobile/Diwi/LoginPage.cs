@@ -22,7 +22,6 @@ namespace Diwi {
 
             mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
             mOkButton = new DiwiUIButton(offScreenGraphics, 146, 170, "Login", buttonOK, this);
-        //    mSipButton = new DiwiUIButton(offScreenGraphics, 146, 170, "Toetsen...", buttonSip, this);
 
             AppController.sKwxClient.messageCallback += new KwxClient.MessageCallback(serverMessage);
 
@@ -33,7 +32,6 @@ namespace Diwi {
             addDrawable(mUserText);
             addDrawable(mPassText);
             addDrawable(mOkButton);
-      //      addDrawable(mSipButton);
             addDrawable(mServerMess);
 
             this.Controls.Add(mUserBox);
