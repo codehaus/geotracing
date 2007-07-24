@@ -343,15 +343,11 @@ public class RouteLogic implements Constants {
 			Record[] routes;
 			if (type == ROUTE_TYPE_GENERATED) {
 				String tables = "diwi_route,utopia_person";
-				String fields = "diwi_route.id,diwi_route.name,diwi_route.description";
-				String where = "diwi_route.type=" + ROUTE_TYPE_GENERATED + " AND diwi_route.state=" + ACTIVE_STATE + " AND utopia_person.id=" + aPersonId;
+				String fields = "diwi_route.id,diwi_route.name,diwi_route.description,diwi_route.distance";
+				String where = "diwi_route.type=" + type + " AND diwi_route.state=" + ACTIVE_STATE + " AND utopia_person.id=" + aPersonId;
 				String relations = "diwi_route,utopia_person";
 				routes = QueryLogic.queryStore(oase, tables, fields, where, relations, null);
 			} else {
-				/*String tables = "diwi_route";
-								String fields = "diwi_route.id,diwi_route.name,diwi_route.description";
-								String where = "diwi_route.type=" + ROUTE_TYPE_FIXED;
-								routes = QueryLogic.queryStore(oase, tables, fields, where, null, null);*/
 				routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + type, null, null);
 			}
 

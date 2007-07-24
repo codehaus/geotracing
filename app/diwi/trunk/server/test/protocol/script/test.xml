@@ -1,4 +1,4 @@
-<testset id="mobileclient-scenario" clients="1">
+<testset id="test-scenario" clients="1">
 
     <!-- Standard KWX login sequence -->
     <test id="login-selapp">
@@ -102,7 +102,7 @@
     <test id="nav-route-get-req">
         <send id="client1">
             <utopia-req>
-                <nav-route-get-req id="705"/>
+                <nav-route-get-req id="1293"/>
             </utopia-req>
         </send>
 
