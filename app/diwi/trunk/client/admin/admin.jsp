@@ -7,35 +7,54 @@
 <%@ page import="java.util.Vector" %>
 <%@ page import="nl.diwi.util.Constants" %>
 <%@ page import="org.keyworx.oase.util.XML" %>
+<%@ page import="nl.justobjects.jox.parser.JXBuilder" %>
 
 <%
+
+
+    String msg = "";
     String personId = request.getParameter("person");
+    String xml = request.getParameter("xml");
     /*String sync = request.getParameter("sync");*/
     System.out.println("Person: " + personId);
     /*System.out.println("Sync: " + sync);*/
 
-    HttpConnector.login(session, "diwi", "geoapp", "user", "geoapp-user", "user", null);
-
-    // get the stats overview
-    /*JXElement getAllStatReq = new JXElement("user-get-allstats-req");
-    JXElement getAllStatRsp = HttpConnector.executeRequest(session, getAllStatReq);*/
-
-    // first get the users
-    OaseSession oase = Oase.createSession("diwi");
-    /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
-    Record[] people = oase.getFinder().freeQuery(query);*/
-    Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
-    System.out.println("dbg1");
-
+    String portalName = "diwi";
+    Record[] people  = new Record[0];
     JXElement getStatRsp = new JXElement("");
-    if(personId!=null && personId.length()>0){
-        JXElement getStatReq = new JXElement("user-get-stats-req");
-        getStatReq.setAttr("id", personId);
-        getStatRsp = HttpConnector.executeRequest(session, getStatReq);
-        System.out.println(new String(getStatRsp.toBytes(false)));
+    try{
+        JXElement rsp = HttpConnector.login(session, portalName, "geoapp", "user", "geoapp-user", "user", null);
+        System.out.println(new String(rsp.toBytes(false)));
+
+        // get the stats overview
+        /*JXElement getAllStatReq = new JXElement("user-get-allstats-req");
+        JXElement getAllStatRsp = HttpConnector.executeRequest(session, getAllStatReq);*/
+
+        // first get the users
+        OaseSession oase = Oase.createSession(portalName);
+        /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
+        Record[] people = oase.getFinder().freeQuery(query);*/
+        people = oase.getFinder().readAll(Person.TABLE_NAME);
+
+        if (xml != null && xml.length() > 0) {
+            JXElement registerRsp = HttpConnector.executeRequest(session, new JXBuilder().build(xml));
+            System.out.println(new String(registerRsp.toBytes(false)));
+            if(registerRsp.getTag().indexOf("-nrsp")!=-1){
+                msg += "Exception registering - " + registerRsp.getAttr("details") + "\n";
+            }
+        }
+        
+        if (personId != null && personId.length() > 0) {
+            JXElement getStatReq = new JXElement("user-get-stats-req");
+            getStatReq.setAttr("id", personId);
+            getStatRsp = HttpConnector.executeRequest(session, getStatReq);
+            System.out.println(new String(getStatRsp.toBytes(false)));
+        }
+
+    }catch(Throwable t){
+        msg = "Exception - " + t.getMessage();
     }
-    
-    
+
 %>
 <%!
     private class Stat{
@@ -191,6 +210,10 @@
                 <input type="submit" name="Submit" value="Sync Media" />
             </form>
         </p>--%>
+        <h1>Digitale Wichelroede statistieken</h1>
+        <%if(msg.length()>0){%>
+            <h1><%=msg%></h1>
+        <%}%>
         <h1>Selecteer een gebruiker</h1>
         <p>
             <form id="userform" name="userform" method="post" action="">
@@ -211,11 +234,8 @@
         </p>
         <p>
             <%
-                System.out.println("dbg2");
                 JXElement person = getStatRsp.getChildByTag("person");
-
                 if (person != null) {
-                    System.out.println("dbg3");
                     Stat stat = new Stat(person);
             %>
             <%--<%=new String(rsp.toEscapedString())%>--%>
