@@ -1,6 +1,6 @@
 <testsuite>
-    <!--<testset file="test.xml"/>-->
-    <testset file="stress-scenario.xml"/>
+    <testset file="test.xml"/>
+    <!--<testset file="stress-scenario.xml"/>-->
     <!--<testset file="ugchit-scenario.xml"/>-->
     <!--<testset file="routehome-scenario.xml"/>-->
     <!--<testset file="registration-scenario.xml"/>-->

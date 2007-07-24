@@ -154,9 +154,7 @@
     <test id="nav-route-home-req">
         <send id="client1">
             <utopia-req>
-                <nav-route-home-req>
-                    <pref name="type" value="walking" />
-                </nav-route-home-req>
+                <nav-route-home-req />
             </utopia-req>
         </send>
 
