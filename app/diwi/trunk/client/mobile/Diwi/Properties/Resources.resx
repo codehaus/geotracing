@@ -127,7 +127,7 @@
     <value>user</value>
   </data>
   <data name="KwxMediaServerUrl" xml:space="preserve">
-    <value>http://test.digitalewichelroede.nl/diwi/media.srv</value>
+    <value>http://www.digitalewichelroede.nl/diwi/media.srv</value>
   </data>
   <data name="KwxServerPassword" xml:space="preserve">
     <value>user</value>
@@ -139,7 +139,7 @@
     <value>2</value>
   </data>
   <data name="KwxServerUrl" xml:space="preserve">
-    <value>http://test.digitalewichelroede.nl/diwi/proto.srv</value>
+    <value>http://www.digitalewichelroede.nl/diwi/proto.srv</value>
   </data>
   <data name="KwxServerUsername" xml:space="preserve">
     <value>geoapp-user</value>

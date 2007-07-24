@@ -59,10 +59,17 @@ namespace Diwi {
         void doTerugStart(int i, string s) {
             XMLement xml = AppController.sKwxClient.routeHome();
             if (xml != null) {
+                if (AppController.sActiveRouteID != -1) {
+                    AppController.sKwxClient.deActivateRoute();
+                    AppController.sActiveRouteID = -1;
+                    AppController.sActiveRoute = null;
+                }
                 AppController.sActiveRouteID = int.Parse(xml.getAttributeValue("id"));
+                AppController.sKwxClient.activateRoute(AppController.sActiveRouteID,false);
                 AppController.sActiveRoute = xml;
                 AppController.sActiveRouteMapPathHor = null;
                 AppController.sActiveRouteMapPathVer = null;
+                AppController.sKwxClient.activateRoute(AppController.sActiveRouteID, true);
                 walkRoute(0, "");
             } else {
                 resetMenu();

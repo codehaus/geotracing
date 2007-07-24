@@ -85,7 +85,7 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://test.digitalewichelroede.nl/diwi/media.srv.
+        ///   Looks up a localized string similar to http://www.digitalewichelroede.nl/diwi/media.srv.
         /// </summary>
         internal static string KwxMediaServerUrl {
             get {
@@ -121,7 +121,7 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://test.digitalewichelroede.nl/diwi/proto.srv.
+        ///   Looks up a localized string similar to http://www.digitalewichelroede.nl/diwi/proto.srv.
         /// </summary>
         internal static string KwxServerUrl {
             get {

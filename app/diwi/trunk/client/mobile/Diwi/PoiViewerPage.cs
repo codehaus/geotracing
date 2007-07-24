@@ -199,7 +199,7 @@ namespace Diwi {
             mDownloadIndex = index;
             if (ugc != null) {
                 string filename = ugc.getAttributeValue("filename");
-                string url = Diwi.Properties.Resources.KwxMediaServerUrl + "?id=\"" + ugc.getAttributeValue("id") + "\"";
+                string url = Diwi.Properties.Resources.KwxMediaServerUrl + "?id=" + ugc.getAttributeValue("id");
                 string ext = (filename.Substring(filename.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = ugc.getAttributeValue("kind");
                 switch (type) {
