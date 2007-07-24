@@ -8,6 +8,8 @@ var DIWIAPP = {
 	personId: null,
 	swapImageIndex: 1+ Math.round(5*Math.random()),
 	hbTimer: null,
+	PORTAL: '/diwi',
+   	autoLogin: false,
 
 	/** Swap images in top. */
 	imageSwap: function() {
@@ -20,18 +22,24 @@ var DIWIAPP = {
 // Initialization of all KWClient and all application objects.
 	init: function() {
 		DIWIAPP.pr('init...');
+
+		// Change portal base url for test
+	//	if (document.location.href.indexOf('test.digitalewichelroede.nl') != -1) {
+	//		DIWIAPP.PORTAL = '/diwitest';
+	//	}
+
 		SRV.init();
-		SRV.url = '/diwi/srv/get.jsp?';
+		SRV.url = DIWIAPP.PORTAL + '/srv/get.jsp?';
 		// KeyWorx client with
 		// callbacks (2x)
 		// server timeout in minutes
 		// server root path /diwi
-		KW.init(DIWIAPP.onRsp, DIWIAPP.onNegRsp, 2, '/diwi');
+		KW.init(DIWIAPP.onRsp, DIWIAPP.onNegRsp, 2, DIWIAPP.PORTAL);
 		DIWINAV.init();
-		DIWIAPP.pr('init done');
+		// DIWIAPP.pr('init done');
 		// MAP.init();
 		var accData = KW.getAccountData();
-		if (accData != null && accData[0] != '') {
+		if (accData != null && accData[0] != '' && accData[0].length > 0) {
 			var loginForm = DH.getObject('loginform');
 			loginForm.name.value = accData[0];
 			loginForm.password.value = accData[1];
@@ -40,7 +48,7 @@ var DIWIAPP = {
 
 		DIWIAPP.imageSwap();
 		// Swap images in top (just for fun)
-		window.setInterval(DIWIAPP.imageSwap, 20000);
+		window.setInterval(DIWIAPP.imageSwap, 30000);
 	},
 
 // called from form submit
@@ -58,7 +66,7 @@ var DIWIAPP = {
 
 	logout: function() {
 		DIWIAPP.pr('uitloggen...');
-		// KW.clearAccount();
+		KW.clearAccount();
 		// KeyWorx client
 		KW.logout();
 		return false;
@@ -66,7 +74,7 @@ var DIWIAPP = {
 
 	restoreSession: function() {
 		SRV.init();
-		SRV.url = '/diwi/srv/get.jsp?';
+		SRV.url = DIWIAPP.PORTAL + '/srv/get.jsp?';
 		KW.restoreSession();
 	},
 
@@ -74,6 +82,14 @@ var DIWIAPP = {
 	sendHeartbeat: function() {
 		var doc = KW.createRequest('echo-req');
 		KW.post(DIWIAPP.onRsp, doc);
+	},
+
+	toggleAutoLogin: function() {
+		DIWIAPP.autoLogin = DH.getObject('autologin').checked;
+		if (DIWIAPP.autoLogin == false) {
+			KW.clearAccount();
+		}
+		// DIWIAPP.pr('autologin=' + autologin);
 	},
 
 	onRsp: function(elm) {
@@ -88,11 +104,12 @@ var DIWIAPP = {
 			DIWIAPP.personId = elm.getElementsByTagName('personid')[0].childNodes[0].nodeValue;
 			KW.selectApp('geoapp', 'user');
 		} else if (elm.tagName == 'select-app-rsp') {
-			DIWIAPP.hbTimer = window.setInterval('DIWIAPP.sendHeartbeat()', 60000)
-
-			KW.storeAccount();
-			KW.storeSession();
-			DIWINAV.onLogin();
+			DIWIAPP.hbTimer = window.setInterval('DIWIAPP.sendHeartbeat()', 120000)
+			if (DIWIAPP.autoLogin == true) {
+				KW.storeAccount();
+				KW.storeSession();
+			}
+ 			DIWINAV.onLogin();
 		} else if (elm.tagName == 'echo-rsp') {
 		} else if (elm.tagName == 'logout-rsp') {
 			window.clearInterval(DIWIAPP.hbTimer);

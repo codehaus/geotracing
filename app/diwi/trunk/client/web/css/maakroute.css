@@ -67,7 +67,27 @@
 
 #afstand-lb {
 	top: 30px;
-	left: 345px;
+	left: 200px;
+}
+
+
+#butmaakeigenroute {
+/*
+	top: 420px;
+ */
+	position: absolute;
+	width: 80px;
+	top: 60px;
+	left: 390px;
+	z-index: 60;
+}
+
+#maakroutebox {
+	position: absolute;
+	width: auto;
+	top: 30px;
+	left: 565px;
+	z-index: 50;
 }
 
 #caption1 {
@@ -221,14 +241,6 @@
 	top: 390px;
 }
 
-#butmaakeigenroute {
-	position: absolute;
-	width: 80px;
-	top: 420px;
-	left: 390px;
-	z-index: 60;
-}
-
 #total {
 	position: absolute;
 	width: 50px;
@@ -259,13 +271,7 @@
 	line-height: 8px;
 }
 
-#maakroutebox {
-	position: absolute;
-	width: auto;
-	top: 30px;
-	left: 565px;
-	z-index: 50;
-}
+
 
 #leguitbox {
 	position: absolute;

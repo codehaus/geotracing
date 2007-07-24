@@ -4,10 +4,7 @@ package nl.diwi.control;
 // Distributable under LGPL license. See terms of license at gnu.org.$
 
 
-import nl.diwi.logic.LogLogic;
-import nl.diwi.logic.RouteLogic;
-import nl.diwi.logic.MapLogic;
-import nl.diwi.logic.NavigationLogic;
+import nl.diwi.logic.*;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
@@ -18,6 +15,7 @@ import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
+import org.keyworx.oase.api.OaseException;
 import org.postgis.PGbox2d;
 import org.geotracing.handler.HandlerUtil;
 
@@ -87,7 +85,7 @@ public class RouteHandler extends DefaultHandler implements ThreadSafe, Constant
         return new UtopiaResponse(response);
     }
 
-    private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException, OaseException {
         RouteLogic logic = createLogic(anUtopiaReq);
 		int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
 		int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
@@ -99,7 +97,8 @@ public class RouteHandler extends DefaultHandler implements ThreadSafe, Constant
 		int personId = HandlerUtil.getUserId(anUtopiaReq);
 
 		NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-		String url = mapLogic.getMapURL(routeId, navLogic.isUserContentEnabled(personId), bbox.getLLB(), bbox.getURT(), width, height);
+		String routePOIs = DIWIQueryLogic.getRoutePOIs(routeId);
+		String url = mapLogic.getMapURL(routeId, routePOIs, navLogic.isUserContentEnabled(personId), bbox.getLLB(), bbox.getURT(), width, height);
 
 		try {
 			response.setAttr(URL_FIELD, URLEncoder.encode(url, "UTF-8"));

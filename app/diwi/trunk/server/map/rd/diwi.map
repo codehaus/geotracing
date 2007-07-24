@@ -201,7 +201,7 @@ LAYER
 	NAME "diwi_pois_sel"
 	CONNECTIONTYPE postgis
 	CONNECTION "user=oaseuser password=oase dbname=$[portal.name] host=localhost"
-	DATA "rdpoint from (select id,rdpoint,type from diwi_poi where id in (%ID%) ) as foo using unique id using SRID=28992"
+	DATA "rdpoint from (select id,rdpoint,type from diwi_poi where id in (%POIIDS%) ) as foo using unique id using SRID=28992"
 
 	DEBUG OFF
 	TYPE POINT

@@ -10,24 +10,35 @@ $Id$
 
 	<property file="../../build.properties"/>
 
+	<property name="build.dir" value="${basedir}/../build/map" />
     <property name="runtime.properties" value="../runtime.test.properties" />
     <property file="${runtime.properties}" />
 
-    <target name="deploy-local">
-		<copy todir="${deploy.local.dir}/${portal.name}/map">
+	<target name="processvars">
+		<delete dir="${build.dir}" />
+		<mkdir dir="${build.dir}" />
+		<copy todir="${build.dir}">
+			<fileset dir="rd"/>
+		</copy>
+		<replace dir="${build.dir}" token="$[portal.name]" value="${portal.name}"/>
+
+	</target>
+
+    <target name="deploy-local" >
+		<copy todir="${deploy.local.dir}/diwi/map">
 			<fileset dir="rd"/>
 		</copy>
 
-        <replace dir="${deploy.local.dir}/${portal.name}/map" token="$[portal.name]" value="${portal.name}"/>        
+        <replace dir="${deploy.local.dir}/diwi/map" token="$[portal.name]" value="diwi"/>
 
-        <chmod file="${deploy.local.dir}/${portal.name}/map/index.cgi" perm="ugo+rx"/>
-		<mkdir dir="${deploy.local.dir}/${portal.name}/map/tmp"/>
+        <chmod file="${deploy.local.dir}/diwi/map/index.cgi" perm="ugo+rx"/>
+		<mkdir dir="${deploy.local.dir}/diwi/map/tmp"/>
 	</target>
 
-    <target name="deploy-berlin">
+    <target name="deploy-berlin" depends="processvars">
 		<exec executable="scp">
-			<arg line="rd/index.cgi"/>
-			<arg line="rd/diwi.map"/>
+			<arg line="${build.dir}/diwi.map"/>
+			<arg line="${build.dir}/index.cgi"/>
 			<arg line="${deploy.test.server}:/var/keyworx/webapps/${portal.name}/map"/>
 		</exec>
 	</target>

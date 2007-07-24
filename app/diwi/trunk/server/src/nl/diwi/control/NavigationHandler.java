@@ -318,7 +318,7 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 		return new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 	}
 
-	private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException {
+	private JXElement getMap(UtopiaRequest anUtopiaReq) throws UtopiaException, OaseException {
 		MapLogic mapLogic = new MapLogic();
 		NavigationLogic navLogic = createLogic(anUtopiaReq);
 
@@ -339,7 +339,8 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 		Record route = navLogic.getActiveRoute(personId);
 		if (route != null) {
 			// Following a route
-			mapURL = mapLogic.getMapURL(route.getId(), navLogic.isUserContentEnabled(personId), llb, urt, width, height);
+			String routePOIs = DIWIQueryLogic.getRoutePOIs(route.getId());
+			mapURL = mapLogic.getMapURL(route.getId(), routePOIs, navLogic.isUserContentEnabled(personId), llb, urt, width, height);
 		} else {
 			// Roaming
 			String layers = "topnl_diwiwms,diwi_pois";
