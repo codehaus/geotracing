@@ -4,8 +4,8 @@
     <!--<testset file="routehome-scenario.xml"/>-->
     <!--<testset file="registration-scenario.xml"/>-->
     <!--<testset file="sync-scenario.xml"/>-->
-    <testset file="cms-scenario.xml"/>
-    <!--<testset file="webclient-scenario1.xml"/>-->
+    <!--<testset file="cms-scenario.xml"/>-->
+    <testset file="webclient-scenario1.xml"/>
     <!--<testset file="mobileclient-scenario.xml"/>-->
     <!--<testset file="webclient-scenario2.xml"/>-->
     <!--<testset file="report-scenario.xml"/>-->

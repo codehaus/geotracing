@@ -8,6 +8,7 @@ import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Java;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.data.UtopiaException;
@@ -17,7 +18,7 @@ import org.keyworx.utopia.core.session.UtopiaResponse;
 import java.util.Vector;
 
 
-public class POIHandler extends DefaultHandler implements Constants {
+public class POIHandler extends DefaultHandler implements ThreadSafe, Constants {
     public final static String POI_INSERT_SERVICE = "poi-insert";
     public final static String POI_GETLIST_SERVICE = "poi-getlist";
     public final static String POI_GET_SERVICE = "poi-get";

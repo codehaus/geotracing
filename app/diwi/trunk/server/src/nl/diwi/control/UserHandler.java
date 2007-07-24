@@ -8,6 +8,7 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
 import org.keyworx.server.ServerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.*;
 import org.keyworx.utopia.core.logic.PersonLogic;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -25,7 +26,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
 
-public class UserHandler extends DefaultHandler implements Constants {
+public class UserHandler extends DefaultHandler implements ThreadSafe, Constants {
 
     public final static String USER_GET_PREFERENCES_SERVICE = "user-get-preferences";
     public final static String USER_GET_STATS_SERVICE = "user-get-stats";

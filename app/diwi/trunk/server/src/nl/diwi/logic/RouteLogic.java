@@ -173,53 +173,53 @@ public class RouteLogic implements Constants {
 				}
 				log.info("now inserting route.");
 				//Process the GPX into datastructures
-				try {
-					route = oase.getModifier().create(ROUTE_TABLE);
-					Format formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
 
-					String description = person.getStringField(Person.FIRSTNAME_FIELD) + " "
-							+ person.getStringField(Person.LASTNAME_FIELD)
-							+ "'s " + aType + " generated at " + formatter.format(new Date())
-							+ " -  " + prefString;
+                route = oase.getModifier().create(ROUTE_TABLE);
+                Format formatter = new SimpleDateFormat("EEEE, dd MMM yyyy HH:mm:ss");
 
-					String gpxName = generated.getChildText(NAME_ELM);
-					if (gpxName != null && gpxName.length() > 0) {
-						description = gpxName + description;
-					}
+                String description = person.getStringField(Person.FIRSTNAME_FIELD) + " "
+                        + person.getStringField(Person.LASTNAME_FIELD)
+                        + "'s " + aType + " generated at " + formatter.format(new Date())
+                        + " -  " + prefString;
 
-					if (aType.equals(GENERATE_PREFS_ROUTE)) {
-						route.setStringField(NAME_FIELD, "persoonlijke route");
-                        route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
-                    } else {
-						route.setStringField(NAME_FIELD, "route terug");
-                        route.setIntField(TYPE_FIELD, ROUTE_TYPE_DIRECT);
-                    }
-					route.setStringField(DESCRIPTION_FIELD, description);					
-					route.setIntField(STATE_FIELD, ACTIVE_STATE);
+                String gpxName = generated.getChildText(NAME_ELM);
+                if (gpxName != null && gpxName.length() > 0) {
+                    description = gpxName + description;
+                }
 
-					// we receive the gpx file in RD
-					LineString rdLineString = GPXUtil.GPXRoute2LineString(generated);
-					PGgeometryLW rdGeom = new PGgeometryLW(rdLineString);
-					route.setObjectField(RDPATH_FIELD, rdGeom);
+                if (aType.equals(GENERATE_PREFS_ROUTE)) {
+                    route.setStringField(NAME_FIELD, "persoonlijke route");
+                    route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+                } else {
+                    route.setStringField(NAME_FIELD, "route terug");
+                    route.setIntField(TYPE_FIELD, ROUTE_TYPE_DIRECT);
+                }
+                route.setStringField(DESCRIPTION_FIELD, description);
+                route.setIntField(STATE_FIELD, ACTIVE_STATE);
 
-					// but also store it in WGS84
-					LineString wgsLineString = GPXUtil.GPXRoute2LineString(generated);
-					wgsLineString = ProjectionConversionUtil.RD2WGS84(wgsLineString);
-					PGgeometryLW wgsGeom = new PGgeometryLW(wgsLineString);
-					route.setObjectField(WGSPATH_FIELD, wgsGeom);
+                // we receive the gpx file in RD
+                LineString rdLineString = GPXUtil.GPXRoute2LineString(generated);
+                PGgeometryLW rdGeom = new PGgeometryLW(rdLineString);
+                route.setObjectField(RDPATH_FIELD, rdGeom);
 
-					oase.getModifier().insert(route);
+                // but also store it in WGS84
+                LineString wgsLineString = GPXUtil.GPXRoute2LineString(generated);
+                wgsLineString = ProjectionConversionUtil.RD2WGS84(wgsLineString);
+                PGgeometryLW wgsGeom = new PGgeometryLW(wgsLineString);
+                route.setObjectField(WGSPATH_FIELD, wgsGeom);
 
-					// now relate the route to the person
-					oase.getRelater().relate(person, route);
+                oase.getModifier().insert(route);
 
-					// now update the distance
-					Record r = oase.getFinder().read(route.getId());
-					r.setIntField(DISTANCE_FIELD, getDistance(r));
-					oase.getModifier().update(r);
-				} catch (OaseException e) {
-					e.printStackTrace();
-				}
+                // now relate the route to the person
+                oase.getRelater().relate(person, route);
+
+                // now update the distance
+                Record r = oase.getFinder().read(route.getId());
+                r.setIntField(DISTANCE_FIELD, getDistance(r));
+                oase.getModifier().update(r);
+
+                // now relate all poi's to the route
+                relatePois(route, generated);                
 			}
 
 			if (route == null) {
@@ -236,7 +236,6 @@ public class RouteLogic implements Constants {
 
 	public int insertRoute(JXElement aRouteElement, int aRouteType) throws UtopiaException {
 		Record route;
-		POILogic poiLogic = new POILogic(oase);
 		try {
 			boolean insert = true;
 			// fixed routes have unique names so check first
@@ -279,17 +278,8 @@ public class RouteLogic implements Constants {
 			oase.getModifier().update(r);
 
 			// now relate all poi's to the route
-			Vector wpts = aRouteElement.getChildByTag("gpx").getChildrenByTag("wpt");
-			for (int i = 0; i < wpts.size(); i++) {
-				JXElement wpt = (JXElement) wpts.elementAt(i);
-				String kichId = wpt.getChildText(NAME_FIELD);
-				Record[] pois = oase.getFinder().queryTable(POI_TABLE, KICHID_FIELD + "='" + kichId.trim() + "'", null, null);
-				if (pois.length == 1) {
-					// create relation
-					oase.getRelater().relate(route, pois[0]);
-				}
-			}
-
+            relatePois(route, aRouteElement.getChildByTag("gpx"));
+            
 		} catch (Throwable t) {
 			log.error("Exception in insertRoute: " + t.toString());
 			throw new UtopiaException("Error in insertRoute", t, ErrorCode.__6006_database_irregularity_error);
@@ -297,7 +287,25 @@ public class RouteLogic implements Constants {
 		return route.getId();
 	}
 
-	public JXElement getRoute(int routeId) throws UtopiaException {
+    private void relatePois(Record aRoute, JXElement aGPX)throws UtopiaException{
+        try{
+            Vector wpts = aGPX.getChildrenByTag("wpt");
+			for (int i = 0; i < wpts.size(); i++) {
+				JXElement wpt = (JXElement) wpts.elementAt(i);
+				String kichId = wpt.getChildText(NAME_FIELD);
+				Record[] pois = oase.getFinder().queryTable(POI_TABLE, KICHID_FIELD + "='" + kichId.trim() + "'", null, null);
+				if (pois.length == 1) {
+					// create relation
+					oase.getRelater().relate(aRoute, pois[0]);
+				}
+			}
+        } catch (Throwable t) {
+			log.error("Exception in insertRoute: " + t.toString());
+			throw new UtopiaException("Error in insertRoute", t, ErrorCode.__6006_database_irregularity_error);
+		}
+    }
+
+    public JXElement getRoute(int routeId) throws UtopiaException {
 		JXElement routeElm;
 		try {
 			routeElm = getRoute(oase.getFinder().read(routeId));
