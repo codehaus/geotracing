@@ -51,19 +51,19 @@ public class RouteLogic implements Constants {
 	}
 
 	/*
-		 <route-generate-req >
-			  <pref name="bos" value="40" type="outdoor-params" />
-			  <pref name="heide" value="20" type="outdoor-params" />
-			  <pref name="bebouwing" value="10" type="outdoor-params" />
-			  <pref name="thema" value="forts" type="theme" />
-			  <pref name="activiteit" value="wandelaar" type="activity" />
-			  <pref name="startpunt" value="nijevelt" type="route" />
-			  <pref name="eindpunt" value="groningen" type="route" />
-			  <pref name="lengte" value="130" type="route" />
-		 </route-generate-req>
+     <route-generate-req >
+          <pref name="bos" value="40" type="outdoor-params" />
+          <pref name="heide" value="20" type="outdoor-params" />
+          <pref name="bebouwing" value="10" type="outdoor-params" />
+          <pref name="thema" value="forts" type="theme" />
+          <pref name="activiteit" value="wandelaar" type="activity" />
+          <pref name="startpunt" value="nijevelt" type="route" />
+          <pref name="eindpunt" value="groningen" type="route" />
+          <pref name="lengte" value="130" type="route" />
+     </route-generate-req>
 
-		 return vector of Route record converted to JXElement.
-		*/
+     return vector of Route record converted to JXElement.
+    */
 	public JXElement generateRoute(JXElement reqElm, int aPersonId, String aType) throws UtopiaException {
 		try {
 			Record person = oase.getFinder().read(aPersonId);
@@ -160,10 +160,10 @@ public class RouteLogic implements Constants {
 			if (generated != null && generated.hasChildren() && generated.getChildByTag("rte") != null && generated.getChildByTag("rte").hasChildren())
 			{
 				//make sure all other generated routes are set to 'inactive'
-				String tables = "diwi_route,utopia_person";
-				String fields = "diwi_route.id";
-				String where = "diwi_route.type=" + ROUTE_TYPE_GENERATED + " AND utopia_person.id=" + aPersonId;
-				String relations = "diwi_route,utopia_person";
+				String tables = ROUTE_TABLE + "," + Person.TABLE_NAME;
+				String fields = ROUTE_TABLE + "." + ID_FIELD;
+				String where = ROUTE_TABLE + "." + TYPE_FIELD + "=" + ROUTE_TYPE_GENERATED + " AND " + Person.TABLE_NAME + "." + ID_FIELD + "=" + aPersonId;
+				String relations = ROUTE_TABLE + "," + Person.TABLE_NAME;
 				String postCond = null;
 				Record[] gens = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
 				for (int i = 0; i < gens.length; i++) {
@@ -214,9 +214,8 @@ public class RouteLogic implements Constants {
                 oase.getRelater().relate(person, route);
 
                 // now update the distance
-                Record r = oase.getFinder().read(route.getId());
-                r.setIntField(DISTANCE_FIELD, getDistance(r));
-                oase.getModifier().update(r);
+                route.setIntField(DISTANCE_FIELD, getDistance(route.getId()));
+                oase.getModifier().update(route);
 
                 // now relate all poi's to the route
                 relatePois(route, generated);                
@@ -226,7 +225,7 @@ public class RouteLogic implements Constants {
 				return new JXElement(ROUTE_ELM);
 			} else {
 				//Convert Route record to XML and add to result
-				return getRoute(route);
+				return route.toXML();
 			}
 		} catch (Throwable t) {
 			log.error("Exception in generateRoute: " + t.toString());
@@ -273,9 +272,8 @@ public class RouteLogic implements Constants {
 			}
 
 			// now update the distance
-			Record r = oase.getFinder().read(route.getId());
-			r.setIntField(DISTANCE_FIELD, getDistance(r));
-			oase.getModifier().update(r);
+			route.setIntField(DISTANCE_FIELD, getDistance(route.getId()));
+			oase.getModifier().update(route);
 
 			// now relate all poi's to the route
             relatePois(route, aRouteElement.getChildByTag("gpx"));
@@ -305,31 +303,29 @@ public class RouteLogic implements Constants {
 		}
     }
 
-    public JXElement getRoute(int routeId) throws UtopiaException {
-		JXElement routeElm;
+    public JXElement getRoute(int aRouteId) throws UtopiaException {
 		try {
-			routeElm = getRoute(oase.getFinder().read(routeId));
+            String tables = ROUTE_TABLE;
+            String fields = ID_FIELD + "," + NAME_FIELD + "," + DESCRIPTION_FIELD + "," + DISTANCE_FIELD;
+            String where = ID_FIELD + "=" + aRouteId;
+            Record[] routes = QueryLogic.queryStore(oase, tables, fields, where, null, null);
+            if(routes.length == 0) throw new UtopiaException("No route found with id:" + aRouteId);
+
+            return routes[0].toXML();
 		} catch (Throwable t) {
 			log.error("Exception in getRoute: " + t.toString());
 			throw new UtopiaException("Error in getRoute", t, ErrorCode.__6006_database_irregularity_error);
 		}
-		return routeElm;
 	}
 
-	public JXElement getRoute(Record aRoute) throws UtopiaException {
-		JXElement routeElm;
-		try {
-			routeElm = XML.createElementFromRecord(ROUTE_ELM, aRoute);
-			routeElm.removeChildByTag(WGSPATH_FIELD);
-			routeElm.removeChildByTag(RDPATH_FIELD);
-		} catch (Throwable t) {
-			log.error("Exception in getRoute: " + t.toString());
-			throw new UtopiaException("Error in getRoute", t, ErrorCode.__6006_database_irregularity_error);
-		}
-		return routeElm;
-	}
-
-	public Vector getRoutes(String aRouteType, String aPersonId) throws UtopiaException {
+    /**
+     * Retrieves routes by type: either fixed, direct or generated
+     * @param aRouteType the route type
+     * @param aPersonId the person id
+     * @return a vector with route elements
+     * @throws UtopiaException the standard exception
+     */
+    public Vector getRoutes(String aRouteType, String aPersonId) throws UtopiaException {
 		Vector results;
 		try {
 			int type = -1;
@@ -342,9 +338,11 @@ public class RouteLogic implements Constants {
 			}
 			Record[] routes;
 			if (type == ROUTE_TYPE_GENERATED) {
-				String tables = "diwi_route,utopia_person";
-				String fields = "diwi_route.id,diwi_route.name,diwi_route.description,diwi_route.distance";
-				String where = "diwi_route.type=" + type + " AND diwi_route.state=" + ACTIVE_STATE + " AND utopia_person.id=" + aPersonId;
+				String tables = ROUTE_TABLE + "," + Person.TABLE_NAME;
+				String fields = ROUTE_TABLE + "." + ID_FIELD + "," + ROUTE_TABLE + "." + NAME_FIELD + "," +
+                        ROUTE_TABLE + "." + DESCRIPTION_FIELD + "," + ROUTE_TABLE + "." + DISTANCE_FIELD;
+				String where = ROUTE_TABLE + "." + TYPE_FIELD + "=" + type + " AND " + ROUTE_TABLE + "." +
+                        STATE_FIELD + "=" + ACTIVE_STATE + " AND " + Person.TABLE_NAME + "." + ID_FIELD + "=" + aPersonId;
 				String relations = "diwi_route,utopia_person";
 				routes = QueryLogic.queryStore(oase, tables, fields, where, relations, null);
 			} else {
@@ -353,7 +351,7 @@ public class RouteLogic implements Constants {
 
 			results = new Vector(routes.length);
 			for (int i = 0; i < routes.length; i++) {
-				results.add(getRoute(routes[i]));
+				results.add(routes[i].toXML());
 			}
 		} catch (Throwable t) {
 			log.error("Exception in getRoutes: " + t.toString());
@@ -377,19 +375,31 @@ public class RouteLogic implements Constants {
 		}
 	}
 
-	private int getDistance(Record route) throws OaseException {
-		// select spatial.Length2d_spheroid( spatial.Makeline( pstart.geometry, pend.geometry  )  , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from RPosition pstart, RPosition as pend where pstart = :pstart and pend = :pend
-		// "select Length2d_spheroid(path , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) from diwi_route as distance where id ="
-		// old: "select length2d(path) AS distance from diwi_route where id="
+    /**
+     * Calculate the distance of a route
+     * @param aRouteId the route id
+     * @return the sitance
+     * @throws UtopiaException the standard exception
+     */
+    private int getDistance(int aRouteId) throws UtopiaException {
+        try{
+            Record distance = oase.getFinder().freeQuery(
+                    "select length2d_spheroid(wgspath , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) as distance from diwi_route where id ="
+                            + aRouteId)[0];
 
-		Record distance = oase.getFinder().freeQuery(
-				"select length2d_spheroid(wgspath , 'SPHEROID[\"WGS_1984\", 6378137, 298.257223563]' ) as distance from diwi_route where id ="
-						+ route.getId())[0];
+            return (int) Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());
+        }catch(Throwable t){
+            throw new UtopiaException(t.toString());
+        }
+    }
 
-		return (int) Float.parseFloat(distance.getField(DISTANCE_FIELD).toString());
-	}
-
-	public PGbox2d getBBox(int routeId) throws UtopiaException {
+    /**
+     * Gets the bounding box for a route
+     * @param routeId the route
+     * @return
+     * @throws UtopiaException
+     */
+    public PGbox2d getBBox(int routeId) throws UtopiaException {
 		Record bounds;
 		try {
 			bounds = oase.getFinder().freeQuery("select extent(rdpath) AS bbox from diwi_route where id=" + routeId)[0];
