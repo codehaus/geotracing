@@ -64,7 +64,15 @@ public class RouteLogic implements Constants {
 
      return vector of Route record converted to JXElement.
     */
-	public JXElement generateRoute(JXElement reqElm, int aPersonId, String aType) throws UtopiaException {
+    /**
+     * Generates a route based on preferences
+     * @param reqElm the xml element with the prefs
+     * @param aPersonId the person id
+     * @param aType a route type: personal or home
+     * @return the route xml element
+     * @throws UtopiaException the standard exception
+     */
+    public JXElement generateRoute(JXElement reqElm, int aPersonId, String aType) throws UtopiaException {
 		try {
 			Record person = oase.getFinder().read(aPersonId);
 
@@ -233,7 +241,14 @@ public class RouteLogic implements Constants {
 		}
 	}
 
-	public int insertRoute(JXElement aRouteElement, int aRouteType) throws UtopiaException {
+    /**
+     * Creates a new route
+     * @param aRouteElement a route xml element
+     * @param aRouteType the route type
+     * @return the route id
+     * @throws UtopiaException the standard exception
+     */
+    public int insertRoute(JXElement aRouteElement, int aRouteType) throws UtopiaException {
 		Record route;
 		try {
 			boolean insert = true;
