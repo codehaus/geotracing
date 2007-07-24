@@ -358,10 +358,12 @@ public class RouteLogic implements Constants {
                         ROUTE_TABLE + "." + DESCRIPTION_FIELD + "," + ROUTE_TABLE + "." + DISTANCE_FIELD;
 				String where = ROUTE_TABLE + "." + TYPE_FIELD + "=" + type + " AND " + ROUTE_TABLE + "." +
                         STATE_FIELD + "=" + ACTIVE_STATE + " AND " + Person.TABLE_NAME + "." + ID_FIELD + "=" + aPersonId;
-				String relations = "diwi_route,utopia_person";
+				String relations = ROUTE_TABLE + "," + Person.TABLE_NAME;
 				routes = QueryLogic.queryStore(oase, tables, fields, where, relations, null);
 			} else {
-				routes = oase.getFinder().queryTable(ROUTE_TABLE, TYPE_FIELD + "=" + type, null, null);
+                String query = "SELECT " + ID_FIELD + "," + NAME_FIELD + "," + DESCRIPTION_FIELD + "," + DISTANCE_FIELD +
+                        " FROM " + ROUTE_TABLE + " WHERE " + TYPE_FIELD + "=" + type;
+                routes = oase.getFinder().freeQuery(query);                
 			}
 
 			results = new Vector(routes.length);
