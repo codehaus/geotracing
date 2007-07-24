@@ -28,10 +28,10 @@ public class MapLogic implements Constants {
 			throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
 		}
 
-        return Amuse.server.getPortal().getProperty(SITE_URL) + "/map?LAYERS=" + theLayers + "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+		return Amuse.server.getPortal().getProperty(SITE_URL) + "/map?LAYERS=" + theLayers + "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
 	}
 
-	public String getMapURL(int routeId, boolean showUGC, Point llb, Point urt, double width, double height) throws UtopiaException {
+	public String getMapURL(int routeId, String poiIds, boolean showUGC, Point llb, Point urt, double width, double height) throws UtopiaException {
 
 		double boundsHeight = urt.y - llb.y;
 		double boundsWidth = urt.x - llb.x;
@@ -60,12 +60,21 @@ public class MapLogic implements Constants {
 		urt.y += padHeight / 2;
 
 		String layers = "topnl_diwiwms,diwi_routes_sel";
+		if (poiIds != null) {
+			layers = layers + ",diwi_pois_sel";
+		}
+
 		if (showUGC) {
 			layers += ",diwi_ugc";
 		}
 
 		// Route id is really part of the layers
 		layers = layers + "&ID=" + routeId;
+		if (poiIds != null) {
+			// Append , separated list of poi ids
+			layers = layers + "&POIIDS=" + poiIds;
+		}
+		
 		return getMapURL(layers, llb, urt, (int) width, (int) height);
 	}
 }

@@ -38,7 +38,7 @@ var ROUTE = {
 	endPOIs: null,
 
 	createDistanceForm: function () {
-		var formHTML = '<p>Afstand</p><form><select id="afstand" ><option value="-1" selected="selected">kies...</option><option value="3000" >3 km</option><option value="5000" >5 km</option><option value="10000" >10 km</option><option value="15000" >15 km</option><option value="20000" >20 km</option></select></form>';
+		var formHTML = '<p>Wandelen/fietsen en afstand</p><form><select id="afstand" ><option value="-1" selected="selected">kies...</option><option value="3000" >wandelen 3 km</option><option value="5000" >wandelen 5 km</option><option value="10000" >fietsen 10 km</option><option value="15000" >fietsen 15 km</option><option value="20000" >fietsen 20 km</option></select></form>';
 
 		DH.setHTML('afstand-lb', formHTML);
 	},
@@ -83,8 +83,8 @@ var ROUTE = {
 		//KW.CMS.getthemes(ROUTE.createThemesForm);
 		ROUTE.createDistanceForm();
 
-		DH.getObject("wandelen").checked = true;
-		DH.getObject("fietsen").checked = false;
+		//DH.getObject("wandelen").checked = true;
+		//DH.getObject("fietsen").checked = false;
 
 		//	DH.getObject("wandelen").checked = true;
 		DIWIAPP.pr('Maak uw eigen route naar uw eigen voorkeuren! Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen. Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.');
@@ -206,7 +206,7 @@ var ROUTE = {
 		}
 
 
-		params['type'] = DH.getObject("wandelen").checked == true ? 'walking' : 'cycling';
+		params['type'] = distance < 10000 ? 'walking' : 'cycling';
 
 		KW.DIWI.generateroute(ROUTE.onCreateRouteRsp, params);
 		DIWIAPP.pr('even geduld, uw persoonlijke route wordt gegenereerd...');

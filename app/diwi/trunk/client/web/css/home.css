@@ -250,8 +250,14 @@ p {
 #logforminlogbut {
 	position: relative;
 	width: auto;
-	top: 0px;
-	left: 20px;
+	top: -40px;
+	left: 105px;
+	z-index: 200;
+}
+
+#autologin {
+	position: relative;
+	width: auto;
 	z-index: 200;
 }
 

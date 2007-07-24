@@ -6,6 +6,7 @@
 var TRIP = {
 	trips: null,
 	mediumPopup: null,
+
 	curTrip: {
 		points: null,
 		media: null,
@@ -79,11 +80,13 @@ var TRIP = {
 		var id = medium.getAttribute('id');
 		var kind = medium.getAttribute('kind');
 		var name = medium.getAttribute('name');
-		var html = '<img src="/diwi/media.srv?id=' + id + '&resize=240" /><br/>' + name;
+		var mediumURL = DIWIAPP.PORTAL + '/media.srv';
+
+		var html = '<img src="' + mediumURL + '?id=' + id + '&resize=240" /><br/>' + name;
 		if (kind == 'video') {
-			html = '<a href="/diwi/media.srv?id=' + id + '" target="_new" >view video: ' + name + '</a>';
+			html = '<a href="' + mediumURL + '?id=' + id + '" target="_new" >view video: ' + name + '</a>';
 		} else if (kind == 'text') {
-			html = name + '<br/><i>'+ DH.getURL('/diwi/media.srv?id=' + id) + '</i>';
+			html = name + '<br/><i>'+ DH.getURL(mediumURL + '?id=' + id) + '</i>';
 		}
 		var mediumPopup = new OpenLayers.Popup("mediumpopup",
 				new OpenLayers.LonLat(x, y),

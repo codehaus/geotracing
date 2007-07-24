@@ -95,7 +95,7 @@ var MAP = {
 		if (pois != null) {
 			MAP.overlays['routepois'] = new OpenLayers.Layer.WMS.Untiled('Route POIs',
 					// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
-					MAP.WMS_URL, {id: pois, layers: 'diwi_pois_sel', format: MAP.IMAGE_FORMAT, transparent: true});
+					MAP.WMS_URL, {poiids: pois, layers: 'diwi_pois_sel', format: MAP.IMAGE_FORMAT, transparent: true});
 
 			MAP.map.addLayer(MAP.overlays['routepois'] );
 		}
