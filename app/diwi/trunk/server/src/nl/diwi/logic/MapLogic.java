@@ -4,16 +4,17 @@ import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
+import org.keyworx.amuse.core.Amuse;
 import org.postgis.Point;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-public class MapLogic {
+import nl.diwi.util.Constants;
 
-	private static final String MAPPING_URL = "http://test.digitalewichelroede.nl/map/";
+public class MapLogic implements Constants {
+
 	private Log log = Logging.getLog("MapLogic");
-
 
 	public MapLogic() {
 	}
@@ -27,7 +28,7 @@ public class MapLogic {
 			throw new UtopiaException("Exception in getMapUrl", e, ErrorCode.__6006_database_irregularity_error);
 		}
 
-		return MAPPING_URL + "?LAYERS=" + theLayers + "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
+        return Amuse.server.getPortal().getProperty(SITE_URL) + "/map?LAYERS=" + theLayers + "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
 	}
 
 	public String getMapURL(int routeId, boolean showUGC, Point llb, Point urt, double width, double height) throws UtopiaException {
