@@ -1,0 +1,38 @@
+body {
+ font-size: 10pt;
+ font-family: verdana, arial, helvetica, sans-serif;
+ color:#5a3d1c;
+
+}
+
+a {
+ color: #98453D;
+ font-family: verdana, arial, helvetica, sans-serif;
+/* font-weight: 600;*/
+ text-decoration: underline;
+}
+a:link {
+}
+a:visited {
+}
+a:hover {
+/* background-color: #ffffff;*/
+}
+p{
+	margin-left:20px;
+	margin-right:20px;
+ line-height: 1.2em;
+ font-size: 0.7em;
+}
+
+H3{
+ margin-left:20px;
+ font-size: 14pt;
+}
+
+H4 {
+ line-height: 1.1em;
+ font-size: 0.6em;
+ margin: 0 0 0 0;
+ padding: 0;
+}

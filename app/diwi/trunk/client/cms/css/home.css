@@ -1,0 +1,337 @@
+body {
+	position: relative;
+	margin: 0px;
+	padding: 0;
+	font-size: 16pt;
+	font-family: verdana, arial, helvetica, sans-serif;
+	color:#5a3d1c;
+	background-color: #F6F8F5;
+}
+
+H1 {
+ font-family: Georgia, Times New Roman, Times, serif;
+ line-height: 1.6em;
+ font-size: 1.7em;
+ margin: 20px 20px 16px 20px;
+ padding: 0;
+}
+
+h2 {
+ font-family: verdana, arial, helvetica, sans-serif;
+ margin: 0 0 5px 0;
+ padding: 0;
+ font-size: 1.1em;
+}
+
+.content>p {
+ margin: 0;
+}
+.content>p+p {
+ text-indent: 30px;
+}
+a {
+ color: #98453D;
+ font-family: verdana, arial, helvetica, sans-serif;
+/* font-weight: 600;*/
+ text-decoration: underline;
+ cursor:pointer;
+}
+a:link {
+}
+a:visited {
+}
+a:hover {
+/* background-color: #ffffff;*/
+}
+p{
+	margin-left:20px;
+	margin-right:20px;
+ line-height: 1.2em;
+}
+
+H3{
+ margin-left:20px;
+ font-size: 1.0em;
+}
+
+H4 {
+ line-height: 1.1em;
+ font-size: 0.6em;
+ margin: 0 0 0 0;
+ padding: 0;
+}
+
+/* All the content boxes belong to the content class. */
+.header {
+ position: relative;
+ width: auto;
+ height:20
+ min-width: 120px;
+ margin: 0 210px 20px 170px;
+ z-index: 300;
+}
+
+
+#header {
+ position: absolute;
+ width: 100;
+ height:20
+ top: 20px;
+ left: 100px;
+ z-index: 1;
+ }
+
+.pagina {
+ position: absolute;
+ width: 100%;
+ top: 261px;
+ left: 0px;
+ z-index: 10;
+ background-color:#F6F8F5;
+}
+#Welkom {
+}
+
+#faq {
+ }
+#routespagina {
+ }
+#vasteroutes-lb{
+ position: absolute;
+ width: auto;
+ top: 20px;
+ left: 356;
+ z-index: 100;
+ }
+#vaste_routes_content{
+ position: absolute;
+ width: 597px;
+ top: 0px;
+ left: 0;
+ z-index: 70;
+ background-color:#F6F8F5;
+}
+#back{
+ position: absolute;
+ width: 800px;
+ top: 0px;
+ left: 0px;
+ z-index: 1;
+}
+#top {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 50;
+	width: 100%;
+	background-image: url(../images/back.gif);
+}
+#topfoto {
+ position: absolute;
+ width: auto;
+ top: 7px;
+ left: 210px;
+ z-index: 70;
+}
+#rechterkolom {
+ position: absolute;
+ width: auto;
+ top: 0px;
+ left: 598px;
+ z-index: 100;
+}
+#bovenbutlijn {
+ position: relative;
+ width: auto;
+ top: 0px;
+ left: -7px;
+ z-index: 20;
+}
+#butinloggen {
+ position: relative;
+ width: auto;
+ top: -5px;
+ left: 0px;
+ z-index: 200;
+}
+#butuitloggen {
+ position: relative;
+ width: auto;
+ top: -5px;
+ left: 0px;
+ z-index: 200;
+}
+#butmijnpagina {
+ position: relative;
+ width: auto;
+ top: -5px;
+ left: 0px;
+ z-index: 200;
+}
+#butmaakroute {
+ position: relative;
+ width: auto;
+ top: -5px;
+ left: 0px;
+ z-index: 200;
+}
+#onderbutlijn {
+ position: relative;
+ width: auto;
+ top: -5px;
+ left: 0px;
+ z-index: 100;
+}
+
+#inlogbox {
+	position:relative;
+	width: auto;
+	top: -5px;
+	left:10px;
+	z-index:100;
+}
+#inlogform {
+ position: relative;
+ width: auto;
+ top: -190px;
+ left: 20px;
+ z-index: 100;
+}
+#logforminlogbut{
+ position: relative;
+ width: auto;
+ top: -7px;
+ left: 20px;
+ z-index: 200;
+}
+#videobox {
+ position: relative;
+ width: auto;
+ top: -5px;
+ left: 10px;
+ z-index: 100;
+}
+#fotovideobox {
+ position: relative;
+ width: auto;
+ top: -185px;
+ left: 25px;
+ z-index: 200;
+}
+#spotmetbox {
+ position: relative;
+ width: auto;
+ top: -175px;
+ left: 8px;
+ z-index: 50;
+}
+#butintrovideo {
+ position: relative;
+ width: auto;
+ top: -307px;
+ left: 70px;
+ padding: 10px;
+ z-index: 100;
+}
+#watistext {
+ position: relative;
+ width: 140px;
+ top: -305px;
+ left: 85px;
+ z-index: 100;
+}
+
+#line {
+	position: absolute;
+	width: 100%;
+	top: 243px;
+	left: 0px;
+	z-index: 100;
+	background-color: #F6F8F5;
+}
+#pda {
+ position: absolute;
+ width: auto;
+ top: 500px;
+ left: 20px;
+ z-index: 100;
+}
+#fototekst {
+ position: absolute;
+ width: auto;
+ top: 138px;
+ left: 251px;
+ z-index: 100;
+ font-family:Georgia, "Times New Roman", Times, serif;
+ font-size:35px;
+ color:#FFFFFF;
+}
+#fototekst a{
+ text-decoration: none;
+ color:#FFFFFF;
+ cursor:pointer;
+}
+#fotoprev {
+ position: absolute;
+ background-color:#FF00CC;
+ width:140px;
+ height: 30px;
+ top: 30px;
+ left: -20px;
+ z-index: 500;
+}
+#fotonext {
+ position: absolute;
+ background-color:#FF00CC;
+ width:140px;
+ height: 30px;
+ top: 30px;
+ left: 140px;
+ z-index: 500;
+}
+#fotonavigatie {
+	color:#6600FF;
+}
+
+#tekst {
+ position: absolute;
+ width: auto;
+ top: 20px;
+ left: 250px;
+ padding: 10px;
+ z-index: 100;
+}
+
+
+#butwelkom {
+ position: absolute;
+ width: auto;
+ top: 205px;
+ left: 212px;
+ z-index: 100;
+}
+#butroutes {
+ position: absolute;
+ width: auto;
+ top: 205px;
+ left: 296px;
+ z-index: 100;
+}
+#butaanmelden {
+ position: absolute;
+ width: auto;
+ top: 205px;
+ left: 381px;
+ z-index: 100;
+}
+#butfaq {
+ position: absolute;
+ width: auto;
+ top: 205px;
+ left: 513;
+ z-index: 100;
+}
+.poidata {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 8pt;
+}

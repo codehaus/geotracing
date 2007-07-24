@@ -1,0 +1,746 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+  <style type="text/css">
+ 	 #map {
+	width: 500px;
+	height: 420px;
+	border: 1px solid black;
+	top: 253px;
+	left: 9px;
+	cursor:crosshair;
+	 }
+    </style>
+
+  //
+<script src="../web/lib/openlayers/lib/OpenLayers.js"></script>
+<script src="./js/floatlayer.js"></script>
+<script src="../web/lib/gt/DHTML.js"></script>
+<script src="../web/lib/gt/KWClient.js"></script>
+<script src="../web/lib/gt/KWClientExt.js"></script>
+<script src="../web/js/KWClientCMS.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Allerhande functies voor het inlezen en tekenen van pois en media
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+var smallPoi;
+var poiArray = new Array();
+var medArray = new Array();
+var poisLoaded = false;
+var mediaLoaded = false;
+
+var currentEditPoi;
+
+// leest xml-dom voor pois uit en zet alles in een array van poi objecten zodat
+// op dit moment nog goed trade-off. Wellicht bij grotere aantallen pois optimaliseren of 
+// procedure aanpassen
+	function parsePois( poiElms)
+	{
+  		momentOn();
+	    var errorCount = 0;
+		var errorFound = false;
+		var x=poiElms.getElementsByTagName('poi');
+		poiArray.length = 0;
+		//alert ("lengte: "+x.length);
+		for (c=0;c<x.length;c++)
+		{
+			smallPoi = new Object();
+		try{
+		//defaults
+		
+		smallPoi.p_Id = x[c].getElementsByTagName('id')[0].childNodes[0].nodeValue;
+	   
+	    if (x[c].getElementsByTagName('name')[0].hasChildNodes()) {smallPoi.p_Naam = x[c].getElementsByTagName('name')[0].childNodes[0].nodeValue;}
+			else { smallPoi.p_Naam = "geen naam";}
+	    if (x[c].getElementsByTagName('description')[0].hasChildNodes()) {smallPoi.p_Beschrijving = x[c].getElementsByTagName('description')[0].childNodes[0].nodeValue;}
+			else { smallPoi.p_Beschrijving = "geen beschrijving";}   
+	    if (x[c].getElementsByTagName('type')[0].hasChildNodes()) {smallPoi.p_Type = x[c].getElementsByTagName('type')[0].childNodes[0].nodeValue }
+			else { smallPoi.p_Type = "geen type";}   		
+	    if (x[c].getElementsByTagName('category')[0].hasChildNodes()) {smallPoi.p_Categorie = x[c].getElementsByTagName('category')[0].childNodes[0].nodeValue;	}				
+			else { smallPoi.p_Categorie = "geen categorie";}  		
+
+			
+ 		//gekoppelde media opvragen	en er een leuk lijstje van maken
+		// todo: nog link van maken zodat het simpel gepreviewd kan worden
+			var mList = "";
+			if (x[c].getElementsByTagName('media').length > 0){
+				if (x[c].getElementsByTagName('media')[0].hasChildNodes()) 
+				{
+						for (m=0;m<x[c].getElementsByTagName('media')[0].childNodes.length;m++)
+						{
+							if (x[c].getElementsByTagName('media')[0].childNodes[m].hasChildNodes()){
+								var media = x[c].getElementsByTagName('media')[0].childNodes[m].childNodes[0].nodeValue;
+								mList += "<a href='"+media+"' target='_blank'>"+media+"</a> <a href='javascript:ontKoppelMedia(\""+media+"\")'>&nbsp;&nbsp&rArr;&nbsp;&nbsp;delete link</a><br/>";
+							}
+						}
+				}
+			}
+			smallPoi.p_Media = mList;
+			if (x[c].getElementsByTagName('x')[0].hasChildNodes()) {smallPoi.p_X = x[c].getElementsByTagName('x')[0].childNodes[0].nodeValue;}
+				else { smallPoi.p_X = "9999";}   
+			if (x[c].getElementsByTagName('y')[0].hasChildNodes()) {smallPoi.p_Y = x[c].getElementsByTagName('y')[0].childNodes[0].nodeValue;}
+				else { smallPoi.p_Y	 = "9999";}   
+			poiArray[c] = smallPoi;
+			}
+			catch(err){ DH.setHTML('selectie','Foutieve pois aangetroffen: niet alle pois zijn geladen');
+			errorFound= true
+			errorCount++ 
+			}
+	}
+			if (errorFound){alert("Foutieve pois aangetroffen: er zijn " +errorCount+" pois niet geladen");}
+			//TST.getAllMedia();
+			addPoi();
+}	
+
+
+//function getPoi(p_ID)
+//{
+	
+//}
+
+
+//leest XMLdom voor Media uit en zet het in een layer
+function parseAllMedia(mediaElms)
+{
+	if (!mediaLoaded){
+		momentOn();
+		//alert('parseAllMedai');
+		var x = mediaElms.getElementsByTagName('medium');
+		//medArray.length = 0;
+		var medText = ""
+		for (c=0;c<x.length;c++)	
+			{
+				m_uri = unescape(x[c].getElementsByTagName('id')[0].childNodes[0].nodeValue);				
+				medText += "<a href='http://www.simlandscape.com/diwimedia/"+m_uri+"' target='blank'>"+m_uri+"</a>&nbsp;&nbsp&rArr;&nbsp;&nbsp;<a href='javascript:koppelMedia(\""+m_uri+"\")'>koppel</a><br>";
+		}
+		document.getElementById('med').innerHTML = medText
+		medText = null;
+	}
+	mediaLoaded = true;
+	momentOff();
+	showMe();
+}
+
+
+//laad poi's en media lijsten binnen
+function laadPois()
+{
+//momentOn();
+clearSelected();
+clearScanned();
+TST.getAllPoi();
+DH.setHTML('media','<strong>gekoppelde media:</strong><br/>');
+//momentOff();
+}
+	
+function checkNumber(x)
+{
+	var anum=/(^\d+$)|(^\d+\.\d+$)/ ;
+	if (anum.test(x))
+	{
+		testresult=true;
+	}
+	else
+	{
+		alert("Voer een getal in");
+		testresult=false;
+	}
+	return (testresult);
+}
+	
+//zoek pois binnen een cirkel met straal r
+function scanForPois(c_x,c_y)
+{
+    clearScanned();
+	onePoiFound = true;
+	sens = document.getElementById('clicksens').value;
+	if (checkNumber(sens))
+	{
+	 r = sens;
+	}
+	else 
+	{
+		document.getElementById('clicksens').value = 500;
+	}
+	 
+	if (poisLoaded){
+		DH.setHTML('selectie', 'Verhoog eventueel de gevoeligheid om de trefkans te vergroten, <br/>of houd de shift knop ingedrukt en trek een rechthoek om in te zoomen<br/>');
+	}
+	
+	try{
+		for (i=0;i<poiArray.length;i++)
+		{
+			 //berekening voor het vinden van punten binnen een cirkel via:
+			 // (x-c_x)2 + (y-c_y)2 = r2
+			  d_x = poiArray[i].p_X;
+			  d_y = poiArray[i].p_Y;
+	
+			  rad = Math.sqrt (Math.abs(d_x-c_x))+Math.sqrt(Math.abs(d_y-c_y)); 
+			  if (rad < Math.sqrt(r)) 
+			  {
+			  	   drawScanned(poiArray[i].p_X,poiArray[i].p_Y);
+				   poiSelected = poiArray[i].p_Id+": "+poiArray[i].p_Naam;
+   				   if (onePoiFound) { DH.setHTML('selectie', 'Geselecteerde punten:'); }				   
+			       DH.addHTML('selectie', '<br>'+poiSelected+'&nbsp;<a href= "javascript:fillPoiForm('+poiArray[i].p_Id+');">Edit</a>');
+				   onePoiFound = false;
+			  }
+		}		 
+	}catch(err)
+	{
+	 DH.setHTML('selectie','FOUT: '+err);
+	}
+}
+
+//check of formulier correct is ingevuld
+function checkPoiForm(form)
+{
+	 if (form.type.value == "") {
+		alert( "Type POI ontbreekt" );
+		form.type.focus();
+		return false ; 
+	}
+	 if (form.x.value == "") {
+		alert( "X ontbreekt" );
+		form.x.focus();
+		return false ; 
+	}
+	
+	 if (form.y.value == "") {
+		alert( "Y ontbreekt" );
+		form.y.focus();
+		return false ; 
+	}
+	
+	 if (form.category.value == "") {
+		alert( "Category ontbreekt" );
+		form.category.focus();
+		return false ; 
+	}
+	
+	 if (form.name.value == "") {
+    alert( "Naam ontbreekt" );
+    form.name.focus();
+    return false ; 
+	}
+
+	 if (form.description.value == "") {
+    alert( "Omschrijving ontbreekt" );
+    form.description.focus();
+    return false ; 
+	}
+
+ return true;
+}
+
+// vult het update formulier met pois gegevens
+function fillPoiForm(poiId)
+{
+try{
+	for (i=0;i<poiArray.length;i++)	
+	{
+	//alert (poiArray[i].p_Id+", "+poiId);
+		if (poiArray[i].p_Id == poiId)	
+		{
+			document.poidata.x.value = poiArray[i].p_X;
+			document.poidata.y.value = poiArray[i].p_Y;
+			document.poidata.id.value = poiArray[i].p_Id;		
+			document.poidata.name.value = poiArray[i].p_Naam;				
+			document.poidata.description.value = poiArray[i].p_Beschrijving;
+			//alert (document.poidata.category.length	);
+			//for(i=0;i<document.poidata.category.length;i++)
+			//{
+			//	if (document.poidata.category.options[i].value==poiArray[i].p_Categorie)
+			//	{
+			//		document.poidata.category.selectedIndex=i
+			//	}
+			//}
+			//document.poidata.category.value = poiArray[i].p_Categorie;				
+			document.poidata.type.value = poiArray[i].p_Type;					
+			DH.setHTML('media','<strong>Reeds gekoppelde media:</strong><p/>');
+			DH.addHTML('media',poiArray[i].p_Media);
+			currentEditPoi = poiId;
+			drawSelected(poiArray[i].p_X,poiArray[i].p_Y);
+	    }
+	}
+ }catch(err){DH.setHTML('selectie','FOUT: '+err);}
+
+}
+
+
+function momentOn()
+{
+document.getElementById("moment").style.visibility="visible"
+}
+
+function momentOff()
+{
+document.getElementById("moment").style.visibility="hidden"
+}
+
+function koppelMedia(medId){
+	var medArray = new Array();
+	medArray[0] = medId;
+	KW.CMS.relateMedia(TST.onRsp,currentEditPoi,medArray);
+	//deze nog vervangen door een singel select poi request
+	laadPois();
+	fillPoiForm(currentEditPoi);
+}
+
+function ontKoppelMedia(medUri){
+	var medArray = new Array();
+	medId = (medUri.substring(medUri.lastIndexOf("/")+1, medUri.length));
+	medArray[0] = medId;
+	KW.CMS.unrelateMedia(TST.onRsp,currentEditPoi,medArray);
+	laadPois();
+	fillPoiForm(currentEditPoi);
+}
+
+
+//reset poidform
+function clearPoiForm()
+{
+ document.poidata.reset();
+}
+
+//aanzetten van de inlees button voor de pois. Dit hoeft alleen bij laden of na een mutatie te gebeuren
+function activeerPoiButton()
+{
+DH.setHTML('selectie', '&nbsp;<br/><div align="center" ><input name="getAll" type="button" id="getAll" value="Teken POIs op de kaart" onClick="laadPois()"/> </div>	');		
+}
+
+function openPopup(URL)
+{
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=100,height=100,left = 462,top = 334');");
+}
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Einde Poi en Media inlees functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+// -->
+</SCRIPT>
+  
+<script type="text/javascript">
+<!--
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+KeyWorx functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+		var TST = 
+		{
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+				//TST.login();
+				KW.restoreSession();
+				TST.pr('init done');
+			},
+
+				// called from form submit
+			login: function() {
+				TST.pr('login start');
+				var name = 'geoapp-user';
+				var password = 'user';
+				TST.pr('login name=' + name + ' password=' + password);
+				// Call KWClient
+				KW.login(name, password);
+				TST.pr('login sent');
+				return false;
+			},
+
+			logout: function() {
+				TST.pr('logout start');
+				// KeyWorx client
+				KW.logout();
+				TST.pr('logout sent');
+				return false;
+			},
+
+			insertPoi: function(form) {
+				if (checkPoiForm(form))
+				{
+					var poi = new Object();
+					poi.name = form.name.value; 
+					poi.description = form.description.value;
+					poi.category = form.category.value;
+					poi.type = form.type.value;
+					poi.x = form.x.value;
+					poi.y = form.y.value;
+					KW.CMS.addpoi(TST.onRsp, poi);						
+					laadPois();	
+					clearPoiForm();	
+				}
+			},
+			
+			updatePoi: function(form) {
+			 		if (checkPoiForm(form))
+					{
+						var poi = new Object();
+						var id = form.id.value;
+						poi.name = form.name.value; 
+						poi.description = form.description.value;
+						poi.category = form.category.value;
+						poi.type = form.type.value;
+						poi.x = form.x.value;
+						poi.y = form.y.value;
+						KW.CMS.updatepoi(TST.onRsp, id, poi);
+						clearPoiForm();	
+						laadPois();
+					}
+			},
+
+			deletePoi: function(form) {
+				var id = form.id.value;
+				KW.CMS.deletepoi(TST.onRsp, id);	
+				laadPois();
+				clearPoiForm();						
+			},
+			
+			getAllPoi: function() {
+				KW.CMS.getallpoi(TST.onGetAll);							
+			},		
+			
+
+			getAllMedia: function() {
+				KW.CMS.getallmedia(TST.onGetAllMedia);							
+			},
+
+			onGetAll: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+				TST.pr('server response ' + elm.tagName);
+				parsePois(elm);
+			},
+			
+			
+		    onGetAllMedia: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+				TST.pr('server response ' + elm.tagName);
+				parseAllMedia(elm);
+			},
+			
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('server response ' + elm.tagName);
+				if (elm.tagName == 'login-rsp') {
+					KW.selectApp('geoapp', 'user');
+				} else if (elm.tagName == 'select-app-rsp') {
+					TST.pr('login OK');
+					TST.pr('storing session, key=' + KW.agentKey);
+					
+				} else if (elm.tagName == 'logout-rsp') {
+					TST.pr('logout OK');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+		
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Einde KW functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+/*		
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+OpenLayer implementaties
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+		var x = 155500;
+		var y = 462500;
+		var zoom = 2;		
+  		var map;
+		var markersLayer;
+        function init(){
+		
+			// mag control initieren (RD projectie)
+			    map = new OpenLayers.Map($('map'), {
+				controls: [new OpenLayers.Control.MouseDefaults(), new OpenLayers.Control.PanZoomBar()],
+				maxExtent: new OpenLayers.Bounds(-207973.103596, 400670.145842, 602056.321374,808687.800824),
+				units: 'meters', projection: "EPSG:28992", 'maxResolution':'auto', numZoomLevels: 15});					
+	
+            //declaratie van de wms lagen
+			var referentie_en_routes = new OpenLayers.Layer.WMS.Untiled( "Refentie en routes", "http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWI_WMS", {layers: 'id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id13'});
+  	       
+			//lagen toevoegen aan map
+            map.addLayer(referentie_en_routes);
+			map.setCenter(new OpenLayers.LonLat(x, y), zoom);
+			
+			// widget voor wisselen lagen
+			//map.addControl(new OpenLayers.Control.LayerSwitcher());
+			
+			// real world coordinaten van de huidig muis positie
+			map.addControl(new OpenLayers.Control.MousePosition());
+			   
+			// click event om huidige positie van muiswijzer te vangen en te vertalen naar RD
+			map.events.register("click", map, function(e) { 
+            	var lonlat = map.getLonLatFromViewPortPx(e.xy);
+				document.poidata.x.value = lonlat.lon;
+				document.poidata.y.value = lonlat.lat;
+				scanForPois(lonlat.lon,lonlat.lat);
+            });
+		
+			markersLayer = new OpenLayers.Layer.Markers("Points of Interest");	
+			selMarkersLayer = new OpenLayers.Layer.Markers("Selected POI");	
+			scanMarkersLayer = new OpenLayers.Layer.Markers("Scanned POI");	
+			map.addLayer(markersLayer);
+			map.addLayer(scanMarkersLayer);
+			map.addLayer(selMarkersLayer);
+			//loadXML();
+			activeerPoiButton();
+		}
+
+
+function addPoi()
+{
+	momentOff();
+		clearPois();
+		for (i=0;i<poiArray.length;i++)
+		{	
+			d_x = poiArray[i].p_X;
+			d_y = poiArray[i].p_Y;
+			//DH.addHTML('result', '<br>'+d_x+', '+d_y);
+			var marker = new OpenLayers.Marker(new OpenLayers.LonLat(d_x,d_y), new OpenLayers.Icon("./images/marker.png", new OpenLayers.Size(10,15) ));
+    		markersLayer.addMarker(marker);
+		}
+	poisLoaded = true;
+
+	DH.setHTML('selectie', 'Click op een poi om deze te selecteren.<br/>Met de shift knop ingedrukt kunt u een rechthoek trekken om in te zoomen<br/>');
+
+}
+
+function drawSelected(d_x,d_y)
+{
+clearSelected();
+//alert ("foo: "+d_x+", "+d_y);
+var selMarker = new OpenLayers.Marker(new OpenLayers.LonLat(d_x,d_y), new OpenLayers.Icon("./images/selmarker.png", new OpenLayers.Size(10,15) ));
+selMarkersLayer.addMarker(selMarker)
+}
+
+function drawScanned(d_x,d_y)
+{
+
+//alert ("foo: "+d_x+", "+d_y);
+var scanMarker = new OpenLayers.Marker(new OpenLayers.LonLat(d_x,d_y), new OpenLayers.Icon("./images/scanmarker.png", new OpenLayers.Size(10,15) ));
+scanMarkersLayer.addMarker(scanMarker)
+}
+
+function clearPois()
+{
+  markersLayer.clearMarkers();
+}
+
+function clearSelected()
+{
+ selMarkersLayer.clearMarkers();
+
+}
+
+
+function clearScanned()
+{
+  scanMarkersLayer.clearMarkers();
+}
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Einde Openlayer functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+
+// -->
+  </script>
+  <script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+  </script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><style type="text/css">
+<!--
+-->
+  </style>
+<link href="css/home.css" rel="stylesheet" type="text/css">
+<title>DIWI POI MANAGER</title>
+<style type="text/css">
+<!--
+.style3 {color: #000000}
+.style4 {font-size: 14pt; font-weight: bold;}
+-->
+</style>
+</head>
+
+<div id="Layer1" style="position:absolute; width:200px; height:115px; z-index:2"></div>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+ <body onload="init()">
+  <div id="moment" style="position:absolute; width:200px; height:115px; z-index:501; left: 50%; top: 50%; background-color: #FF7F00; layer-background-color: #FF7F00; border: 1px none #000000; visibility: hidden;">
+    <div align="center" class="style3">
+      <p class="style4">MOMENT</p>
+      <p>Bezig met verwerking van het verzoek. </p>
+      <p>&nbsp;</p>
+    </div>
+  </div>
+  
+  <!-- BEGIN FLOATING LAYER CODE //-->
+<div id="theLayer" style="position:absolute; width:675px; left:100; top:100; z-index: 500; visibility: hidden;">
+<table border="0" width="675" bgcolor="#424242" cellspacing="0" cellpadding="5">
+<tr>
+<td width="100%">
+  <table border="0" width="100%" cellspacing="0" cellpadding="0" height="250">
+  <tr>
+  <td width="100%" height="35" id="titleBar" style="cursor:move">
+  <ilayer width="100%" onSelectStart="return false">
+  <layer left="0" width="100%" onMouseover="isHot=true;if (isN4) ddN4(theLayer)" onMouseout="isHot=false">
+  <font face="Arial" color="#FFFFFF">Media Bibliotheek</font>
+  </layer>
+  </ilayer>  </td>
+  <td style="cursor:hand" valign="top">
+  <a href="#" onClick="hideMe();return false"><font color=#ffffff size=2 face=arial  style="text-decoration:none">X</font></a>
+  </td>
+  </tr>
+  <tr>
+  <td width="100%" colspan="2" bgcolor="#FFFFFF" class="poidata" id="medialist">
+  <div id="med" style="position:absolute; width:650; z-index:501; height: 200; overflow: auto; left: 10px; top: 50px;">	</div>  
+  </p></td>
+  </tr>
+  </table> 
+</td>
+</tr>
+</table>
+</div>
+<!-- END FLOATING LAYER CODE //--> 
+
+
+  <div id="result" style="position:absolute; width:494px; height:115px; z-index:51; left: 15px; top: 696px; overflow: auto;" class="poidata"></div>
+ <div id="top"><img src="images/top2.jpg" width="597" height="246" border="0" usemap="#Mapie">
+  <map name="Mapie">
+    <area shape="rect" coords="429,202,513,227" href="cms.html" target="_self">
+    <area shape="rect" coords="229,205,311,225" href="index.html">
+    <area shape="rect" coords="332,204,397,228" href="login.html">
+  </map>
+</div>
+  
+  <div id="Layer1" style="position:absolute; width:201px; height:24px; z-index:6; left: 14px; top: 644px;" class="poidata"> gevoeligheid:
+    <input name="clicksens" type="text" id="clicksens" value="500" size="6" maxlength="10">
+  </div>
+  <p>&nbsp;</p>
+  <div id="poidata" style="position:absolute; width:455px; height:337px; z-index:2; left: 527px; top: 328px;" >
+<form action="" method="get" name="poidata" id="poidata">
+			<table width="400" border="0" cellpadding="0" cellspacing="0" class="poidata">
+              <tr>
+                <td width="200"><strong>id:<br>
+                <input name="id" type="text" id="id2" size="25" readonly="true">
+                </strong></td>
+                <td width="200"><strong>type:<br>
+                    <input name="type" type="text" id="type" size="25">
+</strong></td>
+              </tr>
+              <tr>
+                <td><strong>x:<br>
+                </strong>
+                  <input name="x" type="text" id="x3" size="25">
+                  <strong></strong></td>
+                <td><strong>categorie:<br>
+                  <select name="category" id="category">
+                    <option value="geen">...</option>
+                    <option value="Kerk en kerkonderdeel">Kerk en kerkonderdeel</option>
+                    <option value="Klooster, kloosteronderdl">Klooster, kloosteronderdl</option>
+                    <option value="Gedenkteken">Gedenkteken</option>
+                    <option value="Brug">Brug</option>
+                    <option value="Fort, vesting en -onderdl">Fort, vesting en -onderdl</option>
+                    <option value="Erfscheiding">Erfscheiding</option>
+                    <option value="Industrie- en poldermolen">Industrie- en poldermolen</option>
+                    <option value="Begraafplaats en -onderdl">Begraafplaats en -onderdl</option>
+                    <option value="Kerkelijke dienstwoning">Kerkelijke dienstwoning</option>
+                    <option value="Boerderij">Boerderij</option>
+                    <option value="Militair verblijfsgebouw">Militair verblijfsgebouw</option>
+                    <option value="Waterkering en -doorlaat">Waterkering en -doorlaat</option>
+                    <option value="Gemaal">Gemaal</option>
+                    <option value="Grensafbakening">Grensafbakening</option>
+                    <option value="Kasteel, buitenplaats">Kasteel, buitenplaats</option>
+                    <option value="Kapel">Kapel</option>
+                    <option value="Bijgebouwen kastelen enz">Bijgebouwen kastelen enz</option>
+                    <option value="Omwalling">Omwalling</option>
+                                                                        </select>
+</strong></td>
+              </tr>
+              <tr>
+                <td><strong>y:</strong><br>
+                  <input name="y" type="text" id="y2" size="25"></td>
+                <td><strong>naam:<br>
+                    <input name="name" type="text" id="name" size="25">
+                </strong></td>
+              </tr>
+              <tr>
+                <td colspan="2"><strong>beschrijving:<br>
+                </strong>
+                    <textarea name="description" cols="45" rows="5" id="description"></textarea>               
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2"><p><strong><a href="javascript:TST.getAllMedia();">click</a> hier om media te koppelen vanuit de media bibliotheek </strong></p>                  
+                <p><strong>   <a href="javascript: openPopup('upload.html')">click</a> hier voor het uploaden van nieuwe media naar de bibliotheek</strong></p>
+                </td>
+              </tr>
+    </table>
+            <p>
+			  <input type="button" name="Button" value="Voeg toe" onClick="TST.insertPoi(this.form)"/>		
+			  <input type="button" name="Button" value="Pas aan" onClick="TST.updatePoi(this.form)"/>		
+    <input type="button" name="Button" value="Verwijder" onClick="TST.deletePoi(this.form)"/>
+</form> 			  
+  </div>
+  <div id="map" style="position:absolute; z-index:5" class="poidata" ></div>
+  <div id="selectie" style="position:absolute; width:455px; height:70px; z-index:3; left: 530px; top: 253px; overflow: auto;" class="poidata"></div>
+  <div id="media" style="position:absolute; width:455px; height:138px; z-index:4; left: 528px; top: 682px; overflow: auto;" class="poidata"></div>
+
+</body>
+</htm>
