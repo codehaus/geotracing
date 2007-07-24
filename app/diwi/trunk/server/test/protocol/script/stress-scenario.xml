@@ -1,4 +1,4 @@
-<stress portal="mapserver" >
+<stress portal="diwi" >
 
 	<preamble>
 
@@ -9,7 +9,7 @@
 
 	<loop sleepMin="1000" sleepMax="2000">
 
-		<utopia-req reqid="1">
+		<utopia-req>
             <nav-get-map-req  height="240" llbLat="52.07703" llbLon="5.487456" width="320" urtLon="5.490385" urtLat="52.07973" />            
 		</utopia-req>
 

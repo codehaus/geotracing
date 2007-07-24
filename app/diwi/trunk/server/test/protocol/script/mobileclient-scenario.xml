@@ -122,34 +122,6 @@
         </expect>
     </test>
 
-    <test id="route-getlist-req">
-        <send id="client1">
-            <utopia-req>
-                <route-getlist-req type="fixed"/>
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <route-getlist-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
-    <test id="query-q-diwi-routes">
-        <send id="client1">
-            <utopia-req>
-                <query-store-req cmd="q-diwi-routes" type="fixed"/>
-            </utopia-req>
-        </send>
-
-        <expect id="client1">
-            <utopia-rsp>
-                <query-store-rsp/>
-            </utopia-rsp>
-        </expect>
-    </test>
-
     <!--<test id="route-generate-req">
         <send id="client1">
             <utopia-req>
@@ -173,30 +145,44 @@
         </expect>
     </test>-->
 
-    <test id="route-getlist-req">
+    <test id="nav-route-getlist-req">
         <send id="client1">
             <utopia-req>
-                <route-getlist-req type="generated"/>
+                <nav-route-getlist-req type="fixed"/>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <route-getlist-rsp/>
+                <nav-route-getlist-rsp/>
             </utopia-rsp>
         </expect>
     </test>
 
-    <test id="route-get-req">
+    <test id="nav-route-getlist-req">
         <send id="client1">
             <utopia-req>
-                <route-get-req id="705"/>
+                <nav-route-getlist-req type="generated"/>
             </utopia-req>
         </send>
 
         <expect id="client1">
             <utopia-rsp>
-                <route-get-rsp/>
+                <nav-route-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-route-get-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-route-get-req id="705"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-route-get-rsp/>
             </utopia-rsp>
         </expect>
     </test>
