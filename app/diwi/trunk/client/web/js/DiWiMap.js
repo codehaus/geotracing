@@ -52,6 +52,17 @@ var MAP = {
 		MAP.map.addLayer(MAP.overlays['markers']);
 	},
 
+	addStartEndPointLayer: function() {
+		if (MAP.hasOverlay('startendpoints')) {
+			return;
+		}
+
+		MAP.overlays['startendpoints']  = new OpenLayers.Layer.WMS.Untiled('Start -en eindpunten',
+				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
+				MAP.WMS_URL, {layers: 'diwi_startendpoints', format: MAP.IMAGE_FORMAT, transparent: true});
+		MAP.map.addLayer(MAP.overlays['startendpoints']);
+	},
+
 	addPOILayer: function() {
 		if (MAP.hasOverlay('pois')) {
 			return;
@@ -61,11 +72,7 @@ var MAP = {
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {layers: 'diwi_pois', format: MAP.IMAGE_FORMAT, transparent: true});
 		MAP.map.addLayer(MAP.overlays['pois']);
-
-		MAP.overlays['startendpoints']  = new OpenLayers.Layer.WMS.Untiled('Start -en eindpunten',
-				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
-				MAP.WMS_URL, {layers: 'diwi_startendpoints', format: MAP.IMAGE_FORMAT, transparent: true});
-		MAP.map.addLayer(MAP.overlays['startendpoints']);
+		MAP.addStartEndPointLayer();
 	},
 
 	addUGCLayer: function() {
@@ -90,7 +97,7 @@ var MAP = {
 				MAP.WMS_URL, {id: id, layers: 'diwi_routes_sel', format: MAP.IMAGE_FORMAT, transparent: true});
 
 		MAP.map.addLayer(MAP.overlays['route'] );
-
+		MAP.addStartEndPointLayer();
 		var pois = routeRec.getField('pois');
 		if (pois != null) {
 			MAP.overlays['routepois'] = new OpenLayers.Layer.WMS.Untiled('Route POIs',
