@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>DIWI POI MANAGER</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="css/home.css" rel="stylesheet" type="text/css">
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+//-->
+</script>
+
+  <script src="./lib/gt/DHTML.js"></script>
+  <script src="./lib/gt/KWClient.js"></script>
+  <script src="./lib/gt/KWClientExt.js"></script>
+  <script src="./js/KWClientCMS.js"></script>
+
+<SCRIPT LANGUAGE="JavaScript">
+
+	var TST = 
+		{
+			// Initialization of KWClient library
+			init: function() {
+				TST.pr('init...');
+				// KeyWorx client with
+				// callbacks (2x)
+				// server timeout in minutes
+				// server root path /diwi
+				KW.init(TST.onRsp, TST.onNegRsp, 100, '/diwi');
+				//TST.login();
+				
+				TST.pr('init done');
+			},
+
+				// called from form submit
+			login: function(form) {
+				TST.pr('login start');
+				var name = form.naam.value;  //'geoapp-user';
+				var password = form.wachtwoord.value; //'user';
+				TST.pr('login name=' + name + ' password=' + password);
+				// Call KWClient
+				KW.login(name, password);
+				TST.pr('login sent');
+				return false;
+			},
+
+			logout: function() {
+				TST.pr('logout start');
+				// KeyWorx client
+				KW.logout();
+				TST.pr('logout sent');
+				return false;
+			},
+
+			
+			onRsp: function(elm) {
+				if (!elm) {
+					TST.pr('empty response');
+					return;
+				}
+
+				TST.pr('server response ' + elm.tagName);
+				if (elm.tagName == 'login-rsp') {
+					KW.selectApp('geoapp', 'user');
+				} else if (elm.tagName == 'select-app-rsp') {
+					TST.pr('login OK');
+					TST.pr('storing session, key=' + KW.agentKey);
+					KW.storeSession();
+					window.location = "cms.html";
+				} else if (elm.tagName == 'logout-rsp') {
+					TST.pr('logout OK');
+				} else {
+					TST.pr('rsp tag=' + elm.tagName + ' ' + elm);
+					TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');					
+				}
+			},
+
+		// KWClient negative response handler.
+			onNegRsp: function(errorId, error, details) {
+				TST.pr('negative resp:' + error + ' details=' + details);
+			},
+
+		// Util for printing/displaying debug output
+			pr: function (s) {
+				DH.addHTML('result', '<br/>' + s);
+			}
+		}
+
+		// Call TST.init() when page is fully loaded
+		DH.addEvent(window, 'load', TST.init, false);
+		
+
+/*
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Einde KW functies
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+
+</SCRIPT>
+
+</head>
+
+<body>
+<div id="top"><img src="images/top2.jpg" width="597" height="246" border="0" usemap="#Map">
+  <map name="Map">
+    <area shape="rect" coords="326,204,390,228" href="login.html">
+    <area shape="rect" coords="224,205,304,225" href="index.html">
+    <area shape="rect" coords="421,202,503,227" href="cms.html" target="_self">
+  </map>
+</div>
+<div class="pagina id="Welkom">
+  <h1>Login</h1>
+  <p>Voer uw login naam en wachtwoord in om toegang te krijgen tot het POI management systeem </p>
+  <form action="" method="post" name="login" id="login">
+    <table width="456" border="0">
+      <tr>
+        <td width="139">&nbsp;</td>
+        <td width="139">login naam: </td>
+        <td width="164"><input name="naam" type="text" id="naam"></td>
+      </tr>
+      <tr>
+        <td width="139">&nbsp;</td>
+        <td width="139">wachtwoord: </td>
+        <td width="164"><input name="wachtwoord" type="password" id="wachtwoord"></td>
+      <tr>
+        <td>&nbsp;</td>
+        <td colspan="2"><div align="center">
+          <input name="Login" type="button" class="content" id="Login" onClick="TST.login(this.form)" value="Login">
+        </div></td>
+          </table>
+    <p>&nbsp;    </p>
+  </form>
+  <p>&nbsp;</p>
+  <div id="result" style="position:absolute; width:95%; height:100px; z-index:51; left: 4px; top: 260px; overflow: scroll;" class="poidata">
+    <p>&nbsp;</p>
+  </div>
+  <p>&nbsp;</p>
+</div>
+  <p>bla</p>
+</body>
+</html>
