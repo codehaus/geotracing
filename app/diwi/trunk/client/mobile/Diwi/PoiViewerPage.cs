@@ -21,7 +21,10 @@ namespace Diwi {
         int mMediaIndex = 0;
         string xmlString, mDnlUrl;
         int mDownloadIndex=-1;
+        string mDnlName = null;
         string[] dnlFileNames = new string[10];
+        DiwiUIText mNameMess = new DiwiUIText();
+        private Font mFont = new Font("Tahoma", 11, FontStyle.Bold);
 
 
         public PoiViewerPage(DiwiPageBase parent)
@@ -46,6 +49,8 @@ namespace Diwi {
             mDnlMess.Text = "Media worden opgehaald...\n\nEen ogenlik, aub.";
             mDnlMess.Visible = false;
 
+            mNameMess.text = "";
+            addDrawable(mNameMess);
 
             reOrient();
 
@@ -71,6 +76,12 @@ namespace Diwi {
             process.Start();
         }
 
+        void drawNameText() {
+            Rectangle oldRect = mNameMess.rect;
+            mNameMess.erase(sBackgroundColor);
+            mNameMess.draw(mDnlName);
+            redrawRect(oldRect, mNameMess.rect);
+        }
 
 
         void openImage(string fn) {
@@ -80,6 +91,10 @@ namespace Diwi {
             mImage.bitmap = mImageBitmap;
             mImage.x = 10;
             mTextBox.Visible = false;
+            if (mDnlName != null) {
+                mNameMess.y = mImage.y + 18 + mImage.size.Height;
+                drawNameText();
+            }
             draw();
         }
 
@@ -133,8 +148,6 @@ namespace Diwi {
                 openText(path);
                 return;
             }
-
-        
         }
 
 
@@ -172,6 +185,7 @@ namespace Diwi {
                 string url = kichUri.nodeText;
                 string ext = (url.Substring(url.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = kichUri.getAttributeValue("type");
+                mDnlName = null;
                 switch (type) {
                     case "image":
                         mDnlUrl = url;
@@ -202,6 +216,7 @@ namespace Diwi {
                 string url = Diwi.Properties.Resources.KwxMediaServerUrl + "?id=" + ugc.getAttributeValue("id");
                 string ext = (filename.Substring(filename.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = ugc.getAttributeValue("kind");
+                mDnlName = ugc.getAttributeValue("name");
                 switch (type) {
                     case "image":
                         mDnlUrl = url;
@@ -286,6 +301,8 @@ namespace Diwi {
         }
 
         private void reOrient() {
+            mNameMess.x = 4;
+            
             if (horizontal) {
 
                 mImage.x = 4;
@@ -306,8 +323,8 @@ namespace Diwi {
                 mDnlMess.Left = 4;
                 mDnlMess.Top = 56;
                 mDnlMess.Size = new Size(280, 60);
-            
 
+                
 
             } else {
 
