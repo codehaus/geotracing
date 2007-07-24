@@ -233,8 +233,10 @@ public class RouteLogic implements Constants {
 				return new JXElement(ROUTE_ELM);
 			} else {
 				//Convert Route record to XML and add to result
-				return route.toXML();
-			}
+				JXElement e = route.toXML();
+                e.setTag(ROUTE_ELM);
+                return e;
+            }
 		} catch (Throwable t) {
 			log.error("Exception in generateRoute: " + t.toString());
 			throw new UtopiaException("Error in generateRoute", t, ErrorCode.__6006_database_irregularity_error);
@@ -326,7 +328,9 @@ public class RouteLogic implements Constants {
             Record[] routes = QueryLogic.queryStore(oase, tables, fields, where, null, null);
             if(routes.length == 0) throw new UtopiaException("No route found with id:" + aRouteId);
 
-            return routes[0].toXML();
+            JXElement e = routes[0].toXML();
+            e.setTag(ROUTE_ELM);
+            return e;
 		} catch (Throwable t) {
 			log.error("Exception in getRoute: " + t.toString());
 			throw new UtopiaException("Error in getRoute", t, ErrorCode.__6006_database_irregularity_error);
@@ -368,7 +372,9 @@ public class RouteLogic implements Constants {
 
 			results = new Vector(routes.length);
 			for (int i = 0; i < routes.length; i++) {
-				results.add(routes[i].toXML());
+                JXElement e = routes[i].toXML();
+                e.setTag(ROUTE_ELM);                
+                results.add(e);
 			}
 		} catch (Throwable t) {
 			log.error("Exception in getRoutes: " + t.toString());
