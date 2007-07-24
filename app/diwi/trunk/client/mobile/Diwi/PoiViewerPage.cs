@@ -23,8 +23,7 @@ namespace Diwi {
         int mDownloadIndex=-1;
         string mDnlName = null;
         string[] dnlFileNames = new string[10];
-        DiwiUIText mNameMess = new DiwiUIText();
-        private Font mFont = new Font("Tahoma", 11, FontStyle.Bold);
+        DiwiUIText mNameMess = new DiwiUIText(Color.Black,"",new Font("Tahoma", 14, FontStyle.Regular));
 
 
         public PoiViewerPage(DiwiPageBase parent)
@@ -49,7 +48,6 @@ namespace Diwi {
             mDnlMess.Text = "Media worden opgehaald...\n\nEen ogenlik, aub.";
             mDnlMess.Visible = false;
 
-            mNameMess.text = "";
             addDrawable(mNameMess);
 
             reOrient();
@@ -92,7 +90,8 @@ namespace Diwi {
             mImage.x = 10;
             mTextBox.Visible = false;
             if (mDnlName != null) {
-                mNameMess.y = mImage.y + 18 + mImage.size.Height;
+                mNameMess.x = mImage.x;
+                mNameMess.y = mImage.y + 6 + mImage.size.Height;
                 drawNameText();
             }
             draw();
