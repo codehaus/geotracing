@@ -85,12 +85,12 @@ public class RouteLogic implements Constants {
 
 				JXElement pref1 = new JXElement(PREF_ELM);
 				pref1.setAttr(NAME_FIELD, "startx");
-				pref1.setAttr(VALUE_FIELD, rdPointStart.x);
+				pref1.setAttr(VALUE_FIELD, Math.round(rdPointStart.x));
 				reqElm.addChild(pref1);
 
 				JXElement pref2 = new JXElement(PREF_ELM);
 				pref2.setAttr(NAME_FIELD, "starty");
-				pref2.setAttr(VALUE_FIELD, rdPointStart.y);
+				pref2.setAttr(VALUE_FIELD, Math.round(rdPointStart.y));
 				reqElm.addChild(pref2);
 
 				Record[] lastRecs = oase.getRelater().getRelated(person, "g_location", "lastloc");
@@ -98,17 +98,32 @@ public class RouteLogic implements Constants {
 
 				JXElement pref3 = new JXElement(PREF_ELM);
 				pref3.setAttr(NAME_FIELD, "endx");
-				pref3.setAttr(VALUE_FIELD, rdPointEnd.x);
+				pref3.setAttr(VALUE_FIELD, Math.round(rdPointEnd.x));
 				reqElm.addChild(pref3);
 
 				JXElement pref4 = new JXElement(PREF_ELM);
 				pref4.setAttr(NAME_FIELD, "endy");
-				pref4.setAttr(VALUE_FIELD, rdPointEnd.y);
+				pref4.setAttr(VALUE_FIELD, Math.round(rdPointEnd.y));
 				reqElm.addChild(pref4);
+
+                //determine what the user is doing: as all predefined routes are walking routes
+                String type = "cycling";
+                // first get the trip
+                LogLogic logLogic = new LogLogic(oase);
+                Record trip = logLogic.getOpenLog("" + aPersonId, LOG_MOBILE_TYPE);
+                if(trip!=null){
+                    Record[] routes = oase.getRelater().getRelated(trip, ROUTE_TABLE, null);
+                    // now check if we have related routes of type FIXED
+                    for(int i=0;i<routes.length;i++){
+                        if(routes[i].getIntField(STATE_FIELD) == ROUTE_TYPE_FIXED){
+                            type = "walking";
+                        }
+                    }
+                }
 
                 JXElement pref5 = new JXElement(PREF_ELM);
 				pref5.setAttr(NAME_FIELD, "type");
-				pref5.setAttr(VALUE_FIELD, "walking");
+				pref5.setAttr(VALUE_FIELD, type);
 				reqElm.addChild(pref5);
             }
 
@@ -140,9 +155,6 @@ public class RouteLogic implements Constants {
 			}
 
 			JXElement generated = RouteGenerator.generateRoute(prefs);
-			//log.info("dbg 4 " + new String(generated.toBytes(false)));
-			/*URL url = new URL("http://local.diwi.nl/diwi/testresponse/generateroute1.xml");
-						JXElement generated = new JXBuilder().build(url);*/
 			Record route = null;
 
 			if (generated != null && generated.hasChildren() && generated.getChildByTag("rte") != null && generated.getChildByTag("rte").hasChildren())
@@ -177,11 +189,12 @@ public class RouteLogic implements Constants {
 
 					if (aType.equals(GENERATE_PREFS_ROUTE)) {
 						route.setStringField(NAME_FIELD, "persoonlijke route");
-					} else {
+                        route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+                    } else {
 						route.setStringField(NAME_FIELD, "route terug");
-					}
-					route.setStringField(DESCRIPTION_FIELD, description);
-					route.setIntField(TYPE_FIELD, ROUTE_TYPE_GENERATED);
+                        route.setIntField(TYPE_FIELD, ROUTE_TYPE_DIRECT);
+                    }
+					route.setStringField(DESCRIPTION_FIELD, description);					
 					route.setIntField(STATE_FIELD, ACTIVE_STATE);
 
 					// we receive the gpx file in RD
