@@ -9,6 +9,7 @@ import nl.justobjects.jox.parser.JXBuilder;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -19,7 +20,7 @@ import org.keyworx.amuse.core.Amuse;
 
 import java.util.Vector;
 
-public class KICHHandler extends DefaultHandler implements Constants {
+public class KICHHandler extends DefaultHandler implements ThreadSafe, Constants {
     public final static String KICH_GET_MEDIA_SERVICE = "kich-get-media";
     public final static String KICH_GET_THEMES_SERVICE = "kich-get-themes";
     public final static String KICH_SYNC_SERVICE = "kich-sync";

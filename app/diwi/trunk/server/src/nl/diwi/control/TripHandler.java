@@ -6,6 +6,7 @@ import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -21,7 +22,7 @@ import java.util.Vector;
  * @author Just van den Broecke
  * @version $Id: CommentHandler.java 361 2007-02-05 21:34:58Z just $
  */
-public class TripHandler extends DefaultHandler implements Constants {
+public class TripHandler extends DefaultHandler implements ThreadSafe, Constants {
 
     public final static String TRIP_GET_SERVICE = "trip-get";
     public final static String TRIP_GETLIST_SERVICE = "trip-getlist";

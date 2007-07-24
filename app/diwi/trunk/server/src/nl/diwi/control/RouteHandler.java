@@ -13,6 +13,7 @@ import nl.justobjects.jox.dom.JXElement;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -32,7 +33,7 @@ import java.util.Vector;
  * @author Just van den Broecke
  * @version $Id: CommentHandler.java 361 2007-02-05 21:34:58Z just $
  */
-public class RouteHandler extends DefaultHandler implements Constants {
+public class RouteHandler extends DefaultHandler implements ThreadSafe, Constants {
 
     public final static String ROUTE_GENERATE_SERVICE = "route-generate";
     public final static String ROUTE_GET_SERVICE = "route-get";

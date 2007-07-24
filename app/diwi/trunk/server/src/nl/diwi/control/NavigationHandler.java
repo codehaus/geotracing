@@ -16,6 +16,7 @@ import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.oase.api.Relater;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -27,7 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Vector;
 
-public class NavigationHandler extends DefaultHandler implements Constants {
+public class NavigationHandler extends DefaultHandler implements ThreadSafe, Constants {
 
     // Keyworx services
     public final static String NAV_GET_STATE_SERVICE = "nav-get-state";
