@@ -51,6 +51,8 @@ namespace Diwi {
 
         public static bool sSipVisible = false;
 
+        public static float sDistanceMoved = 0;
+
         public static Icon sTerugIcon, sEmptyIcon, sUGCIcon, sFotoIcon, sInfoIcon, sStopRIcon, sVoegToeIcon;
         public static Icon sTextIcon, sVolgIcon, sVideoIcon, sKiesIcon, sStruinIcon, sCheckIcon, sTerugRIcon;
 

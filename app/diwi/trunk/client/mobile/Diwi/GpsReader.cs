@@ -461,9 +461,10 @@ namespace Diwi {
                 mLon = lon;
 
                 // Notify the calling application of the change
-                if (callback != null)
-                    callback((int)sMess.M_POS);
-                AppController.sKwxClient.sendSample();
+                if (true == AppController.sKwxClient.queueSample()) {
+                    if (callback != null)
+                        callback((int)sMess.M_POS);
+                }
             }
 
             if (words[7] != "") {
