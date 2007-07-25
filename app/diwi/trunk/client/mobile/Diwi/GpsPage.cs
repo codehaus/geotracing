@@ -11,7 +11,10 @@ namespace Diwi {
         private DiwiUIText numSatText;
         private DiwiUIText hDopText;
         private DiwiUIText demoText;
+        private DiwiUIText distText;
         private DiwiUIText speedText;
+
+        static Color sBackColor = Color.FromArgb(198, 255, 0);
 
         Font gpsFont = new Font("Arial", 12, FontStyle.Bold);
 
@@ -26,6 +29,7 @@ namespace Diwi {
             speedText = new DiwiUIText(Color.Black, "", gpsFont);
             hDopText = new DiwiUIText(Color.Black, "", gpsFont);
             demoText = new DiwiUIText(Color.Black, "", gpsFont);
+            distText = new DiwiUIText(Color.Black, "", gpsFont);
             fixText = new DiwiUIText(Color.Black, "", gpsFont);
 
             addDrawable(latLonText);
@@ -34,6 +38,7 @@ namespace Diwi {
             addDrawable(hDopText);
             addDrawable(demoText);
             addDrawable(fixText);
+            addDrawable(distText);
 
             mMenu.addItem("terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
 
@@ -50,6 +55,7 @@ namespace Diwi {
             fixText.x = 8; fixText.y = y -= 24;
             hDopText.x = 8; hDopText.y = y -= 24;
             speedText.x = 8; speedText.y = y -= 24;
+            distText.x = 8; distText.y = y -= 24;
             latLonText.x = 8; latLonText.y = y -= 34;
             demoText.x = 8; demoText.y = y -= 30;
             updateDemo();
@@ -64,6 +70,7 @@ namespace Diwi {
                 fixText.x = 8; fixText.y = y -= 24;
                 hDopText.x = 8; hDopText.y = y -= 24;
                 speedText.x = 8; speedText.y = y -= 24;
+                distText.x = 8; distText.y = y -= 24;
                 latLonText.x = 8; latLonText.y = y -= 34;
                 demoText.x = 8; demoText.y = y -= 30;
                 draw();
@@ -77,17 +84,17 @@ namespace Diwi {
 
         void updatePrecision() {
             Rectangle oldRect = hDopText.rect;
-            hDopText.erase(sBackgroundColor);
+            hDopText.erase(sBackColor);
             if (GpsReader.up)
-                hDopText.draw("Precision: " + GpsReader.precision.ToString());
+                hDopText.draw("precisie: " + GpsReader.precision.ToString());
             else
-                hDopText.draw("Precision: -" );
+                hDopText.draw("precisie: -");
             redrawRect(oldRect, hDopText.rect);
         }
 
         void updatePosition() {
             Rectangle oldRect = latLonText.rect;
-            latLonText.erase(sBackgroundColor);
+            latLonText.erase(sBackColor);
             if (GpsReader.up)
                 latLonText.draw(GpsReader.latitude + "; " + GpsReader.longtitude);
             else
@@ -98,22 +105,22 @@ namespace Diwi {
 
         void updateNumSats() {
             Rectangle oldRect = numSatText.rect;
-            numSatText.erase(sBackgroundColor);
+            numSatText.erase(sBackColor);
             if (!GpsReader.demo || GpsReader.demoFile)
-                numSatText.draw("Sattelites in view: " + GpsReader.numSats.ToString());
+                numSatText.draw("Satellieten in zicht: " + GpsReader.numSats.ToString());
             else
-                numSatText.draw("Sattelites in view: -");
+                numSatText.draw("Satellieten in zicht: -");
             redrawRect(oldRect, numSatText.rect);
         }
 
 
         void updateFix() {
             Rectangle oldRect = fixText.rect;
-            fixText.erase(sBackgroundColor);
+            fixText.erase(sBackColor);
             if (!GpsReader.demo || GpsReader.demoFile)
-                fixText.draw(GpsReader.fix ? "Sattelite fix: found" : "Sattelite fix: no");
+                fixText.draw(GpsReader.fix ? "Sat. fix: Ok" : "Sat. fix: geen");
             else
-                fixText.draw("Sattelite fix: -");
+                fixText.draw("Sat. fix: -");
             updateSpeed();
             updatePosition();
             updatePrecision();
@@ -123,25 +130,35 @@ namespace Diwi {
 
         void updateSpeed() {
             Rectangle oldRect = speedText.rect;
-            speedText.erase(sBackgroundColor);
-            if (GpsReader.up)
-                speedText.draw("Speed: " + GpsReader.speed.ToString() + " kph.");
-            else
-                speedText.draw("Speed: -");
+            speedText.erase(sBackColor);
+            if (GpsReader.up) {
+                float speed = (float)(Math.Floor(100.0 * GpsReader.speed) /  100.0);
+                speedText.draw("Snelheid: " + speed.ToString() + " km/u.");
+            } else
+                speedText.draw("Snelheid: -");
             redrawRect(oldRect, speedText.rect);
+            updateDist();
+        }
+
+
+        void updateDist() {
+            Rectangle oldRect = distText.rect;
+            distText.erase(sBackColor);
+            distText.draw("Afstand tot nu: " + Math.Floor(AppController.sDistanceMoved).ToString() + "m.");
+            redrawRect(oldRect, distText.rect);
         }
 
 
         void updateDemo() {
             Rectangle oldRect = demoText.rect;
-            demoText.erase(sBackgroundColor);
+            demoText.erase(sBackColor);
             if (GpsReader.demo) {
                 if (GpsReader.demoFile)
-                    demoText.draw("GPS Found (simulation)");
+                    demoText.draw("GPS gevonden (simulatie)");
                 else
-                    demoText.draw("GPS not found");
+                    demoText.draw("Geen GPS...");
             } else {
-                demoText.draw("GPS Found.");
+                demoText.draw("GPS gevonden.");
             }
             redrawRect(oldRect, demoText.rect);
             updateSpeed();

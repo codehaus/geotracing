@@ -31,10 +31,13 @@ namespace Diwi {
         private string mAgentKey;
         private string xmlString;
         private XMLement selectAppRequest;
+
+        private Thread mSendSamplesThread = new Thread(sendSamplesThread);
+
         string trackId;
         private bool mUGCState = false;
         GeoPoint mLastPoint;
-        
+        Queue<GeoPoint> mPointsQueue = new Queue<GeoPoint>(20);
 
         static private KwxClient sKwxC = null;
 
@@ -61,6 +64,7 @@ namespace Diwi {
             mLastPoint = new GeoPoint(0, 0);
             mServer = Diwi.Properties.Resources.KwxServerUrl;
             mAgentKey = null;
+            mSendSamplesThread.Start();
         }
 
         public void start(string u, string p) {
@@ -429,25 +433,51 @@ namespace Diwi {
         }
 
 
+        public bool queueSample() {
+            GeoPoint newP = new GeoPoint(GpsReader.lat, GpsReader.lon);
+            float d = newP.distance(mLastPoint);
+
+            if (d < 5) return false;
+
+            if (d < 10000) AppController.sDistanceMoved += d;
+
+            // network blok; start discarding samples.
+            if( mPointsQueue.Count > 30 )
+                mPointsQueue.Dequeue();
+
+            mLastPoint = newP;
+
+            mPointsQueue.Enqueue(newP);
+
+            return true;
+        }
+
+        private static void sendSamplesThread() {
+            while (true) {
+                if (sKwxC.mPointsQueue.Count > 0) {
+                    GeoPoint p = sKwxC.mPointsQueue.Dequeue();
+                    sKwxC.sendSample(p.lat, p.lon);
+                }
+                Thread.Sleep(500);
+            }
+        }
+
         /// <summary>
         ///  Sends position sample to the server.
         /// lat/lon format broken on server ?
         /// </summary>
-        public void sendSample() {
+        public void sendSample(float lat, float lon) {
 
-            GeoPoint newP = new GeoPoint(GpsReader.lat, GpsReader.lon);
-            float d = newP.distance(mLastPoint);
-            if (d > 5) {
-                mLastPoint = newP;
-                if (DiwiPageBase.sCurrentPage != null)
-                    DiwiPageBase.sCurrentPage.printStatus(d.ToString());
-            }
+//            if (DiwiPageBase.sCurrentPage != null)
+//                DiwiPageBase.sCurrentPage.printStatus(AppController.sDistanceMoved.ToString());
+
+
             if (mAgentKey != null) {
                 XMLement xml = new XMLement(Protocol.TAG_NAV_POINT_REQ);
                 XMLement pt = new XMLement("pt");
 
-                pt.addAttribute("lon", GpsReader.lon.ToString(GpsReader.mUSFormat));
-                pt.addAttribute("lat", GpsReader.lat.ToString(GpsReader.mUSFormat));
+                pt.addAttribute("lon", lon.ToString(GpsReader.mUSFormat));
+                pt.addAttribute("lat", lat.ToString(GpsReader.mUSFormat));
 
                 xml.addChild(pt);
 

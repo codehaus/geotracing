@@ -174,7 +174,7 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public void printStatus(string s) {
-          //  return;
+            return;
              Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);
 
@@ -191,7 +191,7 @@ namespace Diwi {   // base class for Diwi Pages.
                blendCount = 4;
                draw();
            }
-           return;
+          return;
              Color c = DiwiPageBase.offScreenBitmap.GetPixel(e.X, e.Y);
              Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);

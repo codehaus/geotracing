@@ -119,12 +119,13 @@ namespace Diwi {
         }
 
         void doKiesRoute(int i, string s) {
+
             if (AppController.sKwxClient.agentKey == null) {
+                mIsActive = false;
                 doLogin(0, null);
             }
 
             if (AppController.sKwxClient.agentKey != null) {
-                mIsActive = false;
 
                 if (AppController.sRoutes == null) {
                     AppController.sRoutes = AppController.sKwxClient.getRouteList();
@@ -132,9 +133,11 @@ namespace Diwi {
 
                 if (selectRoutePage == null)
                     selectRoutePage = new SelectRoutePage(this);
+                mIsActive = false;
                 selectRoutePage.ShowDialog();
 
                 if (AppController.sActiveRouteID != -1) {
+                    mIsActive = false;
                     walkRoute(0, null);
                 }
             }
@@ -142,12 +145,20 @@ namespace Diwi {
 
         void doStruin(int i, string s) {
             mIsActive = false;
-            if (AppController.sActiveRouteID != -1) {
-                AppController.sKwxClient.deActivateRoute();
-                AppController.sActiveRouteID = -1;
-                AppController.sActiveRoute = null;
+
+            if (AppController.sKwxClient.agentKey == null) {
+                doLogin(0, null);
             }
-            walkRoute(0, null);
+            if (AppController.sKwxClient.agentKey != null) {
+
+                if (AppController.sActiveRouteID != -1) {
+                    AppController.sKwxClient.deActivateRoute();
+                    AppController.sActiveRouteID = -1;
+                    AppController.sActiveRoute = null;
+                }
+                AppController.sDistanceMoved = 0;
+                walkRoute(0, null);
+            }
         }
 
         void doLogin(int i, string s) {
