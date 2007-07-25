@@ -16,6 +16,7 @@ namespace Diwi {
     /// curently uses geotracing protocol....
     /// </summary>
 
+
     class KwxClient {
         private CultureInfo mUSFormat = new CultureInfo(0x0409);
         static HttpWebRequest sKwxWebRequest;
@@ -32,7 +33,8 @@ namespace Diwi {
         private XMLement selectAppRequest;
         string trackId;
         private bool mUGCState = false;
-
+        GeoPoint mLastPoint;
+        
 
         static private KwxClient sKwxC = null;
 
@@ -56,7 +58,7 @@ namespace Diwi {
         }
 
         private KwxClient() {
-            
+            mLastPoint = new GeoPoint(0, 0);
             mServer = Diwi.Properties.Resources.KwxServerUrl;
             mAgentKey = null;
         }
@@ -433,6 +435,13 @@ namespace Diwi {
         /// </summary>
         public void sendSample() {
 
+            GeoPoint newP = new GeoPoint(GpsReader.lat, GpsReader.lon);
+            float d = newP.distance(mLastPoint);
+            if (d > 5) {
+                mLastPoint = newP;
+                if (DiwiPageBase.sCurrentPage != null)
+                    DiwiPageBase.sCurrentPage.printStatus(d.ToString());
+            }
             if (mAgentKey != null) {
                 XMLement xml = new XMLement(Protocol.TAG_NAV_POINT_REQ);
                 XMLement pt = new XMLement("pt");
