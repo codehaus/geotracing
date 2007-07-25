@@ -73,6 +73,7 @@
     </Compile>
     <Compile Include="MapHandler.cs" />
     <Compile Include="MediaHandler.cs" />
+    <Compile Include="Point.cs" />
     <Compile Include="poiSelectPage.cs">
       <SubType>Form</SubType>
     </Compile>

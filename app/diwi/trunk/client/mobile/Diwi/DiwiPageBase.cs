@@ -174,13 +174,13 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public void printStatus(string s) {
-            return;
+          //  return;
              Rectangle oldRect = mouseText.rect;
              mouseText.erase(sBackgroundColor);
 
              mouseText.text = s;
              mouseText.x = 4;
-             mouseText.y = mCurrentRect.Height-18;
+             mouseText.y = mCurrentRect.Height-40;
              mouseText.draw();
              redrawRect(oldRect, mouseText.rect);
       }
