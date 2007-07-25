@@ -25,15 +25,12 @@
  */
 package org.walkandplay.client.phone;
 
+import de.enough.polish.util.Locale;
+import nl.justobjects.mjox.JXElement;
+
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-
-import de.enough.polish.util.Locale;
-
-//#ifdef polish.debugEnabled
-import nl.justobjects.mjox.JXElement;
-//#endif
 
 /**
  * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
@@ -64,7 +61,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));        
     }
 
-    public void setHome(){
+    public void setHome() {
         //#style mainScreen
         //menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
         menuScreen = new List("", List.IMPLICIT);
@@ -84,44 +81,44 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Quit"), null);
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
-       /* //#style mainLogCommand
-        menuScreen.append("test display", null);
         //#style mainLogCommand
+        menuScreen.append("test display", null);
+        /*//#style mainLogCommand
         menuScreen.append("video canvas", null);*/
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
 
     }
 
-    public void setPlayMode(boolean aMode){
+    public void setPlayMode(boolean aMode) {
         playMode = aMode;
     }
 
-    public boolean getPlayMode(){
+    public boolean getPlayMode() {
         return playMode;
     }
 
-    public void setGame(JXElement aGame){
+    public void setGame(JXElement aGame) {
         game = aGame;
     }
 
-    public JXElement getGame(){
+    public JXElement getGame() {
         return game;
     }
 
-    public void setGameRound(JXElement aGameRound){
+    public void setGameRound(JXElement aGameRound) {
         gameRound = aGameRound;
     }
 
-    public JXElement getGameRound(){
+    public JXElement getGameRound() {
         return gameRound;
     }
 
-    public void setGamePlayId(int anId){
+    public void setGamePlayId(int anId) {
         gamePlayId = anId;
     }
 
-    public int getGamePlayId(){
+    public int getGamePlayId() {
         return gamePlayId;
     }
 
@@ -152,7 +149,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 // Trace
                 traceDisplay = new TraceDisplay(this);
                 Display.getDisplay(this).setCurrent(traceDisplay);
-        		traceDisplay.start();
+                traceDisplay.start();
                 break;
             case 1:
                 // Find
@@ -164,7 +161,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 3:
                 // GPS
-                if(traceDisplay!=null) traceDisplay.stop();
+                if (traceDisplay != null) traceDisplay.stop();
                 Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
             case 4:

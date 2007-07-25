@@ -8,8 +8,8 @@ import java.util.TimerTask;
 
 public class SplashCanvas extends Canvas {
     private WPMidlet midlet;
-    int w=-1, h=-1;
-	private Delayer delayer;
+    int w = -1, h = -1;
+    private Delayer delayer;
     // image objects
     private Image bg, logoBanner, kwxLogo;
 
@@ -44,18 +44,18 @@ public class SplashCanvas extends Canvas {
      */
     public void paint(Graphics g) {
         if (w == -1) {
-			setFullScreenMode(true);
-			w = getWidth();
-			h = getHeight();
-		}
+            setFullScreenMode(true);
+            w = getWidth();
+            h = getHeight();
+        }
         g.setColor(255, 255, 255);
         g.fillRect(0, 0, w, h);
-        g.drawImage(bg, (w - bg.getWidth())/2, (h - bg.getHeight())/2, Graphics.TOP | Graphics.LEFT);
+        g.drawImage(bg, (w - bg.getWidth()) / 2, (h - bg.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         g.drawImage(logoBanner, 0, (h - logoBanner.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
         //g.drawImage(kwxLogo, 3, h - kwxLogo.getHeight() - 3, Graphics.TOP | Graphics.LEFT);
         if (delayer == null) {
-			delayer = new Delayer(2);
-		}
+            delayer = new Delayer(2);
+        }
     }
 
     // creates a delay for the splashscreen
@@ -69,13 +69,13 @@ public class SplashCanvas extends Canvas {
 
         class RemindTask extends TimerTask {
             public void run() {
-                if (screenName != -1) {                    
+                if (screenName != -1) {
                     midlet.setHome();
                     repaint();
                 } else {
-                    try{
+                    try {
                         midlet.destroyApp(true);
-                    }catch(Throwable t){
+                    } catch (Throwable t) {
 
                     }
                     midlet.notifyDestroyed();

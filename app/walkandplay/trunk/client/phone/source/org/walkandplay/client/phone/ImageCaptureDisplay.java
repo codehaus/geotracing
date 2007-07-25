@@ -1,30 +1,28 @@
 package org.walkandplay.client.phone;
 
-import org.geotracing.client.*;
-import org.keyworx.mclient.Protocol;
-
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
+import nl.justobjects.mjox.JXElement;
+import org.geotracing.client.GPSFetcher;
+import org.geotracing.client.GPSLocation;
+import org.geotracing.client.Net;
+import org.geotracing.client.Util;
+import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.media.Player;
 import javax.microedition.media.Manager;
-import javax.microedition.media.control.VideoControl;
+import javax.microedition.media.Player;
 import javax.microedition.media.control.GUIControl;
+import javax.microedition.media.control.VideoControl;
 import javax.microedition.midlet.MIDlet;
-
-import nl.justobjects.mjox.JXElement;
 
 /**
  * Capture image from phone camera.
  *
- * @author  Just van den Broecke
+ * @author Just van den Broecke
  * @version $Id: ImageCapture.java 254 2007-01-11 17:13:03Z just $
  */
 public class ImageCaptureDisplay extends DefaultDisplay {
-
-    private Command capture;
-    private Command skip;
 
     private Player player = null;
     private VideoControl video = null;
@@ -34,35 +32,33 @@ public class ImageCaptureDisplay extends DefaultDisplay {
     private long photoTime;
     private MIDlet midlet;
     private StringItem status = new StringItem("", "Photo Capture");
+
+    private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
+    private Command SKIP_CMD = new Command("Cancel", Command.CANCEL, 1);
+
     private GPSLocation location;
 
     public ImageCaptureDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
 
-        midlet = aMIDlet;        
+        midlet = aMIDlet;
         showCamera();
 
-        capture = new Command("Capture", Command.OK, 1);
-        skip = new Command("Cancel", Command.CANCEL, 1);
-        addCommand(capture);
-        addCommand(skip);
+        addCommand(CAPTURE_CMD);
+        addCommand(SKIP_CMD);
         setCommandListener(this);
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void commandAction(Command c, Displayable d) {
-        if (c == capture) {
+        if (c == CAPTURE_CMD) {
             capture();
             Display.getDisplay(midlet).setCurrent(new PhotoPreview());
-        } else if (c == skip) {
+        } else if (c == SKIP_CMD) {
             player.close();
             // Set the current display of the midlet to the textBox screen
             back();
         }
-    }
-
-    public int append(String aString){
-        //#style formbox
-        return append(aString);
     }
 
     private void back() {
@@ -71,7 +67,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 
     private void showCamera() {
         try {
-            player = Manager.createPlayer("capture://video");
+            player = Manager.createPlayer("CAPTURE_CMD://video");
             player.realize();
 
             // Add the video playback window (item)
@@ -104,7 +100,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 
             // BlogClient.photoPreview = BlogClient.photoData;
             // BlogClient.photoMime = "png";
- // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
+            // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
             status.setText(", WAIT...taking photo...");
 
             location = GPSFetcher.getInstance().getCurrentLocation();
@@ -112,7 +108,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 
             try {
                 photoData = video.getSnapshot("encoding=jpeg&width=320&height=240");
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 // Some phones don't support specific encodings
                 // This should fix at least SonyEricsson K800i...
                 photoData = video.getSnapshot(null);
@@ -127,7 +123,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
             status.setText("OK done...");
 
         } catch (Throwable e) {
-            Util.showAlert(midlet, "capture error", e.getMessage());
+            Util.showAlert(midlet, "CAPTURE_CMD error", e.getMessage());
             back();
         }
     }
