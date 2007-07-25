@@ -276,14 +276,15 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 	}
 
 	private JXElement stopNavigation(UtopiaRequest anUtopiaReq) throws UtopiaException {
-        LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
+        // LogLogic logLogic = new LogLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
         TrackLogic trackLogic = new TrackLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 
 		// Resume current Track for this user
 		trackLogic.suspend(HandlerUtil.getUserId(anUtopiaReq), System.currentTimeMillis());
-		// close this trip
-		logLogic.closeLogs(anUtopiaReq.getUtopiaSession().getContext().getUserId(), LOG_MOBILE_TYPE);
+        
+        // close this trip
+		// logLogic.closeLogs(anUtopiaReq.getUtopiaSession().getContext().getUserId(), LOG_MOBILE_TYPE);
 
 		// Create and return response with open track id.
 		return createResponse(NAV_STOP_SERVICE);
@@ -303,7 +304,8 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 
 		// relate the track to the trip
 		Record trip = logLogic.getOpenLog(anUtopiaReq.getUtopiaSession().getContext().getUserId(), LOG_MOBILE_TYPE);
-		// relate the track to the trip
+        
+        // relate the track to the trip
 		try {
 			oase.getRelater().relate(trip, track.getRecord());
 		} catch (Throwable t) {
