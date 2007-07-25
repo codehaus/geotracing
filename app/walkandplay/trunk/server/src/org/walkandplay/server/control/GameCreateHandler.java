@@ -152,7 +152,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 
 		JXElement gameElm = requestElm.getChildAt(0);
 		HandlerUtil.throwOnMissingChildElement(gameElm, NAME_FIELD);
-		HandlerUtil.throwOnMissingChildElement(gameElm, DESCRIPTION_FIELD);
+		// HandlerUtil.throwOnMissingChildElement(gameElm, DESCRIPTION_FIELD);
 
 		// Use Logic to create game record
 		GameCreateLogic logic = createLogic(anUtopiaReq);
@@ -176,7 +176,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 		JXElement requestElement = anUtopiaReq.getRequestCommand();
 		HandlerUtil.throwOnNonNumAttr(ID_FIELD, requestElement.getAttr(ID_FIELD));
 		int gameId = requestElement.getIntAttr(ID_FIELD);
-		createLogic(anUtopiaReq).deleteGame(gameId);
+		createLogic(anUtopiaReq).deleteGame(HandlerUtil.getUserId(anUtopiaReq), gameId);
 
 		JXElement response = createResponse(GAME_DELETE_SERVICE);
 		response.setAttr(ID_FIELD, gameId);

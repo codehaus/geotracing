@@ -79,8 +79,8 @@ public class GameRoundLogic implements Constants {
 	 * @param aRoundId gameround record id
 	 * @throws UtopiaException Standard Utopia exception
 	 */
-	public void deleteRound(int aRoundId) throws OaseException, UtopiaException {
-		deleteRound(oase.getFinder().read(aRoundId, GAMEROUND_TABLE));
+	public void deleteRound(int aPersonId, int aRoundId) throws OaseException, UtopiaException {
+		deleteRound(aPersonId, oase.getFinder().read(aRoundId, GAMEROUND_TABLE));
 	}
 
 	/**
@@ -89,9 +89,10 @@ public class GameRoundLogic implements Constants {
 	 * @param aGameRound gameround record
 	 * @throws UtopiaException Standard Utopia exception
 	 */
-	public void deleteRound(Record aGameRound) throws OaseException, UtopiaException {
+	public void deleteRound(int aPersonId, Record aGameRound) throws OaseException, UtopiaException {
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
+		throwIfNotOwner(aPersonId, aGameRound);
 
 		Record[] gamePlays = relater.getRelated(aGameRound, GAMEPLAY_TABLE, null);
 		GamePlayLogic gamePlayLogic = new GamePlayLogic(oase);
@@ -191,4 +192,27 @@ public class GameRoundLogic implements Constants {
 		}
 	}
 
+	/**
+	 * Throw exception if person id is not the owner
+	 *
+	 * @param aPersonId person id to check
+	 * @param aRecordId record id to be checked
+	 * @throws OaseException Standard Utopia exception
+	 */
+	protected void throwIfNotOwner(int aPersonId, int aRecordId) throws OaseException {
+		throwIfNotOwner(aPersonId, oase.getFinder().read(aRecordId));
+	}
+
+	/**
+	 * Throw exception if person id is not the owner
+	 *
+	 * @param aPersonId person id to check
+	 * @param aRecord record to be checked
+	 * @throws OaseException Standard Utopia exception
+	 */
+	protected void throwIfNotOwner(int aPersonId, Record aRecord) throws OaseException {
+		if (aRecord.getIntField(OWNER_FIELD) != aPersonId) {
+			throw new OaseException("you are not owner of this record");
+		}
+	}
 }

@@ -87,6 +87,44 @@ KW.WP = {
 	},
 
 /**
+ * Create a new game.
+ * @param callback - user callback function or null
+ * @param name - name of game
+ * @param desc - description of game
+ * @param intro - intro text of game
+ * @param outro - outro text of game
+ */
+	gameCreate: function(callback, name, desc, intro, outro) {
+		var req = KW.createRequest('game-create-req');
+
+		// Add game element
+		var game = req.createElement('game');
+		KW.UTIL.addTextElement(game, 'name', name);
+		KW.UTIL.addOptTextElement(game, 'description', desc);
+		KW.UTIL.addOptTextElement(game, 'intro', intro);
+		KW.UTIL.addOptTextElement(game, 'outro', outro);
+
+		req.documentElement.appendChild(game);
+
+		KW.utopia(req, callback);
+	},
+
+
+/**
+ * Delete a Game (only game owner is allowed to do this).
+ * @param callback - user callback function or null
+ * @param gameId - id of game
+ */
+	gameDelete: function(callback, gameId) {
+		var req = KW.createRequest('game-delete-req');
+
+		// Only game id is required
+		KW.UTIL.setAttr(req, 'id', gameId);
+
+		KW.utopia(req, callback);
+	},
+
+/**
  * Delete medium from Game.
  * @param callback - user callback function or null
  * @param mediumId - id of medium
@@ -160,7 +198,68 @@ KW.WP = {
 	playHeartbeat: function(callback) {
 		var req = KW.createRequest('play-hb-req');
 		KW.utopia(req, callback);
-	}
+	},
 
+/**
+ * Add players to Gameround (only gameround owner is allowed to do this).
+ * @param callback - user callback function or null
+ * @param roundId* - id of gameround
+ * @param playerIds* - comma-separated players ids e.g. "345,8687,564"
+ */
+	roundAddPlayers: function(callback, roundId, playerIds) {
+		var req = KW.createRequest('round-add-players-req');
+
+		KW.UTIL.setAttr(req, 'roundid', roundId);
+		KW.UTIL.setAttr(req, 'playerids', playerIds);
+
+		KW.utopia(req, callback);
+	},
+
+/**
+ * Remove players from Gameround (only gameround owner is allowed to do this).
+ * @param callback - user callback function or null
+ * @param roundId* - id of gameround
+ * @param playerIds* - comma-separated players ids e.g. "345,8687,564"
+ */
+	roundRemovePlayers: function(callback, roundId, playerIds) {
+		var req = KW.createRequest('round-remove-players-req');
+
+
+		KW.UTIL.setAttr(req, 'roundid', roundId);
+		KW.UTIL.setAttr(req, 'playerids', playerIds);
+
+		KW.utopia(req, callback);
+	},
+
+/**
+ * Create a new game round.
+ * @param callback - user callback function or null
+ * @param gameId* - id game to create round for
+ * @param name* - name of gameround
+ * @param playerIds - comma-separated players ids e.g. "345,8687,564"
+ */
+	roundCreate: function(callback, gameId, name, playerIds) {
+		var req = KW.createRequest('round-create-req');
+		KW.UTIL.setAttr(req, 'gameid', gameId);
+		KW.UTIL.setAttr(req, 'name', name);
+		KW.UTIL.setOptAttr(req, 'playerids', playerIds);
+
+		KW.utopia(req, callback);
+	},
+
+
+/**
+ * Delete a Gameround (only gameround owner is allowed to do this).
+ * @param callback - user callback function or null
+ * @param roundId* - id of gameround
+ */
+	roundDelete: function(callback, roundId) {
+		var req = KW.createRequest('round-delete-req');
+
+		// Only game id is required
+		KW.UTIL.setAttr(req, 'id', roundId);
+
+		KW.utopia(req, callback);
+	}
 
 }
