@@ -59,9 +59,12 @@ function XMLRecord(xmlElement) {
 
 	this.xml = xmlElement;
 	this.id = -1;
-	if (this.xml.attributes && this.xml.attributes[0]) {
-		this.id = this.xml.attributes[0].value;
+	if (this.xml.attributes && this.xml.getAttribute("id")) {
+		this.id = this.xml.getAttribute("id");
+	} else  if (this.getField("id") != null) {
+		this.id = this.getField("id");			
 	}
+
 
 	// Get any text/numeric field by name
 	this.getField = function(name) {
