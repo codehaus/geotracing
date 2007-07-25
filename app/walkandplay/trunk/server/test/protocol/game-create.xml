@@ -167,6 +167,27 @@
 		</expect>
 	</test>
 
+	<test id="game-add-text-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<game-add-medium-req id="${gameid}">
+					<medium>
+						<name>atextmediumname</name>
+						<text>atextmediumtext atextmediumtext</text>
+						<lon>4.92204666137695</lon>
+						<lat>52.3764702870686</lat>
+					</medium>
+				</game-add-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-add-medium-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
 	<test id="game-del-medium-req">
 		<send id="client1">
 			<utopia-req>
@@ -235,6 +256,51 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<game-delete-task-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="medium-insert-req-3">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>item1</name>
+						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<size>2758</size>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-add-task-req2">
+		<send id="client1">
+			<utopia-req>
+				<game-add-task-req id="${gameid}">
+					<task>
+						<name>strikvraag</name>
+						<description>wat wordt het meest in amsterdam gestolen ?</description>
+						<answer>mijn fiets</answer>
+						<mediumid>${mediumid3}</mediumid>
+						<score>10</score>
+						<lon>4.92204666137695</lon>
+						<lat>52.3764702870686</lat>
+					</task>
+				</game-add-task-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-add-task-rsp id="${taskid2}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
