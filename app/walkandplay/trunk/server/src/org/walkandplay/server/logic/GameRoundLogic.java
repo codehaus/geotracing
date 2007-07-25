@@ -80,17 +80,25 @@ public class GameRoundLogic implements Constants {
 	 * @throws UtopiaException Standard Utopia exception
 	 */
 	public void deleteRound(int aRoundId) throws OaseException, UtopiaException {
-		Finder finder = oase.getFinder();
+		deleteRound(oase.getFinder().read(aRoundId, GAMEROUND_TABLE));
+	}
+
+	/**
+	 * Delete a gameround.
+	 *
+	 * @param aGameRound gameround record
+	 * @throws UtopiaException Standard Utopia exception
+	 */
+	public void deleteRound(Record aGameRound) throws OaseException, UtopiaException {
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
-		Record gameRound = finder.read(aRoundId, GAMEROUND_TABLE);
-		Record[] gamePlays = relater.getRelated(gameRound, GAMEPLAY_TABLE, null);
+
+		Record[] gamePlays = relater.getRelated(aGameRound, GAMEPLAY_TABLE, null);
 		GamePlayLogic gamePlayLogic = new GamePlayLogic(oase);
 		for (int i = 0; i < gamePlays.length; i++) {
 			gamePlayLogic.delete(gamePlays[i]);
 		}
-		modifier.delete(gameRound);
-
+		modifier.delete(aGameRound);
 	}
 
 	/**

@@ -48,6 +48,7 @@ public interface Constants {
 	public final static String DESCRIPTION_FIELD = "description";
 	public final static String STATE_FIELD = "state";
 	public final static String TYPE_FIELD = "type";
+	public final static String INTRO_FIELD = "intro";
 	public final static String KIND_FIELD = "kind";
 	public final static String LOGINNAME_FIELD = "loginname";
 	public final static String LOCATION_FIELD = "location";
@@ -74,6 +75,7 @@ public interface Constants {
 	public final static String TASK_ID_FIELD = "taskid";
 	public final static String TASK_RESULT_ID_FIELD = "taskresultid";
 	public final static String TASK_STATE_FIELD = "taskstate";
+	public final static String OUTRO_FIELD = "outro";
 
 	public final static String INVITATION_FIELD = "invitation";
 	public final static String INVITATION_SEND = "invitation-send";
