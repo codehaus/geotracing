@@ -4,6 +4,7 @@
 <%@ page import="javax.servlet.http.HttpServletResponse"%>
 <%@ page import="org.keyworx.utopia.core.util.Oase"%>
 <%@ page import="org.geotracing.handler.QueryLogic"%>
+<%@ page import="org.walkandplay.server.logic.WPQueryLogic"%>
 <%!
 
 	// Copyright (c) 2005 Just Objects B.V. <just@justobjects.nl>
@@ -30,7 +31,7 @@
 				result.setAttr("id", gamePlayId);
 
 				Oase oase = QueryLogic.getOase();
-				result.addChildren(GamePlayHandler.getGamePlayEvents(oase, Integer.parseInt(gamePlayId)));
+				result.addChildren(WPQueryLogic.getGamePlayEvents(Integer.parseInt(gamePlayId)));
 
 			}
 

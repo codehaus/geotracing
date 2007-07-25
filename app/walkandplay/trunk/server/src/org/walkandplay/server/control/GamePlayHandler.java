@@ -8,6 +8,7 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.Sys;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -26,7 +27,7 @@ import java.util.Vector;
  * @author Ronald Lenz
  * @version $Id: GameScheduleHandler.java 327 2007-01-25 16:54:39Z just $
  */
-public class GamePlayHandler extends DefaultHandler implements Constants {
+public class GamePlayHandler extends DefaultHandler implements ThreadSafe, Constants {
 
 	public final static String PLAY_RESET_SERVICE = "play-reset";
 	public final static String PLAY_START_SERVICE = "play-start";
@@ -48,8 +49,6 @@ public class GamePlayHandler extends DefaultHandler implements Constants {
 	 *          Standard Utopia exception
 	 */
 	public UtopiaResponse processRequest(UtopiaRequest anUtopiaReq) throws UtopiaException {
-		Log log = Logging.getLog(anUtopiaReq);
-
 		// Get the service name for the request
 		String service = anUtopiaReq.getServiceName();
 

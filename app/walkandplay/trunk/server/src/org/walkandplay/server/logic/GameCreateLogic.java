@@ -140,7 +140,12 @@ public class GameCreateLogic implements Constants {
 			game = modifier.create(GAME_TABLE);
 			game.setIntField(OWNER_FIELD, aPersonId);
 			game.setStringField(NAME_FIELD, aGameElm.getChildText(NAME_FIELD));
-			game.setStringField(DESCRIPTION_FIELD, aGameElm.getChildText(DESCRIPTION_FIELD));
+			String desc = aGameElm.getChildText(DESCRIPTION_FIELD);
+			if (desc == null) {
+				desc = "description for game " + aGameElm.getChildText(NAME_FIELD);
+			}
+
+			game.setStringField(DESCRIPTION_FIELD, desc);
 
 			String intro = aGameElm.getChildText(INTRO_FIELD);
 			if (intro != null) {
@@ -170,7 +175,7 @@ public class GameCreateLogic implements Constants {
 	 * @param aGameId game id to delete
 	 * @throws OaseException Standard Utopia exception
 	 */
-	public void deleteGame(int aGameId) throws OaseException {
+	public void deleteGame(int aPersonId, int aGameId) throws OaseException {
 		Finder finder = oase.getFinder();
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
@@ -178,6 +183,7 @@ public class GameCreateLogic implements Constants {
 		try {
 			transaction.begin();
 			Record gameRecord = finder.read(aGameId, GAME_TABLE);
+			throwIfNotOwner(aPersonId, gameRecord);
 			Record[] locations = relater.getRelated(gameRecord, LOCATION_TABLE, null);
 			for (int i = 0; i < locations.length; i++) {
 				deleteGameLocation(locations[i]);
@@ -186,7 +192,7 @@ public class GameCreateLogic implements Constants {
 			Record[] gameRounds = relater.getRelated(gameRecord, GAMEROUND_TABLE, null);
 			GameRoundLogic gameRoundLogic = new GameRoundLogic(oase);
 			for (int i = 0; i < gameRounds.length; i++) {
-				gameRoundLogic.deleteRound(gameRounds[i]);
+				gameRoundLogic.deleteRound(aPersonId, gameRounds[i]);
 			}
 			modifier.delete(gameRecord);
 
@@ -360,4 +366,28 @@ public class GameCreateLogic implements Constants {
 		}
 	}
 
+
+	/**
+	 * Throw exception if person id is not the owner
+	 *
+	 * @param aPersonId person id to check
+	 * @param aRecordId record id to be checked
+	 * @throws OaseException Standard Utopia exception
+	 */
+	protected void throwIfNotOwner(int aPersonId, int aRecordId) throws OaseException {
+		throwIfNotOwner(aPersonId, oase.getFinder().read(aRecordId));
+	}
+
+	/**
+	 * Throw exception if person id is not the owner
+	 *
+	 * @param aPersonId person id to check
+	 * @param aRecord record to be checked
+	 * @throws OaseException Standard Utopia exception
+	 */
+	protected void throwIfNotOwner(int aPersonId, Record aRecord) throws OaseException {
+		if (aRecord.getIntField(OWNER_FIELD) != aPersonId) {
+			throw new OaseException("you are not owner of this record");
+		}
+	}
 }

@@ -7,6 +7,7 @@ import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -22,7 +23,7 @@ import org.walkandplay.server.util.Constants;
  * @author Just van den Broecke
  * @version $Id$
  */
-public class GameRoundHandler extends DefaultHandler implements Constants {
+public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Constants {
 
 	public final static String ROUND_CREATE_SERVICE = "round-create";
 	public final static String ROUND_DELETE_SERVICE = "round-delete";
@@ -106,7 +107,7 @@ public class GameRoundHandler extends DefaultHandler implements Constants {
 	public JXElement deleteRound(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 		JXElement requestElm = anUtopiaReq.getRequestCommand();
 		HandlerUtil.throwOnNonNumAttr(requestElm, ID_FIELD);
-		createLogic(anUtopiaReq).deleteRound(requestElm.getIntAttr(ID_FIELD));
+		createLogic(anUtopiaReq).deleteRound(HandlerUtil.getUserId(anUtopiaReq), requestElm.getIntAttr(ID_FIELD));
 		return createResponse(ROUND_DELETE_SERVICE);
 	}
 
