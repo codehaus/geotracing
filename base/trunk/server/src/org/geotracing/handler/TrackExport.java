@@ -203,7 +203,7 @@ public class TrackExport {
 
 					// Possibly filter out samples too close to each other
 					// and excess samples.
-					nextSample = new GPSSample(nextPoint.getDoubleAttr("lat"), nextPoint.getDoubleAttr("lat"));
+					nextSample = new GPSSample(nextElement.getDoubleAttr("lat"), nextElement.getDoubleAttr("lat"));
 					if (aTrackPointFilter.filter(nextSample)) {
 						nextSegment.addChild(nextPoint);
 						ptCount++;
