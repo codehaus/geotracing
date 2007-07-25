@@ -1,19 +1,14 @@
 package org.walkandplay.client.phone;
 
+import de.enough.polish.ui.List;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.Locale;
+import org.geotracing.client.Util;
 
-import javax.microedition.midlet.MIDlet;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
-
-import de.enough.polish.ui.StringItem;
-
-/*import de.enough.polish.ui.DigitalClockItem;*/
-import de.enough.polish.ui.List;
-
-import org.geotracing.client.Util;
 
 /**
  * MobiTracer main GUI.
@@ -23,7 +18,7 @@ import org.geotracing.client.Util;
  */
 
 /*public class SettingsDisplay extends Form implements CommandListener {*/
-public class SettingsDisplay extends DefaultDisplay{
+public class SettingsDisplay extends DefaultDisplay {
     List menuScreen;
     Command SOUND_CMD;
     Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
@@ -35,21 +30,21 @@ public class SettingsDisplay extends DefaultDisplay{
     public SettingsDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
 
-        try{
+        try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/settings_icon_small.png");
             //#else
             logo = scheduleImage("/settings_icon_small.png");
             //#endif
-        }catch(Throwable t){
+        } catch (Throwable t) {
             Log.log("Could not load the images on SettingsDisplay");
         }
         append(logo);
 
-        if(Util.hasSound()){
-            SOUND_CMD =  new Command(Locale.get("settings.SoundOff"), Command.ITEM, 2);
-        }else{
-            SOUND_CMD =  new Command(Locale.get("settings.SoundOn"), Command.ITEM, 2);
+        if (Util.hasSound()) {
+            SOUND_CMD = new Command(Locale.get("settings.SoundOff"), Command.ITEM, 2);
+        } else {
+            SOUND_CMD = new Command(Locale.get("settings.SoundOn"), Command.ITEM, 2);
         }
 
         /*//#style titlebox

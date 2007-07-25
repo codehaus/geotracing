@@ -1,19 +1,11 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.*;
 import de.enough.polish.ui.Form;
-import de.enough.polish.ui.TextField;
 
+import javax.microedition.io.Connector;
+import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.*;
-import javax.microedition.lcdui.Gauge;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemCommandListener;
-import javax.microedition.lcdui.StringItem;
-import javax.microedition.media.control.VideoControl;
-import javax.microedition.media.Manager;
-import javax.microedition.media.Player;
-import javax.microedition.media.MediaException;
-import javax.microedition.media.PlayerListener;
+import java.io.DataInputStream;
 
 /**
  * MobiTracer main GUI.
@@ -21,20 +13,23 @@ import javax.microedition.media.PlayerListener;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-public class TestDisplay extends Form implements CommandListener, ItemCommandListener, PlayerListener, Runnable {
+public class TestDisplay extends Form implements CommandListener, DownloadListener {
     private Command BACK_CMD = new Command("Back", Command.BACK, 1);
-    private Command VIEW_CMD = new Command("View", Command.ITEM, 1);
-    private Command START_CMD = new Command("Play", Command.SCREEN, 1);
-    private Command STOP_CMD = new Command("Stop", Command.SCREEN, 2);
+    private Command START_CMD = new Command("Start", Command.OK, 1);
+    private Command STOP_CMD = new Command("Stop", Command.OK, 1);
     protected WPMidlet midlet;
     private Display display;
     protected Displayable prevScreen;
-    private Player player;
-    private String url = "http://test.mlgk.nl/wp/media.srv?id=26527";
+    private Gauge gaugeInf = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
+    private Gauge gauge = new Gauge(null, false, Gauge.INCREMENTAL_UPDATING, Gauge.CONTINUOUS_RUNNING);
+    private Gauge gaProgress = new Gauge("Download Progress", false, 100, 0);
+
+    private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
+    private int progressCounter;
+    private int progressMax = 100;
 
     private int w = -1, h = -1;
-	private Font f, fb;
-    private StringItem msg = new StringItem("", "Starting up...");
+    private Font f, fb;
 
     public TestDisplay(WPMidlet aMidlet) {
         //#style defaultscreen
@@ -43,154 +38,121 @@ public class TestDisplay extends Form implements CommandListener, ItemCommandLis
         prevScreen = Display.getDisplay(midlet).getCurrent();
         display = Display.getDisplay(midlet);
 
-        append(msg);
+        System.out.println("constructor TestDisplay");
+
         addCommand(BACK_CMD);
-        addCommand(VIEW_CMD);
         addCommand(START_CMD);
-        addCommand(STOP_CMD);
 
-        /*//#style formbox
-        append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
-        append(new ClockItem(""));*/
+        //#style formbox
+        append(gaProgress);
 
-        /*//#style labelinfo
-        append("labelinfo");
-        //#style textbox
-        append(new TextField("", "", 32, TextField.ANY));*/
+        setCommandListener(this);
 
-        /*StringItem si = new StringItem("", url, Item.HYPERLINK);
-        si.setDefaultCommand(VIEW_CMD);
-        si.setItemCommandListener(this);
-        append(si);*/
+        //append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
+        //append(new ClockItem(""));
 
-        /*try{
-            midlet.platformRequest(url);
-        }catch(Throwable t){
-            show(t.getMessage());
-        }*/
-
-        /*try{
-            play(url);
-        }catch(Throwable t){
-            show(t.getMessage());            
-        }*/
-
-        /*try{
-            if(player != null && player.getState() == Player.PREFETCHED) {
-                player.start();
-            } else {
-                defplayer();
-            }
-        }catch(Throwable t){
-            show(t.getMessage());
-        }*/
     }
 
-    private void show(String aMsg){
+    public void dlStart() {
+        gaProgress.setMaxValue(progressMax);
+    }
+
+    public void dlProgress() {
+        gaProgress.setValue(progressCounter);
+        if (progressCounter == progressMax - 1) {
+            progressCounter = 0;
+        }
+        progressCounter++;
+    }
+
+    public void dlStop() {
+        gaProgress.setLabel("Download finished!");
+    }
+
+    public void dlError(String aMessage) {
+        show(aMessage);
+    }
+
+    public void dlSetContentLength(int aContentLength) {
+        gaProgress.setLabel("Downloading " + aContentLength + " bytes");
+    }
+
+    private void show(String aMsg) {
         System.out.println(aMsg);
-        msg.setText(aMsg);
     }
 
-    public void commandAction(Command command, Displayable screen) {
-        if(command == BACK_CMD){
-            Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if(command == START_CMD){
-            start();
-        }else if(command == STOP_CMD){
-            stopPlayer();
-        }else{
-            show("unknown command:" + command);
+    private void download() {
+        System.out.println("download");
+        try {
+            removeCommand(START_CMD);
+            addCommand(STOP_CMD);
+
+            Downloader dl = new Downloader();
+            dl.download(this);
+        } catch (Throwable t) {
+            show("Exception in download:" + t.getMessage());
         }
     }
 
-    public void commandAction(Command command, Item anItem) {
-        show("hit the item");
 
+    private class Downloader {
+        public int state = 0;
+
+        private void download(DownloadListener aListener) {
+            final DownloadListener listener = aListener;
+            try {
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            DataInputStream dis = null;
+                            HttpConnection c = null;
+                            String result = null;
+                            try {
+                                //image =  Util.getImage("http://farm2.static.flickr.com/1182/874505187_b12f8039bd_o_d.jpg");
+                                c = (HttpConnection) Connector.open("http://test.mlgk.nl/command.txt");
+                                dis = new DataInputStream(c.openInputStream());
+                                listener.dlStart();
+
+                                // Read until the connection is closed.
+                                StringBuffer b = new StringBuffer();
+                                int ch;
+                                while ((ch = dis.read()) != -1) {
+                                    b.append((char) ch);
+                                    listener.dlProgress();
+                                }
+                                result = b.toString();
+                            } finally {
+                                if (dis != null) {
+                                    dis.close();
+                                }
+                                if (c != null) {
+                                    c.close();
+                                }
+                                listener.dlStop();
+                            }
+                        } catch (Throwable t) {
+                            show(t.getMessage());
+                            listener.dlError(t.getMessage());
+                        }
+                    }
+                }).start();
+            } catch (Throwable t) {
+                show("Exception in Downloader:" + t.getMessage());
+            }
+        }
     }
 
-   public void playerUpdate(Player player,
-     String event, Object data) {
-      if(event == PlayerListener.END_OF_MEDIA) {
-         try {
-            defplayer();
-         }
-         catch(MediaException me) {
-             show(me.getMessage());
-         }
-         reset();
-      }
-   }
 
-   public void start() {
-      Thread t = new Thread(this);
-      t.start();
-   }
-
-    void play(String url) {
-      try {
-         VideoControl vc;
-         defplayer();
-         // create a player instance
-         player = Manager.createPlayer(url);
-         player.addPlayerListener(this);
-         // realize the player
-         player.realize();
-         vc = (VideoControl)player.getControl("VideoControl");
-         if(vc != null) {
-            //Item video = (Item)vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
-            Item video = (Item)vc.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, null);
-            Form v = new Form("Playing Video...");
-            StringItem si = new StringItem("Status: ", "Playing...");
-            v.append(si);
-            v.append(video);
-            display.setCurrent(v);
-         }
-         player.prefetch();
-         player.start();
-      }
-      catch(Throwable t) {
-          show(t.getMessage());
-          reset();
-      }
-   }
-
-    public void run() {
-      play(getURL());
-   }
-
-   String getURL() {
-     return url;
-   }
-    void defplayer() throws MediaException {
-      if (player != null) {
-         if(player.getState() == Player.STARTED) {
-            player.stop();
-         }
-         if(player.getState() == Player.PREFETCHED) {
-            player.deallocate();
-         }
-         if(player.getState() == Player.REALIZED ||
-		    player.getState() == Player.UNREALIZED) {
-            player.close();
-         }
-      }
-      player = null;
-   }
-
-   void reset() {
-      player = null;
-   }
-
-   void stopPlayer() {
-      try {
-         defplayer();
-      }
-      catch(MediaException me) {
-          show(me.getMessage());
-      }
-      reset();
-   }
-
-
+    public void commandAction(Command command, Displayable screen) {
+        if (command == BACK_CMD) {
+            Display.getDisplay(midlet).setCurrent(prevScreen);
+        } else if (command == START_CMD) {
+            download();
+        } else if (command == STOP_CMD) {
+            removeCommand(STOP_CMD);
+            addCommand(START_CMD);
+            dlStop();
+        }
+    }
 
 }

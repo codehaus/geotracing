@@ -1,20 +1,11 @@
 package org.walkandplay.client.phone;
 
 
+import de.enough.polish.ui.StringItem;
+import de.enough.polish.util.Locale;
 import org.geotracing.client.*;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.TextField;
-import javax.microedition.midlet.MIDlet;
-
-import de.enough.polish.ui.*;
-import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.ImageItem;
-
-import de.enough.polish.util.Locale;
-import nl.justobjects.mjox.JXElement;
 
 /**
  * MobiTracer main GUI.
@@ -23,10 +14,10 @@ import nl.justobjects.mjox.JXElement;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 /*public class TraceDisplay extends DefaultDisplay  {*/
-public class TraceDisplay extends DefaultTraceDisplay   {
+public class TraceDisplay extends DefaultTraceDisplay {
     String gpsStatus = "disconnected";
-	String netStatus = "disconnected";
-	String status = "OK";
+    String netStatus = "disconnected";
+    String status = "OK";
     StringItem gpsStatusBT;
     StringItem netStatusBT;
 
@@ -35,9 +26,9 @@ public class TraceDisplay extends DefaultTraceDisplay   {
     private int netNum;
 
     private boolean showGPSInfo = true;
-	private MapDisplay mapViewer;
-	//private TracerEngine tracerEngine;
-	private TraceDisplay traceDisplay;
+    private MapDisplay mapViewer;
+    //private TracerEngine tracerEngine;
+    private TraceDisplay traceDisplay;
 
     private Command NEW_TRK_CMD = new Command(Locale.get("trace.New"), Command.ITEM, 2);
     private Command SUSPEND_TRK_CMD = new Command(Locale.get("trace.Suspend"), Command.ITEM, 2);
@@ -52,18 +43,18 @@ public class TraceDisplay extends DefaultTraceDisplay   {
 
     public TraceDisplay(WPMidlet aMidlet) {
         super(aMidlet, "");
-        try{
+        try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/trace_icon_small.png");
             //#else
             logo = scheduleImage("/trace_icon_small.png");
             //#endif
-        }catch(Throwable t){
+        } catch (Throwable t) {
             Log.log("Could not load the images on TraceDisplay");
         }
-        
+
         tracerEngine = new TracerEngine(aMidlet, this);
-		traceDisplay = this;
+        traceDisplay = this;
 
         addCommand(ADD_TEXT_CMD);
         addCommand(ADD_PHOTO_CMD);
@@ -71,9 +62,9 @@ public class TraceDisplay extends DefaultTraceDisplay   {
         addCommand(SHOW_MAP_CMD);
         addCommand(RADAR_CMD);
         addCommand(NEW_TRK_CMD);
-        if(tracerEngine.isPaused()){
+        if (tracerEngine.isPaused()) {
             addCommand(RESUME_TRK_CMD);
-        }else{
+        } else {
             addCommand(SUSPEND_TRK_CMD);
         }
 
@@ -87,46 +78,46 @@ public class TraceDisplay extends DefaultTraceDisplay   {
         netNum = append(netStatusBT);
     }
 
-	void start() {
-		mapViewer = new MapDisplay();
-		tracerEngine.start();
+    void start() {
+        mapViewer = new MapDisplay();
+        tracerEngine.start();
         // directly go to the map if in play mode.
-        if(midlet.getPlayMode() == true){
+        if (midlet.getPlayMode() == true) {
             mapViewer.activate(midlet);
         }
     }
 
     void stop() {
-		tracerEngine.stop();
-	}
+        tracerEngine.stop();
+    }
 
     TracerEngine getTracer() {
-		return tracerEngine;
-	}
+        return tracerEngine;
+    }
 
-	public void setGPSInfo(GPSInfo theInfo) {
-		mapViewer.setLocation(theInfo.lon.toString(), theInfo.lat.toString());
-		if (!showGPSInfo) {
-			return;
-		}
-		status = theInfo.toString();
+    public void setGPSInfo(GPSInfo theInfo) {
+        mapViewer.setLocation(theInfo.lon.toString(), theInfo.lat.toString());
+        if (!showGPSInfo) {
+            return;
+        }
+        status = theInfo.toString();
         log(status);
     }
 
-	public void setStatus(String s) {
-		status = s;
-		log(s);
-	}
+    public void setStatus(String s) {
+        status = s;
+        log(s);
+    }
 
-	public void onGPSStatus(String s) {
-		gpsStatus = s;
+    public void onGPSStatus(String s) {
+        gpsStatus = s;
         gpsStatusBT.setText(gpsStatus);
         //log(s);
     }
 
 
-	public void onNetStatus(String s) {
-		netStatus = s;
+    public void onNetStatus(String s) {
+        netStatus = s;
         netStatusBT.setText(netStatus);
         //log(s);
     }
@@ -138,79 +129,78 @@ public class TraceDisplay extends DefaultTraceDisplay   {
         System.out.println("net: " + netNum);
         System.out.println("msg: " + msgNum);
         delete(msgNum);
-	}
+    }
 
     public void log(String message) {
         cls();
         //#style formbox
         msgNum = append(message + "\n");
         //msgNum = append(new StringItem("", message + "\n"));
-		System.out.println(msgNum + ":" + message);
-	}
+        System.out.println(msgNum + ":" + message);
+    }
 
 
     private class CreateTrackHandler implements CommandListener {
-		private TextField textField;
-		private Command okCmd = new Command("OK", Command.OK, 1);
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+        private TextField textField;
+        private Command okCmd = new Command("OK", Command.OK, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-		/*
-		* Create the first TextBox and associate
-		* the exit command and listener.
-		*/
-		public void createTrack() {
+        /*
+          * Create the first TextBox and associate
+          * the exit command and listener.
+          */
+        public void createTrack() {
             //#style defaultscreen
             Form form = new Form("Create New Track");
             //#style textbox
             textField = new TextField("Enter Track Name", "", 48, TextField.ANY);
-			form.append(textField);
-			// Add the Exit Command to the TextBox
-			form.addCommand(okCmd);
-			form.addCommand(cancelCmd);
+            form.append(textField);
+            // Add the Exit Command to the TextBox
+            form.addCommand(okCmd);
+            form.addCommand(cancelCmd);
 
-			// Set the command listener for the textbox to the current midlet
-			form.setCommandListener(this);
+            // Set the command listener for the textbox to the current midlet
+            form.setCommandListener(this);
 
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(form);
-		}
+            // Set the current display of the midlet to the textBox screen
+            Display.getDisplay(midlet).setCurrent(form);
+        }
 
-		/*
-		* The commandAction method is implemented by this midlet to
-		* satisfy the CommandListener interface and handle the Exit action.
-		*/
-		public void commandAction(Command command, Displayable screen) {
-			if (command == okCmd) {
-				String trackName = textField.getString();
-				if (trackName != null && trackName.length() > 0) {
-					tracerEngine.suspend();
-					tracerEngine.getNet().newTrack(trackName);
-				} else {
-					onNetStatus("No trk name");
-				}
-			} else {
-				onNetStatus("Create cancel");
-			}
+        /*
+          * The commandAction method is implemented by this midlet to
+          * satisfy the CommandListener interface and handle the Exit action.
+          */
+        public void commandAction(Command command, Displayable screen) {
+            if (command == okCmd) {
+                String trackName = textField.getString();
+                if (trackName != null && trackName.length() > 0) {
+                    tracerEngine.suspend();
+                    tracerEngine.getNet().newTrack(trackName);
+                } else {
+                    onNetStatus("No trk name");
+                }
+            } else {
+                onNetStatus("Create cancel");
+            }
 
+            // Set the current display of the midlet to the textBox screen
+            Display.getDisplay(midlet).setCurrent(traceDisplay);
+        }
+    }
 
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(traceDisplay);
-		}
-	}
+    private class AddTextHandler implements CommandListener {
+        private TextField tagsField;
+        private TextField nameField;
+        private TextField textField;
+        private Command textOkCmd = new Command("OK", Command.OK, 1);
+        private Command submitCmd = new Command("OK", Command.OK, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-	private class AddTextHandler implements CommandListener {
-		private TextField tagsField;
-		private TextField nameField;
-		private TextField textField;
-		private Command textOkCmd = new Command("OK", Command.OK, 1);
-		private Command submitCmd = new Command("OK", Command.OK, 1);
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
-
-		/*
-		* Create the first TextBox and associate
-		* the exit command and listener.
-		*/
-		public void addText() {
+        /*
+          * Create the first TextBox and associate
+          * the exit command and listener.
+          */
+        public void addText() {
             //#style defaultscreen
             Form form = new Form("Add Text");
             // Create the TextBox containing the "Hello,World!" message
@@ -224,14 +214,14 @@ public class TraceDisplay extends DefaultTraceDisplay   {
             form.setCommandListener(this);
 
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
-		/*
-		* Create the first TextBox and associate
-		* the exit command and listener.
-		*/
-		public void addMeta() {
-			// Create the TextBox containing the "Hello,World!" message
+        /*
+          * Create the first TextBox and associate
+          * the exit command and listener.
+          */
+        public void addMeta() {
+            // Create the TextBox containing the "Hello,World!" message
             //#style defaultscreen
             Form form = new Form("Add Info");
             //#style textbox
@@ -239,61 +229,61 @@ public class TraceDisplay extends DefaultTraceDisplay   {
             //#style textbox
             tagsField = new TextField("Enter Tags (opt)", "", 32, TextField.ANY);
 
-			form.append(nameField);
-			form.append(tagsField);
+            form.append(nameField);
+            form.append(tagsField);
 
-			// Add the Exit Command to the TextBox
-			form.addCommand(submitCmd);
-			form.addCommand(cancelCmd);
+            // Add the Exit Command to the TextBox
+            form.addCommand(submitCmd);
+            form.addCommand(cancelCmd);
 
-			// Set the command listener for the textbox to the current midlet
-			form.setCommandListener(this);
+            // Set the command listener for the textbox to the current midlet
+            form.setCommandListener(this);
 
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(form);
-		}
+            // Set the current display of the midlet to the textBox screen
+            Display.getDisplay(midlet).setCurrent(form);
+        }
 
-		/*
-		* The commandAction method is implemented by this midlet to
-		* satisfy the CommandListener interface and handle the Exit action.
-		*/
-		public void commandAction(Command command, Displayable screen) {
-			if (command == submitCmd) {
-				String name = nameField.getString();
-				String text = textField.getString();
-				String tags = tagsField.getString();
-				if (name != null && name.length() > 0 && text != null && text.length() > 0) {
-					tracerEngine.getNet().uploadMedium(name, null, "text", "text/plain", Util.getTime(), text.getBytes(), false);
-				} else {
-					setStatus("Type title and tags");
-				}
-			} else if (command == textOkCmd) {
-				if (textField.getString() == null) {
-					setStatus("No text typed");
-				} else {
-					// text entered, now enter other stuff
-					addMeta();
-					return;
-				}
-			} else {
-				onNetStatus("Add Text cancel");
-			}
+        /*
+          * The commandAction method is implemented by this midlet to
+          * satisfy the CommandListener interface and handle the Exit action.
+          */
+        public void commandAction(Command command, Displayable screen) {
+            if (command == submitCmd) {
+                String name = nameField.getString();
+                String text = textField.getString();
+                String tags = tagsField.getString();
+                if (name != null && name.length() > 0 && text != null && text.length() > 0) {
+                    tracerEngine.getNet().uploadMedium(name, null, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                } else {
+                    setStatus("Type title and tags");
+                }
+            } else if (command == textOkCmd) {
+                if (textField.getString() == null) {
+                    setStatus("No text typed");
+                } else {
+                    // text entered, now enter other stuff
+                    addMeta();
+                    return;
+                }
+            } else {
+                onNetStatus("Add Text cancel");
+            }
 
-			// Set the current display of the midlet to the textBox screen
-			Display.getDisplay(midlet).setCurrent(traceDisplay);
-		}
-	}
+            // Set the current display of the midlet to the textBox screen
+            Display.getDisplay(midlet).setCurrent(traceDisplay);
+        }
+    }
 
     /*
     * The commandAction method is implemented by this midlet to
     * satisfy the CommandListener interface and handle the Exit action.
     */
     public void commandAction(Command cmd, Displayable screen) {
-        if (cmd == BACK_CMD) {            
+        if (cmd == BACK_CMD) {
             System.out.println(midlet);
             System.out.println(prevScreen);
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if (cmd == NEW_TRK_CMD) {
+        } else if (cmd == NEW_TRK_CMD) {
             log("creating new track");
             new CreateTrackHandler().createTrack();
         } else if (cmd == SUSPEND_TRK_CMD) {

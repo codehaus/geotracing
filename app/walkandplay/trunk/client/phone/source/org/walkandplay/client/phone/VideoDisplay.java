@@ -1,7 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.util.Locale;
-
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.Manager;
@@ -10,7 +8,6 @@ import javax.microedition.media.control.VideoControl;
 
 public class VideoDisplay extends GameCanvas implements CommandListener {
     private Player player = null; // player instance
-    private VideoControl vidc; // video control instance
     private WPMidlet midlet;
     protected Displayable prevScreen;
     private String url;
@@ -22,7 +19,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener {
     public VideoDisplay(WPMidlet aMidlet, String aUrl, boolean isTest) {
         super(false);
         midlet = aMidlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();        
+        prevScreen = Display.getDisplay(midlet).getCurrent();
         setFullScreenMode(true);
 
         testMode = isTest;
@@ -35,7 +32,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener {
             bg = scheduleImage("/bg.png");
             //#endif
         } catch (Throwable t) {
-
+            System.out.println(t.getMessage());
         }
 
         addCommand(BACK_CMD);
@@ -44,9 +41,9 @@ public class VideoDisplay extends GameCanvas implements CommandListener {
     }
 
     public void commandAction(Command cmd, Displayable screen) {
-        if(testMode){
+        if (testMode) {
             midlet.setHome();
-        }else{
+        } else {
             Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
         }
     }
@@ -63,7 +60,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener {
         }
 
         // get video control instance
-        vidc = (VideoControl) player.getControl("VideoControl");
+        VideoControl vidc = (VideoControl) player.getControl("VideoControl");
         vidc.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
         int vW = vidc.getSourceWidth();
         int vH = vidc.getSourceHeight();
@@ -90,7 +87,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener {
         Font font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_MEDIUM);
         g.setFont(font);
         g.setColor(0);
-        g.drawString("Video", (getWidth() - font.stringWidth("Video")) / 2, 2, g.TOP | g.LEFT);
+        g.drawString("Video", (getWidth() - font.stringWidth("Video")) / 2, 2, Graphics.TOP | Graphics.LEFT);
 
     }
 }

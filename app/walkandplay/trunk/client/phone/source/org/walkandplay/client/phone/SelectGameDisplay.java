@@ -1,14 +1,12 @@
 package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
-
-import javax.microedition.lcdui.*;
-
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
 import org.geotracing.client.NetListener;
 import org.geotracing.client.Preferences;
 
+import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -32,42 +30,42 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
-        try{
+        try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/play_icon_small.png");
             //#else
             logo = scheduleImage("/play_icon_small.png");
             //#endif
-        }catch(Throwable t){
+        } catch (Throwable t) {
             Log.log("Could not load the images on PlayDisplay");
         }
-        
+
         midlet = aMIDlet;
-        
+
         net = Net.getInstance();
-        if(!net.isConnected()){
+        if (!net.isConnected()) {
             net.setProperties(aMIDlet);
             net.setListener(this);
             net.start();
         }
 
-        if(!net.isConnected()){
+        if (!net.isConnected()) {
             // login must have failed!!!!
             //#style formbox
-            append("Logging in has failed!! Please check your username and password under Settings/Account and try again.");            
-        }else{
+            append("Logging in has failed!! Please check your username and password under Settings/Account and try again.");
+        } else {
 
             // get the games
-            try{
+            try {
                 JXElement req = new JXElement("query-store-req");
                 req.setAttr("cmd", "q-play-status-by-user");
                 req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
                 JXElement rsp = net.utopiaReq(req);
                 System.out.println(new String(rsp.toBytes(false)));
-                if(rsp!=null) {
+                if (rsp != null) {
                     Vector elms = rsp.getChildrenByTag("record");
-                    for(int i=0;i<elms.size();i++){
-                        JXElement elm = (JXElement)elms.elementAt(i);
+                    for (int i = 0; i < elms.size(); i++) {
+                        JXElement elm = (JXElement) elms.elementAt(i);
                         String name = elm.getChildText("name");
                         //String description = elm.getChildText("description");
                         String gameplayState = elm.getChildText("gameplaystate");
@@ -81,10 +79,10 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
                     gamesGroup.setSelectedIndex(0, true);
 
                 }
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 System.out.println(t.getMessage());
             }
-            
+
             append(logo);
             //#style formbox
             append("Select a game and press PLAY in the menu");
@@ -94,7 +92,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
         }
     }
 
-    private void startGame(){
+    private void startGame() {
         /*JXElement req = new JXElement("play-reset-req");
         req.setAttr("id", midlet.getGamePlayId());
         System.out.println(new String(req.toBytes(false)));
@@ -108,15 +106,15 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
         System.out.println(new String(rsp.toBytes(false)));
     }
 
-    public void onNetInfo(String theInfo){
+    public void onNetInfo(String theInfo) {
         Log.log(theInfo);
     }
 
-	public void onNetError(String aReason, Throwable anException){
+    public void onNetError(String aReason, Throwable anException) {
         Log.log(aReason);
     }
 
-	public void onNetStatus(String aStatusMsg){
+    public void onNetStatus(String aStatusMsg) {
         Log.log(aStatusMsg);
     }
 
@@ -137,10 +135,10 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
             midlet.setPlayMode(true);
 
             PlayDisplay d = new PlayDisplay(midlet);
-            midlet.playDisplay = d;                        
+            midlet.playDisplay = d;
             Display.getDisplay(midlet).setCurrent(d);
             d.start();
-        }else if (cmd == DESCRIPTION_CMD) {
+        } else if (cmd == DESCRIPTION_CMD) {
             gameName = gamesGroup.getString(gamesGroup.getSelectedIndex());
             gameElm = (JXElement) games.get(gameName);
             String desc = gameElm.getChildText("description");
