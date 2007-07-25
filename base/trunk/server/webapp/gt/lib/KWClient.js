@@ -210,7 +210,7 @@ var KW = {
 	clearAccount: function() {
 		KW.user = ' ';
 		KW.pwd = ' ';
-		KW.storeAccount();
+		KW._eraseCookie('kwacc');
 	},
 
 	// Store account data locally (cookies).
@@ -221,7 +221,7 @@ var KW = {
 // Get account data from cookie.
 	getAccountData: function( ) {
 		var data = KW._readCookie('kwacc');
-		return (data && data != null) ? data.split(',') : null;
+		return (data && data != null && data.length > 0) ? data.split(',') : null;
 	},
 //
 // Private/internal functions
@@ -327,7 +327,7 @@ var KW = {
 	},
 
 	_eraseCookie: function(name) {
-		createCookie(name, "", -1);
+		KW._createCookie(name, "", -1);
 	}
 
 }
