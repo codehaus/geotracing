@@ -124,7 +124,6 @@ public class TraceDisplay extends DefaultTraceDisplay {
 
     public void cls() {
         System.out.println("# items: " + size());
-        System.out.println("logo: " + logoNum);
         System.out.println("gps: " + gpsNum);
         System.out.println("net: " + netNum);
         System.out.println("msg: " + msgNum);

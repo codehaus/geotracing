@@ -32,18 +32,6 @@ import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-/**
- * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
- * <p/>
- * <p>Copyright Enough Software 2004, 2005</p>
- * <p/>
- * <pre>
- * history
- *        04-Apr-2004 - rob creation
- * </pre>
- *
- * @author Robert Virkus, j2mepolish@enough.de
- */
 public class WPMidlet extends MIDlet implements CommandListener {
 
     List menuScreen;
@@ -83,8 +71,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Log"), null);
         //#style mainLogCommand
         menuScreen.append("test display", null);
-        /*//#style mainLogCommand
-        menuScreen.append("video canvas", null);*/
+        //#style mainLogCommand
+        menuScreen.append("video display", null);
+        //#style mainLogCommand
+        menuScreen.append("GPS test display", null);
+
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
 
@@ -188,6 +179,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
             case 9:
                 // video canvas 1
                 Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=54225", true));
+                break;
+            case 10:
+                // gps test display
+                Display.getDisplay(this).setCurrent(new GPSTestDisplay(this));
                 break;
         }
     }

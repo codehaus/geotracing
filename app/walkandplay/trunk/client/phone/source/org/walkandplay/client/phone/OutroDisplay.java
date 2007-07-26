@@ -10,8 +10,6 @@ public class OutroDisplay extends DefaultDisplay {
 
     public OutroDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
 
         //#style labelinfo
         append("Outro");

@@ -34,8 +34,6 @@ public class ImageCaptureDisplay extends DefaultDisplay {
     private StringItem status = new StringItem("", "Photo Capture");
 
     private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
-    private Command SKIP_CMD = new Command("Cancel", Command.CANCEL, 1);
-
     private GPSLocation location;
 
     public ImageCaptureDisplay(WPMidlet aMIDlet) {
@@ -45,16 +43,13 @@ public class ImageCaptureDisplay extends DefaultDisplay {
         showCamera();
 
         addCommand(CAPTURE_CMD);
-        addCommand(SKIP_CMD);
-        setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void commandAction(Command c, Displayable d) {
         if (c == CAPTURE_CMD) {
             capture();
             Display.getDisplay(midlet).setCurrent(new PhotoPreview());
-        } else if (c == SKIP_CMD) {
+        } else if (c == BACK_CMD) {
             player.close();
             // Set the current display of the midlet to the textBox screen
             back();

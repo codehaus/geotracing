@@ -1,6 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.Form;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
 import org.geotracing.client.NetListener;
@@ -11,23 +10,30 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 import java.util.Vector;
 
-public class ScoreDisplay extends DefaultDisplay implements NetListener {
+public class ScoreDisplay extends DefaultDisplay {
 
-    private Net net;
     private Vector scores;
-    private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
+    private int maxScore;
+    private Net net;
 
     public ScoreDisplay(WPMidlet aMIDlet, int aMaxScore) {
         super(aMIDlet, "");
-
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
+        maxScore = aMaxScore;
+        
+        net = Net.getInstance();
+        if (!net.isConnected()) {
+            net.setProperties(midlet);
+            net.start();
+        }
 
         // get the scores
-        retrieveScores();
+        getScores();
+    }
 
-        //#style defaultscreen
-        Form form = new Form("");
+    private void drawScores(){
+        //#style labelinfo
+        append("Scores");
+        
         // Create the TextBox containing the "Hello,World!" message
         for (int i = 0; i < scores.size(); i++) {
             JXElement r = (JXElement) scores.elementAt(i);
@@ -35,36 +41,13 @@ public class ScoreDisplay extends DefaultDisplay implements NetListener {
             String points = r.getChildText("points");
 
             //#style labelinfo
-            form.append(team);
+            append(team);
             //#style formbox
-            form.append(new Gauge("", false, aMaxScore, Integer.parseInt(points)));
+            append(new Gauge("", false, maxScore, Integer.parseInt(points)));
         }
-
-        net = Net.getInstance();
-        if (!net.isConnected()) {
-            net.setProperties(midlet);
-            net.setListener(this);
-            net.start();
-        }
-
-        form.addCommand(CANCEL_CMD);
-        form.setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(form);
     }
 
-    public void onNetInfo(String theInfo) {
-        Log.log(theInfo);
-    }
-
-    public void onNetError(String aReason, Throwable anException) {
-        Log.log(aReason);
-    }
-
-    public void onNetStatus(String aStatusMsg) {
-        Log.log(aStatusMsg);
-    }
-
-    private void retrieveScores() {
+    private void getScores() {
         try {
             new Thread(new Runnable() {
                 public void run() {
@@ -75,10 +58,13 @@ public class ScoreDisplay extends DefaultDisplay implements NetListener {
                     JXElement rsp = net.utopiaReq(req);
                     scores = rsp.getChildrenByTag("record");
                     Log.log(new String(rsp.toBytes(false)));
+                    
+                    // niow do the rest
+                    drawScores();
                 }
             }).start();
         } catch (Throwable t) {
-            Log.log("Exception in retrieveScores:\n" + t.getMessage());
+            Log.log("Exception in getScores:\n" + t.getMessage());
         }
     }
 
@@ -87,8 +73,8 @@ public class ScoreDisplay extends DefaultDisplay implements NetListener {
     * satisfy the CommandListener interface and handle the Exit action.
     */
     public void commandAction(Command command, Displayable screen) {
-        if (command == CANCEL_CMD) {
-            Display.getDisplay(midlet).setCurrent(prevScreen);
+        if (command == BACK_CMD) {
+            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
         }
     }
 }

@@ -1,6 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.Form;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
 import org.geotracing.client.NetListener;
@@ -11,7 +10,6 @@ import javax.microedition.lcdui.*;
 public class IMDisplay extends DefaultDisplay implements NetListener {
 
     private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
-    private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
 
     private StringItem inputField = new StringItem("", "");
     private TextField outputField = new TextField("", "", 32, TextField.ANY);
@@ -22,25 +20,6 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
     public IMDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
 
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
-
-        //#style defaultscreen
-        Form form = new Form("");
-        //#style labelinfo
-        form.append("last message from webplayer");
-        //#style formbox
-        form.append(inputField);
-
-        if (comment.length() > 0) {
-            inputField.setText(comment);
-        }
-        //#style labelinfo
-        form.append("send message to webplayer");
-        //#style textbox
-        form.append(outputField);
-        form.append(alertField);
-
         net = Net.getInstance();
         if (!net.isConnected()) {
             net.setProperties(midlet);
@@ -48,10 +27,21 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
             net.start();
         }
 
-        form.addCommand(SUBMIT_CMD);
-        form.addCommand(CANCEL_CMD);
-        form.setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(form);
+        //#style labelinfo
+        append("last message from webplayer");
+        //#style formbox
+        append(inputField);
+
+        if (comment.length() > 0) {
+            inputField.setText(comment);
+        }
+        //#style labelinfo
+        append("send message to webplayer");
+        //#style textbox
+        append(outputField);
+        append(alertField);
+
+        addCommand(SUBMIT_CMD);
     }
 
     public void onNetInfo(String theInfo) {
@@ -103,7 +93,6 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
         }
     }
 
-
     /*
     * The commandAction method is implemented by this midlet to
     * satisfy the CommandListener interface and handle the Exit action.
@@ -115,8 +104,8 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
             } else {
                 sendMsg();
             }
-        } else if (command == CANCEL_CMD) {
-            Display.getDisplay(midlet).setCurrent(prevScreen);
+        } else if (command == BACK_CMD) {
+            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
         }
     }
 }

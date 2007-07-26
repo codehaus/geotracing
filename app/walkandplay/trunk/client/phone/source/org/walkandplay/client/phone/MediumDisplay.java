@@ -1,9 +1,7 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.Form;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
-import org.geotracing.client.NetListener;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Command;
@@ -11,10 +9,11 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
-public class MediumDisplay extends DefaultDisplay implements NetListener {
+import de.enough.polish.ui.StringItem;
+
+public class MediumDisplay extends DefaultDisplay{
 
     private Net net;
-    private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
     private Command VIEW_VIDEO_CMD = new Command("View video", Command.SCREEN, 2);
     private String MEDIUM_BASE_URL = Net.getInstance().getURL() + "/media.srv?id=";
 
@@ -23,38 +22,43 @@ public class MediumDisplay extends DefaultDisplay implements NetListener {
     private JXElement medium;
     private Image mediumImage;
 
+    private StringItem name = new StringItem("", "");
 
     public MediumDisplay(WPMidlet aMIDlet, int aMediumId, int theScreenWidth) {
         super(aMIDlet, "");
-        midlet = aMIDlet;
         mediumId = aMediumId;
         screenWidth = theScreenWidth;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
+
 
         net = Net.getInstance();
         if (!net.isConnected()) {
             net.setProperties(midlet);
-            net.setListener(this);
             net.start();
         }
 
-        retrieveMedium();
+        //#style labelinfo
+        append("Media");
 
-        //#style defaultscreen
-        Form form = new Form("");
+        name.setText("Loading...");
+        append(name);
+
+        getMedium();
+    }
+
+    private void drawMedium(){
         String type = medium.getChildText("type");
         //#style labelinfo
-        form.append(medium.getChildText("name"));
+        name.setText(medium.getChildText("name"));
 
         String desc = medium.getChildText("description");
 
         if (desc != null && desc.length() > 0) {
             //#style formbox
-            form.append(desc);
+            append(desc);
         }
 
         if (type.equals("image")) {
-            form.append(mediumImage);
+            append(mediumImage);
 
         } else if (type.equals("video")) {
             //#style formbox
@@ -63,32 +67,15 @@ public class MediumDisplay extends DefaultDisplay implements NetListener {
                     "realplayer. Afterwards close the media player and continue " +
                     "here by pressing 'back'");*/
             //#style formbox
-            form.append("When you click on 'view video' the video will be " +
+            append("When you click on 'view video' the video will be " +
                     "downloaded. This might take a while.... Afterwards continue " +
                     "here by pressing 'back'");
 
-            form.addCommand(VIEW_VIDEO_CMD);
+            addCommand(VIEW_VIDEO_CMD);
         }
-
-        form.addCommand(CANCEL_CMD);
-        form.setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(form);
-
     }
 
-    public void onNetInfo(String theInfo) {
-        System.out.println(theInfo);
-    }
-
-    public void onNetError(String aReason, Throwable anException) {
-        System.out.println(aReason);
-    }
-
-    public void onNetStatus(String aStatusMsg) {
-        System.out.println(aStatusMsg);
-    }
-
-    private void retrieveMedium() {
+    private void getMedium() {
         try {
             // retrieve the medium
             new Thread(new Runnable() {
@@ -135,10 +122,13 @@ public class MediumDisplay extends DefaultDisplay implements NetListener {
                     } else {
                         //showObject.setChildText("text", type + " is not supported (yet)");
                     }
+
+                    // now draw the info
+                    drawMedium();
                 }
             }).start();
         } catch (Throwable t) {
-            Log.log("Exception in retrieveMedium:\n" + t.getMessage());
+            Log.log("Exception in getMedium:\n" + t.getMessage());
         }
     }
 
@@ -147,8 +137,8 @@ public class MediumDisplay extends DefaultDisplay implements NetListener {
     * satisfy the CommandListener interface and handle the Exit action.
     */
     public void commandAction(Command command, Displayable screen) {
-        if (command == CANCEL_CMD) {
-            Display.getDisplay(midlet).setCurrent(prevScreen);
+        if (command == BACK_CMD) {
+            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
         } else if (command == VIEW_VIDEO_CMD) {
             try {
                 // now first stop the tracer engine because the media download
