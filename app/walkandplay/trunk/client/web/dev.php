@@ -45,6 +45,8 @@
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
 
+<script type="text/javascript" src="script/Justs.js"></script>
+
 <script type="text/javascript" src="script/common/pane.js"></script>
 <script type="text/javascript" src="script/common/humandate.js"></script> 
 
