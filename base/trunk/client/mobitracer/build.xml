@@ -112,6 +112,10 @@
 			<property name="package" value="${proguard}"/>
 		</ant>
 
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${jsr179}"/>
+		</ant>
 	</target>
 
 	<target name="compile" depends="clean,init">
