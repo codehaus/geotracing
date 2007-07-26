@@ -655,7 +655,7 @@ public class QueryLogic {
 				String loginName = getParameter(theParms, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
-				Record account = getAccount(oase, loginName);
+				Record account = getAccount(loginName);
 				if (account == null || account.getIntField("state") != 1) {
 					throw new IllegalArgumentException("No (active) account found for loginname=" + loginName);
 				}
@@ -747,7 +747,7 @@ public class QueryLogic {
 				String loginName = getParameter(theParms, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
-				Record person = getPersonForLoginName(oase, loginName);
+				Record person = getPersonForLoginName(loginName);
 				if (person == null) {
 					throw new IllegalArgumentException("No person found for loginname=" + loginName);
 				}
@@ -1267,14 +1267,14 @@ public class QueryLogic {
 		}
 	}
 
-	public static Record getAccount(Oase oase, String aLoginName) throws Exception {
+	public static Record getAccount(String aLoginName) throws OaseException {
 		Finder finder = oase.getFinder();
 		Record[] result = finder.queryTable("utopia_account", "WHERE utopia_account.loginname = '" + aLoginName + "'");
 		return result.length == 0 ? null : result[0];
 	}
 
-	public static Record getPersonForLoginName(Oase oase, String aLoginName) throws Exception {
-		Record account = getAccount(oase, aLoginName);
+	public static Record getPersonForLoginName(String aLoginName) throws OaseException {
+		Record account = getAccount(aLoginName);
 		if (account == null) {
 			return null;
 		}
@@ -1282,7 +1282,16 @@ public class QueryLogic {
 		return result.length == 0 ? null : result[0];
 	}
 
-	protected String getLoginNameForPerson(Oase oase, Record aPerson) throws Exception {
+	public static Record[] getPersonsForLoginNames(String someLoginNames) throws OaseException {
+		String[] loginNames = someLoginNames.split(",");
+		Record[] persons = new Record[loginNames.length];
+		for (int i=0; i < loginNames.length; i++) {
+			persons[i] = getPersonForLoginName(loginNames[i]);
+		}
+		return persons;
+	}
+
+	public static String getLoginNameForPerson(Oase oase, Record aPerson) throws Exception {
 		Record[] result = oase.getRelater().getRelated(aPerson, "utopia_account", null);
 		return result.length == 0 ? null : result[0].getStringField("loginname");
 	}
