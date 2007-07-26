@@ -35,7 +35,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				String loginName = getParameter(theParms, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
-				Record person = getPersonForLoginName(getOase(), loginName);
+				Record person = getPersonForLoginName(loginName);
 				if (person == null) {
 					throw new IllegalArgumentException("No person found for loginname=" + loginName);
 				}
@@ -152,7 +152,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				String loginName = getParameter(theParms, PAR_USER_NAME, null);
 				throwOnMissingParm(PAR_USER_NAME, loginName);
 
-				Record person = getPersonForLoginName(getOase(), loginName);
+				Record person = getPersonForLoginName(loginName);
 				String tables = "utopia_person,wp_gameplay,wp_gameround,wp_game";
 				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_gameround.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
 				String where = "utopia_person.id = " + person.getId();

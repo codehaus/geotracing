@@ -94,7 +94,7 @@
 	<test id="gameround-create-with-players">
 		<send id="client1">
 			<utopia-req>
-				<round-create-req gameid="${gameid}" name="myround2" playerids="${personid}"/>
+				<round-create-req gameid="${gameid}" name="myround2" players="geoapp-user,red2,blue2"/>
 			</utopia-req>
 		</send>
 
@@ -108,7 +108,7 @@
 	<test id="gameround-remove-players">
 		<send id="client1">
 			<utopia-req>
-				<round-remove-players-req roundid="${roundid2}" playerids="${personid}"/>
+				<round-remove-players-req roundid="${roundid2}" players="geoapp-user,red2"/>
 			</utopia-req>
 		</send>
 
@@ -122,7 +122,7 @@
 	<test id="gameround-add-players">
 		<send id="client1">
 			<utopia-req>
-				<round-add-players-req roundid="${roundid2}" playerids="${personid}"/>
+				<round-add-players-req roundid="${roundid2}" players="geoapp-user"/>
 			</utopia-req>
 		</send>
 

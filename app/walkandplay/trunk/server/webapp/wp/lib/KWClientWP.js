@@ -6,7 +6,7 @@
 * KWClientExt.js
 *
 * PURPOSE
-* Provide direct usable functions for WalkAndPlay requests in Ajax.
+* Provide direct usable functions for WalkAndPlay requests in AJAX.
 *
 */
 
@@ -204,13 +204,13 @@ KW.WP = {
  * Add players to Gameround (only gameround owner is allowed to do this).
  * @param callback - user callback function or null
  * @param roundId* - id of gameround
- * @param playerIds* - comma-separated players ids e.g. "345,8687,564"
+ * @param players* - comma-separated player loginnames e.g. "bob,carol,ted"
  */
-	roundAddPlayers: function(callback, roundId, playerIds) {
+	roundAddPlayers: function(callback, roundId, players) {
 		var req = KW.createRequest('round-add-players-req');
 
 		KW.UTIL.setAttr(req, 'roundid', roundId);
-		KW.UTIL.setAttr(req, 'playerids', playerIds);
+		KW.UTIL.setAttr(req, 'players', players);
 
 		KW.utopia(req, callback);
 	},
@@ -219,14 +219,13 @@ KW.WP = {
  * Remove players from Gameround (only gameround owner is allowed to do this).
  * @param callback - user callback function or null
  * @param roundId* - id of gameround
- * @param playerIds* - comma-separated players ids e.g. "345,8687,564"
+ * @param players* - comma-separated player loginnames e.g. "bob,carol,ted"
  */
-	roundRemovePlayers: function(callback, roundId, playerIds) {
+	roundRemovePlayers: function(callback, roundId, players) {
 		var req = KW.createRequest('round-remove-players-req');
 
-
 		KW.UTIL.setAttr(req, 'roundid', roundId);
-		KW.UTIL.setAttr(req, 'playerids', playerIds);
+		KW.UTIL.setAttr(req, 'players', players);
 
 		KW.utopia(req, callback);
 	},
@@ -236,13 +235,13 @@ KW.WP = {
  * @param callback - user callback function or null
  * @param gameId* - id game to create round for
  * @param name* - name of gameround
- * @param playerIds - comma-separated players ids e.g. "345,8687,564"
+ * @param players - comma-separated player loginnames e.g. "bob,carol,ted"
  */
-	roundCreate: function(callback, gameId, name, playerIds) {
+	roundCreate: function(callback, gameId, name, players) {
 		var req = KW.createRequest('round-create-req');
 		KW.UTIL.setAttr(req, 'gameid', gameId);
 		KW.UTIL.setAttr(req, 'name', name);
-		KW.UTIL.setOptAttr(req, 'playerids', playerIds);
+		KW.UTIL.setOptAttr(req, 'players', players);
 
 		KW.utopia(req, callback);
 	},
@@ -261,5 +260,4 @@ KW.WP = {
 
 		KW.utopia(req, callback);
 	}
-
 }
