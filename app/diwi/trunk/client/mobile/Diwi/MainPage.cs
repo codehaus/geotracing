@@ -15,11 +15,9 @@ using Microsoft.WindowsMobile.Forms;
 namespace Diwi {
     class MainPage : DiwiPageBase {
 
-        private DiwiPageBase uitLegPage = null;
         private DiwiPageBase gpsPage = null;
         private DiwiPageBase liPage = null;
         private DiwiPageBase testPage = null;
-        private DiwiPageBase startPage = null;
         private DiwiPageBase selectRoutePage = null;
         private DiwiPageBase walkRoutePage = null;
         private bool sip = false;
