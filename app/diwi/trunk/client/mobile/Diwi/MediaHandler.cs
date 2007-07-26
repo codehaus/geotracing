@@ -67,7 +67,7 @@ namespace Diwi {
                     } while (n > 0);
 
                     fstream.Close();
-                } catch (IOException e) {
+                } catch (IOException) {
                     ; // MessageBox.Show(e.Message, "Error downloading file.");
                 }
 
@@ -77,7 +77,7 @@ namespace Diwi {
 
                 if ((sQuitting == false) && callb != null)
                     callb(path);
-            } catch (WebException we) { 
+            } catch (WebException) { 
 
             }
 
@@ -99,7 +99,6 @@ namespace Diwi {
 
         private Thread mThread;
         string uri;
-        bool busy = false;
         WalkRoutePage.CallbackHandler callb;
 
 
@@ -151,11 +150,8 @@ namespace Diwi {
 
 
         private void threadHandler() {
-            int n;
             byte[] inData = new byte[4096];
             FileInfo fi = new FileInfo(localFile);
-
-            busy = true;
 
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(uri);
 
@@ -242,12 +238,10 @@ namespace Diwi {
 
                 if ((sQuitting == false) && callb != null) callb();
 
-            } catch (IOException e) {
+            } catch (IOException) {
             }
 
             if (sQuitting == false) AppController.sProgBar.bumpDown();
-
-            busy = false;
 
         }
     }

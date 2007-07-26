@@ -18,7 +18,6 @@ namespace Diwi {
         static PoiSelectPage sPoiSelectPage = null;
         static PoiViewerPage sUgcViewerPage = null;
         static CheckStruinPage chckStruinPage = null;
-        static bool sShowUGC = false;
         private DiwiUIText gpsText;
         private POIHandler poiCB;
         public static bool checkStruinWithUser;

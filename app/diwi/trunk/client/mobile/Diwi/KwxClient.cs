@@ -34,7 +34,6 @@ namespace Diwi {
 
         private Thread mSendSamplesThread = new Thread(sendSamplesThread);
 
-        string trackId;
         private bool mUGCState = false;
         GeoPoint mLastPoint;
         Queue<GeoPoint> mPointsQueue = new Queue<GeoPoint>(20);
