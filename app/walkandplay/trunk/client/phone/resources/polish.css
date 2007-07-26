@@ -120,7 +120,7 @@ title {
 	border: none;
 	layout: center | horizontal-expand;
     /*background-image: url(gt_logo.png);*/
-    icon-image: url(gt_logo.png); 
+    /*icon-image: url(gt_logo.png);*/ 
 }
 
 /**
