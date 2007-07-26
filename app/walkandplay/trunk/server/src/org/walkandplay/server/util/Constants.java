@@ -113,6 +113,6 @@ public interface Constants {
 	public final static String VAL_UNKNOWN = "unknown";
 
 	// Radius in meters to hit locations
-	public final static int HIT_RADIUS_METERS = 15;
+	public final static int HIT_RADIUS_METERS = 25;
 
 }
