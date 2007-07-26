@@ -76,7 +76,7 @@ function wpListGames(resp)
 
 	switch(wp_mode)
 	{
-		case 'create': header = '<span class="red">select a game to edit:</span><br>'; break;
+		case 'create': header = '<span class="red">select a game to edit or <br/><a href="javascript://new_game" onclick="JO.gameCreate()">[create new game]</a>:</span><br><br>'; break;
 		case 'play': header = '<span class="red">select a game to play:</span><br>'; break;
 		case 'view': header = '<span class="red">select a game to view:</span><br>'; break;
 	}
@@ -814,7 +814,6 @@ wpGame.prototype.edit = function()
 		str+= '<div style="position:relative; width:175px; margin-top:5px">';
 		str+= '<span class="grey">description:</span><br>'+this.description.substr(0,50)+'...<br>';
 		str+= '<span class="grey">locations:</span><br><span id="edit_game_tasks_cnt">0</span> tasks and <span id="edit_game_media_cnt">0</span> media. ';
-		str+= '<a href="javascript://list_locations" onclick="wp_games.game['+this.id+'].listLocations()">show list</a>';
 		str+= '</div>';
 		
 		//add location button
@@ -824,7 +823,9 @@ wpGame.prototype.edit = function()
 			str+= '<div title="add new location to game" style="cursor:pointer; right:15px; top:12px; width:38px; height:38px; '+PNGbgImage('icon_add_location.png')+'" onclick="wpAddLocation()" onmouseover="this.style.filter=PNGbgImage(\'icon_add_locationX.png\').substr(7)" onmouseout="this.style.filter=PNGbgImage(\'icon_add_location.png\').substr(7)"></div>';
 		}
 		
-		str+= '<br><a href="javascript://edit_info" onclick="alert(\'not yet\')">edit game info</a>';
+		str+= '<br><a href="javascript://list_locations" onclick="wp_games.game['+this.id+'].listLocations()">[edit locations]</a>';
+		str+= '&nbsp;&nbsp;<a href="javascript://edit_info" onclick="JO.gameUpdate(' + this.id + ')">[edit info]</a>';
+		str+= '<br><a href="javascript://add_round" onclick="JO.roundCreate(' + this.id + ')">[add round]</a>&nbsp;&nbsp;<a href="javascript://del_round" onclick="JO.roundDelete(' + this.id +')">[del round]</a>';
 		str+= '<input type=button value="done" onclick="wpSelect(\'create\');this.blur()" style="position:absolute; right:11px; bottom:8px; width:50px;">';
 
 	var pane = panes['edit_game'];
