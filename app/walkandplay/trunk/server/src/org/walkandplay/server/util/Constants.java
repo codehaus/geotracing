@@ -64,7 +64,7 @@ public interface Constants {
 	public final static String MEDIA_STATE_FIELD = "mediastate";
 	public final static String MEDIUM_ID_FIELD = "mediumid";
 	public final static String MEDIUM_RESULT_ID_FIELD = "mediumresultid";
-	public final static String PLAYER_IDS_FIELD = "playerids";
+	// public final static String PLAYER_IDS_FIELD = "playerids";
 	public final static String SCORE_FIELD = "score";
 	public final static String LON_FIELD = "lon";
 	public final static String LAT_FIELD = "lat";
@@ -84,6 +84,8 @@ public interface Constants {
 
 	public final static String RELTAG_INTRO = "intro";
 	public final static String RELTAG_OUTRO = "outro";
+	public final static String RELTAG_OWNER = "owner";
+	public final static String RELTAG_PLAYER = "player";
 	public final static String RELTAG_MEDIUM = "medium";
 	public final static String RELTAG_CREATOR = "creator";
 	public final static String RELTAG_RESULT = "result";

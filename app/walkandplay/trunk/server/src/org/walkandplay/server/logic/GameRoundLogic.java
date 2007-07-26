@@ -62,7 +62,7 @@ public class GameRoundLogic implements Constants {
 			modifier.insert(gameRound);
 
 			relater.relate(game, gameRound);
-			relater.relate(person, gameRound);
+			relater.relate(person, gameRound, RELTAG_OWNER);
 
 			transaction.commit();
 		} catch (Throwable t) {
@@ -106,11 +106,11 @@ public class GameRoundLogic implements Constants {
 	 * Add players (persons) to gameround.
 	 *
 	 * @param aRoundId	  gameround record id
-	 * @param somePlayerIds comma-separated list of playe ids
+	 * @param somePlayers comma-separated list of player account names
 	 * @throws OaseException Standard exception
 	 */
-	public void addPlayers(int aRoundId, String somePlayerIds) throws OaseException {
-		addPlayers(oase.getFinder().read(aRoundId, GAMEROUND_TABLE), somePlayerIds);
+	public void addPlayers(int aRoundId, String somePlayers) throws OaseException {
+		addPlayers(oase.getFinder().read(aRoundId, GAMEROUND_TABLE), somePlayers);
 
 	}
 
@@ -118,29 +118,27 @@ public class GameRoundLogic implements Constants {
 	 * Add players (persons) to gameround.
 	 *
 	 * @param aGameRound	gameround record
-	 * @param somePlayerIds comma-separated list of playe ids
+	 * @param somePlayers comma-separated list of playe ids
 	 * @throws OaseException Standard exception
 	 */
-	public void addPlayers(Record aGameRound, String somePlayerIds) throws OaseException {
-		Finder finder = oase.getFinder();
+	public void addPlayers(Record aGameRound, String somePlayers) throws OaseException {
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
-		String[] playerIds = somePlayerIds.split(",");
+		Record[] persons = WPQueryLogic.getPersonsForLoginNames(somePlayers);
 
 		Transaction transaction = oase.getOaseSession().createTransaction();
-		Record gamePlay, player;
+		Record gamePlay;
 		try {
 			transaction.begin();
 
-			for (int i = 0; i < playerIds.length; i++) {
-				player = finder.read(Integer.parseInt(playerIds[i]), PERSON_TABLE);
+			for (int i = 0; i < persons.length; i++) {
 				gamePlay = modifier.create(GAMEPLAY_TABLE);
 				modifier.insert(gamePlay);
 
 				// Relate player to gameround and gameplay
 				relater.relate(aGameRound, gamePlay);
-				relater.relate(player, aGameRound);
-				relater.relate(player, gamePlay);
+				relater.relate(persons[i], aGameRound, RELTAG_PLAYER);
+				relater.relate(persons[i], gamePlay, RELTAG_PLAYER);
 			}
 			transaction.commit();
 		} catch (Throwable t) {
@@ -154,28 +152,32 @@ public class GameRoundLogic implements Constants {
 	 * Remove players (persons) from gameround.
 	 *
 	 * @param aRoundId	  gameround record id
-	 * @param somePlayerIds comma-separated list of playe ids
+	 * @param somePlayers comma-separated list of playe ids
 	 * @throws OaseException Standard exception
 	 */
-	public void removePlayers(int aRoundId, String somePlayerIds) throws OaseException, UtopiaException {
-		removePlayers(oase.getFinder().read(aRoundId, GAMEROUND_TABLE), somePlayerIds);
+	public void removePlayers(int aRoundId, String somePlayers) throws OaseException, UtopiaException {
+		removePlayers(oase.getFinder().read(aRoundId, GAMEROUND_TABLE), somePlayers);
 	}
 
 	/**
 	 * Remove players (person) from gameround.
 	 *
 	 * @param aGameRound	gameround record
-	 * @param somePlayerIds comma-separated list of playe ids
+	 * @param somePlayers comma-separated list of playe ids
 	 * @throws OaseException Standard exception
 	 */
-	public void removePlayers(Record aGameRound, String somePlayerIds) throws OaseException, UtopiaException {
-		Finder finder = oase.getFinder();
+	public void removePlayers(Record aGameRound, String somePlayers) throws OaseException, UtopiaException {
 		Relater relater = oase.getRelater();
-		String[] playerIds = somePlayerIds.split(",");
-		Record player;
+		Record[] persons = WPQueryLogic.getPersonsForLoginNames(somePlayers);
+		String personIds = "";
+		String nextId;
+		for (int i=0; i < persons.length; i++) {
+			nextId = (persons.length > 0 && i < persons.length-1) ? persons[i].getIdString() + "," : persons[i].getIdString();
+			personIds += nextId;
+		}
 		String tables = "wp_gameround,wp_gameplay,utopia_person";
 		String fields = "wp_gameplay.id";
-		String where = "utopia_person.id in (" + somePlayerIds + ") AND wp_gameround.id = " + aGameRound.getId();
+		String where = "utopia_person.id in (" + personIds + ") AND wp_gameround.id = " + aGameRound.getId();
 		String relations = "wp_gameround,wp_gameplay;wp_gameround,utopia_person;wp_gameplay,utopia_person";
 		String postCond = null;
 		Record[] gamePlays = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
@@ -185,10 +187,10 @@ public class GameRoundLogic implements Constants {
 			gamePlayLogic.delete(gamePlays[i].getIntField(ID_FIELD));
 		}
 
-		for (int i = 0; i < playerIds.length; i++) {
-			player = finder.read(Integer.parseInt(playerIds[i]), PERSON_TABLE);
+		String[] loginNames = somePlayers.split(",");
+		for (int i = 0; i < persons.length; i++) {
 			// UnRelate player from gameround and gameplay
-			relater.unrelate(player, aGameRound);
+			relater.unrelate(persons[i], aGameRound);
 		}
 	}
 

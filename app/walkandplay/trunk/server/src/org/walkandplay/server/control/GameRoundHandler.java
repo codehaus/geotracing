@@ -87,8 +87,8 @@ public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Cons
 		Record gameRound = logic.createRound(HandlerUtil.getUserId(anUtopiaReq), requestElm.getIntAttr(GAME_ID_FIELD), requestElm.getAttr(NAME_FIELD));
 
 		// If players specified: add them to gameround
-		if (requestElm.hasAttr(PLAYER_IDS_FIELD)) {
-			logic.addPlayers(gameRound, requestElm.getAttr(PLAYER_IDS_FIELD));
+		if (requestElm.hasAttr(PLAYERS_FIELD)) {
+			logic.addPlayers(gameRound, requestElm.getAttr(PLAYERS_FIELD));
 		}
 
 
@@ -122,10 +122,10 @@ public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Cons
 		JXElement requestElm = anUtopiaReq.getRequestCommand();
 
 		HandlerUtil.throwOnNonNumAttr(requestElm, ROUND_ID_FIELD);
-		HandlerUtil.throwOnMissingAttr(requestElm, PLAYER_IDS_FIELD);
+		HandlerUtil.throwOnMissingAttr(requestElm, PLAYERS_FIELD);
 
 		// Add players to round
-		createLogic(anUtopiaReq).addPlayers(requestElm.getIntAttr(ROUND_ID_FIELD), requestElm.getAttr(PLAYER_IDS_FIELD));
+		createLogic(anUtopiaReq).addPlayers(requestElm.getIntAttr(ROUND_ID_FIELD), requestElm.getAttr(PLAYERS_FIELD));
 
 		return createResponse(ROUND_ADD_PLAYERS_SERVICE);
 	}
@@ -141,10 +141,10 @@ public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Cons
 		JXElement requestElm = anUtopiaReq.getRequestCommand();
 
 		HandlerUtil.throwOnNonNumAttr(requestElm, ROUND_ID_FIELD);
-		HandlerUtil.throwOnMissingAttr(requestElm, PLAYER_IDS_FIELD);
+		HandlerUtil.throwOnMissingAttr(requestElm, PLAYERS_FIELD);
 
 		// Add players to round
-		createLogic(anUtopiaReq).removePlayers(requestElm.getIntAttr(ROUND_ID_FIELD), requestElm.getAttr(PLAYER_IDS_FIELD));
+		createLogic(anUtopiaReq).removePlayers(requestElm.getIntAttr(ROUND_ID_FIELD), requestElm.getAttr(PLAYERS_FIELD));
 		return createResponse(ROUND_REMOVE_PLAYERS_SERVICE);
 	}
 
