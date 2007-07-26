@@ -10,9 +10,7 @@ public class IntroDisplay extends DefaultDisplay {
 
     public IntroDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "");
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
-
+        
         //#style labelinfo
         append("Intro");
 

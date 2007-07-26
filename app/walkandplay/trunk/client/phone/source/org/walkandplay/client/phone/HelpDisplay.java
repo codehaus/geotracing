@@ -12,7 +12,6 @@ import javax.microedition.lcdui.*;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 public class HelpDisplay extends DefaultDisplay {
-    private List menuScreen;
     private Command HELP1_CMD = new Command("Lost your GPS connection?", Command.ITEM, 2);
     private Command HELP2_CMD = new Command("Application 'hangs'?", Command.ITEM, 2);
     private Command HELP3_CMD = new Command("Login problems?", Command.ITEM, 2);

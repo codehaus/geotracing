@@ -8,6 +8,7 @@ import org.geotracing.client.Log;
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
 import java.util.Vector;
+import java.io.IOException;
 
 /**
  * MobiTracer main GUI.
@@ -15,7 +16,6 @@ import java.util.Vector;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-/*public class TraceDisplay extends DefaultDisplay  {*/
 /*public class PlayDisplay extends GameCanvas implements CommandListener, DownloadListener {*/
 public class PlayDisplay extends GameCanvas implements CommandListener {
     // =====
@@ -26,37 +26,30 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private String tileBaseURL;
     private MFloat tileScale;
 
+    private GoogleMap.LonLat lonLat;
+    private GoogleMap.BBox bbox;
+
+
     private int zoom = 12;
-    private Image mediumDot, playerDot, taskDot, bg;
+    private Image mediumDot, playerDot, playerDot1, playerDot2, playerDot3, taskDot, bg;
     private String mapType = "map";
-    private String lon = "0", lat = "0";
     private boolean active;
+
+    private int OFF_MAP_TOLERANCE = 15;
     // ====
 
     private WPMidlet midlet;
-    private int taskId = -1;
-    private JXElement task;
     private JXElement taskHit;
-    private Image taskImage;
-    private int mediumId = -1;
-    private JXElement medium;
     private JXElement mediumHit;
-    private Image mediumImage;
+
     private Image transBar;
     private int maxScore;
-    private Vector scores;
-
-    /*private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
-private int progressCounter;
-private int progressMax = 100;*/
 
     private Vector gameLocations = new Vector(3);
 
-    private final static int SHOW_TASK = 1;
-    private final static int SHOW_LOG = 2;
-    private final static int SHOW_SCORES = 3;
-    private final static int SHOW_INFO = 4;
-    private final static int SHOW_ERROR = 5;
+    private final static int SHOW_LOG = 1;
+    private final static int SHOW_INFO = 2;
+    private final static int SHOW_ERROR = 3;
     private int SHOW_STATE = 0;
 
     Font f;
@@ -69,10 +62,7 @@ private int progressMax = 100;*/
 
     private boolean showGPSInfo = true;
     private TracerEngine tracerEngine;
-    private PlayDisplay playDisplay;
 
-    /*private Command START_GAME_CMD = new Command(Locale.get("play.Start"), Command.ITEM, 2);
-private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITEM, 2);*/
     private Command ADD_TEXT_CMD = new Command(Locale.get("play.AddText"), Command.ITEM, 2);
     private Command ADD_PHOTO_CMD = new Command(Locale.get("play.AddPhoto"), Command.ITEM, 2);
     private Command ADD_AUDIO_CMD = new Command(Locale.get("play.AddAudio"), Command.ITEM, 2);
@@ -87,7 +77,6 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
     private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);
     private Command HIDE_ERROR_CMD = new Command(Locale.get("play.HideError"), Command.ITEM, 2);
     private Command SHOW_INTRO_CMD = new Command(Locale.get("play.ShowIntro"), Command.ITEM, 2);
-    private Command HIDE_INTRO_CMD = new Command(Locale.get("play.HideIntro"), Command.ITEM, 2);
     private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
 
     public PlayDisplay(WPMidlet aMidlet) {
@@ -112,7 +101,10 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             } else if (user.indexOf("blue") != -1) {
                 playerDot = Image.createImage("/icon_player_b.png");
             } else if (user.indexOf("yellow") != -1) {
-                playerDot = Image.createImage("/icon_player_y.png");
+                //playerDot = Image.createImage("/icon_player_y.png");
+                playerDot1 = Image.createImage("/icon_player_y_1.png");
+                playerDot2 = Image.createImage("/icon_player_y_2.png");
+                playerDot3 = Image.createImage("/icon_player_y_3.png");
             }
 
             taskDot = Image.createImage("/task_dot.png");
@@ -128,7 +120,10 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             } else if (user.indexOf("blue") != -1) {
                 playerDot = scheduleImage("/icon_player_b.png");
             } else if (user.indexOf("yellow") != -1) {
-                playerDot = scheduleImage("/icon_player_y.png");
+                //playerDot = scheduleImage("/icon_player_y.png");
+                playerDot1 = scheduleImage("/icon_player_y_1.png");
+                playerDot2 = scheduleImage("/icon_player_y_2.png");
+                playerDot3 = scheduleImage("/icon_player_y_3.png");
             }
 
             transBar = scheduleImage("/trans_bar.png");
@@ -139,8 +134,7 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             log("Could not load the images on PlayDisplay", true);
         }
 
-        playDisplay = this;
-
+        addAllCommands();
         setCommandListener(this);
 
     }
@@ -158,15 +152,11 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             // get the game and all game locations for this game
             getGame();
             getGameLocations();
-            new IntroDisplay(midlet);
 
-            tileBaseURL = Net.getInstance().getURL() + "/map/gmap.jsp?";
+            tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp?";
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
 
-            //addCommand(BACK_CMD);
-
-            fetchTileInfo();
             show();
 
         } catch (Throwable t) {
@@ -213,53 +203,8 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
     }
 
     public void setLocation(String aLon, String aLat) {
-        lon = aLon;
-        lat = aLat;
-        fetchTileInfo();
+        lonLat = new GoogleMap.LonLat(aLon, aLat);
         show();
-    }
-
-    protected void fetchTileInfo() {
-        if (!hasLocation() || !active) {
-            return;
-        }
-
-        try {
-            // Get pixel offset into GMap 256x256 tile
-            GoogleMap.XY newTileXY = GoogleMap.getPixelXY(lon, lat, zoom);
-
-            // Get unique tile ref (keyhole string)
-            String newTileRef = GoogleMap.getKeyholeRef(lon, lat, zoom);
-
-            // System.out.println("MT: x=" + newTileXY.x + " y=" + newTileXY.y);
-
-            // Force refresh of mapImage when
-            // no tile info (initial)
-            // OR map keyhole ref changed (when zoom or moving off tile)
-            if (!tileRef.equals(newTileRef)) {
-                // System.out.println("refresh");
-                mapImage = null;
-                xy = prevXY = null;
-                tileRef = newTileRef;
-            }
-
-            // Scale x,y to scaled tile image
-            if (tileScale != null) {
-                // Correct pixel offset with tile scale
-                // Scale x,y offset of our location in mapImage
-                newTileXY.x = (int) new MFloat(newTileXY.x).Mul(tileScale).toLong();
-                newTileXY.y = (int) new MFloat(newTileXY.y).Mul(tileScale).toLong();
-
-                // Remember previous (scaled) location
-                prevXY = xy;
-
-                // Set current location
-                xy = newTileXY;
-            }
-
-        } catch (Throwable t) {
-            log("Exception in fetchTileInfo:\n" + t.getMessage(), true);
-        }
     }
 
     private void show() {
@@ -269,15 +214,11 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
     }
 
     public boolean hasLocation() {
-        return !lon.equals(("0")) && !lat.equals("0");
+        return lonLat != null;
     }
 
     void stop() {
         tracerEngine.stop();
-    }
-
-    TracerEngine getTracer() {
-        return tracerEngine;
     }
 
     public void setGPSInfo(GPSInfo theInfo) {
@@ -303,29 +244,29 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
         show();
     }
 
+    //<task-hit id="54232" state="open|hit|done" answerstate="open" mediastate="open"/>
     public void setTaskHit(JXElement aTaskHit) {
-        //<task-hit id="54232" state="open|hit|done" answerstate="open" mediastate="open"/>
         taskHit = aTaskHit;
     }
 
+    //<medium-hit id="54232" state="open|hit" />
     public void setMediumHit(JXElement aMediumHit) {
-        //<medium-hit id="54232" state="open|hit" />
         mediumHit = aMediumHit;
     }
 
     public void onNetStatus(String s) {
         try {
-            if (s.indexOf("task") != -1 && SHOW_STATE != SHOW_TASK) {
+            if (s.indexOf("task") != -1) {
                 //<play-location-rsp><task-hit id="54232" state="open|hit|done" answerstate="open|done" mediastate="open|done"/></play-location-rsp>
                 String state = taskHit.getAttr("state");
                 if (!state.equals("done")) {
                     log("we found a task!!", false);
-                    int taskId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
+                    int taskId = Integer.parseInt(taskHit.getAttr("id"));
                     new TaskDisplay(midlet, taskId, w);
                 }
             } else if (s.indexOf("medium") != -1) {
                 log("we found a medium!!", false);
-                int mediumId = Integer.parseInt(s.substring(s.indexOf("-") + 1, s.length()));
+                int mediumId = Integer.parseInt(mediumHit.getAttr("id"));
                 new MediumDisplay(midlet, mediumId, w);
             } else if (s.indexOf("error") != -1 || s.indexOf("err") != -1 || s.indexOf("ERROR") != -1) {
                 log(s, true);
@@ -340,7 +281,6 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
     }
 
     private void log(String aMsg, boolean isError) {
-        //System.out.println(aMsg);
         Log.log(aMsg);
         if (isError) {
             /*errorMsg = aMsg;
@@ -350,6 +290,23 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             show();*/
         }
     }
+
+    protected void zoomIn() {
+		zoom++;
+		resetMap();
+		show();
+	}
+
+	protected void zoomOut() {
+		zoom--;
+		resetMap();
+		show();
+	}
+
+    protected void resetMap() {
+		bbox = null;
+		mapImage = null;
+	}
 
     /**
      * Draws the map.
@@ -374,88 +331,99 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
         g.setFont(f);
 
         try {
+            // No use proceeding if we don't have location
+			if (!hasLocation()) {
+				//g.drawString("No location (yet)", 10, 10, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                String s = "Retrieving current location...";
+                g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                return;
+			}
 
-            if (tileScale == null) {
-                tileScale = new MFloat(h).Div(GoogleMap.I_GMAP_TILE_SIZE);
-            }
+			// ASSERT: we have a valid location
 
-            if (hasLocation() && mapImage == null) {
-                try {
-                    //String tileSize = w + "x" + w;
-                    //String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=" + tileSize;
-                    String tileURL = tileBaseURL + "lon=" + lon + "&lat=" + lat + "&zoom=" + zoom + "&type=" + mapType + "&format=image&size=320x320";
+			// Create bbox if not present
+			if (bbox == null) {
+				resetMap();
 
-                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    String loading = "Loading map...";
-                    g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+				// Create bbox around our location for given zoom and w,h
+				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
+				//g.drawString("fetching map image...", 10, 10, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                String loading = "Loading map...";
+                g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                repaint();
+				return;
+			}
 
-                    // Get Google Tile image and draw on mapImage
-                    Image tileImage = Util.getImage(tileURL);
-                    mapImage = Image.createImage(tileImage.getWidth(), tileImage.getHeight());
-                    mapImage.getGraphics().drawImage(tileImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+			// Should we fetch new map image ?
+			if (mapImage == null) {
+				try {
+					// Create WMS URL and fetch image
+					String mapURL = GoogleMap.createWMSURL(tileBaseURL, bbox, mapType, w, h, "image/jpeg");
+					Image wmsImage = Util.getImage(mapURL);
+
+					// Create offscreen image
+					mapImage = Image.createImage(wmsImage.getWidth(), wmsImage.getHeight());
+					mapImage.getGraphics().drawImage(wmsImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
                     if (gameLocations != null) {
                         for (int i = 0; i < gameLocations.size(); i++) {
                             JXElement loc = (JXElement) gameLocations.elementAt(i);
 
-                            String locKhRef = GoogleMap.getKeyholeRef(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
-                            // make sure the locations are in the same tile
-                            if (locKhRef.equals(tileRef)) {
-                                GoogleMap.XY Gxy = GoogleMap.getPixelXY(loc.getChildText("lon"), loc.getChildText("lat"), zoom);
-                                Gxy.x = (int) new MFloat(Gxy.x).Mul(tileScale).toLong();
-                                Gxy.y = (int) new MFloat(Gxy.y).Mul(tileScale).toLong();
-                                // draw the location icons onto the map
-                                if (loc.getChildText("type").equals("task")) {
-                                    mapImage.getGraphics().drawImage(taskDot, Gxy.x, Gxy.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (loc.getChildText("type").equals("medium")) {
-                                    mapImage.getGraphics().drawImage(mediumDot, Gxy.x, Gxy.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(mediumDot, Gxy.x, Gxy.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                }
+                            GoogleMap.LonLat lonLat = new GoogleMap.LonLat(loc.getChildText("lon"), loc.getChildText("lat"));
+                            GoogleMap.XY gameLocXY = bbox.getPixelXY(lonLat);
+
+                            if (loc.getChildText("type").equals("task")) {
+                                mapImage.getGraphics().drawImage(taskDot, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            } else if (loc.getChildText("type").equals("medium")) {
+                                mapImage.getGraphics().drawImage(mediumDot, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            } else {
+                                mapImage.getGraphics().drawImage(mediumDot, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                             }
                         }
                     }
                 } catch (Throwable t) {
-                    log(t.getMessage(), true);
-                    /*String err = "error: " + t.getMessage();
-                    g.drawString(err, w/2 - f.stringWidth(err)/2, h/2, Graphics.TOP | Graphics.LEFT);*/
-                    return;
-                }
+					g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+					return;
+				}
+			}
+
+			// Draw location and trace.
+			GoogleMap.XY prevXY = xy;
+			xy = bbox.getPixelXY(lonLat);
+
+			// System.out.println("xy=" + xy);
+			// If we have previous point: draw line from there to current
+			if (prevXY != null) {
+				// Draw trace
+				Graphics mapGraphics = mapImage.getGraphics();
+				mapGraphics.setColor(0, 0, 255);
+				mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
+				mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
+			}
+
+			// Draw background map
+			g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+
+            // draw the player
+            log("zoomlevel:" + zoom, false);
+            if(zoom >= 0 && zoom < 6){
+                g.drawImage(playerDot1, xy.x - (playerDot1.getWidth()) / 2, xy.y - (playerDot1.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+            }else if(zoom >= 6 && zoom < 12){
+                g.drawImage(playerDot2, xy.x - (playerDot2.getWidth()) / 2, xy.y - (playerDot2.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+            }else{
+                g.drawImage(playerDot3, xy.x - (playerDot3.getWidth()) / 2, xy.y - (playerDot3.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
             }
 
-            if (xy != null) {
-
-                // If we have previous point: draw line from there to current
-                if (prevXY != null) {
-                    Graphics mapGraphics = mapImage.getGraphics();
-                    mapGraphics.setColor(0, 0, 255);
-                    mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
-                    mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
-                }
-
-                // Draw the map and user location
-                if (xy.x < 40) {
-                    g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(playerDot, xy.x - (playerDot.getWidth()) / 2, xy.y - (playerDot.getHeight()) / 2, Graphics.VCENTER | Graphics.HCENTER);
-                } else if (xy.x > 280) {
-                    g.drawImage(mapImage, -80, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(playerDot, xy.x - (playerDot.getWidth()) / 2 - 80, xy.y - (playerDot.getHeight()) / 2, Graphics.VCENTER | Graphics.HCENTER);
-                } else {
-                    g.drawImage(mapImage, -40, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(playerDot, xy.x - (playerDot.getWidth()) / 2 - 40, xy.y - (playerDot.getHeight()) / 2, Graphics.VCENTER | Graphics.HCENTER);
-                }
-            } else {
-                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                String s = "Retrieving current location...";
-                g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-            }
+			// If moving off map refresh
+			if (xy.x < OFF_MAP_TOLERANCE || w - xy.x < OFF_MAP_TOLERANCE || xy.y < OFF_MAP_TOLERANCE || h - xy.y < OFF_MAP_TOLERANCE){
+				resetMap();
+			}
 
             switch (SHOW_STATE) {
-                case SHOW_SCORES:
-                    new ScoreDisplay(midlet, maxScore);
-                    break;
                 case SHOW_LOG:
                     g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
@@ -465,7 +433,7 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
                     g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     g.drawString(errorMsg, w / 2, h / 2, Graphics.TOP | Graphics.LEFT);
                     break;
-                    /*case SHOW_INFO:
+                /*case SHOW_INFO:
                     int tH = transBar.getHeight();
                     int margin = 5;
                     int imgMargin = 30;
@@ -481,10 +449,7 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
                     break;*/
             }
 
-        } /*catch (IOException ioe) {
-			g.drawString("cannot get image", 10, 10, Graphics.TOP | Graphics.LEFT);
-			g.drawString("try zooming out", 10, 30, Graphics.TOP | Graphics.LEFT);
-		} */ catch (Throwable t) {
+        } catch (Throwable t) {
             log("Paint exception:" + t.getMessage(), true);
             //g.drawString("ERROR", 10, 10, Graphics.TOP | Graphics.LEFT);
             //g.drawString(t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
@@ -501,40 +466,27 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             tracerEngine.stop();
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == ADD_PHOTO_CMD) {
-            log("adding photo", false);
             new ImageCaptureDisplay(midlet);
         } else if (cmd == ADD_AUDIO_CMD) {
-            log("adding audio", false);
             new AudioCaptureDisplay(midlet);
         } else if (cmd == ADD_TEXT_CMD) {
-            log("adding text", false);
             new AddTextDisplay(midlet);
         } else if (cmd == ZOOM_IN_CMD) {
-            log("zoom in", false);
-            zoom++;
-            fetchTileInfo();
-            show();
+            zoomIn();
         } else if (cmd == ZOOM_OUT_CMD) {
-            log("zoom out", false);
-            zoom--;
-            fetchTileInfo();
-            show();
+            zoomOut();
         } else if (cmd == TOGGLE_MAP_CMD) {
-            log("zoom out", false);
             mapType = mapType.equals("sat") ? "map" : "sat";
-            fetchTileInfo();
-            mapImage = null;
+            resetMap();
             show();
         } else if (cmd == SCORES_CMD) {
-            log("scores", false);
+            log("Scores!!!", false);
             new ScoreDisplay(midlet, maxScore);
         } else if (cmd == SHOW_LOG_CMD) {
-            log("show log", false);
             SHOW_STATE = SHOW_LOG;
             removeAllCommands();
             addCommand(HIDE_LOG_CMD);
         } else if (cmd == HIDE_LOG_CMD) {
-            log("hide log", false);
             SHOW_STATE = 0;
             addAllCommands();
             removeCommand(HIDE_LOG_CMD);
@@ -550,23 +502,19 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
             removeCommand(HIDE_LOG_CMD);
         }*/
         else if (cmd == HIDE_ERROR_CMD) {
-            log("hide error", false);
             SHOW_STATE = 0;
             addAllCommands();
             removeCommand(HIDE_ERROR_CMD);
         } else if (cmd == IM_CMD) {
-            log("instant messaging", false);
             new IMDisplay(midlet);
         } else if (cmd == SHOW_INTRO_CMD) {
-            log("show intro", false);
             new IntroDisplay(midlet);
         }
     }
 
     private void removeAllCommands() {
-        //removeCommand(STOP_GAME_CMD);
         removeCommand(ADD_TEXT_CMD);
-        //removeCommand(ADD_PHOTO_CMD);
+        removeCommand(ADD_PHOTO_CMD);
         removeCommand(ADD_AUDIO_CMD);
         removeCommand(ZOOM_IN_CMD);
         removeCommand(ZOOM_OUT_CMD);
@@ -587,9 +535,8 @@ private Command STOP_GAME_CMD = new Command(Locale.get("play.Stop"), Command.ITE
         addCommand(ZOOM_IN_CMD);
         addCommand(ZOOM_OUT_CMD);
         addCommand(TOGGLE_MAP_CMD);
-        //addCommand(STOP_GAME_CMD);
         addCommand(ADD_TEXT_CMD);
-        //addCommand(ADD_PHOTO_CMD);
+        addCommand(ADD_PHOTO_CMD);
         addCommand(ADD_AUDIO_CMD);
         addCommand(IM_CMD);
         addCommand(SHOW_INTRO_CMD);
