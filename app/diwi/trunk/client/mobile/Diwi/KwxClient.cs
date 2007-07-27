@@ -43,7 +43,9 @@ namespace Diwi {
         public static KwxClient instance {
             get {
                 if (sKwxC != null) return sKwxC;
-                return sKwxC = new KwxClient();
+                sKwxC = new KwxClient();
+                sKwxC.mSendSamplesThread.Start();
+                return sKwxC;
             }
         }
 
@@ -63,7 +65,6 @@ namespace Diwi {
             mLastPoint = new GeoPoint(0, 0);
             mServer = Diwi.Properties.Resources.KwxServerUrl;
             mAgentKey = null;
-            mSendSamplesThread.Start();
         }
 
         public void start(string u, string p) {

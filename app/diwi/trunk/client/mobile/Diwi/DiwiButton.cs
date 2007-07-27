@@ -14,7 +14,7 @@ namespace Diwi {
 
         public static Color sBackColor = Color.FromArgb(180, 250, 0);
         public static Color sButColor = Color.FromArgb(130, 100, 30);
-        public static Color sTextColor = Color.FromArgb(180, 180, 180);
+        public static Color sTextColor = Color.FromArgb(230, 230, 230);
         private SolidBrush mBrush = new SolidBrush(Color.Red);
         private DiwiUIText mText = new DiwiUIText(sTextColor, "", new Font("Arial", 11, FontStyle.Bold));
         private DiwiPageBase mParentForm;
