@@ -43,6 +43,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
 	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
 	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+	<property name="servlet.jar" value="${servlet.dir}/lib/servlet.jar"/>
 	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
 	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
 	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
@@ -69,6 +70,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		<pathelement location="${pushlet.jar}"/>
 		<pathelement location="${postgis-jdbc.jar}"/>
 		<pathelement location="${keyworx.jar}"/>
+		<pathelement location="${servlet.jar}"/>
 		<pathelement location="${kwx-tagging.jar}"/>
 		<pathelement location="${ehcache.jar}"/>
 		<pathelement location="${geoapi.jar}"/>

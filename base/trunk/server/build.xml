@@ -52,6 +52,7 @@ $Id$
 		<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
 		<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
 		<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+		<property name="servlet.jar" value="${servlet.dir}/lib/servlet.jar"/>
 		<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
 		<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
 		<property name="scp" value="${home.bin.dir}/scp.sh"/>
@@ -80,6 +81,7 @@ $Id$
 			<pathelement location="${pushlet.jar}"/>
 			<pathelement location="${postgis-jdbc.jar}"/>
 			<pathelement location="${keyworx.jar}"/>
+			<pathelement location="${servlet.jar}"/>
 			<pathelement location="${kwx-tagging.jar}"/>
 			<pathelement location="${ehcache.jar}"/>
 			<pathelement location="${geoapi.jar}"/>
@@ -106,6 +108,7 @@ $Id$
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${servlet}"/>
 		</ant>
+
 		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${geotools-referencing}"/>
 		</ant>

@@ -52,14 +52,14 @@
 		<load-on-startup>3</load-on-startup>
 	</servlet>
 
-	<!-- Used for server file relay in FileShareAmulet
+	<!-- Map rendering -->
 	<servlet>
-		<servlet-name>RelayServlet</servlet-name>
+		<servlet-name>MapServlet</servlet-name>
 
-		<servlet-class>org.keyworx.amuse.amulet.fileshare.RelayServlet</servlet-class>
+		<servlet-class>org.geotracing.servlet.MapServlet</servlet-class>
 
 		<load-on-startup>4</load-on-startup>
-	</servlet>   -->
+	</servlet>
 
 	<!-- Define the pushlet servlet -->
 	<servlet>
@@ -74,10 +74,10 @@
 		<url-pattern>/media.srv/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- <servlet-mapping>
-		<servlet-name>RelayServlet</servlet-name>
-		<url-pattern>/relay.srv</url-pattern>
-	</servlet-mapping> -->
+	<servlet-mapping>
+		<servlet-name>MapServlet</servlet-name>
+		<url-pattern>/map.srv</url-pattern>
+	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>ProtocolServlet</servlet-name>

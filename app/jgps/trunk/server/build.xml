@@ -35,8 +35,6 @@ $Id: build.xml,v 1.4 2006-08-11 18:47:43 just Exp $
 		<tstamp/>
 	</target>
 
-
-
 	<!-- Optional download/upack of external packages. -->
 	<target name="externals" depends="init">
 		<echo message="downloading and unpacking external packages"/>

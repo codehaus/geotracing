@@ -163,7 +163,7 @@
 					// SHould we start a segment (i.e. resume track) ?
 					if (startSegment) {
 						log.info("RESUME TRACK imei=" + imei + " user=" + userName);
-						trackLogic.resume(personId, Track.VAL_NORMAL_TRACK, t);
+						//trackLogic.resume(personId, Track.VAL_NORMAL_TRACK, t);
 					}
 					Vector pts = new Vector(1);
 					pts.add(pt);

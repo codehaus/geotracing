@@ -1,0 +1,518 @@
+<deelnemers>
+	<!--
+1	352022004550131
+2	352022004550024	NED7574	Fine Fleur	Ronald van Klooster	x	ronald@maxlead.com	Sponsor	Fine Fleur		Ronald van Klooster
+3	352022004550099	NED5961	Mary Bryant	Bart van Breeschoten	x	bartvanbreeschoten@compaqnet.nl		Mary Bryant	Naarden	Bart van Breeschoten	Robin Macco		Guido Benthem	Jan van Ommen	(0)653445386			Niks spel. Knikkers!		home.plant.nl/~meijb125
+4	352022004550040	NED7211	Franky	Siebe Kuipers	x	siebe@pentapark.nl	Forerunner	Franky	Uitwellingerga	Siebe Kuipers	Jetze Kuipers	Peter Jongsma	Rene Krom	Richard Deen	(0)650246706			3x = Scheepsrecht		www.schuttevaerteam.nl
+5	352022004550073	NED7811	Yachtvision	Harry Amsterdam	x	hp.amsterdam@home.nl	Sponsor	Yachtvision 34.7	Stavoren	Harry Amsterdam	Ale Bok	Sipko Zwart	Harm Twaalfhoven	Gerrit Kramer	(0)651231636			Schuttevaerrace : De mooiste race van het jaar!		www.nautischkwartier.nl
+6	352022004550206	NED1650	Dulcinea	Jeroen Horst	x	jeroen.horst@versatel.nl		Dulcinea	Harderwijk	Jeroen Horst	Koos Brochart	Tim Lunshof	John Wijnands	Jan de Winter	(0)614975890					www.colombinehuis.nl
+7	352022001349610	NED7785	Galop	Philip van Nierop	x	nierop@aim.com		Galop	Muiden 	Philip van Nierop	Robert- Jan van Swaay 	Bastiaan Mulder 	Fedor von Balluseck 	Jan- Willem Bout	06-24602725 					www.tweegamedica.com
+8	352022004550115
+9	352022004549281	NED2725	Scirpus	Frits J. Dijk	x	f.j.dijk@chello.nl		Scirpus	Monnickendam	Frits Dijk	Tjerk van Gelderen		Gosse Beerda	Ger Kragten	(0)616443693					www.scirpus.nl
+10	352022004548994	GER73	Helena	Detlef von Schmeling	x	von-schmeling@t-online.de		Helena	Duisburg	Detlef von Schmeling	Florent de Montagner	Rolf Boelhouer	Rouven Weinert	Roman Rossman	0049 171667732			Eine wunderbar verrueckte Regatta: Echte Sportler an Deck - nicht nur Segler…
+11	352022004549133	NED7378	Njuta	Albert Flokstra	x	Albertflokstra@hotmail.com		Njuta	Harlingen	Albert Flokstra	Hero Hettinga	Eric de Vegte	Jan Pieter de Jager	Oeli Reitsma	(0)6 22220230			Oeli, Pieter, Hero, Eric, Albert, Njuta, Njuta, Njuta, samen zijn we goed ja.		www.lastminutezeilen.com
+12	352022004550107	NED6925	High Five	Peter Bergstein	x	p.bergstein@planet.nl		High Five	Blocq van Kuffeler 	Peter Bergstein	Maurice Koot 	Reino van der Hart 	Gert van Dijk 	Thomas Vencken 	(0)6 12965418 			It's the fun and the drive that moves the HIGH FIVE!
+13	352022004550057	NED7234	SWELL	Geert Bosch	x	geert@boschenvanrijn.nl		Swell		Geert Bosch
+14	352022004548911	NED6058	Cygnus	Herman van der Meyden	x	ac49827@tiscali.nl	Borg?	Cygnus	Aalsmeer	Herman van der Meyden	Herman van der Meyden jr.	Harm van der Pol	Alex de Kraker	Mark Oltshoorn	(0)615001005					home.tiscali.nl/ac49827
+15	352022004550123	NED5651C	Blue Jay	Bob Hanenberg	x	rcjacht@planet.nl		Blue Jay	Regatta Center Medemblik	Bob Hanenberg	Erik de Jong	Marcel Hanenberg	Johan Splunder	Silvia Kruyer	(0)655570070			Meedoen is belangrijker dan winnen maar wij gaan voor nummer 1.		www.regattacenter.com 
+
+ V5
+1	352022004550131
+2	352022004550024	NED7574	Fine Fleur	Ronald van Klooster	x	ronald@maxlead.com	Sponsor	Fine Fleur	Hilversum	Ronald van Klooster	Wopke de Vegt	Hans Houben	Renger Ypenburg	Eric Negerman	(0)6 21716675					www.maxlead.nl
+3	352022004550099	NED5961	Mary Bryant	Bart van Breeschoten	x	bartvanbreeschoten@compaqnet.nl		Mary Bryant	Naarden	Bart van Breeschoten	Robin Macco		Guido Benthem	Jan van Ommen	(0)653445386			Niks spel. Knikkers!		home.planet.nl/~meijb125
+4	352022004550040	NED7211	Franky	Siebe Kuipers	x	siebe@pentapark.nl	Forerunner	Franky	Uitwellingerga	Siebe Kuipers	Jetze Kuipers	Peter Jongsma	Rene Krom	Richard Deen	(0)650246706			3x = Scheepsrecht		www.schuttevaerteam.nl
+5	352022004550073	NED7811	Yachtvision	Harry Amsterdam	x	hp.amsterdam@home.nl	Sponsor	Yachtvision 34.7	Stavoren	Harry Amsterdam	Ale Bok	Sipko Zwart	Harm Twaalfhoven	Gerrit Kramer	(0)651231636			Schuttevaerrace : De mooiste race van het jaar!		www.nautischkwartier.nl
+6	352022004550206	NED1650	Dulcinea	Jeroen Horst	x	jeroen.horst@versatel.nl		Dulcinea	Harderwijk	Jeroen Horst	Koos Brochart	Tim Lunshof	John Wijnands	Jan de Winter	(0)614975890					www.colombinehuis.nl
+7	352022001349610	NED7785	Galop	Philip van Nierop	x	nierop@aim.com		Galop	Muiden 	Philip van Nierop	Robert- Jan van Swaay 	Bastiaan Mulder 	Fedor von Balluseck 	Jan- Willem Bout	06-24602725 					www.tweegamedica.com
+8	352022004550115
+9	352022004549281	NED2725	Scirpus	Frits J. Dijk	x	f.j.dijk@chello.nl		Scirpus	Monnickendam	Frits Dijk	Tjerk van Gelderen		Gosse Beerda	Ger Kragten	(0)616443693					www.scirpus.nl
+10	352022004548994	GER73	Helena	Detlef von Schmeling	x	von-schmeling@t-online.de		Helena	Duisburg	Detlef von Schmeling	Florent de Montagner	Rolf Boelhouer	Rouven Weinert	Roman Rossman	0049 171667732			Eine wunderbar verrueckte Regatta: Echte Sportler an Deck - nicht nur Segler…
+11	352022004549133	NED7378	Njuta	Albert Flokstra	x	Albertflokstra@hotmail.com		Njuta	Harlingen	Albert Flokstra	Hero Hettinga	Eric de Vegte	Jan Pieter de Jager	Oeli Reitsma	(0)6 22220230			Oeli, Pieter, Hero, Eric, Albert, Njuta, Njuta, Njuta, samen zijn we goed ja.		www.lastminutezeilen.com
+12	352022004550107	NED6925	High Five	Peter Bergstein	x	p.bergstein@planet.nl		High Five	Blocq van Kuffeler 	Peter Bergstein	Maurice Koot 	Reino van der Hart 	Gert van Dijk 	Thomas Vencken 	(0)6 12965418 			It's the fun and the drive that moves the HIGH FIVE!
+13	352022004550057	NED7234	SWELL	Geert Bosch	x	geert@boschenvanrijn.nl		Swell		Geert Bosch
+14	352022004548911	NED6058	Cygnus	Herman van der Meyden	x	ac49827@tiscali.nl	Borg?	Cygnus	Aalsmeer	Herman van der Meyden	Herman van der Meyden jr.	Harm van der Pol	Alex de Kraker	Mark Oltshoorn	(0)615001005					home.tiscali.nl/ac49827
+15	352022004550123	NED5651C	Blue Jay	Bob Hanenberg	x	rcjacht@planet.nl		Blue Jay	Regatta Center Medemblik	Bob Hanenberg	Erik de Jong	Marcel Hanenberg	Johan Splunder	Silvia Kruyer	(0)655570070			Meedoen is belangrijker dan winnen maar wij gaan voor nummer 1.		www.regattacenter.com 
+
+
+
+ -->
+	<profile>
+		<mambo>1</mambo>
+		<boot>mambo1</boot>
+		<imei>
+			352022004550131
+		</imei>
+		<schipper></schipper>
+		<mobiel></mobiel>
+		<email></email>
+		<color>
+			#444444</color>
+		<regnr>-</regnr>
+		<thuishaven>
+			-</thuishaven>
+		<crewlid1>
+			-</crewlid1>
+		<crewlid2>
+			-</crewlid2>
+		<fietser>
+			-</fietser>
+		<hardloper>
+			-</hardloper>
+		<slogan>
+			Mambo 1 doet het maar njet.
+		</slogan>
+		<url>
+			www.mambo1doetitnjet.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+		2	352022004550024	NED7574	Fine Fleur	Ronald van Klooster	x	ronald@maxlead.com	Sponsor	Fine Fleur		Ronald van Klooster
+ -->
+		<mambo>2</mambo>
+		<boot>Fine Fleur</boot>
+		<imei>
+			352022004550024
+		</imei>
+		<schipper>Ronald van Klooster</schipper>
+		<mobiel>0621716675</mobiel>
+		<email>ronald@maxlead.com</email>
+		<color>
+			#8600ff</color>
+		<regnr>NED7574</regnr>
+		<thuishaven>
+			Hilversum</thuishaven>
+		<crewlid1>
+			Wopke de Vegt				</crewlid1>
+		<crewlid2>
+			Hans Houben</crewlid2>
+		<fietser>
+			Renger Ypenburg</fietser>
+		<hardloper>
+			Eric Negerman</hardloper>
+		<slogan>
+
+		</slogan>
+		<url>
+			www.maxlead.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+ 3	352022004550099	NED5961	Mary Bryant	Bart van Breeschoten	x	bartvanbreeschoten@compaqnet.nl		Mary Bryant	Naarden	Bart van Breeschoten	Robin Macco		Guido Benthem	Jan van Ommen	(0)653445386			Niks spel. Knikkers!		home.plant.nl/~meijb125
+ -->
+		<mambo>3</mambo>
+		<boot>Mary Bryant</boot>
+		<imei>
+			352022004550099
+		</imei>
+		<schipper>Bart van Breeschoten</schipper>
+		<mobiel>(0)653445386</mobiel>
+		<email>bartvanbreeschoten@compaqnet.nl</email>
+		<color>
+			#3400cb</color>
+		<regnr>NED5961</regnr>
+		<thuishaven>
+			Naarden</thuishaven>
+		<crewlid1>
+			Robin Macco</crewlid1>
+		<crewlid2>
+			-</crewlid2>
+		<fietser>
+			Guido Benthem</fietser>
+		<hardloper>
+			Jan van Ommen</hardloper>
+		<slogan>
+			Niks spel. Knikkers!
+		</slogan>
+		<url>
+			home.planet.nl/~meijb125
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+ 4	352022004550040	NED7211	Franky	Siebe Kuipers	x	siebe@pentapark.nl	Forerunner	Franky	Uitwellingerga	Siebe Kuipers	Jetze Kuipers	Peter Jongsma	Rene Krom	Richard Deen	(0)650246706			3x = Scheepsrecht		www.schuttevaerteam.nl
+ -->
+		<mambo>4</mambo>
+		<boot>Franky</boot>
+		<imei>
+			352022004550040
+		</imei>
+		<schipper>Siebe Kuipers</schipper>
+		<mobiel>(0)650246706</mobiel>
+		<email>Siebekuipers@vodafone.nl siebekuipers@vodafone.nl siebe@pentapark.nl</email>
+		<emailupload>hoofdletter probleem, nu opgelost</emailupload>
+		<color>
+			#0131ff</color>
+		<regnr>NED7211</regnr>
+		<thuishaven>
+			Uitwellingerga</thuishaven>
+		<crewlid1>
+			Jetze Kuipers</crewlid1>
+		<crewlid2>
+			Peter Jongsma</crewlid2>
+		<fietser>
+			Rene Krom</fietser>
+		<hardloper>
+			Richard Deen</hardloper>
+		<slogan>
+			3x = Scheepsrecht
+		</slogan>
+		<url>
+			www.schuttevaerteam.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--  5	352022004550073	NED7811	Yachtvision	Harry Amsterdam	x	hp.amsterdam@home.nl	Sponsor	Yachtvision 34.7	Stavoren	Harry Amsterdam	Ale Bok	Sipko Zwart	Harm Twaalfhoven	Gerrit Kramer	(0)651231636			Schuttevaerrace : De mooiste race van het jaar!		www.nautischkwartier.nl
+ -->
+		<mambo>5</mambo>
+		<boot>Yachtvision</boot>
+		<imei>
+			352022004550073
+		</imei>
+		<schipper>Harry Amsterdam</schipper>
+		<mobiel>(0)651231636</mobiel>
+		<email>hp.amsterdam@home.nl harry10@vodafone.nl</email>
+		<emailupload>helemaal ok</emailupload>
+		<color>
+			#ff00ff</color>
+		<regnr>NED7811</regnr>
+		<thuishaven>
+			Stavoren</thuishaven>
+		<crewlid1>
+			Ale Bok</crewlid1>
+		<crewlid2>
+			Sipko Zwart</crewlid2>
+		<fietser>
+			Harm Twaalfhoven</fietser>
+		<hardloper>
+			Gerrit Kramer</hardloper>
+		<slogan>
+			Schuttevaerrace : De mooiste race van het jaar!
+		</slogan>
+		<url>
+			www.nautischkwartier.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+		6	352022004550206	NED1650	Dulcinea	Jeroen Horst	x	jeroen.horst@versatel.nl		Dulcinea	Harderwijk	Jeroen Horst	Koos Brochart	Tim Lunshof	John Wijnands	Jan de Winter	(0)614975890					www.colombinehuis.nl
+ oud: 352022004550206
+ nieuw: 352021003719259
+
+ -->
+		<mambo>6</mambo>
+		<boot>Dulcinea</boot>
+		<imei>
+			352021003719259
+		</imei>
+		<schipper>Jeroen Horst</schipper>
+		<mobiel>(0)614975890</mobiel>
+		<email>jeroen.horst@versatel.nl</email>
+		<color>
+			#009e85</color>
+		<regnr>NED1650</regnr>
+		<thuishaven>
+			Harderwijk</thuishaven>
+		<crewlid1>
+			Koos Brochart</crewlid1>
+		<crewlid2>
+			Tim Lunshof</crewlid2>
+		<fietser>
+			John Wijnands</fietser>
+		<hardloper>
+			Jan de Winter</hardloper>
+		<slogan>
+			-
+		</slogan>
+		<url>
+			www.colombinehuis.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+7	352022001349610	NED7785	Galop	Philip van Nierop	x	nierop@aim.com		Galop	Muiden 	Philip van Nierop	Robert- Jan van Swaay 	Bastiaan Mulder 	Fedor von Balluseck 	Jan- Willem Bout	06-24602725 					www.tweegamedica.com
+ -->
+		<mambo>7</mambo>
+		<boot>Galop</boot>
+		<imei>
+			352022001349610
+		</imei>
+		<schipper>Philip van Nierop</schipper>
+		<mobiel>06-24602725</mobiel>
+		<email>nierop@aim.com</email>
+		<emailupload>1x probleem filename == null daarna ok</emailupload>
+		<color>
+			#004f00</color>
+		<regnr>NED7785</regnr>
+		<thuishaven>
+			Muiden</thuishaven>
+		<crewlid1>
+			Robert- Jan van Swaay</crewlid1>
+		<crewlid2>
+			Bastiaan Mulder</crewlid2>
+		<fietser>
+			Fedor von Balluseck</fietser>
+		<hardloper>
+			Jan- Willem Bout</hardloper>
+		<slogan>
+			-
+		</slogan>
+		<url>www.tweegamedica.com
+		</url>
+	</profile>
+
+	<profile>
+		<mambo>8</mambo>
+		<boot>mambo8</boot>
+		<imei>
+			352022004550115
+		</imei>
+		<schipper></schipper>
+		<mobiel></mobiel>
+		<email></email>
+		<color>
+			#949494</color>
+		<regnr>-</regnr>
+		<thuishaven>
+			-</thuishaven>
+		<crewlid1>
+			-</crewlid1>
+		<crewlid2>
+			-</crewlid2>
+		<fietser>
+			-</fietser>
+		<hardloper>
+			-</hardloper>
+		<slogan>
+			Mambo 8 doet het maar njet.
+		</slogan>
+		<url>
+			www.mambo8doetitnjet.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+ 9	352022004549281	NED2725	Scirpus	Frits J. Dijk	x	f.j.dijk@chello.nl		Scirpus	Monnickendam	Frits Dijk	Tjerk van Gelderen		Gosse Beerda	Ger Kragten	(0)616443693					www.scirpus.nl
+  -->
+		<mambo>9</mambo>
+		<boot>Scirpus</boot>
+		<imei>
+			352022004549281
+		</imei>
+		<schipper>Frits J. Dijk</schipper>
+		<mobiel>(0)616443693</mobiel>
+		<email>f.j.dijk@chello.nl</email>
+		<color>
+			#c4ff00</color>
+		<regnr>NED7785</regnr>
+		<thuishaven>
+			Monnickendam</thuishaven>
+		<crewlid1>Tjerk van Gelderen</crewlid1>
+		<crewlid2>
+			-</crewlid2>
+		<fietser>
+			Gosse Beerda</fietser>
+		<hardloper>
+			Ger Kragten</hardloper>
+		<slogan>
+			-
+		</slogan>
+		<url>www.scirpus.nl
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+ 10	352022004548994	GER73	Helena	Detlef von Schmeling	x	von-schmeling@t-online.de		Helena	Duisburg	Detlef von Schmeling	Florent de Montagner	Rolf Boelhouer	Rouven Weinert	Roman Rossman	0049 171667732			Eine wunderbar verrueckte Regatta: Echte Sportler an Deck - nicht nur Segler…
+  -->
+		<mambo>10</mambo>
+		<boot>Helena</boot>
+		<imei>
+			352022004548994
+		</imei>
+		<schipper>Detlef von Schmeling</schipper>
+		<mobiel>0049 171667732</mobiel>
+		<email>von-schmeling@t-online.de</email>
+		<emailupload>nog niet ok filename == null</emailupload>
+		<color>
+			#fcb800</color>
+		<regnr>GER73</regnr>
+		<thuishaven>
+			Duisburg (DLD)</thuishaven>
+		<crewlid1>Florent de Montagner</crewlid1>
+		<crewlid2>
+			Rolf Boelhouer</crewlid2>
+		<fietser>
+			Rouven Weinert</fietser>
+		<hardloper>
+			Roman Rossman</hardloper>
+		<slogan>
+			Eine wunderbar verrueckte Regatta: Echte Sportler an Deck - nicht nur Segler…
+		</slogan>
+		<url>
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+ 11	352022004549133	NED7378	Njuta	Albert Flokstra	x	Albertflokstra@hotmail.com		Njuta	Harlingen	Albert Flokstra	Hero Hettinga	Eric de Vegte	Jan Pieter de Jager	Oeli Reitsma	(0)6 22220230			Oeli, Pieter, Hero, Eric, Albert, Njuta, Njuta, Njuta, samen zijn we goed ja.		www.lastminutezeilen.com
+  -->
+		<mambo>11</mambo>
+		<boot>Njuta</boot>
+		<imei>
+			352022004549133
+		</imei>
+		<schipper>Albert Flokstra</schipper>
+		<mobiel>(0)6 22220230</mobiel>
+		<email>Albertflokstra@hotmail.com</email>
+		<color>
+			#ff5900</color>
+		<regnr>NED7378</regnr>
+		<thuishaven>
+			Harlingen</thuishaven>
+		<crewlid1>Hero Hettinga</crewlid1>
+		<crewlid2>
+			Eric de Vegte</crewlid2>
+		<fietser>
+			Jan Pieter de Jager</fietser>
+		<hardloper>
+			Oeli Reitsma</hardloper>
+		<slogan>
+			Oeli, Pieter, Hero, Eric, Albert, Njuta, Njuta, Njuta, samen zijn we goed ja.
+		</slogan>
+		<url>www.lastminutezeilen.com
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+12	352022004550107	NED6925	High Five	Peter Bergstein	x	p.bergstein@planet.nl		High Five	Blocq van Kuffeler 	Peter Bergstein	Maurice Koot 	Reino van der Hart 	Gert van Dijk 	Thomas Vencken
+   -->
+		<mambo>12</mambo>
+		<boot>High Five</boot>
+		<imei>
+			352022004550107
+		</imei>
+		<schipper>Peter Bergstein</schipper>
+		<mobiel>0612965418</mobiel>
+		<email>p.bergstein@planet.nl</email>
+		<color>
+			#c20000</color>
+		<regnr>NED6925</regnr>
+		<thuishaven>
+			Blocq van Kuffeler</thuishaven>
+		<crewlid1>Maurice Koot</crewlid1>
+		<crewlid2>
+			Reino van der Hart</crewlid2>
+		<fietser>
+			Gert van Dijk</fietser>
+		<hardloper>
+			Thomas Vencken</hardloper>
+		<slogan>
+			It's the fun and the drive that moves the HIGH FIVE!
+		</slogan>
+		<url>
+		</url>
+	</profile>
+	<profile>
+		<!--
+13	352022004550057	NED7234	SWELL	Geert Bosch	x	geert@boschenvanrijn.nl		Swell		Geert Bosch
+   -->
+		<mambo>13</mambo>
+		<boot>Swell</boot>
+		<imei>
+			352022004550057
+		</imei>
+		<schipper>Geert Bosch</schipper>
+		<mobiel>(0)6 22220230</mobiel>
+		<email>geert@boschenvanrijn.nl</email>
+		<emailupload>nog niet ok filename == null</emailupload>
+		<color>
+			#5e0000</color>
+		<regnr>NED7234</regnr>
+		<thuishaven>
+			-</thuishaven>
+		<crewlid1>-</crewlid1>
+		<crewlid2>
+			-</crewlid2>
+		<fietser>
+			-</fietser>
+		<hardloper>
+			-</hardloper>
+		<slogan>
+			-
+		</slogan>
+		<url>
+		</url>
+	</profile>
+
+	<profile>
+		<!--
+14	352022004548911	NED6058	Cygnus	Herman van der Meyden	x	ac49827@tiscali.nl	Borg?	Cygnus	Aalsmeer	Herman van der Meyden	Herman van der Meyden jr.	Harm van der Pol	Alex de Kraker	Mark Oltshoorn	(0)615001005					home.tiscali.nl/ac49827
+   -->
+		<mambo>14</mambo>
+		<boot>Cygnus</boot>
+		<imei>
+			352022004548911
+		</imei>
+		<schipper>Herman van der Meyden</schipper>
+		<mobiel>(0)615001005</mobiel>
+		<email>ac49827@tiscali.nl</email>
+		<color>
+			#0081ff</color>
+		<regnr>NED6058</regnr>
+		<thuishaven>
+			Aalsmeer</thuishaven>
+		<crewlid1>Herman van der Meyden jr.</crewlid1>
+		<crewlid2>
+			Harm van der Pol</crewlid2>
+		<fietser>
+			Alex de Kraker</fietser>
+		<hardloper>
+			Mark Oltshoorn</hardloper>
+		<slogan>
+			-
+		</slogan>
+		<url>home.tiscali.nl/ac49827
+		</url>
+	</profile>
+	<profile>
+		<!--
+15	352022004550123	NED5651C	Blue Jay	Bob Hanenberg	x	rcjacht@planet.nl		Blue Jay	Regatta Center Medemblik	Bob Hanenberg	Erik de Jong	Marcel Hanenberg	Johan Splunder	Silvia Kruyer	(0)655570070			Meedoen is belangrijker dan winnen maar wij gaan voor nummer 1.		www.regattacenter.com 
+   -->
+		<mambo>15</mambo>
+		<boot>Blue Jay</boot>
+		<imei>
+			352022004550123
+		</imei>
+		<schipper>Bob Hanenberg</schipper>
+		<mobiel>0655570070</mobiel>
+		<email>rcjacht@planet.nl</email>
+		<color>
+			#01fc00</color>
+		<regnr>NED5651C</regnr>
+		<thuishaven>
+			Regatta Center Medemblik</thuishaven>
+		<crewlid1>Erik de Jong</crewlid1>
+		<crewlid2>
+			Marcel Hanenberg</crewlid2>
+		<fietser>
+			 Johan Splunder</fietser>
+		<hardloper>
+			 Silvia Kruyer</hardloper>
+		<slogan>
+			Meedoen is belangrijker dan winnen maar wij gaan voor nummer 1.
+		</slogan>
+		<url>http://www.regattacenter.com/
+		</url>
+	</profile>
+
+</deelnemers>

@@ -1,0 +1,36 @@
+Setup Mambo on MacOSX wioth VMWare WinXP
+
+- links
+http://www.vmware.com/community/thread.jspa?threadID=89575&tstart=0
+
+- on mac
+Add to .vmx file (open package contents of VM file):
+
+serial0.present = "TRUE"
+serial0.fileType = "pipe"
+serial0.fileName = "/tmp/serial1"
+serial0.startConnected = "TRUE"
+serial0.pipe.endPoint = "client"
+
+This sets up the VM serial port in client socket mode.
+I find that Fusion serial port is much more robust when configured as a client socket,
+instead of a server socket (which can crash the VM) or directly connected to a device (which does not always work).
+
+- use the serial device in the VM use socat
+sudo port install socat
+
+socat /dev/<usb serial> UNIX-LISTEN:/tmp/serial1
+e.g.
+sudo socat /dev/tty.MAMBO-Serial2c617-1 UNIX-LISTEN:/tmp/serial1
+this makes BT device available as serial port
+
+- in vmware VM
+left below a round icon should appear with 01010 in it
+
+- open COM1 in Falcom workbench
+
+- quick steps
+socat /dev/<usb serial> UNIX-LISTEN:/tmp/serial1
+start VM and Falcom Workbench
+
+

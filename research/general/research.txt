@@ -267,6 +267,9 @@ Mac:
 ps -e -o "pgid user pid"
 kill -QUIT -27066 (yes "-" and pid is pgid)
 
+- get lat/lon for IP
+http://api.hostip.info/get_html.php?ip=12.215.42.19&position=true
+
 OTHER
 http://pasture.ecn.purdue.edu/~abegps/web_ssm/web_GPS.html
 
