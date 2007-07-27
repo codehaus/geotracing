@@ -36,8 +36,9 @@ public class ImageCaptureDisplay extends DefaultDisplay {
     private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
     private GPSLocation location;
 
-    public ImageCaptureDisplay(WPMidlet aMIDlet) {
+    public ImageCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Capture and send a photo");
+        prevScreen = aPrevScreen;
 
         midlet = aMIDlet;
         showCamera();

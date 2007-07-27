@@ -40,7 +40,7 @@ public class TaskDisplay extends DefaultDisplay{
 
     private void drawTask(){
         if (alert.length() > 0) {
-            //#style formbox
+            //#style alertinfo
             append(alert);
         }
         //#style formbox

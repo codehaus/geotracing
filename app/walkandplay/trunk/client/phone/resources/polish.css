@@ -40,6 +40,7 @@ colors {
     BLACK: rgb(0,0,0);
     RED: rgb(255,0,0);
     GREEN: rgb(0,255,55);
+    ORANGE: rgb(255,200,35);
     GREY: rgb(60,60,60);
 }
 
@@ -298,21 +299,12 @@ focused {
     layout: horizontal-expand | left | top;
 }
 
-.posinfo{
+.alertinfo{
     margin:2;
     padding:2;
     font-color: BLACK;
     font-size: small;
-    background-color: GREEN;
-    layout: horizontal-expand | left | top;
-}
-
-.neginfo{
-    margin:2;
-    padding:2;
-    font-color: BLACK;
-    font-size: small;
-    background-color: RED;       
+    background-color: ORANGE;
     layout: horizontal-expand | left | top;
 }
 

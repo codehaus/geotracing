@@ -46,6 +46,7 @@ public class AddTextDisplay extends DefaultDisplay {
         tagsField = new TextField("", "", 32, TextField.ANY);
         form.append(tagsField);*/
 
+        //#style alertinfo
         append(alertField);
 
         addCommand(SUBMIT_CMD);

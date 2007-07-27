@@ -37,7 +37,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private WPMidlet midlet;
     private JXElement taskHit;
     private JXElement mediumHit;
-    private JXElement msgHit;
 
     private Image transBar;
     private int maxScore;
@@ -45,8 +44,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private Vector gameLocations = new Vector(3);
 
     private final static int SHOW_LOG = 1;
-    private final static int SHOW_INFO = 2;
-    private final static int SHOW_ERROR = 3;
     private int SHOW_STATE = 0;
 
     Font f;
@@ -69,8 +66,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private Command SCORES_CMD = new Command(Locale.get("play.Scores"), Command.ITEM, 2);
     private Command SHOW_LOG_CMD = new Command(Locale.get("play.ShowLog"), Command.ITEM, 2);
     private Command HIDE_LOG_CMD = new Command(Locale.get("play.HideLog"), Command.ITEM, 2);
-    private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);
-    private Command HIDE_ERROR_CMD = new Command(Locale.get("play.HideError"), Command.ITEM, 2);
+    private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);    
     private Command SHOW_INTRO_CMD = new Command(Locale.get("play.ShowIntro"), Command.ITEM, 2);
     private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
 
@@ -147,7 +143,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             log("Could not load the images on PlayDisplay", true);
         }
 
-        addAllCommands();
+        addCommand(ZOOM_IN_CMD);
+        addCommand(ZOOM_OUT_CMD);
+        addCommand(TOGGLE_MAP_CMD);
+        addCommand(ADD_TEXT_CMD);
+        addCommand(ADD_PHOTO_CMD);
+        addCommand(ADD_AUDIO_CMD);
+        addCommand(IM_CMD);
+        addCommand(SHOW_INTRO_CMD);
+        addCommand(SCORES_CMD);
+        addCommand(SHOW_LOG_CMD);
+        addCommand(BACK_CMD);
         setCommandListener(this);
 
     }
@@ -296,9 +302,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
     private void setError(String aMsg){
         errorMsg = aMsg;
-        SHOW_STATE = SHOW_ERROR;
-        removeAllCommands();
-        addCommand(HIDE_ERROR_CMD);
     }
 
     private void zoomIn() {
@@ -348,7 +351,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 String s = "Retrieving current location...";
                 g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
                 //repaint();
-                Log.log("no location");
                 return;
 			}
 
@@ -364,12 +366,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                 g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                 String loading = "Loading map...";
                 g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-                //repaint();
-                Log.log("loading map");
+                //repaint();                
                 return;
 			}
 
-            Log.log("try to draw the map");
             // Should we fetch new map image ?
 			if (mapImage == null) {
 				try {
@@ -427,7 +427,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
             // System.out.println("xy=" + xy);
             // If we have previous point: draw line from there to current
-            if (prevXY != null) {
+            if (prevXY != null && prevXY.x < 1000) {
                 // Draw trace
                 Graphics mapGraphics = mapImage.getGraphics();
                 mapGraphics.setColor(0, 0, 255);
@@ -458,10 +458,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
                     g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
                     g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
                     break;
-                case SHOW_ERROR:
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    g.drawString(errorMsg, w / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-                    break;
             }
 
         } catch (Throwable t) {
@@ -481,7 +477,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
             tracerEngine.stop();
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == ADD_PHOTO_CMD) {
-            new ImageCaptureDisplay(midlet);
+            new ImageCaptureDisplay(midlet, this);
         } else if (cmd == ADD_AUDIO_CMD) {
             new AudioCaptureDisplay(midlet);
         } else if (cmd == ADD_TEXT_CMD) {
@@ -497,53 +493,18 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
         } else if (cmd == SCORES_CMD) {
             new ScoreDisplay(midlet, maxScore, this);
         } else if (cmd == SHOW_LOG_CMD) {
-            SHOW_STATE = SHOW_LOG;
-            removeAllCommands();
+            removeCommand(SHOW_LOG_CMD);
             addCommand(HIDE_LOG_CMD);
+            SHOW_STATE = SHOW_LOG;
         } else if (cmd == HIDE_LOG_CMD) {
-            SHOW_STATE = 0;
-            addAllCommands();
             removeCommand(HIDE_LOG_CMD);
-        } else if (cmd == HIDE_ERROR_CMD) {
+            addCommand(SHOW_LOG_CMD);
             SHOW_STATE = 0;
-            addAllCommands();
-            removeCommand(HIDE_ERROR_CMD);
         } else if (cmd == IM_CMD) {
             new IMDisplay(midlet, this);
         } else if (cmd == SHOW_INTRO_CMD) {
             new IntroDisplay(midlet, this);
         }
-    }
-
-    private void removeAllCommands() {
-        removeCommand(ADD_TEXT_CMD);
-        removeCommand(ADD_PHOTO_CMD);
-        removeCommand(ADD_AUDIO_CMD);
-        removeCommand(ZOOM_IN_CMD);
-        removeCommand(ZOOM_OUT_CMD);
-        removeCommand(TOGGLE_MAP_CMD);
-        removeCommand(SCORES_CMD);
-        removeCommand(SHOW_LOG_CMD);
-        removeCommand(HIDE_ERROR_CMD);
-        removeCommand(HIDE_LOG_CMD);
-        removeCommand(IM_CMD);
-        removeCommand(SHOW_INTRO_CMD);
-        removeCommand(BACK_CMD);
-    }
-
-    private void addAllCommands() {
-        removeAllCommands();
-        addCommand(ZOOM_IN_CMD);
-        addCommand(ZOOM_OUT_CMD);
-        addCommand(TOGGLE_MAP_CMD);
-        addCommand(ADD_TEXT_CMD);
-        addCommand(ADD_PHOTO_CMD);
-        addCommand(ADD_AUDIO_CMD);
-        addCommand(IM_CMD);
-        addCommand(SHOW_INTRO_CMD);
-        addCommand(SCORES_CMD);
-        addCommand(SHOW_LOG_CMD);
-        addCommand(BACK_CMD);
     }
 
 }
