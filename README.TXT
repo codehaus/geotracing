@@ -22,7 +22,7 @@ app             - geotracing applications
 etc, i.e. each application has its own trunk/tags/branches subdirs.
 
 BUILDING
-to build apps you have to build the base first
+to build apps you have to build the base framework first
 
 cd base/trunk
 ant
@@ -32,4 +32,7 @@ Notes:
 for obvious reasons these files ar not in SVN. You should provide 
 a security.properties file based on the template file security.properties.template
 found in the same dir as security.properties would reside.
+- building base/trunk/client/mobitracer will fail on all platforms except Mac OSX. We are moving to j2mepolish.org
+to be more cross-platform
+
 

@@ -6,421 +6,424 @@ $Id: build.xml 353 2007-02-02 12:04:11Z just $
 -->
 <project name="diwi-server" default="build" basedir=".">
 
-    <!-- Initialization of properties (dirs, files) -->
-
-    <!-- Project global properties; overrule by modifying build.properties -->
-    <property name="geotracing.base.dir" value="${basedir}/../../../../base/trunk"/>
-    <property name="geotracing.server.dir" value="${geotracing.base.dir}/server"/>
-    <property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
-    <property file="${geotracing.external.dir}/build.properties"/>
-
-    <property file="${keyworx.dir}/build.properties"/>
-
-    <property name="runtime.properties" value="runtime.live.properties" />
-    <property file="${runtime.properties}" />
-
-    <property name="security.properties" value="security.properties" />
-    <property file="${security.properties}" />
-
-    <!-- Use server utopia config as base config -->
-    <property name="keyworx.server.cfg" value="${server.dir}/cfg/utopia"/>
-
-    <property file="../build.properties"/>
-    <property name="build.properties" value="../build.test.properties" />
-    <property file="build.properties"/>
-
-    <!-- Java compiler options -->
-    <property name="javac.debug" value="false"/>
-    <property name="javac.deprecation" value="false"/>
-    <property name="javac.optimize" value="true"/>
-
-    <!-- Directory locations -->
-    <property name="home" value="${basedir}"/>
-    <property name="home.bin.dir" value="${home}/bin"/>
-    <property name="home.cfg.dir" value="${home}/cfg"/>
-    <property name="home.data.dir" value="${home}/data"/>
-    <property name="home.src.dir" value="${home}/src"/>
-    <property name="home.test.dir" value="${home}/test"/>
-    <property name="home.webapp.dir" value="${home}/webapp"/>
-
-    <property name="build.dir" value="${home}/build"/>
-    <property name="build.class.dir" value="${build.dir}/class"/>
-    <property name="build.lib.dir" value="${build.dir}/lib"/>
-    <property name="build.doc.dir" value="${build.dir}/doc"/>
-    <property name="build.war.dir" value="${build.dir}/war"/>
-    <property name="build.version.dir" value="${build.war.dir}/version"/>
-    <property name="dist.dir" value="${home}/dist"/>
-
-    <property name="external.dir" value="${geotracing.external.dir}"/>
-    <!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
-    <property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
-    <property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
-    <property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
-    <property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
-    <property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
-    <property name="scp" value="${home.bin.dir}/scp.sh"/>
-    <property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
-    <property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
-    <property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
-    <property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
-    <property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
-    <property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
-    <property name="jaf.jar" value="${jaf.dir}/activation.jar"/>
-    <property name="javamail.jar" value="${javamail.dir}/mail.jar"/>
-
-    <!-- All sources to be compiled -->
-    <property name="server.src.path" value="${home.src.dir}"/>
-
-    <!-- The .jar -->
-    <property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
-    <property name="project.war" value="${build.dir}/${project.name}.war"/>
-    <property name="package.zip" value="${dist.dir}/${project.id}-${project.version}.zip"/>
-    <property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${project.version}.zip"/>
-
-    <!-- Construct compilation sourcepath -->
-    <path id="compile.sourcepath">
-        <pathelement location="${home.src.dir}"/>
-        <pathelement location="${geotracing.server.dir}/src"/>
-    </path>
-
-    <!-- Construct compilation classpath -->
-    <path id="compile.classpath">
-        <pathelement location="${build.class.dir}"/>
-        <pathelement location="${pushlet.jar}"/>
-        <pathelement location="${postgis-jdbc.jar}"/>
-        <pathelement location="${keyworx.jar}"/>
-        <pathelement location="${kwx-tagging.jar}"/>
-        <pathelement location="${servlet.jar}"/>
-        <pathelement location="${ehcache.jar}"/>
-        <pathelement location="${geoapi.jar}"/>
-        <pathelement location="${gt2-epsg-wkt.jar}"/>
-        <pathelement location="${gt2-referencing.jar}"/>
-        <pathelement location="${jaf.jar}"/>
-        <pathelement location="${javamail.jar}"/>
-    </path>
-
-    <!-- Initialize: create dirs and set timestamp.. -->
-    <target name="init">
-        <mkdir dir="${build.dir}"/>
-        <tstamp/>
-    </target>
-
-    <!-- Optional download/upack of external packages. -->
-    <target name="externals">
-        <echo message="downloading and unpacking external packages"/>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${keyworx}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${pushlet}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${servlet}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${postgis-jdbc}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${kwx-tagging}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${kwx-metadata}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${ehcache}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${geotools-referencing}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${jaf}"/>
-        </ant>
-
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
-            <property name="package" value="${javamail}"/>
-        </ant>
-
-    </target>
-
-    <!-- Compile the java files. -->
-    <target name="compile" depends="init,externals">
-        <echo message="Compiling java files..."/>
-
-        <!-- Always do clean build -->
-        <delete dir="${build.class.dir}"/>
-        <mkdir dir="${build.class.dir}"/>
-
-        <!-- Compile all java files-->
-        <javac
-                destdir="${build.class.dir}"
-                debug="${javac.debug}"
-                deprecation="${javac.deprecation}"
-                optimize="${javac.optimize}">
-            <src refid="compile.sourcepath"/>
-
-            <classpath refid="compile.classpath"/>
-        </javac>
-    </target>
-
-    <!-- Build the .jar for the project -->
-    <target name="jar" depends="compile">
-        <echo message="Building ${project.jar}..."/>
-
-        <!-- Always do clean build -->
-        <delete file="${project.jar}"/>
-        <mkdir dir="${build.dir}/lib"/>
-
-        <!-- Create the jar file -->
-        <jar jarfile="${project.jar}" basedir="${build.class.dir}">
-            <manifest>
-                <attribute name="Built-By" value="${user.name}"/>
-                <section name="org/geotracing">
-                    <attribute name="Implementation-Title" value="${project.name}"/>
-                    <attribute name="Implementation-Version" value="${project.version}-${DSTAMP}-${TSTAMP}"/>
-                    <attribute name="Implementation-Vendor" value="Waag Society"/>
-                </section>
-            </manifest>
-        </jar>
-    </target>
-
-    <!-- Build the .war for the project -->
-    <target name="war" depends="jar">
-        <echo message="Building webapp ${project.war}..."/>
-
-        <delete dir="${build.war.dir}"/>
-        <delete file="${project.war}"/>
-        <mkdir dir="${build.war.dir}"/>
-
-        <copy todir="${build.war.dir}">
-            <fileset dir="${home.webapp.dir}/${project.name}"/>
-        </copy>
-
-        <!-- First assemble all required files into war directory. -->
-
-        <!-- Keyworx configuration -->
-        <echo message="creating config and kwx webapp..."/>
-        <ant antfile="${keyworx.dir}/build-util.xml" target="config-webapp" inheritall="false">
-            <!-- The base config of KW: utopia, kwlive or minimal -->
-            <property name="kw.base.cfg" value="utopia"/>
-
-            <!-- My server config dir -->
-            <property name="my.cfg.dir" value="${home.cfg.dir}"/>
-
-            <!-- My war dest dir -->
-            <property name="my.war.dir" value="${build.war.dir}"/>
-
-            <!-- My jar file (OPTIONAL) -->
-            <property name="my.jar" value="${project.jar}"/>
-        </ant>
-
-        <copy todir="${build.war.dir}/WEB-INF/" file="${home.cfg.dir}/web.xml" overwrite="true"/>
-        <copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/videoconv.sh" overwrite="true"/>
-        <copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/image-meta.sh" overwrite="true"/>
-        <copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
-
-        <copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
-            <fileset dir="${pushlet.dir}/lib">
-                <include name="pushlet.jar"/>
-            </fileset>
-            <fileset dir="${postgis-jdbc.dir}">
-                <include name="postgis.jar"/>
-            </fileset>
-            <fileset dir="${kwx-tagging.dir}/lib">
-                <include name="tagging.jar"/>
-            </fileset>
-            <fileset dir="${kwx-metadata.dir}/lib">
-                <include name="metadata.jar"/>
-            </fileset>
-            <fileset dir="${ehcache.dir}">
-                <include name="ehcache-1.2.4.jar"/>
-            </fileset>
-            <fileset dir="${geotools-referencing.dir}">
-                <include name="geoapi-nogenerics-2.1-M2.jar"/>
-                <include name="gt2-epsg-wkt-2.3.0.jar"/>
-                <include name="gt2-referencing-2.3.0.jar"/>
-                <include name="jsr108-0.01.jar"/>
-                <include name="vecmath-1.3.1.jar"/>
-            </fileset>
-        </copy>
-
-        <!-- Copy additional external libraries -->
-        <copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
-            <fileset dir="${jaf.dir}">
-                <include name="activation.jar"/>
-            </fileset>
-            <fileset dir="${javamail.dir}">
-                <include name="mail.jar"/>
-            </fileset>
-        </copy>
-
-        <copy todir="${build.war.dir}/WEB-INF/classes">
-            <fileset dir="${home.cfg.dir}">
-                <include name="pushlet.properties"/>
-            </fileset>
-        </copy>
-
-        <!-- Copy relevant GeoTracing tables -->
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
-            <fileset dir="${geotracing.server.dir}/cfg/tables">
-                <include name="g_track.xml"/>
-                <!--<include name="g_location.xml"/>-->
-                <include name="g_area.xml"/>
-            </fileset>
-        </copy>
-
-        <!-- Copy relevant GeoTracing JSP -->
-        <copy todir="${build.war.dir}/srv/" overwrite="true">
-            <fileset dir="${geotracing.server.dir}/webapp/gt/srv">
-            </fileset>
-        </copy>
-
-        <!-- until kwx plugins truly work in KeyWorx copy the jars and tables to get things working-->
-        <copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
-            <fileset dir="${kwx-metadata.dir}/cfg/tables">
-                <exclude name="cc_tag.xml"/>
-                <exclude name="cc_tagrelation.xml"/>
-            </fileset>
-            <fileset dir="${kwx-tagging.dir}/cfg/tables"/>
-        </copy>
-
-        <!-- Set version numbers and build info in version/index.html. -->
-        <concat destfile="${build.war.dir}/version/index.html">
-            <filelist dir="${home.webapp.dir}/${project.name}/version" files="index.html"/>
-            <filterchain>
-                <expandproperties/>
-            </filterchain>
-        </concat>
-
-        <!-- Now insert the proper variables based on the runtime properies -->
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[portal.name]" value="${portal.name}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[keyworx.log.level]" value="${keyworx.log.level}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[keyworx.log.dir]" value="${keyworx.log.dir}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[tcpconnector.port]" value="${tcpconnector.port}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[siteurl.name]" value="${siteurl.name}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[webappurl.name]" value="${webappurl.name}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[kichservleturl.name]" value="${kichservleturl.name}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[routingservleturl.name]" value="${routingservleturl.name}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mediaurl.name]" value="${mediaurl.name}"/>
-
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.host]" value="${mail.host}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.recipient]" value="${mail.recipient}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.username]" value="${mail.username}"/>
-        <replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.password]" value="${mail.password}"/>
-
-        <!--<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${runtime.properties}" summary="true"/>
-        <replace file="${build.war.dir}/WEB-INF/cfg/server.properties" replacefilterfile="${security.properties}" summary="true"/>-->
-
-        <!-- Finally make war -->
-        <jar jarfile="${project.war}">
-            <fileset dir="${build.war.dir}">
-                <include name="**"/>
-            </fileset>
-        </jar>
-    </target>
-
-    <target name="packagewar" depends="clean,war">
-        <delete file="${packagewar.zip}"/>
-
-        <!-- Make zip -->
-        <zip zipfile="${packagewar.zip}">
-            <zipfileset dir="${build.war.dir}"
-                        prefix="${project.id}-war-${project.version}"
-                        excludes="WEB-INF/cfg/portal.xml">
-            </zipfileset>
-        </zip>
-    </target>
-
-    <!-- Build all clean. -->
-    <target name="build" depends="clean,war"/>
-
-    <!-- Package into archive files -->
-    <target name="package" depends="clean,build">
-        <echo message="Packaging distribution into ${package.zip}"/>
-        <mkdir dir="${dist.dir}"/>
-        <copy todir="${build.lib.dir}" file="${keyworx.jar}" overwrite="true"/>
-        <delete file="${package.zip}"/>
-        <zip zipfile="${package.zip}">
-            <zipfileset dir="${home}"
-                        prefix="${project.id}-${project.version}"
-                        excludes="version/**,build/class/**,build/war/**,build/${project.war}"/>
-        </zip>
-
-        <!--	<delete file="${versions.gzip.file}" />
-              <tar tarfile="${versions.tar.file}" basedir="${dist.dir}"/>
-              <gzip zipfile="${versions.gzip.file}" src="${versions.tar.file}"/>
-              <delete file="${versions.tar.file}" />     -->
-
-    </target>
-
-
-    <!-- Run protocol test client. -->
-    <target name="test-protocol" description="Runs protocol test client">
-
-        <java classname="org.keyworx.amuse.test.protocol.Main"
-              fork="true"
-              failonerror="true"
-              maxmemory="128m"
-                >
-            <arg value="${home.test.dir}/protocol/test.properties"/>
-
-            <classpath>
-                <pathelement location="${keyworx.jar}"/>
-                <pathelement location="${project.jar}"/>
-            </classpath>
-        </java>
-    </target>
-
-    <target name="clean" depends="init">
-        <delete dir="${build.dir}"/>
-        <mkdir dir="${build.lib.dir}"/>
-    </target>
-
-    <target name="deploy-local" depends="war">
-        <copy file="${project.war}" todir="${deploy.local.dir}/${portal.name}" overwrite="true"/>
-    </target>
-
-    <target name="deploy-local-raw">
-        <copy todir="${deploy.local.dir}/${portal.name}" overwrite="true">
-            <fileset dir="${home.webapp.dir}/${project.name}"/>
-        </copy>
-        <copy todir="${deploy.local.dir}/${portal.name}/lib" overwrite="true">
-            <fileset dir="${pushlet.dir}/webapps/pushlet/lib">
-                <include name="ajax-pushlet-client.js"/>
-            </fileset>
-        </copy>
-        <!--	<copy todir="${deploy.test.dir}/rsc" overwrite="true">
-                      <fileset dir="${home.test.dir}/rsc"/>
-              </copy> -->
-    </target>
-
-    <target name="deploy-berlin" depends="clean, war">
-        <exec executable="scp">
-            <arg line="${project.war}"/>
-            <arg line="${deploy.test.server}:/var/keyworx/webapps/diwi"/>
-        </exec>
-    </target>
-
-    <target name="doc">
-        <mkdir dir="${build.doc.dir}/jsdoc"/>
-        <exec executable="${jsdoc}">
-            <arg line="-d ${build.doc.dir}/jsdoc"/>
-            <arg line="${home.webapp.dir}/${project.name}/lib"/>
-        </exec>
-    </target>
-
-    <!-- Run the tests for the project
-    <target name="test">
-        <echo message="Testing..."/>
-        <ant antfile="test/build.xml" inheritall="false"/>
-    </target>
-    -->
+	<!-- Initialization of properties (dirs, files) -->
+	<property name="home" value="${basedir}"/>
+	<property name="geotracing.base.dir" value="${home}/../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+	<property name="geotracing.server.dir" value="${geotracing.base.dir}/server"/>
+
+	<property file="../build.properties"/>
+	<property name="build.properties" value="../build.test.properties"/>
+	<property file="build.properties"/>
+
+	<property name="runtime.properties" value="runtime.live.properties"/>
+	<property file="${runtime.properties}"/>
+
+	<property name="security.properties" value="security.properties"/>
+	<property file="${security.properties}"/>
+
+	<!-- Use server utopia config as base config -->
+	<property name="keyworx.server.cfg" value="${keyworx.dir}/server/cfg/utopia"/>
+
+	<!-- Java compiler options -->
+	<property name="javac.debug" value="false"/>
+	<property name="javac.deprecation" value="false"/>
+	<property name="javac.optimize" value="true"/>
+
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+	<property name="home.bin.dir" value="${home}/bin"/>
+	<property name="home.cfg.dir" value="${home}/cfg"/>
+	<property name="home.data.dir" value="${home}/data"/>
+	<property name="home.src.dir" value="${home}/src"/>
+	<property name="home.test.dir" value="${home}/test"/>
+	<property name="home.webapp.dir" value="${home}/webapp"/>
+
+	<property name="build.dir" value="${home}/build"/>
+	<property name="build.class.dir" value="${build.dir}/class"/>
+	<property name="build.lib.dir" value="${build.dir}/lib"/>
+	<property name="build.doc.dir" value="${build.dir}/doc"/>
+	<property name="build.war.dir" value="${build.dir}/war"/>
+	<property name="build.version.dir" value="${build.war.dir}/version"/>
+	<property name="dist.dir" value="${home}/dist"/>
+
+	<property name="external.dir" value="${geotracing.external.dir}"/>
+	<!--	<property name="pushlet.dir" value="${external.dir}/pushlet-2.0.2"/> -->
+	<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
+	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+	<property name="servlet.jar" value="${servlet.dir}/lib/servlet.jar"/>
+	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
+	<property name="jsdoc.dir" value="${external.dir}/jsdoc-1.9.9.2"/>
+	<property name="jsdoc" value="${jsdoc.dir}/jsdoc.pl"/>
+	<property name="scp" value="${home.bin.dir}/scp.sh"/>
+	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
+	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
+	<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
+	<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
+	<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
+	<property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
+	<property name="jaf.jar" value="${jaf.dir}/activation.jar"/>
+	<property name="javamail.jar" value="${javamail.dir}/mail.jar"/>
+
+	<!-- Construct compilation sourcepath -->
+	<path id="compile.sourcepath">
+		<pathelement location="${home.src.dir}"/>
+		<pathelement location="${geotracing.server.dir}/src"/>
+	</path>
+
+	<!-- Construct compilation classpath -->
+	<path id="compile.classpath">
+		<pathelement location="${build.class.dir}"/>
+		<pathelement location="${pushlet.jar}"/>
+		<pathelement location="${postgis-jdbc.jar}"/>
+		<pathelement location="${keyworx.jar}"/>
+		<pathelement location="${servlet.jar}"/>
+		<pathelement location="${kwx-tagging.jar}"/>
+		<pathelement location="${servlet.jar}"/>
+		<pathelement location="${ehcache.jar}"/>
+		<pathelement location="${geoapi.jar}"/>
+		<pathelement location="${gt2-epsg-wkt.jar}"/>
+		<pathelement location="${gt2-referencing.jar}"/>
+		<pathelement location="${jaf.jar}"/>
+		<pathelement location="${javamail.jar}"/>
+	</path>
+
+	<!-- All sources to be compiled -->
+	<property name="server.src.path" value="${home.src.dir}"/>
+
+	<!-- The .jar -->
+	<property name="project.jar" value="${build.lib.dir}/${project.id}.jar"/>
+	<property name="project.war" value="${build.dir}/${project.name}.war"/>
+	<property name="package.zip" value="${dist.dir}/${project.id}-${project.version}.zip"/>
+	<property name="packagewar.zip" value="${dist.dir}/${project.id}-war-${project.version}.zip"/>
+	<mkdir dir="${build.dir}"/>
+	<tstamp/>
+
+
+	<!-- Optional download/upack of external packages. -->
+	<target name="externals">
+
+		<echo message="downloading and unpacking external packages"/>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${keyworx}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${pushlet}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${servlet}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${postgis-jdbc}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${kwx-tagging}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${kwx-metadata}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${ehcache}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${geotools-referencing}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${jaf}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${javamail}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${servlet}"/>
+		</ant>
+	</target>
+
+
+	<!-- Compile the java files. -->
+	<target name="compile" depends="externals">
+		<echo message="Compiling java files..."/>
+
+		<!-- Always do clean build -->
+		<delete dir="${build.class.dir}"/>
+		<mkdir dir="${build.class.dir}"/>
+
+		<!-- Compile all java files-->
+		<javac
+				destdir="${build.class.dir}"
+				debug="${javac.debug}"
+				deprecation="${javac.deprecation}"
+				optimize="${javac.optimize}">
+			<src refid="compile.sourcepath"/>
+
+			<classpath refid="compile.classpath"/>
+		</javac>
+	</target>
+
+	<!-- Build the .jar for the project -->
+	<target name="jar" depends="compile">
+		<echo message="Building ${project.jar}..."/>
+
+		<!-- Always do clean build -->
+		<delete file="${project.jar}"/>
+		<mkdir dir="${build.dir}/lib"/>
+
+		<!-- Create the jar file -->
+		<jar jarfile="${project.jar}" basedir="${build.class.dir}">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<section name="org/geotracing">
+					<attribute name="Implementation-Title" value="${project.name}"/>
+					<attribute name="Implementation-Version" value="${project.version}-${DSTAMP}-${TSTAMP}"/>
+					<attribute name="Implementation-Vendor" value="Waag Society"/>
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- Build the .war for the project -->
+	<target name="war" depends="jar">
+		<echo message="Building webapp ${project.war}..."/>
+
+		<delete dir="${build.war.dir}"/>
+		<delete file="${project.war}"/>
+		<mkdir dir="${build.war.dir}"/>
+
+		<copy todir="${build.war.dir}">
+			<fileset dir="${home.webapp.dir}/${project.name}"/>
+		</copy>
+
+		<!-- First assemble all required files into war directory. -->
+
+		<!-- Keyworx configuration -->
+		<echo message="creating config and kwx webapp..."/>
+		<ant antfile="${keyworx.dir}/build-util.xml" target="config-webapp" inheritall="false">
+			<!-- The base config of KW: utopia, kwlive or minimal -->
+			<property name="kw.base.cfg" value="utopia"/>
+
+			<!-- My server config dir -->
+			<property name="my.cfg.dir" value="${home.cfg.dir}"/>
+
+			<!-- My war dest dir -->
+			<property name="my.war.dir" value="${build.war.dir}"/>
+
+			<!-- My jar file (OPTIONAL) -->
+			<property name="my.jar" value="${project.jar}"/>
+		</ant>
+
+		<copy todir="${build.war.dir}/WEB-INF/" file="${home.cfg.dir}/web.xml" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/videoconv.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/image-meta.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
+
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
+			<fileset dir="${pushlet.dir}/lib">
+				<include name="pushlet.jar"/>
+			</fileset>
+			<fileset dir="${postgis-jdbc.dir}">
+				<include name="postgis.jar"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/lib">
+				<include name="tagging.jar"/>
+			</fileset>
+			<fileset dir="${kwx-metadata.dir}/lib">
+				<include name="metadata.jar"/>
+			</fileset>
+			<fileset dir="${ehcache.dir}">
+				<include name="ehcache-1.2.4.jar"/>
+			</fileset>
+			<fileset dir="${geotools-referencing.dir}">
+				<include name="geoapi-nogenerics-2.1-M2.jar"/>
+				<include name="gt2-epsg-wkt-2.3.0.jar"/>
+				<include name="gt2-referencing-2.3.0.jar"/>
+				<include name="jsr108-0.01.jar"/>
+				<include name="vecmath-1.3.1.jar"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy additional external libraries -->
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
+			<fileset dir="${jaf.dir}">
+				<include name="activation.jar"/>
+			</fileset>
+			<fileset dir="${javamail.dir}">
+				<include name="mail.jar"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/classes">
+			<fileset dir="${home.cfg.dir}">
+				<include name="pushlet.properties"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant GeoTracing tables -->
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			<fileset dir="${geotracing.server.dir}/cfg/tables">
+				<include name="g_track.xml"/>
+				<!--<include name="g_location.xml"/>-->
+				<include name="g_area.xml"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant GeoTracing JSP -->
+		<copy todir="${build.war.dir}/srv/" overwrite="true">
+			<fileset dir="${geotracing.server.dir}/webapp/gt/srv">
+			</fileset>
+		</copy>
+
+		<!-- until kwx plugins truly work in KeyWorx copy the jars and tables to get things working-->
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			<fileset dir="${kwx-metadata.dir}/cfg/tables">
+				<exclude name="cc_tag.xml"/>
+				<exclude name="cc_tagrelation.xml"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/cfg/tables"/>
+		</copy>
+
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.dir}/${project.name}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Now insert the proper variables based on the runtime properies -->
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[portal.name]" value="${portal.name}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[keyworx.log.level]" value="${keyworx.log.level}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[keyworx.log.dir]" value="${keyworx.log.dir}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[tcpconnector.port]" value="${tcpconnector.port}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[siteurl.name]" value="${siteurl.name}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[webappurl.name]" value="${webappurl.name}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[kichservleturl.name]" value="${kichservleturl.name}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[routingservleturl.name]"
+				 value="${routingservleturl.name}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mediaurl.name]" value="${mediaurl.name}"/>
+
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.host]" value="${mail.host}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.recipient]" value="${mail.recipient}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.username]" value="${mail.username}"/>
+		<replace dir="${build.war.dir}/WEB-INF/cfg" token="$[mail.password]" value="${mail.password}"/>
+
+		<!--<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml" replacefilterfile="${runtime.properties}" summary="true"/>
+				<replace file="${build.war.dir}/WEB-INF/cfg/server.properties" replacefilterfile="${security.properties}" summary="true"/>-->
+
+		<!-- Finally make war -->
+		<jar jarfile="${project.war}">
+			<fileset dir="${build.war.dir}">
+				<include name="**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="packagewar" depends="clean,war">
+		<delete file="${packagewar.zip}"/>
+
+		<!-- Make zip -->
+		<zip zipfile="${packagewar.zip}">
+			<zipfileset dir="${build.war.dir}"
+						prefix="${project.id}-war-${project.version}"
+						excludes="WEB-INF/cfg/portal.xml">
+			</zipfileset>
+		</zip>
+	</target>
+
+	<!-- Build all clean. -->
+	<target name="build" depends="clean,war"/>
+
+	<!-- Package into archive files -->
+	<target name="package" depends="clean,build">
+		<echo message="Packaging distribution into ${package.zip}"/>
+		<mkdir dir="${dist.dir}"/>
+		<copy todir="${build.lib.dir}" file="${keyworx.jar}" overwrite="true"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${home}"
+						prefix="${project.id}-${project.version}"
+						excludes="version/**,build/class/**,build/war/**,build/${project.war}"/>
+		</zip>
+
+		<!--	<delete file="${versions.gzip.file}" />
+					  <tar tarfile="${versions.tar.file}" basedir="${dist.dir}"/>
+					  <gzip zipfile="${versions.gzip.file}" src="${versions.tar.file}"/>
+					  <delete file="${versions.tar.file}" />     -->
+
+	</target>
+
+
+	<!-- Run protocol test client. -->
+	<target name="test-protocol" description="Runs protocol test client">
+
+		<java classname="org.keyworx.amuse.test.protocol.Main"
+			  fork="true"
+			  failonerror="true"
+			  maxmemory="128m"
+				>
+			<arg value="${home.test.dir}/protocol/test.properties"/>
+
+			<classpath>
+				<pathelement location="${keyworx.jar}"/>
+				<pathelement location="${project.jar}"/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}"/>
+		<mkdir dir="${build.lib.dir}"/>
+	</target>
+
+	<target name="deploy-local" depends="war">
+		<copy file="${project.war}" todir="${deploy.local.dir}/${portal.name}" overwrite="true"/>
+	</target>
+
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${portal.name}" overwrite="true">
+			<fileset dir="${home.webapp.dir}/${project.name}"/>
+		</copy>
+		<copy todir="${deploy.local.dir}/${portal.name}/lib" overwrite="true">
+			<fileset dir="${pushlet.dir}/webapps/pushlet/lib">
+				<include name="ajax-pushlet-client.js"/>
+			</fileset>
+		</copy>
+		<!--	<copy todir="${deploy.test.dir}/rsc" overwrite="true">
+							  <fileset dir="${home.test.dir}/rsc"/>
+					  </copy> -->
+	</target>
+
+	<target name="deploy-berlin" depends="clean, war">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="${deploy.test.server}:/var/keyworx/webapps/diwi"/>
+		</exec>
+	</target>
+
+	<target name="doc">
+		<mkdir dir="${build.doc.dir}/jsdoc"/>
+		<exec executable="${jsdoc}">
+			<arg line="-d ${build.doc.dir}/jsdoc"/>
+			<arg line="${home.webapp.dir}/${project.name}/lib"/>
+		</exec>
+	</target>
+
+	<!-- Run the tests for the project
+		<target name="test">
+			<echo message="Testing..."/>
+			<ant antfile="test/build.xml" inheritall="false"/>
+		</target>
+		-->
 </project>

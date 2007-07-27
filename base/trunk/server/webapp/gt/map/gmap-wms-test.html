@@ -34,11 +34,11 @@
                     "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'},
                     {gutter: 15});  */
   			glayerRoads = new OpenLayers.Layer.WMS.Untiled("Gmap Roads",
-					"http://test.mlgk.nl/wp/map/gmap-wms.jsp", {layers: 'map', format: "image/jpeg"});
+					"http://test.mlgk.nl/wp/map.srv", {layers: 'map', format: "image/jpeg"});
 			glayerRoads.ratio = 1;
 
 			glayerSat = new OpenLayers.Layer.WMS.Untiled("Gmap Sat",
-					"http://test.mlgk.nl/wp/map/gmap-wms.jsp", {layers: 'sat', format: "image/jpeg"});
+					"http://test.mlgk.nl/wp/map.srv", {layers: 'sat', format: "image/jpeg"});
 
 			var twms = new OpenLayers.Layer.WMS( "World Map",
 				"http://world.freemap.in/cgi-bin/mapserv?",
