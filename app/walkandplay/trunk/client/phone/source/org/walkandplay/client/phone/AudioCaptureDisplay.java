@@ -40,9 +40,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
     private Command PLAY_CMD = new Command("Play", Command.SCREEN, 1);
 
     public AudioCaptureDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
+        super(aMIDlet, "Record and send audio");
 
         int rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
         int bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
@@ -62,8 +60,6 @@ public class AudioCaptureDisplay extends DefaultDisplay {
         }
 
         addCommand(START_CMD);
-        setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public int write(String s) {
@@ -136,7 +132,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
 
     private void back() {
-        Display.getDisplay(midlet).setCurrent(prevScreen);
+        Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
     }
 
 

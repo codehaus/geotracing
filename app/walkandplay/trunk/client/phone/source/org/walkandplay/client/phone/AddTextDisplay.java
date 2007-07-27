@@ -9,14 +9,16 @@ import javax.microedition.lcdui.*;
 
 public class AddTextDisplay extends DefaultDisplay {
 
+    private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
+
     private Net net;
     private TextField nameField;
     private TextField textField;
     private StringItem alertField = new StringItem("", "");
-    private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
-
-    public AddTextDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+    
+    public AddTextDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+        super(aMIDlet, "Add Text");
+        prevScreen = aPrevScreen;
 
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -86,7 +88,11 @@ public class AddTextDisplay extends DefaultDisplay {
                 }
             }
         } else if (command == BACK_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            Log.log("prevscreen:" + prevScreen);
+            if(prevScreen!=null){
+                Log.log(prevScreen.getTitle());
+            }            
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
 

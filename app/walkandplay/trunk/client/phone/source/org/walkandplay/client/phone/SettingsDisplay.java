@@ -19,27 +19,24 @@ import javax.microedition.lcdui.Image;
 
 /*public class SettingsDisplay extends Form implements CommandListener {*/
 public class SettingsDisplay extends DefaultDisplay {
-    List menuScreen;
-    Command SOUND_CMD;
-    Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
+   private Command SOUND_CMD;
+   private Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
 
-    //StringItem label = new StringItem("", "Settings");
     StringItem text = new StringItem("", "Choose settings from the menu to change");
-    private Image logo;
 
     public SettingsDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Settings");
 
         try {
             //#ifdef polish.images.directLoad
-            logo = Image.createImage("/settings_icon_small.png");
+            Image logo = Image.createImage("/settings_icon_small.png");
             //#else
-            logo = scheduleImage("/settings_icon_small.png");
+            Image logo = scheduleImage("/settings_icon_small.png");
             //#endif
+            append(logo);
         } catch (Throwable t) {
             Log.log("Could not load the images on SettingsDisplay");
         }
-        append(logo);
 
         if (Util.hasSound()) {
             SOUND_CMD = new Command(Locale.get("settings.SoundOff"), Command.ITEM, 2);
@@ -47,8 +44,6 @@ public class SettingsDisplay extends DefaultDisplay {
             SOUND_CMD = new Command(Locale.get("settings.SoundOn"), Command.ITEM, 2);
         }
 
-        /*//#style titlebox
-        append(label);*/
         //#style formbox
         append(text);
 

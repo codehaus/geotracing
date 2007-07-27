@@ -22,7 +22,7 @@ public class HelpDisplay extends DefaultDisplay {
     StringItem text = new StringItem("", "Welcome to the help section");
 
     public HelpDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Help");
 
         try {
             //#ifdef polish.images.directLoad

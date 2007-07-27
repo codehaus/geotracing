@@ -37,7 +37,7 @@ public class ImageCaptureDisplay extends DefaultDisplay {
     private GPSLocation location;
 
     public ImageCaptureDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Capture and send a photo");
 
         midlet = aMIDlet;
         showCamera();

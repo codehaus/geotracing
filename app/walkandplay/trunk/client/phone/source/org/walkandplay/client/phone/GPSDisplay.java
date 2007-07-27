@@ -37,7 +37,7 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
     private Image logo;
 
     public GPSDisplay(WPMidlet theMIDlet) {
-        super(theMIDlet, "");
+        super(theMIDlet, "Set up your GPS");
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/gps_icon_small.png");
@@ -191,10 +191,10 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
      * Clear the whole form content.
      */
     public void cls() {
-        /*System.out.println("# items: " + size());
-        System.out.println("logo: " + logoNum);
-        System.out.println("msg: " + msgNum);
-        System.out.println("choice: " + choiceNum);*/
+        /*Log.log("# items: " + size());
+        Log.log("logo: " + logoNum);
+        Log.log("msg: " + msgNum);
+        Log.log("choice: " + choiceNum);*/
         /*delete(msgNum);
         delete(choiceNum);*/
         deleteAll();
@@ -204,7 +204,7 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         cls();
         //#style formbox
         msgNum = append(new StringItem("", message + "\n"));
-        System.out.println(message);
+        Log.log(message);
     }
 
     private static Preferences getPreferences() {

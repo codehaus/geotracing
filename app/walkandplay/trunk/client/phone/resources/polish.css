@@ -39,6 +39,7 @@ colors {
     /*LIGHTBLUE: argb(130,153,179,204);*/
     BLACK: rgb(0,0,0);
     RED: rgb(255,0,0);
+    GREEN: rgb(0,255,55);
     GREY: rgb(60,60,60);
 }
 
@@ -120,7 +121,7 @@ title {
 	border: none;
 	layout: center | horizontal-expand;
     /*background-image: url(gt_logo.png);*/
-    /*icon-image: url(gt_logo.png);*/ 
+    icon-image: url(gt_logo.png); 
 }
 
 /**
@@ -293,7 +294,26 @@ focused {
     padding:2;
     font-color: BLACK;
     font-size: small;
-    background-color: WHITE;        
+    background-color: WHITE;
+    layout: horizontal-expand | left | top;
+}
+
+.posinfo{
+    margin:2;
+    padding:2;
+    font-color: BLACK;
+    font-size: small;
+    background-color: GREEN;
+    layout: horizontal-expand | left | top;
+}
+
+.neginfo{
+    margin:2;
+    padding:2;
+    font-color: BLACK;
+    font-size: small;
+    background-color: RED;       
+    layout: horizontal-expand | left | top;
 }
 
 .formbox {
@@ -310,7 +330,7 @@ focused {
     background-color:LIGHTBLUE;
     font-color: GREY;
     font-size: small;
-    layout: horizontal-expand | horizontal-center | top;
+    layout: horizontal-expand | left | top;
     /*textfield-direct-input: true;*/
 }
 

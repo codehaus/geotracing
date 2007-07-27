@@ -25,7 +25,7 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
     private Image logo;
 
     public FindDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Find a game");
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/find_icon_small.png");
@@ -56,7 +56,7 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
                 req.setAttr("cmd", "q-schedule-by-user");
                 req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
                 JXElement rsp = net.utopiaReq(req);
-                System.out.println(new String(rsp.toBytes(false)));
+                Log.log(new String(rsp.toBytes(false)));
                 if (rsp != null) {
                     Vector elms = rsp.getChildrenByTag("record");
                     for (int i = 0; i < elms.size(); i++) {
@@ -68,7 +68,7 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
                     }
                 }
             } catch (Throwable t) {
-                System.out.println(t.getMessage());
+                Log.log(t.getMessage());
             }
 
             append(logo);
