@@ -20,8 +20,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable games = new Hashtable(2);
     private String gameName;
-    private JXElement gameElm;
-    private WPMidlet midlet;
+    private JXElement gameElm;    
     private Net net;
     private Image logo;
 
@@ -29,7 +28,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     Command DESCRIPTION_CMD = new Command(Locale.get("selectGame.Description"), Command.SCREEN, 2);
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+        super(aMIDlet, "Play a game!");
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/play_icon_small.png");
@@ -51,7 +50,7 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
 
         if (!net.isConnected()) {
             // login must have failed!!!!
-            //#style formbox
+            //#style neginfo
             append("Logging in has failed!! Please check your username and password under Settings/Account and try again.");
         } else {
 
@@ -62,30 +61,27 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
                 req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
                 JXElement rsp = net.utopiaReq(req);
                 System.out.println(new String(rsp.toBytes(false)));
-                if (rsp != null) {
-                    Vector elms = rsp.getChildrenByTag("record");
-                    for (int i = 0; i < elms.size(); i++) {
-                        JXElement elm = (JXElement) elms.elementAt(i);
-                        String name = elm.getChildText("name");
-                        //String description = elm.getChildText("description");
-                        String gameplayState = elm.getChildText("gameplaystate");
-                        String displayName = name + " | " + gameplayState;
-                        //String displayName = name + " - '" + description + "' | state: " + gameplayState;
-                        //#style formbox
-                        gamesGroup.append(displayName, null);
-                        games.put(displayName, elm);
-                    }
-                    // select the first on
-                    gamesGroup.setSelectedIndex(0, true);
 
+                Vector elms = rsp.getChildrenByTag("record");
+                for (int i = 0; i < elms.size(); i++) {
+                    JXElement elm = (JXElement) elms.elementAt(i);
+                    String name = elm.getChildText("name");
+                    String gameplayState = elm.getChildText("gameplaystate");
+                    String displayName = name + " | " + gameplayState;
+                    //#style formbox
+                    gamesGroup.append(displayName, null);
+                    games.put(displayName, elm);
                 }
+                // select the first on
+                gamesGroup.setSelectedIndex(0, true);
+
             } catch (Throwable t) {
                 System.out.println(t.getMessage());
             }
 
             append(logo);
-            //#style formbox
-            append("Select a game and press PLAY in the menu");
+            //#style labelinfo
+            append("Select a game and press PLAY from the options");
             append(gamesGroup);
             addCommand(PLAY_CMD);
             addCommand(DESCRIPTION_CMD);
@@ -93,12 +89,6 @@ public class SelectGameDisplay extends DefaultDisplay implements NetListener {
     }
 
     private void startGame() {
-        /*JXElement req = new JXElement("play-reset-req");
-        req.setAttr("id", midlet.getGamePlayId());
-        System.out.println(new String(req.toBytes(false)));
-        JXElement rsp = net.utopiaReq(req);
-        System.out.println(new String(rsp.toBytes(false)));*/
-
         JXElement req = new JXElement("play-start-req");
         req.setAttr("id", midlet.getGamePlayId());
         System.out.println(new String(req.toBytes(false)));

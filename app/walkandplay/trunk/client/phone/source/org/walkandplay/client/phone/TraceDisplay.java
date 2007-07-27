@@ -42,7 +42,7 @@ public class TraceDisplay extends DefaultTraceDisplay {
     private Image logo;
 
     public TraceDisplay(WPMidlet aMidlet) {
-        super(aMidlet, "");
+        super(aMidlet, "Trace");
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/trace_icon_small.png");
@@ -123,10 +123,10 @@ public class TraceDisplay extends DefaultTraceDisplay {
     }
 
     public void cls() {
-        System.out.println("# items: " + size());
-        System.out.println("gps: " + gpsNum);
-        System.out.println("net: " + netNum);
-        System.out.println("msg: " + msgNum);
+        Log.log("# items: " + size());
+        Log.log("gps: " + gpsNum);
+        Log.log("net: " + netNum);
+        Log.log("msg: " + msgNum);
         delete(msgNum);
     }
 
@@ -135,7 +135,7 @@ public class TraceDisplay extends DefaultTraceDisplay {
         //#style formbox
         msgNum = append(message + "\n");
         //msgNum = append(new StringItem("", message + "\n"));
-        System.out.println(msgNum + ":" + message);
+        Log.log(msgNum + ":" + message);
     }
 
 
@@ -279,8 +279,6 @@ public class TraceDisplay extends DefaultTraceDisplay {
     */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
-            System.out.println(midlet);
-            System.out.println(prevScreen);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == NEW_TRK_CMD) {
             log("creating new track");

@@ -9,7 +9,7 @@ import javax.microedition.lcdui.*;
 
 public class IMDisplay extends DefaultDisplay implements NetListener {
 
-    private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
+    private Command SUBMIT_CMD = new Command("Send", Command.OK, 1);
 
     private StringItem inputField = new StringItem("", "");
     private TextField outputField = new TextField("", "", 32, TextField.ANY);
@@ -17,8 +17,9 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
     private Net net;
     private String comment = "";
 
-    public IMDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+    public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+        super(aMIDlet, "Messaging");
+        prevScreen = aPrevScreen;
 
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -45,15 +46,15 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
     }
 
     public void onNetInfo(String theInfo) {
-        System.out.println(theInfo);
+        Log.log(theInfo);
     }
 
     public void onNetError(String aReason, Throwable anException) {
-        System.out.println(aReason);
+        Log.log(aReason);
     }
 
     public void onNetStatus(String aStatusMsg) {
-        System.out.println(aStatusMsg);
+        Log.log(aStatusMsg);
     }
 
     private void sendMsg() {
@@ -105,7 +106,7 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
                 sendMsg();
             }
         } else if (command == BACK_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
 }

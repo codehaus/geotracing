@@ -16,9 +16,10 @@ public class ScoreDisplay extends DefaultDisplay {
     private int maxScore;
     private Net net;
 
-    public ScoreDisplay(WPMidlet aMIDlet, int aMaxScore) {
-        super(aMIDlet, "");
+    public ScoreDisplay(WPMidlet aMIDlet, int aMaxScore, Displayable aPrevScreen) {
+        super(aMIDlet, "Scores");
         maxScore = aMaxScore;
+        prevScreen = aPrevScreen;
         
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -31,9 +32,6 @@ public class ScoreDisplay extends DefaultDisplay {
     }
 
     private void drawScores(){
-        //#style labelinfo
-        append("Scores");
-        
         // Create the TextBox containing the "Hello,World!" message
         for (int i = 0; i < scores.size(); i++) {
             JXElement r = (JXElement) scores.elementAt(i);
@@ -74,7 +72,7 @@ public class ScoreDisplay extends DefaultDisplay {
     */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
 }

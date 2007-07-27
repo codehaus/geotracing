@@ -14,7 +14,8 @@ import de.enough.polish.ui.StringItem;
 public class MediumDisplay extends DefaultDisplay{
 
     private Net net;
-    private Command VIEW_VIDEO_CMD = new Command("View video", Command.SCREEN, 2);
+    private Command VIEW_VIDEO_CMD = new Command("View video in", Command.SCREEN, 2);
+    private Command VIEW_VIDEO_CMD2 = new Command("View video ext", Command.SCREEN, 2);
     private String MEDIUM_BASE_URL = Net.getInstance().getURL() + "/media.srv?id=";
 
     private int mediumId;
@@ -24,10 +25,11 @@ public class MediumDisplay extends DefaultDisplay{
 
     private StringItem name = new StringItem("", "");
 
-    public MediumDisplay(WPMidlet aMIDlet, int aMediumId, int theScreenWidth) {
-        super(aMIDlet, "");
+    public MediumDisplay(WPMidlet aMIDlet, int aMediumId, int theScreenWidth, Displayable aPrevScreen) {
+        super(aMIDlet, "Media");
         mediumId = aMediumId;
         screenWidth = theScreenWidth;
+        prevScreen = aPrevScreen;
 
 
         net = Net.getInstance();
@@ -35,9 +37,6 @@ public class MediumDisplay extends DefaultDisplay{
             net.setProperties(midlet);
             net.start();
         }
-
-        //#style labelinfo
-        append("Media");
 
         name.setText("Loading...");
         append(name);
@@ -72,6 +71,7 @@ public class MediumDisplay extends DefaultDisplay{
                     "here by pressing 'back'");
 
             addCommand(VIEW_VIDEO_CMD);
+            addCommand(VIEW_VIDEO_CMD2);
         }
     }
 
@@ -138,15 +138,16 @@ public class MediumDisplay extends DefaultDisplay{
     */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == VIEW_VIDEO_CMD) {
+            Display.getDisplay(midlet).setCurrent(new VideoDisplay(midlet, MEDIUM_BASE_URL + mediumId, this));
+        } else if (command == VIEW_VIDEO_CMD2) {
             try {
                 // now first stop the tracer engine because the media download
                 // needs the internet connection too
-                /*tracerEngine.suspend();
-                tracerEngine.stop();
-                midlet.platformRequest(MEDIUM_BASE_URL + mediumId);*/
-                Display.getDisplay(midlet).setCurrent(new VideoDisplay(midlet, MEDIUM_BASE_URL + mediumId, false));
+                /*midlet.playDisplay.getTracerEngine().suspend();
+                midlet.playDisplay.getTracerEngine().stop();*/
+                midlet.platformRequest(MEDIUM_BASE_URL + mediumId);
             }
             catch (Throwable t) {
                 Util.showAlert(midlet, "Error", t.getMessage());

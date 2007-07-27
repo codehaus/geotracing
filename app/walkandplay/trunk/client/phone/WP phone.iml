@@ -10,6 +10,9 @@
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
+    <content url="file://$MODULE_DIR$/../../../../../base/trunk/external/locationapi/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../base/trunk/external/locationapi/src" isTestSource="false" />
+    </content>
     <orderEntry type="jdk" jdkName="1.4" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">

@@ -8,12 +8,10 @@ public class IntroDisplay extends DefaultDisplay {
 
     private Command CONTINUE_CMD = new Command("Continue", Command.SCREEN, 1);
 
-    public IntroDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "");
+    public IntroDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+        super(aMIDlet, "Intro");
+        prevScreen = aPrevScreen;
         
-        //#style labelinfo
-        append("Intro");
-
         //#style formbox
         append(midlet.getGame().getChildText("intro"));
 
@@ -28,7 +26,7 @@ public class IntroDisplay extends DefaultDisplay {
          */
     public void commandAction(Command command, Displayable screen) {
         if (command == CONTINUE_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
 

@@ -20,10 +20,11 @@ public class TaskDisplay extends DefaultDisplay{
     private int taskId;
     private Image taskImage;
 
-    public TaskDisplay(WPMidlet aMIDlet, int aTaskId, int theScreenWidth) {
-        super(aMIDlet, "");
+    public TaskDisplay(WPMidlet aMIDlet, int aTaskId, int theScreenWidth, Displayable aPrevScreen) {
+        super(aMIDlet, "Task");
         taskId = aTaskId;
         screenWidth = theScreenWidth;
+        prevScreen = aPrevScreen;
 
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -141,7 +142,7 @@ public class TaskDisplay extends DefaultDisplay{
         } else if (command == OUTRO_CMD) {
             new OutroDisplay(midlet);
         } else if (command == BACK_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
 

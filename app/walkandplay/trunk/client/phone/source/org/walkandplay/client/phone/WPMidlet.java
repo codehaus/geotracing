@@ -46,17 +46,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public WPMidlet() {
         super();
         setHome();
-        //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));        
+        //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));
     }
 
     public void setHome() {
         //#style mainScreen
-        //menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
-        menuScreen = new List("", List.IMPLICIT);
+        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);        
         //#style mainTraceCommand
         menuScreen.append(Locale.get("menu.Trace"), null);
-        //#style mainFindCommand
-        menuScreen.append(Locale.get("menu.Find"), null);
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
         //#style mainGPSCommand
@@ -73,6 +70,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append("test display", null);
         //#style mainLogCommand
         menuScreen.append("video display", null);
+        //#style mainLogCommand
+        menuScreen.append("video form", null);
         //#style mainLogCommand
         menuScreen.append("GPS test display", null);
 
@@ -143,42 +142,42 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 traceDisplay.start();
                 break;
             case 1:
-                // Find
-                Display.getDisplay(this).setCurrent(new FindDisplay(this));
-                break;
-            case 2:
                 // Play
                 Display.getDisplay(this).setCurrent(new SelectGameDisplay(this));
                 break;
-            case 3:
+            case 2:
                 // GPS
                 if (traceDisplay != null) traceDisplay.stop();
                 Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
-            case 4:
+            case 3:
                 // Settings
                 Display.getDisplay(this).setCurrent(new SettingsDisplay(this));
                 break;
-            case 5:
+            case 4:
                 // Help
                 Display.getDisplay(this).setCurrent(new HelpDisplay(this));
                 break;
-            case 6:
+            case 5:
                 // Quit
                 Display.getDisplay(this).setCurrent(new SplashCanvas(this, -1));
                 //notifyDestroyed();
                 break;
-            case 7:
+            case 6:
                 // Log
                 Log.view(this);
                 break;
-            case 8:
+            case 7:
                 // test display
                 Display.getDisplay(this).setCurrent(new TestDisplay(this));
                 break;
+            case 8:
+                // video canvas
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=54225", null));
+                break;
             case 9:
-                // video canvas 1
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=54225", true));
+                // video form
+                Display.getDisplay(this).setCurrent(new VideoForm(this, "http://test.mlgk.nl/wp/media.srv?id=54225"));
                 break;
             case 10:
                 // gps test display

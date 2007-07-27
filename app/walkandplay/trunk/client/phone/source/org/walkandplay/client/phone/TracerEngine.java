@@ -211,18 +211,13 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
             JXElement rsp = net.utopiaReq(req);
             // TODO: remove later - teskting purposes
             //rsp.removeChildren();
-            /*if (System.currentTimeMillis() % 3 == 0) {
-                JXElement hit = new JXElement("cmt-hit");
-                hit.setText("bericht van webspeler");
-                rsp.addChild(hit);
-            }
 
-            if (System.currentTimeMillis() % 3 == 0) {
+            /*if (System.currentTimeMillis() % 3 == 0) {
                 JXElement hit = new JXElement("task-hit");
                 hit.setAttr("id", 22560);
                 rsp.addChild(hit);
             }*/
-/*
+            
             if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                 JXElement hit = new JXElement("medium-hit");
                 hit.setAttr("id", 26527);
@@ -233,12 +228,12 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                 JXElement hit = new JXElement("medium-hit");
                 hit.setAttr("id", 22629);
                 rsp.addChild(hit);
-            }*/
+            }
 
             //long lastCommandTime = Util.getTime();
             if (rsp != null) {
                 onNetStatus("sent #" + theCount);
-                System.out.println(new String(rsp.toBytes(false)));
+                Log.log(new String(rsp.toBytes(false)));
                 Util.playTone(96, 75, VOLUME);
                 JXElement e = rsp.getChildAt(0);
                 if (e != null) {
@@ -256,11 +251,9 @@ public class TracerEngine implements GPSFetcherListener, NetListener {
                             playDisplay.setMediumHit(e);
                         }
                         onNetStatus("medium-" + e.getAttr("id"));
-                    } else if (e.getTag().equals("cmt-hit")) {
-                        onNetStatus("cmt-" + e.getText());
                     }
                 } else {
-                    System.out.println("No task or medium hit found");
+                    Log.log("No task or medium hit found");
                 }
             } else {
                 onNetStatus("send error");

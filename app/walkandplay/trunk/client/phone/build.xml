@@ -24,7 +24,7 @@
 	<!-- sets paths to all external package dirs. -->
 	<property file="${geotracing.external.dir}/build.properties"/>
 
-	<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
+    <property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
 	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
 	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
 	<property name="mobitracer.src" value="${geotracing.base.dir}/client/mobitracer/src"/>
@@ -38,6 +38,7 @@
 	<property name="cldcemu.jar" value="${mppsdk.dir}/cldc.jar"/>
 	<property name="adapter.jar" value="${mppsdk.dir}/adapter.jar"/>
     <property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
+    <property name="jsr179.jar" value="${geotracing.external.dir}/jsr179/lib/jsr179.jar"/>
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
 	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
 
@@ -91,7 +92,8 @@
 	-->
 
     <path id="compile.classpath">
-		<!--
+        <pathelement location="${jsr179.jar}"/>
+        <!--
 		<pathelement location="${jsr82.zip}"/>
 		<pathelement location="${mmapi.jar}"/>-->
 	</path>
@@ -99,6 +101,7 @@
     <path id="emulator.classpath">
         <pathelement location="${connbridge.jar}"/>
         <pathelement location="${avetana.jar}"/>
+        <pathelement location="${jsr179.jar}"/>
         <pathelement location="${emulator.jar}"/>
         <pathelement location="${adapter.jar}"/>
         <pathelement location="${cldcemu.jar}"/>
@@ -114,7 +117,8 @@
 	/>
 
 
-	<!-- build targets, each target can be called via "ant [name]",
+
+    <!-- build targets, each target can be called via "ant [name]",
 		 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
 
 	<target name="setdeploy"
@@ -137,7 +141,7 @@
 		<property name="dir.work" value="build/test" />
 	</target>
 
-	<target name="init">
+	<target name="init" depends="externals">
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/polish" />
 		<property name="deploy-url" value="http://test.mlgk.nl/wp/ota/" />
@@ -208,6 +212,7 @@
                 <compiler>
                     <classpath refid="compile.classpath"/>
                 </compiler>
+                
                 <!-- midlets definition -->
 				<midlet class="org.walkandplay.client.phone.WPMidlet" name="MLGK" />
 				<!-- project-wide variables - used for preprocessing.  -->
@@ -263,7 +268,7 @@
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
 					<attribute name="kw-url" value="http://test.mlgk.nl/wp" />					
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="red1" />
+					<attribute name="kw-user" value="yellow2" />
 					<attribute name="kw-password" value="user" />
 					<attribute name="kw-amulet" value="mlgkamulet" />
 					<attribute name="kw-port" value="6000" />
@@ -333,6 +338,44 @@
 
 
 		</j2mepolish>
+	</target>
+
+    <!-- Optional download/upack of external packages. -->
+	<target name="externals">
+		<echo message="downloading and unpacking external packages"/>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${avetana}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${btapi}"/>
+		</ant>
+
+        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${jsr179}"/>
+		</ant>
+
+        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${keyworx}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${midp2}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${mmapi}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${mppsdk}"/>
+		</ant>
+
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+			<property name="package" value="${proguard}"/>
+		</ant>
+
 	</target>
 
     <target name="run" depends="clean,build">
