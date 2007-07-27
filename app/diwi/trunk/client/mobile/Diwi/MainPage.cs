@@ -56,8 +56,10 @@ namespace Diwi {
 
         void doTerugStart(int i, string s) {
             XMLement xml = AppController.sKwxClient.routeHome();
+            xml = xml.getChildByName("route");
+            string xs = xml.toString();
            // AppController.sEventLog.WriteLine(xml.toString());
-            if (xml != null) {
+            if (xml != null && xml.getAttributeValue("id") != null) {
                 if (AppController.sActiveRouteID != -1) {
                     AppController.sKwxClient.deActivateRoute();
                     AppController.sActiveRouteID = -1;

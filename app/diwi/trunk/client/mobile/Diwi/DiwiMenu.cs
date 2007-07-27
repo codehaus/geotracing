@@ -16,7 +16,7 @@ namespace Diwi {
         public static Color sBarColor = Color.FromArgb(220, 250, 0);
         public static Color sSelColor = Color.FromArgb(130, 100, 30);
         public static Color sTextColor = Color.Black;
-        public static Color sSelTextColor = Color.FromArgb(180, 180, 180);
+        public static Color sSelTextColor = Color.FromArgb(230, 230, 230);
         static Bitmap mMiniLogo = null;
         static DateTime sLastHit = DateTime.Now;
         private SolidBrush mBrush = new SolidBrush(Color.Red);
