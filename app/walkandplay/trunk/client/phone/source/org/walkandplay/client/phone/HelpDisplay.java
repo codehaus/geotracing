@@ -34,7 +34,6 @@ public class HelpDisplay extends DefaultDisplay {
             Log.log("Could not load the images on HelpDisplay");
         }
 
-        //#style labelinfo
         append(logo);
 
         //#style formbox
