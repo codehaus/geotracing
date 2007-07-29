@@ -1,8 +1,8 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import org.geotracing.client.Net;
-import org.geotracing.client.NetListener;
+import nl.justobjects.mjox.XMLChannelListener;
+import nl.justobjects.mjox.XMLChannel;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
@@ -10,60 +10,53 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 import java.util.Vector;
 
-public class ScoreDisplay extends DefaultDisplay {
+public class ScoreDisplay extends DefaultDisplay implements XMLChannelListener {
 
-    private Vector scores;
     private int maxScore;
-    private Net net;
-
+    
     public ScoreDisplay(WPMidlet aMIDlet, int aMaxScore, Displayable aPrevScreen) {
         super(aMIDlet, "Scores");
         maxScore = aMaxScore;
         prevScreen = aPrevScreen;
-        
-        net = Net.getInstance();
-        if (!net.isConnected()) {
-            net.setProperties(midlet);
-            net.start();
-        }
+        midlet.setKWClientListener(this);
 
         // get the scores
         getScores();
     }
 
-    private void drawScores(){
-        // Create the TextBox containing the "Hello,World!" message
-        for (int i = 0; i < scores.size(); i++) {
-            JXElement r = (JXElement) scores.elementAt(i);
-            String team = r.getChildText("team");
-            String points = r.getChildText("points");
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        String tag = aResponse.getTag();
+        if(tag.equals("utopia-rsp")){
+            JXElement rsp = aResponse.getChildAt(0);
+            if(rsp.getTag().equals("query-store-rsp")){
+                Vector elms = rsp.getChildrenByTag("record");
+                for (int i = 0; i < elms.size(); i++) {
+                    JXElement e = (JXElement) elms.elementAt(i);
+                    String team = e.getChildText("team");
+                    String points = e.getChildText("points");
 
-            //#style labelinfo
-            append(team);
-            //#style formbox
-            append(new Gauge("", false, maxScore, Integer.parseInt(points)));
+                    //#style labelinfo
+                    append(team);
+                    //#style formbox
+                    append(new Gauge("", false, maxScore, Integer.parseInt(points)));
+                }
+            }
         }
     }
 
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops, we lost our connection. Please go back and try again.");
+    }
+
     private void getScores() {
-        try {
-            new Thread(new Runnable() {
-                public void run() {
-                    JXElement req = new JXElement("query-store-req");
-                    req.setAttr("cmd", "q-scores");
-                    req.setAttr("gameid", midlet.getGamePlayId());
-                    Log.log(new String(req.toBytes(false)));
-                    JXElement rsp = net.utopiaReq(req);
-                    scores = rsp.getChildrenByTag("record");
-                    Log.log(new String(rsp.toBytes(false)));
-                    
-                    // niow do the rest
-                    drawScores();
-                }
-            }).start();
-        } catch (Throwable t) {
-            Log.log("Exception in getScores:\n" + t.getMessage());
-        }
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-scores");
+        req.setAttr("gameid", midlet.getGamePlayId());
+        midlet.sendRequest(req);
     }
 
     /*

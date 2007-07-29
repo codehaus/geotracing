@@ -5,8 +5,8 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Net;
-import org.geotracing.client.NetListener;
 import org.geotracing.client.Preferences;
+import org.keyworx.mclient.ClientException;
 
 import javax.microedition.lcdui.*;
 import java.util.Hashtable;
@@ -30,61 +30,104 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Play a game!");
+        
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/play_icon_small.png");
             //#else
             logo = scheduleImage("/play_icon_small.png");
             //#endif
+
+            append(logo);
+
+            connect();
         } catch (Throwable t) {
-            Log.log("Could not load the images on PlayDisplay");
+            //#style alertinfo
+            append("Oops, could not start you up. \n " + t.getMessage());
         }
+    }
 
-        midlet.setListener(this);
+    private void connect() throws ClientException {
+        try{
+            Preferences prefs = new Preferences(Net.RMS_STORE_NAME);
 
-        append(logo);
-        //#style labelinfo
-        append("Select a game and press PLAY from the options");
-        append(gamesGroup);
-        addCommand(PLAY_CMD);
-        addCommand(DESCRIPTION_CMD);
+			String user = prefs.get("kw-user", midlet.getAppProperty("kw-user"));
+			String password = prefs.get("kw-password", midlet.getAppProperty("kw-password"));
+			String server = prefs.get("kw-server", midlet.getAppProperty("kw-server"));
+			String port = prefs.get("kw-port", midlet.getAppProperty("kw-port"));
 
-        getGames();
+			TCPClient kwClient = new TCPClient(server, Integer.parseInt(port));
+            midlet.setKWClient(kwClient);
+            midlet.setKWClientListener(this);
+            kwClient.login(user, password);
+            
+        }catch(Throwable t){
+            throw new ClientException(t);
+        }
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
-        if(tag.equals("utopia-rsp")){
-            JXElement rsp = aResponse.getChildAt(0);
-            if(rsp.getTag().equals("query-store-rsp")){
-                Vector elms = rsp.getChildrenByTag("record");
-                for (int i = 0; i < elms.size(); i++) {
-                    JXElement elm = (JXElement) elms.elementAt(i);
-                    String name = elm.getChildText("name");
-                    String gameplayState = elm.getChildText("gameplaystate");
-                    String displayName = name + " | " + gameplayState;
-                    //#style formbox
-                    gamesGroup.append(displayName, null);
-                    games.put(displayName, elm);
-                }
-                // select the first on
-                gamesGroup.setSelectedIndex(0, true);
-            }else if(rsp.getTag().equals("play-start-rsp")){
-                midlet.setGameRound(gameElm);
-                midlet.setGamePlayId(gamePlayId);
+        if(tag.equals("login-rsp")){
+            try{
+                Log.log("send select app");
+                midlet.getKWClient().setAgentKey(aResponse);
+                midlet.getKWClient().selectApp("geoapp", "user");
+            }catch(Throwable t){
+                Log.log("Selectapp failed:" + t.getMessage());
+            }
+        }else if(tag.equals("select-app-rsp")){
+            getGames();
+        }else if(tag.indexOf("-nrsp")!=-1){
+            //#style alertinfo
+            append("Oops, could not log in. Check your username and password in SETTINGS.");
+        }else{
+            if(tag.equals("utopia-rsp")){
+                JXElement rsp = aResponse.getChildAt(0);
+                if(rsp.getTag().equals("query-store-rsp")){
 
-                midlet.setPlayMode(true);
-                PlayDisplay d = new PlayDisplay(midlet);
-                midlet.playDisplay = d;
-                Display.getDisplay(midlet).setCurrent(d);
-                d.start();
+                    // draw the screen
+                    append(logo);
+                    //#style labelinfo
+                    append("Select a game and press PLAY from the options");
+                    append(gamesGroup);
+                    addCommand(PLAY_CMD);
+                    addCommand(DESCRIPTION_CMD);
+
+                    Vector elms = rsp.getChildrenByTag("record");
+                    for (int i = 0; i < elms.size(); i++) {
+                        JXElement elm = (JXElement) elms.elementAt(i);
+                        String name = elm.getChildText("name");
+                        String gameplayState = elm.getChildText("gameplaystate");
+                        String displayName = name + " | " + gameplayState;
+                        //#style formbox
+                        gamesGroup.append(displayName, null);
+                        games.put(displayName, elm);
+                    }
+                    // select the first
+                    gamesGroup.setSelectedIndex(0, true);
+
+                }else if(rsp.getTag().equals("play-start-rsp")){
+                    midlet.setGameRound(gameElm);
+                    midlet.setGamePlayId(gamePlayId);
+
+                    // start the playdisplay
+                    midlet.setPlayMode(true);
+                    PlayDisplay d = new PlayDisplay(midlet);
+                    midlet.playDisplay = d;
+                    Display.getDisplay(midlet).setCurrent(d);
+                    d.start();
+                }
             }
         }
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        Log.log("XMLChannel stopped");
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops, we lost our connection. Please go back and try again.");
     }
 
     private void getGames(){

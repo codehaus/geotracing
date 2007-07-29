@@ -1,7 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.StringItem;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.GPSLocation;
@@ -14,7 +12,6 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.GUIControl;
 import javax.microedition.media.control.VideoControl;
-import javax.microedition.midlet.MIDlet;
 
 /**
  * Capture image from phone camera.
@@ -24,26 +21,26 @@ import javax.microedition.midlet.MIDlet;
  */
 public class ImageCaptureDisplay extends DefaultDisplay {
 
+
+    private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
+
     private Player player = null;
     private VideoControl video = null;
     private Image photoPreview;
     private byte[] photoData;
     private String photoMime;
     private long photoTime;
-    private MIDlet midlet;
+    private Displayable prevScreen;
     private StringItem status = new StringItem("", "Photo Capture");
-
-    private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
     private GPSLocation location;
 
     public ImageCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
-        super(aMIDlet, "Capture and send a photo");
+        super(aMIDlet, "Take a picture");
         prevScreen = aPrevScreen;
-
-        midlet = aMIDlet;
         showCamera();
 
         addCommand(CAPTURE_CMD);
+        setCommandListener(this);
     }
 
     public void commandAction(Command c, Displayable d) {
@@ -52,7 +49,6 @@ public class ImageCaptureDisplay extends DefaultDisplay {
             Display.getDisplay(midlet).setCurrent(new PhotoPreview());
         } else if (c == BACK_CMD) {
             player.close();
-            // Set the current display of the midlet to the textBox screen
             back();
         }
     }
@@ -63,19 +59,18 @@ public class ImageCaptureDisplay extends DefaultDisplay {
 
     private void showCamera() {
         try {
-            player = Manager.createPlayer("CAPTURE_CMD://video");
+            player = Manager.createPlayer("capture://video");
             player.realize();
 
             // Add the video playback window (item)
             video = (VideoControl) player.getControl("VideoControl");
-            Item item = (Item) video.initDisplayMode(
-                    GUIControl.USE_GUI_PRIMITIVE, null);
-            item.setLayout(Item.LAYOUT_CENTER |
-                    Item.LAYOUT_NEWLINE_AFTER);
+            Item item = (Item) video.initDisplayMode(GUIControl.USE_GUI_PRIMITIVE, null);
+            item.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER);
             append(item);
             // Add a caption
             status.setText("Press Fire to take photo");
             status.setLayout(Item.LAYOUT_CENTER);
+            //#style labelinfo
             append(status);
 
             player.start();
@@ -97,14 +92,14 @@ public class ImageCaptureDisplay extends DefaultDisplay {
             // BlogClient.photoPreview = BlogClient.photoData;
             // BlogClient.photoMime = "png";
             // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
-            status.setText(", WAIT...taking photo...");
+            status.setText("WAIT, taking photo...");
 
             location = GPSFetcher.getInstance().getCurrentLocation();
             photoTime = Util.getTime();
 
             try {
                 photoData = video.getSnapshot("encoding=jpeg&width=320&height=240");
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 // Some phones don't support specific encodings
                 // This should fix at least SonyEricsson K800i...
                 photoData = video.getSnapshot(null);
@@ -145,52 +140,51 @@ public class ImageCaptureDisplay extends DefaultDisplay {
             }
         }
 
-        Image preview = Image.createImage(temp);
-        return preview;
+        return Image.createImage(temp);
     }
 
     private class PhotoPreview extends Form implements CommandListener {
 
-        private Command cancel;
-        private Command submit;
+        private Command CANCEL_CMD = new Command("Back", Command.CANCEL, 1);
+        private Command SUBMIT_CMD = new Command("Submit", Command.OK, 1);
         private TextField name = new TextField("Photo Name (below)", null, 24, TextField.ANY);
 
         public PhotoPreview() {
             super("Photo Preview");
-            cancel = new Command("Back", Command.CANCEL, 1);
-            submit = new Command("Submit", Command.OK, 1);
-            addCommand(cancel);
-            addCommand(submit);
+            addCommand(CANCEL_CMD);
+            addCommand(SUBMIT_CMD);
             setCommandListener(this);
 
             append(new ImageItem("", photoPreview, ImageItem.LAYOUT_CENTER, "image"));
-            //#style textbox
             append(name);
             append("press Submit to send or Back to cancel");
         }
 
         public void commandAction(Command c, Displayable d) {
-            if (c == cancel) {
+            if (c == CANCEL_CMD) {
                 photoData = null;
                 photoPreview = null;
                 back();
 
-            } else if (c == submit) {
+            } else if (c == SUBMIT_CMD) {
                 deleteAll();
                 append("SENDING PHOTO...(takes a while)");
-                JXElement rsp = Net.getInstance().uploadMedium(name.getString(), null, "image", photoMime, photoTime, photoData, true);
+                JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
                 if (rsp == null) {
+                    //#style alertinfo
                     append("error submitting photo !");
                 } else if (Protocol.isPositiveResponse(rsp)) {
+                    //#style alertinfo
                     append("submit photo OK ");
                     append("\nsize=" + photoData.length / 1024 + " kb name= " + name.getString() + " id=" + rsp.getAttr("id"));
 
                 } else {
+                    //#style alertinfo
                     append("submit failed: error is " + rsp.getAttr("error"));
                 }
 
             }
-            append("\npress Back to go back");
+            //append("\npress Back to go back");
         }
 
     }

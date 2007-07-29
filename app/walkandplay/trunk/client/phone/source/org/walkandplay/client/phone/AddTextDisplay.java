@@ -1,13 +1,16 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.XMLChannelListener;
+import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
+import java.util.Vector;
 
-public class AddTextDisplay extends DefaultDisplay {
+public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener {
 
     private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
 
@@ -19,6 +22,7 @@ public class AddTextDisplay extends DefaultDisplay {
     public AddTextDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Add Text");
         prevScreen = aPrevScreen;
+        midlet.setKWClientListener(this);
 
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -52,6 +56,30 @@ public class AddTextDisplay extends DefaultDisplay {
         addCommand(SUBMIT_CMD);
     }
 
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        String tag = aResponse.getTag();        
+        if(tag.equals("utopia-rsp")){
+            JXElement rsp = aResponse.getChildAt(0);
+            if(rsp.getTag().equals("play-add-medium-rsp")){
+                textField.setString("");
+                nameField.setString("");
+                alertField.setText("Text sent successfully");            
+            }else if(rsp.getTag().equals("play-add-medium-nrsp")){
+                textField.setString("");
+                nameField.setString("");
+                alertField.setText("Error sending text - please try again.");
+            }
+        }
+    }
+
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops, we lost our connection. Please go back and try again.");
+    }
+
     /*
     * The commandAction method is implemented by this midlet to
     * satisfy the CommandListener interface and handle the Exit action.
@@ -70,29 +98,13 @@ public class AddTextDisplay extends DefaultDisplay {
                         //now do an add medium
                         JXElement addMediumReq = new JXElement("play-add-medium-req");
                         addMediumReq.setAttr("id", rsp.getAttr("id"));
-                        Log.log(new String(addMediumReq.toBytes(false)));
-                        JXElement addMediumRsp = Net.getInstance().utopiaReq(addMediumReq);
-                        Log.log(new String(addMediumRsp.toBytes(false)));
-
-                        if (addMediumRsp.getTag().indexOf("-rsp") != -1) {
-                            textField.setString("");
-                            nameField.setString("");
-                            alertField.setText("Text sent successfully");
-                        } else {
-                            textField.setString("");
-                            nameField.setString("");
-                            alertField.setText("Error sending text - please try again.");
-                        }
+                        midlet.sendRequest(addMediumReq);
                     }
                 } else {
                     alertField.setText("Type title and text");
                 }
             }
-        } else if (command == BACK_CMD) {
-            Log.log("prevscreen:" + prevScreen);
-            if(prevScreen!=null){
-                Log.log(prevScreen.getTitle());
-            }            
+        } else if (command == BACK_CMD) {                        
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
