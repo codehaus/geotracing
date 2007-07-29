@@ -64,7 +64,7 @@ public class SettingsDisplay extends DefaultDisplay {
         } else if (cmd == SOUND_CMD) {
             Util.toggleSound();
         } else if (cmd == ACCOUNT_CMD) {
-            Display.getDisplay(midlet).setCurrent(new AccountDisplay(midlet));
+            new AccountDisplay(midlet);
         }
     }
 

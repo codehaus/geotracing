@@ -2,6 +2,8 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.XMLChannelListener;
+import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
 
@@ -16,7 +18,7 @@ import java.util.Vector;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 /*public class PlayDisplay extends GameCanvas implements CommandListener, DownloadListener {*/
-public class PlayDisplay extends GameCanvas implements CommandListener {
+public class PlayDisplay extends GameCanvas implements CommandListener, XMLChannelListener {
     private GoogleMap.XY xy;
     private Image mapImage;
     private Displayable prevScreen;
@@ -32,7 +34,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     private boolean active;
 
     private int OFF_MAP_TOLERANCE = 15;
-    // ====
 
     private WPMidlet midlet;
     private JXElement taskHit;
@@ -76,6 +77,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
         midlet = aMidlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();
+        midlet.setKWClientListener(this);
 
         // make sure we stop tracing when we go into play mode
         if (midlet.traceDisplay != null) midlet.traceDisplay.stop();
@@ -158,6 +160,35 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
 
     }
 
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        String tag = aResponse.getTag();
+        if (tag.equals("utopia-rsp")) {
+            JXElement rsp = aResponse.getChildAt(0);
+            if (rsp.getTag().equals("query-store-rsp")) {
+                String cmd = rsp.getAttr("cmd");
+                if(cmd!=null && cmd.equals("q-game-locations")){
+                    gameLocations = rsp.getChildrenByTag("record");
+
+                    // now determine the maximum attainable score
+                    for (int i = 0; i < gameLocations.size(); i++) {
+                        JXElement r = (JXElement) gameLocations.elementAt(i);
+                        if (r.getChildText("type").equals("task")) {
+                            maxScore += Integer.parseInt(r.getChildText("score"));
+                        }
+                    }
+                }else if(cmd!=null && cmd.equals("q-game")){
+                    midlet.setGame(rsp.getChildByTag("record"));
+                }
+            }
+        }
+    }
+
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        
+    }
+
+
     /**
      * User is now ready to start playing
      */
@@ -185,41 +216,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener {
     }
 
     private void getGameLocations() {
-        try {
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-game-locations");
-            req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
-            log(new String(req.toBytes(false)), false);
-            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-            gameLocations = rsp.getChildrenByTag("record");
-
-            // now determine the maximum attainable score
-            for (int i = 0; i < gameLocations.size(); i++) {
-                JXElement r = (JXElement) gameLocations.elementAt(i);
-                if (r.getChildText("type").equals("task")) {
-                    maxScore += Integer.parseInt(r.getChildText("score"));
-                }
-            }
-            log("maxscore: " + maxScore, false);
-
-            log(new String(rsp.toBytes(false)), false);
-        } catch (Throwable t) {
-            log("Exception in getGameLocations():\n" + t.getMessage(), true);
-        }
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-game-locations");
+        req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
+        midlet.sendRequest(req);
     }
 
     private void getGame() {
-        try {
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-game");
-            req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
-            log(new String(req.toBytes(false)), false);
-            JXElement rsp = tracerEngine.getNet().utopiaReq(req);
-            log(new String(rsp.toBytes(false)), false);
-            midlet.setGame(rsp.getChildByTag("record"));
-        } catch (Throwable t) {
-            log("Exception in getGame():\n" + t.getMessage(), true);
-        }
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-game");
+        req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
+        midlet.sendRequest(req);        
     }
 
     public void setLocation(String aLon, String aLat) {

@@ -1,13 +1,15 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.XMLChannelListener;
+import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Net;
 import org.geotracing.client.NetListener;
 import org.geotracing.client.Preferences;
 
 import javax.microedition.lcdui.*;
 
-public class IMDisplay extends DefaultDisplay implements NetListener {
+public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
 
     private Command SUBMIT_CMD = new Command("Send", Command.OK, 1);
 
@@ -20,11 +22,11 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
     public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Messaging");
         prevScreen = aPrevScreen;
+        midlet.setKWClientListener(this);
 
         net = Net.getInstance();
         if (!net.isConnected()) {
             net.setProperties(midlet);
-            net.setListener(this);
             net.start();
         }
 
@@ -45,16 +47,22 @@ public class IMDisplay extends DefaultDisplay implements NetListener {
         addCommand(SUBMIT_CMD);
     }
 
-    public void onNetInfo(String theInfo) {
-        Log.log(theInfo);
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        String tag = aResponse.getTag();
+        if(tag.equals("utopia-rsp")){
+            JXElement rsp = aResponse.getChildAt(0);
+            if(rsp.getTag().equals("-rsp")){
+
+            }
+        }
     }
 
-    public void onNetError(String aReason, Throwable anException) {
-        Log.log(aReason);
-    }
-
-    public void onNetStatus(String aStatusMsg) {
-        Log.log(aStatusMsg);
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops, we lost our connection. Please go back and try again.");
     }
 
     private void sendMsg() {

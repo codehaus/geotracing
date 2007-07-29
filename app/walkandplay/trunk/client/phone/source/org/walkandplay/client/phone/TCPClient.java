@@ -15,7 +15,7 @@ import nl.justobjects.mjox.XMLChannelListener;
  * for MIDP2, and possibly MIDP1.
  *
  * @author Just van den Broecke
- * @version $Id: HTTPClient.java,v 1.3 2006/08/04 12:28:26 just Exp $
+ * @version $Id: TCPClient.java,v 1.3 2006/08/04 12:28:26 just Exp $
  * @see org.keyworx.mclient.HTTPMidlet
  */
 
@@ -27,16 +27,6 @@ public class TCPClient extends Protocol {
     public static final int DEFAULT_TIMEOUT_MINS = 5;
 
     /**
-     * server address.
-     */
-    private String server;
-
-    /**
-     * server port.
-     */
-    private int port;
-
-    /**
      * Debug flag for verbose output.
      */
     private boolean debug;
@@ -45,11 +35,6 @@ public class TCPClient extends Protocol {
      * Key gotten on login ack
      */
     private String agentKey;
-
-    /**
-     * Keyworx session timeout (minutes).
-     */
-    private int timeout;
 
     /**
      * Saved login request for session restore on timeout.
@@ -66,15 +51,12 @@ public class TCPClient extends Protocol {
     /**
      * Constructor with full protocol URL e.g. http://www.bla.com/proto.srv.
      */
-    public TCPClient(String aServer, int aPort) {
-        server = aServer;
-        port = aPort;
-
+    public TCPClient(String aServer, int aPort) throws ClientException{
         try {
-            xmlChannel = new SocketXMLChannel(server, port);
+            xmlChannel = new SocketXMLChannel(aServer, aPort);
             xmlChannel.start();
         } catch (Throwable t) {
-
+            throw new ClientException("Could not connect to " + aServer + " at port " + aPort);
         }
     }
 
@@ -216,7 +198,7 @@ public class TCPClient extends Protocol {
      */
     private void p(String s) {
         if (debug) {
-            System.out.println("[HTTPClient] " + s);
+            System.out.println("[TCPClient] " + s);
         }
     }
 
@@ -231,7 +213,7 @@ public class TCPClient extends Protocol {
      * Util: warn with exception.
      */
     private void warn(String s, Throwable t) {
-        System.err.println("[HTTPClient] - WARN - " + s + " ex=" + t);
+        System.err.println("[TCPClient] - WARN - " + s + " ex=" + t);
 
         if (t != null) {
             t.printStackTrace();

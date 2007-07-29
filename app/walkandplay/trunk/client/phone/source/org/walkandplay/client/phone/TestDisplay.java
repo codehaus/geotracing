@@ -22,7 +22,6 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
     protected Displayable prevScreen;
     private Gauge gaugeInf = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
     private Gauge gauge = new Gauge(null, false, Gauge.INCREMENTAL_UPDATING, Gauge.CONTINUOUS_RUNNING);
-    private Gauge gaProgress = new Gauge("Download Progress", false, 100, 0);
 
     private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
     private int progressCounter;
@@ -44,7 +43,7 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
         addCommand(START_CMD);
 
         //#style formbox
-        append(gaProgress);
+        append(progressBar);
 
         setCommandListener(this);
 
@@ -54,11 +53,11 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
     }
 
     public void dlStart() {
-        gaProgress.setMaxValue(progressMax);
+        progressBar.setMaxValue(progressMax);
     }
 
     public void dlProgress() {
-        gaProgress.setValue(progressCounter);
+        progressBar.setValue(progressCounter);
         if (progressCounter == progressMax - 1) {
             progressCounter = 0;
         }
@@ -66,7 +65,7 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
     }
 
     public void dlStop() {
-        gaProgress.setLabel("Download finished!");
+        progressBar.setLabel("Download finished!");
     }
 
     public void dlError(String aMessage) {
@@ -74,7 +73,7 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
     }
 
     public void dlSetContentLength(int aContentLength) {
-        gaProgress.setLabel("Downloading " + aContentLength + " bytes");
+        progressBar.setLabel("Downloading " + aContentLength + " bytes");
     }
 
     private void show(String aMsg) {

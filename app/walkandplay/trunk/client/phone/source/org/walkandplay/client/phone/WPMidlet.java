@@ -28,18 +28,12 @@ package org.walkandplay.client.phone;
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannelListener;
-import nl.justobjects.mjox.XMLChannel;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import org.geotracing.client.Net;
-import org.geotracing.client.Preferences;
-
-import java.util.Vector;
-
-public class WPMidlet extends MIDlet implements CommandListener, XMLChannelListener {
+public class WPMidlet extends MIDlet implements CommandListener{
 
     List menuScreen;
     PlayDisplay playDisplay;
@@ -54,62 +48,27 @@ public class WPMidlet extends MIDlet implements CommandListener, XMLChannelListe
     public WPMidlet() {
         super();
         setHome();
-        connect();
         //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));
     }
 
-    private void connect(){
-        try{
-            Preferences prefs = new Preferences(Net.RMS_STORE_NAME);
+    public void setKWClient(TCPClient aKWClient){
+        kwClient = aKWClient;
+    }
 
-			String user = prefs.get("kw-user", getAppProperty("kw-user"));
-			String password = prefs.get("kw-password", getAppProperty("kw-password"));
-			String server = prefs.get("kw-server", getAppProperty("kw-server"));
-			String port = prefs.get("kw-port", getAppProperty("kw-port"));
-
-			kwClient = new TCPClient(server, Integer.parseInt(port));
-            kwClient.setListener(this);
-            kwClient.login(user, password);
-        }catch(Throwable t){
-            Log.log("connect exception:" + t.getMessage());
-        }
+    public TCPClient getKWClient(){
+        return kwClient;
     }
 
     public void sendRequest(JXElement aRequest){
         try{
+            Log.log("** sent: " + new String(aRequest.toBytes(false)));
             kwClient.utopia(aRequest);
         }catch(Throwable t){
             Log.log("Exception sending " + new String(aRequest.toBytes(false)));
         }
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
-        String tag = aResponse.getTag();
-        if(tag.equals("login-rsp")){
-            try{
-                Log.log("send select app");
-                kwClient.setAgentKey(aResponse);
-                kwClient.selectApp("geoapp", "user");
-            }catch(Throwable t){
-                Log.log("Selectapp failed:" + t.getMessage());
-            }
-        }else if(tag.equals("select-app-rsp")){
-            // now stop listening here
-            // kwClient.setListener(null);
-        }
-    }
-
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        Log.log("XMLChannel stopped");
-        try{
-            kwClient.restart();
-        }catch(Throwable t){
-            Log.log("Exception restarting the XMLchannel");
-        }
-    }
-
-    public void setListener(XMLChannelListener aListener){
+    public void setKWClientListener(XMLChannelListener aListener){
         kwClient.setListener(aListener);
     }
 
@@ -141,7 +100,6 @@ public class WPMidlet extends MIDlet implements CommandListener, XMLChannelListe
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
-
     }
 
     public void setPlayMode(boolean aMode) {
