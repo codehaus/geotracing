@@ -65,10 +65,12 @@ namespace Diwi {
         }
 
         void openMapT(string path) {
-            if (InvokeRequired) {
-                this.Invoke(mapDownloaded, new object[] { path });
-            } else {
-                openMap(path);
+            if (this.mIsActive) {
+                if (InvokeRequired) {
+                    this.Invoke(mapDownloaded, new object[] { path });
+                } else {
+                    openMap(path);
+                }
             }
         }
 

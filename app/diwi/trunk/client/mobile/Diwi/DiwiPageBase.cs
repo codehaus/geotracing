@@ -137,10 +137,12 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         void blendLocalTimeout() {
-            if (InvokeRequired) {
-                this.Invoke(sBTCB, null);
-            } else {
-                blendTimout();
+            if (this.mIsActive) {
+                if (InvokeRequired) {
+                    this.Invoke(sBTCB, null);
+                } else {
+                    blendTimout();
+                }
             }
         }
 
@@ -154,10 +156,12 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public void doDrawMini(Bitmap b) {
-            if (InvokeRequired) {
-                this.Invoke(dmcb, new object[] { b });
-            } else {
-                ddoDM(b);
+            if (this.mIsActive) {
+                if (InvokeRequired) {
+                    this.Invoke(dmcb, new object[] { b });
+                } else {
+                    ddoDM(b);
+                }
             }
         }
 

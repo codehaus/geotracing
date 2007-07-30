@@ -57,10 +57,12 @@ namespace Diwi {
         }
 
         void doTimeout(Object stateInfo) {
-            if (InvokeRequired) {
-                this.Invoke(new splashEnd(this.doTimeout), null);
-            } else {
-                doTimeout();
+            if (this.mIsActive) {
+                if (InvokeRequired) {
+                    this.Invoke(new splashEnd(this.doTimeout), null);
+                } else {
+                    doTimeout();
+                }
             }
         }
 

@@ -51,11 +51,14 @@ namespace Diwi {
             mServerMess.draw(m);
             redrawRect(oldRect, mServerMess.rect);
         }
+
         void serverMessage(string m) {
-            if (InvokeRequired)
-                this.Invoke(new updateKwxMessageDelegate(this.updateKwxMessage), new object[] { m });
-            else
-                updateKwxMessage(m);
+            if (this.mIsActive) {
+                if (InvokeRequired)
+                    this.Invoke(new updateKwxMessageDelegate(this.updateKwxMessage), new object[] { m });
+                else
+                    updateKwxMessage(m);
+            }
         }
 
         private void reOrient() {

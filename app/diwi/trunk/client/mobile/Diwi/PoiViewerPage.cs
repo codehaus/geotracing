@@ -153,21 +153,23 @@ namespace Diwi {
         void dnlDoneT(string path) {
 
             mMediaDnl = null;
+            if (this.mIsActive) {
 
-            AppController.sEventLog.WriteLine("\tdownloaded url: {0}", mDnlUrl);
+                AppController.sEventLog.WriteLine("\tdownloaded url: {0}", mDnlUrl);
 
-            dnlFileNames[mDownloadIndex] = path;
-            if (mDownloadIndex == mMediaIndex) {
-                if (InvokeRequired) {
-                    this.Invoke(new mediaCallback(this.openFile), new object[] { path });
-                } else {
-                    openFile(path);
+                dnlFileNames[mDownloadIndex] = path;
+                if (mDownloadIndex == mMediaIndex) {
+                    if (InvokeRequired) {
+                        this.Invoke(new mediaCallback(this.openFile), new object[] { path });
+                    } else {
+                        openFile(path);
+                    }
                 }
-            }
 
-            if (mAllMedia.getChild(1 + mDownloadIndex) != null) {
-                mDownloadIndex = mDownloadIndex + 1;
-                doDownloadMedium(mDownloadIndex);
+                if (mAllMedia.getChild(1 + mDownloadIndex) != null) {
+                    mDownloadIndex = mDownloadIndex + 1;
+                    doDownloadMedium(mDownloadIndex);
+                }
             }
 
         }
