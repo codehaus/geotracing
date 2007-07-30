@@ -395,6 +395,11 @@ namespace Diwi {   // base class for Diwi Pages.
             draw();
         }
 
+        protected override void OnDeactivate(EventArgs e) {
+            base.OnDeactivate(e);
+            mIsActive = false;
+        }
+
         protected virtual void doTerug(int i, string s) {
             mIsActive = false;
 

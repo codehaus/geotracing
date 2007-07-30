@@ -178,11 +178,13 @@ namespace Diwi {
         }
 
         void navPointMessage(XMLement xml, float lat, float lon) {
-            if (xml != null) {
-                if (InvokeRequired)
-                    Invoke(poiCB, new object[] { xml, lat, lon });
-                else
-                    navPointReceive(xml, lat, lon);
+            if (this.mIsActive) {
+                if (xml != null) {
+                    if (InvokeRequired)
+                        Invoke(poiCB, new object[] { xml, lat, lon });
+                    else
+                        navPointReceive(xml, lat, lon);
+                }
             }
         }
 
@@ -196,10 +198,12 @@ namespace Diwi {
         }
 
         void mapReceivedCB() {
-            if (InvokeRequired)
-                Invoke(new CallbackHandler(mapReceived), null);
-            else
-                mapReceived();
+            if (this.mIsActive) {
+                if (InvokeRequired)
+                    Invoke(new CallbackHandler(mapReceived), null);
+                else
+                    mapReceived();
+            }
         }
 
         void doVideo(int i, string s) {
