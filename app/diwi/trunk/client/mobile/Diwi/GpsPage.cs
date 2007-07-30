@@ -196,13 +196,14 @@ namespace Diwi {
 
 
         void gpsMessage(int m) {
-            if (InvokeRequired) {
-                this.Invoke(new updateGpsMessage(this.newGgpsMessage), new object[] { m });
-            } else {
-                newGgpsMessage(m);
+            if (this.mIsActive) {
+                if (InvokeRequired) {
+                    this.Invoke(new updateGpsMessage(this.newGgpsMessage), new object[] { m });
+                } else {
+                    newGgpsMessage(m);
+                }
             }
         }
-
 
         #endregion
 
