@@ -59,10 +59,12 @@ namespace Diwi {
 
         private delegate void updateGpsMessage(int m);
         void gpsMessage(int m) {
-            if (InvokeRequired) {
-                this.Invoke(new updateGpsMessage(updateGPS), new object[] { m });
-            } else {
-                updateGPS(m);
+            if (this.mIsActive) {
+                if (InvokeRequired) {
+                    this.Invoke(new updateGpsMessage(updateGPS), new object[] { m });
+                } else {
+                    updateGPS(m);
+                }
             }
         }
 
