@@ -132,7 +132,7 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
                 oase.getRelater().relate(person.getRecord(), pref, "register");
             }
 
-            String subject = "Digitale Wichelroede registration for " + firstName + " " + lastName;
+            /*String subject = "Digitale Wichelroede registration for " + firstName + " " + lastName;
             String body = "Digitale Wichelroede registration for: \n";
             body += "+++++++++++++++++++++++++++++++++++++++++++++\n\n";
             body += firstName + " " + lastName + "\n\n";
@@ -197,7 +197,7 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
             String mailUser = ServerConfig.getProperty("mail.user");
             String mailPassword = ServerConfig.getProperty("mail.password");
 
-            sendMail(mailHost, mailUser, mailPassword, mailRecipient, "DigitaleWichelroede", subject, body);
+            sendMail(mailHost, mailUser, mailPassword, mailRecipient, "DigitaleWichelroede", subject, body);*/
 
             JXElement responseElement = createResponse(USER_REGISTER_SERVICE);
             responseElement.setAttr("id", "" + person.getId());
