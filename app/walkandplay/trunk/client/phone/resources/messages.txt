@@ -21,7 +21,7 @@ var:MyExampleVariable=Hello World
 
 MIDlet-Description=Mobile Learning Game Kit
 
-menu.Trace=Trace
+menu.Create=Create
 menu.GPS=GPS
 menu.Settings=Settings
 menu.Find=Find
@@ -45,6 +45,16 @@ trace.AddText=Add text
 trace.AddAudio=Add audio
 trace.ShowMap=Map
 trace.Radar=Radar
+
+create.New=New
+create.Edit=Edit
+create.AddRound=Add round
+trace.Suspend=Suspend
+trace.Resume=Resume
+create.AddPhoto=Add photo
+create.AddText=Add text
+create.AddAudio=Add audio
+create.ShowMap=Map
 
 find.Ok=Ok
 
@@ -73,5 +83,6 @@ play.HideIntro=Hide intro
 settings.SoundOn=Sound ON
 settings.SoundOff=Sound OFF
 settings.Account=Account
+settings.Version=Version
 
 
