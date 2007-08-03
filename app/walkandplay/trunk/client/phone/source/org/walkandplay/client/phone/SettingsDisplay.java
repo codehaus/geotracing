@@ -1,6 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.List;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.Locale;
 import org.geotracing.client.Util;
@@ -19,9 +18,9 @@ import javax.microedition.lcdui.Image;
 
 /*public class SettingsDisplay extends Form implements CommandListener {*/
 public class SettingsDisplay extends DefaultDisplay {
-   private Command SOUND_CMD;
-   private Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
-   private Command VERSION_CMD = new Command(Locale.get("settings.Version"), Command.ITEM, 2);
+    private Command SOUND_CMD;
+    private Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
+    private Command VERSION_CMD = new Command(Locale.get("settings.Version"), Command.ITEM, 2);
 
     StringItem text = new StringItem("", "Choose settings from the menu to change");
 

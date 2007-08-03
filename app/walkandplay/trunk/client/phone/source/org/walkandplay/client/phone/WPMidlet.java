@@ -31,7 +31,7 @@ import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-public class WPMidlet extends MIDlet implements CommandListener{
+public class WPMidlet extends MIDlet implements CommandListener {
 
     private List menuScreen;
     private SelectGameDisplay selectGameDisplay;
@@ -45,11 +45,11 @@ public class WPMidlet extends MIDlet implements CommandListener{
 
     public void setHome() {
         //#style mainScreen
-        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);        
+        menuScreen = new List("Mobile City", List.IMPLICIT);
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
         //#style mainTraceCommand
-        menuScreen.append(Locale.get("menu.Trace"), null);
+        menuScreen.append(Locale.get("menu.Create"), null);
         //#style mainGPSCommand
         menuScreen.append(Locale.get("menu.GPS"), null);
         //#style mainSettingsCommand
@@ -95,39 +95,39 @@ public class WPMidlet extends MIDlet implements CommandListener{
         }
     }
 
-    public SelectGameDisplay getPlayApp(){
+    public SelectGameDisplay getPlayApp() {
         return selectGameDisplay;
     }
 
-    public CreateDisplay getCreateApp(){
+    public CreateDisplay getCreateApp() {
         return createDisplay;
     }
-    
-    public String getKWUrl(){
+
+    public String getKWUrl() {
         return getAppProperty("kw-url");
     }
 
-    public String getKWServer(){
+    public String getKWServer() {
         return getAppProperty("kw-server");
     }
 
-    public String getKWUser(){
+    public String getKWUser() {
         return getAppProperty("kw-user");
     }
 
-    public String getKWPassword(){
+    public String getKWPassword() {
         return getAppProperty("kw-password");
     }
 
-    public String getKWPort(){
+    public String getKWPort() {
         return getAppProperty("kw-port");
     }
 
-    public String getKWApp(){
+    public String getKWApp() {
         return getAppProperty("kw-app");
     }
 
-    public String getKWRole(){
+    public String getKWRole() {
         return getAppProperty("kw-role");
     }
 
@@ -147,7 +147,6 @@ public class WPMidlet extends MIDlet implements CommandListener{
                 break;
             case 2:
                 // GPS
-                if (createDisplay != null) createDisplay.stop();
                 Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
             case 3:

@@ -2,7 +2,10 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.ui.StringItem;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
 
 
 /**

@@ -14,7 +14,7 @@ public class OutroDisplay extends DefaultDisplay {
         append(midlet.getPlayApp().getGame().getChildText("outro"));
 
         addCommand(CONTINUE_CMD);
-        removeCommand(BACK_CMD);        
+        removeCommand(BACK_CMD);
     }
 
     /*

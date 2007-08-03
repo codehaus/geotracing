@@ -2,10 +2,8 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.XMLChannel;
-import org.geotracing.client.Net;
-import org.geotracing.client.Preferences;
+import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.*;
 import java.util.Hashtable;
@@ -32,7 +30,7 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Play a game!");
-        
+
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/play_icon_small.png");
@@ -47,16 +45,16 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         }
     }
 
-    private void connect(){
-        try{
-            if(kwClient!=null){
+    private void connect() {
+        try {
+            if (kwClient != null) {
                 kwClient.restart();
-            }else{
+            } else {
                 kwClient = new TCPClient(midlet.getKWServer(), Integer.parseInt(midlet.getKWPort()));
                 setKWClientListener(this);
                 kwClient.login(midlet.getKWUser(), midlet.getKWPassword());
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             deleteAll();
             addCommand(BACK_CMD);
             //#style alertinfo
@@ -67,23 +65,23 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
-        if(tag.equals("login-rsp")){
-            try{
+        if (tag.equals("login-rsp")) {
+            try {
                 Log.log("send select app");
                 kwClient.setAgentKey(aResponse);
                 kwClient.selectApp("geoapp", "user");
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 Log.log("Selectapp failed:" + t.getMessage());
             }
-        }else if(tag.equals("select-app-rsp")){
+        } else if (tag.equals("select-app-rsp")) {
             getGameRoundsByUser();
-        }else if(tag.indexOf("-nrsp")!=-1){
+        } else if (tag.indexOf("-nrsp") != -1) {
             //#style alertinfo
             append("Oops, could not log in. Check your username and password in SETTINGS.");
-        }else{
-            if(tag.equals("utopia-rsp")){
+        } else {
+            if (tag.equals("utopia-rsp")) {
                 JXElement rsp = aResponse.getChildAt(0);
-                if(rsp.getTag().equals("query-store-rsp")){
+                if (rsp.getTag().equals("query-store-rsp")) {
 
                     // draw the screen
                     append(logo);
@@ -106,7 +104,7 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
                     // select the first
                     gamesGroup.setSelectedIndex(0, true);
 
-                }else if(rsp.getTag().equals("play-start-rsp")){
+                } else if (rsp.getTag().equals("play-start-rsp")) {
                     // start the playdisplay
                     PlayDisplay d = new PlayDisplay(midlet);
                     Display.getDisplay(midlet).setCurrent(d);
@@ -124,18 +122,18 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         connect();
     }
 
-    public void sendRequest(JXElement aRequest){
-        try{
+    public void sendRequest(JXElement aRequest) {
+        try {
             Log.log("** sent: " + new String(aRequest.toBytes(false)));
             kwClient.utopia(aRequest);
-        }catch(Throwable t){
+        } catch (Throwable t) {
             Log.log("Exception sending " + new String(aRequest.toBytes(false)));
             // we need to reconnect!!!!
             connect();
         }
     }
 
-    public void setKWClientListener(XMLChannelListener aListener){
+    public void setKWClientListener(XMLChannelListener aListener) {
         kwClient.setListener(aListener);
     }
 
@@ -163,7 +161,7 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         return gamePlayId;
     }
 
-    private void getGameRoundsByUser(){
+    private void getGameRoundsByUser() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-play-status-by-user");
         req.setAttr("user", midlet.getKWUser());

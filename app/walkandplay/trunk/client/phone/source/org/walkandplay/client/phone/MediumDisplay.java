@@ -1,5 +1,6 @@
 package org.walkandplay.client.phone;
 
+import de.enough.polish.ui.StringItem;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
@@ -9,9 +10,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.StringItem;
-
-public class MediumDisplay extends DefaultDisplay{
+public class MediumDisplay extends DefaultDisplay {
 
     private Net net;
     private Command VIEW_VIDEO_CMD = new Command("View video in", Command.SCREEN, 2);
@@ -39,13 +38,13 @@ public class MediumDisplay extends DefaultDisplay{
         }
 
         name.setText("Loading...");
-        //#style formbox
+        //#style labelinfo
         append(name);
 
         getMedium();
     }
 
-    private void drawMedium(){
+    private void drawMedium() {
         String type = medium.getChildText("type");
         name.setText(medium.getChildText("name"));
 

@@ -2,20 +2,8 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.ui.StringItem;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.TextField;
-import javax.microedition.location.Coordinates;
-import javax.microedition.location.Criteria;
-import javax.microedition.location.Location;
-import javax.microedition.location.LocationException;
-import javax.microedition.location.LocationListener;
-import javax.microedition.location.LocationProvider;
-import javax.microedition.location.ProximityListener;
-import javax.microedition.location.QualifiedCoordinates;
+import javax.microedition.lcdui.*;
+import javax.microedition.location.*;
 
 /**
  * MobiTracer main GUI.
@@ -245,17 +233,17 @@ public class GPSTestDisplay extends DefaultDisplay implements CommandListener, L
     private void getLocation(Location loc) {
         show("getLocation");
         try {
-            if(loc == null){
+            if (loc == null) {
                 show("No location...");
                 return;
-            }else{
+            } else {
                 show("location:" + loc);
             }
             QualifiedCoordinates c = loc.getQualifiedCoordinates();
-            if(c == null){
+            if (c == null) {
                 show("No QualfifiedCoordinates");
                 return;
-            }else{
+            } else {
                 show("QC:" + c);
             }
 
