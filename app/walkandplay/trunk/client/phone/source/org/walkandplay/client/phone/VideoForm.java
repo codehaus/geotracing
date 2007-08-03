@@ -1,15 +1,14 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.game.GameCanvas;
-import javax.microedition.lcdui.*;
-import javax.microedition.media.Player;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Gauge;
+import javax.microedition.lcdui.Item;
 import javax.microedition.media.Manager;
+import javax.microedition.media.Player;
 import javax.microedition.media.control.VideoControl;
-import javax.microedition.io.HttpConnection;
-import javax.microedition.io.Connector;
-import java.io.DataInputStream;
 
-public class VideoForm extends DefaultDisplay implements DownloadListener{
+public class VideoForm extends DefaultDisplay implements DownloadListener {
     private Player player = null; // player instance
     private String url;
     private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
@@ -18,7 +17,7 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
     private boolean run = true;
 
 
-   private Command HOME_CMD = new Command("Home", Command.ITEM, 2);
+    private Command HOME_CMD = new Command("Home", Command.ITEM, 2);
 
     public VideoForm(WPMidlet aMidlet, String aUrl) {
         super(aMidlet, "Video");
@@ -31,7 +30,7 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
         append(progressBar);
 
         addCommand(HOME_CMD);
-        
+
         new VideoDownloader().download(this);
     }
 
@@ -105,7 +104,7 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
         // get video control instance
         VideoControl vidc = (VideoControl) player.getControl("VideoControl");
         //Item videoDisp = (Item)vidc.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, null);
-        Item videoDisp = (Item)vidc.initDisplayMode(VideoControl.USE_GUI_PRIMITIVE, null);
+        Item videoDisp = (Item) vidc.initDisplayMode(VideoControl.USE_GUI_PRIMITIVE, null);
         deleteAll();
         addCommand(BACK_CMD);
         addCommand(HOME_CMD);

@@ -1,8 +1,8 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.XMLChannel;
+import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
@@ -13,7 +13,7 @@ import java.util.Vector;
 public class ScoreDisplay extends DefaultDisplay implements XMLChannelListener {
 
     private int maxScore;
-    
+
     public ScoreDisplay(WPMidlet aMIDlet, int aMaxScore, Displayable aPrevScreen) {
         super(aMIDlet, "Scores");
         maxScore = aMaxScore;
@@ -27,9 +27,9 @@ public class ScoreDisplay extends DefaultDisplay implements XMLChannelListener {
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
-        if(tag.equals("utopia-rsp")){
+        if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
-            if(rsp.getTag().equals("query-store-rsp")){
+            if (rsp.getTag().equals("query-store-rsp")) {
                 Vector elms = rsp.getChildrenByTag("record");
                 for (int i = 0; i < elms.size(); i++) {
                     JXElement e = (JXElement) elms.elementAt(i);

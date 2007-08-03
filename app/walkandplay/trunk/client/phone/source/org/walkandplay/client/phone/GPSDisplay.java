@@ -216,6 +216,6 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         } catch (RecordStoreException e) {
             return null;
         }
-	}
-    
+    }
+
 }

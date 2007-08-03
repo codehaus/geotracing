@@ -1,10 +1,11 @@
 package org.walkandplay.client.phone;
 
-import org.geotracing.client.*;
+import org.geotracing.client.Net;
+import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 public class VersionDisplay extends DefaultDisplay {
 
@@ -22,19 +23,19 @@ public class VersionDisplay extends DefaultDisplay {
 
         String myName = midlet.getAppProperty("MIDlet-Name");
         String versionURL = midlet.getKWUrl() + "/ota/version.html";
-		String theirVersion = null;
-		try {
-			theirVersion = Util.getPage(versionURL);
-			if (theirVersion != null && !theirVersion.trim().equals(myVersion)) {
+        String theirVersion = null;
+        try {
+            theirVersion = Util.getPage(versionURL);
+            if (theirVersion != null && !theirVersion.trim().equals(myVersion)) {
                 //#style alertinfo
                 append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
-			}
-		} catch (Throwable t) {
+            }
+        } catch (Throwable t) {
             //#style alertinfo
             append("Error fetching version from " + versionURL);
-		}
+        }
 
-		Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
+        Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
     }
 
     /*
@@ -44,10 +45,10 @@ public class VersionDisplay extends DefaultDisplay {
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if (command == FETCH_CMD) {
-            try{
+        } else if (command == FETCH_CMD) {
+            try {
                 midlet.platformRequest(Net.getInstance().getURL() + "/ota/version.html");
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());
             }

@@ -1,11 +1,11 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.XMLChannel;
+import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.GPSFetcher;
-import org.geotracing.client.GPSLocation;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
-import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
@@ -19,7 +19,7 @@ import javax.microedition.media.control.VideoControl;
  * @author Just van den Broecke
  * @version $Id: ImageCapture.java 254 2007-01-11 17:13:03Z just $
  */
-public class ImageCaptureDisplay extends DefaultDisplay {
+public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelListener {
 
 
     private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
@@ -32,11 +32,20 @@ public class ImageCaptureDisplay extends DefaultDisplay {
     private long photoTime;
     private Displayable prevScreen;
     private StringItem status = new StringItem("", "Photo Capture");
-    private GPSLocation location;
+    private boolean playing;
+    private StringItem alertField = new StringItem("", "");
 
-    public ImageCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public ImageCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
         super(aMIDlet, "Take a picture");
         prevScreen = aPrevScreen;
+        playing = isPlaying;
+
+        if (isPlaying) {
+            midlet.getPlayApp().setKWClientListener(this);
+        } else {
+            midlet.getCreateApp().setKWClientListener(this);
+        }
+
         showCamera();
 
         addCommand(CAPTURE_CMD);
@@ -50,6 +59,30 @@ public class ImageCaptureDisplay extends DefaultDisplay {
             player.close();
             back();
         }
+    }
+
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        String tag = aResponse.getTag();
+        if (tag.equals("utopia-rsp")) {
+            deleteAll();
+            addCommand(BACK_CMD);
+            //#style alertinfo
+            append(alertField);
+            JXElement rsp = aResponse.getChildAt(0);
+            if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                alertField.setText("Image sent successfully");
+            } else if (rsp.getTag().equals("play-add-medium-nrsp")) {
+                alertField.setText("Error sending Image - please try again.");
+            }
+        }
+    }
+
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops, we lost our connection. Please go back and try again.");
     }
 
     private void back() {
@@ -92,13 +125,11 @@ public class ImageCaptureDisplay extends DefaultDisplay {
             // BlogClient.photoMime = "png";
             // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
             status.setText("WAIT, taking photo...");
-
-            location = GPSFetcher.getInstance().getCurrentLocation();
             photoTime = Util.getTime();
 
             try {
                 photoData = video.getSnapshot("encoding=jpeg&width=320&height=240");
-            } catch(Throwable t) {
+            } catch (Throwable t) {
                 // Some phones don't support specific encodings
                 // This should fix at least SonyEricsson K800i...
                 photoData = video.getSnapshot(null);
@@ -169,23 +200,31 @@ public class ImageCaptureDisplay extends DefaultDisplay {
                 deleteAll();
                 append("SENDING PHOTO...(takes a while)");
                 JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
-                if (rsp == null) {
-                    //#style alertinfo
-                    append("error submitting photo !");
-                } else if (Protocol.isPositiveResponse(rsp)) {
-                    //#style alertinfo
-                    append("submit photo OK ");
-                    append("\nsize=" + photoData.length / 1024 + " kb name= " + name.getString() + " id=" + rsp.getAttr("id"));
-
+                if (playing) {
+                    JXElement addMediumReq = new JXElement("play-add-medium-req");
+                    addMediumReq.setAttr("id", rsp.getAttr("id"));
+                    midlet.getPlayApp().sendRequest(addMediumReq);
                 } else {
-                    //#style alertinfo
-                    append("submit failed: error is " + rsp.getAttr("error"));
+                    JXElement addMediumReq = new JXElement("game-add-medium-req");
+                    addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
+                    JXElement medium = new JXElement("medium");
+                    addMediumReq.addChild(medium);
+
+                    JXElement id = new JXElement("id");
+                    id.setText(rsp.getAttr("id"));
+                    medium.addChild(id);
+
+                    JXElement lat = new JXElement("lat");
+                    lat.setText("" + GPSFetcher.getInstance().getCurrentLocation().lat);
+                    medium.addChild(lat);
+
+                    JXElement lon = new JXElement("lon");
+                    lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
+                    medium.addChild(lon);
+
+                    midlet.getCreateApp().sendRequest(addMediumReq);
                 }
-
             }
-            //append("\npress Back to go back");
         }
-
     }
-
 }

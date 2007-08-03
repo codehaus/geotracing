@@ -1,12 +1,12 @@
 package org.walkandplay.client.phone;
 
-import org.keyworx.mclient.Protocol;
-import org.keyworx.mclient.ClientException;
-import org.keyworx.mclient.ProtocolException;
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 import nl.justobjects.mjox.SocketXMLChannel;
+import nl.justobjects.mjox.XMLChannel;
 import nl.justobjects.mjox.XMLChannelListener;
+import org.keyworx.mclient.ClientException;
+import org.keyworx.mclient.Protocol;
+import org.keyworx.mclient.ProtocolException;
 
 /**
  * Basic KeyWorx client using XML over HTTP.
@@ -51,7 +51,7 @@ public class TCPClient extends Protocol {
     /**
      * Constructor with full protocol URL e.g. http://www.bla.com/proto.srv.
      */
-    public TCPClient(String aServer, int aPort) throws ClientException{
+    public TCPClient(String aServer, int aPort) throws ClientException {
         try {
             xmlChannel = new SocketXMLChannel(aServer, aPort);
             xmlChannel.start();
@@ -145,12 +145,12 @@ public class TCPClient extends Protocol {
         debug = b;
     }
 
-    synchronized public void restart() throws ClientException{
+    synchronized public void restart() throws ClientException {
         if (xmlChannel != null) {
-            xmlChannel.stop();            
+            xmlChannel.stop();
             xmlChannel = null;
         }
-        doRequest(loginRequest);        
+        doRequest(loginRequest);
     }
 
     /**

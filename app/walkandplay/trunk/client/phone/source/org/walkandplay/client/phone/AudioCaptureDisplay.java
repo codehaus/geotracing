@@ -3,6 +3,9 @@ package org.walkandplay.client.phone;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
 import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.XMLChannel;
+import nl.justobjects.mjox.XMLChannelListener;
+import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
@@ -23,7 +26,7 @@ import java.io.ByteArrayOutputStream;
  * @author Just van den Broecke
  * @version $Id: AudioCapture.java 222 2006-12-10 00:17:59Z just $
  */
-public class AudioCaptureDisplay extends DefaultDisplay {
+public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelListener {
 
     private Player player;
     private RecordControl recordcontrol;
@@ -33,15 +36,24 @@ public class AudioCaptureDisplay extends DefaultDisplay {
     private static final String MIME = "audio/x-wav";
     private long startTime;
     final int kbPerSec;
+    private boolean playing;
+    private StringItem alertField = new StringItem("", "");
 
     private Command START_CMD = new Command("Start", Command.OK, 1);
     private Command STOP_CMD = new Command("Stop", Command.OK, 1);
     private Command SUBMIT_CMD = new Command("Submit", Command.OK, 1);
     private Command PLAY_CMD = new Command("Play", Command.SCREEN, 1);
 
-    public AudioCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public AudioCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
         super(aMIDlet, "Record and send audio");
         prevScreen = aPrevScreen;
+        playing = isPlaying;
+
+        if (isPlaying) {
+            midlet.getPlayApp().setKWClientListener(this);
+        } else {
+            midlet.getCreateApp().setKWClientListener(this);
+        }
 
         int rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
         int bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
@@ -64,6 +76,30 @@ public class AudioCaptureDisplay extends DefaultDisplay {
         }
 
         addCommand(START_CMD);
+    }
+
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        String tag = aResponse.getTag();
+        if (tag.equals("utopia-rsp")) {
+            deleteAll();
+            addCommand(BACK_CMD);
+            //#style alertinfo
+            append(alertField);
+            JXElement rsp = aResponse.getChildAt(0);
+            if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                alertField.setText("Audio sent successfully");
+            } else if (rsp.getTag().equals("play-add-medium-nrsp")) {
+                alertField.setText("Error sending audio - please try again.");
+            }
+        }
+    }
+
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops, we lost our connection. Please go back and try again.");
     }
 
     public int write(String s) {
@@ -115,18 +151,29 @@ public class AudioCaptureDisplay extends DefaultDisplay {
             if (rsp == null) {
                 write("cannot submit audio!");
             } else if (Protocol.isPositiveResponse(rsp)) {
-                //now do an add medium
-                JXElement addMediumReq = new JXElement("play-add-medium-req");
-                addMediumReq.setAttr("id", rsp.getAttr("id"));
-                Log.log(new String(addMediumReq.toBytes(false)));
-                JXElement addMediumRsp = Net.getInstance().utopiaReq(addMediumReq);
-                Log.log(new String(addMediumRsp.toBytes(false)));
-                if (Protocol.isPositiveResponse(addMediumRsp)) {
-                    //#style alertinfo
-                    append("Upload succesfull!");
+                if (playing) {
+                    JXElement addMediumReq = new JXElement("play-add-medium-req");
+                    addMediumReq.setAttr("id", rsp.getAttr("id"));
+                    midlet.getPlayApp().sendRequest(addMediumReq);
                 } else {
-                    //#style alertinfo
-                    append("Upload failed:" + addMediumRsp.toBytes(false));
+                    JXElement addMediumReq = new JXElement("game-add-medium-req");
+                    addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
+                    JXElement medium = new JXElement("medium");
+                    addMediumReq.addChild(medium);
+
+                    JXElement id = new JXElement("id");
+                    id.setText(rsp.getAttr("id"));
+                    medium.addChild(id);
+
+                    JXElement lat = new JXElement("lat");
+                    lat.setText("" + GPSFetcher.getInstance().getCurrentLocation().lat);
+                    medium.addChild(lat);
+
+                    JXElement lon = new JXElement("lon");
+                    lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
+                    medium.addChild(lon);
+
+                    midlet.getCreateApp().sendRequest(addMediumReq);
                 }
             } else {
                 //#style alertinfo

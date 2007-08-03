@@ -1,8 +1,8 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.XMLChannel;
+import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.Net;
 import org.geotracing.client.Preferences;
 
@@ -49,9 +49,9 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
-        if(tag.equals("utopia-rsp")){
+        if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
-            if(rsp.getTag().equals("-rsp")){
+            if (rsp.getTag().equals("-rsp")) {
 
             }
         }

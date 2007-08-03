@@ -2,7 +2,10 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.ui.Form;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 public class DefaultDisplay extends Form implements CommandListener {
     protected Command BACK_CMD = new Command("Back", Command.BACK, 1);
