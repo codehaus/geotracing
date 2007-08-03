@@ -50,6 +50,7 @@ namespace Diwi {
         private static Sound sPOI;
 
         public static bool sSipVisible = false;
+        public static bool sQuitting = true;
 
         public static float sDistanceMoved = 0;
 
@@ -122,15 +123,18 @@ namespace Diwi {
             sKwxClient = KwxClient.instance;
             sGpsReader = GpsReader.instance;
 
+            sQuitting = false;
+
+
 
             // sBacklight.Activate();
         }
 
         public static void deactivate() {
+            sQuitting = true;
+
             sGpsReader.stop();
             sKwxClient.stop();
-            MediaDownloader.sQuitting = true;
-            MediaUploader.sQuitting = true;
             sTrackLog.Close();
             sEventLog.Close();
             Thread.Sleep(1000);

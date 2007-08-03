@@ -16,6 +16,7 @@ using Microsoft.WindowsMobile.Forms;
 
 namespace Diwi {
     class Progress {
+
         private delegate void timerTick();
         System.Threading.Timer mTimer;
         static Bitmap[] mLogo = new Bitmap[4];
@@ -54,9 +55,11 @@ namespace Diwi {
 
 
         void doTimeoutT(Object stateInfo) {
-            index++;
-            if (index > 3) index = 0;
-            DiwiPageBase.drawMini(mLogo[index]);
+            if (!AppController.sQuitting) {
+                index++;
+                if (index > 3) index = 0;
+                DiwiPageBase.drawMini(mLogo[index]);
+            }
         }
     }
 }
