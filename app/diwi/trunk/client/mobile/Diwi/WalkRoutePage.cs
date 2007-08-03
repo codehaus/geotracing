@@ -59,7 +59,7 @@ namespace Diwi {
 
         private delegate void updateGpsMessage(int m);
         void gpsMessage(int m) {
-            if (this.mIsActive) {
+            if (this.mIsActive && AppController.sQuitting == false) {
                 if (InvokeRequired) {
                     this.Invoke(new updateGpsMessage(updateGPS), new object[] { m });
                 } else {
@@ -200,7 +200,7 @@ namespace Diwi {
         }
 
         void mapReceivedCB() {
-            if (this.mIsActive) {
+            if (this.mIsActive && AppController.sQuitting == false) {
                 if (InvokeRequired)
                     Invoke(new CallbackHandler(mapReceived), null);
                 else

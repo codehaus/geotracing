@@ -147,7 +147,9 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         static void doTimeoutT(Object stateInfo) {
-            sCurrentPage.blendLocalTimeout();
+            if ((DiwiPageBase.sCurrentPage != null) && DiwiPageBase.sCurrentPage.mIsActive && AppController.sQuitting == false) {
+                sCurrentPage.blendLocalTimeout();
+            }
         }
 
         void ddoDM(Bitmap b) {
@@ -166,7 +168,9 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         public static void drawMini(Bitmap b) {
-            sCurrentPage.doDrawMini(b);
+            if ((DiwiPageBase.sCurrentPage != null) && DiwiPageBase.sCurrentPage.mIsActive && AppController.sQuitting == false) {
+                sCurrentPage.doDrawMini(b);
+            }
         }
 
         protected void setMenuText(int index, string s) {

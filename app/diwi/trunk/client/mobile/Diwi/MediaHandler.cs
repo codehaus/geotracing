@@ -10,7 +10,6 @@ namespace Diwi {
 
 
     class MediaDownloader {
-        public static bool sQuitting = false;
         private Thread mThread;
         string uri;
         string path;
@@ -75,7 +74,7 @@ namespace Diwi {
 
                 stream.Close();
 
-                if ((sQuitting == false) && callb != null)
+                if ((AppController.sQuitting == false) && callb != null)
                     callb(path);
             } catch (WebException) { 
 
@@ -236,12 +235,12 @@ namespace Diwi {
                 }
 
 
-                if ((sQuitting == false) && callb != null) callb();
+                if ((AppController.sQuitting == false) && callb != null) callb();
 
             } catch (IOException) {
             }
 
-            if (sQuitting == false) AppController.sProgBar.bumpDown();
+            if (AppController.sQuitting == false) AppController.sProgBar.bumpDown();
 
         }
     }
