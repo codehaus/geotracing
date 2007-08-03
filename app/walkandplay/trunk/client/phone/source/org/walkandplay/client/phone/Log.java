@@ -58,7 +58,7 @@ public class Log {
             for (int i = 0; i < LOG_SZ; i++) {
                 nextMsg = logMsgs[idx++];
                 if (nextMsg != null) {
-                    //#style formbox
+                    //#style labelinfo
                     form.append(new StringItem("", "\n" + i + "=====\n" + nextMsg));
                     /*form.append("\n" + i + "=====\n" + nextMsg);*/
                 }

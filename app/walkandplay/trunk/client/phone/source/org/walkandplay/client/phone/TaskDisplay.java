@@ -24,7 +24,7 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
         super(aMIDlet, "Task");
         screenWidth = theScreenWidth;
         prevScreen = aPrevScreen;
-        midlet.setKWClientListener(this);
+        midlet.getPlayApp().setKWClientListener(this);
         taskId = aTaskId;
 
         getTask();
@@ -107,7 +107,7 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-task");
         req.setAttr("id", taskId);
-        midlet.sendRequest(req);
+        midlet.getPlayApp().sendRequest(req);
     }
 
     /*
@@ -127,7 +127,7 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
                 JXElement req = new JXElement("play-answertask-req");
                 req.setAttr("id", taskId);
                 req.setAttr("answer", inputField.getString());
-                midlet.sendRequest(req);
+                midlet.getPlayApp().sendRequest(req);
             }
         } else if (command == OUTRO_CMD) {
             new OutroDisplay(midlet);

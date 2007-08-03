@@ -1,7 +1,6 @@
 package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 public class OutroDisplay extends DefaultDisplay {
@@ -12,12 +11,10 @@ public class OutroDisplay extends DefaultDisplay {
         super(aMIDlet, "Outro");
 
         //#style formbox
-        append(midlet.getGame().getChildText("outro"));
+        append(midlet.getPlayApp().getGame().getChildText("outro"));
 
         addCommand(CONTINUE_CMD);
-        removeCommand(BACK_CMD);
-        setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(this);
+        removeCommand(BACK_CMD);        
     }
 
     /*

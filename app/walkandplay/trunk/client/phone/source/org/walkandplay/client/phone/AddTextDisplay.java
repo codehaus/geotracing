@@ -8,7 +8,6 @@ import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
-import java.util.Vector;
 
 public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener {
 
@@ -22,7 +21,12 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
     public AddTextDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Add Text");
         prevScreen = aPrevScreen;
-        midlet.setKWClientListener(this);
+
+        if(aPrevScreen.getTitle().equals("Trace")){
+            midlet.getCreateApp().setKWClientListener(this);
+        }else{
+            midlet.getPlayApp().setKWClientListener(this);
+        }
 
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -62,8 +66,8 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
         if(tag.equals("utopia-rsp")){
             JXElement rsp = aResponse.getChildAt(0);
             if(rsp.getTag().equals("play-add-medium-rsp")){
-                textField.setString("");
-                nameField.setString("");
+                deleteAll();
+                addCommand(BACK_CMD);
                 alertField.setText("Text sent successfully");            
             }else if(rsp.getTag().equals("play-add-medium-nrsp")){
                 textField.setString("");
@@ -98,7 +102,7 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
                         //now do an add medium
                         JXElement addMediumReq = new JXElement("play-add-medium-req");
                         addMediumReq.setAttr("id", rsp.getAttr("id"));
-                        midlet.sendRequest(addMediumReq);
+                        midlet.getPlayApp().sendRequest(addMediumReq);
                     }
                 } else {
                     alertField.setText("Type title and text");

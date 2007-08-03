@@ -6,7 +6,6 @@ import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Net;
 import org.geotracing.client.Preferences;
-import org.keyworx.mclient.ClientException;
 
 import javax.microedition.lcdui.*;
 import java.util.Hashtable;
@@ -19,10 +18,13 @@ import java.util.Vector;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListener {
+    private TCPClient kwClient;
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
-    private Hashtable games = new Hashtable(2);
+    private Hashtable gameRounds = new Hashtable(2);
     private int gamePlayId;
-    private JXElement gameElm;
+    private JXElement game;
+    private JXElement gameRound;
+
     private Image logo;
 
     Command PLAY_CMD = new Command(Locale.get("selectGame.Play"), Command.SCREEN, 2);
@@ -38,8 +40,6 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
             logo = scheduleImage("/play_icon_small.png");
             //#endif
 
-            append(logo);
-
             connect();
         } catch (Throwable t) {
             //#style alertinfo
@@ -47,22 +47,20 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         }
     }
 
-    private void connect() throws ClientException {
+    private void connect(){
         try{
-            Preferences prefs = new Preferences(Net.RMS_STORE_NAME);
-
-			String user = prefs.get("kw-user", midlet.getAppProperty("kw-user"));
-			String password = prefs.get("kw-password", midlet.getAppProperty("kw-password"));
-			String server = prefs.get("kw-server", midlet.getAppProperty("kw-server"));
-			String port = prefs.get("kw-port", midlet.getAppProperty("kw-port"));
-
-			TCPClient kwClient = new TCPClient(server, Integer.parseInt(port));
-            midlet.setKWClient(kwClient);
-            midlet.setKWClientListener(this);
-            kwClient.login(user, password);
-            
+            if(kwClient!=null){
+                kwClient.restart();
+            }else{
+                kwClient = new TCPClient(midlet.getKWServer(), Integer.parseInt(midlet.getKWPort()));
+                setKWClientListener(this);
+                kwClient.login(midlet.getKWUser(), midlet.getKWPassword());
+            }
         }catch(Throwable t){
-            throw new ClientException(t);
+            deleteAll();
+            addCommand(BACK_CMD);
+            //#style alertinfo
+            append("We can not connect. Please check your account settings.");
         }
     }
 
@@ -72,13 +70,13 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         if(tag.equals("login-rsp")){
             try{
                 Log.log("send select app");
-                midlet.getKWClient().setAgentKey(aResponse);
-                midlet.getKWClient().selectApp("geoapp", "user");
+                kwClient.setAgentKey(aResponse);
+                kwClient.selectApp("geoapp", "user");
             }catch(Throwable t){
                 Log.log("Selectapp failed:" + t.getMessage());
             }
         }else if(tag.equals("select-app-rsp")){
-            getGames();
+            getGameRoundsByUser();
         }else if(tag.indexOf("-nrsp")!=-1){
             //#style alertinfo
             append("Oops, could not log in. Check your username and password in SETTINGS.");
@@ -103,19 +101,14 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
                         String displayName = name + " | " + gameplayState;
                         //#style formbox
                         gamesGroup.append(displayName, null);
-                        games.put(displayName, elm);
+                        gameRounds.put(displayName, elm);
                     }
                     // select the first
                     gamesGroup.setSelectedIndex(0, true);
 
                 }else if(rsp.getTag().equals("play-start-rsp")){
-                    midlet.setGameRound(gameElm);
-                    midlet.setGamePlayId(gamePlayId);
-
                     // start the playdisplay
-                    midlet.setPlayMode(true);
                     PlayDisplay d = new PlayDisplay(midlet);
-                    midlet.playDisplay = d;
                     Display.getDisplay(midlet).setCurrent(d);
                     d.start();
                 }
@@ -128,24 +121,59 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         addCommand(BACK_CMD);
         //#style alertinfo
         append("Oops, we lost our connection. Please go back and try again.");
+        connect();
     }
 
-    private void getGames(){
-        try {
-            JXElement req = new JXElement("query-store-req");
-            req.setAttr("cmd", "q-play-status-by-user");
-            req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
-            midlet.sendRequest(req);
-        } catch (Throwable t) {
-            System.out.println(t.getMessage());
+    public void sendRequest(JXElement aRequest){
+        try{
+            Log.log("** sent: " + new String(aRequest.toBytes(false)));
+            kwClient.utopia(aRequest);
+        }catch(Throwable t){
+            Log.log("Exception sending " + new String(aRequest.toBytes(false)));
+            // we need to reconnect!!!!
+            connect();
         }
-
     }
 
-    private void startGame() {
+    public void setKWClientListener(XMLChannelListener aListener){
+        kwClient.setListener(aListener);
+    }
+
+    public void setGame(JXElement aGame) {
+        game = aGame;
+    }
+
+    public JXElement getGame() {
+        return game;
+    }
+
+    public void setGameRound(JXElement aGameRound) {
+        gameRound = aGameRound;
+    }
+
+    public JXElement getGameRound() {
+        return gameRound;
+    }
+
+    public void setGamePlayId(int anId) {
+        gamePlayId = anId;
+    }
+
+    public int getGamePlayId() {
+        return gamePlayId;
+    }
+
+    private void getGameRoundsByUser(){
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-play-status-by-user");
+        req.setAttr("user", midlet.getKWUser());
+        sendRequest(req);
+    }
+
+    private void startGameRound() {
         JXElement req = new JXElement("play-start-req");
         req.setAttr("id", gamePlayId);
-        midlet.sendRequest(req);
+        sendRequest(req);
     }
 
     /*
@@ -156,13 +184,13 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == PLAY_CMD) {
-            gameElm = (JXElement) games.get(gamesGroup.getString(gamesGroup.getSelectedIndex()));
-            gamePlayId = Integer.parseInt(gameElm.getChildText("gameplayid"));
+            gameRound = (JXElement) gameRounds.get(gamesGroup.getString(gamesGroup.getSelectedIndex()));
+            gamePlayId = Integer.parseInt(gameRound.getChildText("gameplayid"));
 
             // now start the game
-            startGame();
+            startGameRound();
         } else if (cmd == DESCRIPTION_CMD) {
-            JXElement gameElm = (JXElement) games.get(gamesGroup.getString(gamesGroup.getSelectedIndex()));
+            JXElement gameElm = (JXElement) gameRounds.get(gamesGroup.getString(gamesGroup.getSelectedIndex()));
             String desc = gameElm.getChildText("description");
 
             //#style labelinfo

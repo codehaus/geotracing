@@ -21,6 +21,7 @@ import javax.microedition.lcdui.Image;
 public class SettingsDisplay extends DefaultDisplay {
    private Command SOUND_CMD;
    private Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
+   private Command VERSION_CMD = new Command(Locale.get("settings.Version"), Command.ITEM, 2);
 
     StringItem text = new StringItem("", "Choose settings from the menu to change");
 
@@ -51,6 +52,7 @@ public class SettingsDisplay extends DefaultDisplay {
         append(clock);*/
         addCommand(SOUND_CMD);
         addCommand(ACCOUNT_CMD);
+        addCommand(VERSION_CMD);
 
     }
 
@@ -65,6 +67,8 @@ public class SettingsDisplay extends DefaultDisplay {
             Util.toggleSound();
         } else if (cmd == ACCOUNT_CMD) {
             new AccountDisplay(midlet);
+        } else if (cmd == VERSION_CMD) {
+            new VersionDisplay(midlet, this);
         }
     }
 

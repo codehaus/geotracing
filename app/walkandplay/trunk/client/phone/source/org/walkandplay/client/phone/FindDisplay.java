@@ -57,15 +57,13 @@ public class FindDisplay extends DefaultDisplay implements NetListener {
                 req.setAttr("user", new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER)));
                 JXElement rsp = net.utopiaReq(req);
                 Log.log(new String(rsp.toBytes(false)));
-                if (rsp != null) {
-                    Vector elms = rsp.getChildrenByTag("record");
-                    for (int i = 0; i < elms.size(); i++) {
-                        JXElement elm = (JXElement) elms.elementAt(i);
-                        String name = elm.getChildText("name");
-                        //#style formbox
-                        gamesGroup.append(name, null);
-                        games.put(name, elm);
-                    }
+                Vector elms = rsp.getChildrenByTag("record");
+                for (int i = 0; i < elms.size(); i++) {
+                    JXElement elm = (JXElement) elms.elementAt(i);
+                    String name = elm.getChildText("name");
+                    //#style formbox
+                    gamesGroup.append(name, null);
+                    games.put(name, elm);
                 }
             } catch (Throwable t) {
                 Log.log(t.getMessage());

@@ -40,7 +40,6 @@ public class ImageCaptureDisplay extends DefaultDisplay {
         showCamera();
 
         addCommand(CAPTURE_CMD);
-        setCommandListener(this);
     }
 
     public void commandAction(Command c, Displayable d) {

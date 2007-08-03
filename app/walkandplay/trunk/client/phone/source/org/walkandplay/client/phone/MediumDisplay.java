@@ -39,6 +39,7 @@ public class MediumDisplay extends DefaultDisplay{
         }
 
         name.setText("Loading...");
+        //#style formbox
         append(name);
 
         getMedium();
@@ -46,7 +47,6 @@ public class MediumDisplay extends DefaultDisplay{
 
     private void drawMedium(){
         String type = medium.getChildText("type");
-        //#style labelinfo
         name.setText(medium.getChildText("name"));
 
         String desc = medium.getChildText("description");
@@ -140,7 +140,7 @@ public class MediumDisplay extends DefaultDisplay{
         if (command == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == VIEW_VIDEO_CMD) {
-            Display.getDisplay(midlet).setCurrent(new VideoDisplay(midlet, MEDIUM_BASE_URL + mediumId, this));
+            new VideoDisplay(midlet, MEDIUM_BASE_URL + mediumId, this);
         } else if (command == VIEW_VIDEO_CMD2) {
             try {
                 // now first stop the tracer engine because the media download

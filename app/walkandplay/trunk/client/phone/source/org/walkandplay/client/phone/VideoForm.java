@@ -15,9 +15,10 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
     private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
     private int progressCounter;
     private int progressMax = 100;
+    private boolean run = true;
 
-    private Command BACK_CMD = new Command("Back", Command.ITEM, 2);
-    private Command HOME_CMD = new Command("Home", Command.ITEM, 2);
+
+   private Command HOME_CMD = new Command("Home", Command.ITEM, 2);
 
     public VideoForm(WPMidlet aMidlet, String aUrl) {
         super(aMidlet, "Video");
@@ -29,10 +30,8 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
         //#style formbox
         append(progressBar);
 
-        addCommand(BACK_CMD);
         addCommand(HOME_CMD);
-        setCommandListener(this);
-
+        
         new VideoDownloader().download(this);
     }
 
@@ -41,19 +40,22 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
     }
 
     public void dlProgress() {
-        progressBar.setValue(progressCounter);
-        if (progressCounter == progressMax - 1) {
-            progressCounter = 0;
-        }
-        progressCounter++;
+        progressBar = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
     }
 
     public void dlStop() {
-        /*progressBar.setLabel("Download finished!");*/
+        deleteAll();
+        addCommand(BACK_CMD);
+        progressBar = new Gauge("Download finished", false, 100, 100);
         play();
     }
 
     public void dlError(String aMessage) {
+        deleteAll();
+        addCommand(BACK_CMD);
+        append(progressBar);
+        progressBar.setValue(0);
+
         //#style alertinfo
         append(aMessage);
     }
@@ -66,7 +68,8 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
         if (cmd == HOME_CMD) {
             midlet.setHome();
         } else if (cmd == BACK_CMD) {
-            Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+            midlet.setHome();
+//            /Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
         }
     }
 
@@ -76,17 +79,17 @@ public class VideoForm extends DefaultDisplay implements DownloadListener{
         private void download(DownloadListener aListener) {
             final DownloadListener listener = aListener;
             try {
+                listener.dlStart();
+                listener.dlProgress();
+
                 new Thread(new Runnable() {
                     public void run() {
                         try {
-                            listener.dlStart();
-                            listener.dlProgress();
-
                             player = Manager.createPlayer(url);
                             player.realize();
                             player.prefetch();
-
                             listener.dlStop();
+
                         } catch (Throwable t) {
                             listener.dlError(t.getMessage());
                         }

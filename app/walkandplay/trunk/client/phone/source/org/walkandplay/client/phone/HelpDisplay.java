@@ -19,6 +19,7 @@ public class HelpDisplay extends DefaultDisplay {
     private Image logo;
 
     //StringItem label = new StringItem("", "Help");
+    StringItem title = new StringItem("", "");
     StringItem text = new StringItem("", "Welcome to the help section");
 
     public HelpDisplay(WPMidlet aMIDlet) {
@@ -35,6 +36,9 @@ public class HelpDisplay extends DefaultDisplay {
         }
 
         append(logo);
+
+        //#style labelinfo
+        append(title);
 
         //#style formbox
         append(text);

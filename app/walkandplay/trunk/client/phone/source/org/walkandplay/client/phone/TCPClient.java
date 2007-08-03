@@ -150,8 +150,7 @@ public class TCPClient extends Protocol {
             xmlChannel.stop();            
             xmlChannel = null;
         }
-        doRequest(loginRequest);
-        doRequest(selectAppRequest);
+        doRequest(loginRequest);        
     }
 
     /**

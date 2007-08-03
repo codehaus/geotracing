@@ -77,12 +77,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
 
         midlet = aMidlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();
-        midlet.setKWClientListener(this);
+        midlet.getPlayApp().setKWClientListener(this);
 
-        // make sure we stop tracing when we go into play mode
-        if (midlet.traceDisplay != null) midlet.traceDisplay.stop();
         try {
-            String user = new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
+            String user = midlet.getAppProperty(Net.PROP_USER);
 
             //#ifdef polish.images.directLoad
             if (user.indexOf("red") != -1) {
@@ -166,19 +164,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("query-store-rsp")) {
-                String cmd = rsp.getAttr("cmd");
-                if(cmd!=null && cmd.equals("q-game-locations")){
+                if(rsp.getChildAt(0).getChildByTag("intro")!=null){
+                    midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
+                }else {
                     gameLocations = rsp.getChildrenByTag("record");
-
                     // now determine the maximum attainable score
                     for (int i = 0; i < gameLocations.size(); i++) {
                         JXElement r = (JXElement) gameLocations.elementAt(i);
                         if (r.getChildText("type").equals("task")) {
                             maxScore += Integer.parseInt(r.getChildText("score"));
                         }
-                    }
-                }else if(cmd!=null && cmd.equals("q-game")){
-                    midlet.setGame(rsp.getChildByTag("record"));
+                    }                    
                 }
             }
         }
@@ -204,7 +200,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
             getGameLocations();
 
             //tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp?";
-            tileBaseURL = Net.getInstance().getURL() + "/map.srv?";
+            //tileBaseURL = Net.getInstance().getURL() + "/map.srv?";
+            tileBaseURL = midlet.getKWUrl() + "/map.srv";
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
 
@@ -218,15 +215,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     private void getGameLocations() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-game-locations");
-        req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
-        midlet.sendRequest(req);
+        req.setAttr("id", midlet.getPlayApp().getGameRound().getChildText("gameid"));
+        midlet.getPlayApp().sendRequest(req);
     }
 
     private void getGame() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-game");
-        req.setAttr("id", midlet.getGameRound().getChildText("gameid"));
-        midlet.sendRequest(req);        
+        req.setAttr("id", midlet.getPlayApp().getGameRound().getChildText("gameid"));
+        midlet.getPlayApp().sendRequest(req);
     }
 
     public void setLocation(String aLon, String aLat) {
@@ -486,7 +483,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
         } else if (cmd == ADD_PHOTO_CMD) {
             new ImageCaptureDisplay(midlet, this);
         } else if (cmd == ADD_AUDIO_CMD) {
-            new AudioCaptureDisplay(midlet);
+            new AudioCaptureDisplay(midlet, this);
         } else if (cmd == ADD_TEXT_CMD) {
             new AddTextDisplay(midlet, this);            
         } else if (cmd == ZOOM_IN_CMD) {
