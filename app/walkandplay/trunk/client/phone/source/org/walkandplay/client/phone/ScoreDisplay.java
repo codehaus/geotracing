@@ -18,7 +18,7 @@ public class ScoreDisplay extends DefaultDisplay implements XMLChannelListener {
         super(aMIDlet, "Scores");
         maxScore = aMaxScore;
         prevScreen = aPrevScreen;
-        midlet.setKWClientListener(this);
+        midlet.getPlayApp().setKWClientListener(this);
 
         // get the scores
         getScores();
@@ -55,8 +55,8 @@ public class ScoreDisplay extends DefaultDisplay implements XMLChannelListener {
     private void getScores() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-scores");
-        req.setAttr("gameid", midlet.getGamePlayId());
-        midlet.sendRequest(req);
+        req.setAttr("gameid", midlet.getPlayApp().getGamePlayId());
+        midlet.getPlayApp().sendRequest(req);
     }
 
     /*

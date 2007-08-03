@@ -39,8 +39,9 @@ public class AudioCaptureDisplay extends DefaultDisplay {
     private Command SUBMIT_CMD = new Command("Submit", Command.OK, 1);
     private Command PLAY_CMD = new Command("Play", Command.SCREEN, 1);
 
-    public AudioCaptureDisplay(WPMidlet aMIDlet) {
+    public AudioCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Record and send audio");
+        prevScreen = aPrevScreen;
 
         int rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
         int bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
@@ -53,7 +54,10 @@ public class AudioCaptureDisplay extends DefaultDisplay {
             output = new ByteArrayOutputStream();
             recordcontrol.setRecordStream(output);
 
-            write("AUDIO RECORDER\n Use the menu to start and stop recording.\nSettings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
+            //#style labelinfo
+            append("Use the menu to start and stop recording.");
+            //#style formbox
+            append("Settings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
         } catch (Exception e) {
             Util.showAlert(midlet, "Error", "Cannot create player. Maybe audio (MMAPI) is not supported.");
             back();
@@ -91,8 +95,10 @@ public class AudioCaptureDisplay extends DefaultDisplay {
             addCommand(PLAY_CMD);
             addCommand(SUBMIT_CMD);
 
-            write("Recording stopped\n duration=" + (Util.getTime() - startTime) / 1000 + " seconds\n size=" + audioData.length / 1024 + "kb.");
-            write("Enter Recording Name");
+            //#style labelinfo
+            append("Recorded: " + (Util.getTime() - startTime) / 1000 + " secs - " + audioData.length / 1024 + "kb");
+            //#style labelinfo
+            append("Enter Recording Name");
             //#style textbox
             append(name);
             write("press Play to hear recording or Submit to upload");
@@ -103,7 +109,7 @@ public class AudioCaptureDisplay extends DefaultDisplay {
                 return;
             }
 
-            write("", "SUBMITTING AUDIO... (takes a while)");
+            write("", "Uploading... (takes a while)");
 
             JXElement rsp = Net.getInstance().uploadMedium(name.getString(), null, "audio", MIME, startTime, audioData, false);
             if (rsp == null) {
@@ -116,12 +122,15 @@ public class AudioCaptureDisplay extends DefaultDisplay {
                 JXElement addMediumRsp = Net.getInstance().utopiaReq(addMediumReq);
                 Log.log(new String(addMediumRsp.toBytes(false)));
                 if (Protocol.isPositiveResponse(addMediumRsp)) {
-                    write("submit audio OK, press Back");
+                    //#style alertinfo
+                    append("Upload succesfull!");
                 } else {
-                    write("add medium failed:" + addMediumRsp.toBytes(false));
+                    //#style alertinfo
+                    append("Upload failed:" + addMediumRsp.toBytes(false));
                 }
             } else {
-                write("submit audio failed: error is " + rsp.getAttr("error") + " press Back");
+                //#style alertinfo
+                append("Upload failed: error is " + rsp.getAttr("error") + " press Back");
             }
 
             removeCommand(SUBMIT_CMD);
@@ -132,17 +141,18 @@ public class AudioCaptureDisplay extends DefaultDisplay {
 
 
     private void back() {
-        Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
+        Display.getDisplay(midlet).setCurrent(prevScreen);
     }
 
 
     private void play() {
         if (audioData == null) {
-            write("no audio data recorded");
+            //#style alertinfo
+            append("No audio recorded");
             return;
         }
 
-        write("", "PLAYING AUDIO...");
+        write("", "Playing audio...");
 
         try {
             Manager.createPlayer(new ByteArrayInputStream(audioData), MIME).start();
@@ -157,21 +167,21 @@ public class AudioCaptureDisplay extends DefaultDisplay {
             recordcontrol.startRecord();
             player.start();
             startTime = Util.getTime();
-            write("", "RECORDING AUDIO...\n press Stop to stop recording");
+            write("", "Press STOP to stop recording");
 
             new Thread(new Runnable() {
                 public void run() {
                     int seconds = 0;
 
                     //#style formbox
-                    StringItem status = new StringItem("", "STATUS 0 secs 0 kb");
+                    StringItem status = new StringItem("", "Recording: 0 secs - 0 kb");
                     status.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_VCENTER);
                     append(status);
                     try {
                         while (player != null) {
                             Thread.sleep(1000);
                             seconds++;
-                            status.setText("STATUS" + seconds + " secs " + (seconds * kbPerSec) + " kb");
+                            status.setText("Recording: " + seconds + " secs - " + (seconds * kbPerSec) + " kb");
                         }
                     } catch (Throwable t) {
                         Log.log(t.getMessage());

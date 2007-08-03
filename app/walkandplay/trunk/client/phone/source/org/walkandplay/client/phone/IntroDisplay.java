@@ -13,11 +13,9 @@ public class IntroDisplay extends DefaultDisplay {
         prevScreen = aPrevScreen;
         
         //#style formbox
-        append(midlet.getGame().getChildText("intro"));
+        append(midlet.getPlayApp().getGame().getChildText("intro"));
 
-        addCommand(CONTINUE_CMD);
-        setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(this);
+        addCommand(CONTINUE_CMD);        
     }
 
     /*

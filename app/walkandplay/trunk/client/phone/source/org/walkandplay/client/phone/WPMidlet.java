@@ -26,8 +26,6 @@
 package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
-import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
@@ -35,15 +33,9 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 public class WPMidlet extends MIDlet implements CommandListener{
 
-    List menuScreen;
-    PlayDisplay playDisplay;
-    TraceDisplay traceDisplay;
-    private boolean playMode;
-
-    private JXElement game;
-    private JXElement gameRound;
-    private int gamePlayId;
-    private TCPClient kwClient;
+    private List menuScreen;
+    private SelectGameDisplay selectGameDisplay;
+    private CreateDisplay createDisplay;
 
     public WPMidlet() {
         super();
@@ -51,34 +43,13 @@ public class WPMidlet extends MIDlet implements CommandListener{
         //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));
     }
 
-    public void setKWClient(TCPClient aKWClient){
-        kwClient = aKWClient;
-    }
-
-    public TCPClient getKWClient(){
-        return kwClient;
-    }
-
-    public void sendRequest(JXElement aRequest){
-        try{
-            Log.log("** sent: " + new String(aRequest.toBytes(false)));
-            kwClient.utopia(aRequest);
-        }catch(Throwable t){
-            Log.log("Exception sending " + new String(aRequest.toBytes(false)));
-        }
-    }
-
-    public void setKWClientListener(XMLChannelListener aListener){
-        kwClient.setListener(aListener);
-    }
-
     public void setHome() {
         //#style mainScreen
         menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);        
-        //#style mainTraceCommand
-        menuScreen.append(Locale.get("menu.Trace"), null);
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
+        //#style mainTraceCommand
+        menuScreen.append(Locale.get("menu.Trace"), null);
         //#style mainGPSCommand
         menuScreen.append(Locale.get("menu.GPS"), null);
         //#style mainSettingsCommand
@@ -97,41 +68,11 @@ public class WPMidlet extends MIDlet implements CommandListener{
         menuScreen.append("video form", null);
         //#style mainLogCommand
         menuScreen.append("GPS test display", null);
+        //#style mainLogCommand
+        menuScreen.append("Friend Finder", null);
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
-    }
-
-    public void setPlayMode(boolean aMode) {
-        playMode = aMode;
-    }
-
-    public boolean getPlayMode() {
-        return playMode;
-    }
-
-    public void setGame(JXElement aGame) {
-        game = aGame;
-    }
-
-    public JXElement getGame() {
-        return game;
-    }
-
-    public void setGameRound(JXElement aGameRound) {
-        gameRound = aGameRound;
-    }
-
-    public JXElement getGameRound() {
-        return gameRound;
-    }
-
-    public void setGamePlayId(int anId) {
-        gamePlayId = anId;
-    }
-
-    public int getGamePlayId() {
-        return gamePlayId;
     }
 
     protected void startApp() throws MIDletStateChangeException {
@@ -154,22 +95,59 @@ public class WPMidlet extends MIDlet implements CommandListener{
         }
     }
 
+    public SelectGameDisplay getPlayApp(){
+        return selectGameDisplay;
+    }
+
+    public CreateDisplay getCreateApp(){
+        return createDisplay;
+    }
+    
+    public String getKWUrl(){
+        return getAppProperty("kw-url");
+    }
+
+    public String getKWServer(){
+        return getAppProperty("kw-server");
+    }
+
+    public String getKWUser(){
+        return getAppProperty("kw-user");
+    }
+
+    public String getKWPassword(){
+        return getAppProperty("kw-password");
+    }
+
+    public String getKWPort(){
+        return getAppProperty("kw-port");
+    }
+
+    public String getKWApp(){
+        return getAppProperty("kw-app");
+    }
+
+    public String getKWRole(){
+        return getAppProperty("kw-role");
+    }
+
     private void goToScreen(int aScreenNr) {
 
         switch (aScreenNr) {
             case 0:
-                // Trace
-                traceDisplay = new TraceDisplay(this);
-                Display.getDisplay(this).setCurrent(traceDisplay);
-                traceDisplay.start();
+                // Play
+                selectGameDisplay = new SelectGameDisplay(this);
+                Display.getDisplay(this).setCurrent(selectGameDisplay);
                 break;
             case 1:
-                // Play
-                Display.getDisplay(this).setCurrent(new SelectGameDisplay(this));
+                // Trace
+                createDisplay = new CreateDisplay(this);
+                Display.getDisplay(this).setCurrent(createDisplay);
+                createDisplay.start();
                 break;
             case 2:
                 // GPS
-                if (traceDisplay != null) traceDisplay.stop();
+                if (createDisplay != null) createDisplay.stop();
                 Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
             case 3:
@@ -204,6 +182,10 @@ public class WPMidlet extends MIDlet implements CommandListener{
             case 10:
                 // gps test display
                 Display.getDisplay(this).setCurrent(new GPSTestDisplay(this));
+                break;
+            case 11:
+                // friendfinder display
+                Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
                 break;
         }
     }

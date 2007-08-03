@@ -4,7 +4,6 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannelListener;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Net;
-import org.geotracing.client.NetListener;
 import org.geotracing.client.Preferences;
 
 import javax.microedition.lcdui.*;
@@ -22,7 +21,7 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
     public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Messaging");
         prevScreen = aPrevScreen;
-        midlet.setKWClientListener(this);
+        midlet.getPlayApp().setKWClientListener(this);
 
         net = Net.getInstance();
         if (!net.isConnected()) {
@@ -31,7 +30,7 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
         }
 
         //#style labelinfo
-        append("last message from webplayer");
+        append("last message from web player");
         //#style formbox
         append(inputField);
 
@@ -39,7 +38,7 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
             inputField.setText(comment);
         }
         //#style labelinfo
-        append("send message to webplayer");
+        append("send message to web player");
         //#style textbox
         append(outputField);
         append(alertField);
