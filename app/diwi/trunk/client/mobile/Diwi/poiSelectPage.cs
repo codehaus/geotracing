@@ -13,7 +13,7 @@ namespace Diwi {
 
     class PoiSelectPage : DiwiPageBase {
         static PoiViewerPage sPoiPage = null;
-        Label mTextBox = new Label();
+        TextBox mTextBox = new TextBox();
         List<string> poiIDs;
         XMLement mCurrentPOI;
         bool mHasContent = false;
@@ -28,11 +28,11 @@ namespace Diwi {
             this.Controls.Add(mTextBox);
 
             mTextBox.Font = new Font("Tahoma", 12, FontStyle.Regular);
-            //mTextBox.Multiline = true;
-            //mTextBox.ReadOnly = true;
-            //mTextBox.ScrollBars = ScrollBars.Vertical;
+            mTextBox.Multiline = true;
+            mTextBox.ReadOnly = true;
+            mTextBox.ScrollBars = ScrollBars.Vertical;
             mTextBox.ForeColor = Color.Black;
-            mTextBox.BackColor = mTextBox.BackColor = Color.FromArgb(198, 255, 0);
+            mTextBox.BackColor = Color.FromArgb(198, 255, 0);
 
             reOrient();
 
