@@ -22,12 +22,12 @@ namespace Diwi {
 
         void doFillMenu() {
             if (AppController.sRoutes != null && AppController.sRoutes.children.Count > 0) {
-                int maxRoutes = horizontal ? 5 : 8;
+                int maxRoutes = horizontal ? 5 : 7;
 
                 mMenu.clear();
 
                 for (int i = mRouteOffset; i < AppController.sRoutes.children.Count; i++) {
-                    if (i >= maxRoutes) {
+                    if (i-mRouteOffset >= maxRoutes) {
                         mMenu.addItem("Meer..", new DiwiUIMenu.DiwiMenuCallbackHandler(doMoreRoutes), AppController.sVolgIcon);
                         mLastRouteDisplay = i - 1;
                         break;
@@ -48,6 +48,7 @@ namespace Diwi {
         void doMoreRoutes(int i, string s) {
             mRouteOffset = mLastRouteDisplay;
             doFillMenu();
+            draw();
         }
 
         void doBekijkRoute(int i, string s) {
@@ -70,6 +71,7 @@ namespace Diwi {
             // change location of stuff
             if (mInitializing) return;
             if (base.doResize(e)) {
+                doFillMenu();
                 draw();
             }
         }
