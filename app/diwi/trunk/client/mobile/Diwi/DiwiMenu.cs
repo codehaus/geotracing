@@ -8,14 +8,14 @@ namespace Diwi {
     /// <summary>
     /// The menu and title bar on every Diwi page.
     /// </summary>
-    class DiwiUIMenu : DiwiDrawable
-    {
+    class DiwiUIMenu : DiwiDrawable {
+
         public delegate void DiwiMenuCallbackHandler(int item,string name);
 
-        public static Color sBackColor = Color.FromArgb(180, 250, 0);
-        public static Color sBarColor = Color.FromArgb(220, 250, 0);
-        public static Color sSelColor = Color.FromArgb(130, 100, 30);
-        public static Color sTextColor = Color.Black;
+        public static Color sBackColor    = Color.FromArgb(180, 250, 0);
+        public static Color sBarColor     = Color.FromArgb(220, 250, 0);
+        public static Color sSelColor     = Color.FromArgb(130, 100, 30);
+        public static Color sTextColor    = Color.Black;
         public static Color sSelTextColor = Color.FromArgb(230, 230, 230);
         static Bitmap mMiniLogo = null;
         static DateTime sLastHit = DateTime.Now;
@@ -40,6 +40,14 @@ namespace Diwi {
             if (mMiniLogo == null) {
                 mMiniLogo = new Bitmap(AppController.sAssembly.GetManifestResourceStream(@"Diwi.Resources.minis.gif"));
             }
+        }
+
+        public void clear() {
+            mCurrentMenuIndex = -1;
+            mItems = new ArrayList();
+            mCallbacks = new ArrayList();
+            mItemRects = new ArrayList();
+            mIcons = new ArrayList();
         }
 
         public bool IsMenu() {
@@ -152,16 +160,11 @@ namespace Diwi {
             int x = mParentRect.X + mParentRect.Width - 30;
             int y = mParentRect.Y;
 
-            // draw yellow bar on the side
-           // mBrush.Color = sBarColor;
-           // DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, x, y, 30, mParentRect.Height);
-
             DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, 5, 4);
             DiwiPageBase.offScreenGraphics.DrawImage(mMiniLogo, mParentRect.Width - 28 , 4);
 
             mBrush.Color = sSelColor;
             DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, 32, 4, mParentRect.Width - 32 - 4 - 30, 24);
-            // DiwiPageBase.offScreenGraphics.FillRectangle(mBrush, mParentRect.Width - 27, 4, 24, 24);
             mText.text = mParentForm.title;
             mText.x = 36;
             mText.y = 5;
