@@ -204,6 +204,5 @@ namespace Diwi {
             return SipShowIM(ShowIt ? SIPF_ON : SIPF_OFF);
 
         }
-
     }
 }

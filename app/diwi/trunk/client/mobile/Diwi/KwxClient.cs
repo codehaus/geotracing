@@ -118,6 +118,13 @@ namespace Diwi {
 
             x = getRouteList();
             if (x != null) {
+                
+                // tomtom!!
+
+                for (int i = 0; i < 10; i++) {
+                    x.addChild(x.getChild(1));
+                }
+
                 AppController.sRoutes = x;
                 if (messageCallback != null) {
                     string s = x.toString();
