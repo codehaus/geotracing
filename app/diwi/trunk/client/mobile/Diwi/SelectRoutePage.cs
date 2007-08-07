@@ -6,27 +6,52 @@ using System.Drawing;
 
 namespace Diwi {
     class SelectRoutePage : DiwiPageBase {
-        static RouteInfoPage rInfoPage = null; 
+
+        static RouteInfoPage rInfoPage = null;
+        int mRouteOffset = 0;
+        int mLastRouteDisplay = 0;
+        DiwiUIMenu.DiwiMenuCallbackHandler sr;
 
         public SelectRoutePage(DiwiPageBase parent)
             : base(parent) {
-            DiwiUIMenu.DiwiMenuCallbackHandler sr = new DiwiUIMenu.DiwiMenuCallbackHandler(doBekijkRoute);
-            if (AppController.sRoutes != null) {
-                foreach (XMLement xml in AppController.sRoutes.children) {
-                    mMenu.addItem(xml.getChildValue("name"), sr, AppController.sInfoIcon);
-                }
-                mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
-
-            } else {
-                mMenu.addItem("Geen Routes", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug),AppController.sTerugIcon);
-            }
+            sr = new DiwiUIMenu.DiwiMenuCallbackHandler(doBekijkRoute);
+            doFillMenu();
             AppController.sActiveRoute = null;
             title = "Kies Route";
         }
 
+        void doFillMenu() {
+            if (AppController.sRoutes != null && AppController.sRoutes.children.Count > 0) {
+                int maxRoutes = horizontal ? 5 : 8;
+
+                mMenu.clear();
+
+                for (int i = mRouteOffset; i < AppController.sRoutes.children.Count; i++) {
+                    if (i >= maxRoutes) {
+                        mMenu.addItem("Meer..", new DiwiUIMenu.DiwiMenuCallbackHandler(doMoreRoutes), AppController.sVolgIcon);
+                        mLastRouteDisplay = i - 1;
+                        break;
+                    }
+                    mMenu.addItem(AppController.sRoutes.getChild(i).getChildValue("name"), sr, AppController.sInfoIcon);
+                }
+
+//                foreach (XMLement xml in AppController.sRoutes.children) {
+ //                   mMenu.addItem(xml.getChildValue("name"), sr, AppController.sInfoIcon);
+ //               }
+                mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug), AppController.sTerugIcon);
+
+            } else {
+                mMenu.addItem("Geen Routes", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug), AppController.sTerugIcon);
+            }
+        }
+
+        void doMoreRoutes(int i, string s) {
+            mRouteOffset = mLastRouteDisplay;
+            doFillMenu();
+        }
 
         void doBekijkRoute(int i, string s) {
-            XMLement route = AppController.sRoutes.getChild(i);
+            XMLement route = AppController.sRoutes.getChild(i + mRouteOffset);
             if (rInfoPage == null) rInfoPage = new RouteInfoPage(this);
             rInfoPage.setContent(route);
             rInfoPage.ShowDialog();
