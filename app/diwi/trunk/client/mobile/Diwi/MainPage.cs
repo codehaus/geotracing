@@ -25,7 +25,7 @@ namespace Diwi {
             : base(parent) {
 
 
-            mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo), AppController.sVideoIcon);
+           // mMenu.addItem("Intro Video", new DiwiUIMenu.DiwiMenuCallbackHandler(doVideo), AppController.sVideoIcon);
             mMenu.addItem("Struinen", new DiwiUIMenu.DiwiMenuCallbackHandler(doStruin), AppController.sStruinIcon);
             mMenu.addItem("Kies route", new DiwiUIMenu.DiwiMenuCallbackHandler(doKiesRoute), AppController.sKiesIcon);
             mMenu.addItem("Terug naar route", new DiwiUIMenu.DiwiMenuCallbackHandler(walkRoute),
