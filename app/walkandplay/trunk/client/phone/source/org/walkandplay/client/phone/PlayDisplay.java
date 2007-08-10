@@ -3,12 +3,13 @@ package org.walkandplay.client.phone;
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Vector;
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
 /*public class PlayDisplay extends GameCanvas implements CommandListener, DownloadListener {*/
-public class PlayDisplay extends GameCanvas implements CommandListener, XMLChannelListener, TracerEngineListener {
+public class PlayDisplay extends GameCanvas implements CommandListener, TCPClientListener, GPSEngineListener {
     private GoogleMap.XY xy;
     private Image mapImage;
     private Displayable prevScreen;
@@ -39,6 +40,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     private JXElement taskHit;
     private JXElement mediumHit;
 
+    private Timer IMPollTimer;
+    private Vector IMMessages;
+    private long lastIMRetrievalTime = -1;
+    private static long POLL_INTERVAL = 60000L;
+    private IMDisplay imDisplay;
+
     private Image transBar;
     private int maxScore;
 
@@ -56,7 +63,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     String errorMsg = "";
 
     private boolean showGPSInfo = true;
-    private TracerEngine tracerEngine;
+    private GPSEngine gpsEngine;
 
     private Command ADD_TEXT_CMD = new Command(Locale.get("play.AddText"), Command.ITEM, 2);
     private Command ADD_PHOTO_CMD = new Command(Locale.get("play.AddPhoto"), Command.ITEM, 2);
@@ -71,16 +78,19 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     private Command SHOW_INTRO_CMD = new Command(Locale.get("play.ShowIntro"), Command.ITEM, 2);
     private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
 
+    private int IMCounter;
+    private int prevIMCounter;
+
     public PlayDisplay(WPMidlet aMidlet) {
         super(false);
         setFullScreenMode(true);
 
         midlet = aMidlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();
-        midlet.getPlayApp().setKWClientListener(this);
+        midlet.getActiveApp().addTCPClientListener(this);
 
         try {
-            String user = midlet.getAppProperty(Net.PROP_USER);
+            String user = midlet.getKWUser();
 
             //#ifdef polish.images.directLoad
             if (user.indexOf("red") != -1) {
@@ -159,15 +169,18 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("query-store-rsp")) {
-                if (rsp.getChildAt(0).getChildByTag("intro") != null) {
+                String cmd = rsp.getAttr("cmd");
+                if (cmd.equals("q-game")) {
+                    Log.log("Seting game record");
                     midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
-                } else {
+                } else if(cmd.equals("q-game-locations")) {
+                    Log.log("Getting game locations");
                     gameLocations = rsp.getChildrenByTag("record");
+                    Log.log("nr of locs:" + gameLocations.size());
                     // now determine the maximum attainable score
                     for (int i = 0; i < gameLocations.size(); i++) {
                         JXElement r = (JXElement) gameLocations.elementAt(i);
@@ -176,7 +189,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
                         }
                     }
                 }
-            }
+            } else if (rsp.getTag().equals("cmt-read-rsp")) {
+                IMMessages = rsp.getChildren();
+                IMCounter = rsp.getChildren().size();
+                if (IMCounter > prevIMCounter) {
+                    if (imDisplay.isActive()) {
+                        imDisplay.setMessages(IMMessages);
+                    } else {
+                        imDisplay = new IMDisplay(midlet, this, IMMessages);
+                    }
+                }
+            } 
         }
     }
 
@@ -190,13 +213,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     void start() {
         try {
             // start the traceEngine
-            tracerEngine = new TracerEngine(midlet, this, true);
-            tracerEngine.start();
-            tracerEngine.suspendResume();
+            gpsEngine = new GPSEngine(midlet, this);
+            midlet.getActiveApp().addTCPClientListener(gpsEngine);
+            gpsEngine.start();
 
             // get the game and all game locations for this game
             getGame();
             getGameLocations();
+            // start polling for IM messages
+            startIMPoll();
 
             //tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp?";
             //tileBaseURL = Net.getInstance().getURL() + "/map.srv?";
@@ -207,7 +232,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
             show();
 
         } catch (Throwable t) {
-            log("Exception in start():\n" + t.getMessage(), true);
+            log("Exception in start():" + t.getMessage(), true);
         }
     }
 
@@ -240,11 +265,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
         return lonLat != null;
     }
 
-    void stop() {
-        tracerEngine.stop();
-    }
-
-    public void setGPSInfo(GPSInfo theInfo) {
+    public void onGPSInfo(GPSInfo theInfo) {
         setLocation(theInfo.lon.toString(), theInfo.lat.toString());
         if (!showGPSInfo) {
             return;
@@ -252,7 +273,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
         status = theInfo.toString();
     }
 
-    public void setStatus(String s) {
+    public void onStatus(String s) {
         status = s;
     }
 
@@ -267,16 +288,16 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
 
     //<task-hit id="22560" state="open|hit|done" answerstate="open" mediastate="open"/>
     //<medium-hit id="22578" state="open|hit" />
-    public void setHit(JXElement aHitElement) {
+    public void onHit(JXElement aHitElement) {
         String tag = aHitElement.getTag();
-        if(tag.equals("task-hit")){
+        if (tag.equals("task-hit")) {
             taskHit = aHitElement;
             String state = taskHit.getAttr("state");
             if (!state.equals("done")) {
                 log("we found a task!!", false);
                 new TaskDisplay(midlet, Integer.parseInt(taskHit.getAttr("id")), w, this);
             }
-        }else if(tag.equals("medium-hit")){
+        } else if (tag.equals("medium-hit")) {
             mediumHit = aHitElement;
             new MediumDisplay(midlet, Integer.parseInt(mediumHit.getAttr("id")), w, this);
         }
@@ -323,6 +344,49 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     private void resetMap() {
         bbox = null;
         mapImage = null;
+    }
+
+    /*
+    <cmt-read-req>
+        <target>${trkid1}</target>
+    </cmt-read-req>
+     */
+    private void getIMMessages() {
+        JXElement req = new JXElement("cmt-read-req");
+        JXElement target = new JXElement("target");
+        target.setText("" + midlet.getPlayApp().getGamePlayId());
+        req.addChild(target);
+
+        lastIMRetrievalTime = Util.getTime();
+        midlet.getPlayApp().sendRequest(req);
+    }
+
+    private void stopIMPoll() {
+        if (IMPollTimer != null) {
+            IMPollTimer.cancel();
+            IMPollTimer = null;
+        }
+    }
+
+    private void startIMPoll() {
+        if (IMPollTimer != null) {
+            return;
+        }
+
+        IMPollTimer = new Timer();
+        TimerTask task = new Poller();
+
+        // wait five seconds before executing, then
+        // execute every ten seconds
+        IMPollTimer.schedule(task, 5000, POLL_INTERVAL);
+    }
+
+    private class Poller extends TimerTask {
+        public void run() {
+            if (Util.getTime() - lastIMRetrievalTime > POLL_INTERVAL || lastIMRetrievalTime < 0) {
+                getIMMessages();
+            }
+        }
     }
 
     /**
@@ -477,8 +541,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
     */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
-            tracerEngine.suspendResume();
-            tracerEngine.stop();
+            gpsEngine.stop();
+            stopIMPoll();
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == ADD_PHOTO_CMD) {
             new ImageCaptureDisplay(midlet, this, true);
@@ -505,7 +570,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, XMLChann
             addCommand(SHOW_LOG_CMD);
             SHOW_STATE = 0;
         } else if (cmd == IM_CMD) {
-            new IMDisplay(midlet, this);
+            imDisplay = new IMDisplay(midlet, this, IMMessages);
         } else if (cmd == SHOW_INTRO_CMD) {
             new IntroDisplay(midlet, this);
         }

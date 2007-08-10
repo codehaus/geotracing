@@ -2,7 +2,7 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.ui.StringItem;
 import nl.justobjects.mjox.JXElement;
-import org.geotracing.client.Net;
+import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Command;
@@ -10,12 +10,11 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
-public class MediumDisplay extends DefaultDisplay {
+public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
 
-    private Net net;
     private Command VIEW_VIDEO_CMD = new Command("View video in", Command.SCREEN, 2);
     private Command VIEW_VIDEO_CMD2 = new Command("View video ext", Command.SCREEN, 2);
-    private String MEDIUM_BASE_URL = Net.getInstance().getURL() + "/media.srv?id=";
+    private String MEDIUM_BASE_URL;
 
     private int mediumId;
     private int screenWidth;
@@ -29,13 +28,8 @@ public class MediumDisplay extends DefaultDisplay {
         mediumId = aMediumId;
         screenWidth = theScreenWidth;
         prevScreen = aPrevScreen;
-
-
-        net = Net.getInstance();
-        if (!net.isConnected()) {
-            net.setProperties(midlet);
-            net.start();
-        }
+        midlet.getActiveApp().addTCPClientListener(this);
+        MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
 
         name.setText("Loading...");
         //#style labelinfo
@@ -74,29 +68,27 @@ public class MediumDisplay extends DefaultDisplay {
         }
     }
 
-    private void getMedium() {
-        try {
-            // retrieve the medium
-            new Thread(new Runnable() {
-                public void run() {
-                    Log.log("retrieving the medium: " + mediumId);
-                    JXElement req = new JXElement("query-store-req");
-                    req.setAttr("cmd", "q-medium");
-                    req.setAttr("id", mediumId);
-                    JXElement rsp = net.utopiaReq(req);
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        String tag = aResponse.getTag();
+        if (tag.equals("utopia-rsp")) {
+            JXElement rsp = aResponse.getChildAt(0);
+            if (rsp.getTag().equals("query-store-rsp")) {
+                String cmd = rsp.getAttr("cmd");
+                if (cmd.equals("q-medium")) {
                     medium = rsp.getChildByTag("record");
                     String type = medium.getChildText("type");
                     String url = MEDIUM_BASE_URL + mediumId;
                     Log.log(url);
+
                     if (type.equals("image")) {
                         try {
                             url += "&resize=" + (screenWidth - 10);
                             mediumImage = Util.getImage(url);
                         } catch (Throwable t) {
-                            Log.log("Error fetching image url");
+                            Log.log("Error retrieving image");
                         }
                     } else if (type.equals("audio")) {
-                        try {
+                       try {
                             Util.playStream(url);
                             // open up real player!!!
                             //midlet.platformRequest(url);
@@ -125,10 +117,19 @@ public class MediumDisplay extends DefaultDisplay {
                     // now draw the info
                     drawMedium();
                 }
-            }).start();
-        } catch (Throwable t) {
-            Log.log("Exception in getMedium:\n" + t.getMessage());
+            }
         }
+    }
+
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+
+    }
+
+    private void getMedium() {
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-medium");
+        req.setAttr("id", mediumId);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     /*
@@ -137,6 +138,7 @@ public class MediumDisplay extends DefaultDisplay {
     */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == VIEW_VIDEO_CMD) {
             new VideoDisplay(midlet, MEDIUM_BASE_URL + mediumId, this);

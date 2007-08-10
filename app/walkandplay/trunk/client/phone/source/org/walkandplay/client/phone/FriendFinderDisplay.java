@@ -1,9 +1,7 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import org.geotracing.client.GPSFetcher;
-import org.geotracing.client.GPSLocation;
-import org.geotracing.client.Util;
+import org.geotracing.client.*;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -14,7 +12,9 @@ import java.util.Vector;
 /**
  * Monitor for geotagged objects around point.
  */
-public class FriendFinderDisplay extends GameCanvas {
+public class FriendFinderDisplay extends GameCanvas implements CommandListener, GPSFetcherListener {
+    private GPSFetcher gpsFetcher;
+
     private static final int MIN_HIT_DIST = 20;
     private static final int START_RADIUS = 50;
     private static final int MAX_OBJECTS = 10;
@@ -45,12 +45,16 @@ public class FriendFinderDisplay extends GameCanvas {
     private boolean emulator = false;
     private JXElement nearestUser;
 
+    private Command BACK_CMD = new Command("Back", Command.ITEM, 2);
+
     public FriendFinderDisplay(WPMidlet aMidlet) {
         super(false);
         setFullScreenMode(true);
         midlet = aMidlet;
         queryBaseURL = midlet.getKWUrl() + "/srv/get.jsp?cmd=q-around";
         prevScreen = Display.getDisplay(aMidlet).getCurrent();
+        startGPSFetcher();
+        addCommand(BACK_CMD);
         show();
     }
 
@@ -67,6 +71,13 @@ public class FriendFinderDisplay extends GameCanvas {
             timer = null;
         }
         active = false;
+    }
+
+    public void commandAction(Command cmd, Displayable screen) {
+        if (cmd == BACK_CMD) {
+            gpsFetcher.stop();
+            Display.getDisplay(midlet).setCurrent(prevScreen);
+        }
     }
 
     /**
@@ -394,6 +405,53 @@ public class FriendFinderDisplay extends GameCanvas {
 
             radius = targetRadius;
             setState(STATE_DETECTED);
+        }
+    }
+
+    public void onGPSConnect() {
+        Log.log(" connecting gps");
+    }
+
+    public void onGPSLocation(GPSLocation aLocation) {
+        Log.log("gps location");
+    }
+
+    public void onGPSInfo(GPSInfo theInfo) {
+        Log.log("gps info");
+    }
+
+    public void onGPSDisconnect() {
+        Log.log("gps disconnect");
+    }
+
+    public void onGPSError(String aReason, Throwable anException) {
+        Log.log("gps error");
+    }
+
+    public void onGPSStatus(String aStatusMsg) {
+        Log.log("gps status:" + aStatusMsg);
+    }
+
+    public void onGPSTimeout() {
+        Log.log("gps timeout");
+    }
+
+    private void startGPSFetcher() {
+        try {
+            String gpsURL = GPSSelector.getGPSURL();
+            if (gpsURL == null) {
+                onGPSStatus("NO GPS");
+                return;
+            }
+
+            long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
+            gpsFetcher = GPSFetcher.getInstance();
+            gpsFetcher.setListener(this);
+            gpsFetcher.setURL(gpsURL);
+            gpsFetcher.start(GPS_SAMPLE_INTERVAL);
+        } catch (Throwable t) {
+            onGPSStatus("start error");
+            gpsFetcher = null;
         }
     }
 }

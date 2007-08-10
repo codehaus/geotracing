@@ -2,17 +2,16 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
 
-public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
+public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
     private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
-    private String MEDIUM_BASE_URL = Net.getInstance().getURL() + "/media.srv?id=";
+    private String MEDIUM_BASE_URL;
 
     private TextField inputField;
     private int screenWidth;
@@ -24,35 +23,38 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
         super(aMIDlet, "Task");
         screenWidth = theScreenWidth;
         prevScreen = aPrevScreen;
-        midlet.getPlayApp().setKWClientListener(this);
+        midlet.getActiveApp().addTCPClientListener(this);
+        MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
         taskId = aTaskId;
 
         getTask();
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("query-store-rsp")) {
-                task = rsp.getChildByTag("record");
-                if (task != null) {
-                    String mediumId = task.getChildText("mediumid");
-                    String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
-                    try {
-                        taskImage = Util.getImage(url);
-                    } catch (Throwable t) {
+                String cmd = rsp.getAttr("cmd");
+                if(cmd.equals("q-task")){
+                    task = rsp.getChildByTag("record");
+                    if (task != null) {
+                        String mediumId = task.getChildText("mediumid");
+                        String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
+                        try {
+                            taskImage = Util.getImage(url);
+                        } catch (Throwable t) {
+                            //#style alertinfo
+                            append("Could not get the image for this task");
+                            Log.log("Error fetching task image url: " + url);
+                        }
+                        drawScreen();
+                    } else {
+                        deleteAll();
+                        addCommand(BACK_CMD);
                         //#style alertinfo
-                        append("Could not get the image for this task");
-                        Log.log("Error fetching task image url: " + url);
+                        append("Serious error: No task found");
                     }
-                    drawScreen();
-                } else {
-                    deleteAll();
-                    addCommand(BACK_CMD);
-                    //#style alertinfo                    
-                    append("Serious error: No task found");
                 }
             } else if (rsp.getTag().equals("play-answertask-rsp")) {
                 deleteAll();
@@ -77,6 +79,11 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
                     //#style alertinfo
                     append("Oops, wrong answer! Try again...");
                 }
+            }else if (rsp.getTag().equals("play-answertask-nrsp")) {
+                deleteAll();
+                addCommand(BACK_CMD);
+                //#style alertinfo
+                append("Serious error: " + rsp.getAttr("details"));
             }
         }
     }
@@ -107,7 +114,7 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-task");
         req.setAttr("id", taskId);
-        midlet.getPlayApp().sendRequest(req);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     /*
@@ -127,7 +134,7 @@ public class TaskDisplay extends DefaultDisplay implements XMLChannelListener {
                 JXElement req = new JXElement("play-answertask-req");
                 req.setAttr("id", taskId);
                 req.setAttr("answer", inputField.getString());
-                midlet.getPlayApp().sendRequest(req);
+                midlet.getActiveApp().sendRequest(req);
             }
         } else if (command == OUTRO_CMD) {
             new OutroDisplay(midlet);

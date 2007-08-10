@@ -2,19 +2,18 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
 /**
- * MobiTracer main GUI.
+ * Edit Game display
  *
- * @author Just van den Broecke
+ * @author Ronald Lenz
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-public class EditGameDisplay extends DefaultDisplay implements XMLChannelListener {
+public class EditGameDisplay extends DefaultDisplay implements TCPClientListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable games = new Hashtable(2);
 
@@ -33,7 +32,7 @@ public class EditGameDisplay extends DefaultDisplay implements XMLChannelListene
             logo = scheduleImage("/play_icon_small.png");
             //#endif
 
-            midlet.getCreateApp().setKWClientListener(this);
+            midlet.getActiveApp().addTCPClientListener(this);
             addCommand(OK_CMD);
 
             getGamesByUser();
@@ -44,7 +43,6 @@ public class EditGameDisplay extends DefaultDisplay implements XMLChannelListene
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
 
         if (tag.equals("utopia-rsp")) {
@@ -83,7 +81,7 @@ public class EditGameDisplay extends DefaultDisplay implements XMLChannelListene
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-games-by-user");
         req.setAttr("user", midlet.getKWUser());
-        midlet.getCreateApp().sendRequest(req);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     /*

@@ -2,19 +2,15 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
-import org.geotracing.client.GPSFetcher;
-import org.geotracing.client.Net;
-import org.geotracing.client.Util;
+import org.geotracing.client.*;
 import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
 
-public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener {
+public class AddTextDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
 
-    private Net net;
     private TextField nameField;
     private TextField textField;
     private StringItem alertField = new StringItem("", "");
@@ -25,18 +21,7 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
         prevScreen = aPrevScreen;
         playing = isPlaying;
 
-        // TODO: make a better solution for this boolean
-        if (isPlaying) {
-            midlet.getPlayApp().setKWClientListener(this);
-        } else {
-            midlet.getCreateApp().setKWClientListener(this);
-        }
-
-        net = Net.getInstance();
-        if (!net.isConnected()) {
-            net.setProperties(midlet);
-            net.start();
-        }
+        midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
         append("Enter Title");
@@ -62,20 +47,25 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
-            deleteAll();
-            addCommand(BACK_CMD);
-            //#style alertinfo
-            append(alertField);
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                deleteAll();
+                addCommand(BACK_CMD);
+                //#style alertinfo
+                append(alertField);
+                
                 alertField.setText("Text sent successfully");
-            } else if (rsp.getTag().equals("play-add-medium-nrsp")) {
+            } else if (rsp.getTag().indexOf("-nrsp")!=-1) {
+                deleteAll();
+                addCommand(BACK_CMD);
+                //#style alertinfo
+                append(alertField);
+
                 textField.setString("");
                 nameField.setString("");
-                alertField.setText("Error sending text - please try again.");
+                alertField.setText("Error sending text - please try again.\n" + rsp.getAttr("details"));
             }
         }
     }
@@ -86,6 +76,37 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
         //#style alertinfo
         append("Oops, we lost our connection. Please go back and try again.");
     }
+
+    public JXElement uploadMedium(String aName, String aDescription, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
+		HTTPUploader uploader = new HTTPUploader();
+		JXElement rsp = null;
+		try {
+			uploader.connect(midlet.getKWUrl() + "/media.srv");
+			if (aName == null || aName.length() == 0) {
+				aName = "unnamed " + aType;
+			}
+
+            String agentKey;
+            if (playing) {
+                agentKey = midlet.getPlayApp().getTCPClient().getAgentKey();
+            } else {
+                agentKey = midlet.getCreateApp().getTCPClient().getAgentKey();
+            }
+
+            Log.log("agentkey:" + agentKey);
+
+            uploader.writeField("agentkey", agentKey);
+			uploader.writeField("name", aName);
+			uploader.writeField("description", aDescription);
+			uploader.writeFile(aName, aMime, "mobit-upload", theData);
+
+            rsp = uploader.getResponse();
+
+        } catch (Throwable t) {
+			Log.log("Upload error: " + t);
+		}
+		return rsp;
+	}
 
     /*
     * The commandAction method is implemented by this midlet to
@@ -101,7 +122,8 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
                 alertField.setText("Please type some text...");
             } else {
                 //String tags = tagsField.getString();
-                JXElement rsp = net.uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                //JXElement rsp = uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                JXElement rsp = Net.getInstance().uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
                 if (Protocol.isPositiveResponse(rsp)) {
                     //now do an add medium
                     if (playing) {
@@ -131,6 +153,7 @@ public class AddTextDisplay extends DefaultDisplay implements XMLChannelListener
                 }
             }
         } else if (command == BACK_CMD) {
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

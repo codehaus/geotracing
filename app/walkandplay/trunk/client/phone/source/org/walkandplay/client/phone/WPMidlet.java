@@ -36,11 +36,20 @@ public class WPMidlet extends MIDlet implements CommandListener {
     private List menuScreen;
     private SelectGameDisplay selectGameDisplay;
     private CreateDisplay createDisplay;
+    private DefaultAppDisplay activeApp;
+
+    public final static String KW_URL = "kw-url";
+    public final static String KW_USER = "kw-user";
+    public final static String KW_PASSWORD = "kw-password";
+    public final static String KW_SERVER = "kw-server";
+    public final static String KW_PORT = "kw-port";
+    public final static String KW_APP = "kw-app";
+    public final static String KW_ROLE = "kw-role";
 
     public WPMidlet() {
         super();
-        setHome();
-        //Display.getDisplay(this).setCurrent(new SplashCanvas(this, 1));
+        //setHome();
+        Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
     }
 
     public void setHome() {
@@ -104,31 +113,35 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     public String getKWUrl() {
-        return getAppProperty("kw-url");
+        return getAppProperty(KW_URL);
     }
 
     public String getKWServer() {
-        return getAppProperty("kw-server");
+        return getAppProperty(KW_SERVER);
     }
 
     public String getKWUser() {
-        return getAppProperty("kw-user");
+        return getAppProperty(KW_USER);
     }
 
     public String getKWPassword() {
-        return getAppProperty("kw-password");
+        return getAppProperty(KW_PASSWORD);
     }
 
-    public String getKWPort() {
-        return getAppProperty("kw-port");
+    public int getKWPort() {
+        return Integer.parseInt(getAppProperty(KW_PORT));
     }
 
     public String getKWApp() {
-        return getAppProperty("kw-app");
+        return getAppProperty(KW_APP);
     }
 
     public String getKWRole() {
-        return getAppProperty("kw-role");
+        return getAppProperty(KW_ROLE);
+    }
+
+    public DefaultAppDisplay getActiveApp(){
+        return activeApp;
     }
 
     private void goToScreen(int aScreenNr) {
@@ -137,13 +150,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
             case 0:
                 // Play
                 selectGameDisplay = new SelectGameDisplay(this);
-                Display.getDisplay(this).setCurrent(selectGameDisplay);
+                activeApp = selectGameDisplay;
+                Display.getDisplay(this).setCurrent(activeApp);
                 break;
             case 1:
-                // Trace
+                // Create
                 createDisplay = new CreateDisplay(this);
-                Display.getDisplay(this).setCurrent(createDisplay);
-                createDisplay.start();
+                activeApp = createDisplay;
+                Display.getDisplay(this).setCurrent(activeApp);
                 break;
             case 2:
                 // GPS
@@ -159,7 +173,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 5:
                 // Quit
-                Display.getDisplay(this).setCurrent(new SplashCanvas(this, -1));
+                Display.getDisplay(this).setCurrent(new SplashDisplay(this, -1));
                 //notifyDestroyed();
                 break;
             case 6:

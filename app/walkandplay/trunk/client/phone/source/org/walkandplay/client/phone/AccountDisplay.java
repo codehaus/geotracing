@@ -12,15 +12,8 @@ import javax.microedition.rms.RecordStoreException;
 
 /**
  * Allows changing account preferences.
- * <p/>
- * Account preferences (user,password,server URL) can be configured in
- * JAD/JAR file, but may be changed and stored in RMS. The values in the RMS
- * will always prevail.
- * <p/>
- * In this Form a user can change account settings and store these in RMS.
- * Currently it is required to restart the Midlet after such change.
  *
- * @author Just van den Broecke
+ * @author Ronald Lenz
  * @version $Id: AccountScreen.java 128 2006-10-30 16:17:38Z just $
  */
 public class AccountDisplay extends DefaultDisplay {
@@ -33,18 +26,14 @@ public class AccountDisplay extends DefaultDisplay {
     public AccountDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Account");
 
-        addCommand(OK_CMD);
+        String user = getPreferences().get(WPMidlet.KW_URL, midlet.getKWUser());
+        String password = getPreferences().get(WPMidlet.KW_PASSWORD, midlet.getKWPassword());
+        String url = getPreferences().get(WPMidlet.KW_URL, midlet.getKWUrl());
 
-        String user = getPreferences().get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
-
-        String password = getPreferences().get(Net.PROP_PASSWORD, midlet.getAppProperty(Net.PROP_PASSWORD));
-
-        String url = getPreferences().get(Net.PROP_URL, midlet.getAppProperty(Net.PROP_URL));
-
-        // Create input fields for user/password/url
         userField = new TextField("", user, 16, TextField.ANY);
         passwordField = new TextField("", password, 16, TextField.PASSWORD);
         urlField = new TextField("", url, 512, TextField.ANY);
+
         //#style labelinfo
         append("user");
         //#style textbox
@@ -58,20 +47,11 @@ public class AccountDisplay extends DefaultDisplay {
         //#style textbox
         append(urlField);
 
-        // OK/cancel midlet menu
         addCommand(OK_CMD);
-
-        // Set the command listener for callback
         setCommandListener(this);
-
-        // Set our Form as  current display of the midlet
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    /*
-        * The commandAction method is implemented by this midlet to
-        * satisfy the CommandListener interface and handle the Cancel action.
-        */
     public void commandAction(Command command, Displayable screen) {
         if (command == OK_CMD) {
             String user = userField.getString();
