@@ -196,7 +196,8 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 			result = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, Protocol.__4005_Unexpected_error, t.getMessage());
 			log.error("Unexpected Error during query", t);
 		}
-		return result;
+        result.setAttr("cmd", aQueryName);
+        return result;
 	}
 
 	/**
