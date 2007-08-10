@@ -1,6 +1,5 @@
 package org.walkandplay.client.phone;
 
-import org.geotracing.client.Net;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Command;
@@ -47,7 +46,7 @@ public class VersionDisplay extends DefaultDisplay {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == FETCH_CMD) {
             try {
-                midlet.platformRequest(Net.getInstance().getURL() + "/ota/version.html");
+                midlet.platformRequest(midlet.getKWUrl() + "/ota/version.html");
             } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());

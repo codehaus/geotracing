@@ -8,28 +8,22 @@ import org.keyworx.mclient.ClientException;
 import org.keyworx.mclient.Protocol;
 import org.keyworx.mclient.ProtocolException;
 
+import java.util.Vector;
+
 /**
- * Basic KeyWorx client using XML over HTTP.
- * <p/>
- * Use this class within J2ME MIDlets. Should work at least
- * for MIDP2, and possibly MIDP1.
+ * Basic TCP Client.
  *
- * @author Just van den Broecke
+ * @author Ronald Lenz
  * @version $Id: TCPClient.java,v 1.3 2006/08/04 12:28:26 just Exp $
  * @see org.keyworx.mclient.HTTPMidlet
  */
 
-public class TCPClient extends Protocol {
+public class TCPClient extends Protocol implements XMLChannelListener {
 
     /**
      * Default KW session timeout (minutes).
      */
     public static final int DEFAULT_TIMEOUT_MINS = 5;
-
-    /**
-     * Debug flag for verbose output.
-     */
-    private boolean debug;
 
     /**
      * Key gotten on login ack
@@ -47,25 +41,70 @@ public class TCPClient extends Protocol {
     private JXElement selectAppRequest;
 
     private XMLChannel xmlChannel;
+    private Vector listeners = new Vector(3);
+    private static final TCPClient instance = new TCPClient();
 
-    /**
-     * Constructor with full protocol URL e.g. http://www.bla.com/proto.srv.
-     */
-    public TCPClient(String aServer, int aPort) throws ClientException {
+    private TCPClient() {
+
+    }
+
+    public static TCPClient getInstance() {
+        return instance;
+    }
+
+    public void start(String aServer, int aPort) throws ClientException {
         try {
             xmlChannel = new SocketXMLChannel(aServer, aPort);
             xmlChannel.start();
+            xmlChannel.setListener(this);
         } catch (Throwable t) {
             throw new ClientException("Could not connect to " + aServer + " at port " + aPort);
         }
     }
 
-    synchronized public void setListener(XMLChannelListener aListener) {
-        xmlChannel.setListener(aListener);
+    synchronized public void stop() {
+        try {
+            logout();
+        } catch (Throwable t) {
+            // nada - we stop anyway
+        }
+
+        if (xmlChannel != null) {
+            xmlChannel.stop();
+            xmlChannel = null;
+        }
+    }
+
+
+    synchronized public void addListener(TCPClientListener aListener) {
+        listeners.addElement(aListener);
+        Log.log("Added TCPClientListener # " + listeners.size());
+    }
+
+    synchronized public void removeListener(TCPClientListener aListener) {
+        listeners.removeElement(aListener);
+        Log.log("Removed TCPClientListener # " + listeners.size());
+    }
+
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("** received:" + new String(aResponse.toBytes(false)));
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TCPClientListener) listeners.elementAt(i)).accept(anXMLChannel, aResponse);
+        }
+    }
+
+    public void onStop(XMLChannel anXMLChannel, String aReason) {
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TCPClientListener) listeners.elementAt(i)).onStop(anXMLChannel, aReason);
+        }
     }
 
     synchronized public void setAgentKey(JXElement aLoginResponse) {
         agentKey = aLoginResponse.getAttr("agentkey");
+    }
+
+    synchronized public String getAgentKey() {
+        return agentKey;
     }
 
     /**
@@ -127,7 +166,6 @@ public class TCPClient extends Protocol {
         doRequest(request);
     }
 
-
     /**
      * Logout from portal.
      */
@@ -141,39 +179,12 @@ public class TCPClient extends Protocol {
         doRequest(request);
     }
 
-    public void setDebug(boolean b) {
-        debug = b;
-    }
-
-    synchronized public void restart() throws ClientException {
-        if (xmlChannel != null) {
-            xmlChannel.stop();
-            xmlChannel = null;
-        }
-        doRequest(loginRequest);
-    }
-
-    /**
-     * Throw exception on negative protocol response.
-     */
-    private void throwOnNrsp(JXElement anJXElement) throws ProtocolException {
-        if (isNegativeResponse(anJXElement)) {
-            String details = "no details";
-            if (anJXElement.hasAttr(ATTR_DETAILS)) {
-                details = anJXElement.getAttr(ATTR_DETAILS);
-            }
-            throw new ProtocolException(anJXElement.getIntAttr(ATTR_ERRORID),
-                    anJXElement.getAttr(ATTR_ERROR), details);
-        }
-    }
-
     /**
      * Throw exception when not logged in.
      */
     private void throwOnInvalidSession() throws ClientException {
         if (agentKey == null) {
-            /*throw new ClientException("Invalid keyworx session");*/
-            restart();
+            throw new ClientException("Invalid keyworx session");
         }
     }
 
@@ -182,41 +193,12 @@ public class TCPClient extends Protocol {
      */
     private void doRequest(JXElement anJXElement) throws ClientException {
         try {
-            System.out.println("Sending " + new String(anJXElement.toBytes(false)));
+            Log.log("** sending " + new String(anJXElement.toBytes(false)));
             xmlChannel.push(anJXElement);
         } catch (Throwable t) {
-            System.out.println("Exception sending " +
-                    new String(anJXElement.toBytes(false)) + ":" + t.getMessage());
-            restart();
+            Log.log("Exception sending " + new String(anJXElement.toBytes(false)) + ":" + t.getMessage());
         }
     }
 
-
-    /**
-     * Util: print.
-     */
-    private void p(String s) {
-        if (debug) {
-            System.out.println("[TCPClient] " + s);
-        }
-    }
-
-    /**
-     * Util: warn.
-     */
-    private void warn(String s) {
-        warn(s, null);
-    }
-
-    /**
-     * Util: warn with exception.
-     */
-    private void warn(String s, Throwable t) {
-        System.err.println("[TCPClient] - WARN - " + s + " ex=" + t);
-
-        if (t != null) {
-            t.printStackTrace();
-        }
-    }
 
 }

@@ -32,7 +32,7 @@ public class Log {
 
     /*
      * Create the first TextBox and associate
-     * the exit command and listener.
+     * the exit command and gpsEngineListener.
      */
     public static void view(MIDlet aMidlet) {
         final Displayable prevScreen = Display.getDisplay(aMidlet).getCurrent();
@@ -43,7 +43,7 @@ public class Log {
         // Single command to go back to prev screen
         form.addCommand(new Command("Back", Command.BACK, 1));
 
-        // Set the command listener for the textbox to the current midlet
+        // Set the command gpsEngineListener for the textbox to the current midlet
         form.setCommandListener(new CommandListener() {
             public void commandAction(Command command, Displayable screen) {
                 // Go back to caller screen

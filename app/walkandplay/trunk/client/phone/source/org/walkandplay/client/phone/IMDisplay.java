@@ -2,41 +2,32 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
-import org.geotracing.client.Net;
-import org.geotracing.client.Preferences;
 
 import javax.microedition.lcdui.*;
+import java.util.Vector;
 
-public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
+public class IMDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command SUBMIT_CMD = new Command("Send", Command.OK, 1);
 
     private StringItem inputField = new StringItem("", "");
     private TextField outputField = new TextField("", "", 32, TextField.ANY);
     private StringItem alertField = new StringItem("", "");
-    private Net net;
-    private String comment = "";
+    private Vector messages;
+    private boolean active;
 
-    public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, Vector theMessages) {
         super(aMIDlet, "Messaging");
         prevScreen = aPrevScreen;
-        midlet.getPlayApp().setKWClientListener(this);
-
-        net = Net.getInstance();
-        if (!net.isConnected()) {
-            net.setProperties(midlet);
-            net.start();
-        }
+        midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
         append("last message from web player");
         //#style formbox
         append(inputField);
 
-        if (comment.length() > 0) {
-            inputField.setText(comment);
-        }
+        setMessages(theMessages);
+
         //#style labelinfo
         append("send message to web player");
         //#style textbox
@@ -44,10 +35,22 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
         append(alertField);
 
         addCommand(SUBMIT_CMD);
+
+        active = true;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setMessages(Vector theMessages) {
+        messages = theMessages;
+        if (messages != null && messages.size() > 0) {
+            inputField.setText(((JXElement) messages.elementAt(0)).getChildText("content"));
+        }
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
@@ -64,42 +67,28 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
         append("Oops, we lost our connection. Please go back and try again.");
     }
 
-    private void sendMsg() {
-        try {
-            new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        String user = new Preferences(Net.RMS_STORE_NAME).get(Net.PROP_USER, midlet.getAppProperty(Net.PROP_USER));
+    /*
+    <cmt-insert-req>
+        <target>${trkid1}</target>
+        <content>comments on this track</content>
+    </cmt-insert-req>
+    <cmt-read-req>
+        <target>${trkid1}</target>
+    </cmt-read-req>
+     */
+    private void sendMessage(String aMessage) {
+        JXElement req = new JXElement("cmt-insert-req");
+        JXElement target = new JXElement("target");
+        target.setText("" + midlet.getPlayApp().getGamePlayId());
+        req.addChild(target);
 
-                        JXElement req = new JXElement("cmt-insert-req");
-                        JXElement comment = new JXElement("comment");
-                        req.addChild(comment);
-                        JXElement targetPerson = new JXElement("targetperson");
-                        JXElement author = new JXElement("author");
-                        author.setText(user);
-                        comment.addChild(author);
-                        JXElement content = new JXElement("content");
-                        content.setText(outputField.getString());
-                        comment.addChild(content);
-                        Log.log(new String(req.toBytes(false)));
-                        JXElement rsp = net.utopiaReq(req);
-                        //JXElement rsp = net.utopiaReq(req);
-                        Log.log(new String(rsp.toBytes(false)));
-                        if (rsp.getTag().indexOf("-rsp") != -1) {
-                            alertField.setText("msg sent!");
-                        } else {
-                            alertField.setText("error sending msg!");
-                        }
-                        Log.log(new String(rsp.toBytes(false)));
-                    } catch (Throwable t) {
-                        alertField.setText(t.getMessage());
-                    }
-                }
-            }).start();
-        } catch (Throwable t) {
-            Log.log("Exception in sendMsg:\n" + t.getMessage());
-        }
+        JXElement content = new JXElement("content");
+        content.setText(aMessage);
+        req.addChild(content);
+
+        midlet.getActiveApp().sendRequest(req);
     }
+
 
     /*
     * The commandAction method is implemented by this midlet to
@@ -110,9 +99,11 @@ public class IMDisplay extends DefaultDisplay implements XMLChannelListener {
             if (outputField.getString() == null) {
                 alertField.setText("No text typed");
             } else {
-                sendMsg();
+                sendMessage(outputField.getString());
             }
         } else if (command == BACK_CMD) {
+            active = false;
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

@@ -2,14 +2,13 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextField;
 
-public class NewGameDisplay extends DefaultDisplay implements XMLChannelListener {
+public class NewGameDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
     private TextField inputField;
@@ -18,7 +17,7 @@ public class NewGameDisplay extends DefaultDisplay implements XMLChannelListener
     public NewGameDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "New game");
         prevScreen = aPrevScreen;
-        midlet.getCreateApp().setKWClientListener(this);
+        midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
         append("Create a new game");
@@ -30,7 +29,6 @@ public class NewGameDisplay extends DefaultDisplay implements XMLChannelListener
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
@@ -68,7 +66,7 @@ public class NewGameDisplay extends DefaultDisplay implements XMLChannelListener
         /*JXElement state = new JXElement("state");
         state.setText("0");
         game.addChild(state);*/
-        midlet.getCreateApp().sendRequest(req);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     public void commandAction(Command command, Displayable screen) {

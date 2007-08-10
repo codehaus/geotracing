@@ -188,11 +188,11 @@ public class GPSTestDisplay extends DefaultDisplay implements CommandListener, L
     }
 
     private void setListener() {
-        show("setListener");
+        show("addListener");
         try {
             lp.setLocationListener(this, 2, -1, -1);
         } catch (Throwable t) {
-            show("setListener exception:" + t.toString());
+            show("addListener exception:" + t.toString());
         }
     }
 

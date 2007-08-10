@@ -3,7 +3,6 @@ package org.walkandplay.client.phone;
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
 
@@ -14,7 +13,7 @@ import java.util.Vector;
 /**
  * SHows moving dot on map.
  */
-public class MapDisplay extends GameCanvas implements CommandListener, XMLChannelListener, TracerEngineListener {
+public class MapDisplay extends GameCanvas implements CommandListener, TCPClientListener, GPSEngineListener {
     private Image mapImage;
     private Displayable prevScreen;
     private String tileBaseURL;
@@ -57,11 +56,10 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
 
         midlet = aMidlet;
         prevScreen = aPrevScreen;
-        midlet.getCreateApp().setKWClientListener(this);
-        midlet.getCreateApp().getTracer().setListener(this);
+        midlet.getActiveApp().addTCPClientListener(this);
 
         try {
-            String user = midlet.getAppProperty(Net.PROP_USER);
+            String user = midlet.getKWUser();
 
             //#ifdef polish.images.directLoad
             if (user.indexOf("red") != -1) {
@@ -133,12 +131,15 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("query-store-rsp")) {
-                gameLocations = rsp.getChildrenByTag("record");
+                String cmd = rsp.getAttr("cmd");
+                if(cmd.equals("q-game-locations")){
+                    Log.log("setting the gamelocations");
+                    gameLocations = rsp.getChildrenByTag("record");
+                }
             }
         }
     }
@@ -154,7 +155,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
         try {
             // get all game locations for this game
             String gameId = midlet.getCreateApp().getGameId();
-            if(gameId!=null && gameId.length()>0){
+            if (gameId != null && gameId.length() > 0) {
                 getGameLocations(gameId);
             }
 
@@ -173,7 +174,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-game-locations");
         req.setAttr("id", aGameId);
-        midlet.getCreateApp().sendRequest(req);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     public void setLocation(String aLon, String aLat) {
@@ -195,7 +196,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
 
     }
 
-    public void setGPSInfo(GPSInfo theInfo) {
+    public void onGPSInfo(GPSInfo theInfo) {
         setLocation(theInfo.lon.toString(), theInfo.lat.toString());
         if (!showGPSInfo) {
             return;
@@ -203,7 +204,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
         status = theInfo.toString();
     }
 
-    public void setStatus(String s) {
+    public void onStatus(String s) {
         status = s;
     }
 
@@ -230,8 +231,8 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
         }
     }
 
-    public void setHit(JXElement aHitElement) {
-        
+    public void onHit(JXElement aHitElement) {
+
     }
 
     private void log(String aMsg, boolean isError) {
@@ -392,7 +393,6 @@ public class MapDisplay extends GameCanvas implements CommandListener, XMLChanne
     */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
-            midlet.getCreateApp().getTracer().setListener(midlet.getCreateApp());
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == ZOOM_IN_CMD) {
             zoomIn();

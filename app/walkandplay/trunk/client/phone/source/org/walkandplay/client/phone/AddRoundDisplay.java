@@ -2,11 +2,10 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.*;
 
-public class AddRoundDisplay extends DefaultDisplay implements XMLChannelListener {
+public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
 
@@ -17,8 +16,7 @@ public class AddRoundDisplay extends DefaultDisplay implements XMLChannelListene
     public AddRoundDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Add game round");
         prevScreen = aPrevScreen;
-
-        midlet.getCreateApp().setKWClientListener(this);
+        midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
         append("Enter Title");
@@ -31,20 +29,24 @@ public class AddRoundDisplay extends DefaultDisplay implements XMLChannelListene
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
-            deleteAll();
-            addCommand(BACK_CMD);
-            //#style alertinfo
-            append(alertField);
             if (rsp.getTag().equals("round-create-rsp")) {
+                clearScreen();
                 alertField.setText("Game round '" + gameRoundName + "' added");
             } else if (rsp.getTag().equals("round-create-nrsp")) {
+                clearScreen();
                 alertField.setText("Error adding game round '" + gameRoundName + "'. Please try again.");
             }
         }
+    }
+
+    private void clearScreen(){
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append(alertField);
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
@@ -60,13 +62,9 @@ public class AddRoundDisplay extends DefaultDisplay implements XMLChannelListene
         req.setAttr("gameid", midlet.getCreateApp().getGameId());
         req.setAttr("name", aGameRoundName);
         req.setAttr("players", midlet.getKWUser());
-        midlet.getCreateApp().sendRequest(req);
+        midlet.getActiveApp().sendRequest(req);
     }
 
-    /*
-    * The commandAction method is implemented by this midlet to
-    * satisfy the CommandListener interface and handle the Exit action.
-    */
     public void commandAction(Command command, Displayable screen) {
         if (command == OK_CMD) {
             gameRoundName = nameField.getString();
@@ -78,6 +76,7 @@ public class AddRoundDisplay extends DefaultDisplay implements XMLChannelListene
                 createGameRound(gameRoundName);
             }
         } else if (command == BACK_CMD) {
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

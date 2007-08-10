@@ -4,7 +4,6 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
@@ -26,7 +25,7 @@ import java.io.ByteArrayOutputStream;
  * @author Just van den Broecke
  * @version $Id: AudioCapture.java 222 2006-12-10 00:17:59Z just $
  */
-public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelListener {
+public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Player player;
     private RecordControl recordcontrol;
@@ -37,6 +36,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelLis
     private long startTime;
     final int kbPerSec;
     private boolean playing;
+
     private StringItem alertField = new StringItem("", "");
 
     private Command START_CMD = new Command("Start", Command.OK, 1);
@@ -48,12 +48,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelLis
         super(aMIDlet, "Record and send audio");
         prevScreen = aPrevScreen;
         playing = isPlaying;
-
-        if (isPlaying) {
-            midlet.getPlayApp().setKWClientListener(this);
-        } else {
-            midlet.getCreateApp().setKWClientListener(this);
-        }
+        midlet.getActiveApp().addTCPClientListener(this);
 
         int rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
         int bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
@@ -79,20 +74,24 @@ public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelLis
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
-            deleteAll();
-            addCommand(BACK_CMD);
-            //#style alertinfo
-            append(alertField);
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                clearScreen();
                 alertField.setText("Audio sent successfully");
             } else if (rsp.getTag().equals("play-add-medium-nrsp")) {
+                clearScreen();
                 alertField.setText("Error sending audio - please try again.");
             }
         }
+    }
+
+    private void clearScreen(){
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append(alertField);
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
@@ -151,12 +150,12 @@ public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelLis
             if (rsp == null) {
                 write("cannot submit audio!");
             } else if (Protocol.isPositiveResponse(rsp)) {
+                JXElement addMediumReq;
                 if (playing) {
-                    JXElement addMediumReq = new JXElement("play-add-medium-req");
+                    addMediumReq = new JXElement("play-add-medium-req");
                     addMediumReq.setAttr("id", rsp.getAttr("id"));
-                    midlet.getPlayApp().sendRequest(addMediumReq);
                 } else {
-                    JXElement addMediumReq = new JXElement("game-add-medium-req");
+                    addMediumReq = new JXElement("game-add-medium-req");
                     addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
                     JXElement medium = new JXElement("medium");
                     addMediumReq.addChild(medium);
@@ -173,8 +172,9 @@ public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelLis
                     lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
                     medium.addChild(lon);
 
-                    midlet.getCreateApp().sendRequest(addMediumReq);
+
                 }
+                midlet.getActiveApp().sendRequest(addMediumReq);
             } else {
                 //#style alertinfo
                 append("Upload failed: error is " + rsp.getAttr("error") + " press Back");
@@ -188,6 +188,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements XMLChannelLis
 
 
     private void back() {
+        midlet.getActiveApp().removeTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(prevScreen);
     }
 

@@ -3,7 +3,6 @@ package org.walkandplay.client.phone;
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 
 import javax.microedition.lcdui.*;
 import java.util.Hashtable;
@@ -15,8 +14,7 @@ import java.util.Vector;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListener {
-    private TCPClient kwClient;
+public class SelectGameDisplay extends DefaultAppDisplay implements TCPClientListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable gameRounds = new Hashtable(2);
     private int gamePlayId;
@@ -47,13 +45,10 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
 
     private void connect() {
         try {
-            if (kwClient != null) {
-                kwClient.restart();
-            } else {
-                kwClient = new TCPClient(midlet.getKWServer(), Integer.parseInt(midlet.getKWPort()));
-                setKWClientListener(this);
-                kwClient.login(midlet.getKWUser(), midlet.getKWPassword());
-            }
+            tcpClient = TCPClient.getInstance();
+            tcpClient.start(midlet.getKWServer(), midlet.getKWPort());
+            tcpClient.addListener(this);
+            tcpClient.login(midlet.getKWUser(), midlet.getKWPassword());
         } catch (Throwable t) {
             deleteAll();
             addCommand(BACK_CMD);
@@ -63,13 +58,12 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("login-rsp")) {
             try {
                 Log.log("send select app");
-                kwClient.setAgentKey(aResponse);
-                kwClient.selectApp("geoapp", "user");
+                tcpClient.setAgentKey(aResponse);
+                tcpClient.selectApp(midlet.getKWApp(), midlet.getKWRole());
             } catch (Throwable t) {
                 Log.log("Selectapp failed:" + t.getMessage());
             }
@@ -82,29 +76,33 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
             if (tag.equals("utopia-rsp")) {
                 JXElement rsp = aResponse.getChildAt(0);
                 if (rsp.getTag().equals("query-store-rsp")) {
+                    String cmd = rsp.getAttr("cmd");
+                    if(cmd.equals("q-play-status-by-user")){
+                        // draw the screen
+                        append(logo);
+                        //#style labelinfo
+                        append("Select a game and press PLAY from the options");
+                        append(gamesGroup);
+                        addCommand(PLAY_CMD);
+                        addCommand(DESCRIPTION_CMD);
 
-                    // draw the screen
-                    append(logo);
-                    //#style labelinfo
-                    append("Select a game and press PLAY from the options");
-                    append(gamesGroup);
-                    addCommand(PLAY_CMD);
-                    addCommand(DESCRIPTION_CMD);
-
-                    Vector elms = rsp.getChildrenByTag("record");
-                    for (int i = 0; i < elms.size(); i++) {
-                        JXElement elm = (JXElement) elms.elementAt(i);
-                        String name = elm.getChildText("name");
-                        String gameplayState = elm.getChildText("gameplaystate");
-                        String displayName = name + " | " + gameplayState;
-                        //#style formbox
-                        gamesGroup.append(displayName, null);
-                        gameRounds.put(displayName, elm);
+                        Vector elms = rsp.getChildrenByTag("record");
+                        for (int i = 0; i < elms.size(); i++) {
+                            JXElement elm = (JXElement) elms.elementAt(i);
+                            String name = elm.getChildText("name");
+                            String gameplayState = elm.getChildText("gameplaystate");
+                            String displayName = name + " | " + gameplayState;
+                            //#style formbox
+                            gamesGroup.append(displayName, null);
+                            gameRounds.put(displayName, elm);
+                        }
+                        // select the first
+                        gamesGroup.setSelectedIndex(0, true);
                     }
-                    // select the first
-                    gamesGroup.setSelectedIndex(0, true);
-
                 } else if (rsp.getTag().equals("play-start-rsp")) {
+
+                    removeTCPClientListener(this);
+                    
                     // start the playdisplay
                     PlayDisplay d = new PlayDisplay(midlet);
                     Display.getDisplay(midlet).setCurrent(d);
@@ -119,22 +117,7 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
         addCommand(BACK_CMD);
         //#style alertinfo
         append("Oops, we lost our connection. Please go back and try again.");
-        connect();
-    }
-
-    public void sendRequest(JXElement aRequest) {
-        try {
-            Log.log("** sent: " + new String(aRequest.toBytes(false)));
-            kwClient.utopia(aRequest);
-        } catch (Throwable t) {
-            Log.log("Exception sending " + new String(aRequest.toBytes(false)));
-            // we need to reconnect!!!!
-            connect();
-        }
-    }
-
-    public void setKWClientListener(XMLChannelListener aListener) {
-        kwClient.setListener(aListener);
+        //connect();
     }
 
     public void setGame(JXElement aGame) {
@@ -180,6 +163,8 @@ public class SelectGameDisplay extends DefaultDisplay implements XMLChannelListe
        */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
+            removeTCPClientListener(this);
+            tcpClient.stop();
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == PLAY_CMD) {
             gameRound = (JXElement) gameRounds.get(gamesGroup.getString(gamesGroup.getSelectedIndex()));

@@ -2,7 +2,6 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
@@ -19,8 +18,7 @@ import javax.microedition.media.control.VideoControl;
  * @author Just van den Broecke
  * @version $Id: ImageCapture.java 254 2007-01-11 17:13:03Z just $
  */
-public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelListener {
-
+public class ImageCaptureDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
 
@@ -39,12 +37,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelLis
         super(aMIDlet, "Take a picture");
         prevScreen = aPrevScreen;
         playing = isPlaying;
-
-        if (isPlaying) {
-            midlet.getPlayApp().setKWClientListener(this);
-        } else {
-            midlet.getCreateApp().setKWClientListener(this);
-        }
+        midlet.getActiveApp().addTCPClientListener(this);
 
         showCamera();
 
@@ -62,7 +55,6 @@ public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelLis
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             deleteAll();
@@ -86,6 +78,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelLis
     }
 
     private void back() {
+        midlet.getActiveApp().removeTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(prevScreen);
     }
 
@@ -200,12 +193,13 @@ public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelLis
                 deleteAll();
                 append("SENDING PHOTO...(takes a while)");
                 JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
+                JXElement addMediumReq;
                 if (playing) {
-                    JXElement addMediumReq = new JXElement("play-add-medium-req");
+                    addMediumReq = new JXElement("play-add-medium-req");
                     addMediumReq.setAttr("id", rsp.getAttr("id"));
-                    midlet.getPlayApp().sendRequest(addMediumReq);
+
                 } else {
-                    JXElement addMediumReq = new JXElement("game-add-medium-req");
+                    addMediumReq = new JXElement("game-add-medium-req");
                     addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
                     JXElement medium = new JXElement("medium");
                     addMediumReq.addChild(medium);
@@ -221,9 +215,8 @@ public class ImageCaptureDisplay extends DefaultDisplay implements XMLChannelLis
                     JXElement lon = new JXElement("lon");
                     lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
                     medium.addChild(lon);
-
-                    midlet.getCreateApp().sendRequest(addMediumReq);
                 }
+                midlet.getActiveApp().sendRequest(addMediumReq);
             }
         }
     }

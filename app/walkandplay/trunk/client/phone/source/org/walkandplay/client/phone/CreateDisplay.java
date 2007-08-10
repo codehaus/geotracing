@@ -5,36 +5,20 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import nl.justobjects.mjox.XMLChannelListener;
-import org.geotracing.client.GPSInfo;
+import org.geotracing.client.*;
 
 import javax.microedition.lcdui.*;
 
-/**
- * MobiTracer main GUI.
- *
- * @author Just van den Broecke
- * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
- */
-/*public class CreateDisplay extends DefaultDisplay  {*/
-public class CreateDisplay extends DefaultDisplay implements XMLChannelListener, TracerEngineListener {
+public class CreateDisplay extends DefaultAppDisplay implements TCPClientListener, GPSEngineListener {
     private String gpsStatus = "disconnected";
     private String netStatus = "disconnected";
-    private String status = "OK";
     private StringItem gpsStatusBT;
     private StringItem netStatusBT;
     private StringItem gameLabel = new StringItem("", "Create an new game or select one to edit");
 
-    private TracerEngine tracerEngine;
-    private TCPClient kwClient;
+    private GPSEngine gpsEngine;
     private String gameId;
-    private String gameName;
 
-    private int msgNum;
-    private int gpsNum;
-    private int netNum;
-
-    private boolean showGPSInfo = true;
 
     private Command NEW_GAME_CMD = new Command(Locale.get("create.New"), Command.ITEM, 2);
     private Command EDIT_GAME_CMD = new Command(Locale.get("create.Edit"), Command.ITEM, 2);
@@ -58,10 +42,6 @@ public class CreateDisplay extends DefaultDisplay implements XMLChannelListener,
             Log.log("Could not load the images on CreateDisplay");
         }
 
-        tracerEngine = new TracerEngine(aMidlet, this, false);
-
-        connect();
-
         addCommand(NEW_GAME_CMD);
         addCommand(EDIT_GAME_CMD);
         addCommand(SHOW_MAP_CMD);
@@ -70,23 +50,23 @@ public class CreateDisplay extends DefaultDisplay implements XMLChannelListener,
         //#style labelinfo
         append(gameLabel);
 
-        //#style gpsstat
-        gpsStatusBT = new StringItem("gps", gpsStatus, Item.BUTTON);
         //#style netstat
-        netStatusBT = new StringItem("net", netStatus, Item.BUTTON);
-        gpsNum = append(gpsStatusBT);
-        netNum = append(netStatusBT);
+        netStatusBT = new StringItem("", netStatus, Item.BUTTON);
+        append(netStatusBT);
+
+        //#style gpsstat
+        gpsStatusBT = new StringItem("", gpsStatus, Item.BUTTON);
+        append(gpsStatusBT);
+
+        connect();
     }
 
     private void connect() {
         try {
-            if (kwClient != null) {
-                kwClient.restart();
-            } else {
-                kwClient = new TCPClient(midlet.getKWServer(), Integer.parseInt(midlet.getKWPort()));
-                setKWClientListener(this);
-                kwClient.login(midlet.getKWUser(), midlet.getKWPassword());
-            }
+            tcpClient = TCPClient.getInstance();
+            tcpClient.start(midlet.getKWServer(), midlet.getKWPort());
+            tcpClient.addListener(this);
+            tcpClient.login(midlet.getKWUser(), midlet.getKWPassword());
         } catch (Throwable t) {
             deleteAll();
             addCommand(BACK_CMD);
@@ -108,21 +88,26 @@ public class CreateDisplay extends DefaultDisplay implements XMLChannelListener,
     }
 
     public void setGameName(String aGameName) {
-        gameName = aGameName;
         gameLabel.setText("Working on game '" + aGameName + "'");
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        Log.log("** received:" + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("login-rsp")) {
             try {
                 Log.log("send select app");
-                kwClient.setAgentKey(aResponse);
-                kwClient.selectApp("geoapp", "user");
+                tcpClient.setAgentKey(aResponse);
+                tcpClient.selectApp(midlet.getKWApp(), midlet.getKWRole());
             } catch (Throwable t) {
                 Log.log("Selectapp failed:" + t.getMessage());
             }
+        }else if (tag.equals("select-app-rsp")) {
+            Log.log("Now startup the gps engine: " + midlet);
+            gpsEngine = new GPSEngine(midlet, this);
+            Log.log("starting...");
+            gpsEngine.start();
+            Log.log("started...");
+            addTCPClientListener(gpsEngine);
         }
     }
 
@@ -131,81 +116,30 @@ public class CreateDisplay extends DefaultDisplay implements XMLChannelListener,
         addCommand(BACK_CMD);
         //#style alertinfo
         append("Oops, we lost our connection. Please go back and try again.");
-        connect();
+        //connect();
     }
 
-    public void sendRequest(JXElement aRequest) {
-        try {
-            Log.log("** sent: " + new String(aRequest.toBytes(false)));
-            kwClient.utopia(aRequest);
-        } catch (Throwable t) {
-            Log.log("Exception sending " + new String(aRequest.toBytes(false)));
-            // we need to reconnect!!!!
-            connect();
-        }
-    }
-
-    public void setKWClientListener(XMLChannelListener aListener) {
-        kwClient.setListener(aListener);
-    }
-
-    void start() {
-        tracerEngine.start();
-    }
-
-    void stop() {
-        tracerEngine.stop();
-    }
-
-    TracerEngine getTracer() {
-        return tracerEngine;
-    }
-
-    public void setGPSInfo(GPSInfo theInfo) {
-        //mapViewer.setLocation(theInfo.lon.toString(), theInfo.lat.toString());
-        if (!showGPSInfo) {
-            return;
-        }
-        status = theInfo.toString();
-        log(status);
-    }
-
-    public void setStatus(String s) {
-        status = s;
-        log(s);
-    }
 
     public void onGPSStatus(String s) {
         gpsStatus = s;
         gpsStatusBT.setText(gpsStatus);
-        //log(s);
     }
 
-
-    public void onNetStatus(String s) {
-        netStatus = s;
+    public void onNetStatus(String aStatus){
+        netStatus = aStatus;
         netStatusBT.setText(netStatus);
-        //log(s);
     }
 
-    public void setHit(JXElement aHitElement) {
-        
+    public void onStatus(String aStatus){
+        onNetStatus(aStatus);
     }
 
-    public void cls() {
-        Log.log("# items: " + size());
-        Log.log("gps: " + gpsNum);
-        Log.log("net: " + netNum);
-        Log.log("msg: " + msgNum);
-        delete(msgNum);
+    public void onHit(JXElement anElement){
+
     }
 
-    public void log(String message) {
-        cls();
-        //#style formbox
-        msgNum = append(message + "\n");
-        //msgNum = append(new StringItem("", message + "\n"));
-        Log.log(msgNum + ":" + message);
+    public void onGPSInfo(GPSInfo theInfo) {
+        gpsStatusBT.setText(theInfo.toString());
     }
 
     /*
@@ -214,27 +148,22 @@ public class CreateDisplay extends DefaultDisplay implements XMLChannelListener,
     */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
+            gpsEngine.stop();
+            tcpClient.stop();
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == NEW_GAME_CMD) {
-            log("creating new game");
             new NewGameDisplay(midlet, this);
         } else if (cmd == EDIT_GAME_CMD) {
-            log("editing new game");
             new EditGameDisplay(midlet, this);
         } else if (cmd == ADD_ROUND_CMD) {
-            log("creating new round");
             new AddRoundDisplay(midlet, this);
         } else if (cmd == ADD_PHOTO_CMD) {
-            log("adding photo");
             new ImageCaptureDisplay(midlet, this, false);
         } else if (cmd == ADD_AUDIO_CMD) {
-            log("adding audio");
             new AudioCaptureDisplay(midlet, this, false);
         } else if (cmd == ADD_TEXT_CMD) {
-            log("adding text");
             new AddTextDisplay(midlet, this, false);
         } else if (cmd == SHOW_MAP_CMD) {
-            log("show map");
             MapDisplay md = new MapDisplay(midlet, this);
             Display.getDisplay(midlet).setCurrent(md);
             md.start();
