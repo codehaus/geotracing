@@ -62,8 +62,11 @@ var TRIP = {
 		var medium = TRIP.curTrip.media[index];
 		var x = medium.getAttribute('x');
 		var y = medium.getAttribute('y');
-		var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x, y));
+		var ll = new OpenLayers.LonLat(x, y);
+		var marker = new OpenLayers.Marker(ll);
 		this.fun = function(evt) {
+			MAP.map.setCenter(ll);
+			MAP.map.pan(100, 100);
 			TRIP.showMedium(index);
 			Event.stop(evt);
 		};
@@ -80,20 +83,25 @@ var TRIP = {
 		var id = medium.getAttribute('id');
 		var kind = medium.getAttribute('kind');
 		var name = medium.getAttribute('name');
-		var mediumURL = DIWIAPP.PORTAL + '/media.srv';
+		var mediumURL = DIWIAPP.PORTAL + '/media.srv?id=' + id;
 
-		var html = '<img src="' + mediumURL + '?id=' + id + '&resize=240" /><br/>' + name;
-		if (kind == 'video') {
-			html = '<a href="' + mediumURL + '?id=' + id + '" target="_new" >view video: ' + name + '</a>';
+		var html = 'onbekend media formaat';
+		if (kind == 'image') {
+			html = '<a href="' + mediumURL + '" target="_new" ><img src="' + mediumURL + '&resize=240" /></a><br/>' + name;
+		} else if (kind == 'video') {
+			//html = '<a href="' + mediumURL + '?id=' + id + '" target="_new" >view video: ' + name + '</a>';
+			mediumURL += '&format=swf';
+			html = '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" align="center"><param name="movie" value="' + mediumURL + '"><param name="quality" value="high"><param name="bgcolor" value="#ffffff"><param name="loop" value="true"><embed src="' + mediumURL + '" quality="high" bgcolor="#ffffff" swliveconnect="true" loop="true" type="application/x-shockwave-flash"pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?p1_prod_version=shockwaveflash"></embed></object><br/>' + name;
+
 		} else if (kind == 'text') {
-			html = name + '<br/><i>'+ DH.getURL(mediumURL + '?id=' + id) + '</i>';
+			html = name + '<br/><i>'+ DH.getURL(mediumURL) + '</i>';
 		}
-		var mediumPopup = new OpenLayers.Popup("mediumpopup",
+		var mediumPopup = new OpenLayers.Popup('mpopup' + id,
 				new OpenLayers.LonLat(x, y),
-				new OpenLayers.Size(320, 240),
+				new OpenLayers.Size(280, 240),
 				html,
 				true);
-		MAP.map.addPopup(mediumPopup);
+		MAP.map.addPopup(mediumPopup, true);
 
 	},
 
