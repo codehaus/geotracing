@@ -7,12 +7,6 @@ import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
-/**
- * Edit Game display
- *
- * @author Ronald Lenz
- * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
- */
 public class EditGameDisplay extends DefaultDisplay implements TCPClientListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable games = new Hashtable(2);
@@ -71,10 +65,8 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     private void getGamesByUser() {
@@ -84,10 +76,6 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
         midlet.getActiveApp().sendRequest(req);
     }
 
-    /*
-       * The commandAction method is implemented by this midlet to
-       * satisfy the CommandListener interface and handle the Cancel action.
-       */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
@@ -98,6 +86,4 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
-
-
 }

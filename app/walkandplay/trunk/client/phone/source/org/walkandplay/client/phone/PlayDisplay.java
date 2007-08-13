@@ -204,7 +204,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     /**

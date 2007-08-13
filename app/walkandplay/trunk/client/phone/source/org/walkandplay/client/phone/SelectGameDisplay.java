@@ -8,13 +8,7 @@ import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
-/**
- * MobiTracer main GUI.
- *
- * @author Just van den Broecke
- * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
- */
-public class SelectGameDisplay extends DefaultAppDisplay implements TCPClientListener {
+public class SelectGameDisplay extends AppStartDisplay {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable gameRounds = new Hashtable(2);
     private int gamePlayId;
@@ -40,20 +34,6 @@ public class SelectGameDisplay extends DefaultAppDisplay implements TCPClientLis
         } catch (Throwable t) {
             //#style alertinfo
             append("Oops, could not start you up. \n " + t.getMessage());
-        }
-    }
-
-    private void connect() {
-        try {
-            tcpClient = TCPClient.getInstance();
-            tcpClient.start(midlet.getKWServer(), midlet.getKWPort());
-            tcpClient.addListener(this);
-            tcpClient.login(midlet.getKWUser(), midlet.getKWPassword());
-        } catch (Throwable t) {
-            deleteAll();
-            addCommand(BACK_CMD);
-            //#style alertinfo
-            append("We can not connect. Please check your account settings.");
         }
     }
 
@@ -110,14 +90,6 @@ public class SelectGameDisplay extends DefaultAppDisplay implements TCPClientLis
                 }
             }
         }
-    }
-
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
-        //connect();
     }
 
     public void setGame(JXElement aGame) {

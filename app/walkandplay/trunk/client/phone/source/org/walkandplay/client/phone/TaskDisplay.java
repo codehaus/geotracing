@@ -104,10 +104,8 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     private void getTask() {
@@ -117,10 +115,6 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         midlet.getActiveApp().sendRequest(req);
     }
 
-    /*
-    * The commandAction method is implemented by this midlet to
-    * satisfy the CommandListener interface and handle the Exit action.
-    */
     public void commandAction(Command command, Displayable screen) {
         if (command == OK_CMD) {
             if (inputField.getString() == null) {
