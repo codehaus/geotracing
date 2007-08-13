@@ -10,12 +10,6 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.rms.RecordStoreException;
 
-/**
- * Allows changing account preferences.
- *
- * @author Ronald Lenz
- * @version $Id: AccountScreen.java 128 2006-10-30 16:17:38Z just $
- */
 public class AccountDisplay extends DefaultDisplay {
     private TextField urlField;
     private TextField userField;

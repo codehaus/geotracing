@@ -122,7 +122,8 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     private void getMedium() {

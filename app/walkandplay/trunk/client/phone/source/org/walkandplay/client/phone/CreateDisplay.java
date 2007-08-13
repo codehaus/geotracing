@@ -9,7 +9,7 @@ import org.geotracing.client.*;
 
 import javax.microedition.lcdui.*;
 
-public class CreateDisplay extends DefaultAppDisplay implements TCPClientListener, GPSEngineListener {
+public class CreateDisplay extends AppStartDisplay implements TCPClientListener, GPSEngineListener {
     private String gpsStatus = "disconnected";
     private String netStatus = "disconnected";
     private StringItem gpsStatusBT;
@@ -61,20 +61,6 @@ public class CreateDisplay extends DefaultAppDisplay implements TCPClientListene
         connect();
     }
 
-    private void connect() {
-        try {
-            tcpClient = TCPClient.getInstance();
-            tcpClient.start(midlet.getKWServer(), midlet.getKWPort());
-            tcpClient.addListener(this);
-            tcpClient.login(midlet.getKWUser(), midlet.getKWPassword());
-        } catch (Throwable t) {
-            deleteAll();
-            addCommand(BACK_CMD);
-            //#style alertinfo
-            append("We can not connect. Please check your account settings.");
-        }
-    }
-
     public void setGameId(String aGameId) {
         gameId = aGameId;
         addCommand(ADD_ROUND_CMD);
@@ -111,15 +97,6 @@ public class CreateDisplay extends DefaultAppDisplay implements TCPClientListene
         }
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
-        //connect();
-    }
-
-
     public void onGPSStatus(String s) {
         gpsStatus = s;
         gpsStatusBT.setText(gpsStatus);
@@ -142,10 +119,6 @@ public class CreateDisplay extends DefaultAppDisplay implements TCPClientListene
         gpsStatusBT.setText(theInfo.toString());
     }
 
-    /*
-    * The commandAction method is implemented by this midlet to
-    * satisfy the CommandListener interface and handle the Exit action.
-    */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
             gpsEngine.stop();
@@ -169,6 +142,5 @@ public class CreateDisplay extends DefaultAppDisplay implements TCPClientListene
             md.start();
         }
     }
-
 }
 

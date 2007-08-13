@@ -71,10 +71,8 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     public JXElement uploadMedium(String aName, String aDescription, String aType, String aMime, long aTime, byte[] theData, boolean encode) {

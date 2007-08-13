@@ -19,12 +19,6 @@ import javax.microedition.media.control.RecordControl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-/**
- * Record and submit audio.
- *
- * @author Just van den Broecke
- * @version $Id: AudioCapture.java 222 2006-12-10 00:17:59Z just $
- */
 public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Player player;
@@ -95,10 +89,8 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     public int write(String s) {

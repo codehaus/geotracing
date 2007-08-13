@@ -145,7 +145,8 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     /**

@@ -61,10 +61,8 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
+        midlet.getActiveApp().connect();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     /*

@@ -36,7 +36,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     private List menuScreen;
     private SelectGameDisplay selectGameDisplay;
     private CreateDisplay createDisplay;
-    private DefaultAppDisplay activeApp;
+    private AppStartDisplay activeApp;
 
     public final static String KW_URL = "kw-url";
     public final static String KW_USER = "kw-user";
@@ -140,7 +140,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return getAppProperty(KW_ROLE);
     }
 
-    public DefaultAppDisplay getActiveApp(){
+    public AppStartDisplay getActiveApp(){
         return activeApp;
     }
 
