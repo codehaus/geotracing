@@ -9,7 +9,7 @@ package org.geotracing.client;
  * @author  Just van den Broecke
  * @version $Id$
  */
-public interface NetListener {
+public interface  NetListener {
 
 	public void onNetInfo(String theInfo);
 

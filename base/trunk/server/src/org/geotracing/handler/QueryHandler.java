@@ -9,6 +9,7 @@ import org.keyworx.amuse.core.Protocol;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.utopia.core.control.DefaultHandler;
+import org.keyworx.utopia.core.control.ThreadSafe;
 import org.keyworx.utopia.core.data.ErrorCode;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.session.UtopiaRequest;
@@ -27,7 +28,7 @@ import java.util.Map;
  * @author Just van den Broecke
  * @version $Id$
  */
-public class QueryHandler extends DefaultHandler {
+public class QueryHandler extends DefaultHandler implements ThreadSafe {
 
 	public final static String QUERY_STORE_SERVICE = "query-store";
 	public final static String ATTR_CMD = "cmd";
@@ -131,6 +132,8 @@ public class QueryHandler extends DefaultHandler {
 			// In case of error create negative response
 			result = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, result.getText());
 		}
+		result.setAttr(ATTR_CMD, command);
+
 		return result;
 
 	}
