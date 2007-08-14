@@ -55,6 +55,7 @@ $Id$
 		<!-- GeoTracing base JS files. -->
 		<copy todir="${home.external}/gt">
 			<fileset dir="${geotracing.base.dir}/server/webapp/gt/lib" >
+				<include name="Date.js"/>
 				<include name="DHTML.js"/>
 				<include name="KWClient.js"/>
 				<include name="KWClientExt.js"/>

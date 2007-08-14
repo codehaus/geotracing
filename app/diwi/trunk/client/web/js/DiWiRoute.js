@@ -87,10 +87,10 @@ var ROUTE = {
 		//DH.getObject("fietsen").checked = false;
 
 		//	DH.getObject("wandelen").checked = true;
-		DIWIAPP.pr('Maak uw eigen route naar uw eigen voorkeuren! Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen. Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.');
+		DIWIAPP.pr('Maak uw eigen route naar uw eigen voorkeuren! Klik op "Maak Route" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen. Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.<br/>Het maken van een eigen route is gebaseerd op het gebruik van GEEN, &Eacute;&Eacute;N of TWEE landschapskenmerken (dus GEEN, &Eacute;&Eacute;N of TWEE schuiven). Zodra er een schuif verschoven is richting maximum (100 %) dan wordt deze keuze meegenomen in de berekening.');
 
 		// Create and configure the sliders
-		for (var i = 1; i < 11; i++) {
+		for (var i = 1; i < 9; i++) {
 			ROUTE.createSlider('s' + i);
 		}
 	},
@@ -205,6 +205,9 @@ var ROUTE = {
 			}
 		}
 
+		// Defaults for non-exposed sliders
+		params['grootwater'] = 0;
+		params['industrie'] = 0;
 
 		params['type'] = distance < 10000 ? 'walking' : 'cycling';
 
@@ -217,13 +220,14 @@ var ROUTE = {
 		ROUTE.generatedRouteId = xmlRsp.firstChild.getAttribute('id');
 		var route = xmlRsp.firstChild;
 		if (!route || route.childNodes.length == 0) {
-			DIWIAPP.pr('Helaas, er kon geen route gemaakt worden met de door u ingebrachte gegevens. Probeert u het nog een keer met andere gegevens.');
+			DIWIAPP.pr('Helaas, met de door u ingegeven waarden kon geen route worden samengesteld. <br/>Probeert u het nogmaals met andere waarden..');
+			// DIWIAPP.pr('Helaas, er kon geen route gemaakt worden met de door u ingebrachte gegevens. Probeert u het nog een keer met andere gegevens.');
 			return;
 		}
 		DIWINAV.loadPage('pages/routemap.html');
 		MAP.show();
 
-		SRV.get('q-diwi-route-info', ROUTE.onQueryRouteInfo, 'id', ROUTE.generatedRouteId);
+		SRV.get('q-diwi-route-info', ROUTE.onQueryGenRouteInfo, 'id', ROUTE.generatedRouteId);
 		// KW.DIWI.getmap(ROUTE.onGetRouteMapRsp, ROUTE.generatedRouteId, 580, 400);
 	},
 
@@ -231,6 +235,15 @@ var ROUTE = {
 		DIWINAV.loadPage('pages/routemap.html');
 		MAP.show();
 		MAP.addRouteLayer(ROUTE.generatedRouteId);
+	},
+
+	onQueryGenRouteInfo: function(records) {
+		var routeRec = records[0];
+		var name = routeRec.getField('name');
+		var description = routeRec.getField('description');
+		var routeString = 'Uw persoonlijke route is gereed! De afstand is ' + Math.round(routeRec.getField('distance') / 1000) + ' km.<br/>Deze route kunt u straks op uw Digitale Wichelroede selecteren. Indien u een andere route wilt genereren klik dan nogmaals op "Maak Route".';
+		DIWIAPP.pr(routeString);
+		MAP.addRouteLayer(routeRec);
 	},
 
 	onQueryRouteInfo: function(records) {

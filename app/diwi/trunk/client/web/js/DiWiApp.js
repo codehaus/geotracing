@@ -47,6 +47,17 @@ var DIWIAPP = {
 		}
 
 		DIWIAPP.imageSwap();
+
+		Date.MONTHS = [
+				'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli',
+				'Augustus', 'September', 'October', 'November', 'December'
+				];
+
+		Date.DAYS = [
+				'Zondag', 'Maandag', 'Dinsdag', 'Woensdag',
+				'Donderdag', 'Vrijdag', 'Zaterdag'
+				];
+
 		// Swap images in top (just for fun)
 		window.setInterval(DIWIAPP.imageSwap, 30000);
 	},
@@ -120,8 +131,20 @@ var DIWIAPP = {
 	},
 
 // KWClient negative response handler.
-	onNegRsp: function(errorId, error, details) {
-		DIWIAPP.pr('hmm, de server zegt: "' + error + '" en in bijzonder "' + details + '"');
+	onNegRsp: function(errorId, error, details, responseTag) {
+		switch (responseTag) {
+			case 'route-generate-nrsp':
+				DIWIAPP.pr('Helaas, met de door u ingegeven waarden kon geen route worden samengesteld. <br/>Probeert u het nogmaals met andere waarden.');
+				break;
+
+			case 'login-nrsp':
+				DIWIAPP.pr('Gebruiker of wachtwoord is onbekend');
+				break;
+
+			default:
+				DIWIAPP.pr('Helaas, er is een onbekende fout opgetreden. De melding is: <br/><i>"' + details + '"</i>');
+				break;
+		}
 	},
 
 // Util for printing/displaying debug output
