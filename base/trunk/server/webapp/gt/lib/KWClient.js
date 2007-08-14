@@ -281,7 +281,7 @@ var KW = {
 	},
 
 	_negativeRsp: function(element) {
-		KW.onNegRsp(element.getAttribute('errorId'), element.getAttribute('error'), element.getAttribute('details'));
+		KW.onNegRsp(element.getAttribute('errorId'), element.getAttribute('error'), element.getAttribute('details'), element.tagName);
 	},
 
 /** Session recovery: after re-establish re-issue request. */
