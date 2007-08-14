@@ -96,7 +96,7 @@ public class LogLogic implements Constants {
      */
     public void closeLogByTime(String aPersonId, String aType) throws UtopiaException {
         try {
-            long timeout = Long.parseLong(ServerConfig.getProperty("keyworx.log.timeout"));
+            long timeout = Long.parseLong(ServerConfig.getProperty("keyworx.log.timeout"))*1000;
             long now = System.currentTimeMillis();
 
             Record[] records = queryOpenLogs(aPersonId, aType);
@@ -105,8 +105,13 @@ public class LogLogic implements Constants {
                 Record record = oase.getFinder().read(records[i].getId(), LOG_TABLE);
 
                 long startDate = record.getLongField(START_DATE_FIELD);
+                log.info("###### Log closing check");
+                log.info("###### timeout: " + timeout);
+                log.info("###### now: " + now);
+                log.info("###### startdate: " + startDate);
                 // we time out after 12 hrs
                 if (now - startDate > timeout) {
+                    log.info("###### now - startDate > timeout - so close the log");
                     record.setStringField(STATE_FIELD, LOG_STATE_CLOSED);
                     record.setLongField(END_DATE_FIELD, now);
                     oase.getModifier().update(record);
@@ -190,8 +195,10 @@ public class LogLogic implements Constants {
         try {
             Record[] recs = queryOpenLogs(aPersonId, aType);
             if (recs == null || recs.length == 0) {
+                log.info("###### getOpenLog: no open logs found - create a new one");
                 return createLog(aPersonId, aType);
             }
+            log.info("###### getOpenLog: found an open log: use this one");
             return oase.getFinder().read(recs[0].getId(), LOG_TABLE);
         } catch (Throwable t) {
             log.error("Exception in getOpenLog: " + t.toString());

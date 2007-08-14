@@ -25,7 +25,7 @@
     <test id="trip-getlist-req">
         <send id="client1">
             <utopia-req>
-                <trip-getlist-req/>
+                <trip-getlist-req personid="68"/>
             </utopia-req>
         </send>
 
@@ -36,7 +36,7 @@
         </expect>
     </test>
 
-    <test id="trip-get-req">
+    <!--<test id="trip-get-req">
         <send id="client1">
             <utopia-req>
                 <trip-get-req id="14"/>
@@ -48,7 +48,7 @@
                 <trip-get-rsp/>
             </utopia-rsp>
         </expect>
-    </test>
+    </test>-->
 
     <test id="logout">
         <send id="client1">
