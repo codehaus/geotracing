@@ -108,7 +108,7 @@
         </expect>
     </test>
 
-    <test id="nav-deactivate-route-req">
+    <!--<test id="nav-deactivate-route-req">
         <send id="client1">
             <utopia-req>
                 <nav-deactivate-route-req/>
@@ -121,7 +121,7 @@
             </utopia-rsp>
         </expect>
     </test>
-
+-->
     <!--<test id="route-generate-req">
         <send id="client1">
             <utopia-req>

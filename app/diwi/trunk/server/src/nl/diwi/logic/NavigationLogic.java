@@ -180,6 +180,8 @@ public class NavigationLogic implements Constants {
                 deactivateRoute(aPersonId);
             }
 
+            log.info("###### activateroute");
+            log.info("###### force a new trip:" + init);
             LogLogic logLogic = new LogLogic(oase);
             if (init) {
                 // now create explicitely close the previous trip

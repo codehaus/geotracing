@@ -1,5 +1,5 @@
 <testsuite>
-    <testset file="test.xml"/>
+    <!--<testset file="test.xml"/>-->
     <!--<testset file="stress-scenario.xml"/>-->
     <!--<testset file="ugchit-scenario.xml"/>-->
     <!--<testset file="routehome-scenario.xml"/>-->
@@ -8,6 +8,8 @@
     <!--<testset file="cms-scenario.xml"/>-->
     <!--<testset file="webclient-scenario1.xml"/>-->
     <!--<testset file="mobileclient-scenario.xml"/>-->
+    <!--<testset file="mobileclient-startup-test.xml"/>-->
+    <testset file="mobileclient-tripbug-test.xml"/>
     <!--<testset file="webclient-scenario2.xml"/>-->
     <!--<testset file="report-scenario.xml"/>-->
 </testsuite>
