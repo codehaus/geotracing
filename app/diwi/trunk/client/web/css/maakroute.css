@@ -147,7 +147,7 @@
 	z-index: 50;
 }
 
-#industrie {
+#bebouwd {
 	top: 210px;
 }
 
@@ -162,7 +162,7 @@
 	z-index: 50;
 }
 
-#bebouwd {
+#bos {
 	top: 240px;
 }
 
@@ -177,7 +177,7 @@
 	z-index: 50;
 }
 
-#bos {
+#heizand {
 	top: 270px;
 }
 
@@ -192,7 +192,7 @@
 	z-index: 50;
 }
 
-#heizand {
+#natuurgras {
 	top: 300px;
 }
 
@@ -207,7 +207,7 @@
 	z-index: 50;
 }
 
-#natuurgras {
+#kleinwater {
 	top: 330px;
 }
 
@@ -221,8 +221,8 @@
 	left: 200px;
 	z-index: 50;
 }
-
-#grootwater {
+/*
+#kleinwater {
 	top: 360px;
 }
 
@@ -239,7 +239,7 @@
 
 #kleinwater {
 	top: 390px;
-}
+}  */
 
 #total {
 	position: absolute;

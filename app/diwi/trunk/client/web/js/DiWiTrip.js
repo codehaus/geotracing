@@ -16,10 +16,11 @@ var TRIP = {
 
 	onShowTrip: function(rsp) {
 		DH.displayOff('triplist');
-		DIWIAPP.pr('Mijn trip ingetekend.');
+		DH.displayOff('remarks');
+		DIWIAPP.pr('Hiernaast vindt u uw tocht ingetekend.');
 		DH.displayOn('triplistbacklink');
 		MAP.show();
-		MAP.addMarkerLayer('Mijn trip');
+		MAP.addMarkerLayer('Mijn tocht');
 
 		TRIP.curTrip.points = rsp.getElementsByTagName('pt');
 		TRIP.curTrip.media = rsp.getElementsByTagName('medium');
@@ -35,12 +36,15 @@ var TRIP = {
 
 		var tripsCont = ' ';
 		var nextTrip;
+		var date = ' ';
 		for (var i = 0; i < TRIP.trips.length; i++) {
 			nextTrip = TRIP.trips[i];
-			tripsCont += '<a onclick="TRIP.showTrip(\'' + nextTrip.getField('id') + '\');" href="#"> ' + nextTrip.getField('name') + '</a><br/>';
+			date = new Date(new Number(nextTrip.getField('startdate')));
+			tripsCont += (i+1) + '. <a onclick="TRIP.showTrip(\'' + nextTrip.getField('id') + '\');" href="#">tocht gemaakt op ' + date.format("DDDD D MMM YYYY") + '</a><br/>';
 		}
 		DH.setHTML('triplist', tripsCont);
 		DH.displayOn('triplist');
+		DH.displayOn('remarks');
 		DIWIAPP.pr('Hiernaast een lijst van uw gemaakte tochten.');
 	},
 
@@ -148,7 +152,7 @@ var TRIP = {
 
 	showTrip: function(anId) {
 		KW.DIWI.gettrip(TRIP.onShowTrip, anId);
-		DIWIAPP.pr('Trip ophalen...');
+		DIWIAPP.pr('Tocht ophalen...');
 		return false;
 	},
 
