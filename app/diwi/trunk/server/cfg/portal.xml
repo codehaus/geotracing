@@ -59,7 +59,9 @@
 
 
         <daemons>
-
+            <daemon id="upgradedaemon" class="nl.diwi.daemon.DIWIUpgradeDaemon">
+				<property name="relations">false</property>
+			</daemon>
         </daemons>
     </application>
 </portal>
