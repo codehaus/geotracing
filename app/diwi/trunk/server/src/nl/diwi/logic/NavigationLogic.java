@@ -185,7 +185,7 @@ public class NavigationLogic implements Constants {
             LogLogic logLogic = new LogLogic(oase);
             if (init) {
                 // now create explicitely close the previous trip
-                //logLogic.closeLogs("" + aPersonId, LOG_MOBILE_TYPE);
+                // logLogic.closeLogs("" + aPersonId, LOG_MOBILE_TYPE);
             }
 
             //Relate route to person as active route
