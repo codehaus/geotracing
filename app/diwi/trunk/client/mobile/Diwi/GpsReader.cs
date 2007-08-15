@@ -434,13 +434,14 @@ namespace Diwi {
                 return false; // geen fix; geen interessante data!
             }
 
-            if (real) {
+ /*           if (real) {
                 mSoundCount--;
                 if (mSoundCount <= 0) {
                     mSoundCount = 10;
                     AppController.SysBeep();
                 }
             }
+  * */
 
             if (words[3] != "" && words[4] != "" && words[5] != "" && words[6] != "") {
 

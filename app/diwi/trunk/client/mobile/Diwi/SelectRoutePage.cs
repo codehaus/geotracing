@@ -38,10 +38,21 @@ namespace Diwi {
 //                foreach (XMLement xml in AppController.sRoutes.children) {
  //                   mMenu.addItem(xml.getChildValue("name"), sr, AppController.sInfoIcon);
  //               }
-                mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug), AppController.sTerugIcon);
+                mMenu.addItem("Terug", new DiwiUIMenu.DiwiMenuCallbackHandler(myTerug), AppController.sTerugIcon);
 
             } else {
                 mMenu.addItem("Geen Routes", new DiwiUIMenu.DiwiMenuCallbackHandler(doTerug), AppController.sTerugIcon);
+            }
+        }
+
+        void myTerug(int i, string s) {
+            if (mRouteOffset > 0) {
+                mRouteOffset -= ((horizontal ? 5 : 7) - 1);
+                if (mRouteOffset < 0) mRouteOffset = 0;
+                doFillMenu();
+                draw();
+            } else {
+                doTerug(0, "");
             }
         }
 
