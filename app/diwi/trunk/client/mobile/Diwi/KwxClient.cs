@@ -35,6 +35,8 @@ namespace Diwi {
         private Thread mSendSamplesThread = new Thread(sendSamplesThread);
 
         private bool mUGCState = false;
+        private bool mNavStarted = false;
+
         GeoPoint mLastPoint;
         Queue<GeoPoint> mPointsQueue = new Queue<GeoPoint>(20);
 
@@ -238,9 +240,10 @@ namespace Diwi {
             lock (this) {
                 xml = utopiaRequest(xml);
             }
-            if (xml != null && xml.tag == Protocol.TAG_NAV_START_RSP)
+            if (xml != null && xml.tag == Protocol.TAG_NAV_START_RSP) {
+                mNavStarted = true;
                 return xml;
-            else
+            } else
                 return null;
         }
 
@@ -441,22 +444,22 @@ namespace Diwi {
 
 
         public bool queueSample() {
-            GeoPoint newP = new GeoPoint(GpsReader.lat, GpsReader.lon);
-            float d = newP.distance(mLastPoint);
+                GeoPoint newP = new GeoPoint(GpsReader.lat, GpsReader.lon);
+                float d = newP.distance(mLastPoint);
 
-            if (d < 5) return false;
+                if (d < 15) return false;
 
-            if (d < 10000) AppController.sDistanceMoved += d;
+                if (d < 10000) AppController.sDistanceMoved += d;
+                if (mNavStarted) {
+                    // network blok; start discarding samples.
+                    if (mPointsQueue.Count > 30)
+                        mPointsQueue.Dequeue();
 
-            // network blok; start discarding samples.
-            if( mPointsQueue.Count > 30 )
-                mPointsQueue.Dequeue();
+                    mLastPoint = newP;
 
-            mLastPoint = newP;
-
-            mPointsQueue.Enqueue(newP);
-
-            return true;
+                    mPointsQueue.Enqueue(newP);
+                }
+                return true;
         }
 
         private static void sendSamplesThread() {
