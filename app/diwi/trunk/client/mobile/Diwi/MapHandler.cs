@@ -43,7 +43,7 @@ namespace Diwi {
         static MapBounds sHorTempBounds = new MapBounds();
         static MapBounds sVerTempBounds = new MapBounds();
 
-        static float sMapRadius = 0.1F;
+        static float sMapRadius = 0.25F;
         static bool sActive = false;
         static int sDownloadingVersion = 0;
 
