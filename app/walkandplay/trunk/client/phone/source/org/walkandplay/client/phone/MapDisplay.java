@@ -33,7 +33,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
 
     private Image transBar;
 
-    private Vector gameLocations = new Vector(3);
+    private Vector gameLocations;
 
     Font f;
     int fh, w, h;
@@ -57,6 +57,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         midlet = aMidlet;
         prevScreen = aPrevScreen;
         midlet.getActiveApp().addTCPClientListener(this);
+        GPSEngine.getInstance().addListener(this);
 
         try {
             String user = midlet.getKWUser();
@@ -131,6 +132,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        Log.log("MapDisplay accept: " + new String(aResponse.toBytes(false)));
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
@@ -144,8 +146,17 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         }
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        midlet.getActiveApp().connect();
+
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
@@ -156,8 +167,10 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         try {
             // get all game locations for this game
             String gameId = midlet.getCreateApp().getGameId();
-            if (gameId != null && gameId.length() > 0) {
-                getGameLocations(gameId);
+            if(gameId !=null && gameId.length() >0){
+                if (gameId != null && gameId.length() > 0) {
+                    getGameLocations(gameId);
+                }
             }
 
             tileBaseURL = midlet.getKWUrl() + "/map.srv";
@@ -197,6 +210,10 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
 
     }
 
+    public void onGPSLocation(Vector thePoints) {
+
+    }
+
     public void onGPSInfo(GPSInfo theInfo) {
         setLocation(theInfo.lon.toString(), theInfo.lat.toString());
         if (!showGPSInfo) {
@@ -230,10 +247,6 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         } catch (Throwable t) {
             log("Exception in onNetStatus:\n" + t.getMessage(), true);
         }
-    }
-
-    public void onHit(JXElement aHitElement) {
-
     }
 
     private void log(String aMsg, boolean isError) {
@@ -298,6 +311,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
                 return;
             }
 
+            Log.log("dbg 8");
             // ASSERT: we have a valid location
 
             // Create bbox if not present
@@ -314,6 +328,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
                 return;
             }
 
+            Log.log("dbg 9");
             // Should we fetch new map image ?
             if (mapImage == null) {
                 try {
@@ -394,6 +409,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == ZOOM_IN_CMD) {
             zoomIn();

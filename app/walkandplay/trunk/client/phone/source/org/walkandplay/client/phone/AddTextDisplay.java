@@ -70,8 +70,21 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         }
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        midlet.getActiveApp().connect();
+    public void onNetStatus(String aStatus){
+
+    }
+
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        //#style alertinfo
+        append(anErrorMessage);
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
@@ -84,13 +97,7 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
 				aName = "unnamed " + aType;
 			}
 
-            String agentKey;
-            if (playing) {
-                agentKey = midlet.getPlayApp().getTCPClient().getAgentKey();
-            } else {
-                agentKey = midlet.getCreateApp().getTCPClient().getAgentKey();
-            }
-
+            String agentKey = TCPClient.getInstance().getAgentKey();
             Log.log("agentkey:" + agentKey);
 
             uploader.writeField("agentkey", agentKey);
@@ -120,8 +127,10 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
                 alertField.setText("Please type some text...");
             } else {
                 //String tags = tagsField.getString();
-                //JXElement rsp = uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
-                JXElement rsp = Net.getInstance().uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                JXElement rsp = uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                /*Net net = Net.getInstance();
+                net.setProperties(midlet);
+                JXElement rsp = net.uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);*/
                 if (Protocol.isPositiveResponse(rsp)) {
                     //now do an add medium
                     if (playing) {

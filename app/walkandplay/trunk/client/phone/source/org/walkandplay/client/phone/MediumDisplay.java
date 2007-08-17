@@ -21,7 +21,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
     private JXElement medium;
     private Image mediumImage;
 
-    private StringItem name = new StringItem("", "");
+    private StringItem mediumLabel = new StringItem("", "");
 
     public MediumDisplay(WPMidlet aMIDlet, int aMediumId, int theScreenWidth, Displayable aPrevScreen) {
         super(aMIDlet, "Media");
@@ -31,16 +31,21 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
         midlet.getActiveApp().addTCPClientListener(this);
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
 
-        name.setText("Loading...");
+        mediumLabel.setText("Loading...");
         //#style labelinfo
-        append(name);
+        append(mediumLabel);
 
         getMedium();
     }
 
     private void drawMedium() {
         String type = medium.getChildText("type");
-        name.setText(medium.getChildText("name"));
+        String name = medium.getChildText("name");
+        if(name!=null && name.length()>0){
+            mediumLabel.setText(name);
+        }else{
+            mediumLabel.setText("Untitled");
+        }
 
         String desc = medium.getChildText("description");
 
@@ -121,8 +126,21 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
         }
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        midlet.getActiveApp().connect();
+    public void onNetStatus(String aStatus){
+
+    }
+
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        //#style alertinfo
+        append(anErrorMessage);
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 

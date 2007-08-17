@@ -37,8 +37,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private int OFF_MAP_TOLERANCE = 15;
 
     private WPMidlet midlet;
-    private JXElement taskHit;
-    private JXElement mediumHit;
 
     private Timer IMPollTimer;
     private Vector IMMessages;
@@ -57,10 +55,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     Font f;
     int fh, w, h;
 
-    String gpsStatus = "disconnected";
-    String netStatus = "disconnected";
-    String status = "OK";
-    String errorMsg = "";
+    private String gpsStatus = "disconnected";
+    private String netStatus = "disconnected";
+    private String errorMsg = "";
 
     private boolean showGPSInfo = true;
     private GPSEngine gpsEngine;
@@ -180,7 +177,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 } else if(cmd.equals("q-game-locations")) {
                     Log.log("Getting game locations");
                     gameLocations = rsp.getChildrenByTag("record");
-                    Log.log("nr of locs:" + gameLocations.size());
                     // now determine the maximum attainable score
                     for (int i = 0; i < gameLocations.size(); i++) {
                         JXElement r = (JXElement) gameLocations.elementAt(i);
@@ -199,12 +195,55 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         imDisplay = new IMDisplay(midlet, this, IMMessages);
                     }
                 }
-            } 
+            } else if (rsp.getTag().equals("play-location-rsp")) {
+                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    Log.log("add a hit!!!!");
+                    JXElement hit = new JXElement("medium-hit");
+                    hit.setAttr("id", 26527);
+                    rsp.addChild(hit);
+                }
+
+                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    JXElement hit = new JXElement("medium-hit");
+                    hit.setAttr("id", 22629);
+                    rsp.addChild(hit);
+                }
+
+                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    JXElement hit = new JXElement("task-hit");
+                    hit.setAttr("id", 22560);
+                    rsp.addChild(hit);
+                }
+*/
+                Util.playTone(96, 75, midlet.getVolume());
+                JXElement e = rsp.getChildAt(0);
+
+                if(e!=null){
+                    String t = e.getTag();
+                    if (t.equals("task-hit")) {
+                        String state = e.getAttr("state");
+                        if (!state.equals("done")) {
+                            log("we found a task!!", false);
+                            new TaskDisplay(midlet, Integer.parseInt(e.getAttr("id")), w, this);
+                        }
+                    } else if (t.equals("medium-hit")) {
+                        new MediumDisplay(midlet, Integer.parseInt(e.getAttr("id")), w, this);
+                    }
+                }
+            }
         }
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        midlet.getActiveApp().connect();
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
@@ -214,9 +253,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     void start() {
         try {
             // start the traceEngine
-            gpsEngine = new GPSEngine(midlet, this);
-            midlet.getActiveApp().addTCPClientListener(gpsEngine);
-            gpsEngine.start();
+            gpsEngine = GPSEngine.getInstance();
+            gpsEngine.addListener(this);
+            gpsEngine.start(midlet);
 
             // get the game and all game locations for this game
             getGame();
@@ -266,16 +305,20 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         return lonLat != null;
     }
 
+    public void onGPSLocation(Vector thePoints) {
+        // send the request
+        JXElement req = new JXElement("play-location-req");
+        req.addChildren(thePoints);
+
+        midlet.getActiveApp().sendRequest(req);        
+    }
+
     public void onGPSInfo(GPSInfo theInfo) {
         setLocation(theInfo.lon.toString(), theInfo.lat.toString());
         if (!showGPSInfo) {
             return;
         }
-        status = theInfo.toString();
-    }
-
-    public void onStatus(String s) {
-        status = s;
+        gpsStatus = theInfo.toString();
     }
 
     public void onGPSStatus(String s) {
@@ -285,23 +328,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             setError(s);
         }
         show();
-    }
-
-    //<task-hit id="22560" state="open|hit|done" answerstate="open" mediastate="open"/>
-    //<medium-hit id="22578" state="open|hit" />
-    public void onHit(JXElement aHitElement) {
-        String tag = aHitElement.getTag();
-        if (tag.equals("task-hit")) {
-            taskHit = aHitElement;
-            String state = taskHit.getAttr("state");
-            if (!state.equals("done")) {
-                log("we found a task!!", false);
-                new TaskDisplay(midlet, Integer.parseInt(taskHit.getAttr("id")), w, this);
-            }
-        } else if (tag.equals("medium-hit")) {
-            mediumHit = aHitElement;
-            new MediumDisplay(midlet, Integer.parseInt(mediumHit.getAttr("id")), w, this);
-        }
     }
 
     public void onNetStatus(String s) {
@@ -545,7 +571,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             gpsEngine.stop();
             stopIMPoll();
             midlet.getActiveApp().removeTCPClientListener(this);
-            Display.getDisplay(midlet).setCurrent(prevScreen);
+            Display.getDisplay(midlet).setCurrent(prevScreen);            
         } else if (cmd == ADD_PHOTO_CMD) {
             new ImageCaptureDisplay(midlet, this, true);
         } else if (cmd == ADD_AUDIO_CMD) {

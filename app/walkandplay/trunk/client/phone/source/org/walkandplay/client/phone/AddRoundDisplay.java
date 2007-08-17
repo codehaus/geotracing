@@ -49,9 +49,22 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
         append(alertField);
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        midlet.getActiveApp().connect();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());        
+    public void onNetStatus(String aStatus){
+
+    }
+
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        //#style alertinfo
+        append(anErrorMessage);
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     private void createGameRound(String aGameRoundName) {
