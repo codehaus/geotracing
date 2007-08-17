@@ -45,6 +45,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String KW_PORT = "kw-port";
     public final static String KW_APP = "kw-app";
     public final static String KW_ROLE = "kw-role";
+    public final static String VOLUME = "volume";
 
     public WPMidlet() {
         super();
@@ -138,6 +139,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public String getKWRole() {
         return getAppProperty(KW_ROLE);
+    }
+
+    public int getVolume() {
+        return Integer.parseInt(getAppProperty(VOLUME));
     }
 
     public AppStartDisplay getActiveApp(){

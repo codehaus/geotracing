@@ -1,12 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.Form;
-
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Display;
-
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 
@@ -19,7 +12,7 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
     }
 
     public void addTCPClientListener(TCPClientListener aListener) {
-        tcpClient.addListener(aListener);
+        tcpClient.addListener(aListener);        
     }
 
     public void removeTCPClientListener(TCPClientListener aListener) {
@@ -30,18 +23,40 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
         return tcpClient;
     }
 
+    public void exit(){
+        deleteAll();
+        addCommand(BACK_CMD);
+        //#style alertinfo
+        append("Oops a fatal error. Please try again. If this error happens repeatedly, please re-install");
+    }
+
     protected void connect() {
         try {
             tcpClient = TCPClient.getInstance();
-            tcpClient.start(midlet.getKWServer(), midlet.getKWPort());
             tcpClient.addListener(this);
-            tcpClient.login(midlet.getKWUser(), midlet.getKWPassword());
+            tcpClient.start(midlet);
         } catch (Throwable t) {
             deleteAll();
             addCommand(BACK_CMD);
             //#style alertinfo
             append("We can not connect. Please check your account settings.");
         }
+    }
+
+    public void onNetStatus(String aStatus){
+
+    }
+
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+
+    }
+
+    public void onFatal(){
+        
     }
 
     public void sendRequest(JXElement aRequest) {
@@ -56,10 +71,4 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
         
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        deleteAll();
-        addCommand(BACK_CMD);
-        //#style alertinfo
-        append("Oops, we lost our connection. Please go back and try again.");
-    }
 }

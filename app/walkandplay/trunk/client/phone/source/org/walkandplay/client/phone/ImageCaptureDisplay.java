@@ -70,8 +70,21 @@ public class ImageCaptureDisplay extends DefaultDisplay implements TCPClientList
         }
     }
 
-    public void onStop(XMLChannel anXMLChannel, String aReason) {
-        midlet.getActiveApp().connect();
+    public void onNetStatus(String aStatus){
+
+    }
+
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        //#style alertinfo
+        append(anErrorMessage);
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 

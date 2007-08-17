@@ -20,29 +20,27 @@ import java.util.Vector;
 
 public class TCPClient extends Protocol implements XMLChannelListener {
 
-    /**
-     * Default KW session timeout (minutes).
-     */
-    public static final int DEFAULT_TIMEOUT_MINS = 5;
+    public final static String DISCONNECTED = "disconnected";
+    public final static String CONNECTING = "connecting";
+    public final static String CONNECTED = "connected";
+    private String STATE = DISCONNECTED;
+
+    private WPMidlet midlet;
+
+    private JXElement lastRequest;
 
     /**
      * Key gotten on login ack
      */
     private String agentKey;
 
-    /**
-     * Saved login request for session restore on timeout.
-     */
-    private JXElement loginRequest;
-
-    /**
-     * Saved selectApp request for session restore on timeout.
-     */
-    private JXElement selectAppRequest;
 
     private XMLChannel xmlChannel;
     private Vector listeners = new Vector(3);
     private static final TCPClient instance = new TCPClient();
+
+    private int panicCounter;
+    private int MAX_PANIC = 3;
 
     private TCPClient() {
 
@@ -52,29 +50,46 @@ public class TCPClient extends Protocol implements XMLChannelListener {
         return instance;
     }
 
-    public void start(String aServer, int aPort) throws ClientException {
+    public void start(WPMidlet aMIDlet) throws ClientException {
         try {
-            xmlChannel = new SocketXMLChannel(aServer, aPort);
+            midlet = aMIDlet;
+            panicCounter = 0;
+
+            xmlChannel = new SocketXMLChannel(midlet.getKWServer(), midlet.getKWPort());
             xmlChannel.start();
             xmlChannel.setListener(this);
+
+            login();
+            
         } catch (Throwable t) {
-            throw new ClientException("Could not connect to " + aServer + " at port " + aPort);
+            throw new ClientException("Could not connect to " + midlet.getKWServer() + " at port " + midlet.getKWPort());
         }
     }
 
     synchronized public void stop() {
-        try {
+        // first let all listeners know we have are disconnecting
+        broadCastNetStatus(DISCONNECTED);
+
+        // remove all listeners
+        listeners = new Vector(3);
+
+        /*try {
             logout();
         } catch (Throwable t) {
             // nada - we stop anyway
-        }
+        }*/
+
+        exit();
+    }
+
+    synchronized private void exit() {
+        STATE = DISCONNECTED;
 
         if (xmlChannel != null) {
             xmlChannel.stop();
             xmlChannel = null;
         }
     }
-
 
     synchronized public void addListener(TCPClientListener aListener) {
         listeners.addElement(aListener);
@@ -88,14 +103,51 @@ public class TCPClient extends Protocol implements XMLChannelListener {
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         Log.log("** received:" + new String(aResponse.toBytes(false)));
-        for (int i = 0; i < listeners.size(); i++) {
-            ((TCPClientListener) listeners.elementAt(i)).accept(anXMLChannel, aResponse);
+        String tag = aResponse.getTag();
+        if (tag.equals("login-rsp")) {
+            try {
+                setAgentKey(aResponse);
+                selectApp();
+            } catch (Throwable t) {
+                Log.log("Selectapp failed:" + t.getMessage());
+                broadCastFatal();
+            }
+        }else if(aResponse.getTag().equals("select-app-rsp")){
+            STATE = CONNECTED;
+            // no (more) panic - reset the counter
+            panicCounter = 0;
+
+            try{
+                if(lastRequest!=null){
+                    // first re-issue previous request
+                    doRequest(lastRequest);
+                    lastRequest = null;
+                }else{
+                    // only broadcast connected state when there is NO pending request
+                    broadCastConnected();
+                    broadCastNetStatus(CONNECTED);
+                }
+            }catch(Throwable t){
+
+            }
+        }else if (tag.equals("login-nrsp")) {
+            broadCastError("Invalid username and/or password. Please check your settings.");
+        }else if (tag.equals("select-app-nrsp")) {
+            broadCastFatal();
+        }else{
+            for (int i = 0; i < listeners.size(); i++) {
+                ((TCPClientListener) listeners.elementAt(i)).accept(anXMLChannel, aResponse);
+            }
         }
     }
 
     public void onStop(XMLChannel anXMLChannel, String aReason) {
-        for (int i = 0; i < listeners.size(); i++) {
-            ((TCPClientListener) listeners.elementAt(i)).onStop(anXMLChannel, aReason);
+        STATE = DISCONNECTED;
+
+        try{
+            restart();
+        }catch(Throwable t){
+            //
         }
     }
 
@@ -107,27 +159,46 @@ public class TCPClient extends Protocol implements XMLChannelListener {
         return agentKey;
     }
 
-    /**
-     * Login on portal with portalname (no longer required).
-     */
-    synchronized public void login(String aName, String aPassword, String aPortal) throws ClientException {
-        login(aName, aPassword);
+    synchronized public String getState() {
+        return STATE;
+    }
+
+    private void broadCastConnected(){
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TCPClientListener) listeners.elementAt(i)).onConnected();
+        }
+    }
+
+    private void broadCastNetStatus(String aNetStatus){
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TCPClientListener) listeners.elementAt(i)).onNetStatus(aNetStatus);
+        }
+    }
+
+    private void broadCastError(String anErrorMessage){
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TCPClientListener) listeners.elementAt(i)).onError(anErrorMessage);
+        }
+    }
+
+    private void broadCastFatal(){
+        for (int i = 0; i < listeners.size(); i++) {
+            ((TCPClientListener) listeners.elementAt(i)).onFatal();
+        }
     }
 
     /**
      * Login on portal.
      */
-    synchronized public void login(String aName, String aPassword) throws ClientException {
+    synchronized public void login() throws ClientException {
         agentKey = null;
+        STATE = CONNECTING;
 
         // Create XML request
         JXElement request = createRequest(SERVICE_LOGIN);
-        request.setAttr(ATTR_NAME, aName);
-        request.setAttr(ATTR_PASSWORD, aPassword);
+        request.setAttr(ATTR_NAME, midlet.getKWUser());
+        request.setAttr(ATTR_PASSWORD, midlet.getKWPassword());
         request.setAttr(ATTR_PROTOCOLVERSION, PROTOCOL_VERSION);
-
-        // Save for later session restore
-        loginRequest = request;
 
         // Execute request
         doRequest(request);
@@ -136,27 +207,27 @@ public class TCPClient extends Protocol implements XMLChannelListener {
     /**
      * Select application on portal.
      */
-    synchronized public void selectApp(String anAppName, String aRole) throws ClientException {
-        throwOnInvalidSession();
+    synchronized public void selectApp() throws ClientException {
+        if(!STATE.equals(CONNECTING)){
+            throw new ClientException("Start TCPClient first");
+        }
 
         // Create XML request
         JXElement request = createRequest(SERVICE_SELECT_APP);
-        request.setAttr(ATTR_APPNAME, anAppName);
-        request.setAttr(ATTR_ROLENAME, aRole);
-
-        // Save for later session restore
-        selectAppRequest = request;
+        request.setAttr(ATTR_APPNAME, midlet.getKWApp());
+        request.setAttr(ATTR_ROLENAME, midlet.getKWRole());
 
         // Execute request
         doRequest(request);
-
     }
 
     /**
      * Utopia service.
      */
     synchronized public void utopia(JXElement aHandlerRequest) throws ClientException {
-        throwOnInvalidSession();
+        if(STATE.equals(DISCONNECTED)){
+            throw new ClientException("Start TCPClient first");
+        }
 
         // Wrap Handler request with <utopia-req> tag
         JXElement request = createRequest(SERVICE_UTOPIA);
@@ -166,12 +237,21 @@ public class TCPClient extends Protocol implements XMLChannelListener {
         doRequest(request);
     }
 
+    synchronized private void restart() throws ClientException{
+        if(panicCounter == MAX_PANIC){
+            broadCastFatal();
+            exit();
+        }else{
+            panicCounter++;
+            stop();
+            start(midlet);
+        }
+    }
+
     /**
      * Logout from portal.
      */
-    synchronized public void logout() throws ClientException {
-        throwOnInvalidSession();
-
+    synchronized private void logout() throws ClientException {
         // Create XML request
         JXElement request = createRequest(SERVICE_LOGOUT);
 
@@ -180,23 +260,21 @@ public class TCPClient extends Protocol implements XMLChannelListener {
     }
 
     /**
-     * Throw exception when not logged in.
-     */
-    private void throwOnInvalidSession() throws ClientException {
-        if (agentKey == null) {
-            throw new ClientException("Invalid keyworx session");
-        }
-    }
-
-    /**
      * Do XML over HTTP request and retun response.
      */
-    private void doRequest(JXElement anJXElement) throws ClientException {
+    private void doRequest(JXElement aRequest) throws ClientException {
         try {
-            Log.log("** sending " + new String(anJXElement.toBytes(false)));
-            xmlChannel.push(anJXElement);
+            Log.log("** sending " + new String(aRequest.toBytes(false)));
+            xmlChannel.push(aRequest);
+            broadCastNetStatus(CONNECTED);
         } catch (Throwable t) {
-            Log.log("Exception sending " + new String(anJXElement.toBytes(false)) + ":" + t.getMessage());
+            // store the request
+            lastRequest = aRequest;
+
+            // restart the tcpclient
+            restart();
+
+            Log.log("Exception sending " + new String(aRequest.toBytes(false)) + ":" + t.getMessage());
         }
     }
 

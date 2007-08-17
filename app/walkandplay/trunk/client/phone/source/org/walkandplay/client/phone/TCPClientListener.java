@@ -7,6 +7,12 @@ public interface TCPClientListener {
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse);
 
-    public void onStop(XMLChannel anXMLChannel, String aReason);
+    public void onNetStatus(String aStatus);
+
+    public void onConnected();
+
+    public void onError(String anErrorMessage);
+
+    public void onFatal();
 
 }
