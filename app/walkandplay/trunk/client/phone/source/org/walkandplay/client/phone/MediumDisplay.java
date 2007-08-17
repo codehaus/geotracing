@@ -4,6 +4,8 @@ import de.enough.polish.ui.StringItem;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Util;
+import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.util.TCPClientListener;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;

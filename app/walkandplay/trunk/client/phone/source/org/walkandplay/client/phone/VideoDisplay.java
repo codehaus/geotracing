@@ -1,5 +1,7 @@
 package org.walkandplay.client.phone;
 
+import org.walkandplay.client.phone.util.Log;
+
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.Manager;

@@ -3,6 +3,7 @@ package org.walkandplay.client.phone;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.Locale;
 import org.geotracing.client.Util;
+import org.walkandplay.client.phone.util.Log;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;

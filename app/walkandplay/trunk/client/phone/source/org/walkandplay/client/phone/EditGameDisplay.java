@@ -7,6 +7,8 @@ import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.walkandplay.client.phone.util.TCPClientListener;
+
 public class EditGameDisplay extends DefaultDisplay implements TCPClientListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable games = new Hashtable(2);

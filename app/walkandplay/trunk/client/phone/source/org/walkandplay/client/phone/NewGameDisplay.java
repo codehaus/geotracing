@@ -8,6 +8,9 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextField;
 
+import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.util.TCPClientListener;
+
 public class NewGameDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);

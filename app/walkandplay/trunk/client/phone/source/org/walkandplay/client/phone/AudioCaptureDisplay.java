@@ -8,6 +8,9 @@ import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
+import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.util.Uploader;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
@@ -151,7 +154,10 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
 
             write("", "Uploading... (takes a while)");
 
-            JXElement rsp = Net.getInstance().uploadMedium(name.getString(), null, "audio", MIME, startTime, audioData, false);
+            /*JXElement rsp = Net.getInstance().uploadMedium(name.getString(), null, "audio", MIME, startTime, audioData, false);*/
+            Uploader uploader = new Uploader();
+            JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name.getString(), null, "audio", MIME, startTime, audioData, false);
+
             if (rsp == null) {
                 write("cannot submit audio!");
             } else if (Protocol.isPositiveResponse(rsp)) {

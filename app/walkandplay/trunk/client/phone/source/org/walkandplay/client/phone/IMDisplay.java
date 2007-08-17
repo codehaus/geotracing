@@ -6,6 +6,8 @@ import nl.justobjects.mjox.XMLChannel;
 import javax.microedition.lcdui.*;
 import java.util.Vector;
 
+import org.walkandplay.client.phone.util.TCPClientListener;
+
 public class IMDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command SUBMIT_CMD = new Command("Send", Command.OK, 1);

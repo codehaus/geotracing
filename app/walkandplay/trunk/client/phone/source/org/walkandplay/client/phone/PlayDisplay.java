@@ -5,6 +5,9 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
+import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.util.GPSEngine;
+import org.walkandplay.client.phone.util.GPSEngineListener;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -562,10 +565,21 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         }
     }
 
-    /*
-    * The commandAction method is implemented by this midlet to
-    * satisfy the CommandListener interface and handle the Exit action.
-    */
+    public void keyPressed(int key) {
+		switch (key) {
+			case KEY_NUM0:
+				mapType = mapType.equals("sat") ? "map" : "sat";
+                resetMap();
+                show();
+				return;
+			case KEY_STAR:
+				zoomIn();
+				return;
+			case KEY_POUND:
+				zoomOut();						
+		}
+    }
+
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
             gpsEngine.stop();
