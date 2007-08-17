@@ -5,6 +5,8 @@ import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
 import org.geotracing.client.Util;
+import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.util.Uploader;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
@@ -203,7 +205,9 @@ public class ImageCaptureDisplay extends DefaultDisplay implements TCPClientList
             } else if (c == SUBMIT_CMD) {
                 deleteAll();
                 append("SENDING PHOTO...(takes a while)");
-                JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
+                Uploader uploader = new Uploader();
+                //JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
+                JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name.getString(), null, "image", photoMime, photoTime, photoData, false);
                 JXElement addMediumReq;
                 if (playing) {
                     addMediumReq = new JXElement("play-add-medium-req");

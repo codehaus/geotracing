@@ -4,6 +4,9 @@ import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
+import org.walkandplay.client.phone.util.GPSEngine;
+import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.util.GPSEngineListener;
 
 import javax.microedition.lcdui.*;
 import java.util.Vector;
@@ -42,7 +45,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
             logo = scheduleImage("/trace_icon_small.png");
             //#endif
         } catch (Throwable t) {
-            Log.log("Could not load the images on CreateDisplay");
+            org.walkandplay.client.phone.util.Log.log("Could not load the images on CreateDisplay");
         }
 
         addCommand(NEW_GAME_CMD);
@@ -142,7 +145,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
                 new StateHandler().showState();
             }
         }catch(Throwable t){
-            Log.log("damn: " + t.toString());
+            org.walkandplay.client.phone.util.Log.log("damn: " + t.toString());
             t.printStackTrace();
         }
     }

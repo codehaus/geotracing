@@ -4,6 +4,9 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
 import org.keyworx.mclient.Protocol;
+import org.walkandplay.client.phone.util.TCPClient;
+import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.util.Uploader;
 
 import javax.microedition.lcdui.*;
 
@@ -88,35 +91,6 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
-    public JXElement uploadMedium(String aName, String aDescription, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
-		HTTPUploader uploader = new HTTPUploader();
-		JXElement rsp = null;
-		try {
-			uploader.connect(midlet.getKWUrl() + "/media.srv");
-			if (aName == null || aName.length() == 0) {
-				aName = "unnamed " + aType;
-			}
-
-            String agentKey = TCPClient.getInstance().getAgentKey();
-            Log.log("agentkey:" + agentKey);
-
-            uploader.writeField("agentkey", agentKey);
-			uploader.writeField("name", aName);
-			uploader.writeField("description", aDescription);
-			uploader.writeFile(aName, aMime, "mobit-upload", theData);
-
-            rsp = uploader.getResponse();
-
-        } catch (Throwable t) {
-			Log.log("Upload error: " + t);
-		}
-		return rsp;
-	}
-
-    /*
-    * The commandAction method is implemented by this midlet to
-    * satisfy the CommandListener interface and handle the Exit action.
-    */
     public void commandAction(Command command, Displayable screen) {
         if (command == SUBMIT_CMD) {
             String name = nameField.getString();
@@ -127,7 +101,8 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
                 alertField.setText("Please type some text...");
             } else {
                 //String tags = tagsField.getString();
-                JXElement rsp = uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                Uploader uploader = new Uploader();
+                JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
                 /*Net net = Net.getInstance();
                 net.setProperties(midlet);
                 JXElement rsp = net.uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);*/

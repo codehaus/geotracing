@@ -7,6 +7,8 @@ import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.*;
 import java.io.DataInputStream;
 
+import org.walkandplay.client.phone.util.DownloadListener;
+
 /**
  * MobiTracer main GUI.
  *

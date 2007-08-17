@@ -3,6 +3,7 @@ package org.walkandplay.client.phone;
 import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.StringItem;
 import org.geotracing.client.Preferences;
+import org.walkandplay.client.phone.util.Log;
 
 import javax.bluetooth.*;
 import javax.microedition.lcdui.Command;

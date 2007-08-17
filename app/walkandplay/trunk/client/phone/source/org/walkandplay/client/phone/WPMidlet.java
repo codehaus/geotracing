@@ -31,6 +31,8 @@ import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import org.walkandplay.client.phone.util.Log;
+
 public class WPMidlet extends MIDlet implements CommandListener {
 
     private List menuScreen;

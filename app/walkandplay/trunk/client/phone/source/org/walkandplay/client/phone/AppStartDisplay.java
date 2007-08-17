@@ -2,6 +2,9 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
+import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.util.TCPClient;
 
 public class AppStartDisplay extends DefaultDisplay implements TCPClientListener {
 
@@ -63,7 +66,7 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
         try {
             tcpClient.utopia(aRequest);
         } catch (Throwable t) {
-            Log.log("Exception sending " + new String(aRequest.toBytes(false)));            
+            Log.log("Exception sending " + new String(aRequest.toBytes(false)));
         }
     }
 

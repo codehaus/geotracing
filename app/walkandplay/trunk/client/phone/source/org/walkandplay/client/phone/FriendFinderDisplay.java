@@ -409,31 +409,31 @@ public class FriendFinderDisplay extends GameCanvas implements CommandListener, 
     }
 
     public void onGPSConnect() {
-        Log.log(" connecting gps");
+        org.walkandplay.client.phone.util.Log.log(" connecting gps");
     }
 
     public void onGPSLocation(GPSLocation aLocation) {
-        Log.log("gps location");
+        org.walkandplay.client.phone.util.Log.log("gps location");
     }
 
     public void onGPSInfo(GPSInfo theInfo) {
-        Log.log("gps info");
+        org.walkandplay.client.phone.util.Log.log("gps info");
     }
 
     public void onGPSDisconnect() {
-        Log.log("gps disconnect");
+        org.walkandplay.client.phone.util.Log.log("gps disconnect");
     }
 
     public void onGPSError(String aReason, Throwable anException) {
-        Log.log("gps error");
+        org.walkandplay.client.phone.util.Log.log("gps error");
     }
 
     public void onGPSStatus(String aStatusMsg) {
-        Log.log("gps status:" + aStatusMsg);
+        org.walkandplay.client.phone.util.Log.log("gps status:" + aStatusMsg);
     }
 
     public void onGPSTimeout() {
-        Log.log("gps timeout");
+        org.walkandplay.client.phone.util.Log.log("gps timeout");
     }
 
     private void startGPSFetcher() {

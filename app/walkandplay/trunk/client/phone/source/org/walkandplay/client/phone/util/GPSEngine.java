@@ -1,8 +1,9 @@
-package org.walkandplay.client.phone;
+package org.walkandplay.client.phone.util;
 
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
+import org.walkandplay.client.phone.WPMidlet;
 
 import java.util.Calendar;
 import java.util.TimeZone;

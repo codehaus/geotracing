@@ -1,4 +1,4 @@
-package org.walkandplay.client.phone;
+package org.walkandplay.client.phone.util;
 
 public interface DownloadListener {
 

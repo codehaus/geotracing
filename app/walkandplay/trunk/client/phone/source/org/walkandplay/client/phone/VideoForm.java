@@ -1,5 +1,7 @@
 package org.walkandplay.client.phone;
 
+import org.walkandplay.client.phone.util.DownloadListener;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;

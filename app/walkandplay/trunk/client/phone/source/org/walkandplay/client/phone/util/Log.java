@@ -1,4 +1,4 @@
-package org.walkandplay.client.phone;
+package org.walkandplay.client.phone.util;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;

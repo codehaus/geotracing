@@ -9,6 +9,8 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 import java.util.Vector;
 
+import org.walkandplay.client.phone.util.TCPClientListener;
+
 public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
 
     private int maxScore;

@@ -1,6 +1,7 @@
 package org.walkandplay.client.phone;
 
 import org.geotracing.client.Util;
+import org.walkandplay.client.phone.util.Log;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
