@@ -69,7 +69,7 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
     private void getScores() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-scores");
-        req.setAttr("gameid", midlet.getPlayApp().getGamePlayId());
+        req.setAttr("gameroundid", midlet.getPlayApp().getGameRound().getId());
         midlet.getPlayApp().sendRequest(req);
     }
 

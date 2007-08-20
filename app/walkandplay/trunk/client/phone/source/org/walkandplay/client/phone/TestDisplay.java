@@ -45,6 +45,7 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
         addCommand(START_CMD);
 
         //#style formbox
+        append(gaugeInf);
         append(progressBar);
 
         setCommandListener(this);

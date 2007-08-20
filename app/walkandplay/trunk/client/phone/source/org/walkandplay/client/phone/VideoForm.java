@@ -2,16 +2,16 @@ package org.walkandplay.client.phone;
 
 import org.walkandplay.client.phone.ProgressListener;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Gauge;
-import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
 
-public class VideoForm extends DefaultDisplay implements ProgressListener {
+public class VideoForm extends DefaultDisplay implements ProgressListener, PlayerListener {
     private Player player = null; // player instance
+    VideoControl vidc = null;
     private String url;
     private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
     private int progressCounter;
@@ -26,14 +26,15 @@ public class VideoForm extends DefaultDisplay implements ProgressListener {
         url = aUrl;
 
         //#style labelinfo
-        append("Downloading the video");
+        /*append("Downloading the video");*/
 
         //#style formbox
-        append(progressBar);
+        /*append(progressBar);*/
 
         addCommand(HOME_CMD);
 
-        new VideoDownloader().download(this);
+        //new VideoDownloader().download(this);
+        play();
     }
 
     public void prStart() {
@@ -65,10 +66,26 @@ public class VideoForm extends DefaultDisplay implements ProgressListener {
         progressBar.setLabel("Downloading " + aContentLength + " bytes");
     }
 
+    public void playerUpdate(Player aPlayer, String anEvent, Object theDate) {
+        //#style labelinfo
+        append("player update:" + anEvent);
+        
+        if (anEvent.equals(PlayerListener.END_OF_MEDIA)) {
+            try {
+                defPlayer();
+            }
+            catch (Throwable t) {
+            }
+            //reset();
+        }
+    }
+
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == HOME_CMD) {
+            stop();
             midlet.setHome();
         } else if (cmd == BACK_CMD) {
+            stop();
             midlet.setHome();
 //            /Display.getDisplay(midlet).setCurrent(midlet.playDisplay);
         }
@@ -92,7 +109,7 @@ public class VideoForm extends DefaultDisplay implements ProgressListener {
                             listener.prStop();
 
                         } catch (Throwable t) {
-                            listener.prError(t.getMessage());
+                            //listener.prError(t.getMessage());
                         }
                     }
                 }).start();
@@ -102,14 +119,71 @@ public class VideoForm extends DefaultDisplay implements ProgressListener {
         }
     }
 
+    private void stop() {
+        try {
+            if (player != null) {
+                player.stop();
+                player = null;
+            }
+            if (vidc != null) {
+                vidc = null;
+            }
+        } catch (Throwable t) {
+            // nada
+        }
+    }
+
+    private void defPlayer() throws MediaException {
+        if (player != null) {
+            if (player.getState() == Player.STARTED) {
+                player.stop();
+            }
+            if (player.getState() == Player.PREFETCHED) {
+                player.deallocate();
+            }
+            if (player.getState() == Player.REALIZED || player.getState() == Player.UNREALIZED) {
+                player.close();
+            }
+        }
+        player = null;
+    }
+
     public void play() {
-        // get video control instance
-        VideoControl vidc = (VideoControl) player.getControl("VideoControl");
+        try {
+            VideoControl vc;
+            defPlayer();
+            // create a player instance
+            player = Manager.createPlayer(url);
+            player.addPlayerListener(this);
+            // realize the player
+            //player.prefetch();
+            player.realize();
+            vc = (VideoControl) player.getControl("VideoControl");
+            if (vc != null) {
+                Item video = (Item) vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
+                Form v = new Form("Playing Video...");
+                StringItem si = new StringItem("Status: ","Playing...");
+                v.append(si);
+                v.append(video);
+                Display.getDisplay(midlet).setCurrent(v);
+            }
+            player.prefetch();
+            player.start();
+        }
+        catch (Throwable t) {
+
+        }
+        /* // get video control instance
+        vidc = (VideoControl) player.getControl("VideoControl");
         //Item videoDisp = (Item)vidc.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, null);
         Item videoDisp = (Item) vidc.initDisplayMode(VideoControl.USE_GUI_PRIMITIVE, null);
         deleteAll();
         addCommand(BACK_CMD);
         addCommand(HOME_CMD);
+
+        //#style labelinfo
+        append("Playing the video");
+
         append(videoDisp);
 
         int vW = vidc.getSourceWidth();
@@ -128,6 +202,6 @@ public class VideoForm extends DefaultDisplay implements ProgressListener {
             player.start();
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 }
