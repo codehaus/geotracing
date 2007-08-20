@@ -7,7 +7,7 @@ import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.*;
 import java.io.DataInputStream;
 
-import org.walkandplay.client.phone.util.DownloadListener;
+import org.walkandplay.client.phone.ProgressListener;
 
 /**
  * MobiTracer main GUI.
@@ -15,7 +15,7 @@ import org.walkandplay.client.phone.util.DownloadListener;
  * @author Just van den Broecke
  * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
  */
-public class TestDisplay extends Form implements CommandListener, DownloadListener {
+public class TestDisplay extends Form implements CommandListener, ProgressListener {
     private Command BACK_CMD = new Command("Back", Command.BACK, 1);
     private Command START_CMD = new Command("Start", Command.OK, 1);
     private Command STOP_CMD = new Command("Stop", Command.OK, 1);
@@ -54,11 +54,11 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
 
     }
 
-    public void dlStart() {
+    public void prStart() {
         progressBar.setMaxValue(progressMax);
     }
 
-    public void dlProgress() {
+    public void prProgress(int anAmount) {
         progressBar.setValue(progressCounter);
         if (progressCounter == progressMax - 1) {
             progressCounter = 0;
@@ -66,15 +66,15 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
         progressCounter++;
     }
 
-    public void dlStop() {
+    public void prStop() {
         progressBar.setLabel("Download finished!");
     }
 
-    public void dlError(String aMessage) {
+    public void prError(String aMessage) {
         show(aMessage);
     }
 
-    public void dlSetContentLength(int aContentLength) {
+    public void prSetContentLength(int aContentLength) {
         progressBar.setLabel("Downloading " + aContentLength + " bytes");
     }
 
@@ -99,8 +99,8 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
     private class Downloader {
         public int state = 0;
 
-        private void download(DownloadListener aListener) {
-            final DownloadListener listener = aListener;
+        private void download(ProgressListener aListener) {
+            final ProgressListener listener = aListener;
             try {
                 new Thread(new Runnable() {
                     public void run() {
@@ -112,14 +112,14 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
                                 //image =  Util.getImage("http://farm2.static.flickr.com/1182/874505187_b12f8039bd_o_d.jpg");
                                 c = (HttpConnection) Connector.open("http://test.mlgk.nl/command.txt");
                                 dis = new DataInputStream(c.openInputStream());
-                                listener.dlStart();
+                                listener.prStart();
 
                                 // Read until the connection is closed.
                                 StringBuffer b = new StringBuffer();
                                 int ch;
                                 while ((ch = dis.read()) != -1) {
                                     b.append((char) ch);
-                                    listener.dlProgress();
+                                    listener.prProgress(-1);
                                 }
                                 result = b.toString();
                             } finally {
@@ -129,11 +129,11 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
                                 if (c != null) {
                                     c.close();
                                 }
-                                listener.dlStop();
+                                listener.prStop();
                             }
                         } catch (Throwable t) {
                             show(t.getMessage());
-                            listener.dlError(t.getMessage());
+                            listener.prError(t.getMessage());
                         }
                     }
                 }).start();
@@ -152,7 +152,7 @@ public class TestDisplay extends Form implements CommandListener, DownloadListen
         } else if (command == STOP_CMD) {
             removeCommand(STOP_CMD);
             addCommand(START_CMD);
-            dlStop();
+            prStop();
         }
     }
 

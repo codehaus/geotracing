@@ -5,9 +5,9 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.GPSEngine;
-import org.walkandplay.client.phone.util.GPSEngineListener;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.GPSEngine;
+import org.walkandplay.client.phone.GPSEngineListener;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -587,7 +587,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);            
         } else if (cmd == ADD_PHOTO_CMD) {
-            new ImageCaptureDisplay(midlet, this, true);
+            new ImageCaptureDisplayOld(midlet, this, true);
         } else if (cmd == ADD_AUDIO_CMD) {
             new AudioCaptureDisplay(midlet, this, true);
         } else if (cmd == ADD_TEXT_CMD) {

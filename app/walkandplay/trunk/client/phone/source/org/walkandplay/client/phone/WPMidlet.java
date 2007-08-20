@@ -31,10 +31,12 @@ import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.Log;
+import org.geotracing.client.Util;
 
 public class WPMidlet extends MIDlet implements CommandListener {
 
+    private WPMidlet midlet;
     private List menuScreen;
     private SelectGameDisplay selectGameDisplay;
     private CreateDisplay createDisplay;
@@ -51,8 +53,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public WPMidlet() {
         super();
+        midlet = this;
         //setHome();
-        Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
+        //Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
+        new VersionChecker().check();
     }
 
     public void setHome() {
@@ -73,15 +77,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
         //#style mainLogCommand
-        menuScreen.append("test display", null);
+        /*menuScreen.append("test display", null);*/
         //#style mainLogCommand
-        menuScreen.append("video display", null);
+        /*menuScreen.append("video display", null);*/
         //#style mainLogCommand
-        menuScreen.append("video form", null);
+        /*menuScreen.append("video form", null);*/
         //#style mainLogCommand
-        menuScreen.append("GPS test display", null);
+        /*menuScreen.append("GPS test display", null);*/
         //#style mainLogCommand
-        menuScreen.append("Friend Finder", null);
+        /*menuScreen.append("Friend Finder", null);*/
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
@@ -210,4 +214,57 @@ public class WPMidlet extends MIDlet implements CommandListener {
         }
     }
 
+    private class VersionChecker implements CommandListener {
+		private Command EXIT_CMD = new Command("Exit", Command.EXIT, 1);
+		private Command CONTINUE_CMD = new Command("Continue at you own risk", Command.SCREEN, 1);
+        private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
+
+        private Form form;
+        public void check() {
+            String myVersion = getAppProperty("MIDlet-Version");
+
+            String myName = getAppProperty("MIDlet-Name");
+            String versionURL = getKWUrl() + "/ota/version.html";
+            try {
+                String theirVersion = Util.getPage(versionURL);
+                if (theirVersion != null){
+                    if(!theirVersion.trim().equals(myVersion)) {
+                        //#style defaultscreen
+                        form = new Form("Mobile City - Version check");
+
+                        //#style alertinfo
+                        form.append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
+                        form.addCommand(EXIT_CMD);                        
+                        form.addCommand(GET_CMD);
+                        form.addCommand(CONTINUE_CMD);
+
+                        form.setCommandListener(this);
+                        Display.getDisplay(midlet).setCurrent(form);
+                    }else{
+                        setHome();
+                    }
+                }else{
+                    setHome();
+                }
+            } catch (Throwable t) {
+                setHome();
+            }
+		}
+
+		public void commandAction(Command command, Displayable screen) {
+			if (command == EXIT_CMD) {
+                Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
+            } else if (command == CONTINUE_CMD) {
+                setHome();
+            } else if (command == GET_CMD) {
+                try {
+                    midlet.platformRequest(midlet.getKWUrl() + "/ota/mlgk.jar");
+                } catch (Throwable t) {
+                    //#style alertinfo
+                    form.append("Could not get new version...sorry.");
+                    Log.log(t.getMessage());
+                }
+            }
+		}
+	}
 }

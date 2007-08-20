@@ -1,6 +1,6 @@
 package org.walkandplay.client.phone;
 
-import org.walkandplay.client.phone.util.DownloadListener;
+import org.walkandplay.client.phone.ProgressListener;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -10,7 +10,7 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.VideoControl;
 
-public class VideoForm extends DefaultDisplay implements DownloadListener {
+public class VideoForm extends DefaultDisplay implements ProgressListener {
     private Player player = null; // player instance
     private String url;
     private Gauge progressBar = new Gauge("Download Progress", false, 100, 0);
@@ -36,22 +36,22 @@ public class VideoForm extends DefaultDisplay implements DownloadListener {
         new VideoDownloader().download(this);
     }
 
-    public void dlStart() {
+    public void prStart() {
         progressBar.setMaxValue(progressMax);
     }
 
-    public void dlProgress() {
+    public void prProgress(int anAmount) {
         progressBar = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
     }
 
-    public void dlStop() {
+    public void prStop() {
         deleteAll();
         addCommand(BACK_CMD);
         progressBar = new Gauge("Download finished", false, 100, 100);
         play();
     }
 
-    public void dlError(String aMessage) {
+    public void prError(String aMessage) {
         deleteAll();
         addCommand(BACK_CMD);
         append(progressBar);
@@ -61,7 +61,7 @@ public class VideoForm extends DefaultDisplay implements DownloadListener {
         append(aMessage);
     }
 
-    public void dlSetContentLength(int aContentLength) {
+    public void prSetContentLength(int aContentLength) {
         progressBar.setLabel("Downloading " + aContentLength + " bytes");
     }
 
@@ -77,11 +77,11 @@ public class VideoForm extends DefaultDisplay implements DownloadListener {
     private class VideoDownloader {
         public int state = 0;
 
-        private void download(DownloadListener aListener) {
-            final DownloadListener listener = aListener;
+        private void download(ProgressListener aListener) {
+            final ProgressListener listener = aListener;
             try {
-                listener.dlStart();
-                listener.dlProgress();
+                listener.prStart();
+                listener.prProgress(-1);
 
                 new Thread(new Runnable() {
                     public void run() {
@@ -89,15 +89,15 @@ public class VideoForm extends DefaultDisplay implements DownloadListener {
                             player = Manager.createPlayer(url);
                             player.realize();
                             player.prefetch();
-                            listener.dlStop();
+                            listener.prStop();
 
                         } catch (Throwable t) {
-                            listener.dlError(t.getMessage());
+                            listener.prError(t.getMessage());
                         }
                     }
                 }).start();
             } catch (Throwable t) {
-                listener.dlError("Exception in Downloader:" + t.getMessage());
+                listener.prError("Exception in Downloader:" + t.getMessage());
             }
         }
     }

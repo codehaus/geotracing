@@ -8,8 +8,8 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextField;
 
-import org.walkandplay.client.phone.util.Log;
-import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.Log;
+import org.walkandplay.client.phone.TCPClientListener;
 
 public class NewGameDisplay extends DefaultDisplay implements TCPClientListener {
 

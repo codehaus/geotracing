@@ -4,9 +4,9 @@ import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
-import org.walkandplay.client.phone.util.GPSEngine;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.GPSEngineListener;
+import org.walkandplay.client.phone.GPSEngine;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.GPSEngineListener;
 
 import javax.microedition.lcdui.*;
 import java.util.Vector;
@@ -45,7 +45,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
             logo = scheduleImage("/trace_icon_small.png");
             //#endif
         } catch (Throwable t) {
-            org.walkandplay.client.phone.util.Log.log("Could not load the images on CreateDisplay");
+            Log.log("Could not load the images on CreateDisplay");
         }
 
         addCommand(NEW_GAME_CMD);
@@ -132,7 +132,8 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
             } else if (cmd == ADD_ROUND_CMD) {
                 new AddRoundDisplay(midlet, this);
             } else if (cmd == ADD_PHOTO_CMD) {
-                new ImageCaptureDisplay(midlet, this, false);
+                Display.getDisplay(midlet).setCurrent(new ImageCaptureDisplay(midlet));
+                /*new ImageCaptureDisplay(midlet, this, false);*/
             } else if (cmd == ADD_AUDIO_CMD) {
                 new AudioCaptureDisplay(midlet, this, false);
             } else if (cmd == ADD_TEXT_CMD) {
@@ -145,7 +146,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
                 new StateHandler().showState();
             }
         }catch(Throwable t){
-            org.walkandplay.client.phone.util.Log.log("damn: " + t.toString());
+            Log.log("damn: " + t.toString());
             t.printStackTrace();
         }
     }

@@ -3,10 +3,9 @@ package org.walkandplay.client.phone;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
-import org.geotracing.client.Net;
 import org.geotracing.client.Util;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.Uploader;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.Uploader;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
@@ -20,7 +19,7 @@ import javax.microedition.media.control.VideoControl;
  * @author Just van den Broecke
  * @version $Id: ImageCapture.java 254 2007-01-11 17:13:03Z just $
  */
-public class ImageCaptureDisplay extends DefaultDisplay implements TCPClientListener {
+public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientListener {
 
     private Command CAPTURE_CMD = new Command("Capture", Command.OK, 1);
 
@@ -35,7 +34,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements TCPClientList
     private boolean playing;
     private StringItem alertField = new StringItem("", "");
 
-    public ImageCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
+    public ImageCaptureDisplayOld(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
         super(aMIDlet, "Take a picture");
         prevScreen = aPrevScreen;
         playing = isPlaying;

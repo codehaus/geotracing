@@ -5,9 +5,9 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
-import org.walkandplay.client.phone.util.GPSEngineListener;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.GPSEngine;
+import org.walkandplay.client.phone.GPSEngineListener;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.GPSEngine;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;

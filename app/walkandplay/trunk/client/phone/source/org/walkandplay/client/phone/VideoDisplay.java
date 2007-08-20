@@ -1,6 +1,6 @@
 package org.walkandplay.client.phone;
 
-import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.Log;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -23,6 +23,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener {
         midlet = aMidlet;
         prevScreen = aPrevScreen;
         setFullScreenMode(true);
+        Display.getDisplay(midlet).setCurrent(this);
 
         url = aUrl;
 

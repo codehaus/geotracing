@@ -2,9 +2,9 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import org.walkandplay.client.phone.util.Log;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.TCPClient;
+import org.walkandplay.client.phone.Log;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.TCPClient;
 
 public class AppStartDisplay extends DefaultDisplay implements TCPClientListener {
 

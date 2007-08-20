@@ -7,7 +7,7 @@ import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.TCPClientListener;
 
 public class EditGameDisplay extends DefaultDisplay implements TCPClientListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);

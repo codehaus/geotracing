@@ -5,24 +5,20 @@ import de.enough.polish.ui.TextField;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
-import org.geotracing.client.Net;
 import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
-import org.walkandplay.client.phone.util.Log;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.Uploader;
+import org.walkandplay.client.phone.Log;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.Uploader;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.RecordControl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientListener {
+public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientListener, ProgressListener {
 
     private Player player;
     private RecordControl recordcontrol;
@@ -40,6 +36,12 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
     private Command STOP_CMD = new Command("Stop", Command.OK, 1);
     private Command SUBMIT_CMD = new Command("Submit", Command.OK, 1);
     private Command PLAY_CMD = new Command("Play", Command.SCREEN, 1);
+
+    private Gauge progressBar = new Gauge("Upload Progress", false, 100, 0);
+    //private Gauge progressBar = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
+
+    private int progressCounter;
+    private int progressMax = 100;
 
     public AudioCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
         super(aMIDlet, "Record and send audio");
@@ -109,6 +111,90 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
+    public void prStart() {
+        progressBar.setMaxValue(progressMax);
+    }
+
+    public void prProgress(int anAmount) {
+        progressBar.setValue(anAmount);                
+    }
+
+    public void prStop() {
+        progressBar.setLabel("Upload finished!");
+    }
+
+    public void prError(String aMessage) {
+        write(aMessage);
+    }
+
+    public void prSetContentLength(int aContentLength) {
+        progressBar.setLabel("Downloading " + aContentLength + " bytes");
+    }
+
+    private class Progress {
+        public int state = 0;
+
+        private void start(ProgressListener aListener) {
+            final ProgressListener listener = aListener;
+            try {
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            try {
+                                listener.prStart();
+                                Uploader uploader = new Uploader();
+                                listener.prProgress(progressMax/4);
+                                JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name.getString(), null, "audio", MIME, startTime, audioData, false);
+                                listener.prProgress(progressMax/2);
+                                if (rsp == null) {
+                                    write("cannot submit audio!");
+                                } else if (Protocol.isPositiveResponse(rsp)) {
+                                    JXElement addMediumReq;
+                                    if (playing) {
+                                        addMediumReq = new JXElement("play-add-medium-req");
+                                        addMediumReq.setAttr("id", rsp.getAttr("id"));
+                                    } else {
+                                        addMediumReq = new JXElement("game-add-medium-req");
+                                        addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
+                                        JXElement medium = new JXElement("medium");
+                                        addMediumReq.addChild(medium);
+
+                                        JXElement id = new JXElement("id");
+                                        id.setText(rsp.getAttr("id"));
+                                        medium.addChild(id);
+
+                                        JXElement lat = new JXElement("lat");
+                                        lat.setText("" + GPSFetcher.getInstance().getCurrentLocation().lat);
+                                        medium.addChild(lat);
+
+                                        JXElement lon = new JXElement("lon");
+                                        lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
+                                        medium.addChild(lon);
+
+
+                                    }
+                                    listener.prProgress(progressMax*3/4);
+                                    midlet.getActiveApp().sendRequest(addMediumReq);
+                                    listener.prProgress(progressMax);
+                                } else {
+                                    //#style alertinfo
+                                    append("Upload failed: error is " + rsp.getAttr("error") + " press Back");
+                                }
+                            } finally {
+                                listener.prStop();
+                            }
+                        } catch (Throwable t) {
+                            listener.prError(t.getMessage());
+                        }
+                    }
+                }).start();
+            } catch (Throwable t) {
+                //#style alertinfo
+                append("Exception in Downloader:" + t.getMessage());
+            }
+        }
+    }
+
     public int write(String s) {
         //#style formbox
         return append(s);
@@ -154,43 +240,11 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
 
             write("", "Uploading... (takes a while)");
 
-            /*JXElement rsp = Net.getInstance().uploadMedium(name.getString(), null, "audio", MIME, startTime, audioData, false);*/
-            Uploader uploader = new Uploader();
-            JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name.getString(), null, "audio", MIME, startTime, audioData, false);
+            //#style formbox
+            append(progressBar);
 
-            if (rsp == null) {
-                write("cannot submit audio!");
-            } else if (Protocol.isPositiveResponse(rsp)) {
-                JXElement addMediumReq;
-                if (playing) {
-                    addMediumReq = new JXElement("play-add-medium-req");
-                    addMediumReq.setAttr("id", rsp.getAttr("id"));
-                } else {
-                    addMediumReq = new JXElement("game-add-medium-req");
-                    addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
-                    JXElement medium = new JXElement("medium");
-                    addMediumReq.addChild(medium);
-
-                    JXElement id = new JXElement("id");
-                    id.setText(rsp.getAttr("id"));
-                    medium.addChild(id);
-
-                    JXElement lat = new JXElement("lat");
-                    lat.setText("" + GPSFetcher.getInstance().getCurrentLocation().lat);
-                    medium.addChild(lat);
-
-                    JXElement lon = new JXElement("lon");
-                    lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
-                    medium.addChild(lon);
-
-
-                }
-                midlet.getActiveApp().sendRequest(addMediumReq);
-            } else {
-                //#style alertinfo
-                append("Upload failed: error is " + rsp.getAttr("error") + " press Back");
-            }
-
+            new Progress().start(this);
+            
             removeCommand(SUBMIT_CMD);
         } else if (c == PLAY_CMD) {
             play();

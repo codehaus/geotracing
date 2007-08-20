@@ -1,4 +1,4 @@
-package org.walkandplay.client.phone.util;
+package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.HTTPUploader;
@@ -15,7 +15,7 @@ public class Uploader {
 			}
 
             String agentKey = TCPClient.getInstance().getAgentKey();
-            org.walkandplay.client.phone.util.Log.log("agentkey:" + agentKey);
+            Log.log("agentkey:" + agentKey);
 
             uploader.writeField("agentkey", agentKey);
 			uploader.writeField("name", aName);
@@ -25,7 +25,7 @@ public class Uploader {
             rsp = uploader.getResponse();
 
         } catch (Throwable t) {
-			org.walkandplay.client.phone.util.Log.log("Upload error: " + t);
+			Log.log("Upload error: " + t);
 		}
 		return rsp;
 	}

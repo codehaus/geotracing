@@ -6,7 +6,7 @@ import nl.justobjects.mjox.XMLChannel;
 import javax.microedition.lcdui.*;
 import java.util.Vector;
 
-import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.TCPClientListener;
 
 public class IMDisplay extends DefaultDisplay implements TCPClientListener {
 
