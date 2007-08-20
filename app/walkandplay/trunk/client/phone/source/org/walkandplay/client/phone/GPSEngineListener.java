@@ -1,4 +1,4 @@
-package org.walkandplay.client.phone.util;
+package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.GPSInfo;

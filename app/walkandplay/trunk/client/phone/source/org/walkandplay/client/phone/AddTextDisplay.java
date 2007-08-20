@@ -4,9 +4,8 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
 import org.keyworx.mclient.Protocol;
-import org.walkandplay.client.phone.util.TCPClient;
-import org.walkandplay.client.phone.util.TCPClientListener;
-import org.walkandplay.client.phone.util.Uploader;
+import org.walkandplay.client.phone.TCPClientListener;
+import org.walkandplay.client.phone.Uploader;
 
 import javax.microedition.lcdui.*;
 

@@ -1,4 +1,4 @@
-package org.walkandplay.client.phone.util;
+package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.SocketXMLChannel;
@@ -6,7 +6,7 @@ import nl.justobjects.mjox.XMLChannel;
 import nl.justobjects.mjox.XMLChannelListener;
 import org.keyworx.mclient.ClientException;
 import org.keyworx.mclient.Protocol;
-import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.Log;
 import org.walkandplay.client.phone.WPMidlet;
 
 import java.util.Vector;

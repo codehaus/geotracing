@@ -1,4 +1,4 @@
-package org.walkandplay.client.phone.util;
+package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
@@ -59,7 +59,8 @@ public class Log {
                 nextMsg = logMsgs[idx++];
                 if (nextMsg != null) {
                     //#style labelinfo
-                    form.append(new StringItem("", "\n" + i + "=====\n" + nextMsg));
+                    form.append(new StringItem("", nextMsg));
+                    //form.append(new StringItem("", "\n" + i + "=====\n" + nextMsg));
                     /*form.append("\n" + i + "=====\n" + nextMsg);*/
                 }
                 if (idx == LOG_SZ) {

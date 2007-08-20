@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
-import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.Log;
 
 
 /**

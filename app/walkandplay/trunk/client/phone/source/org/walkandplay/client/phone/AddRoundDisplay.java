@@ -5,8 +5,8 @@ import nl.justobjects.mjox.XMLChannel;
 
 import javax.microedition.lcdui.*;
 
-import org.walkandplay.client.phone.util.Log;
-import org.walkandplay.client.phone.util.TCPClientListener;
+import org.walkandplay.client.phone.Log;
+import org.walkandplay.client.phone.TCPClientListener;
 
 public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener {
 

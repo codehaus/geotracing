@@ -1,5 +1,0 @@
-idea's for new features
-
-- tracer
-- presence friends viewer
-- warm - koud

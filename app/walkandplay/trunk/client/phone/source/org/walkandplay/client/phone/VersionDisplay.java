@@ -1,7 +1,7 @@
 package org.walkandplay.client.phone;
 
 import org.geotracing.client.Util;
-import org.walkandplay.client.phone.util.Log;
+import org.walkandplay.client.phone.Log;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
@@ -9,12 +9,11 @@ import javax.microedition.lcdui.Displayable;
 
 public class VersionDisplay extends DefaultDisplay {
 
-    private Command FETCH_CMD = new Command("Fetch new version", Command.SCREEN, 1);
+    private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
 
     public VersionDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Version check");
         prevScreen = aPrevScreen;
-
 
         String myVersion = midlet.getAppProperty("MIDlet-Version");
 
@@ -26,9 +25,15 @@ public class VersionDisplay extends DefaultDisplay {
         String theirVersion = null;
         try {
             theirVersion = Util.getPage(versionURL);
-            if (theirVersion != null && !theirVersion.trim().equals(myVersion)) {
-                //#style alertinfo
-                append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
+            if (theirVersion != null){
+                if(!theirVersion.trim().equals(myVersion)) {
+                    //#style alertinfo
+                    append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
+                    addCommand(GET_CMD);
+                }else{
+                    //#style alertinfo
+                    append("Your have the latest version");
+                }
             }
         } catch (Throwable t) {
             //#style alertinfo
@@ -38,16 +43,12 @@ public class VersionDisplay extends DefaultDisplay {
         Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
     }
 
-    /*
-     * The commandAction method is implemented by this midlet to
-     * satisfy the CommandListener interface and handle the Exit action.
-     */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        } else if (command == FETCH_CMD) {
+        } else if (command == GET_CMD) {
             try {
-                midlet.platformRequest(midlet.getKWUrl() + "/ota/version.html");
+                midlet.platformRequest(midlet.getKWUrl() + "/ota/mlgk.jar");
             } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());
