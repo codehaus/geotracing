@@ -21,7 +21,7 @@ public class VersionDisplay extends DefaultDisplay {
         append("Current version: " + myVersion);
 
         String myName = midlet.getAppProperty("MIDlet-Name");
-        String versionURL = midlet.getKWUrl() + "/ota/version.html";
+        String versionURL = midlet.getKWUrl() + "/mob/dist/version.html";
         String theirVersion = null;
         try {
             theirVersion = Util.getPage(versionURL);
@@ -48,7 +48,7 @@ public class VersionDisplay extends DefaultDisplay {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == GET_CMD) {
             try {
-                midlet.platformRequest(midlet.getKWUrl() + "/ota/mlgk.jar");
+                midlet.platformRequest(midlet.getKWUrl());
             } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());
