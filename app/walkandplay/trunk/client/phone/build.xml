@@ -171,7 +171,7 @@
             <info
 				license="GPL"
 				name="MLGK"
-				version="1.0.0"
+				version="${midlet.version}"
 				description=""
 				vendorName="GeoWorX"
 				infoUrl="http://www.j2mepolish.org"
