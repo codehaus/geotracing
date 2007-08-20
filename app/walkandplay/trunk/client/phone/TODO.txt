@@ -1,0 +1,8 @@
+- VideoDisplay -> VideoForm voor progressbar
+- DownloadListener implementeren
+- PhotoDisplay werkend krijgen: heeft iets met polish te maken
+twijfelachtig - Play: eerst gps verbinding dan pas spelen
+done - version check bij opstarten implementeren
+- nieuwe iconen
+- help op elk scherm.
+- kaarten cachen op mobiel??

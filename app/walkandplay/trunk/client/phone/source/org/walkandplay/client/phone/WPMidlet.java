@@ -54,9 +54,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public WPMidlet() {
         super();
         midlet = this;
-        //setHome();
+        setHome();
         //Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
-        new VersionChecker().check();
+        //new VersionChecker().check();
     }
 
     public void setHome() {
@@ -77,15 +77,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
         //#style mainLogCommand
-        /*menuScreen.append("test display", null);*/
+        menuScreen.append("test display", null);
         //#style mainLogCommand
-        /*menuScreen.append("video display", null);*/
+        menuScreen.append("video display", null);
         //#style mainLogCommand
-        /*menuScreen.append("video form", null);*/
+        menuScreen.append("video form", null);
         //#style mainLogCommand
-        /*menuScreen.append("GPS test display", null);*/
+        menuScreen.append("GPS test display", null);
         //#style mainLogCommand
-        /*menuScreen.append("Friend Finder", null);*/
+        menuScreen.append("Friend Finder", null);
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
@@ -197,11 +197,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 8:
                 // video canvas
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=54225", null));
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=26527", null));
                 break;
             case 9:
                 // video form
-                Display.getDisplay(this).setCurrent(new VideoForm(this, "http://test.mlgk.nl/wp/media.srv?id=54225"));
+                Display.getDisplay(this).setCurrent(new VideoForm(this, "http://test.mlgk.nl/wp/media.srv?id=26527"));
                 break;
             case 10:
                 // gps test display

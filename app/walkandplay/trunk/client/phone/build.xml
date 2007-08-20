@@ -266,7 +266,7 @@
 				<jad>
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
-					<attribute name="kw-url" value="http://test.mlgk.nl/wp" />					
+					<attribute name="kw-url" value="http://test.mlgk.nl/wp" />
 					<attribute name="kw-server" value="test.mlgk.nl" />					
 					<attribute name="kw-timeout" value="20" />
 					<attribute name="kw-user" value="yellow2" />
@@ -275,6 +275,7 @@
 					<attribute name="kw-port" value="6050" />
 					<attribute name="kw-app" value="geoapp" />
 					<attribute name="kw-role" value="user" />
+					<attribute name="volume" value="70" />
 					<attribute name="audio-rate" value="8000" />
 					<attribute name="audio-bits" value="8" />
 					<attribute name="gps-sample-interval" value="15000" />

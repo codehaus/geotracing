@@ -202,7 +202,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                     Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("medium-hit");
-                    hit.setAttr("id", 26527);
+                    hit.setAttr("id", 221499);
+                    //hit.setAttr("id", 26527);
                     rsp.addChild(hit);
                 }
 
