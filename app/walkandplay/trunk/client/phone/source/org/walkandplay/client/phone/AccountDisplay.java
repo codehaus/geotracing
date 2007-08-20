@@ -37,7 +37,7 @@ public class AccountDisplay extends DefaultDisplay {
         append(passwordField);
         //#style labelinfo
         append("server");
-        //#style textbox
+        //#style labelinfo
         append(urlField);
 
         addCommand(OK_CMD);
