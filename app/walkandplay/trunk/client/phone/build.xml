@@ -24,6 +24,9 @@
 	<!-- sets paths to all external package dirs. -->
 	<property file="${geotracing.external.dir}/build.properties"/>
 
+	<!-- sets project-wide props. -->
+	<property file="${basedir}/../../build.properties"/>
+
     <property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
 	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
 	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
@@ -267,7 +270,7 @@
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
 					<attribute name="kw-url" value="http://test.mlgk.nl/wp" />
-					<attribute name="kw-server" value="test.mlgk.nl" />					
+					<attribute name="kw-server" value="test.mlgk.nl" />
 					<attribute name="kw-timeout" value="20" />
 					<attribute name="kw-user" value="yellow2" />
 					<attribute name="kw-password" value="user" />
@@ -418,5 +421,23 @@
     <target name="N73" description="launches the application with the N73 design" depends="enableN73, test, build" />
 
     <target name="debug" description="debugs the project" depends="enableDebug, test, build" />
+
+	<!-- Copies mobile apps to test server. -->
+	<target name="deploy-test" depends="build">
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="dist/version.html">
+			<filelist dir="etc" files="version.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<echo message="Copying jars to ${deploy.test.server}:${deploy.test.dir}/mob"/>
+		<exec executable="scp">
+			<arg line="-r"/>
+			<arg line="dist"/>
+			<arg line="${deploy.test.server}:${deploy.test.dir}/mob" />
+		</exec>
+	</target>
 
 </project>
