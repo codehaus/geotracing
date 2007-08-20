@@ -30,9 +30,12 @@ import de.enough.polish.util.Locale;
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.rms.RecordStoreException;
 
 import org.walkandplay.client.phone.Log;
 import org.geotracing.client.Util;
+import org.geotracing.client.Preferences;
+import org.geotracing.client.Net;
 
 public class WPMidlet extends MIDlet implements CommandListener {
 
@@ -41,6 +44,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
     private SelectGameDisplay selectGameDisplay;
     private CreateDisplay createDisplay;
     private AppStartDisplay activeApp;
+
+    public static final String RMS_STORE_NAME = "db";
+
+    private static Preferences preferences;
 
     public final static String KW_URL = "kw-url";
     public final static String KW_USER = "kw-user";
@@ -120,19 +127,19 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     public String getKWUrl() {
-        return getAppProperty(KW_URL);
+        return getPreferences().get((KW_URL), getAppProperty(KW_URL));
     }
 
     public String getKWServer() {
-        return getAppProperty(KW_SERVER);
+        return getPreferences().get((KW_SERVER), getAppProperty(KW_SERVER));
     }
 
     public String getKWUser() {
-        return getAppProperty(KW_USER);
+        return getPreferences().get((KW_USER), getAppProperty(KW_USER));
     }
 
     public String getKWPassword() {
-        return getAppProperty(KW_PASSWORD);
+        return getPreferences().get((KW_PASSWORD), getAppProperty(KW_PASSWORD));
     }
 
     public int getKWPort() {
@@ -153,6 +160,17 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public AppStartDisplay getActiveApp(){
         return activeApp;
+    }
+
+    public Preferences getPreferences() {
+        try {
+            if (preferences == null) {
+                preferences = new Preferences(RMS_STORE_NAME);
+            }
+            return preferences;
+        } catch (RecordStoreException e) {
+            return null;
+        }
     }
 
     private void goToScreen(int aScreenNr) {

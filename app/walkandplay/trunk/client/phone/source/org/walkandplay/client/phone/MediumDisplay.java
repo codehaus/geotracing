@@ -11,6 +11,8 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
+import javax.microedition.media.Player;
+import javax.microedition.media.Manager;
 
 public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
 
@@ -22,6 +24,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
     private int screenWidth;
     private JXElement medium;
     private Image mediumImage;
+    private Player audioPlayer;
 
     private StringItem mediumLabel = new StringItem("", "");
 
@@ -96,7 +99,12 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
                         }
                     } else if (type.equals("audio")) {
                        try {
-                            Util.playStream(url);
+                            audioPlayer = Manager.createPlayer(url);
+                            audioPlayer.prefetch();
+                            audioPlayer.start();
+
+                            //Util.playStream(url);
+
                             // open up real player!!!
                             //midlet.platformRequest(url);
                         } catch (Throwable t) {
@@ -159,6 +167,16 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
     */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
+            if(audioPlayer!=null){
+                try{
+                    audioPlayer.stop();
+                    audioPlayer.deallocate();
+                    audioPlayer.close();
+                    audioPlayer = null;
+                }catch(Throwable t){
+                    //
+                }
+            }
             midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == VIEW_VIDEO_CMD) {
