@@ -424,9 +424,19 @@
 
 	<!-- Copies mobile apps to test server. -->
 	<target name="deploy-test" depends="build">
-		<!-- Set version numbers and build info in version/index.html. -->
+		<tstamp/>
+		
+		<!-- Set version number. -->
 		<concat destfile="dist/version.html">
 			<filelist dir="etc" files="version.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Set version numbers and build info. -->
+		<concat destfile="dist/build.html">
+			<filelist dir="etc" files="build.html"/>
 			<filterchain>
 				<expandproperties/>
 			</filterchain>
