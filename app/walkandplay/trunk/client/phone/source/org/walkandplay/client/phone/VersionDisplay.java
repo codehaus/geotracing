@@ -8,6 +8,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 public class VersionDisplay extends DefaultDisplay {
+	private String serverURL;
 
     private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
 
@@ -21,7 +22,8 @@ public class VersionDisplay extends DefaultDisplay {
         append("Current version: " + myVersion);
 
         String myName = midlet.getAppProperty("MIDlet-Name");
-        String versionURL = midlet.getKWUrl() + "/mob/dist/version.html";
+		serverURL = "http://" + midlet.getKWServer();
+		String versionURL = serverURL + "/mob/dist/version.html";
         String theirVersion = null;
         try {
             theirVersion = Util.getPage(versionURL);
@@ -48,7 +50,7 @@ public class VersionDisplay extends DefaultDisplay {
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == GET_CMD) {
             try {
-                midlet.platformRequest(midlet.getKWUrl());
+                midlet.platformRequest(serverURL);
             } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());
