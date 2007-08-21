@@ -6,16 +6,37 @@ import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Net;
 import org.keyworx.mclient.Protocol;
 
-import javax.microedition.lcdui.*;
 import javax.microedition.media.Player;
 import javax.microedition.media.Manager;
 import javax.microedition.media.control.VideoControl;
 import javax.microedition.media.control.GUIControl;
 import javax.microedition.midlet.MIDlet;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.StringItem;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.TextField;
+import javax.microedition.lcdui.ImageItem;
+/*import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.StringItem;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.TextField;
+import javax.microedition.lcdui.ImageItem;*/
 
 import nl.justobjects.mjox.JXElement;
 
-public class ImageCaptureDisplay extends Form implements CommandListener{
+public class ImageCaptureDisplay extends Form implements CommandListener {
 
     private Command capture;
     private Command skip;

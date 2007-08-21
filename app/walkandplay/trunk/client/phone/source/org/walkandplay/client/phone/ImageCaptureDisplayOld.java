@@ -4,8 +4,6 @@ import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Util;
-import org.walkandplay.client.phone.TCPClientListener;
-import org.walkandplay.client.phone.Uploader;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
@@ -50,7 +48,16 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
             capture();
             Display.getDisplay(midlet).setCurrent(new PhotoPreview());
         } else if (c == BACK_CMD) {
-            player.close();
+            if(player!=null){
+                try{
+                    player.stop();
+                    player.deallocate();
+                    player.stop();
+                    player = null;
+                }catch(Throwable t){
+                    //
+                }
+            }
             back();
         }
     }
@@ -120,15 +127,6 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
 
     private void capture() {
         try {
-            // PNG, 160x120
-            // BlogClient.photoData = video.getSnapshot(null);
-            //      OR
-            // BlogClient.photoData = video.getSnapshot(
-            //     "encoding=png&width=160&height=120");
-
-            // BlogClient.photoPreview = BlogClient.photoData;
-            // BlogClient.photoMime = "png";
-            // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
             status.setText("WAIT, taking photo...");
             photoTime = Util.getTime();
 
@@ -206,7 +204,7 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
                 append("SENDING PHOTO...(takes a while)");
                 Uploader uploader = new Uploader();
                 //JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
-                JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name.getString(), null, "image", photoMime, photoTime, photoData, false);
+                JXElement rsp = uploader.uploadMedium(TCPClient.getInstance().getAgentKey(), midlet.getKWUrl(), name.getString(), null, "image", photoMime, photoTime, photoData, false);
                 JXElement addMediumReq;
                 if (playing) {
                     addMediumReq = new JXElement("play-add-medium-req");

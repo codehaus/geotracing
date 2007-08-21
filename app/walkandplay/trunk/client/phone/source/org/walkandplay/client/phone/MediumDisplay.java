@@ -7,14 +7,11 @@ import org.geotracing.client.Util;
 import org.walkandplay.client.phone.Log;
 import org.walkandplay.client.phone.TCPClientListener;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.*;
 import javax.microedition.media.Player;
 import javax.microedition.media.Manager;
 
-public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
+public class MediumDisplay extends DefaultDisplay implements TCPClientListener, ProgressListener {
 
     private Command VIEW_VIDEO_CMD = new Command("View video in", Command.SCREEN, 2);
     private Command VIEW_VIDEO_CMD2 = new Command("View video ext", Command.SCREEN, 2);
@@ -25,6 +22,12 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
     private JXElement medium;
     private Image mediumImage;
     private Player audioPlayer;
+
+    private Gauge progressBar = new Gauge("Upload Progress", false, 100, 0);
+    //private Gauge progressBar = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
+
+    private int progressCounter;
+    private int progressMax = 100;
 
     private StringItem mediumLabel = new StringItem("", "");
 
@@ -76,6 +79,27 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener {
             addCommand(VIEW_VIDEO_CMD);
             addCommand(VIEW_VIDEO_CMD2);
         }
+    }
+
+    public void prStart() {
+        progressBar.setMaxValue(progressMax);
+    }
+
+    public void prProgress(int anAmount) {
+        progressBar.setValue(anAmount);
+    }
+
+    public void prStop() {
+        progressBar.setLabel("Upload finished!");
+    }
+
+    public void prError(String aMessage) {
+        //#style alertinfo
+        append(aMessage);
+    }
+
+    public void prSetContentLength(int aContentLength) {
+        progressBar.setLabel("Downloading " + aContentLength + " bytes");
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {

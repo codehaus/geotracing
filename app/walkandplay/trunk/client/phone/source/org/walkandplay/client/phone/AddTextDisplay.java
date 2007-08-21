@@ -101,7 +101,7 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
             } else {
                 //String tags = tagsField.getString();
                 Uploader uploader = new Uploader();
-                JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
+                JXElement rsp = uploader.uploadMedium(TCPClient.getInstance().getAgentKey(), midlet.getKWUrl(), name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
                 /*Net net = Net.getInstance();
                 net.setProperties(midlet);
                 JXElement rsp = net.uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);*/
