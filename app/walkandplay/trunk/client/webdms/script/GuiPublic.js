@@ -25,11 +25,11 @@ function wpCreatePane(type)
 			
 
 		case 'list_games':
-			var pane = new Pane('list_games',100,160,180,140,1,true);
+			var pane = new Pane('list_games',100,160,200,200,1,true);
 			break;
 
 		case 'list_rounds':
-			var pane = new Pane('list_rounds',320,188,165,140,1,true);
+			var pane = new Pane('list_rounds',340,188,165,140,1,true);
 			pane.setContent(wpGuiCreate('list_rounds'));
 			break;
 			
@@ -98,8 +98,9 @@ function wpGuiCreate(type,s,id,n)
 	switch(type)
 	{
 		case 'main':
- 			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
- 			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
+//  			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
+//  			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
+			str+= '<div style="font-style:italic">DMS workshop tool</div>';
 			str+= '<div id="menu" style="line-height:20px;">';
 			str+= '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>, ';
 			str+= '<a href="javascript://play" onclick="wpSelect(\'play\')">play</a> and ';
