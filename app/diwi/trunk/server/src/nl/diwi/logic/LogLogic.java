@@ -17,6 +17,8 @@ import org.keyworx.utopia.core.data.Person;
 import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.data.Medium;
 import org.keyworx.utopia.core.util.Oase;
+import org.postgis.Point;
+import org.postgis.PGgeometryLW;
 
 import java.io.File;
 import java.io.IOException;
@@ -338,6 +340,8 @@ public class LogLogic implements Constants {
                 builder.build(fileField.getFileInputStream());
             }
 
+            //log.info("Result from the event field:" + new String(logElm.toBytes(false)));
+
             if (type.equals(LOG_MOBILE_TYPE)) {
                 JXElement tripElm = new JXElement(LOG_MOBILE_TYPE);
 
@@ -347,8 +351,7 @@ public class LogLogic implements Constants {
                 // now also add the track to the log output
                 TrackLogic trackLogic = new TrackLogic(oase);
                 JXElement trackElm = trackLogic.export("" + trackRec.getId(), "gtx", "x,y,t", true, 20, 1000);
-                log.info(new String(trackElm.toBytes(false)));
-
+                
                 // add hit poi's, ugc and routes
                 // first the contents of the gtx
                 tripElm.addChildren(trackElm.getChildren());
@@ -356,46 +359,57 @@ public class LogLogic implements Constants {
                 // now add poi en ugc hits
                 JXElement hits = new JXElement("hits");
                 Vector poiHitElms = logElm.getChildrenByTag(POI_HIT_ELM);
+                //log.info("found " + poiHitElms.size() + " hits!");
                 for(int i=0;i<poiHitElms.size();i++){
+                    //log.info("processing poi # " + i);
                     JXElement poiHitElm = (JXElement)poiHitElms.elementAt(i);
                     String id = poiHitElm.getAttr(ID_FIELD);
                     String query = "SELECT * from " + POI_TABLE + " WHERE " + ID_FIELD + "=" + id;
                     Record[] records = oase.getFinder().freeQuery(query);
-                    JXElement e = records[0].toXML();
-                    e.setAttr("time", poiHitElm.getAttr("time"));
-                    e.setAttr("date", poiHitElm.getAttr("date"));
-                    e.addChild(e);
+                    Point rdPoint = (Point) ((PGgeometryLW) records[0].getObjectField(RDPOINT_FIELD)).getGeometry();
+                    poiHitElm.setAttr(X_FIELD, "" + rdPoint.x);
+                    poiHitElm.setAttr(Y_FIELD, "" + rdPoint.y);
+                    poiHitElm.setAttr(NAME_FIELD, "" + records[0].getStringField(NAME_FIELD));
+                    hits.addChild(poiHitElm);
                 }
+
                 Vector ugcHitElms = logElm.getChildrenByTag(UGC_HIT_ELM);
+                log.info("found " + ugcHitElms.size() + " hits!");
+
                 for(int i=0;i<ugcHitElms.size();i++){
                     JXElement ugcHitElm = (JXElement)ugcHitElms.elementAt(i);
+                    log.info("processing ugc # " + i + ": " + new String(ugcHitElm.toBytes(false)));
+                    // <ugc-hit id="24450" name="waterkant" filename="IMAGE_010.jpg" kind="image" time="1187513089802" date="Sunday, 19 Aug 2007 10:44:49"/>
                     String id = ugcHitElm.getAttr(ID_FIELD);
-                    String tables = UGC_TABLE + "," + Medium.TABLE_NAME;
-                    String fields = Medium.TABLE_NAME + "." + ID_FIELD + "," + Medium.TABLE_NAME + "." + NAME_FIELD  + "," + Medium.TABLE_NAME + "." + DESCRIPTION_FIELD;
-                    String where = UGC_TABLE + "." + ID_FIELD + "=" + id;
-                    String relations = UGC_TABLE + "," + Medium.TABLE_NAME + ",medium";
-                    String postCond = null;
-                    Record[] records = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
-                    JXElement e = records[0].toXML();
-                    e.setAttr("time", ugcHitElm.getAttr("time"));
-                    e.setAttr("date", ugcHitElm.getAttr("date"));
-                    e.addChild(e);
+                    Record medium = oase.getFinder().read(ugcHitElm.getIntAttr(ID_FIELD));
+
+                    ugcHitElm.setAttr(DESCRIPTION_FIELD, medium.getStringField(DESCRIPTION_FIELD));
+
+                    // get related location
+                    Record[] locations = oase.getRelater().getRelated(medium, UGC_TABLE, "medium");
+                    if(locations.length>0){
+                        Record location = locations[0];
+                        Point rdPoint = (Point) ((PGgeometryLW) location.getObjectField(RDPOINT_FIELD)).getGeometry();
+                        ugcHitElm.setAttr(X_FIELD, "" + rdPoint.x);
+                        ugcHitElm.setAttr(Y_FIELD, "" + rdPoint.y);
+                    }
+
+                    hits.addChild(ugcHitElm);                    
                 }
                 tripElm.addChild(hits);
 
                 // now add routes
-                // <nav-activate-route-req id="685"/>
                 JXElement routes = new JXElement("routes");
                 Vector routeMsgs = logElm.getChildrenByTag(NavigationHandler.NAV_ACTIVATE_ROUTE_SERVICE + "-req");
                 for(int i=0;i<routeMsgs.size();i++){
                     JXElement routeMsg = (JXElement)routeMsgs.elementAt(i);
+                    routeMsg.setTag("route");
                     String id = routeMsg.getAttr(ID_FIELD);
                     String query = "SELECT id,name,description from " + ROUTE_TABLE + " WHERE " + ID_FIELD + "=" + id;
                     Record[] records = oase.getFinder().freeQuery(query);
-                    JXElement e = records[0].toXML();
-                    e.setAttr("time", routeMsg.getAttr("time"));
-                    e.setAttr("date", routeMsg.getAttr("date"));
-                    routes.addChild(e);
+                    routeMsg.setAttr(NAME_FIELD, records[0].getStringField(NAME_FIELD));
+                    routeMsg.setAttr(DESCRIPTION_FIELD, records[0].getStringField(DESCRIPTION_FIELD));
+                    routes.addChild(routeMsg);
                 }
                 tripElm.addChild(routes);
 
