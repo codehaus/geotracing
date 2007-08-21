@@ -7,9 +7,6 @@ import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
-import org.walkandplay.client.phone.Log;
-import org.walkandplay.client.phone.TCPClientListener;
-import org.walkandplay.client.phone.Uploader;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
@@ -37,7 +34,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
     private Command SUBMIT_CMD = new Command("Submit", Command.OK, 1);
     private Command PLAY_CMD = new Command("Play", Command.SCREEN, 1);
 
-    private Gauge progressBar = new Gauge("Upload Progress", false, 100, 0);
+    private Gauge progressBar = new Gauge("", false, 100, 0);
     //private Gauge progressBar = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
 
     private int progressCounter;
@@ -143,8 +140,8 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
                             try {
                                 listener.prStart();
                                 Uploader uploader = new Uploader();
-                                listener.prProgress(progressMax/4);
-                                JXElement rsp = uploader.uploadMedium(midlet.getKWUrl(), name.getString(), null, "audio", MIME, startTime, audioData, false);
+                                listener.prProgress(progressMax/4);                                
+                                JXElement rsp = uploader.uploadMedium(TCPClient.getInstance().getAgentKey(), midlet.getKWUrl(), name.getString(), null, "audio", MIME, startTime, audioData, false);
                                 listener.prProgress(progressMax/2);
                                 if (rsp == null) {
                                     write("cannot submit audio!");

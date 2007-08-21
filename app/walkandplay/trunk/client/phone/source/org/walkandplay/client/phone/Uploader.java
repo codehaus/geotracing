@@ -5,7 +5,7 @@ import org.geotracing.client.HTTPUploader;
 
 public class Uploader {
 
-    public JXElement uploadMedium(String aKWUrl, String aName, String aDescription, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
+    public JXElement uploadMedium(String anAgentKey, String aKWUrl, String aName, String aDescription, String aType, String aMime, long aTime, byte[] theData, boolean encode) {
 		HTTPUploader uploader = new HTTPUploader();
 		JXElement rsp = null;
 		try {
@@ -14,10 +14,9 @@ public class Uploader {
 				aName = "unnamed " + aType;
 			}
 
-            String agentKey = TCPClient.getInstance().getAgentKey();
-            Log.log("agentkey:" + agentKey);
+            Log.log("agentkey:" + anAgentKey);
 
-            uploader.writeField("agentkey", agentKey);
+            uploader.writeField("agentkey", anAgentKey);
 			uploader.writeField("name", aName);
 			uploader.writeField("description", aDescription);
 			uploader.writeFile(aName, aMime, "mobit-upload", theData);
