@@ -24,6 +24,8 @@
 
 <head><title><?=$title?></title>
 
+<!-- yeah! -->
+
 <!-- //USE07 -->
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
