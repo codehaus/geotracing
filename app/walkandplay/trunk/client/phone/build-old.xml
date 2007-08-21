@@ -56,7 +56,7 @@
 	<property name="boot.classpath" value="${midp2.dir}/classes"/>
 
 	<path id="compile.sourcepath">
-		<pathelement location="${basedir}/src"/>
+		<pathelement location="${basedir}/source"/>
 		<pathelement location="${mobitracer.src}"/>
 		<pathelement location="${kwclient.src}"/>
 		<pathelement location="${mjox.src}"/>
