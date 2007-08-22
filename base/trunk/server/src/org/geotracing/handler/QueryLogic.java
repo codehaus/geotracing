@@ -434,7 +434,24 @@ public class QueryLogic {
 				String targetId = getParameter(theParms, PAR_TARGET, null);
 				throwOnMissingParm(PAR_TARGET, targetId);
 
-				result = createResponse(oase.getFinder().freeQuery("select * from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + targetId + " ORDER BY id", CommentLogic.TABLE_COMMENT));
+				// Limit
+				String limitParm = getParameter(theParms, "max", null);
+				// Show last comments ?
+				String lastParm = getParameter(theParms, "last", null);
+
+				String query = "select * from " + CommentLogic.TABLE_COMMENT + " WHERE target = " + targetId;
+
+				query += " ORDER BY creationdate";
+
+				if (lastParm != null && lastParm.equals("true")) {
+					query += " DESC";
+				}
+
+				if (limitParm != null) {
+					query += " LIMIT " + Integer.parseInt(limitParm);
+				}
+				
+				result = createResponse(oase.getFinder().freeQuery(query, CommentLogic.TABLE_COMMENT));
 
 				String ownerInfo = getParameter(theParms, PAR_OWNER_INFO, "false");
 				if (ownerInfo.equals("true")) {
@@ -450,6 +467,8 @@ public class QueryLogic {
 				String excludeOwner = getParameter(theParms, PAR_EXCLUDE_OWNER, "false");
 				String addOwnerInfo = getParameter(theParms, PAR_OWNER_INFO, "false");
 				String addTargetInfo = getParameter(theParms, PAR_TARGET_INFO, "false");
+				// Limit
+				String limitParm = getParameter(theParms, "max", null);
 
 				String query = "select * from " + CommentLogic.TABLE_COMMENT + " WHERE targetperson = " + targetPerson;
 				if (state != null) {
@@ -460,8 +479,14 @@ public class QueryLogic {
 					query += " AND ( owner is null OR owner != " + targetPerson + ")";
 				}
 
-				// log.info("excludeowner=" + excludeOwner + " q=" + query);
-				result = createResponse(oase.getFinder().freeQuery(query + " ORDER BY target,creationdate DESC"));
+				query += " ORDER BY target,creationdate DESC";
+
+				if (limitParm != null) {
+					query += " LIMIT " + Integer.parseInt(limitParm);
+				}
+
+				 // log.info("excludeowner=" + excludeOwner + " q=" + query);
+				result = createResponse(oase.getFinder().freeQuery(query));
 
 				if (addOwnerInfo.equals("true")) {
 					addOwnerFields(result);
