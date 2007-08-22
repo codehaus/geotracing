@@ -118,6 +118,8 @@ get comments for given target record
 - parms
 * "target" : (m) id of target record
 * "ownerinfo" : (o) if "true" include ownername (=loginname) and ownericon (user thumb id) in result
+* "max" : (o) maximum number of records to be returned, default all
+* "last" : (o) get last comments if "true"
 
 q-comments-for-target-person
 get comments for given target person id
@@ -125,6 +127,7 @@ get comments for given target person id
 * "state" : (o) state of comments (1 unread, 2 is read)
 * "excludeowner" : (o) exclude comments made by target person (i.e. owner of comment)
 * "ownerinfo" : (o) if "true" include ownername (=loginname) and ownericon (user thumb id) in result
+* "max" : (o) maximum number of records to be returned, default all
 
 "q-commenters-for-target"
 get commenter ids (person ids) that have commented on target record
