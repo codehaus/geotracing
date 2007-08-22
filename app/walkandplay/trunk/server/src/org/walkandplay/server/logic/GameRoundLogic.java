@@ -53,6 +53,14 @@ public class GameRoundLogic implements Constants {
 
 		try {
 			transaction.begin();
+
+			// Set game to "published" state if in draft
+			// TODO we assume this is done by owner
+			if (game.getIntField(STATE_FIELD) == GAME_CREATE_STATE_DRAFT) {
+				game.setIntField(STATE_FIELD, GAME_CREATE_STATE_PUBLISHED);
+				modifier.update(game);
+			}
+
 			gameRound = modifier.create(GAMEROUND_TABLE);
 
 			// Set ourselves as owner
@@ -94,12 +102,21 @@ public class GameRoundLogic implements Constants {
 		Relater relater = oase.getRelater();
 		throwIfNotOwner(aPersonId, aGameRound);
 
+		Record game = relater.getRelated(aGameRound, GAME_TABLE, null)[0];
+
 		Record[] gamePlays = relater.getRelated(aGameRound, GAMEPLAY_TABLE, null);
 		GamePlayLogic gamePlayLogic = new GamePlayLogic(oase);
 		for (int i = 0; i < gamePlays.length; i++) {
 			gamePlayLogic.delete(gamePlays[i]);
 		}
 		modifier.delete(aGameRound);
+
+		// Set game from "published" state to "draft" if this was last round deleted
+		// TODO we assume this is done by owner
+		if (relater.getRelated(game, GAMEROUND_TABLE, null).length == 0) {
+			game.setIntField(STATE_FIELD, GAME_CREATE_STATE_DRAFT);
+			modifier.update(game);
+		}
 	}
 
 	/**
@@ -214,7 +231,7 @@ public class GameRoundLogic implements Constants {
 	 */
 	protected void throwIfNotOwner(int aPersonId, Record aRecord) throws OaseException {
 		if (aRecord.getIntField(OWNER_FIELD) != aPersonId) {
-			throw new OaseException("you are not owner of this record");
+			throw new OaseException("you are not the owner of this gameround");
 		}
 	}
 }

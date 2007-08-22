@@ -432,22 +432,22 @@
 	</test>
 
 	<test id="play-location-req-hit-task22">
-			<send id="client1">
-				<utopia-req>
-					<play-location-req>
-						<pt lon="4.93020053" lat="52.3787423" label="sumatrakade-3erechts"/>
-					</play-location-req>
-				</utopia-req>
-			</send>
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.93020053" lat="52.3787423" label="sumatrakade-3erechts"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
 
-			<expect id="client1">
-				<utopia-rsp>
-					<play-location-rsp>
-						<task-hit id="${taskhitid2}" state="hit" answerstate="ok" mediastate="open"/>
-					</play-location-rsp>
-				</utopia-rsp>
-			</expect>
-		</test>
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<task-hit id="${taskhitid2}" state="hit" answerstate="ok" mediastate="open"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
 
 	<test id="medium-insert-req-2">
 		<send id="client1">
@@ -488,7 +488,7 @@
 	<test id="get-gameplay-events">
 		<send id="client1">
 			<utopia-req>
-				<play-get-events-req id="${gameplayid}" />
+				<play-get-events-req id="${gameplayid}"/>
 			</utopia-req>
 		</send>
 
@@ -601,7 +601,7 @@
 		<send id="client1">
 			<utopia-req>
 				<play-location-req>
-					<pt lon="4.936079978942871" lat="52.37761645879678"  label="fotootje"/>
+					<pt lon="4.936079978942871" lat="52.37761645879678" label="fotootje"/>
 				</play-location-req>
 			</utopia-req>
 		</send>
@@ -1335,22 +1335,22 @@
 	</test>
 
 	<test id="play-location-req-hit-task32">
-			<send id="client1">
-				<utopia-req>
-					<play-location-req>
-						<pt lon="4.92234706878" lat="52.376044558" label="voor zwijger"/>
-					</play-location-req>
-				</utopia-req>
-			</send>
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.92234706878" lat="52.376044558" label="voor zwijger"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
 
-			<expect id="client1">
-				<utopia-rsp>
-					<play-location-rsp>
-						<task-hit id="${taskhitid3}" state="hit" answerstate="ok" mediastate="open"/>
-					</play-location-rsp>
-				</utopia-rsp>
-			</expect>
-		</test>
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<task-hit id="${taskhitid3}" state="hit" answerstate="ok" mediastate="open"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
 
 	<test id="medium-insert-req-3">
 		<send id="client1">
@@ -1400,6 +1400,82 @@
 		<expect id="client1">
 			<utopia-rsp>
 				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="q-scores">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-scores" roundid="${roundid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp cmd="q-scores">
+					<record>
+						<id>27515
+						</id>
+
+						<state>running
+						</state>
+
+						<score>0
+						</score>
+
+						<loginname>red2
+						</loginname>
+
+					</record>
+
+					<record>
+						<id>219887
+						</id>
+
+						<state>running
+						</state>
+
+						<score>0
+						</score>
+
+						<loginname>yellow2
+						</loginname>
+
+					</record>
+
+					<record>
+						<id>150608
+						</id>
+
+						<state>done
+						</state>
+
+						<score>125
+						</score>
+
+						<loginname>green2
+						</loginname>
+
+					</record>
+
+					<record>
+						<id>27520
+						</id>
+
+						<state>done
+						</state>
+
+						<score>125
+						</score>
+
+						<loginname>blue2
+						</loginname>
+
+					</record>
+
+				</query-store-rsp>
+
 			</utopia-rsp>
 		</expect>
 	</test>

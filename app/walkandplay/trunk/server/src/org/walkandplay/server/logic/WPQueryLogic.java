@@ -73,11 +73,11 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				Record[] gameRounds = getOase().getRelater().getRelated(game, GAMEROUND_TABLE, null);
 				result = createResponse(gameRounds);
-			} else if ("q-gameplays".equals(aQueryName)) {
-				String id = getParameter(theParms, "roundid", null);
-				throwOnMissingParm("roundid", id);
+			} else if ("q-gameplays".equals(aQueryName) ||"q-scores".equals(aQueryName)) {
+				String id = getParameter(theParms, ATTR_ROUNDID, null);
+				throwOnMissingParm(ATTR_ROUNDID, id);
 				String tables = "utopia_person,wp_gameplay,wp_gameround";
-				String fields = "wp_gameplay.id,wp_gameplay.state";
+				String fields = "wp_gameplay.id,wp_gameplay.state,wp_gameplay.score";
 				String where = "wp_gameround.id = " + id;
 				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,utopia_person";
 				String postCond = null;
@@ -160,21 +160,6 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				String postCond = null;
 				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
 
-			} else if ("q-scores".equals(aQueryName)) {
-				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-				// gameplay id
-				String gameId = (String) theParms.get("gameid");
-
-				JXElement s1 = new JXElement("record");
-				s1.setChildText("team", "red1");
-				s1.setChildText("points", "5");
-				result.addChild(s1);
-
-				JXElement s2 = new JXElement("record");
-				s2.setChildText("team", "blue1");
-				s2.setChildText("points", "10");
-				result.addChild(s2);
-
 			} else if ("q-task".equals(aQueryName)) {
 				String id = getParameter(theParms, PAR_ID, null);
 				throwOnMissingParm(PAR_ID, id);
@@ -196,7 +181,6 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 			result = Protocol.createNegativeResponse(QUERY_STORE_SERVICE, Protocol.__4005_Unexpected_error, t.getMessage());
 			log.error("Unexpected Error during query", t);
 		}
-        result.setAttr("cmd", aQueryName);
         return result;
 	}
 
@@ -297,7 +281,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		return result;
 	}
 
-	public static Record getGameForGamePlay(int aGamePlayId) throws OaseException, UtopiaException {
+	public static Record getGameForGamePlay(int aGamePlayId) {
 		Record game = null;
 		try {
 			Record gamePlay = getOase().getFinder().read(aGamePlayId, GAMEPLAY_TABLE);
@@ -305,6 +289,44 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 			game = getOase().getRelater().getRelated(schedule, GAME_TABLE, null)[0];
 		} catch (Throwable t) {
 			log.warn("Error query getGameForGamePlay gamePlayId=" + aGamePlayId, t);
+		}
+
+		return game;
+	}
+
+	public static Record getGameForGameMedium(int aMediumId) {
+		Record game = null;
+		try {
+			Record medium = getOase().getFinder().read(aMediumId, MEDIUM_TABLE);
+			Record location = getOase().getRelater().getRelated(medium, LOCATION_TABLE, null)[0];
+			game = getOase().getRelater().getRelated(location, GAME_TABLE, null)[0];
+		} catch (Throwable t) {
+			log.warn("Error query getGameForGameMedium mediumId=" + aMediumId, t);
+		}
+
+		return game;
+	}
+
+	public static Record getGameForGameLocation(int aLocationId)  {
+		Record game = null;
+		try {
+			Record location = getOase().getFinder().read(aLocationId, LOCATION_TABLE);
+			game = getOase().getRelater().getRelated(location, GAME_TABLE, null)[0];
+		} catch (Throwable t) {
+			log.warn("Error query getGameForGameLocation locationId=" + aLocationId, t);
+		}
+
+		return game;
+	}
+
+	public static Record getGameForGameTask(int aTaskId) {
+		Record game = null;
+		try {
+			Record medium = getOase().getFinder().read(aTaskId, TASK_TABLE);
+			Record location = getOase().getRelater().getRelated(medium, LOCATION_TABLE, null)[0];
+			game = getOase().getRelater().getRelated(location, GAME_TABLE, null)[0];
+		} catch (Throwable t) {
+			log.warn("Error query getGameForGameTask taskId=" + aTaskId, t);
 		}
 
 		return game;

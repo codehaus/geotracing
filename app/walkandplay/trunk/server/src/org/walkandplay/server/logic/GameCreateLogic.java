@@ -34,6 +34,9 @@ public class GameCreateLogic implements Constants {
 	 * @throws OaseException Standard Utopia exception
 	 */
 	public Record addGameMedium(int aPersonId, int aGameId, JXElement aMediumElm) throws OaseException {
+		// Throws exception if game cannot be updated
+		verifyGameUpdate(aPersonId, aGameId);
+
 		Transaction transaction = oase.getOaseSession().createTransaction();
 		Record mediumRecord = null;
 		try {
@@ -84,6 +87,9 @@ public class GameCreateLogic implements Constants {
 	 * @throws OaseException Standard Utopia exception
 	 */
 	public Record addGameTask(int aPersonId, int aGameId, JXElement aTaskElm) throws OaseException {
+		// Throws exception if game cannot be updated
+		verifyGameUpdate(aPersonId, aGameId);
+
 		Transaction transaction = oase.getOaseSession().createTransaction();
 		Record taskRecord = null;
 
@@ -184,16 +190,21 @@ public class GameCreateLogic implements Constants {
 			transaction.begin();
 			Record gameRecord = finder.read(aGameId, GAME_TABLE);
 			throwIfNotOwner(aPersonId, gameRecord);
+
+			// Delete locations related to game with their tasks/media
 			Record[] locations = relater.getRelated(gameRecord, LOCATION_TABLE, null);
 			for (int i = 0; i < locations.length; i++) {
 				deleteGameLocation(locations[i]);
 			}
 
+			// Delete all gamerounds (and gameplays!)
 			Record[] gameRounds = relater.getRelated(gameRecord, GAMEROUND_TABLE, null);
 			GameRoundLogic gameRoundLogic = new GameRoundLogic(oase);
 			for (int i = 0; i < gameRounds.length; i++) {
 				gameRoundLogic.deleteRound(aPersonId, gameRounds[i]);
 			}
+
+			// Finally delete game itself
 			modifier.delete(gameRecord);
 
 			transaction.commit();
@@ -203,13 +214,112 @@ public class GameCreateLogic implements Constants {
 		}
 	}
 
+
+	/**
+	 * Delete a game medium and its location.
+	 *
+	 * @param aMediumId medium id related to game
+	 * @throws OaseException Standard Utopia exception
+	 */
+	public void deleteGameMedium(int aPersonId, int aMediumId) throws OaseException {
+		// Throws exception if game cannot be updated
+		verifyGameUpdate(aPersonId, WPQueryLogic.getGameForGameMedium(aMediumId));
+
+		Record medium = oase.getFinder().read(aMediumId, MEDIUM_TABLE);
+		if (medium == null) {
+			throw new OaseException("No medium found for id=" + aMediumId);
+		}
+		deleteGameMedium(oase.getFinder().read(aMediumId, MEDIUM_TABLE));
+	}
+
+
+
+	/**
+	 * Delete a game task and its location.
+	 *
+	 * @param aTaskId task id related to game
+	 * @throws OaseException Standard Utopia exception
+	 */
+	public void deleteGameTask(int aPersonId, int aTaskId) throws OaseException {
+		// Throws exception if game cannot be updated
+		verifyGameUpdate(aPersonId, WPQueryLogic.getGameForGameTask(aTaskId));
+
+		Record task = oase.getFinder().read(aTaskId, TASK_TABLE);
+		if (task == null) {
+			throw new OaseException("No task found for id=" + aTaskId);
+		}
+		deleteGameTask(task);
+	}
+
+	/**
+	 * Update a game.
+	 *
+	 * @param aGameId game id for update
+	 * @throws OaseException Standard Utopia exception
+	 */
+	public void updateGame(int aPersonId, int aGameId, JXElement aGameElm) throws OaseException {
+		Finder finder = oase.getFinder();
+		Modifier modifier = oase.getModifier();
+		Record game = finder.read(aGameId, GAME_TABLE);
+
+		// Throws exception if game cannot be updated
+		verifyGameUpdate(aPersonId, game);
+
+		String name = aGameElm.getChildText(NAME_FIELD);
+		if (name != null) {
+			game.setStringField(NAME_FIELD, name);
+		}
+		String desc = aGameElm.getChildText(DESCRIPTION_FIELD);
+
+		if (desc != null) {
+			game.setStringField(DESCRIPTION_FIELD, desc);
+		}
+		String intro = aGameElm.getChildText(INTRO_FIELD);
+		if (intro != null) {
+			game.setStringField(INTRO_FIELD, intro);
+		}
+		String outro = aGameElm.getChildText(OUTRO_FIELD);
+
+		if (outro != null) {
+			game.setStringField(OUTRO_FIELD, outro);
+		}
+		modifier.update(game);
+	}
+
+
+
+	/**
+	 * Throw exception if game cannot be updated.
+	 *
+	 * @param aPersonId person id to check
+	 * @param aGameId record id of game to be checked
+	 * @throws OaseException thrown if verify failed
+	 */
+	public void verifyGameUpdate(int aPersonId, int aGameId) throws OaseException {
+		verifyGameUpdate(aPersonId, oase.getFinder().read(aGameId, GAME_TABLE));
+	}
+
+	/**
+	 * Throw exception if game cannot be updated.
+	 *
+	 * @param aPersonId person id to check
+	 * @param aGameRecord record of game to be checked
+	 * @throws OaseException thrown if verify failed
+	 */
+	public void verifyGameUpdate(int aPersonId, Record aGameRecord) throws OaseException {
+		throwIfNotOwner(aPersonId, aGameRecord);
+		throwIfNotDraft(aGameRecord);
+	}
+
+	/***************************** INTERNAL METHODS *******************************************/
+
 	/**
 	 * Delete a game location.
 	 *
 	 * @param aLocationRec location  related to game
 	 * @throws OaseException Standard Utopia exception
 	 */
-	public void deleteGameLocation(Record aLocationRec) throws OaseException {
+	protected void deleteGameLocation(Record aLocationRec) throws OaseException {
 		Relater relater = oase.getRelater();
 		switch (aLocationRec.getIntField(TYPE_FIELD)) {
 
@@ -240,37 +350,26 @@ public class GameCreateLogic implements Constants {
 	/**
 	 * Delete a game medium and its location.
 	 *
-	 * @param aMediumId medium id related to game
-	 * @throws OaseException Standard Utopia exception
-	 */
-	public void deleteGameMedium(int aMediumId) throws OaseException {
-		deleteGameMedium(oase.getFinder().read(aMediumId, MEDIUM_TABLE));
-	}
-
-	/**
-	 * Delete a game medium and its location.
-	 *
 	 * @param aMediumRec medium related to game
 	 * @throws OaseException Standard Utopia exception
 	 */
-	public void deleteGameMedium(Record aMediumRec) throws OaseException {
+	protected void deleteGameMedium(Record aMediumRec) throws OaseException {
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
-		Record locationRecord = relater.getRelated(aMediumRec, Location.TABLE_NAME, null)[0];
-		modifier.delete(locationRecord);
-		modifier.delete(aMediumRec);
+		Transaction transaction = oase.getOaseSession().createTransaction();
+		try {
+			transaction.begin();
+			Record locationRecord = relater.getRelated(aMediumRec, Location.TABLE_NAME, null)[0];
+			modifier.delete(locationRecord);
+			modifier.delete(aMediumRec);
+
+			transaction.commit();
+		} catch (Throwable t) {
+			transaction.cancel();
+			throw new OaseException("deleteGameMedium transaction failed for id=" + aMediumRec.getId(), t);
+		}
 	}
 
-
-	/**
-	 * Delete a game task and its location.
-	 *
-	 * @param aTaskId task id related to game
-	 * @throws OaseException Standard Utopia exception
-	 */
-	public void deleteGameTask(int aTaskId) throws OaseException {
-		deleteGameMedium(oase.getFinder().read(aTaskId, TASK_TABLE));
-	}
 
 	/**
 	 * Delete a game task and related location/medium.
@@ -278,45 +377,24 @@ public class GameCreateLogic implements Constants {
 	 * @param aTaskRec task related to game
 	 * @throws OaseException Standard Utopia exception
 	 */
-	public void deleteGameTask(Record aTaskRec) throws OaseException {
+	protected void deleteGameTask(Record aTaskRec) throws OaseException {
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
-		Record locationRecord = relater.getRelated(aTaskRec, Location.TABLE_NAME, null)[0];
-		Record mediumRecord = relater.getRelated(aTaskRec, MEDIUM_TABLE, null)[0];
-		modifier.delete(aTaskRec);
-		modifier.delete(locationRecord);
-		modifier.delete(mediumRecord);
-	}
+		Transaction transaction = oase.getOaseSession().createTransaction();
+		try {
+			transaction.begin();
+			Record locationRecord = relater.getRelated(aTaskRec, Location.TABLE_NAME, null)[0];
+			Record mediumRecord = relater.getRelated(aTaskRec, MEDIUM_TABLE, null)[0];
 
-	/**
-	 * Update a game.
-	 *
-	 * @param aGameId game id for update
-	 * @throws OaseException Standard Utopia exception
-	 */
-	public void updateGame(int aGameId, JXElement aGameElm) throws OaseException {
-		Finder finder = oase.getFinder();
-		Modifier modifier = oase.getModifier();
-		Record game = finder.read(aGameId, GAME_TABLE);
-		String name = aGameElm.getChildText(NAME_FIELD);
-		if (name != null) {
-			game.setStringField(NAME_FIELD, name);
-		}
-		String desc = aGameElm.getChildText(DESCRIPTION_FIELD);
+			modifier.delete(aTaskRec);
+			modifier.delete(locationRecord);
+			modifier.delete(mediumRecord);
 
-		if (desc != null) {
-			game.setStringField(DESCRIPTION_FIELD, desc);
+			transaction.commit();
+		} catch (Throwable t) {
+			transaction.cancel();
+			throw new OaseException("deleteGameTask transaction failed for id=" + aTaskRec.getId(), t);
 		}
-		String intro = aGameElm.getChildText(INTRO_FIELD);
-		if (intro != null) {
-			game.setStringField(INTRO_FIELD, intro);
-		}
-		String outro = aGameElm.getChildText(OUTRO_FIELD);
-
-		if (outro != null) {
-			game.setStringField(OUTRO_FIELD, outro);
-		}
-		modifier.update(game);
 	}
 
 
@@ -366,7 +444,6 @@ public class GameCreateLogic implements Constants {
 		}
 	}
 
-
 	/**
 	 * Throw exception if person id is not the owner
 	 *
@@ -387,7 +464,29 @@ public class GameCreateLogic implements Constants {
 	 */
 	protected void throwIfNotOwner(int aPersonId, Record aRecord) throws OaseException {
 		if (aRecord.getIntField(OWNER_FIELD) != aPersonId) {
-			throw new OaseException("you are not owner of this record");
+			throw new OaseException("you are not owner of this game");
+		}
+	}
+
+	/**
+	 * Throw exception if game not in draft state.
+	 *
+	 * @param aGameId game id to check
+	 * @throws OaseException Standard Utopia exception
+	 */
+	protected void throwIfNotDraft(int aGameId) throws OaseException {
+		throwIfNotDraft(oase.getFinder().read(aGameId, GAME_TABLE));
+	}
+
+	/**
+	 * Throw exception if game not in draft state.
+	 *
+	 * @param aRecord record to be checked
+	 * @throws OaseException Standard Utopia exception
+	 */
+	protected void throwIfNotDraft(Record aRecord) throws OaseException {
+		if (aRecord.getIntField(STATE_FIELD) != GAME_CREATE_STATE_DRAFT) {
+			throw new OaseException("game is not in draft state");
 		}
 	}
 }

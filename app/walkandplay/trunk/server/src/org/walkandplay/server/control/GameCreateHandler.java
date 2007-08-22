@@ -195,7 +195,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 		JXElement requestElement = anUtopiaReq.getRequestCommand();
 		HandlerUtil.throwOnNonNumAttr(requestElement, ID_FIELD);
 		int mediumId = requestElement.getIntAttr(ID_FIELD);
-		createLogic(anUtopiaReq).deleteGameMedium(mediumId);
+		createLogic(anUtopiaReq).deleteGameMedium(HandlerUtil.getUserId(anUtopiaReq), mediumId);
 
 		JXElement response = createResponse(GAME_DEL_MEDIUM_SERVICE);
 		response.setAttr(ID_FIELD, mediumId);
@@ -216,7 +216,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 		HandlerUtil.throwOnNonNumAttr(requestElement, ID_FIELD);
 		int taskId = requestElement.getIntAttr(ID_FIELD);
 
-		createLogic(anUtopiaReq).deleteGameTask(taskId);
+		createLogic(anUtopiaReq).deleteGameTask(HandlerUtil.getUserId(anUtopiaReq), taskId);
 
 		JXElement response = createResponse(GAME_DEL_TASK_SERVICE);
 		response.setAttr(ID_FIELD, taskId);
@@ -230,7 +230,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 		HandlerUtil.throwOnMissingChildElement(requestElm, TAG_GAME);
 
 		JXElement gameElm = requestElm.getChildAt(0);
-		createLogic(anUtopiaReq).updateGame(requestElm.getIntAttr(ID_FIELD), gameElm);
+		createLogic(anUtopiaReq).updateGame(HandlerUtil.getUserId(anUtopiaReq), requestElm.getIntAttr(ID_FIELD), gameElm);
 		return createResponse(GAME_UPDATE_SERVICE);
 	}
 

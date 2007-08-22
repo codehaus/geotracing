@@ -403,13 +403,11 @@ public class GamePlayLogic implements Constants {
 			throw new UtopiaException("Cannot play game that is already done");
 		}
 
-		// TODO Find any running games
+		// If already a running game: pause
 		Record runningGamePlay = WPQueryLogic.getRunningGamePlay(aPersonId);
 		if (runningGamePlay != null) {
-
+			runningGamePlay.setStringField(STATE_FIELD, PLAY_STATE_PAUSED);
 		}
-
-		// Record person = finder.read(personId, PERSON_TABLE);
 
 		// Game state is scheduled or running
 		if (gamePlay.getStringField(STATE_FIELD).equals(PLAY_STATE_SCHEDULED)) {
@@ -480,7 +478,6 @@ public class GamePlayLogic implements Constants {
 
 	public void reset(Record aPerson, Record aGamePlay) throws OaseException, UtopiaException {
 
-		Finder finder = oase.getFinder();
 		Modifier modifier = oase.getModifier();
 		Relater relater = oase.getRelater();
 
@@ -503,9 +500,24 @@ public class GamePlayLogic implements Constants {
 		// Game state is scheduled or running
 		aGamePlay.setIntField(SCORE_FIELD, 0);
 		aGamePlay.setStringField(STATE_FIELD, PLAY_STATE_SCHEDULED);
+
+		// re-init events field
+		FileField fileField = aGamePlay.getFileField(EVENTS_FIELD);
+
+		if (fileField != null) {
+			File emptyFile;
+
+			try {
+				emptyFile = File.createTempFile("empty", ".txt");
+			} catch (IOException ioe) {
+				log.warn("Cannot create empty temp file", ioe);
+				throw new UtopiaException("Cannot create temp file", ioe);
+			}
+			aGamePlay.setFileField(EVENTS_FIELD, aGamePlay.createFileField(emptyFile));
+		}
+
 		modifier.update(aGamePlay);
 
-		// TODO re-init events field
 	}
 
 
