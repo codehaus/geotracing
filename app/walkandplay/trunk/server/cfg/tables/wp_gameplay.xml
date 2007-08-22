@@ -37,7 +37,7 @@
 		<!-- totalscore -->
 		<field name="score" type="INTEGER" required="true" default="0"/>
 
-		<!-- 1=scheduled 2=running 3=done -->
+		<!-- Values: scheduled,running,paused,done  -->
         <field name="state" type="STRING" size="12" default="scheduled" required="true" />
 
 		<field name="extra" type="XML" />

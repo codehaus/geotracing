@@ -35,6 +35,7 @@ public interface Constants {
 	public final static String ATTR_TRACKID = "trackid";
 	public final static String ATTR_TASKID = "taskid";
 	public final static String ATTR_MEDIUMID = "mediumid";
+	public final static String ATTR_ROUNDID = "roundid";
 
 	// table fields
 	public final static String ANSWER_FIELD = "answer";
@@ -98,10 +99,14 @@ public interface Constants {
 	public static final int LOC_TYPE_GAME_TASK = 100;
 	public static final int LOC_TYPE_GAME_MEDIUM = 101;
 
+	// Game states
+	public final static int GAME_CREATE_STATE_DRAFT = 1;
+	public final static int GAME_CREATE_STATE_PUBLISHED = 2;
+
 	// Game play states
 	public final static String PLAY_STATE_SCHEDULED = "scheduled";
 	public final static String PLAY_STATE_RUNNING = "running";
-	public final static String PLAY_STATE_SUSPENDED = "suspended";
+	public final static String PLAY_STATE_PAUSED = "paused";
 	public final static String PLAY_STATE_DONE = "done";
 
 	// Task result states
