@@ -41,9 +41,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
     private WPMidlet midlet;
 
-    private Timer IMPollTimer;
+    private Timer pollTimer;
     private Vector IMMessages;
-    private long lastIMRetrievalTime = -1;
+    private long lastRetrievalTime = -1;
     private static long POLL_INTERVAL = 60000L;
     private IMDisplay imDisplay;
 
@@ -192,10 +192,22 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 IMMessages = rsp.getChildren();
                 IMCounter = rsp.getChildren().size();
                 if (IMCounter > prevIMCounter) {
+                    prevIMCounter = IMCounter;
                     if (imDisplay.isActive()) {
                         imDisplay.setMessages(IMMessages);
-                    } else {
+                    }else{
                         imDisplay = new IMDisplay(midlet, this, IMMessages);
+                    }
+                }
+            } else if (rsp.getTag().equals("photo-read-rsp")) {
+                IMMessages = rsp.getChildren();
+                IMCounter = rsp.getChildren().size();
+                if (IMCounter > prevIMCounter) {
+                    prevIMCounter = IMCounter;
+                    if (!imDisplay.isActive()) {
+                        imDisplay = new IMDisplay(midlet, this, IMMessages);
+                    }else{
+                        imDisplay.setMessages(IMMessages);
                     }
                 }
             } else if (rsp.getTag().equals("play-location-rsp")) {
@@ -231,7 +243,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                             new TaskDisplay(midlet, Integer.parseInt(e.getAttr("id")), w, this);
                         }
                     } else if (t.equals("medium-hit")) {
-                        new MediumDisplay(midlet, Integer.parseInt(e.getAttr("id")), w, this);
+                        new MediumDisplay(midlet, e.getAttr("id"), w, this);
                     }
                 }
             }
@@ -265,7 +277,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             getGame();
             getGameLocations();
             // start polling for IM messages
-            startIMPoll();
+            startPoll();
 
             //tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp?";
             //tileBaseURL = Net.getInstance().getURL() + "/map.srv?";
@@ -378,43 +390,44 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     }
 
     /*
-    <cmt-read-req>
+    <cmt-read-req size="3">
         <target>${trkid1}</target>
     </cmt-read-req>
      */
     private void getIMMessages() {
         JXElement req = new JXElement("cmt-read-req");
+        req.setAttr("size", 3);
         JXElement target = new JXElement("target");
         target.setText("" + midlet.getPlayApp().getGamePlayId());
         req.addChild(target);
 
-        lastIMRetrievalTime = Util.getTime();
+        lastRetrievalTime = Util.getTime();
         midlet.getPlayApp().sendRequest(req);
     }
 
-    private void stopIMPoll() {
-        if (IMPollTimer != null) {
-            IMPollTimer.cancel();
-            IMPollTimer = null;
+    private void stopPoll() {
+        if (pollTimer != null) {
+            pollTimer.cancel();
+            pollTimer = null;
         }
     }
 
-    private void startIMPoll() {
-        if (IMPollTimer != null) {
+    private void startPoll() {
+        if (pollTimer != null) {
             return;
         }
 
-        IMPollTimer = new Timer();
+        pollTimer = new Timer();
         TimerTask task = new Poller();
 
         // wait five seconds before executing, then
         // execute every ten seconds
-        IMPollTimer.schedule(task, 5000, POLL_INTERVAL);
+        pollTimer.schedule(task, 5000, POLL_INTERVAL);
     }
 
     private class Poller extends TimerTask {
         public void run() {
-            if (Util.getTime() - lastIMRetrievalTime > POLL_INTERVAL || lastIMRetrievalTime < 0) {
+            if (Util.getTime() - lastRetrievalTime > POLL_INTERVAL || lastRetrievalTime < 0) {
                 getIMMessages();
             }
         }
@@ -584,7 +597,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
             gpsEngine.stop();
-            stopIMPoll();
+            stopPoll();
             midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);            
         } else if (cmd == ADD_PHOTO_CMD) {

@@ -6,3 +6,4 @@ done - version check bij opstarten implementeren
 - nieuwe iconen
 - help op elk scherm.
 - kaarten cachen op mobiel??
+- create singletons for all screens??

@@ -35,7 +35,6 @@ import javax.microedition.rms.RecordStoreException;
 import org.walkandplay.client.phone.Log;
 import org.geotracing.client.Util;
 import org.geotracing.client.Preferences;
-import org.geotracing.client.Net;
 
 public class WPMidlet extends MIDlet implements CommandListener {
 
@@ -57,6 +56,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String KW_APP = "kw-app";
     public final static String KW_ROLE = "kw-role";
     public final static String VOLUME = "volume";
+    public final static String MEDIA_PLAYER = "videoplayer";
+    public final static String INTERN = "intern";
+    public final static String EXTERN = "extern";
 
     public WPMidlet() {
         super();
@@ -158,6 +160,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return Integer.parseInt(getAppProperty(VOLUME));
     }
 
+    public boolean useInternalMediaPlayer(){
+        String type = getPreferences().get((MEDIA_PLAYER));
+        if(type == null || type.equals(INTERN)){
+            return true;
+        }
+        return false;        
+    }
+
     public AppStartDisplay getActiveApp(){
         return activeApp;
     }
@@ -215,7 +225,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 8:
                 // video canvas
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "http://test.mlgk.nl/wp/media.srv?id=26527", null));
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", "http://test.mlgk.nl/wp/media.srv?id=26527", null));
                 break;
             case 9:
                 // video form
