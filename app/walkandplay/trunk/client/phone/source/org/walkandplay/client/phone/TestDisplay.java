@@ -1,7 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.Form;
-
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.*;

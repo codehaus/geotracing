@@ -2,10 +2,9 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import org.geotracing.client.*;
 import org.keyworx.mclient.Protocol;
-import org.walkandplay.client.phone.TCPClientListener;
-import org.walkandplay.client.phone.Uploader;
+import org.geotracing.client.Util;
+import org.geotracing.client.GPSFetcher;
 
 import javax.microedition.lcdui.*;
 

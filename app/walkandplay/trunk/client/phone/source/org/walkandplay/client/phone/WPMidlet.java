@@ -70,7 +70,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public void setHome() {
         //#style mainScreen
-        menuScreen = new List("Mobile City", List.IMPLICIT);
+        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
         //#style mainTraceCommand
@@ -85,7 +85,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Quit"), null);
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
-        //#style mainLogCommand
+       /* //#style mainLogCommand
         menuScreen.append("test display", null);
         //#style mainLogCommand
         menuScreen.append("video display", null);
@@ -94,7 +94,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //#style mainLogCommand
         menuScreen.append("GPS test display", null);
         //#style mainLogCommand
-        menuScreen.append("Friend Finder", null);
+        menuScreen.append("Friend Finder", null);*/
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
@@ -225,11 +225,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 8:
                 // video canvas
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", "http://test.mlgk.nl/wp/media.srv?id=26527", null));
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() +"/media.srv?id=26527", null));
                 break;
             case 9:
                 // video form
-                Display.getDisplay(this).setCurrent(new VideoForm(this, "http://test.mlgk.nl/wp/media.srv?id=26527"));
+                Display.getDisplay(this).setCurrent(new VideoForm(this, getKWUrl() + "/media.srv?id=26527"));
                 break;
             case 10:
                 // gps test display
@@ -252,13 +252,13 @@ public class WPMidlet extends MIDlet implements CommandListener {
             String myVersion = getAppProperty("MIDlet-Version");
 
             String myName = getAppProperty("MIDlet-Name");
-            String versionURL = getKWUrl() + "/ota/version.html";
+            String versionURL = getKWUrl() + "/mob/dist/version.html";
             try {
                 String theirVersion = Util.getPage(versionURL);
                 if (theirVersion != null){
                     if(!theirVersion.trim().equals(myVersion)) {
                         //#style defaultscreen
-                        form = new Form("Mobile City - Version check");
+                        form = new Form("Version check");
 
                         //#style alertinfo
                         form.append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
@@ -286,7 +286,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 setHome();
             } else if (command == GET_CMD) {
                 try {
-                    midlet.platformRequest(midlet.getKWUrl() + "/ota/mlgk.jar");
+                    midlet.platformRequest("http://" + midlet.getKWServer());
                 } catch (Throwable t) {
                     //#style alertinfo
                     form.append("Could not get new version...sorry.");

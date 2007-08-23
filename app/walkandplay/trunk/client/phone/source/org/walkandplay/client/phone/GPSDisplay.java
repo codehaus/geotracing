@@ -1,15 +1,9 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.ChoiceGroup;
-import de.enough.polish.ui.StringItem;
 import org.geotracing.client.Preferences;
-import org.walkandplay.client.phone.Log;
 
 import javax.bluetooth.*;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.*;
 import javax.microedition.rms.RecordStoreException;
 import java.util.Hashtable;
 
