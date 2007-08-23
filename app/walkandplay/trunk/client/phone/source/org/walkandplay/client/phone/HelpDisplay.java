@@ -49,10 +49,6 @@ public class HelpDisplay extends DefaultDisplay {
         addCommand(HELP4_CMD);
     }
 
-    /*
-       * The commandAction method is implemented by this midlet to
-       * satisfy the CommandListener interface and handle the Cancel action.
-       */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
             Display.getDisplay(midlet).setCurrent(prevScreen);
@@ -63,19 +59,15 @@ public class HelpDisplay extends DefaultDisplay {
         } else if (cmd == HELP2_CMD) {
             title.setText(HELP2_CMD.getLabel());
             //#style formbox
-            text.setText("Yes sometimes software hangs. Sometimes you can press the red 'cancel call' button to close the " +
-                    "application. If that doesn't work just reboot your phone and simply start over again.");
+            text.setText(Locale.get("help.Topic2Text"));
         } else if (cmd == HELP3_CMD) {
             title.setText(HELP3_CMD.getLabel());
             //#style formbox
-            text.setText("Make sure that your username and password correspond with those you can find under Settings/Account.");
+            text.setText(Locale.get("help.Topic3Text"));
         } else if (cmd == HELP4_CMD) {
             title.setText(HELP4_CMD.getLabel());
             //#style formbox
-            text.setText("Sometimes you think your application has disappeared all of a sudden. This can happen because another " +
-                    "application like a mediaplayer has started up and now has the focus. Or a call or sms came in between." +
-                    "Most of the time when you close the 'upper' app this application appears again. Most Nokia's will " +
-                    "also let you switch applications when holding the down the menu-button for a few secs.");
+            text.setText(Locale.get("help.Topic4Text"));
         }
     }
 }
