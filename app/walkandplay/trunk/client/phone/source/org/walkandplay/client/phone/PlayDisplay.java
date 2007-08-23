@@ -15,13 +15,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-/**
- * MobiTracer main GUI.
- *
- * @author Just van den Broecke
- * @version $Id: TraceScreen.java 254 2007-01-11 17:13:03Z just $
- */
-/*public class PlayDisplay extends GameCanvas implements CommandListener, DownloadListener {*/
 public class PlayDisplay extends GameCanvas implements CommandListener, TCPClientListener, GPSEngineListener {
     private GoogleMap.XY xy;
     private Image mapImage;
@@ -211,26 +204,42 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     }
                 }
             } else if (rsp.getTag().equals("play-location-rsp")) {
+                Log.log("add a hit!!!!");
+                // video
                 if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                    Log.log("add a hit!!!!");
+                    JXElement hit = new JXElement("medium-hit");
+                    hit.setAttr("id", 26527);
+                    rsp.addChild(hit);
+                }
+
+                /*// audio
+                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                     JXElement hit = new JXElement("medium-hit");
                     hit.setAttr("id", 221499);
-                    //hit.setAttr("id", 26527);
                     rsp.addChild(hit);
                 }
 
-                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                // image
+                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                     JXElement hit = new JXElement("medium-hit");
-                    hit.setAttr("id", 22629);
+                    hit.setAttr("id", 22578);
                     rsp.addChild(hit);
                 }
 
+                // text
+                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    JXElement hit = new JXElement("medium-hit");
+                    hit.setAttr("id", 531414);
+                    rsp.addChild(hit);
+                }
+
+                // task
                 if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                     JXElement hit = new JXElement("task-hit");
                     hit.setAttr("id", 22560);
                     rsp.addChild(hit);
-                }
-*/
+                }*/
+
                 Util.playTone(96, 75, midlet.getVolume());
                 JXElement e = rsp.getChildAt(0);
 
@@ -390,19 +399,19 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     }
 
     /*
-    <cmt-read-req size="3">
-        <target>${trkid1}</target>
-    </cmt-read-req>
+    <utopia-req>
+       <query-store-req cmd="q-comments-for-target" target="219881" max="2"  last="true"/>
+    </utopia-req>
      */
     private void getIMMessages() {
-        JXElement req = new JXElement("cmt-read-req");
-        req.setAttr("size", 3);
-        JXElement target = new JXElement("target");
-        target.setText("" + midlet.getPlayApp().getGamePlayId());
-        req.addChild(target);
-
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-comments-for-target");
+        req.setAttr("target", midlet.getPlayApp().getGamePlayId());
+        req.setAttr("max", 3);
+        req.setAttr("last", true);
+        
         lastRetrievalTime = Util.getTime();
-        midlet.getPlayApp().sendRequest(req);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     private void stopPoll() {

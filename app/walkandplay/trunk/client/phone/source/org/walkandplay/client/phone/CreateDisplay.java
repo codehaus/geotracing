@@ -4,9 +4,6 @@ import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.*;
-import org.walkandplay.client.phone.GPSEngine;
-import org.walkandplay.client.phone.TCPClientListener;
-import org.walkandplay.client.phone.GPSEngineListener;
 
 import javax.microedition.lcdui.*;
 import java.util.Vector;

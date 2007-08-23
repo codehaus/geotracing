@@ -184,19 +184,23 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         private Player player;
         private Gauge progressBar = new Gauge("", false, 100, 0);
         private StringItem state = new StringItem("", "");
+        private Form form;
+        private String name;
 
         public void playerUpdate(Player aPlayer, String anEvent, Object theDate) {
-            state.setText(anEvent);
+            form.setTitle("Audio:" + name + " [" + anEvent + "]");
+            //state.setText(anEvent);
         }
 
         public void play(String aName, String anUrl) {
             try {
+                name = aName;
                 //#style defaultscreen
-                Form form = new Form("Loading audio...");
+                form = new Form("Audio: " + name + " [downloading]");
                 //#style labelinfo
                 form.append(aName);
-                //#style labelinfo
-                form.append(state);
+                /*//#style labelinfo
+                form.append(state);*/
                 //#style labelinfo
                 form.append(progressBar);
 

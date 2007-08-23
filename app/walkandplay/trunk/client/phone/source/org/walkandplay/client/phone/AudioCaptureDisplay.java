@@ -1,7 +1,5 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.TextField;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;

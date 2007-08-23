@@ -1,14 +1,10 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.ClockItem;
 import de.enough.polish.util.Locale;
 import org.geotracing.client.Util;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.*;
 
 public class SettingsDisplay extends DefaultDisplay {
     private Command SOUND_CMD;
