@@ -1,7 +1,5 @@
 <!--
-
 ANT Build file for WalkAndPlay deployables.
-
 $Id: build.xml 108 2006-10-20 21:45:17Z just $
 -->
 <project name="WP" default="build" basedir=".">
