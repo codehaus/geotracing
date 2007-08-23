@@ -162,7 +162,6 @@ public class GameRoundLogic implements Constants {
 			transaction.cancel();
 			throw new OaseException("addplayers transaction failed", t);
 		}
-
 	}
 
 	/**
