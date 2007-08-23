@@ -20,12 +20,8 @@ $Id$
 -->
 <devices>
 
-	<!--
-	This device is outcommented because it is already defined in the general "devices.xml" file.
-	You can use this device as a blueprint for your own definitions.
-
 	<device>
-		<identifier>Sony-Ericsson/K700, Sony-Ericsson/K700i, Sony-Ericsson/K700c</identifier>
+		<identifier>SonyEricsson/K700x</identifier>
 		<groups>Nokia-UI</groups>
 		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x208"/>
@@ -52,7 +48,7 @@ $Id$
 		<capability name="Font.medium" value="18" />
 		<capability name="Font.large" value="22" />
 	</device>
-	-->
+
 	<device>
 		<identifier>Nokia/N73</identifier>
 		<groups>Series60E3</groups>
