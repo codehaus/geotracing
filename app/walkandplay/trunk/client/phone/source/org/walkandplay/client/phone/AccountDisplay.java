@@ -1,14 +1,12 @@
 package org.walkandplay.client.phone;
 
-import de.enough.polish.ui.TextField;
 import org.geotracing.client.Net;
-import org.geotracing.client.Preferences;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.rms.RecordStoreException;
+import javax.microedition.lcdui.TextField;
 
 public class AccountDisplay extends DefaultDisplay {
     private TextField urlField;
