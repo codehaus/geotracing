@@ -3,15 +3,15 @@
   * for all Nokia Series60 phones.
   */
 
-/*menu {
-	*//*menubar-color: transparent;*//*
+menu {
+	/*menubar-color: transparent;*/
 }
 
 .mainScreen {
-	*//*background {
+	/*background {
 		type: image;
 		color: transparent;
 		image: url( bg-stripe.png );
         repeat:repeat;
-    }*//*
-}*/
+    }*/
+}

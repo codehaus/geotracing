@@ -35,8 +35,8 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
                     Vector elms = rsp.getChildrenByTag("record");
                     for (int i = 0; i < elms.size(); i++) {
                         JXElement e = (JXElement) elms.elementAt(i);
-                        String team = e.getChildText("team");
-                        String points = e.getChildText("points");
+                        String team = e.getChildText("loginname");
+                        String points = e.getChildText("score");
 
                         //#style labelinfo
                         append(team);
@@ -69,7 +69,7 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
     private void getScores() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-scores");
-        req.setAttr("gameroundid", midlet.getPlayApp().getGameRound().getId());
+        req.setAttr("roundid", midlet.getPlayApp().getGameRound().getChildText("roundid"));
         midlet.getPlayApp().sendRequest(req);
     }
 
