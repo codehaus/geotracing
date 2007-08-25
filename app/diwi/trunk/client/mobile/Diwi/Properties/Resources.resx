@@ -136,7 +136,7 @@
     <value>4.0</value>
   </data>
   <data name="KwxServerTimeout" xml:space="preserve">
-    <value>2</value>
+    <value>10</value>
   </data>
   <data name="KwxServerUrl" xml:space="preserve">
     <value>http://www.digitalewichelroede.nl/diwi/proto.srv</value>

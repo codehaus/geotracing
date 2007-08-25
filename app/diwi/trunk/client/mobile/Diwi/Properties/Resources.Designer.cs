@@ -112,7 +112,7 @@ namespace Diwi.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2.
+        ///   Looks up a localized string similar to 10.
         /// </summary>
         internal static string KwxServerTimeout {
             get {
