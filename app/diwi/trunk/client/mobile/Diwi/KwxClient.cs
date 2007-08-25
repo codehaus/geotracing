@@ -37,6 +37,8 @@ namespace Diwi {
         private bool mUGCState = false;
         private bool mNavStarted = false;
 
+        private static int mEchoTimer = 0;
+
         GeoPoint mLastPoint;
         Queue<GeoPoint> mPointsQueue = new Queue<GeoPoint>(20);
 
@@ -121,12 +123,6 @@ namespace Diwi {
             x = getRouteList();
             if (x != null) {
                 
-                // tomtom!!
-
- //               for (int i = 0; i < 10; i++) {
- //                   x.addChild(x.getChild(1));
-//                }
-
                 AppController.sRoutes = x;
                 if (messageCallback != null) {
                     string s = x.toString();
@@ -193,6 +189,14 @@ namespace Diwi {
                 xml = doRequest(xml);
             }
             mAgentKey = null;
+            return xml;
+        }
+
+        public XMLement sendEchoRequest() {
+            XMLement xml = new XMLement(Protocol.TAG_ECHO_REQ);
+            lock (this) {
+                xml = doRequest(xml);
+            }
             return xml;
         }
 
@@ -468,6 +472,13 @@ namespace Diwi {
                     GeoPoint p = sKwxC.mPointsQueue.Dequeue();
                     sKwxC.sendSample(p.lat, p.lon);
                 }
+
+                mEchoTimer++;
+                if (mEchoTimer > 120) {
+                    mEchoTimer = 0;
+                    sKwxC.sendEchoRequest();
+                }
+
                 Thread.Sleep(500);
             }
         }
@@ -538,7 +549,7 @@ namespace Diwi {
                 byte[] postBytes = encoding.GetBytes(anElement.toString());
 
                 sKwxWebRequest.KeepAlive = true;
-                sKwxWebRequest.Timeout = 20000;
+                sKwxWebRequest.Timeout = 10000;
                 sKwxWebRequest.Method = "POST";
                 sKwxWebRequest.ContentType = "text/xml";
                 sKwxWebRequest.ContentLength = postBytes.Length;

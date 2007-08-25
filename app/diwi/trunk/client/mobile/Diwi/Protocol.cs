@@ -11,6 +11,7 @@ namespace Diwi
         public static string POSTFIX_IND = "-ind";
         public static string POSTFIX_NRSP = "-nrsp";
 
+        public static string SERVICE_ECHO = "echo";
         public static string SERVICE_LOGIN = "login";
         public static string SERVICE_LOGOUT = "logout";
         public static string SERVICE_UTOPIA = "utopia";
@@ -31,6 +32,7 @@ namespace Diwi
         public static string SERVICE_UGCON_GET = "nav-ugc-on";
         public static string SERVICE_UGCOFF_GET = "nav-ugc-off";
 
+        public static string TAG_ECHO_REQ = SERVICE_ECHO + POSTFIX_REQ;
         public static string TAG_UGC_ON_REQ = SERVICE_UGCON_GET + POSTFIX_REQ;
         public static string TAG_UGC_OFF_REQ = SERVICE_UGCOFF_GET + POSTFIX_REQ;
         public static string TAG_NAV_HOME_REQ = SERVICE_HOME_GET + POSTFIX_REQ;
