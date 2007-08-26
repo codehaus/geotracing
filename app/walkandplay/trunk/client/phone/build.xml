@@ -1,4 +1,4 @@
-<project name="MLGK Phone" default="run">
+<project name="WP Phone" default="run">
 
     <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
