@@ -24,6 +24,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private GoogleMap.LonLat lonLat;
     private GoogleMap.BBox bbox;
 
+    private String errorMsg = "";
 
     private int zoom = 12;
     private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3, bg;
@@ -53,7 +54,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
     private String gpsStatus = "disconnected";
     private String netStatus = "disconnected";
-    private String errorMsg = "";
 
     private boolean showGPSInfo = true;
     private GPSEngine gpsEngine;
@@ -146,6 +146,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             log("Could not load the images on PlayDisplay", true);
         }
 
+        addCommand(BACK_CMD);
+        setCommandListener(this);
+
+    }
+
+    private void setCommands(){
+        removeCommand(BACK_CMD);
+
         addCommand(ZOOM_IN_CMD);
         addCommand(ZOOM_OUT_CMD);
         addCommand(TOGGLE_MAP_CMD);
@@ -157,8 +165,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         addCommand(SCORES_CMD);
         addCommand(SHOW_LOG_CMD);
         addCommand(BACK_CMD);
-        setCommandListener(this);
-
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -192,49 +198,42 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         imDisplay = new IMDisplay(midlet, this, IMMessages);
                     }
                 }
-            } else if (rsp.getTag().equals("photo-read-rsp")) {
-                IMMessages = rsp.getChildren();
-                IMCounter = rsp.getChildren().size();
-                if (IMCounter > prevIMCounter) {
-                    prevIMCounter = IMCounter;
-                    if (!imDisplay.isActive()) {
-                        imDisplay = new IMDisplay(midlet, this, IMMessages);
-                    }else{
-                        imDisplay.setMessages(IMMessages);
-                    }
-                }
             } else if (rsp.getTag().equals("play-location-rsp")) {
-                Log.log("add a hit!!!!");
-                // video
+                /*// video
                 if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("medium-hit");
                     hit.setAttr("id", 26527);
                     rsp.addChild(hit);
-                }
+                }*/
 
-                /*// audio
-                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                // audio
+                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("medium-hit");
                     hit.setAttr("id", 221499);
                     rsp.addChild(hit);
-                }
+                }*/
 
                 // image
-                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("medium-hit");
                     hit.setAttr("id", 22578);
                     rsp.addChild(hit);
-                }
+                }*/
 
                 // text
-                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("medium-hit");
                     hit.setAttr("id", 531414);
                     rsp.addChild(hit);
-                }
+                }*/
 
                 // task
-                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                    Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("task-hit");
                     hit.setAttr("id", 22560);
                     rsp.addChild(hit);
@@ -348,37 +347,21 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
     public void onGPSStatus(String s) {
         gpsStatus = "GPS:" + s;
-        if (s.indexOf("error") != -1 || s.indexOf("err") != -1 || s.indexOf("ERROR") != -1) {
-            log(s, true);
-            setError(s);
+        if(s.equals("GPS connected")){
+            setCommands();
+        }else if(s.equals("No GPS") || s.indexOf("error")!=-1){
+            errorMsg = "No GPS signal - please go back and setup your GPS (again).";
         }
         show();
     }
 
     public void onNetStatus(String s) {
-        try {
-            if (s.indexOf("error") != -1 || s.indexOf("err") != -1 || s.indexOf("ERROR") != -1) {
-                log(s, true);
-                setError(s);
-            }
-
-            netStatus = "NET:" + s;
-            show();
-        } catch (Throwable t) {
-            log("Exception in onNetStatus:\n" + t.getMessage(), true);
-        }
+        netStatus = "NET:" + s;
+        show();
     }
 
     private void log(String aMsg, boolean isError) {
         Log.log(aMsg);
-        if (isError) {
-            setError(aMsg);
-            show();
-        }
-    }
-
-    private void setError(String aMsg) {
-        errorMsg = aMsg;
     }
 
     private void zoomIn() {
@@ -470,8 +453,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                 g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                 String s = "Retrieving current location...";
+                if(errorMsg.length()>0){
+                    s = errorMsg;
+                }
                 g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-                //repaint();
                 return;
             }
 
@@ -487,7 +472,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                 String loading = "Loading map...";
                 g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-                //repaint();                
                 return;
             }
 
