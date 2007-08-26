@@ -55,9 +55,14 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         }
 
         if (mediumType.equals("image")) {
+            setTitle("Image");
             append(mediumImage);
 
+        } else if (mediumType.equals("text")) {
+            setTitle("Text");            
+
         } else if (mediumType.equals("video")) {
+            setTitle("Video");
             if (midlet.useInternalMediaPlayer()) {
                 //#style formbox
                 append("When you click on 'play video' the video will be " +
@@ -73,6 +78,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
             addCommand(PLAY_VIDEO_CMD);
         } else if (mediumType.equals("audio")) {
+            setTitle("Audio");
             if (midlet.useInternalMediaPlayer()) {
                 //#style formbox
                 append("When you click on 'play audio' the audio will be " +
@@ -105,7 +111,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
                     mediumType = medium.getChildText("type");
                     if (mediumType.equals("image")) {
                         try {
-                            mediumUrl += "&resize=" + (screenWidth - 10);
+                            mediumUrl += "&resize=" + (screenWidth - 12);
                             mediumImage = Util.getImage(mediumUrl);
                         } catch (Throwable t) {
                             Log.log("Error retrieving image");
@@ -188,7 +194,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         private String name;
 
         public void playerUpdate(Player aPlayer, String anEvent, Object theDate) {
-            form.setTitle("Audio:" + name + " [" + anEvent + "]");
+            form.setTitle("Audio: " + name + " [" + anEvent + "]");
             //state.setText(anEvent);
         }
 

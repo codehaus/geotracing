@@ -45,10 +45,6 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
             Log.log("Could not load the images on CreateDisplay");
         }
 
-        addCommand(NEW_GAME_CMD);
-        addCommand(EDIT_GAME_CMD);
-        addCommand(SHOW_STATE_CMD);
-
         append(logo);
         //#style labelinfo
         append(gameLabel);
@@ -58,10 +54,15 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
 
     public void setGameId(String aGameId) {
         gameId = aGameId;
+        removeAllCommands();
+        addCommand(NEW_GAME_CMD);
+        addCommand(EDIT_GAME_CMD);
+        addCommand(SHOW_STATE_CMD);
         addCommand(ADD_ROUND_CMD);
         addCommand(ADD_TEXT_CMD);
         addCommand(ADD_PHOTO_CMD);
         addCommand(ADD_AUDIO_CMD);
+        addCommand(BACK_CMD);
     }
 
     public String getGameId() {
@@ -101,6 +102,16 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     public void onGPSStatus(String s) {
         gpsStatus = s;
         gpsStatusBT.setText("GPS:" + gpsStatus);
+        Log.log("gps status:" + s);
+        if(s.equals("GPS connected")){
+            addCommand(NEW_GAME_CMD);
+            addCommand(EDIT_GAME_CMD);
+            addCommand(SHOW_STATE_CMD);
+            addCommand(BACK_CMD);
+        }else if(s.equals("No GPS") || s.indexOf("error")!=-1){
+            //#style alertinfo
+            append("No GPS signal - please go back and setup your GPS (again).");            
+        }        
     }
 
     public void onNetStatus(String aStatus){
