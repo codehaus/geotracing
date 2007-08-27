@@ -3,7 +3,7 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="geoapp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+			<login-req name="geoapp-user" password="user" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 
@@ -15,7 +15,7 @@
 						<portalid>26
 						</portalid>
 
-						<portalname>walkandplay
+						<portalname>mlgk
 						</portalname>
 
 						<personid>${personid}
@@ -133,7 +133,7 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>item1</name>
-						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<filename>/var/keyworx/webapps/mlgk/test/media/just-1964.jpg</filename>
 						<size>2758</size>
 					</medium>
 				</medium-insert-req>
@@ -208,7 +208,7 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>item1</name>
-						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<filename>/var/keyworx/webapps/mlgk/test/media/just-1964.jpg</filename>
 						<size>2758</size>
 					</medium>
 				</medium-insert-req>
@@ -267,7 +267,7 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>item1</name>
-						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<filename>/var/keyworx/webapps/mlgk/test/media/just-1964.jpg</filename>
 						<size>2758</size>
 					</medium>
 				</medium-insert-req>
