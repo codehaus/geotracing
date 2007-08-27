@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Gameround table definition -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+       </insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="owner"/>
+			<field name="state"/>
+        </list>
+
+		<query>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="state"/>
+         </query>
+	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+		<field name="name" type="STRING" size="64" required="true" default="gameround for game"/>
+
+		<!-- 1=open 2=running 3=done  -->
+        <field name="state" type="INTEGER" default="1" required="true" />
+		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" default="-1"/>
+	</data>
+</table>

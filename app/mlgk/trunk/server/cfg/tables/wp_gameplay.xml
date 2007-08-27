@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- Game table definition -->
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="name" />
+			<field name="state" />
+            <field name="startdate" />
+			<field name="enddate" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="name" />
+			<field name="state" />
+ 		</query>
+ 	</views>
+
+	<!--{data -->
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<!-- Gameplay name -->
+		<field name="name" type="STRING" size="64" required="true" default="gameplay" />
+
+		<field name="startdate" type="TIMESTAMP"/>
+		<field name="enddate" type="TIMESTAMP"/>
+
+		<!-- totalscore -->
+		<field name="score" type="INTEGER" required="true" default="0"/>
+
+		<!-- Values: scheduled,running,paused,done  -->
+        <field name="state" type="STRING" size="12" default="scheduled" required="true" />
+
+		<field name="extra" type="XML" />
+
+		<!-- Events generated while playing (used e.g. for playback) -->
+ 		<field name="events" type="FILE"  />
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="creationdate" type="TIMESTAMP"/>
+	</data>
+	<!--}data -->
+</table>

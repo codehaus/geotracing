@@ -1,0 +1,1403 @@
+<testset id="gameplay" clients="1">
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="blue2" password="user" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp>
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
+
+						<portalname/>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
+			</login-rsp>
+
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
+		</expect>
+
+	</test>
+
+	<test id="heartbeat">
+		<send id="client1">
+			<utopia-req>
+				<play-hb-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-hb-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="q-play-status">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-play-status-by-user" user="blue2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp>
+					<record>
+						<name/>
+						<description/>
+						<gameid>${gameid}</gameid>
+						<roundid>${roundid}</roundid>
+						<gameplayid>${gameplayid}</gameplayid>
+						<gameplaystate/>
+					</record>
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-reset-req1">
+		<send id="client1">
+			<utopia-req>
+				<play-reset-req id="${gameplayid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-reset-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-start-req">
+		<send id="client1">
+			<utopia-req>
+				<play-start-req id="${gameplayid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-start-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-one-sample">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.921789169311523" lat="52.3765423330248"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-multi-sample">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.921917915344238" lat="52.37675192059285"/>
+					<pt lon="4.922089576721191" lat="52.37693530889892"/>
+					<pt lon="4.922218322753906" lat="52.377223488984086"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-medium-1">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9225401878" lat="52.377930832" label="game2-medium1-brugmidden"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<medium-hit id="${mediumhitid1}"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="get-medium-1">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-medium" id="${mediumhitid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp>
+					<record id="${mediumhitid1}">
+						<name/>
+						<description/>
+						<type/>
+					</record>
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-multi-sample">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.922604560852051" lat="52.37793083212911"/>
+					<pt lon="4.922733306884766" lat="52.37824520322338"/>
+					<pt lon="4.9228620529174805" lat="52.37855957207963"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-task-1">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.922990798950195" lat="52.37879534725308"/>
+					<pt lon="4.9230766296386" lat="52.379555058692" label="javakade-sumatrakade"/>
+					<pt lon="4.9230766296386" lat="52.379555058692" label="javakade-sumatrakade"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<task-hit id="${taskhitid1}" state="hit" answerstate="open" mediastate="open"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="get-task-1">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-task" id="${taskhitid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp>
+					<record>
+						<id/>
+						<mediumid/>
+						<mediumtype/>
+						<name/>
+						<description/>
+						<answer/>
+						<score/>
+					</record>
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="medium-insert-req-1">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>item1</name>
+						<filename>/var/keyworx/webapps/walkandplay/wptest/media/bentejoes.jpg</filename>
+						<size>242652</size>
+						<kind>image</kind>
+						<mime>image/jpeg</mime>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-add-medium-task-1">
+		<send id="client1">
+			<utopia-req>
+				<play-add-medium-req id="${mediumid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-add-medium-rsp locationid="${locationid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-answer-task-1-wrong">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid1}" answer="wrong"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="hit" mediastate="done" answerstate="notok" score="0"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-answer-task-1-right">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid1}" answer="waag"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="done" mediastate="done" answerstate="ok" score="10"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-get-gameplay">
+		<send id="client1">
+			<utopia-req>
+				<play-get-gameplay-req id="${gameplayid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-get-gameplay-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<!--	<test id="play-reset-req2">
+			<send id="client1">
+				<utopia-req>
+					<play-reset-req id="${gameplayid}"/>
+				</utopia-req>
+			</send>
+
+			<expect id="client1">
+				<utopia-rsp>
+					<play-reset-rsp/>
+				</utopia-rsp>
+			</expect>
+		</test> -->
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.92462158203125" lat="52.37963364878544"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9256086349487305" lat="52.379528861964225"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.926810264587402" lat="52.37937168126619"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.928441047668457" lat="52.379057318191556"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-task2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9302005" lat="52.378742" label="sumatrakade-3erechts"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<task-hit id="${taskhitid2}" state="hit" answerstate="open" mediastate="open"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="play-answer-task-2-right">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid2}" answer="damrak"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="hit" mediastate="open" answerstate="ok" score="0" playstate="running"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-task22">
+			<send id="client1">
+				<utopia-req>
+					<play-location-req>
+						<pt lon="4.93020053" lat="52.3787423" label="sumatrakade-3erechts"/>
+					</play-location-req>
+				</utopia-req>
+			</send>
+
+			<expect id="client1">
+				<utopia-rsp>
+					<play-location-rsp>
+						<task-hit id="${taskhitid2}" state="hit" answerstate="ok" mediastate="open"/>
+					</play-location-rsp>
+				</utopia-rsp>
+			</expect>
+		</test>
+
+	<test id="medium-insert-req-2">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>waterland</name>
+						<filename>/var/keyworx/webapps/walkandplay/wptest/media/waterland.jpg</filename>
+						<size>652049</size>
+						<kind>image</kind>
+						<mime>image/jpeg</mime>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid2}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-add-medium-task-2">
+		<send id="client1">
+			<utopia-req>
+				<play-add-medium-req id="${mediumid2}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-add-medium-rsp locationid="${locationid2}" taskstate="done" playstate="running"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.930887222290039" lat="52.37850717742566"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.932217597961426" lat="52.37834999309081"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.932990074157715" lat="52.378192808196424"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.933676719665527" lat="52.37814041310731"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.934406280517578" lat="52.378035622742544"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.935178756713867" lat="52.377826041267014"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.936079978942871" lat="52.37761645879678"  label="fotootje"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.936723709106445" lat="52.37753786511401"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.936637878417969" lat="52.37714489460192"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.936981201171875" lat="52.37675192059285" label="javakade-verbindingsdam"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.937281608581543" lat="52.376332744462054"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.937753677368164" lat="52.375939763225844"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.938225746154785" lat="52.37552057938607"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.93861198425293" lat="52.37510139156744"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.938912391662598" lat="52.374786998092326"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.939513206481934" lat="52.37426300399354"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.940071105957031" lat="52.37387000433956" label="veemkade-verbindingsdam"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.939212799072266" lat="52.373922404495474"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.938654899597168" lat="52.37397480458923"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.93809700012207" lat="52.37413200449746"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.937710762023926" lat="52.37421060424173" label="text poi"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9373674392700195" lat="52.37421060424173"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.936938285827637" lat="52.37428920384616"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.936251640319824" lat="52.374420202875974"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.93560791015625" lat="52.374472602379115"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.935307502746582" lat="52.37460360086495"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.934878349304199" lat="52.37468219976994"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.934406280517578" lat="52.37481319763407"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.933891296386719" lat="52.374865596670915"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.933462142944336" lat="52.37497039455815"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.932689666748047" lat="52.375048992810335"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.932217597961426" lat="52.37510139156744"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.93161678314209" lat="52.37525858746567"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.931015968322754" lat="52.37538958362014"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9305009841918945" lat="52.37546818112632"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.929900169372559" lat="52.37552057938607"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.929513931274414" lat="52.37557297758363"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9291276931762695" lat="52.375625375719025" label="veemkade"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.92861270904541" lat="52.37552057938607"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9280548095703125" lat="52.375546778492605"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.927711486816406" lat="52.3755991766591"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.927239418029785" lat="52.37567777379224"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9266815185546875" lat="52.37541578280444"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.925994873046875" lat="52.37557297758363"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9253082275390625" lat="52.37557297758363"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.924921989440918" lat="52.37565157476341"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.92436408996582" lat="52.37570397280555"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.923763275146484" lat="52.37580876870334"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.923248291015625" lat="52.375834967638916"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.922819137573242" lat="52.37591356435243"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2-hit-task3">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.9223470687866" lat="52.37604455856" label="voor zwijger"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp>
+					<task-hit id="${taskhitid3}" state="hit" answerstate="open" mediastate="open"/>
+				</play-location-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-answer-task-3-right">
+		<send id="client1">
+			<utopia-req>
+				<play-answertask-req id="${taskhitid3}" answer="zwijger"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-answertask-rsp state="hit" mediastate="open" answerstate="ok" score="0" playstate="running"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req-hit-task32">
+			<send id="client1">
+				<utopia-req>
+					<play-location-req>
+						<pt lon="4.92234706878" lat="52.376044558" label="voor zwijger"/>
+					</play-location-req>
+				</utopia-req>
+			</send>
+
+			<expect id="client1">
+				<utopia-rsp>
+					<play-location-rsp>
+						<task-hit id="${taskhitid3}" state="hit" answerstate="ok" mediastate="open"/>
+					</play-location-rsp>
+				</utopia-rsp>
+			</expect>
+		</test>
+
+	<test id="medium-insert-req-3">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>zwijger</name>
+						<filename>/var/keyworx/webapps/walkandplay/wptest/media/zwijger-old.jpg</filename>
+						<size>68323</size>
+						<kind>image</kind>
+						<mime>image/jpeg</mime>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-add-medium-task-3">
+		<send id="client1">
+			<utopia-req>
+				<play-add-medium-req id="${mediumid3}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-add-medium-rsp locationid="${locationid3}" taskstate="done" playstate="done"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-location-req2">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.921832084655762" lat="52.37607075735982"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="logout">
+		<send id="client1">
+			<logout-req/>
+		</send>
+
+		<expect id="client1">
+			<logout-rsp/>
+		</expect>
+	</test>
+
+</testset>
+

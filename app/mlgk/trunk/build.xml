@@ -1,0 +1,85 @@
+<!--
+ANT Build file for WalkAndPlay deployables.
+$Id: build.xml 108 2006-10-20 21:45:17Z just $
+-->
+<project name="WP" default="build" basedir=".">
+	<!-- Directory locations -->
+	<property name="home" value="${basedir}"/>
+
+	<property file="${home}/build.properties"/>
+
+	<property name="client.dir" value="${home}/client"/>
+	<property name="client.phone.dir" value="${client.dir}/phone"/>
+	<property name="client.web.dir" value="${client.dir}/web"/>
+	<property name="server.dir" value="${home}/server"/>
+	<property name="build.dir" value="${home}/build"/>
+
+	<!-- The .zips for deployment -->
+	<property name="package-all.zip" value="${build.dir}/${project.id}-${version}.zip"/>
+	<property name="package-back.zip" value="${build.dir}/${project.id}-back-${version}.zip"/>
+	<property name="package-front.zip" value="${build.dir}/${project.id}-front-${version}.zip"/>
+
+	<!-- Build all -->
+	<target name="build-front">
+		<echo message="Building front of ${project.name}..."/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
+	</target>
+
+	<!-- Build all -->
+	<target name="build-back">
+		<echo message="Building back-end of ${project.name}..."/>
+
+
+		<!-- Builds server and all server depends on. -->
+		<ant antfile="${server.dir}/build.xml" target="build" inheritall="false"/>
+
+	</target>
+
+	<!-- Build all -->
+	<target name="build" depends="build-front,build-back">
+		<echo message="Building all of ${project.name}..."/>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-back" depends="build-back">
+		<echo message="Packaging distribution into ${package-back.zip}"/>
+		<mkdir dir="${build.dir}"/>
+		<delete file="${package-back.zip}"/>
+		<zip zipfile="${package-back.zip}">
+			<zipfileset dir="${server.dir}/build" includes="*.war"/>
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-front" depends="build-front">
+		<echo message="Packaging distribution into ${package-front.zip}"/>
+		<mkdir dir="${build.dir}"/>
+		<delete file="${package-front.zip}"/>
+		<zip zipfile="${package-front.zip}">
+			<zipfileset dir="${client.web.dir}" excludes="build/**,build.*"/>
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package" depends="package-front,package-back">
+		<echo message="Packaging distribution into ${package-all.zip}"/>
+		<mkdir dir="${build.dir}"/>
+		<delete file="${package-all.zip}"/>
+		<zip zipfile="${package-all.zip}">
+			<zipfileset src="${package-back.zip}"/>
+			<zipfileset src="${package-front.zip}"/>
+		</zip>
+	</target>
+
+	<!-- Deploy entire package into local deploy dir. -->
+	<target name="deploy-local">
+		<echo message="Deploying ${package-all.zip} into ${deploy.local.dir}"/>
+		<unzip src="${package-all.zip}" dest="${deploy.local.dir}" overwrite="true"/>
+	</target>
+
+</project>

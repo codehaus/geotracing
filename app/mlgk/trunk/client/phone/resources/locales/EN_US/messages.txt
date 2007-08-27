@@ -1,0 +1,78 @@
+#######################################
+#                                     #
+#   This file contains translations   #
+#   of the application.               #
+#   Key and Value are separated       #
+#   by the equals-sign "=".           #
+#                                     #
+#######################################
+
+# You can also define localized preprocessing variables here, by starting the
+# definition with "var:". Variables defined here will override the ones defined
+# in the <variables>-section of your build.xml.
+# Variables starting with "polish." or "MIDlet-" don't need to start with "var:"
+# by the way.
+var:MyExampleVariable=Hello World
+
+# It's also possible to set MIDlet-attributes for your JAD- and MANIFEST-files here.
+# If you like you can start them with "var:" as well, but it is not needed.
+# Again MIDlet-attributes defined override the one defined in the <info>-
+# and <jad>-sections of your build.xml
+
+MIDlet-Description=Mobile Learning Game Kit
+
+menu.Create=Create
+menu.GPS=GPS
+menu.Settings=Settings
+menu.Play=Play
+menu.Help=Help
+menu.Quit=Exit
+menu.Log=Log
+
+help.Topic1=Lost your GPS connection?
+help.Topic1Text=This can happen for several reasons. \n\n1)First the obvious make sure it's turned on and within bluetooth range (5-7 mtrs). \n\n2)If you have never used a GPS with this phone before then go to the GPS section and connect to the device first. After a reset the GPS is automatically found and connected. \n\n3)Sometimes the GPS-device can hang - just reset it.
+help.Topic2=Application 'hangs'?
+help.Topic2Text=Yes sometimes software hangs. Sometimes you can press the red 'cancel call' button to close the application. If that doesn't work just reboot your phone and simply start over again.
+help.Topic3=Login problems?
+help.Topic3Text=Check if the username and password with which you signed up on the website correspond with those under 'settings'/'account'.
+help.Topic4=Where is my application?
+help.Topic4Text=Sometimes you think your application has disappeared all of a sudden. This can happen because another application like a mediaplayer has started up and now has the focus. Or a call or sms came in between. Most of the time when you close the 'upper' app this application appears again. Most Nokia's will also let you switch applications when holding the down the menu-button for a few secs.
+help.Topic5=Uploading media?
+help.Topic5Text=You can upload photo's, video's and audio by sending it by email. The media is then related to the position where you're at at that moment.
+
+create.New=New game
+create.Edit=Edit game
+create.AddRound=Add gameround
+create.AddPhoto=Drop photo
+create.AddText=Drop text
+create.AddAudio=Drop audio
+create.ShowMap=Show map
+create.ShowState=Show state
+create.HideState=Hide state
+
+selectGame.Play=Play
+selectGame.Description=Description
+
+medium.playVideo=Play video
+medium.playAudio=Play audio
+
+play.AddPhoto=Drop photo
+play.AddText=Drop text
+play.AddAudio=Drop audio
+play.ZoomIn=Zoom in [*]
+play.ZoomOut=Zoom out [#]
+play.ToggleMap=Toggle Map [0]
+play.Scores=Show scores
+play.ShowLog=Show log
+play.HideLog=Hide log
+play.IM=Send message
+play.Back=Stop game
+play.ShowIntro=Show intro
+play.HideIntro=Hide intro
+
+settings.SoundOn=Sound ON
+settings.SoundOff=Sound OFF
+settings.MediaPlayerIntern=Inline mediaplayer ON
+settings.MediaPlayerExtern=Inline mediaplayer OFF
+settings.Account=Account
+settings.Version=Version

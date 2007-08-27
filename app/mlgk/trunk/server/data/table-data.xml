@@ -1,0 +1,1979 @@
+<db context="games">
+    <table name="game">
+        <record table="game" id="77">
+            <id>77</id>
+            <owner>unknown</owner>
+            <name>amsterdam</name>
+            <description>the amsterdam game</description>
+            <state>active</state>
+            <startdate>1100621215730</startdate>
+            <enddate>1100621299999</enddate>
+            <extra/>
+        </record>
+    </table>
+    <table name="team">
+        <record table="team" id="80">
+            <id>80</id>
+            <owner>unknown</owner>
+            <name>blue</name>
+            <state>enabled</state>
+            <location>
+                <location lat="52.38641" lon="4.902618" rx="2142" ry="1045" mx="1222" my="1768" q="100"
+                          time="163137.838" zonename="zone1" label="damode"/>
+            </location>
+            <score>
+                <score points="70" boobytraps="1" cloaks="1" zones="1"/>
+            </score>
+            <actions>
+                <actions/>
+            </actions>
+            <zones>
+                <zones>
+                    <zone zonename="zone1" state="done" score="20"/>
+                    <zone zonename="zone2" state="todo"/>
+                    <zone zonename="zone3" state="todo"/>
+                    <zone zonename="zone4" state="todo"/>
+                    <zone zonename="zone5" state="todo"/>
+                    <zone zonename="zone6" state="todo"/>
+                </zones>
+            </zones>
+            <results>
+                <results>
+                    <result zonename="zone1" cloaks="1" boobytraps="1">
+                        <assignment type="bewijs" id="166" answerid="10478" score="10" state="done"/>
+                        <assignment type="poorter" id="169" answerid="10489" score="20" state="done"/>
+                        <assignment type="poorter" id="171" answerid="10496" score="20" state="done"/>
+                    </result>
+                    <result zonename="zone2" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2291" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2309" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2331" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone3" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2353" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2377" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2421" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone4" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2549" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2585" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2631" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone5" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2671" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2693" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2715" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone6" cloaks="0" boobytraps="0">
+                        <assignment type="poorter" id="3426" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="3402" answerid="-1" score="0" state="todo"/>
+                        <assignment type="bewijs" id="3380" answerid="-1" score="0" state="todo"/>
+                    </result>
+                </results>
+            </results>
+            <extra/>
+        </record>
+        <record table="team" id="83">
+            <id>83</id>
+            <owner>unknown</owner>
+            <name>red</name>
+            <state>enabled</state>
+            <location>
+                <location lat="0.0" lon="0.0" time="1143642674128" mx="0" my="0" rx="0" ry="0" zonename="none"/>
+            </location>
+            <score>
+                <score points="0" boobytraps="0" cloaks="0" zones="0"/>
+            </score>
+            <actions>
+                <actions/>
+            </actions>
+            <zones>
+                <zones>
+                    <zone zonename="zone1" state="todo"/>
+                    <zone zonename="zone2" state="selected"/>
+                    <zone zonename="zone3" state="todo"/>
+                    <zone zonename="zone4" state="todo"/>
+                    <zone zonename="zone5" state="todo"/>
+                    <zone zonename="zone6" state="todo"/>
+                </zones>
+            </zones>
+            <results>
+                <results>
+                    <result zonename="zone1" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="166" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="169" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="171" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone2" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2291" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2309" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2331" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone3" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2353" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2377" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2421" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone4" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2549" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2585" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2631" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone5" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2671" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2693" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2715" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone6" cloaks="0" boobytraps="0">
+                        <assignment type="poorter" id="3426" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="3402" answerid="-1" score="0" state="todo"/>
+                        <assignment type="bewijs" id="3380" answerid="-1" score="0" state="todo"/>
+                    </result>
+                </results>
+            </results>
+            <extra/>
+        </record>
+        <record table="team" id="85">
+            <id>85</id>
+            <owner>unknown</owner>
+            <name>green</name>
+            <state>enabled</state>
+            <location>
+                <location lat="0.0" lon="0.0" time="1143642693706" mx="0" my="0" rx="0" ry="0" zonename="none"/>
+            </location>
+            <score>
+                <score points="0" boobytraps="0" cloaks="0" zones="0"/>
+            </score>
+            <actions>
+                <actions/>
+            </actions>
+            <zones>
+                <zones>
+                    <zone zonename="zone1" state="todo"/>
+                    <zone zonename="zone2" state="todo"/>
+                    <zone zonename="zone3" state="selected"/>
+                    <zone zonename="zone4" state="todo"/>
+                    <zone zonename="zone5" state="todo"/>
+                    <zone zonename="zone6" state="todo"/>
+                </zones>
+            </zones>
+            <results>
+                <results>
+                    <result zonename="zone1" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="166" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="169" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="171" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone2" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2291" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2309" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2331" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone3" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2353" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2377" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2421" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone4" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2549" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2585" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2631" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone5" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2671" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2693" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2715" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone6" cloaks="0" boobytraps="0">
+                        <assignment type="poorter" id="3426" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="3402" answerid="-1" score="0" state="todo"/>
+                        <assignment type="bewijs" id="3380" answerid="-1" score="0" state="todo"/>
+                    </result>
+                </results>
+            </results>
+            <extra/>
+        </record>
+        <record table="team" id="6396">
+            <id>6396</id>
+            <owner>unknown</owner>
+            <name>yellow</name>
+            <state>enabled</state>
+            <location>
+                <location lat="0.0" lon="0.0" time="1143642665646" mx="0" my="0" rx="0" ry="0" zonename="none"/>
+            </location>
+            <score>
+                <score points="0" boobytraps="0" cloaks="0" zones="0"/>
+            </score>
+            <actions>
+                <actions/>
+            </actions>
+            <zones>
+                <zones>
+                    <zone zonename="zone1" state="todo"/>
+                    <zone zonename="zone2" state="todo"/>
+                    <zone zonename="zone3" state="todo"/>
+                    <zone zonename="zone4" state="todo"/>
+                    <zone zonename="zone5" state="todo"/>
+                    <zone zonename="zone6" state="selected"/>
+                </zones>
+            </zones>
+            <results>
+                <results>
+                    <result zonename="zone1" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="166" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="169" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="171" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone2" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2291" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2309" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2331" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone3" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2353" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2377" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2421" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone4" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2549" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2585" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2631" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone5" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2671" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2693" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2715" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone6" cloaks="0" boobytraps="0">
+                        <assignment type="poorter" id="3426" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="3402" answerid="-1" score="0" state="todo"/>
+                        <assignment type="bewijs" id="3380" answerid="-1" score="0" state="todo"/>
+                    </result>
+                </results>
+            </results>
+            <extra/>
+        </record>
+        <record table="team" id="6390">
+            <id>6390</id>
+            <owner>unknown</owner>
+            <name>orange</name>
+            <state>enabled</state>
+            <location>
+                <location lat="0.0" lon="0.0" time="1143642665359" mx="0" my="0" rx="0" ry="0" zonename="none"/>
+            </location>
+            <score>
+                <score points="0" boobytraps="0" cloaks="0" zones="0"/>
+            </score>
+            <actions>
+                <actions/>
+            </actions>
+            <zones>
+                <zones>
+                    <zone zonename="zone1" state="todo"/>
+                    <zone zonename="zone2" state="todo"/>
+                    <zone zonename="zone3" state="todo"/>
+                    <zone zonename="zone4" state="selected"/>
+                    <zone zonename="zone5" state="todo"/>
+                    <zone zonename="zone6" state="todo"/>
+                </zones>
+            </zones>
+            <results>
+                <results>
+                    <result zonename="zone1" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="166" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="169" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="171" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone2" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2291" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2309" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2331" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone3" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2353" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2377" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2421" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone4" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2549" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2585" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2631" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone5" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2671" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2693" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2715" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone6" cloaks="0" boobytraps="0">
+                        <assignment type="poorter" id="3426" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="3402" answerid="-1" score="0" state="todo"/>
+                        <assignment type="bewijs" id="3380" answerid="-1" score="0" state="todo"/>
+                    </result>
+                </results>
+            </results>
+            <extra/>
+        </record>
+        <record table="team" id="6395">
+            <id>6395</id>
+            <owner>unknown</owner>
+            <name>purple</name>
+            <state>enabled</state>
+            <location>
+                <location lat="0.0" lon="0.0" time="1143642665516" mx="0" my="0" rx="0" ry="0" zonename="none"/>
+            </location>
+            <score>
+                <score points="0" boobytraps="0" cloaks="0" zones="0"/>
+            </score>
+            <actions>
+                <actions/>
+            </actions>
+            <zones>
+                <zones>
+                    <zone zonename="zone1" state="todo"/>
+                    <zone zonename="zone2" state="todo"/>
+                    <zone zonename="zone3" state="todo"/>
+                    <zone zonename="zone4" state="todo"/>
+                    <zone zonename="zone5" state="selected"/>
+                    <zone zonename="zone6" state="todo"/>
+                </zones>
+            </zones>
+            <results>
+                <results>
+                    <result zonename="zone1" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="166" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="169" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="171" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone2" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2291" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2309" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2331" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone3" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2353" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2377" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2421" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone4" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2549" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2585" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2631" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone5" cloaks="0" boobytraps="0">
+                        <assignment type="bewijs" id="2671" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2693" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="2715" answerid="-1" score="0" state="todo"/>
+                    </result>
+                    <result zonename="zone6" cloaks="0" boobytraps="0">
+                        <assignment type="poorter" id="3426" answerid="-1" score="0" state="todo"/>
+                        <assignment type="poorter" id="3402" answerid="-1" score="0" state="todo"/>
+                        <assignment type="bewijs" id="3380" answerid="-1" score="0" state="todo"/>
+                    </result>
+                </results>
+            </results>
+            <extra/>
+        </record>
+    </table>
+    <table name="player">
+        <record table="player" id="87">
+            <id>87</id>
+            <owner>unknown</owner>
+            <name>hq-blue</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="88">
+            <id>88</id>
+            <owner>unknown</owner>
+            <name>+31613362231</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="99">
+            <id>99</id>
+            <owner>unknown</owner>
+            <name>hq-red</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="101">
+            <id>101</id>
+            <owner>unknown</owner>
+            <name>volvenster25@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="103">
+            <id>103</id>
+            <owner>unknown</owner>
+            <name>+31613362418</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="104">
+            <id>104</id>
+            <owner>unknown</owner>
+            <name>stenentempo4@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="105">
+            <id>105</id>
+            <owner>unknown</owner>
+            <name>hq-green</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="106">
+            <id>106</id>
+            <owner>unknown</owner>
+            <name>gp-green</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="107">
+            <id>107</id>
+            <owner>unknown</owner>
+            <name>Tomdem@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6401">
+            <id>6401</id>
+            <owner>unknown</owner>
+            <name>hq-orange</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6402">
+            <id>6402</id>
+            <owner>unknown</owner>
+            <name>slimmeer4@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6403">
+            <id>6403</id>
+            <owner>unknown</owner>
+            <name>gp-orange</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6404">
+            <id>6404</id>
+            <owner>unknown</owner>
+            <name>hq-purple</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6405">
+            <id>6405</id>
+            <owner>unknown</owner>
+            <name>gulkarakter1@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6406">
+            <id>6406</id>
+            <owner>unknown</owner>
+            <name>gp-purple</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6407">
+            <id>6407</id>
+            <owner>unknown</owner>
+            <name>hq-yellow</name>
+            <type>hq</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6408">
+            <id>6408</id>
+            <owner>unknown</owner>
+            <name>spaansgebruik20@imail.nl</name>
+            <type>videophone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+        <record table="player" id="6409">
+            <id>6409</id>
+            <owner>unknown</owner>
+            <name>gp-yellow-just</name>
+            <type>gamephone</type>
+            <lastalive/>
+            <extra/>
+        </record>
+    </table>
+    <table name="personage">
+        <record table="personage" id="92">
+            <id>92</id>
+            <owner>unknown</owner>
+            <name>Eerste Orde van het Eeuwige Vuur</name>
+            <description/>
+            <power>vuur</power>
+            <extra/>
+        </record>
+        <record table="personage" id="93">
+            <id>93</id>
+            <owner>unknown</owner>
+            <name>Eerste Orde van het Heilige Wijwater</name>
+            <description/>
+            <power>water</power>
+            <extra/>
+        </record>
+        <record table="personage" id="94">
+            <id>94</id>
+            <owner>unknown</owner>
+            <name>Eerste Orde van het Houten Kruis</name>
+            <description/>
+            <power>hout</power>
+            <extra/>
+        </record>
+        <record table="personage" id="1059">
+            <id>1059</id>
+            <owner>unknown</owner>
+            <name>Tweede Orde van het Houten Kruis</name>
+            <description/>
+            <power>hout</power>
+            <extra/>
+        </record>
+        <record table="personage" id="1060">
+            <id>1060</id>
+            <owner>unknown</owner>
+            <name>Tweede Orde van het Eeuwige Vuur</name>
+            <description/>
+            <power>vuur</power>
+            <extra/>
+        </record>
+        <record table="personage" id="1061">
+            <id>1061</id>
+            <owner>unknown</owner>
+            <name>Tweede Orde van het Heilige Wijwater</name>
+            <description/>
+            <power>water</power>
+            <extra/>
+        </record>
+    </table>
+    <table name="confrontation">
+        <record table="confrontation" id="10230">
+            <id>10230</id>
+            <owner>purple</owner>
+            <initiator>purple</initiator>
+            <target>blue</target>
+            <winner>none</winner>
+            <location>
+                <location lat="52.37262" lon="4.89975" rx="1770" ry="1888" mx="951" my="1219" q="93" time="141431.383"
+                          zonename="zone5" label="zasomo"/>
+            </location>
+            <date>1107872067945</date>
+            <creationdate>1107872067945</creationdate>
+            <modificationdate>1107872067945</modificationdate>
+            <extra/>
+        </record>
+        <record table="confrontation" id="7405">
+            <id>7405</id>
+            <owner>blue</owner>
+            <initiator>blue</initiator>
+            <target>purple</target>
+            <winner>none</winner>
+            <location>
+                <location lat="52.3726" lon="4.900497" rx="1867" ry="1843" mx="911" my="1288" time="095817.453"
+                          zonename="zone1" label="lypaqi"/>
+            </location>
+            <date>1106833563691</date>
+            <creationdate>1106833563691</creationdate>
+            <modificationdate>1106833563691</modificationdate>
+            <extra/>
+        </record>
+    </table>
+    <table name="zone">
+        <record table="zone" id="121">
+            <id>121</id>
+            <owner>unknown</owner>
+            <name>zone1</name>
+            <description>De Lastage</description>
+            <area/>
+            <extra>
+                <teaser>
+                    Zone 1: De Lastage
+                    De Lastage hoorde wel bij de stad maar had niet helemaal dezelfde rechten als andere stadsdelen.
+                    Scheepsbouwers en touwslagers deelden de wijk met half-legale stedelingen.
+                </teaser>
+            </extra>
+        </record>
+        <record table="zone" id="122">
+            <id>122</id>
+            <owner>unknown</owner>
+            <name>zone2</name>
+            <description>De Kade</description>
+            <area/>
+            <extra>
+                <teaser>
+                    Zone 2: De Kade
+                    Aan de noordkant van de stad strekte de kade zich uit langs het water van het IJ. Scheepslui,
+                    vissers en de ambachtslieden langs de Nieuwendijk bepaalden het straatbeeld.
+                </teaser>
+            </extra>
+        </record>
+        <record table="zone" id="123">
+            <id>123</id>
+            <owner>unknown</owner>
+            <name>zone3</name>
+            <description>De Twee Zijden</description>
+            <area/>
+            <extra>
+                <teaser>
+                    Zone 3: De Twee Zijden
+                    Het burgerleven en het geloof, de oude en de nieuwe zijde, rijkdom en armoede, de nonnen en de
+                    hoeren...in Aemstelredamme zie je allerlei tegenstellingen die toch samengaan in dezelfde stad.
+                </teaser>
+            </extra>
+        </record>
+        <record table="zone" id="124">
+            <id>124</id>
+            <owner>unknown</owner>
+            <name>zone4</name>
+            <description>Die Plaets</description>
+            <area/>
+            <extra>
+                <teaser>
+                    Zone 4: Die Plaets
+                    In deze zone ligt de oorsprong van de stad: de dam in de Amstel. Ooit was Die Plaets het centrale
+                    plein waar het volk heenstroomde bij bijzondere gebeurtenissen, en de plaats waar burgerschap en
+                    rechtspraak hun vorm kregen.
+                </teaser>
+            </extra>
+        </record>
+        <record table="zone" id="125">
+            <id>125</id>
+            <owner>unknown</owner>
+            <name>zone5</name>
+            <description>De Kloosters</description>
+            <area/>
+            <extra>
+                <teaser>
+                    Zone 5: De Kloosters
+                    De hele stad stond vol met sporen van religie. Maar dit deel van de stad kende wel heel veel
+                    kloosters en kapellen. De vrome mensen die er woonden en werkten hadden ook veel invloed op het
+                    stadse leven.
+                </teaser>
+            </extra>
+        </record>
+        <record table="zone" id="126">
+            <id>126</id>
+            <owner>unknown</owner>
+            <name>zone6</name>
+            <description>Verdediging</description>
+            <area/>
+            <extra>
+                <teaser>
+                    Zone 6: De Verdediging
+                    Met hard werken en handeldrijven bereikte Aemstelredamme de nodige rijkdom en status. Dat betekende
+                    ook dat er wat te halen viel voor plunderaars of rivaliserende steden. Rond de stadsgrens en vooral
+                    landinwaarts moesten de inwoners hun stad vaak verdedigen.
+                </teaser>
+            </extra>
+        </record>
+    </table>
+    <table name="assignment">
+        <record table="assignment" id="166">
+            <id>166</id>
+            <owner>unknown</owner>
+            <name>Montelbaanstoren</name>
+            <description>opdracht Montelbaanstoren</description>
+            <type>bewijs</type>
+            <location>
+                <location rx="2565" ry="1993" mx="540" my="1648"/>
+            </location>
+            <info>
+                <info points="10" reqimages="1" reqvideos="1"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="ZonePersonageIntro" medium="video" id="9552"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="ZoneIntro" medium="image" id="9554">De Lastage is een gebied buiten de stadsmuur. Er
+                            lagen scheepswerven en ook woonden er mensen. Toen de Hertog van Gelre de Lastage binnenviel
+                            werden alle bezittingen van deze mensen verwoest. Maar het stadsbestuur wilde nog steeds
+                            geen muur om de Lastage heen bouwen.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="9556">De scheepsbouwer vertelde dat hij een
+                            stukje van de Heilige Hostie heeft gekocht in de hoop te genezen van zijn brandwonden. Maar
+                            de wonden werden alleen maar erger.
+                        </part>
+                        <part name="Dadertip" medium="image" id="9558">De vrouw van de scheepsbouwer kan zich alleen nog
+                            herinneren dat de man van de hostie cement aan zijn handen had zitten.
+                        </part>
+                        <part name="Media-antwoord">Er zouden in de loop der tijd onverklaarbare magische dingen gebeurd
+                            zijn met de Montelbaanstoren. Jullie HQ kan helpen om hierachter te komen. Verbeeld deze
+                            dingen met behulp van een foto en een geluidsopname/filmpje.
+                        </part>
+                        <part name="Tekst-wachtwoord">Welke bijnaam heeft de Montelbaanstoren in de loop der eeuwen
+                            gekregen?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="ZonePersonageIntro" medium="video" id="9560" thumb="9562"/>
+                        <part name="ZoneIntro" medium="image" id="9565">De Lastage is een gebied buiten de stadsmuur. Er
+                            lagen scheepswerven en ook woonden er mensen. Toen de Hertog van Gelre de Lastage binnenviel
+                            werden alle bezittingen van deze mensen verwoest. Maar het stadsbestuur wilde nog steeds
+                            geen muur om de Lastage heen bouwen.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="9567">De scheepsbouwer vertelde dat hij een
+                            stukje van de Heilige Hostie heeft gekocht in de hoop te genezen van zijn brandwonden. Maar
+                            de wonden werden alleen maar erger.
+                        </part>
+                        <part name="Dadertip" medium="image" id="9569">De vrouw van de scheepsbouwer kan zich alleen nog
+                            herinneren dat de man van de hostie cement aan zijn handen had zitten.
+                        </part>
+                        <part name="Media-antwoord">Jouw pelgrims moeten met behulp van een foto en een
+                            geluidsopname/filmpje) de onverklaarbare magische dingen die met de Montelbaanstoren gebeurd
+                            zouden kunnen zijn verbeelden.
+                            Help jouw pelgrims door op internet de pagina('s) te zoeken, die deze onverklaarbare
+                            gebeurtenissen van de Montelbaanstoren beschrijven. Geef snel de twee vreemde gebeurtenissen
+                            door aan je pelgrims.
+                        </part>
+                        <part name="Tekst-wachtwoord">Welke bijnaam heeft de Montelbaanstoren in de loop der eeuwen
+                            gekregen?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>malle jaap;mallejaap;malle-jaap</answer>
+            <creationdate>1100095169023</creationdate>
+            <modificationdate>1107793175536</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="169">
+            <id>169</id>
+            <owner>unknown</owner>
+            <name>Sint Antoniespoort</name>
+            <description>opdracht Sint Antoniespoort</description>
+            <type>poorter</type>
+            <location>
+                <location rx="1868" ry="1844" mx="911" my="1284"/>
+            </location>
+            <info>
+                <info teaser="buiten de muur" points="20" reqimages="2" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9621"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9623">Oorspronkelijk was de Sint Antoniespoort een van
+                            de vier stadspoorten en vormde zij een onderdeel van de Middeleeuwse stadsmuur.
+                        </part>
+                        <part name="Screen2" medium="image" id="9625">De bouw van de muur was duur. Daarom voerde het
+                            stadsbestuur van Amsterdam een nieuwe belasting in. Metselaars moesten verplicht metselen
+                            anders kregen ze een boete van 10.000 stenen en mochten ze een jaar lang niet metselen.
+                        </part>
+                        <part name="Screen3" medium="image" id="9627">Ook aan gewone burgers werden boetes opgelegd in
+                            de vorm van stenen. Een handelaar die werd betrapt omdat hij zijn vis te duur had verkocht
+                            moest 5.000 stenen betalen.
+                        </part>
+                        <part name="Media-antwoord">Fotografeer waar de stadsmuur tegen de poort was aangebouwd. Kijk
+                            goed op de kaart naar de loop van de stadsmuur en de ligging van de stadspoort, HQ kan je
+                            helpen.
+                        </part>
+                        <part name="Tekst-wachtwoord" medium="image" id="9629">Loop vervolgens langs de muur richting
+                            Zee tot aan de brug die weer richting de Lastage gaat. In de kademuur van de Geldersekade
+                            bevinden zich nog steeds stukken zandsteen van de stadsmuur. Vanaf de brug kun je ze zien.
+                            Met de laatste afbeelding kun je deze plek vinden. Hoeveel stenen zitten er nu nog?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9631" thumb="9633"/>
+                        <part name="Screen1" medium="image" id="9636">Oorspronkelijk was de Sint Antoniespoort een van
+                            de vier stadspoorten en vormde zij een onderdeel van de Middeleeuwse stadsmuur.
+                        </part>
+                        <part name="Screen2" medium="image" id="9638">De bouw van de muur was duur. Daarom voerde het
+                            stadsbestuur van Amsterdam een nieuwe belasting in. Metselaars moesten verplicht metselen
+                            anders kregen ze een boete van 10.000 stenen en mochten ze een jaar lang niet metselen.
+                        </part>
+                        <part name="Screen3" medium="image" id="9640">Ook aan gewone burgers werden boetes opgelegd in
+                            de vorm van stenen. Een handelaar die werd betrapt omdat hij zijn vis te duur had verkocht
+                            moest 5.000 stenen betalen.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9642">Je pelgrims moeten foto's maken van de twee
+                            punten waar de stadsmuur tegen de Sint Antoniespoort was aangebouwd. Je kunt ze helpen met
+                            oude afbeeldingen die de juiste plaatsen aangeven.
+                        </part>
+                        <part name="Tekst-wachtwoord">In de kademuur van de Geldersekade bevinden zich nog steeds
+                            stukken zandsteen van de stadsmuur. De pelgrims weten van waaruit je ze kunt zien. Hoeveel
+                            stenen zitten er nu nog op die hoek?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>6;zes</answer>
+            <creationdate>1100095300649</creationdate>
+            <modificationdate>1107814269542</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="171">
+            <id>171</id>
+            <owner>unknown</owner>
+            <name>Schreierstoren</name>
+            <description>opdracht Schreierstoren</description>
+            <type>poorter</type>
+            <location>
+                <location rx="2142" ry="1055" mx="1223" my="1780"/>
+            </location>
+            <info>
+                <info teaser="schip in zicht" points="20" reqimages="1" reqvideos="1"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9571"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9573">De Schreierstoren maakte onderdeel uit van de
+                            stenen stadsmuur gebouwd in de jaren 1481-1494.
+                        </part>
+                        <part name="Screen2" medium="image" id="9575">Deze ommuring bestond uit verdedigingstorens en
+                            vier stadspoorten, onderling verbonden door een stadsmuur.
+                        </part>
+                        <part name="Screen3" medium="image" id="9577">De Schreierstoren, gebouwd in ?1487, is de enige
+                            overgebleven verdedigingstoren. De Schreierstoren heette oorspronkelijk de
+                            Schreyhoeckstoren.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9579">Rond de naam van de toren is een legende
+                            ontstaan. Zoek dit met hulp van HQ uit en beeld de in de legende ontstane betekenis van de
+                            naam uit in een foto en een filmpje.
+                        </part>
+                        <part name="Tekst-wachtwoord">Als je rond 1500 op de Schreierstoren gestaan zou hebben en
+                            uitkeek richting de scheepbouwerswijk in de Lastage, wat voor werktuig zag je dan?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9581" thumb="9583"/>
+                        <part name="Screen1" medium="image" id="9586">De Schreierstoren maakte onderdeel uit van de
+                            stenen stadsmuur gebouwd in de jaren 1481-1494.
+                        </part>
+                        <part name="Screen2" medium="image" id="9588">Deze ommuring bestond uit verdedigingstorens en
+                            vier stadspoorten, onderling verbonden door een stadsmuur.
+                        </part>
+                        <part name="Screen3" medium="image" id="9590">De Schreierstoren, gebouwd in ?1487, is de enige
+                            overgebleven verdedigingstoren. De Schreierstoren heette oorspronkelijk de
+                            Schreyhoeckstoren.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9592">Rond de naam van de toren is een legende
+                            ontstaan. Zoek die uit, zodat de pelgrims de in de legende ontstane betekenis van de naam
+                            uit kunnen beelden in een foto en een filmpje.
+                        </part>
+                        <part name="Tekst-wachtwoord">Als je rond 1500 op de Schreierstoren gestaan zou hebben en
+                            uitkeek richting de scheepbouwerswijk in de Lastage, wat voor werktuig zag je dan?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>kraan;hijskraan;scheepskraan;hijswerktuig;takel;scheepstakel</answer>
+            <creationdate>1100095335251</creationdate>
+            <modificationdate>1107793598029</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2291">
+            <id>2291</id>
+            <owner>unknown</owner>
+            <name>Nieuwe Stadsherberg</name>
+            <description>opdracht Nieuwe Stadsherberg</description>
+            <type>bewijs</type>
+            <location>
+                <location rx="1531" ry="503" mx="2045" my="1440"/>
+            </location>
+            <info>
+                <info points="10" reqimages="1" reqvideos="2"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="ZonePersonageIntro" medium="video" id="9651"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="ZoneIntro" medium="image" id="9653">De kade van Amsterdam was een bijzonder gebied.
+                            Schepen die dagen op zee hadden gevaren, kwamen door de houten palissaden heen. Als het
+                            buitenlandse schepen waren moesten ze tol betalen in de daarvoorbestemde tolhuizen.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="9655">De waard was vroeger schipper en in de
+                            hoop dat hij meer vis zou vangen kocht hij een stukje Hostie. Maar zijn netten bleven leeg!
+                            Daarom werd hij maar waard in de Nieuwe Stadsherberg en gooide hij het stukje in het water.
+                            Maar de volgende dag lag het weer in de herberg!
+                        </part>
+                        <part name="Dadertip" medium="image" id="9657">De waard weet alleen nog dat de man van de Hostie
+                            een troffel in zijn zak had.
+                        </part>
+                        <part name="Media-antwoord">Beklim de fietsenflat en maak een panoramafilmpje van Amsterdam,
+                            zoals de waard hem gezien zou kunnen hebben vanuit de herberg. Een panorama is een breed
+                            vergezicht, gemaakt vanuit en rondom een vast punt.
+                        </part>
+                        <part name="Tekst-wachtwoord">De Nieuwe Stadsherberg moest wijken voor de aanleg van een nieuw
+                            "eiland". Welk eiland ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="ZonePersonageIntro" medium="video" id="9659" thumb="9661"/>
+                        <part name="ZoneIntro" medium="image" id="9664">De kade van Amsterdam was een bijzonder gebied.
+                            Schepen die dagen op zee hadden gevaren, kwamen door de houten palissaden heen. Als het
+                            buitenlandse schepen waren moesten ze tol betalen in de daarvoorbestemde tolhuizen.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="9666">De waard was vroeger schipper en in de
+                            hoop dat hij meer vis zou vangen kocht hij een stukje Hostie. Maar zijn netten bleven leeg!
+                            Daarom werd hij maar waard in de Nieuwe Stadsherberg en gooide hij het stukje in het water.
+                            Maar de volgende dag lag het weer in de herberg!
+                        </part>
+                        <part name="Dadertip" medium="image" id="9668">De waard weet alleen nog dat de man van de Hostie
+                            een troffel in zijn zak had.
+                        </part>
+                        <part name="Media-antwoord">Jouw pelgrims moeten een filmpje maken van een panorama van
+                            Amsterdam, zoals de Waard in de Nieuwe stadsherberg hem gezien zou kunnen hebben. Help jouw
+                            pelgrims door op internet het Panorama van Kaerius te zoeken en als bron te gebruiken.
+                        </part>
+                        <part name="Tekst-wachtwoord">De Nieuwe Stadsherberg moest wijken voor de aanleg van een nieuw
+                            "eiland". Welk eiland ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>stationseiland;stationeiland</answer>
+            <creationdate>1102510386322</creationdate>
+            <modificationdate>1107814285019</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2309">
+            <id>2309</id>
+            <owner>unknown</owner>
+            <name>Sint Antoniestoren</name>
+            <description>opdracht Sint Antoniestoren</description>
+            <type>poorter</type>
+            <location>
+                <location rx="1868" ry="1844" mx="952" my="1288"/>
+            </location>
+            <info>
+                <info teaser="onzichtbaar water" points="20" reqimages="2" reqvideos="1"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="10329"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="10331">De Sint Antoniespoort werd gebouwd in 1488 en
+                            maakte onderdeel uit van de stadsmuur. Voor die muur langs liep het water van de grachten.
+                            Oorspronkelijk was het een stadspoort die aan de oostkant toegang gaf tot de stad.
+                        </part>
+                        <part name="Screen2" medium="image" id="10333">Tussen voorpoort en hoofdpoort lag een klein
+                            pleintje, eigenlijk een brug met een sluis eronder want het gebouw was ook een zeewering.
+                            Langs de rechterkade liep het zoute water uit het IJ, langs de linkerkade het zoete water
+                            van de Amstel.
+                        </part>
+                        <part name="Screen3">Nog geen vijftig jaar later was de stad al zo gegroeid dat de oostrand
+                            verderop kwam te liggen. Toen is grotendeels het marktplein aangelegd waar het gebouw nu op
+                            staat, de Nieuwmarkt. Hiervoor werd de voormalige stadsgracht overkluisd: gedempt, opgehoogd
+                            en dichtgebouwd dus. Het muurwerk van de poort kwam gedeeltelijk onder het nieuwe
+                            straatoppervlak te liggen: in de middeleeuwen was het gebouw juist uit de verre omtrek te
+                            zien als indrukwekkende hoge poort.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="10335">Er is nog steeds een ruim 160 meter lange
+                            tunnel (duiker) onder de Nieuwmarkt waar vroeger de gracht liep. Maak een foto van de ingang
+                            van de duiker, dan zoekt HQ een foto van binnenin waar jullie niet kunnen komen. Maak ook
+                            een filmpje van de Antoniespoort waarin je (half)rond de stadskant van het gebouw loopt. HQ
+                            vertelt je welk detail van het gebouw er niet mag missen in het beeld.
+                        </part>
+                        <part name="Tekst-wachtwoord">De eerste steen van de poort werd gelegd in 1488. Maar op welke
+                            datum ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="10337" thumb="10339"/>
+                        <part name="Screen1" medium="image" id="10342">De Sint Antoniespoort werd gebouwd in 1488 en
+                            maakte onderdeel uit van de stadsmuur. Voor die muur langs liep het water van de grachten.
+                            Oorspronkelijk was het een stadspoort die aan de oostkant toegang gaf tot de stad.
+                        </part>
+                        <part name="Screen2" medium="image" id="10344">Tussen voorpoort en hoofdpoort lag een klein
+                            pleintje, eigenlijk een brug met een sluis eronder want het gebouw was ook een zeewering.
+                            Langs de rechterkade liep het zoute water uit het IJ, langs de linkerkade het zoete water
+                            van de Amstel.
+                        </part>
+                        <part name="Screen3" medium="image" id="10346">Nog geen vijftig jaar later was de stad al zo
+                            gegroeid dat de oostrand verderop kwam te liggen. Toen is grotendeels het marktplein
+                            aangelegd waar het gebouw nu op staat, de Nieuwmarkt. Hiervoor werd de voormalige
+                            stadsgracht overkluisd: gedempt, opgehoogd en dichtgebouwd dus. Het muurwerk van de poort
+                            kwam gedeeltelijk onder het nieuwe straatoppervlak te liggen: in de middeleeuwen was het
+                            gebouw juist uit de verre omtrek te zien als indrukwekkende hoge poort.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="10348">Er is nog steeds een ruim 160 meter lange
+                            tunnel (?duiker?) onder de Nieuwmarkt waar vroeger de gracht liep. Zoek een foto van de
+                            tunnel onder het gebouw, je pelgrims maken een foto van buitenaf. Daarna maken ze een
+                            filmpje van de Antoniespoort waarin ze (half)rond de stadskant van het gebouw lopen. Zorg
+                            dat ze daarin zeker "de eerste steen" filmen. Zoek daarvoor op hoe die eruit ziet en waar
+                            hij zit.
+                        </part>
+                        <part name="Tekst-wachtwoord">De eerste steen van de poort werd gelegd in 1488. Maar op welke
+                            datum ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>28 april;28-04;28/04;achtentwintig april</answer>
+            <creationdate>1102510397501</creationdate>
+            <modificationdate>1107879108868</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2331">
+            <id>2331</id>
+            <owner>unknown</owner>
+            <name>Zeedijk</name>
+            <description>opdracht Zeedijk</description>
+            <type>poorter</type>
+            <location>
+                <location rx="1839" ry="1081" mx="1397" my="1606"/>
+            </location>
+            <info>
+                <info teaser="dorst lessen en brand blussen" points="20" reqimages="2" reqvideos="1"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9691"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9693">Oorspronkelijk stond de Zeedijk net als heel
+                            Amsterdam vol met houten huizen. Er zijn er nu nog maar twee van over: een op het Begijnhof
+                            en het huis hier op Zeedijk nummer 1.
+                        </part>
+                        <part name="Screen2">De middeleeuwse houten huizen hadden verdiepingen die telkens een stukje
+                            verder naar voren sprongen, iedere verdieping hing als het ware boven de straat. Het
+                            voordeel was dat gevels en ramen veel minder te verduren hadden van regen en wind. De
+                            geveltoppen aan weerszijden van de straten hellen dus altijd naar elkaar toe, waardoor de
+                            straten nog dichter bebouwd leken. Ook toen huizen meer en meer van steen gemaakt werden
+                            hield men nog wel eens vast aan deze bouwstijl.
+                        </part>
+                        <part name="Screen3" medium="image" id="9695">Dit pand is wat hoger dan de eerdere houten
+                            huizen, en is van het bouwtype dat een oplossing was voor de brandgevoeligheid. De oudste
+                            gegevens gaan terug tot 1543, maar ook daarvoor stonden er vrijwel zeker al houten bouwsels.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9697">Maak eerst twee foto's (evt. door het raam)
+                            waarop goed te zien is dat het huis zowel van binnen als van buiten grotendeels van hout is.
+                            De functie van het gebouw is niet veel anders dan vroeger: drinken en slapen. Zoek de
+                            huidige naam van het pand en bedenk of zoek uit (rond het cafe of met hulp van HQ) wat die
+                            naam met een spreekwoord te maken heeft. Beeld dit uit in een filmpje.
+                        </part>
+                        <part name="Tekst-wachtwoord">Welk deel van het huis mocht na 1452 niet meer van hout zijn ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9699" thumb="9701"/>
+                        <part name="Screen1" medium="image" id="9704">Oorspronkelijk stond de Zeedijk net als heel
+                            Amsterdam vol met houten huizen. Er zijn er nu nog maar twee van over: een op het Begijnhof
+                            en het huis hier op Zeedijk nummer 1.
+                        </part>
+                        <part name="Screen2">De middeleeuwse houten huizen hadden verdiepingen die telkens een stukje
+                            verder naar voren sprongen, iedere verdieping hing als het ware boven de straat. Het
+                            voordeel was dat gevels en ramen veel minder te verduren hadden van regen en wind. De
+                            geveltoppen aan weerszijden van de straten hellen dus altijd naar elkaar toe, waardoor de
+                            straten nog dichter bebouwd leken. Ook toen huizen meer en meer van steen gemaakt werden
+                            hield men nog wel eens vast aan deze bouwstijl.
+                        </part>
+                        <part name="Screen3" medium="image" id="9706">Dit pand is wat hoger dan de eerdere houten
+                            huizen, en is van het bouwtype dat een oplossing was voor de brandgevoeligheid. De oudste
+                            gegevens gaan terug tot 1543, maar ook daarvoor stonden er vrijwel zeker al houten bouwsels.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9708">Er zijn een paar grote stadsbranden
+                            geweest, maar na die van 1452 nam de stad maatregelen: er werd een speciale regel (?keur?)
+                            ingesteld. Zoek op wat de Keur van 1452 inhield. De pelgrims hebben je misschien nog nodig
+                            voor een vraag over de huidige naam van het houten pand.
+                        </part>
+                        <part name="Tekst-wachtwoord">Welk deel van het huis mocht na 1452 niet meer van hout zijn ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>muur;zijgevel;zijmuur</answer>
+            <creationdate>1102510411468</creationdate>
+            <modificationdate>1107814334060</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2353">
+            <id>2353</id>
+            <owner>unknown</owner>
+            <name>Smidse Nieuwendijk</name>
+            <description>opdracht Smidse Nieuwendijk</description>
+            <type>bewijs</type>
+            <location>
+                <location rx="1154" ry="1251" mx="1582" my="1059"/>
+            </location>
+            <info>
+                <info points="10" reqimages="2" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="ZonePersonageIntro" medium="video" id="9717"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="ZoneIntro" medium="image" id="9719">Aan de twee zijden stonden twee kerken. De Oude
+                            Kerk aan de Oude Zijde en de Nieuwe kerk aan de Nieuwe Zijde. Behalve voor godsdienstige
+                            rituelen, kwamen burgers ook naar de kerk om te handelen, te wandelen of een spelletje te
+                            spelen. Het was een openbare ruimte waar iedereen in- en uit liep.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="9721">De priester van de Nieuwe Kerk dacht een
+                            goede daad te doen door voor de kerk een stukje van de Hostie te kopen. Echter, sindsdien
+                            werd alles zwart op het moment dat de priester de mis voordroeg. Hij heeft geprobeerd de
+                            Hostie te vernietigen in de smidse aan de Nieuwendijk.
+                        </part>
+                        <part name="Dadertip" medium="image" id="9723">De priester weet dat de man die de Hostie aan hem
+                            verkocht een gilderuimte in de kerk had, gewijd aan Onze Lieve Vrouw.
+                        </part>
+                        <part name="Media-antwoord">De beschermheilige van het smidsgilde is St. Eloy. Zoek met hulp van
+                            HQ uit wat er voor wonderlijks gebeurde met deze heilige. Maak een foto van de plek op
+                            Nieuwendijk 154, waar de smidse stond. Maak ook een moderne fotoversie van de afbeelding van
+                            St. Eloy.
+                        </part>
+                        <part name="Tekst-wachtwoord">Aan welke van 'de twee zijden' was de smidse gevestigd?</part>
+                    </gamephone>
+                    <hq>
+                        <part name="ZonePersonageIntro" medium="video" id="9725" thumb="9727"/>
+                        <part name="ZoneIntro" medium="image" id="9730">Aan de twee zijden stonden twee kerken. De Oude
+                            Kerk aan de Oude Zijde en de Nieuwe kerk aan de Nieuwe Zijde. Behalve voor godsdienstige
+                            rituelen, kwamen burgers ook naar de kerk om te handelen, te wandelen of een spelletje te
+                            spelen. Het was een openbare ruimte waar iedereen in- en uit liep.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="9732">De priester van de Nieuwe Kerk dacht een
+                            goede daad te doen door voor de kerk een stukje van de Hostie te kopen. Echter, sindsdien
+                            werd alles zwart op het moment dat de priester de mis voordroeg. Hij heeft geprobeerd de
+                            Hostie te vernietigen in de smidse aan de Nieuwendijk.
+                        </part>
+                        <part name="Dadertip" medium="image" id="9734">De priester weet dat de man die de Hostie aan hem
+                            verkocht een gilderuimte in de kerk had, gewijd aan Onze Lieve Vrouw.
+                        </part>
+                        <part name="Media-antwoord">Je pelgrims maken een foto van de plek op Nieuwendijk 154, waar de
+                            smidse stond. De beschermheilige van het smidsgilde is St. Eloy. Zoek op internet uit wat er
+                            voor wonderlijks gebeurde met deze heilige en stuur ze een of meer afbeeldingen. Je pelgrims
+                            moeten daarna een moderne fotoversie maken van de afbeelding van St. Eloy.
+                        </part>
+                        <part name="Tekst-wachtwoord">Aan welke van 'de twee zijden' was de smidse gevestigd?</part>
+                    </hq>
+                </content>
+            </content>
+            <answer>nieuwe;nieuwe zijde;nieuwezijde</answer>
+            <creationdate>1102510441261</creationdate>
+            <modificationdate>1107814347224</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2377">
+            <id>2377</id>
+            <owner>unknown</owner>
+            <name>Oude Kerk</name>
+            <description>opdracht Oude Kerk</description>
+            <type>poorter</type>
+            <location>
+                <location rx="1556" ry="1501" mx="1309" my="1254"/>
+            </location>
+            <info>
+                <info teaser="samen begraven" points="20" reqimages="2" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="8945"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="8947">De Oude Kerk is het oudste stenen gebouw en gaat
+                            terug tot ca. 1250, toen Amsterdam een kleine nederzetting bij de Dam aan de Amstel was.
+                        </part>
+                        <part name="Screen2" medium="image" id="8949">De kerk werd gewijd aan de heilige Sint Nicolaas,
+                            bisschop van Myra en patroonheilige van de zeelieden. In de Oude Kerk werden niet alleen
+                            godsdienstoefeningen gehouden. Het was een ontmoetingsplaats voor inwoners en handelaren,
+                            waar men van gedachten kon wisselen.
+                        </part>
+                        <part name="Screen3" medium="image" id="8951">Er zijn meer dan tienduizend mensen begraven in de
+                            Oude Kerk. Vanwege het Christelijke idee dat je je lichaam tijdens de dag des oordeels weer
+                            nodig zou hebben, werd binnen in de kerk begraven. Het was ook een bron van inkomsten voor
+                            de kerk, hoe dichter bij het altaar hoe zekerder van je plekje in de hemel, maar dat kostte
+                            wel wat.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8953">HQ zoekt op in welk graf uit 1182-1500 de
+                            meeste mensen lagen en dirigeert jullie naar dit graf. Fotografeer dit graf.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoeveel mensen liggen er in het gevonden graf?</part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="8955" thumb="8957"/>
+                        <part name="Screen1" medium="image" id="8960">De Oude Kerk is het oudste stenen gebouw en gaat
+                            terug tot ca. 1250, toen Amsterdam een kleine nederzetting bij de Dam aan de Amstel was.
+                        </part>
+                        <part name="Screen2" medium="image" id="8962">De kerk werd gewijd aan de heilige Sint Nicolaas,
+                            bisschop van Myra en patroonheilige van de zeelieden. In de Oude Kerk werden niet alleen
+                            godsdienstoefeningen gehouden. Het was een ontmoetingsplaats voor inwoners en handelaren,
+                            waar men van gedachten kon wisselen.
+                        </part>
+                        <part name="Screen3" medium="image" id="8964">Er zijn meer dan tienduizend mensen begraven in de
+                            Oude Kerk. Vanwege het Christelijke idee dat je je lichaam tijdens de dag des oordeels weer
+                            nodig zou hebben, werd binnen in de kerk begraven. Het was ook een bron van inkomsten voor
+                            de kerk, hoe dichter bij het altaar hoe zekerder van je plekje in de hemel, maar dat kostte
+                            wel wat.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8966">Gegevens over de graven in de Oude Kerk
+                            staan op internet. Zoek op in welk graf uit 1182-1500 de meeste mensen lagen en dirigeer je
+                            pelgrims erheen (per telefoon, want GPS werkt niet binnenin de kerk!. Zij moeten het goed
+                            graf fotograferen.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoeveel mensen liggen er in het gevonden graf?</part>
+                    </hq>
+                </content>
+            </content>
+            <answer>tien;10</answer>
+            <creationdate>1102510683415</creationdate>
+            <modificationdate>1107440521345</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2421">
+            <id>2421</id>
+            <owner>unknown</owner>
+            <name>Nieuwe Kerk</name>
+            <description>opdracht Nieuwe Kerk</description>
+            <type>poorter</type>
+            <location>
+                <location rx="732" ry="1591" mx="1518" my="800"/>
+            </location>
+            <info>
+                <info teaser="wie heeft de grootste" points="20" reqimages="4" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="8655"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="8657">Al voor 1400 werd er druk gebouwd aan de Nieuwe
+                            Kerk, terwijl de Bisschop pas in 1408 zijn goedkeuring gaf. Reden voor de bouw was heel
+                            simpel: de Kerk aan de Oude Zijds was te klein geworden.
+                        </part>
+                        <part name="Screen2" medium="image" id="8659">De kerk werd gewijd in 1408 aan Onze Lieve Vrouwe
+                            en de Heilige Catharina, maar zou nooit bekend worden als de Onze Lieve Vrouwe of
+                            Catharinakerk. Nog altijd heet zij De Nieuwe Kerk, ter onderscheiding van De Oude Kerk.
+                        </part>
+                        <part name="Screen3" medium="image" id="8661">In vroeger tijden vergeleken Amsterdammers de
+                            Nieuwe Kerk graag met de kathedraal van Amiens in Frankrijk. Dit is een van de beroemdste
+                            kerken van Europa, ook gebouwd in de Middeleeuwen en uitgeroepen tot een van de
+                            wereldwonderen.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8663">Maak je eigen vergelijking. Bepaal met je
+                            HQ waarop je de kerken zou kunnen vergelijken. Maak twee foto's van de Nieuwe Kerk op
+                            dezelfde manier als de foto's die HQ van Amiens kan vinden.
+                        </part>
+                        <part name="Tekst-wachtwoord">De Nieuwe Kerk kreeg nooit een indrukwekkende toren. Tot aan 1642
+                            werden er wel palen voor geslagen. Zoek op hoeveel palen en tel er de hoogte van de
+                            spitstoren van Amiens bij op.
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="8665" thumb="8667"/>
+                        <part name="Screen1" medium="image" id="8670">Al voor 1400 werd er druk gebouwd aan de Nieuwe
+                            Kerk, terwijl de Bisschop pas in 1408 zijn goedkeuring gaf. Reden voor de bouw was heel
+                            simpel: de Kerk aan de Oude Zijds was te klein geworden.
+                        </part>
+                        <part name="Screen2" medium="image" id="8672">De kerk werd gewijd in 1408 aan Onze Lieve Vrouwe
+                            en de Heilige Catharina, maar zou nooit bekend worden als de Onze Lieve Vrouwe of
+                            Catharinakerk. Nog altijd heet zij De Nieuwe Kerk, ter onderscheiding van De Oude Kerk.
+                        </part>
+                        <part name="Screen3" medium="image" id="8674">In vroeger tijden vergeleken Amsterdammers de
+                            Nieuwe Kerk graag met de kathedraal van Amiens in Frankrijk. Dit is een van de beroemdste
+                            kerken van Europa, ook gebouwd in de Middeleeuwen en uitgeroepen tot een van de
+                            wereldwonderen.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8676">Maak je eigen vergelijking. Bepaal met je
+                            pelgrims hoe je de kerken zou kunnen vergelijken. Zoek foto's van de Amiens-kathedraal die
+                            zij op dezelfde manier van de Nieuwe Kerk kunnen maken en terugsturen. Dien totaal dus vier
+                            foto's in.
+                        </part>
+                        <part name="Tekst-wachtwoord">De Nieuwe Kerk kreeg nooit een indrukwekkende toren. Tot aan 1642
+                            werden er wel palen voor geslagen. Zoek op hoeveel palen en tel er de hoogte van de
+                            spitstoren van Amiens bij op.
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>6475</answer>
+            <creationdate>1102510868033</creationdate>
+            <modificationdate>1107440476647</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2549">
+            <id>2549</id>
+            <owner>unknown</owner>
+            <name>Dam</name>
+            <description>opdracht Dam</description>
+            <type>bewijs</type>
+            <location>
+                <location rx="982" ry="1831" mx="1190" my="803"/>
+            </location>
+            <info>
+                <info points="10" reqimages="0" reqvideos="1"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="ZonePersonageIntro" medium="video" id="8776"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="ZoneIntro" medium="image" id="8778">Die Plaets was het hart van de stad. Er werd
+                            gehandeld, geroddeld en rechtgesproken. Rechtspraak was openbaar, net zoals het voltrekken
+                            van het doodvonnis door de beul.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="8780">De beul heeft voor 300 florijnen een
+                            stukje van de Heilige Hostie gekocht in de hoop zijn nare dromen te stoppen. Maar sindsdien
+                            gaan de ter doodveroordeelden maar niet dood.
+                        </part>
+                        <part name="Dadertip" medium="image" id="8782">De beul zei er nog bij: "Daar kan zijn gilde dat
+                            Onze Lieve Vrouw vereert helemaal niets aan veranderen!"
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8784">Ga op de plaats van het schavot staan en
+                            maak daar een filmpje van een terechtstelling zoals te zien is op de afbeelding. HQ kan
+                            helpen uitzoeken waar die juiste plaats is.
+                        </part>
+                        <part name="Tekst-wachtwoord">Wat verdiende de beul met het afhakken van een hoofd (antwoord met
+                            alleen een cijfer, geen florijnen, guldens of euro's)?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="ZonePersonageIntro" medium="video" id="8786" thumb="8788"/>
+                        <part name="ZoneIntro" medium="image" id="8791">Die Plaets was het hart van de stad. Er werd
+                            gehandeld, geroddeld en rechtgesproken. Rechtspraak was openbaar, net zoals het voltrekken
+                            van het doodvonnis door de beul.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="8793">De beul heeft voor 300 florijnen een
+                            stukje van de Heilige Hostie gekocht in de hoop zijn nare dromen te stoppen. Maar sindsdien
+                            gaan de ter doodveroordeelden maar niet dood.
+                        </part>
+                        <part name="Dadertip" medium="image" id="8795">De beul zei er nog bij: "Daar kan zijn gilde dat
+                            Onze Lieve Vrouw vereert helemaal niets aan veranderen!
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8797">Jouw pelgrims moeten op de plaats van het
+                            schavot gaan staan en daar een filmpje maken van een terechtstelling zoals te zien is op de
+                            afbeelding. Zoek met de afbeelding en de kaarten uit waar dat is en help je pelgrims om de
+                            juiste plek te vinden.
+                        </part>
+                        <part name="Tekst-wachtwoord">Wat verdiende de beul met het afhakken van een hoofd (antwoord met
+                            alleen een cijfer, geen florijnen, guldens of euro's)?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>6;zes</answer>
+            <creationdate>1102602403231</creationdate>
+            <modificationdate>1107440490171</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2585">
+            <id>2585</id>
+            <owner>unknown</owner>
+            <name>Stadhuis</name>
+            <description>opdracht Stadhuis</description>
+            <type>poorter</type>
+            <location>
+                <location rx="768" ry="1774" mx="1331" my="735"/>
+            </location>
+            <info>
+                <info teaser="wachters boven de ingang" points="20" reqimages="1" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9736"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9738">Op die Plaets stond in de Middeleeuwen het
+                            stadhuis. Vanaf 1400 werd Amsterdam bestuurd door vier burgemeesters en werd er recht
+                            gesproken door de schout en schepenen.
+                        </part>
+                        <part name="Screen2" medium="image" id="9740">De schout had ook helpers: rakkers, die hem
+                            hielpen op straat de orde te bewaren en dieven en ander gespuis op te pakken. De rakkers
+                            herkende je aan hun houten knuppel.
+                        </part>
+                        <part name="Screen3" medium="image" id="9742">Het stadhuis is verwoest door de stadsbrand van
+                            1652. Er zijn vier beelden bewaard gebleven: de gravenbeelden. Het stadsbestuur had deze
+                            beelden laten maken als dank voor de Graaf die hen stadsrechten had gegeven.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9744">Maak een foto van vier personen (jezelf of
+                            anderen) op de plaats waar de gravenbeelden hebben gestaan. HQ zoekt uit waar de ingang was
+                            van het oude stadhuis en waar de vier gravenbeelden stonden.
+                        </part>
+                        <part name="Tekst-wachtwoord">Deze ingang leidde naar het deel van het stadhuisgebouw waar het
+                            stadsbestuur zetelde. Wat was de speciale naam van dit deel van het gebouw?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9746" thumb="9748"/>
+                        <part name="Screen1" medium="image" id="9751">Op die Plaets stond in de Middeleeuwen het
+                            stadhuis. Vanaf 1400 werd Amsterdam bestuurd door vier burgemeesters en werd er recht
+                            gesproken door de schout en schepenen.
+                        </part>
+                        <part name="Screen2" medium="image" id="9753">De schout had ook helpers: rakkers, die hem
+                            hielpen op straat de orde te bewaren en dieven en ander gespuis op te pakken. De rakkers
+                            herkende je aan hun houten knuppel.
+                        </part>
+                        <part name="Screen3" medium="image" id="9755">Het stadhuis is verwoest door de stadsbrand van
+                            1652. Er zijn vier beelden bewaard gebleven: de gravenbeelden. Het stadsbestuur had deze
+                            beelden laten maken als dank voor de Graaf die hen stadsrechten had gegeven.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9757">De pelgrims moeten een foto maken van vier
+                            personen op de plaats waar de gravenbeelden hebben gestaan. Zoek voor ze uit waar de ingang
+                            was van het oude stadhuis en waar de vier gravenbeelden stonden.
+                        </part>
+                        <part name="Tekst-wachtwoord">Deze ingang leidde naar het deel van het stadhuisgebouw waar het
+                            stadsbestuur zetelde. Wat was de speciale naam van dit deel van het gebouw?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>vierschaar; vier schaar</answer>
+            <creationdate>1102602548626</creationdate>
+            <modificationdate>1107814364403</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2631">
+            <id>2631</id>
+            <owner>unknown</owner>
+            <name>Sint Lucienklooster</name>
+            <description>opdracht Sint Lucienklooster</description>
+            <type>poorter</type>
+            <location>
+                <location rx="549" ry="2372" mx="1151" my="467"/>
+            </location>
+            <info>
+                <info teaser="van gehucht tot rijkste stad" points="20" reqimages="2" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9040"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9042">Er zijn al veel boeken over Amsterdam en de
+                            geschiedenis ervan geschreven. Een pas verschenen boek over de ontstaansperiode heet 'Een
+                            stad uit het niets'.
+                        </part>
+                        <part name="Screen2" medium="image" id="9044">Op de plek waar jullie staan was een klooster,
+                            later een weeshuis, en vandaag de dag een museum over de geschiedenis van Amsterdam.
+                        </part>
+                        <part name="Screen3" medium="image" id="9046">Hier vind je alles over het verhaal van de stad
+                            Amsterdam die eeuwig in beweging is, zich steeds weer aanpast aan nieuwe tijden.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9048">Zoek in het museum en met HQ uit wat de
+                            verklaring is voor de groei van Amsterdam. Maak in het museum twee foto's die de titel van
+                            het boek verklaren omdat ze het ontstaan van de stad laten zien.
+                        </part>
+                        <part name="Tekst-wachtwoord">Het boek is de eerste van een serie. Tot aan welk jaartal
+                            behandelt dit deel de geschiedenis van Amsterdam?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9050" thumb="9052"/>
+                        <part name="Screen1" medium="image" id="9055">Er zijn al veel boeken over Amsterdam en de
+                            geschiedenis ervan geschreven. Een pas verschenen boek over de ontstaansperiode heet 'Een
+                            stad uit het niets'.
+                        </part>
+                        <part name="Screen2" medium="image" id="9057">Op de plek waar jullie staan was een klooster,
+                            later een weeshuis, en vandaag de dag een museum over de geschiedenis van Amsterdam.
+                        </part>
+                        <part name="Screen3" medium="image" id="9059">Hier vind je alles over het verhaal van de stad
+                            Amsterdam die eeuwig in beweging is, zich steeds weer aanpast aan nieuwe tijden.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9061">Zoek in het museum en met HQ uit wat de
+                            verklaring is voor de groei van Amsterdam. Maak in het museum twee foto's die de titel van
+                            het boek verklaren omdat ze het ontstaan van de stad laten zien.
+                        </part>
+                        <part name="Tekst-wachtwoord">Het boek is de eerste van een serie. Tot aan welk jaartal
+                            behandelt dit deel de geschiedenis van Amsterdam?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>1578;1579</answer>
+            <creationdate>1102603201240</creationdate>
+            <modificationdate>1107440541653</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2671">
+            <id>2671</id>
+            <owner>unknown</owner>
+            <name>Agnietenklooster</name>
+            <description>opdracht Agnietenklooster</description>
+            <type>bewijs</type>
+            <location>
+                <location rx="1125" ry="2412" mx="791" my="762"/>
+            </location>
+            <info>
+                <info points="10" reqimages="3" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="ZonePersonageIntro" medium="video" id="8829"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="ZoneIntro" medium="image" id="8831">Amsterdam telde ongeveer 21 kloosters, waarvan
+                            19 binnen de stadsmuur. Er waren meer vrouwen- dan mannenkloosters.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="8833">De non is een meisje van lichte zeden
+                            geweest en zit nu tegen haar wil in het Agnietenklooster.
+                        </part>
+                        <part name="Dadertip" medium="image" id="8835">Ze heeft de kist met de Hostie uit de Heilige
+                            Stede gestolen uit liefde voor Thyderic Janszoon.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8837">Zoek met HQ de legende uit van St. Agnes,
+                            de martelares waar het Agnietenklooster aan was gewijd. Zoek of maak een afbeelding van St.
+                            Agnes. Voor welke twee begrippen staat het lam symbool ? Maak ook twee foto's van voorwerpen
+                            of mensen die hetzelfde symboliseren.
+                        </part>
+                        <part name="Tekst-wachtwoord">In het Latijn betekent 'agnus' dus 'lam'. Wat betekent 'agnos' in
+                            het oud Grieks ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="ZonePersonageIntro" medium="video" id="8839" thumb="8841"/>
+                        <part name="ZoneIntro" medium="image" id="8844">Amsterdam telde ongeveer 21 kloosters, waarvan
+                            19 binnen de stadsmuur. Er waren meer vrouwen- dan mannenkloosters.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="8846">De non is een meisje van lichte zeden
+                            geweest en zit nu tegen haar wil in het Agnietenklooster.
+                        </part>
+                        <part name="Dadertip" medium="image" id="8848">Ze heeft de kist met de Hostie uit de Heilige
+                            Stede gestolen uit liefde voor Thyderic Janszoon.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8850">Jouw pelgrims moeten twee foto's maken van
+                            mensen of dingen die dezelfde symbolische betekenis hebben als een lam zoals die een rol
+                            speelt in de legende van St. Agnes.
+                            Help jouw pelgrims door op internet te zoeken naar de legende van St. Agnes, de martelares
+                            van het St. Agnietenklooster.
+                        </part>
+                        <part name="Tekst-wachtwoord">In het Latijn betekent 'agnus' dus 'lam'. Wat betekent 'agnos' in
+                            het oud Grieks ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>eerbaar;rein;zuiver</answer>
+            <creationdate>1102603331547</creationdate>
+            <modificationdate>1107440494918</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2693">
+            <id>2693</id>
+            <owner>unknown</owner>
+            <name>Begijnhof</name>
+            <description>opdracht Begijnhof</description>
+            <type>poorter</type>
+            <location>
+                <location rx="533" ry="2564" mx="1009" my="393"/>
+            </location>
+            <info>
+                <info teaser="mirakelse processie" points="20" reqimages="1" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9759"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9761">Godsdienst was in de middeleeuwen heel belangrijk.
+                            De meeste Amsterdammers waren Rooms katholiek. De paus was en is hoofd van deze kerk.
+                        </part>
+                        <part name="Screen2" medium="image" id="9763">Vrome mensen geloofden dat God zich in wonderen
+                            openbaarde. Ook in Amsterdam gebeurde zo'n wonder: het Mirakel van Amsterdam.
+                        </part>
+                        <part name="Screen3" medium="image" id="9765">Veel bedevaartgangers kwamen naar de Heilige
+                            Stede, de plek waar de Mirakel-hostie wonderen had verricht en bewaard lag. Ze hoopten op
+                            nieuwe wonderen en die leken ook te gebeuren. Zo was er een non die niet kon lopen en opeens
+                            weer 'kwiek was als een jong meisje'!
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9767">Zoek met HQ vanuit het Begijnhof de route
+                            van de Stille Omgang, een symbolische wandelroute die uitgroeide tot een jaarlijkse
+                            processie naar de Heilige Stede ter ere van het Mirakel. Maak een foto op de plek waar de
+                            Heilige Stede was.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoe heet de weg tussen het Singel en de Kalverstraat, die speciaal
+                            werd aangelegd voor de vele pelgrims en bedevaartgangers van buiten de stad ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9769" thumb="9771"/>
+                        <part name="Screen1" medium="image" id="9774">Godsdienst was in de middeleeuwen heel belangrijk.
+                            De meeste Amsterdammers waren Rooms katholiek. De paus was en is hoofd van deze kerk.
+                        </part>
+                        <part name="Screen2" medium="image" id="9776">Vrome mensen geloofden dat God zich in wonderen
+                            openbaarde. Ook in Amsterdam gebeurde zo'n wonder: het Mirakel van Amsterdam.
+                        </part>
+                        <part name="Screen3" medium="image" id="9778">Veel bedevaartgangers kwamen naar de Heilige
+                            Stede, de plek waar de Mirakel-hostie wonderen had verricht en bewaard lag. Ze hoopten op
+                            nieuwe wonderen en die leken ook te gebeuren. Zo was er een non die niet kon lopen en opeens
+                            weer 'kwiek was als een jong meisje'!
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9780">Zoek vanuit het Begijnhof de route van de
+                            Stille Omgang, een symbolische wandelroute die uitgroeide tot een jaarlijkse processie naar
+                            de Heilige Stede ter ere van het Mirakel. Laat de pelgrims de route lopen en een foto maken
+                            op de plek waar de Heilige Stede was.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoe heet de weg tussen het Singel en de Kalverstraat, die speciaal
+                            werd aangelegd voor de vele pelgrims en bedevaartgangers van buiten de stad ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>heilige weg;heiligeweg</answer>
+            <creationdate>1102603347274</creationdate>
+            <modificationdate>1107814379120</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="2715">
+            <id>2715</id>
+            <owner>unknown</owner>
+            <name>Gebed Zonder End</name>
+            <description>opdracht Gebed Zonder End</description>
+            <type>poorter</type>
+            <location>
+                <location rx="983" ry="2542" mx="771" my="639"/>
+            </location>
+            <info>
+                <info teaser="het geloof ligt op straat" points="20" reqimages="4" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9782"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9784">Amsterdam kende rond 1550 veel kloosters.
+                            Gelovigen trekken zich terug in een klooster om daar een aan God gewijd leven te leiden. Een
+                            monnik of non kwam niet buiten het klooster en bracht een deel van de dag biddend door.
+                        </part>
+                        <part name="Screen2" medium="image" id="9786">Vrouwen gingen vaak het klooster in als ze
+                            ongehuwd bleven of als men vond dat ze zich schandalig hadden gedragen. Door hun dagen aan
+                            het geloof te besteden, hoopten ze alsnog op een plaatsje in de hemel.
+                        </part>
+                        <part name="Screen3" medium="image" id="9788">Een klooster was geheel zelfredzaam. Er was een
+                            eigen moestuin, bakkerij, wasserij, enz. Kloosters namen veel ruimte in. Dat vond het
+                            stadsbestuur minder prettig. Terwijl de kloosterlingen veel ruimte hadden, woonden de
+                            burgers te dicht op elkaar!
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9790">Maak een wandeling vanuit Gebed zonder end
+                            via de Oudezijds Achterburgwal naar de Bethanienstraat. Onderzoek zelf hoe veel ruimte door
+                            kloosters werd ingenomen door onderweg vier of meer foto's te maken van straatnamen(bordjes)
+                            waarvan je vermoedt dat ze te maken hebben met geloof en kloosters. Verstuur ze naar HQ.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoeveel kloosters telde Aemstelredamme in de middeleeuwen (rond
+                            1550) ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9792" thumb="9794"/>
+                        <part name="Screen1" medium="image" id="9797">msterdam kende rond 1550 veel kloosters. Gelovigen
+                            trekken zich terug in een klooster om daar een aan God gewijd leven te leiden. Een monnik of
+                            non kwam niet buiten het klooster en bracht een deel van de dag biddend door.
+                        </part>
+                        <part name="Screen2" medium="image" id="9799">Vrouwen gingen vaak het klooster in als ze
+                            ongehuwd bleven of als men vond dat ze zich schandalig hadden gedragen. Door hun dagen aan
+                            het geloof te besteden, hoopten ze alsnog op een plaatsje in de hemel.
+                        </part>
+                        <part name="Screen3" medium="image" id="9801">Een klooster was geheel zelfredzaam. Er was een
+                            eigen moestuin, bakkerij, wasserij, enz. Kloosters namen veel ruimte in. Dat vond het
+                            stadsbestuur minder prettig. Terwijl de kloosterlingen veel ruimte hadden, woonden de
+                            burgers te dicht op elkaar!
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9803">Je pelgrims maken een wandeling vanuit
+                            Gebed Zonder End via de Oudezijds Achterburgwal naar de Bethanienstraat. Onderzoek zelf hoe
+                            veel ruimte door kloosters werd ingenomen door ze onderweg vier of meer foto's te laten
+                            maken van straatnamen(bordjes) waarvan je vermoedt dat ze te maken hebben met geloof en
+                            kloosters.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoeveel kloosters telde Aemstelredamme in de middeleeuwen (rond
+                            1550) ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>19;20;21;22</answer>
+            <creationdate>1102603361475</creationdate>
+            <modificationdate>1107814394888</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="3380">
+            <id>3380</id>
+            <owner>unknown</owner>
+            <name>Regulierstoren</name>
+            <description>opdracht Regulierstoren</description>
+            <type>bewijs</type>
+            <location>
+                <location rx="902" ry="3087" mx="557" my="381"/>
+            </location>
+            <info>
+                <info points="10" reqimages="2" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="ZonePersonageIntro" medium="video" id="8926"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="ZoneIntro" medium="image" id="8928">Amsterdam is verscheidene malen aangevallen door
+                            Utrechtenaren en Geldenaren. Om de stad goed te verdedigen vanuit de verdedigingstorens,
+                            ontstonden er schuttersgilden. Na de uitvinding van het buskruit ontstonden de
+                            Kloveniersgilden.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="8930">De schutter vertelde dat hij de slechtste
+                            schutter is van zijn gilde. Hij wilde ook wel eens winnen tijdens de schietwedstrijd die ze
+                            elk jaar organiseren. Daarom heeft hij een stukje hostie gekocht in de hoop te winnen. Hij
+                            schoot echter geen een keer raak!
+                        </part>
+                        <part name="Dadertip" medium="image" id="8932">Van de dief van de Hostie wist de schutter te
+                            vertellen dat ook hij lid van een gilde was.
+                        </part>
+                        <part name="Media-antwoord">Het is nu 1550. Bijna honderd jaar later werd het beroemdste
+                            schilderij van Nederland geschilderd: een schutterstuk. Ga in dezelfde houding staan als de
+                            twee belangrijkste schutters op dit schilderij en neem een foto met de voormalige
+                            Regulierstoren op de achtergrond.
+                        </part>
+                        <part name="Tekst-wachtwoord">De Nachtwacht is een bijnaam. In de officiele titel van het
+                            schilderij zit een ander woord voor 'schuttersgroep'. Welk woord is dat ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="ZonePersonageIntro" medium="video" id="8934" thumb="8936"/>
+                        <part name="ZoneIntro" medium="image" id="8939">Amsterdam is verscheidene malen aangevallen door
+                            Utrechtenaren en Geldenaren. Om de stad goed te verdedigen vanuit de verdedigingstorens,
+                            ontstonden er schuttersgilden. Na de uitvinding van het buskruit ontstonden de
+                            Kloveniersgilden.
+                        </part>
+                        <part name="Personageverhaal" medium="image" id="8941">De schutter vertelde dat hij de slechtste
+                            schutter is van zijn gilde. Hij wilde ook wel eens winnen tijdens de schietwedstrijd die ze
+                            elk jaar organiseren. Daarom heeft hij een stukje hostie gekocht in de hoop te winnen. Hij
+                            schoot echter geen een keer raak!
+                        </part>
+                        <part name="Dadertip" medium="image" id="8943">Van de dief van de Hostie wist de schutter te
+                            vertellen dat ook hij lid van een gilde was.
+                        </part>
+                        <part name="Media-antwoord">Het is nu 1550. Bijna honderd jaar later werd het beroemdste
+                            schilderij van Nederland geschilderd: een schutterstuk. Zoek er een afbeelding van. De
+                            pelgrims moeten een tweede afbeelding maken, maar van zichzelf bij de Regulierstoren. Zoek
+                            uit wie de twee belangrijkste schutters op het schilderij zijn, zodat de pelgrims kunnen
+                            poseren.
+                        </part>
+                        <part name="Tekst-wachtwoord">De Nachtwacht is een bijnaam. In de officiele titel van het
+                            schilderij zit een ander woord voor 'schuttersgroep'. Welk woord is dat ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>compagnie</answer>
+            <creationdate>1102929600702</creationdate>
+            <modificationdate>1107440516360</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="3402">
+            <id>3402</id>
+            <owner>unknown</owner>
+            <name>Swych Utrecht</name>
+            <description>opdracht Swych Utrecht</description>
+            <type>poorter</type>
+            <location>
+                <location rx="1267" ry="2839" mx="498" my="691"/>
+            </location>
+            <info>
+                <info teaser="indringers uit zuidoost" points="20" reqimages="2" reqvideos="0"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="9805"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="9807">Swych Utrecht maakte onderdeel uit van de stenen
+                            stadsmuur gebouwd in de jaren 1481-1494.
+                        </part>
+                        <part name="Screen2" medium="image" id="9809">Deze ommuring bestond uit verdedigingstorens en
+                            vier stadspoorten, onderling verbonden door een stadsmuur.
+                        </part>
+                        <part name="Screen3" medium="image" id="9811">Swych Utrecht was een van de grootste
+                            verdedigingstorens en keek in zuidoostelijke richting uit over de drassige weiden.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9813">Dit verdedigingswerk is gesloopt in 1882.
+                            Het gebouw dat hier nu staat, bevat nog wel ergens een afbeelding van Swych Utrecht. Maak
+                            daar een foto van. Maak een tweede foto in de richting van Utrecht waarop jullie met gebaren
+                            de betekenis van de naam uitbeelden.
+                        </part>
+                        <part name="Tekst-wachtwoord">De naam van het huidige gebouw dat op de plaats staat van Swych
+                            Utrecht, heeft nog steeds iets te maken met de schutterij. Wat is die naam ?
+                        </part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="9815" thumb="9817"/>
+                        <part name="Screen1" medium="image" id="9820">Swych Utrecht maakte onderdeel uit van de stenen
+                            stadsmuur gebouwd in de jaren 1481-1494.
+                        </part>
+                        <part name="Screen2" medium="image" id="9822">Deze ommuring bestond uit verdedigingstorens en
+                            vier stadspoorten, onderling verbonden door een stadsmuur.
+                        </part>
+                        <part name="Screen3" medium="image" id="9824">Swych Utrecht was een van de grootste
+                            verdedigingstorens en keek in zuidoostelijke richting uit over de drassige weiden.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="9826">Dit verdedigingswerk is gesloopt in 1882.
+                            Het gebouw dat hier nu staat, bevat nog wel ergens een afbeelding van Swych Utrecht. Laat er
+                            een foto van maken, en maak er ook een richting Utrecht, waarop jullie met gebaren de
+                            betekenis van de naam uitbeelden.
+                        </part>
+                        <part name="Tekst-wachtwoord">De naam van het huidige gebouw dat op de plaats staat van Swych
+                            Utrecht, heeft nog steeds iets te maken met de schutterij. Wat is die naam ?
+                        </part>
+                    </hq>
+                </content>
+            </content>
+            <answer>doelen;doelenhotel</answer>
+            <creationdate>1102929619247</creationdate>
+            <modificationdate>1107814407710</modificationdate>
+            <extra/>
+        </record>
+        <record table="assignment" id="3426">
+            <id>3426</id>
+            <owner>unknown</owner>
+            <name>Klovenier</name>
+            <description>opdracht Klovenier</description>
+            <type>poorter</type>
+            <location>
+                <location rx="1513" ry="2458" mx="561" my="747"/>
+            </location>
+            <info>
+                <info teaser="3..2..1..vuur!" points="20" reqimages="0" reqvideos="1"/>
+            </info>
+            <content>
+                <content>
+                    <videophone>
+                        <part name="Assignment-clip" medium="video" id="8875"/>
+                    </videophone>
+                    <gamephone>
+                        <part name="Screen1" medium="image" id="8877">Als er gevaar dreigde voor Amsterdam dan werden
+                            alle poorters opgeroepen om de stad te komen helpen verdedigen. Je mocht zelf weten wat voor
+                            wapen je meebracht, maar het moest minimaal een dolk zijn.
+                        </part>
+                        <part name="Screen2" medium="image" id="8879">Vanaf de 14de eeuw ging men zich in oorlogsvoering
+                            specialiseren. Er ontstonden schuttersgilden. Hun namen ontleenden ze aan de wapens waarmee
+                            ze oefenden en vochten. Zo ontstond in Amsterdam het voetbooggilde en handbooggilde.
+                        </part>
+                        <part name="Screen3" medium="image" id="8881">Na de uitvinding van het buskruit ontstonden
+                            kloveniers- of bussegilden. De kloveniers hechtten veel waarde aan hun gilde. Ze
+                            organiseerden feestelijke maaltijden, wedstrijden en lieten zich op schuttersstukken
+                            portretteren. Dit bevestigde het broederschapskarakter van het gilde.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8883">Jullie staan op de Kloveniersburgwal. Niet
+                            ver hier vandaan zijn de Voetboogstraat en de Handboogstraat. Er ligt nog een straat vlakbij
+                            de Kloveniersburgwal die te maken heeft met de schutters, hij is genoemd naar hun
+                            oefenterrein. HQ kan jullie erheen loodsen. Verfilm met dat straatnaambordje in beeld het
+                            gebruik van de genoemde drie soorten wapens.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoe heet het wapen dat de kloveniers gebruikten ?</part>
+                    </gamephone>
+                    <hq>
+                        <part name="Assignment-clip" medium="video" id="8885" thumb="8887"/>
+                        <part name="Screen1" medium="image" id="8890">Als er gevaar dreigde voor Amsterdam dan werden
+                            alle poorters opgeroepen om de stad te komen helpen verdedigen. Je mocht zelf weten wat voor
+                            wapen je meebracht, maar het moest minimaal een dolk zijn.
+                        </part>
+                        <part name="Screen2" medium="image" id="8892">Vanaf de 14de eeuw ging men zich in oorlogsvoering
+                            specialiseren. Er ontstonden schuttersgilden. Hun namen ontleenden ze aan de wapens waarmee
+                            ze oefenden en vochten. Zo ontstond in Amsterdam het voetbooggilde en handbooggilde.
+                        </part>
+                        <part name="Screen3" medium="image" id="8894">Na de uitvinding van het buskruit ontstonden
+                            kloveniers- of bussegilden. De kloveniers hechtten veel waarde aan hun gilde. Ze
+                            organiseerden feestelijke maaltijden, wedstrijden en lieten zich op schuttersstukken
+                            portretteren. Dit bevestigde het broederschapskarakter van het gilde.
+                        </part>
+                        <part name="Media-antwoord" medium="image" id="8896">De pelgrims staan op de Kloveniersburgwal.
+                            Niet ver daar vandaan zijn de Voetboogstraat en de Handboogstraat. Er ligt nog een straat
+                            vlakbij de Kloveniersburgwal die te maken heeft met de schutters, hij is genoemd naar hun
+                            oefenterrein. Laat de pelgrims met dat straatnaambordje in beeld het gebruik uitbeelden van
+                            de genoemde drie soorten wapens.
+                        </part>
+                        <part name="Tekst-wachtwoord">Hoe heet het wapen dat de kloveniers gebruikten ?</part>
+                    </hq>
+                </content>
+            </content>
+            <answer>klover</answer>
+            <creationdate>1102929718784</creationdate>
+            <modificationdate>1107440500553</modificationdate>
+            <extra/>
+        </record>
+    </table>
+    <table name="answer">
+        <record table="answer" id="10478">
+            <id>10478</id>
+            <owner>unknown</owner>
+            <name>Montelbaanstoren</name>
+            <team>blue</team>
+            <description>opdracht Montelbaanstoren</description>
+            <type>bewijs</type>
+            <content>
+                <content>
+                    bad answer;aap;malle jaap*
+                </content>
+            </content>
+            <creationdate>1143642696682</creationdate>
+            <modificationdate>1143642697092</modificationdate>
+            <extra/>
+        </record>
+        <record table="answer" id="10489">
+            <id>10489</id>
+            <owner>unknown</owner>
+            <name>Sint Antoniespoort</name>
+            <team>blue</team>
+            <description>opdracht Sint Antoniespoort</description>
+            <type>poorter</type>
+            <content>
+                <content>
+                    zes*
+                </content>
+            </content>
+            <creationdate>1143642697461</creationdate>
+            <modificationdate>1143642697649</modificationdate>
+            <extra/>
+        </record>
+        <record table="answer" id="10496">
+            <id>10496</id>
+            <owner>unknown</owner>
+            <name>Schreierstoren</name>
+            <team>blue</team>
+            <description>opdracht Schreierstoren</description>
+            <type>poorter</type>
+            <content>
+                <content>
+                    scheepstakel*
+                </content>
+            </content>
+            <creationdate>1143642698063</creationdate>
+            <modificationdate>1143642698449</modificationdate>
+            <extra/>
+        </record>
+    </table>
+    <table name="boobytrap"/>
+    <table name="cloak"/>
+</db>

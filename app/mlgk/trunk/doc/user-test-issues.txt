@@ -1,0 +1,28 @@
+technisch
+1. geen email configuratie phones
+2. upload/bekijken mpeg4 niet ondersteund
+3. view event replay werkt niet goed
+4. score niet zichtbaar
+5. answer insturen gaat soms fout (leeg antwoord)
+SEVERE: Negative response for service=play-answertask; exception:Missing name=answer value=
+6. poi hit slecht op nieuwendijk (signaal wordt 1x per 20 sek gestuurd)
+7. opvragen taak duurt te lang
+8. map: zoom -1 wordt aan server opgevraagd
+9. map ophalen blijft hangen
+10. hq ziet poi hit maar mobiel niet
+11. audio upload: wordt niet aan opdracht gekoppeld
+12. video verschijnt niet op mobiel bij poi-hit
+13. je kunt antwoord meerdere keren insturen (?)
+14. audio opnemen: audio wordt niet bewaard
+15. geheugenkaarten moeten in telefoons
+
+concept
+13. meer diversiteit in soorten opdrachten (multiple choice, tekst, alleen media)
+14. pois zonder opdracht: niet zinvol als je er ook lang naar moet zoeken
+15. tegen elkaar spelen: leuk met scores, wordt belangrijk gevonden
+16. storyboard: werkte niet echt
+17. meer context geven
+18. niet teveel interviews
+19. hq overbodig !!
+
+

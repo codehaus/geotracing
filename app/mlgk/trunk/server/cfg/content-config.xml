@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	This file defines the mapping between the names of tables and columns in the
+	database and the names of xml elements used in the ContentHandler.
+
+	type elements map a type name to a table name. If you want to use the
+	ContentHandler to insert, retrieve, update and delete content in a specific
+	table in the database, you have to specify a type mapping. Even if the
+	type name and database name are the same! The content handler will not
+	operate on tables if they are not specifically mapped through a type mapping.
+
+	field elements map a field name to the name of a column	 in the database.
+	This is an optional mapping; if the field name and the column name are the
+	same, the mapping may be omitted.
+	The field element allows you to specify two other things:
+	1. whether a field should be included when list of a particular type is requested.
+	You specify this using the 'listed' attribute, which defaults to false.
+	2. wheter a field should be searched through in a search. This is specified using
+	the 'searchable' attribute, wich also defaults to false.
+
+-->
+<contenthandler-config context="walkandplay">
+
+	<type name="account" table="utopia_account">
+		<field name="loginname" listed="false" searchable="true"/>
+		<field name="password" listed="false" searchable="false" password="true"/>
+		<field name="sessionkey" listed="false" searchable="false"/>
+		<field name="state" listed="false" searchable="false"/>
+	</type>
+
+    <type name="game" table="wp_game">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>
+
+<!--	<type name="tourschedule" table="tourschedule">
+		 <field name="name" listed="true" searchable="true"/>
+		 <field name="description" listed="true" searchable="true"/>
+		 <field name="invitation" listed="true" searchable="true"/>
+		 <field name="startdate" listed="true" searchable="true"/>
+		 <field name="enddate" listed="true" searchable="true"/>
+	 </type>
+
+    <type name="gameplay" table="gameplay">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>      -->
+
+    <type name="tag" table="cc_tag">
+		<field name="name" listed="true" searchable="true"/>
+	</type>
+
+    <type name="license" table="cc_license">
+		<field name="type" listed="true" searchable="true"/>
+		<field name="uri" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>
+
+    <type name="medium" table="base_medium">
+		<field name="name" listed="false" searchable="false"/>
+		<field name="mime" listed="true" searchable="true"/>
+		<field name="kind" listed="true" searchable="true"/>
+		<field name="filename" listed="true" searchable="false"/>
+		<field name="size" listed="true" searchable="false"/>
+
+	</type>
+
+	<type name="person" table="utopia_person">
+		<field name="firstname" listed="true" searchable="true"/>
+		<field name="lastname" listed="true" searchable="true"/>
+		<field name="street" listed="true" searchable="true"/>
+		<field name="streetnr" listed="true" searchable="true"/>
+		<field name="zipcode" listed="true" searchable="true"/>
+		<field name="mobilenr" listed="true" searchable="true"/>
+		<field name="city" listed="true" searchable="true"/>
+		<field name="country" listed="true" searchable="true"/>
+		<field name="email" listed="true" searchable="true"/>
+		<field name="extra" listed="true" searchable="true"/>        
+    </type>
+
+	<type name="portal" table="utopia_portal">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true"/>
+		<field name="type" listed="true"/>
+	</type>
+
+	<type name="right" table="utopia_right">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>
+
+	<type name="role" table="utopia_role">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>
+
+<!--    <type name="url" table="utopia_url">
+		<field name="name" listed="true" searchable="true"/>
+		<field name="description" listed="true" searchable="true"/>
+	</type>  -->
+
+</contenthandler-config>

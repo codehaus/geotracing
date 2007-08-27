@@ -1,0 +1,83 @@
+<!--
+This is just an example how you can extend the device database without
+interfering with the core files "devices.xml", "groups.xml", "apis.xml" and "vendors.xml".
+By using "custom-devices.xml", "custom-groups.xml", "custom-apis.xml" and "custom-vendors.xml"
+you can extend the database without needing to merge the file every time you update J2ME Polish.
+
+You can use this file either in the installation folder of J2ME Polish or in your project folder.
+
+Please have a look at the PDF documentation for a in-depth description of the device database.
+
+You must not define any device here that has already been defined in the ${polish.home}/devices.xml.
+
+Please consider to publish your device-definitions when they could be of use for the community
+at large.
+
+Jus: added N73 device from J2MEPolish CVS version of devices.xml in
+http://cvs.berlios.de/cgi-bin/viewcvs.cgi/polish/build/
+$Id$
+
+-->
+<devices>
+
+	<device>
+		<identifier>SonyEricsson/K700x</identifier>
+		<groups>Nokia-UI</groups>
+		<features>hasCamera, hasVideo, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="176x208"/>
+		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="CanvasSize" value="176x176"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, aac" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="StorageSize" value="40 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4" />
+		<capability name="Emulator.Skin" value="SonyEricsson_K700" />
+		<capability name="DebugInterface" value="KDWP" />
+		<capability name="Bugs" value="drawRgbOrigin, ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts" />
+		<capability name="Font.small" value="15" />
+		<capability name="Font.medium" value="18" />
+		<capability name="Font.large" value="22" />
+	</device>
+
+	<device>
+		<identifier>Nokia/N73</identifier>
+		<groups>Series60E3</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Symbian OS 9.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, m3g, pdaapi, btapi, webservice"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<!--<capability name="ScreenSize" value="176x208"/>-->
+		<capability name="FullCanvasSize" value="240x320"/>
+		<!--<capability name="FullCanvasSize" value="176x176"/>-->
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
+		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3, aac+, eaac+, realaudio, truetone, wb-amr, wav"/>
+		<capability name="HeapSize" value="dynamic"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="StorageSize" value="42 MB"/>
+		<capability name="DRM" value="OMA DRM v1.0"/>
+		<capability name="Region" value="Americas, Asia-Pacific, Africa, Europe"/>
+		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
+		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="CameraResolution" value="3.2 MP"/>
+		<capability name="AnnouncementDate" value="2005-04-25"/>
+		<capability name="Font.small" value="12" />
+		<capability name="Font.medium" value="16" />
+		<capability name="Font.large" value="21" />
+		<capability name="wap.userAgent" value="NokiaN73"/>
+	</device>
+
+
+</devices>

@@ -1,0 +1,165 @@
+<testset id="gameround" clients="1">
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" portalname="walkandplay" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp>
+				<agent>
+					<portal-context>
+						<portalid>26
+						</portalid>
+
+						<portalname>walkandplay
+						</portalname>
+
+						<personid>${personid}
+						</personid>
+
+						<personname>geoapp user
+						</personname>
+
+						<accesslist>
+							<access applicationname="geoapp" rolename="user"/>
+						</accesslist>
+
+					</portal-context>
+
+				</agent>
+
+			</login-rsp>
+
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
+		</expect>
+	</test>
+
+	<test id="game-create-req">
+		<send id="client1">
+			<utopia-req>
+				<game-create-req>
+					<game>
+						<name>mygame</name>
+						<description>description of my game</description>
+						<intro>introductie van mijn game</intro>
+						<outro>de outro van de game</outro>
+					</game>
+				</game-create-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-create-rsp id="${gameid}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-create">
+		<send id="client1">
+			<utopia-req>
+				<round-create-req gameid="${gameid}" name="myround"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-create-rsp id="${roundid1}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-delete">
+		<send id="client1">
+			<utopia-req>
+				<round-delete-req id="${roundid1}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-delete-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-create-with-players">
+		<send id="client1">
+			<utopia-req>
+				<round-create-req gameid="${gameid}" name="myround2" players="geoapp-user,red2,blue2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-create-rsp id="${roundid2}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-remove-players">
+		<send id="client1">
+			<utopia-req>
+				<round-remove-players-req roundid="${roundid2}" players="geoapp-user,red2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-remove-players-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-add-players">
+		<send id="client1">
+			<utopia-req>
+				<round-add-players-req roundid="${roundid2}" players="geoapp-user"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-add-players-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-delete2">
+		<send id="client1">
+			<utopia-req>
+				<round-delete-req id="${roundid2}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-delete-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-delete-req">
+		<send id="client1">
+			<utopia-req>
+				<game-delete-req id="${gameid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-delete-rsp id="${gameid}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+</testset>
+
