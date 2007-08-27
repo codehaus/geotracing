@@ -1,0 +1,80 @@
+#######################################
+#                                     #
+#   This file contains translations   #
+#   of the application.               #
+#   Key and Value are separated       #
+#   by the equals-sign "=".           #
+#                                     #
+#######################################
+
+# You can also define localized preprocessing variables here, by starting the
+# definition with "var:". Variables defined here will override the ones defined
+# in the <variables>-section of your build.xml.
+# Variables starting with "polish." or "MIDlet-" don't need to start with "var:"
+# by the way.
+var:MyExampleVariable=Hello World
+
+# It's also possible to set MIDlet-attributes for your JAD- and MANIFEST-files here.
+# If you like you can start them with "var:" as well, but it is not needed.
+# Again MIDlet-attributes defined override the one defined in the <info>-
+# and <jad>-sections of your build.xml
+
+MIDlet-Description=Mobile Learning Game Kit
+
+menu.Create=Maak
+menu.GPS=GPS
+menu.Settings=Instellingen
+menu.Play=Speel
+menu.Help=Help
+menu.Quit=Sluit af
+menu.Log=Log
+
+help.Topic1=Geen GPS verbinding?
+help.Topic1Text=Dit kan om een aantal verschillende redenen gebeuren. \n\n1)Als je een externe GPS ontvanger (staat aan toch ;) ) gebruikt moet je binnen bluetooth afstand zijn (5-7m). \n\n2)Als je je GPS nog nooit hebt verbonden met de applicatie zul je dat eerst onder 'GPS' moeten doen.\n\n3)Soms 'hangt' zelfs de GPS ontvanger - start deze opnieuw op.
+help.Topic2=Applicatie 'bevroren'?
+help.Topic2Text=Ja soms gebeurt dat :(. Tijd om opnieuw op te starten. Sommige telefoons sluiten applicaties af door op de 'hang op'-knop in te drukken.
+help.Topic3=Aanmeld problemen?
+help.Topic3Text=Zorg dat je gebruikersnaam en wachtwoord waarmee je je op de website hebt aangemeld corresponderen met deze in 'instellingen'/'gegevens'.
+help.Topic4=Waar is mijn applicatie?
+help.Topic4Text=Soms lijkt de applicatie te zijn verdwenen. Dat kan gebeuren doordat er bv een andere applicatie overheen is geopend.
+help.Topic5=Insturen media?
+help.Topic5Text=Je kunt foto's, video's en audio insturen door het te emailen. Je media wordt dan gekoppeld aan de lokatie waar je op dat moment bent.
+
+create.New=Nieuw spel
+create.Edit=Wijzig spel
+create.AddRound=Maak nieuwe spelronde
+create.AddPhoto=Plaats foto
+create.AddText=Plaats tekst
+create.AddAudio=Plaats geluid
+create.ShowMap=Toon kaart
+create.ShowState=Toon status
+create.HideState=Verberg status
+
+selectGame.Play=Speel spel
+selectGame.Description=Bekijk details
+
+medium.playVideo=Speel video af
+medium.playAudio=Speel audio af
+
+play.AddPhoto=Plaats foto
+play.AddText=Plaats tekst
+play.AddAudio=Plaats geluid
+play.ZoomIn=Zoom in [*]
+play.ZoomOut=Zoom uit [#]
+play.ToggleMap=Andere kaart [0]
+play.Scores=Toon scores
+play.ShowLog=Toon status
+play.HideLog=Verberg status
+play.IM=Verstuur bericht
+play.Back=Stop spel
+play.ShowIntro=Toon intro
+play.HideIntro=Verberg intro
+
+settings.SoundOn=Geluid AAN
+settings.SoundOff=Geluid UIT
+settings.MediaPlayerIntern=Speel media intern AAN
+settings.MediaPlayerExtern=Speel media intern UIT
+settings.Account=Gegevens
+settings.Version=Versie
+
+

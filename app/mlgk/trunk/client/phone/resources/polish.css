@@ -1,0 +1,391 @@
+/**
+  * The polish.css files contains all
+  * design information about a project.
+  * It can be adjusted for specific devices
+  * or device groups by putting it in the
+  * appropriate sub-folder.
+  * If you want to adjust a design for all
+  * Nokia devices, define it in "resources/Nokia/polish.css"
+  * and so on. Only new and different settings
+  * need to be specified in such polish.css files.
+  */
+
+/**
+  * the colors which are defined in
+  * the colors section can later be referenced.
+  * This makes changes easy, since the color
+  * just needs to be changed in one position.
+  * Even default colors (like blue, green, lime, etc)
+  * can be changed here.
+  */
+colors {
+    /**
+	WHITE:  rgb(132,143,96);
+	LIGHTBLUE:  rgb(238,241,229);
+	LIGHTBLUE:  argb(130, 238,241,229);
+	BLACK: rgb(238,241,229);
+	GREY: rgb( 30, 85, 86 );
+    */
+
+    /*WHITE: rgb( 153, 179, 204 );
+    LIGHTBLUE: argb( 130, 231, 243, 255 );
+    LIGHTBLUE: argb( 130, 238, 241, 229 );
+    BLACK: rgb( 40, 40, 40 );
+    GREY: rgb( 77, 84, 90 );*/
+
+    WHITE: rgb(255,255,255);
+    LIGHTBLUE: argb(130,197,219,237);
+    TRANSWHITE: argb(130,255,255,255);
+    /*LIGHTBLUE: argb(130,153,179,204);*/
+    BLACK: rgb(0,0,0);
+    RED: rgb(255,0,0);
+    GREEN: rgb(0,255,55);
+    ORANGE: rgb(255,200,35);
+    GREY: rgb(60,60,60);
+}
+
+/**
+  * the menu style is a predefined style for
+  * designing the fullscreen-menu.
+  * The font-settings (font-color,
+  * font-face, font-style and font-size)
+  * are used to design the menu-texts
+  * (like Options, Select, or Cancel).
+  * With the focused-style attribute
+  * another style than the default "focused"
+  * style is used for the menu.
+  * The menubar-color can be set to any
+  * color. When "transparent" is used,
+  * the background shines through.
+  */
+menu {
+    margin-left: 2;
+    padding: 2;
+    background {
+        type: round-rect;
+        color: LIGHTBLUE;
+        border-width: 1;
+        border-color: BLACK;
+    }
+    font-size: small;
+    focused-style: .menuFocused;
+    font-color: BLACK;
+    font-style: bold;
+    menubar-color: WHITE;
+}
+
+/**
+  * The menuItem style is a predefined style
+  * for the actual commands in a fullscreen-menu.
+  * When the menuItem style is not defined,
+  * the menu style will be used instead.
+  */
+menuItem {
+    margin-top: 2;
+    padding: 2;
+    padding-left: 2;
+    font {
+        color: GREY;
+        size: small;
+        style: bold;
+    }
+    font-size: small;
+    layout: left;
+}
+
+/**
+  * This is a custom style for selected
+  * menu items. It is used, because it has
+  * been defined in the menu style.
+  */
+.menuFocused extends .menuItem {
+    background-color: WHITE;
+    font-color: BLACK;
+    layout: left | horizontal-expand;
+}
+
+/**
+  * The title style is a predefined style which is used
+  * for all screen-titles.
+  */
+title {
+	padding: 2;
+	margin-top: 0;
+	margin-bottom: 5;
+	margin-left: 0;
+	margin-right: 0;
+	font-face: system;
+	font-size: small;
+	font-style: bold;
+	font-color: BLACK;
+	background-color: WHITE;
+	border: none;
+	layout: center | horizontal-expand;
+    /*background-image: url(gt_logo.png);*/
+    icon-image: url(gt_logo.png); 
+}
+
+/**
+  * The focused style is a predefined style which
+  * is used by lists, forms, choice-groups and so on.
+  * This style will be used for highlighting the currently
+  * focused item.
+  */
+focused {
+    padding: 2;
+    background {
+        type: round-rect;
+        arc: 8;
+        color: LIGHTBLUE;
+        border-color: BLACK;
+        border-width: 1;
+    }
+
+    font {
+        style: bold;
+        color: GREY;
+        size: small;
+    }
+
+    layout: expand | center;
+}
+
+/**
+  * The .mainScreen style is a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  * If the source-code would not have defined this
+  * style, we could use the dynamic style "list" to design all
+  * list-screens.
+  * An interesting attribute is the "columns" attribute which
+  * is used to use a table with two columns instead of the default
+  * layout.
+  */
+.mainScreen {
+    padding: 5;
+    padding-left: 5;
+    padding-right: 5;
+    background-color: BLACK;   
+    /*layout: horizontal-expand | horizontal-center | vertical-center;*/
+    layout: horizontal-expand | top | horizontal-center;
+    columns:3;
+    columns-width: equal;
+    background-color: WHITE;
+    background-image:url(bg.png);
+    /*background-image:url(bg-stripe.png);*/
+    /*background-repeat:repeat;*/
+    font-size: small;
+    /*show-text-in-title: true;*/
+}
+
+.defaultScreen {
+    padding: 5;
+    /*padding-left: 5;
+    padding-right: 5;*/
+    /*background {
+        *//*color: LIGHTBLUE;*//*
+        type: smooth-color;
+        color: blue;
+        gradient-color: white;
+    }*/
+
+    layout: horizontal-expand | top | left;
+    columns:1;
+    background-image:url(bg.png);
+    background{
+        /*image:url(bg-stripe.png);
+        border-width:2;
+        repeat:repeat;*/
+    }
+    font-size: small;
+
+    /*show-text-in-title: true;*/
+}
+
+/**
+  * The .mainCommand style is also a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  * If the source-code would not have defined this
+  * style, we could use the dynamic style "listitem" to design all
+  * items on the list-screens.
+  * An interesting attribute is the "icon-image" URL, which uses
+  * the %INDEX% keyword. The first list-item will use the image
+  * "icon0.png", the second "icon1.png" and so on.
+  */
+.mainCommand {
+    margin: 2; /* for the missing border of the focused style */
+    padding: 2;
+    background: none;
+    font-color: GREY;
+    font-style: bold;
+    font-size: small;
+    layout: center;
+    icon-image-align: top;
+}
+
+.mainTraceCommand extends .mainCommand {
+    icon-image: url( trace_icon.png );
+}
+
+.mainGPSCommand extends .mainCommand {
+    icon-image: url( gps_icon.png );
+}
+
+.mainSettingsCommand extends .mainCommand {
+    icon-image: url( settings_icon.png );
+}
+
+.mainHelpCommand extends .mainCommand {
+    icon-image: url( help_icon.png );
+}
+
+.mainFindCommand extends .mainCommand {
+    icon-image: url( find_icon.png );
+}
+
+.mainPlayCommand extends .mainCommand {
+    icon-image: url( play_icon.png );
+}
+
+.mainQuitCommand extends .mainCommand {
+    icon-image: url( quit_icon.png );
+}
+
+.mainLogCommand extends .mainCommand {
+    icon-image: url( log_icon.png );
+}
+
+.traceNewCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceResumeCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceSuspendCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceAddPhotoCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceAddTextCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceAddAudioCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceShowMapCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.traceRadarCommand extends .mainCommand {
+    icon-image: url( gps_icon_small.png );
+}
+
+.logo {
+    layout: left | top;
+}
+
+.labelinfo{
+    margin:2;
+    padding:2;
+    font-color: BLACK;
+    font-size: small;
+    background-color: WHITE;
+    layout: horizontal-expand | left | top;
+}
+
+.alertinfo{
+    margin:2;
+    padding:2;
+    font-color: BLACK;
+    font-size: small;
+    background-color: ORANGE;
+    layout: horizontal-expand | left | top;
+}
+
+.formbox {
+    margin:2;
+    padding:2;    
+    border{
+        width:1;
+        color:BLACK;
+        type:round-rect;
+        /*type:shadow;*/
+        /*offset: 2;*/
+        arc:6;        
+    }
+    background-color:LIGHTBLUE;
+    font-color: GREY;
+    font-size: small;
+    layout: horizontal-expand | left | top;
+    /*textfield-direct-input: true;*/
+}
+
+.titlebox {
+    margin:2;
+    padding:2;
+    background-color:WHITE;
+    font-color: BLACK;
+    font-size: small;
+    font-style: bold;
+    layout: horizontal-expand | horizontal-center | top;
+}
+
+.textbox extends .formbox {
+    /*label-font-size:small;*/
+    textfield-direct-input: true;
+}
+
+.button {
+    margin: 2;
+    padding: 2;
+    font-color: GREY;
+    font-size: small;
+    layout: center;
+    border{
+        width:1;
+        color:GREY;
+        type:round-rect;
+        arc:6;
+    }
+    background-color:LIGHTBLUE;
+    font-color: GREY;
+}
+
+.gpsstat {
+    margin: 2;
+    padding: 2;
+    font-color: GREY;
+    font-size: small;
+    layout: horizontal-expand | horizontal-center | top;
+    border{
+        width:1;
+        color:GREY;
+        type:round-rect;
+        arc:6;
+    }
+    background-color:LIGHTBLUE;
+}
+
+.netstat {
+    margin: 2;
+    padding: 2;
+    font-color: GREY;
+    font-size: small;
+    layout: horizontal-expand | horizontal-center | top;
+    border{
+        width:1;
+        color:GREY;
+        type:round-rect;
+        arc:6;
+    }
+    background-color:LIGHTBLUE;
+}
+
+
+

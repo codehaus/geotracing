@@ -1,0 +1,152 @@
+<testset id="tourschedule" clients="1">
+
+	<test id="login-selapp">
+
+		<send id="client1">
+			<login-req name="geoapp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
+			<select-app-req appname="geoapp" rolename="user"/>
+		</send>
+
+		<expect id="client1">
+
+			<login-rsp>
+				<!--<portalid>${portalid}</portalid>-->
+			</login-rsp>
+
+			<select-app-rsp>
+				<!--<applicationid>${applicationid}</applicationid>-->
+			</select-app-rsp>
+
+		</expect>
+	</test>
+
+    <test id="tour-create-req">
+		<send id="client1">
+			<utopia-req>
+				<tour-create-req>
+					<tour>
+                        <owner>31282</owner>
+						<name>MyFirstTour</name>
+						<description>Echt een hele mooie tour</description>
+						<intro>prachtige introductie</intro>
+						<outro>prachtige outro</outro>
+					</tour>
+				</tour-create-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-create-rsp id="${tourid}" tourscheduleid="${tourscheduleid}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-send-invitation-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-send-invitation-req id="${tourscheduleid}">
+					<tourschedule>
+						<invitation>You are invited to the beer tour. Click the link to confirm.</invitation>
+                        <players>
+                            <person nickname="ronny" email="ronald@waag.org" />
+                        </players>
+                    </tourschedule>
+                    <confirmationurl>http://local.walkandplay.com/wp/confirmation.jsp</confirmationurl>
+                </tourschedule-send-invitation-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-send-invitation-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-confirm-invitation-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-confirm-invitation-req id="${tourscheduleid}" email="ronald@waag.org" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-confirm-invitation-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-schedule-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-schedule-req id="${tourscheduleid}">
+					<tourschedule>
+						<startdate>3243453453453</startdate>
+						<enddate>345345345345</enddate>
+                    </tourschedule>
+                </tourschedule-schedule-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-schedule-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-create-team-req">
+		<send id="client1">
+			<utopia-req>
+				<tourschedule-create-team-req id="${tourscheduleid}">
+					<team>
+						<name>red team</name>
+						<person id="31282" />
+						<person id="103556" />
+                    </team>
+                    <team>
+						<name>blue team</name>
+						<person id="332376" />
+						<person id="491193" />
+                    </team>
+                </tourschedule-create-team-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<tour-create-team-rsp />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+    <test id="tourschedule-update-team-req">
+            <send id="client1">
+                <utopia-req>
+                    <tourschedule-update-team-req id="${tourscheduleid}">
+                        <team>
+                            <name>red team</name>
+                            <person id="31282" />
+                            <person id="103556" />
+                        </team>
+                        <team>
+                            <name>blue team</name>
+                            <person id="332376" />
+                            <person id="491193" />
+                        </team>
+                    </tourschedule-update-team-req>
+                </utopia-req>
+            </send>
+
+            <expect id="client1">
+                <utopia-rsp>
+                    <tour-update-team-rsp />
+                </utopia-rsp>
+            </expect>
+        </test>
+
+
+</testset>
+

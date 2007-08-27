@@ -1,0 +1,389 @@
+<!--
+
+ANT Build file for WalkAndPlay.
+
+$Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
+-->
+<project name="WP Server" default="build" basedir=".">
+
+	<!-- Project global properties; overrule by modifying build.properties -->
+	<property name="home" value="${basedir}"/>
+	<!-- Project global properties; overrule by modifying build.properties -->
+	<property name="geotracing.base.dir" value="${home}/../../../../base/trunk"/>
+	<property name="geotracing.server.dir" value="${geotracing.base.dir}/server"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+	<property file="${geotracing.external.dir}/build.properties"/>
+
+	<!-- Initialization of properties (dirs, files) -->
+	<property file="${home}/../build.properties"/>
+	<property file="${home}/build.properties"/>
+
+	<property name="keyworx.jar" value="${keyworx.dir}/build/server/keyworx.jar"/>
+	<property name="geotracing.jar" value="${gt.war.dir}/WEB-INF/lib/geotracing.jar"/>
+
+	<!-- Directory locations -->
+	<property name="server.cfg.dir" value="${home}/cfg"/>
+	<property name="server.test.dir" value="${home}/test"/>
+
+	<property name="build.dir" value="${home}/build"/>
+	<property name="build.class.dir" value="${build.dir}/class"/>
+	<property name="build.lib.dir" value="${build.dir}/lib"/>
+	<property name="build.zip.dir" value="${build.dir}/zip"/>
+	<property name="home.src.dir" value="${home}/src"/>
+	<property name="home.cfg.dir" value="${home}/cfg"/>
+	<property name="home.data.dir" value="${home}/data"/>
+	<property name="home.client.web.dir" value="${home}/../client/web"/>
+	<property name="home.webapp.dir" value="${home}/webapp/${war.name}"/>
+
+	<property name="build.war.dir" value="${build.dir}/war"/>
+	<property name="version.dir" value="${home}/version"/>
+	<property name="package.zip" value="${version.dir}/${project.id}-${version}.zip"/>
+	<property name="deploy.zip" value="${build.dir}/${project.id}-${version}.zip"/>
+
+	<property name="tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
+	<property name="pushletclient.jar" value="${pushlet.dir}/lib/pushletclient.jar"/>
+	<property name="pushlet.jar" value="${pushlet.dir}/lib/pushlet.jar"/>
+	<property name="servlet.jar" value="${servlet.dir}/lib/servlet.jar"/>
+	<property name="kwx-tagging.jar" value="${kwx-tagging.dir}/lib/tagging.jar"/>
+	<property name="postgis-jdbc.jar" value="${postgis-jdbc.dir}/postgis.jar"/>
+	<property name="ehcache.jar" value="${ehcache.dir}/ehcache-1.2.4.jar"/>
+	<property name="geoapi.jar" value="${geotools-referencing.dir}/geoapi-nogenerics-2.1-M2.jar"/>
+	<property name="gt2-epsg-wkt.jar" value="${geotools-referencing.dir}/gt2-epsg-wkt-2.3.0.jar"/>
+	<property name="gt2-referencing.jar" value="${geotools-referencing.dir}/gt2-referencing-2.3.0.jar"/>
+	<property name="javax-units.jar" value="${geotools-referencing.dir}/jsr108-0.01.jar"/>
+	<property name="metadata.jar" value="${kwx-metadata.dir}/lib/metadata.jar"/>
+
+	<!-- The .jar -->
+	<property name="project.jad" value="${home}/../client/phone/etc/wp.jad"/>
+	<property name="project.jar" value="${build.lib.dir}/${war.name}.jar"/>
+	<property name="project.war" value="${build.dir}/${war.name}.war"/>
+	<property name="test.project.war" value="${build.dir}/${war.name}test.war"/>
+
+	<!-- Construct compilation sourcepath -->
+	<path id="compile.sourcepath">
+		<pathelement location="${home.src.dir}"/>
+		<pathelement location="${geotracing.server.dir}/src"/>
+	</path>
+
+	<path id="compile.classpath">
+		<pathelement location="${build.class.dir}"/>
+		<pathelement location="${pushlet.jar}"/>
+		<pathelement location="${postgis-jdbc.jar}"/>
+		<pathelement location="${keyworx.jar}"/>
+		<pathelement location="${servlet.jar}"/>
+		<pathelement location="${kwx-tagging.jar}"/>
+		<pathelement location="${ehcache.jar}"/>
+		<pathelement location="${geoapi.jar}"/>
+		<pathelement location="${gt2-epsg-wkt.jar}"/>
+		<pathelement location="${gt2-referencing.jar}"/>
+		<pathelement location="${metadata.jar}"/>
+	</path>
+
+	<!-- Initialize: create dirs and set timestamp.. -->
+	<target name="init">
+		<mkdir dir="${build.dir}"/>
+		<tstamp/>
+	</target>
+
+	<!-- Compile the java files. -->
+	<target name="compile" depends="init">
+		<echo message="Compiling java files..."/>
+
+		<!-- Always do clean build -->
+		<delete dir="${build.class.dir}"/>
+		<mkdir dir="${build.class.dir}"/>
+
+		<!-- Compile all java files-->
+		<javac
+				destdir="${build.class.dir}"
+				debug="${javac.debug}"
+				deprecation="${javac.deprecation}"
+				optimize="${javac.optimize}"
+				includes="**/*.java">
+			<src refid="compile.sourcepath"/>
+
+			<classpath refid="compile.classpath"/>
+		</javac>
+
+	</target>
+
+
+	<!-- Build the .jar for the project -->
+	<target name="jar" depends="compile">
+		<echo message="Building ${project.jar}..."/>
+		<mkdir dir="${build.lib.dir}"/>
+
+		<!-- Always do clean build -->
+		<delete file="${project.jar}"/>
+
+		<!-- Create the jar file -->
+		<jar jarfile="${project.jar}" basedir="${build.class.dir}">
+			<manifest>
+				<attribute name="Built-By" value="${user.name}"/>
+				<section name="org/walkandplay">
+					<attribute name="Implementation-Title" value="${project.name}"/>
+					<attribute name="Implementation-Version" value="${version}-${DSTAMP}-${TSTAMP}"/>
+					<attribute name="Implementation-Vendor" value="Waag Society"/>
+				</section>
+			</manifest>
+		</jar>
+	</target>
+
+
+	<!-- Build the .wars for the project -->
+	<target name="war" depends="jar">
+		<echo message="Building webapp ${project.war}..."/>
+
+		<delete dir="${build.war.dir}"/>
+		<delete file="${project.war}"/>
+		<mkdir dir="${build.war.dir}"/>
+
+		<copy todir="${build.war.dir}">
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+
+		<!-- First assemble all required files into war directory. -->
+
+		<!-- Keyworx configuration -->
+		<echo message="creating config and kwx webapp..."/>
+		<ant antfile="${keyworx.dir}/build-util.xml" target="config-webapp" inheritall="false">
+			<!-- The base config of KW: utopia, kwlive or minimal -->
+			<property name="kw.base.cfg" value="utopia"/>
+
+			<!-- My server config dir -->
+			<property name="my.cfg.dir" value="${home.cfg.dir}"/>
+
+			<!-- My war dest dir -->
+			<property name="my.war.dir" value="${build.war.dir}"/>
+
+			<!-- My jar file (OPTIONAL) -->
+			<property name="my.jar" value="${project.jar}"/>
+		</ant>
+
+		<copy todir="${build.war.dir}/WEB-INF/" file="${home.cfg.dir}/web.xml" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/videoconv.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/image-meta.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
+		<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
+			<fileset dir="${home.data.dir}"/>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
+			<fileset dir="${pushlet.dir}/lib">
+				<include name="pushlet.jar"/>
+			</fileset>
+			<fileset dir="${postgis-jdbc.dir}">
+				<include name="postgis.jar"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/lib">
+				<include name="tagging.jar"/>
+			</fileset>
+			<fileset dir="${kwx-metadata.dir}/lib">
+				<include name="metadata.jar"/>
+			</fileset>
+			<fileset dir="${ehcache.dir}">
+				<include name="ehcache-1.2.4.jar"/>
+			</fileset>
+			<fileset dir="${geotools-referencing.dir}">
+				<include name="geoapi-nogenerics-2.1-M2.jar"/>
+				<include name="gt2-epsg-wkt-2.3.0.jar"/>
+				<include name="gt2-referencing-2.3.0.jar"/>
+				<include name="jsr108-0.01.jar"/>
+				<include name="vecmath-1.3.1.jar"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${build.war.dir}/WEB-INF/classes">
+			<fileset dir="${home.cfg.dir}">
+				<include name="pushlet.properties"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant GeoTracing tables -->
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			<fileset dir="${geotracing.server.dir}/cfg/tables">
+				<include name="g_track.xml"/>
+				<include name="g_location.xml"/>
+				<include name="g_area.xml"/>
+				<include name="kw_comment.xml"/>
+			</fileset>
+			<fileset dir="${keyworx.dir}/server/cfg/utopia/tables">
+				<include name="oase_initialdata.xml"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant GeoTracing JSP -->
+		<copy todir="${build.war.dir}" overwrite="true">
+			<fileset dir="${geotracing.server.dir}/webapp/gt">
+				<include name="lib/**"/>
+				<include name="map/**"/>
+				<include name="my/**"/>
+				<include name="srv/**"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy external JS libs. -->
+		<copy todir="${build.war.dir}/lib">
+			<fileset dir="${pushlet.dir}/webapps/pushlet/lib">
+				<include name="ajax-pushlet-client.js"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant GeoTracing shell-scripts -->
+		<copy todir="${build.war.dir}/WEB-INF/bin" overwrite="true">
+			<fileset dir="${geotracing.server.dir}/bin">
+				<include name="drawloc.sh"/>
+			</fileset>
+		</copy>
+
+		<!-- Copy relevant WNP webapp files -->
+		<copy todir="${build.war.dir}" overwrite="true">
+			<fileset dir="${home.webapp.dir}">
+				<include name="lib/**"/>
+				<include name="srv/**"/>
+			</fileset>
+		</copy>
+
+		<!-- until kwx plugins truly work in KeyWorx copy the jars and tables to get things working-->
+		<copy todir="${build.war.dir}/WEB-INF/cfg/tables" overwrite="true">
+			<fileset dir="${kwx-metadata.dir}/cfg/tables">
+				<exclude name="cc_tag.xml"/>
+				<exclude name="cc_tagrelation.xml"/>
+			</fileset>
+			<fileset dir="${kwx-tagging.dir}/cfg/tables"/>
+		</copy>
+
+		<!-- Set version numbers and build info in version/index.html. -->
+		<concat destfile="${build.war.dir}/version/index.html">
+			<filelist dir="${home.webapp.dir}/version" files="index.html"/>
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</concat>
+
+		<!-- Replace users/passwords with local values as not to have them in repository -->
+		<replace file="${build.war.dir}/WEB-INF/cfg/portal.xml"
+				 replacefilterfile="${home}/security.properties" summary="true"/>
+
+		<!-- Finally make war -->
+		<jar jarfile="${project.war}">
+			<fileset dir="${build.war.dir}">
+				<include name="**"/>
+			</fileset>
+		</jar>
+
+	</target>
+
+
+	<!-- Build all clean. -->
+	<target name="build" depends="clean,war"/>
+
+	<!-- Package into archive files -->
+	<target name="package" depends="build">
+		<delete dir="${build.zip.dir}"/>
+		<mkdir dir="${build.zip.dir}"/>
+		<copy file="${project.war}" todir="${build.zip.dir}"/>
+		<copy todir="${build.zip.dir}">
+			<fileset dir="${home}/client/web" excludes="wp/"/>
+		</copy>
+
+		<!-- copy files over from the base client lib -->
+		<copy todir="${build.zip.dir}/lib" overwrite="true">
+			<fileset dir="${basedir}/../../../base/trunk/server/webapp/gt/lib"/>
+		</copy>
+
+		<property name="geotracing.external.dir" value="${basedir}/../../../base/trunk/server"/>
+
+		<zip zipfile="${deploy.zip}">
+			<zipfileset dir="${build.zip.dir}"
+						prefix="${project.id}-${version}"
+						excludes="build/**,version/**"/>
+		</zip>
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}"/>
+	</target>
+
+	<target name="deploy-local" depends="build">
+		<copy file="${project.war}" todir="${deploy.local.dir}" overwrite="true"/>
+	</target>
+
+	<target name="deploy-test.waag.org" depends="build">
+		<copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+	</target>
+
+	<target name="deploy-berlin" depends="build">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="${deploy.test.server}:${deploy.test.dir}"/>
+		</exec>
+	</target>
+
+	<target name="copy-berlin" depends="build">
+		<exec executable="scp">
+			<arg line="${project.war}"/>
+			<arg line="${deploy.test.server}:versions"/>
+		</exec>
+	</target>
+
+	<!--<target name="deploy-local++" depends="replace metadata plugin, build">
+		 <copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+		 <copy file="${test.project.war}" todir="${deploy.test.dir}" overwrite="true"/>
+	 </target>
+ -->
+	<target name="deploy-local-raw">
+		<copy todir="${deploy.local.dir}/${war.name}" overwrite="true">
+			<fileset dir="${home.client.web.dir}"/>
+			<fileset dir="${home.webapp.dir}"/>
+		</copy>
+	</target>
+
+
+	<!--<target name="replace metadata plugin">
+			--><!-- build it --><!--
+        <ant antfile="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build.xml" target="package"
+             inheritall="false"/>
+
+        --><!-- and move it --><!--
+        <copy todir="${metadata.plugin.dir}" overwrite="true">
+            <fileset dir="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build/plugin/packaged">
+                <excludesfile
+                        name="/Users/Ronald/workspaces/workspace-kwx/kwx-metadata/build/plugin/packaged/metadata.tar.gz"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="replace tagging plugin">
+        --><!-- build it --><!--
+        <ant antfile="/Users/Ronald/workspaces/workspace-kwx/tagging/build.xml" target="package" inheritall="false"/>
+
+        --><!-- and move it --><!--
+        <copy todir="${tagging.plugin.dir}" overwrite="true">
+            <fileset dir="/Users/Ronald/workspaces/workspace-kwx/tagging/build/packaged">
+                <excludesfile name="/Users/Ronald/workspaces/workspace-kwx/tagging/build/packaged/tagging.tar.gz"/>
+            </fileset>
+        </copy>
+    </target>-->
+
+	<!-- Run protocol test client. -->
+	<target name="protocoltest" description="Runs protocol test client">
+		<!-- Copy media files (these will be moved during media uploads in tests -->
+		<copy todir="${deploy.local.dir}/wptest/media" overwrite="true">
+			<fileset dir="${deploy.local.dir}/wptest/media/save"/>
+		</copy>
+
+		<java classname="org.keyworx.amuse.test.protocol.Main"
+			  fork="true"
+			  failonerror="true"
+			  maxmemory="128m"
+				>
+			<arg value="${server.test.dir}/cfg/test.properties"/>
+
+			<classpath>
+				<pathelement location="${keyworx.jar}"/>
+			</classpath>
+		</java>   
+	</target>
+
+</project>

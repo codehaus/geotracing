@@ -1,0 +1,27 @@
+MIDlet-1: ${midlet.name}, ${midlet.icon}, ${midlet.class}
+MIDlet-Info-URL: ${midlet.info.url}
+MIDlet-Name: ${midlet.name}
+MIDlet-Vendor: ${midlet.vendor}
+MIDlet-Version: ${midlet.version}
+MIDlet-Icon: ${midlet.icon}
+MicroEdition-Configuration: ${midlet.cldc}
+MicroEdition-Profile: ${midlet.midp}
+MIDlet-Permissions: ${midlet.permissions}
+MIDlet-Permissions-Opt: ${midlet.permissions.opt}
+kw-url: http://test.walkandplay.com/wp
+kw-timeout: 20
+kw-user: yellow2
+kw-password: user
+kw-app: geoapp
+kw-role: user
+audio-rate: 8000
+audio-bits: 8
+gps-sample-interval: 15000
+gps-min-sats: 4
+gps-min-hdop: 2
+device-screen-width: 240
+device-screen-height: 320
+MPP-Show-Keypad: true
+MPP-Width: 240
+MPP-Height: 320
+mt-options: full

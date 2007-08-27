@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--
+Assignment table definition
+$Id: assignment.xml,v 1.1.1.1 2006/04/03 09:21:35 rlenz Exp $
+ -->
+<table>
+
+	<views>
+
+		<insert>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="score"/>
+			<field name="answer"/>
+		</insert>
+
+		<list>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="score"/>
+		</list>
+
+		<query>
+			<field name="id"/>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="score"/>
+			<field name="type"/>
+			<field name="answer"/>
+			<field name="extra"/>
+		</query>
+	</views>
+	<!--{data -->
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true"/>
+
+		<!-- Unique name: zone1-bewijs, zone3-1 -->
+		<field name="name" type="STRING" size="64" required="true"/>
+
+		<!-- Meta: what it is about. -->
+		<field name="description" type="TEXT" required="false"/>
+
+		<!-- How many points one can get. -->
+		<field name="score" type="INTEGER" required="true" default="1"/>
+
+		<!-- Type: values are "bewijs" or "poorter" -->
+		<field name="type" type="STRING" size="32" required="false"/>
+
+		<!-- Answer string e.g. "malle jan" -->
+		<field name="answer" type="STRING" size="64" required="false"/>
+
+		<!-- Standard fields -->
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML"/>
+	</data>
+	<!--}data -->
+</table>

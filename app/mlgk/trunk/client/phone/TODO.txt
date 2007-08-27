@@ -1,0 +1,7 @@
+- DownloadListener implementeren
+- PhotoDisplay werkend krijgen: heeft iets met polish te maken
+twijfelachtig - Play: eerst gps verbinding dan pas spelen
+- nieuwe iconen
+- help op elk scherm.
+- kaarten cachen op mobiel??
+- create singletons for all screens??

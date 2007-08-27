@@ -1,0 +1,220 @@
+<testset id="profile" clients="1">
+
+    <test id="login-selapp">
+
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
+
+        <expect id="client1">
+            <login-rsp/>
+            <select-app-rsp/>
+        </expect>
+    </test>
+    
+    <!-- minimal signup-->
+    <!-- Commented out because a person without firstname and lastname will fail.
+         This has been fixed in keyworx versions above 1.0.7-RC3
+    <test id="minimal-profile-create-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-create-req>
+                    <person>
+                        <nickname>PiETT</nickname>
+                        <email>maarten@waag.org</email>
+                        <password>pietje</password>
+                    </person>
+                    <license>by-nc</license>
+                    <confirmationurl>register.jsp</confirmationurl>
+                </profile-create-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-create-rsp id="${personid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+ 	-->
+ 	
+ 	<!-- ... so no need for this either
+    <test id="person-delete-req">
+        <send id="client1">
+            <utopia-req>
+                <person-delete-req id="${personid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <person-delete-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+	-->
+	 
+    <!-- full signup-->
+    <test id="profile-create-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-create-req>
+                    <person>
+                        <nickname>PiETTer</nickname>
+                        <firstname>pieter</firstname>
+                        <lastname>janssen</lastname>
+                        <email>maarten@waag.org</email>
+                        <emailpublic>true</emailpublic>
+                        <profilepublic>true</profilepublic>
+                        <password>pietje</password>
+                        <street>sdcsdcsdc</street>
+                        <streetnr>454</streetnr>
+                        <zipcode>scdsdc</zipcode>
+                        <city>sdcsdc</city>
+                        <country>sdsdc</country>
+                        <mobilenr>34346346346346</mobilenr>
+                    </person>
+                    <photoid></photoid>
+                    <license>by-nc</license>
+                    <confirmationurl>register.jsp</confirmationurl>
+                    <tag>ffff</tag>
+                    <tag>gggg</tag>
+                    <tag>hhhh</tag>
+                </profile-create-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-create-rsp id="${personid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="profile-update-req">
+            <send id="client1">
+                <utopia-req>
+                    <profile-update-req id="${personid}">
+                        <photoid></photoid>                        
+                    </profile-update-req>
+                </utopia-req>
+            </send>
+
+            <expect id="client1">
+                <utopia-rsp>
+                    <profile-update-rsp/>
+                </utopia-rsp>
+            </expect>
+        </test>
+
+
+    <test id="profile-activate-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-activate-req code="0004cb61a63144e0ad2c3f4712b112ce" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-activate-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="profile-get-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-get-req id="${personid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-get-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="profile-update-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-update-req id="${personid}">
+                    <person>
+                        <nickname>JJJan</nickname>
+                        <firstname>jan</firstname>
+                        <lastname>janssen</lastname>
+                        <email>maarten@waag.org</email>
+                        <emailpublic>false</emailpublic>
+                        <profilepublic>true</profilepublic>
+                        <password>janjan</password>
+                        <street>sdcsdcsdsdcsdcc</street>
+                        <streetnr>454567</streetnr>
+                        <zipcode>scdsdcsd</zipcode>
+                        <city>sdcsdcsd</city>
+                        <country>sdsdcsd</country>
+                        <mobilenr>3434346346</mobilenr>
+                    </person>
+                    <photoid></photoid>
+                    <licenseid>122</licenseid>
+                    <tag>kkkk</tag>
+                    <tag>llll</tag>
+                    <tag>mmmm</tag>
+                </profile-update-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-update-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="profile-sendjad-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-sendjad-req id="${personid}" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-sendjad-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="profile-resetpassword-req">
+        <send id="client1">
+            <utopia-req>
+                <profile-resetpassword-req confirmationurl="profile.jsp" email="maarten@waag.org" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <profile-resetpassword-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+
+    <!-- always clean up at the end of the test.... -->
+    <test id="person-delete-req">
+        <send id="client1">
+            <utopia-req>
+                <person-delete-req id="${personid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <person-delete-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+</testset>
+

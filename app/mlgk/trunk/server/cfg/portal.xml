@@ -1,0 +1,119 @@
+<portal name="walkandplay">
+
+    <!-- Standard host-dependent container properties -->
+    <property name="siteurl" host="ronaldinho.local">http://local.mlgk.nl</property>
+    <property name="webappurl" host="ronaldinho.local">http://local.mlgk.nl/wp</property>
+    <property name="siteurl" host="suwa">http://local.mlgk.nl</property>
+    <property name="webappurl" host="suwa">http://local.mlgk.nl/wp</property>
+    <property name="siteurl" host="berlin">http://test.mlgk.nl</property>
+    <property name="webappurl" host="berlin">http://test.mlgk.nl/wp</property>
+    <property name="siteurl" host="prod">http://www.mlgk.nl</property>
+    <property name="webappurl" host="prod">http://www.mlgk.nl/wp</property>
+
+	<!-- not used: see Constants.java <property name="hit.radius">30</property>  -->
+
+	<config>
+        <!-- Oase context file. Context id becomes portal name -->
+        <context file="oase-context.xml"/>
+		<!-- NOT YET <data file="../data/initial-data.xml" label="gameinit"/> -->
+    </config>
+
+
+    <!-- Connectors -->
+    <connectors>
+        <!-- Mainly needed for TracerDaemon and LocEmailUploadDaemon -->
+        <connector id="tcp" class="org.keyworx.amuse.net.tcp.TCPConnector">
+            <property name="port">6050</property>
+            <property name="pongTimeoutMillis">30000</property>
+        </connector>
+    </connectors>
+
+
+    <!-- Application context -->
+    <application name="geoapp" organisation="Waag Society">
+
+        <data>
+
+        </data>
+
+        <!-- Utopia handlers -->
+        <handlers>
+            <handler id="medium" class="org.keyworx.utopia.core.control.MediumHandler">
+                <property name="max-file-size">1000000</property>
+            </handler>
+
+     <!--       <handler id="t" class="org.geotracing.handler.TracingHandler"/>  -->
+
+			<handler id="query" class="org.geotracing.handler.QueryHandler">
+                <property name="logic">org.walkandplay.server.logic.WPQueryLogic</property>
+            </handler>
+
+			<handler id="profile" class="org.walkandplay.server.control.ProfileHandler">
+                <property name="config">content-config.xml</property>
+            </handler>
+
+			<handler id="game" class="org.walkandplay.server.control.GameCreateHandler">
+                <property name="config">content-config.xml</property>
+            </handler>
+
+			<handler id="round" class="org.walkandplay.server.control.GameRoundHandler"/>
+
+			<handler id="play" class="org.walkandplay.server.control.GamePlayHandler">
+				<property name="verbose">false</property>				
+			</handler>
+
+			<handler id="schedule" class="org.walkandplay.server.control.GameScheduleHandler">
+                <property name="config">content-config.xml</property>
+            </handler>
+            <!--
+           <handler id="assignment" class="org.walkandplay.server.control.AssignmentHandler"/>
+            <handler id="content" class="org.keyworx.utopia.core.control.ContentHandler"/>
+            <handler id="version" class="org.walkandplay.server.control.VersionHandler"/>  -->
+            <!-- plugin handlers -->
+            <handler id="tagging" class="org.keyworx.plugin.tagging.control.TagHandler"/>
+            <handler id="license" class="org.keyworx.plugin.metadata.control.LicenseHandler"/>
+
+            <handler id="cmt" class="org.geotracing.handler.CommentHandler">
+				<property name="allow-anonymous">true</property>
+				<property name="max-content-chars">1024</property>
+				<property name="max-commments-per-target">256</property>
+				<property name="thread-alert">false</property>
+			</handler>
+        </handlers>
+
+        <!--<amulets>
+            <amulet id="wp-amulet" class="org.walkandplay.server.engine.GameAmulet"/>
+        </amulets>
+
+        <spaces>
+            <space id="wp-space" access="public"/>
+        </spaces>
+-->
+        <daemons>
+            <daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
+                <property name="intervalMillis">25000</property>
+
+                <!-- Note these values are context-dependent and specified externally. -->
+                <property name="host">email.upload.host</property>
+
+                <!-- Production-server context -->
+                <property name="email" host="berlin">email.upload.email.berlin</property>
+                <property name="user" host="berlin">email.upload.user.berlin</property>
+                <property name="password" host="berlin">email.upload.password.berlin</property>
+
+				<!-- application request to use -->
+				<property name="useService" >play-add-medium</property>
+            </daemon>
+
+			<!--
+			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
+				<property name="pois2textmedia">false</property>
+			</daemon> -->
+
+            <!-- Tracer Bot
+			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
+				<property name="intervalMillis">25000</property>
+			</daemon>              -->
+        </daemons>
+    </application>
+</portal>

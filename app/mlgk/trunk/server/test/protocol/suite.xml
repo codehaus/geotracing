@@ -1,0 +1,8 @@
+<testsuite>
+   <!--   <testset file="profile.xml" />
+   testset file="license.xml" / -->
+    <testset file="game-create.xml"/>
+	<testset file="game-round.xml"/>
+	 <testset file="game-play.xml"/>
+</testsuite>
+

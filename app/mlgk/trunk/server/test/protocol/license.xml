@@ -1,0 +1,59 @@
+<testset id="license" clients="1">
+
+    <test id="login-selapp">
+
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" portalname="walkandplaytest" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
+
+        <expect id="client1">
+            <login-rsp/>
+            <select-app-rsp/>
+        </expect>
+    </test>
+    
+    <test id="license-get-req">
+        <send id="client1">
+            <utopia-req>
+                <license-get-req uri="http://creativecommons.org/licenses/by/2.5/" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <license-get-rsp id="${licenseid}"/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="license-getlist-req">
+        <send id="client1">
+            <utopia-req>
+                <license-getlist-req />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <license-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <!-- always clean up at the end of the test.... -->
+    <test id="license-delete-req">
+        <send id="client1">
+            <utopia-req>
+                <license-delete-req id="${licenseid}"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <person-delete-rsp />
+            </utopia-rsp>
+        </expect>
+    </test>
+
+</testset>

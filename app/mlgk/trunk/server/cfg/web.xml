@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+*   Please read the license agreement at the end of this file.
+*   Waag Society, 2004; http://www.waag.org
+*
+*   cd:	Tue May 11 15:03:27 CEST 2004
+*   author:	Just van den Broecke
+*
+*   $Id$
+*************************************************************** -->
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+
+	<!-- KeyWorx Startup -->
+	<servlet>
+		<servlet-name>MainServlet</servlet-name>
+
+		<servlet-class>org.keyworx.server.MainServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- KeyWorx protocol over HTTP  -->
+	<servlet>
+		<servlet-name>ProtocolServlet</servlet-name>
+
+		<servlet-class>org.keyworx.amuse.servlet.ProtocolServlet</servlet-class>
+
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+	<!-- Media upload/download -->
+	<servlet>
+		<servlet-name>MediaServlet</servlet-name>
+
+		<servlet-class>org.keyworx.amuse.servlet.MediaServlet</servlet-class>
+
+		<init-param>
+			<param-name>uploadDir</param-name>
+			<param-value>/tmp/keyworx/upload</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>maxFileSize</param-name>
+			<param-value>99999999</param-value>
+		</init-param>
+
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+
+	<!-- Map rendering -->
+	<servlet>
+		<servlet-name>MapServlet</servlet-name>
+
+		<servlet-class>org.geotracing.servlet.MapServlet</servlet-class>
+
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+
+	<!-- Define the pushlet servlet -->
+	<servlet>
+		<servlet-name>pushlet</servlet-name>
+		<servlet-class>nl.justobjects.pushlet.servlet.Pushlet</servlet-class>
+		<load-on-startup>5</load-on-startup>
+	</servlet>
+
+	<!-- Define URI mappings -->
+	<servlet-mapping>
+		<servlet-name>MediaServlet</servlet-name>
+		<url-pattern>/media.srv/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>MapServlet</servlet-name>
+		<url-pattern>/map.srv</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ProtocolServlet</servlet-name>
+		<url-pattern>/proto.srv</url-pattern>
+	</servlet-mapping>
+
+	<!-- The pushlet -->
+	<servlet-mapping>
+		<servlet-name>pushlet</servlet-name>
+		<url-pattern>/pushlet.srv</url-pattern>
+	</servlet-mapping>
+
+	<mime-mapping>
+		<extension>.jnlp</extension>
+		<mime-type>application/x-java-jnlp-file</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>jnlp</extension>
+		<mime-type>application/x-java-jnlp-file</mime-type>
+	</mime-mapping>
+
+	<mime-mapping>
+		<extension>.jar</extension>
+		<mime-type>application/java-archive</mime-type>
+	</mime-mapping>
+
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>
+
+<!--
+* $Log: web.xml,v $
+* Revision 1.1  2005/05/11 15:17:14  just
+* *** empty log message ***
+*
+* Revision 1.1.1.1  2005/03/10 21:42:13  just
+* Import of keyworx server
+*
+*
+-->
+
+
+<!-- Waag OSS license statement.
+ *
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Initial Developer of the Original Code is "Waag Society / for old and new media"
+ * Portions created by the Initial Developer are Copyright (C) 2004
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** -->
+
+
+
