@@ -2,9 +2,8 @@
 <?php
 	switch($_SERVER["HTTP_HOST"])
 	{
-		case "local.mlgk.nl":
-		case "test.mlgk.nl": 
-			$key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRGAXkkWYA3JiTOCSaqJOEk_4qGkhRYUEVifAgdoyuk3uEfBOCthrNEBg";
+		case "test.walkandplay.com":
+			$key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRjLdUAkr7fvd8TLmN5lAekOOCGcRQJIt7caapB5n-IidVPPNGWWOhDTw";
 			break;
 	}
 	//needed for google polylines in MSIE
@@ -15,7 +14,7 @@
 	}
 	//for beta development
  	$dev = eregi("dev",$_SERVER["REQUEST_URI"])? "javascript:tmp_debug('toggle')":"";
- 	$title = ($dev=="")? "Mobile Learning Game Kit":"mlgk - development";
+ 	$title = ($dev=="")? "DMS - Locative Workshop":"DMS - dev";
  	$debug = ($dev=="")? "":"tmp_debug('toggle');\n";
  	//$defaultzoom = ($dev=="")? 8:15;
  	$defaultzoom = 15;
@@ -37,18 +36,18 @@
 <!-- gui -->
 
 <script type="text/javascript" src="script/common/utils.js"></script>
+<script type="text/javascript" src="script/common/pane.js"></script>
+<script type="text/javascript" src="script/common/humandate.js"></script> 
 
 <script type="text/javascript" src="script/Application.js"></script>
 <script type="text/javascript" src="script/GuiPublic.js"></script>
 
 <script type="text/javascript" src="script/Game.js"></script>
+<script type="text/javascript" src="script/View.js"></script>
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
 
 <script type="text/javascript" src="script/Justs.js"></script>
-
-<script type="text/javascript" src="script/common/pane.js"></script>
-<script type="text/javascript" src="script/common/humandate.js"></script> 
 
 <!-- development -->
 
@@ -65,7 +64,7 @@
 <script type="text/javascript" src="/wp/lib/KWClientExt.js"></script>
 <script type="text/javascript" src="/wp/lib/KWClientWP.js"></script>
 
-<!-- init -->
+<!-- init  -->
 
 <script type="text/javascript">
 //<![CDATA[

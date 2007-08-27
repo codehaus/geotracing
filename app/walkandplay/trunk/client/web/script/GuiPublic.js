@@ -1,56 +1,87 @@
-/* usemedia.com . joes koppers . 04.2007 */
+/* usemedia.com . joes koppers . 04.2007 [rev 08.2007] */
 /* thnx for reading this code */
 
 
-//gui
+//wp public gui
 
-
-function wpCreatePane(type)
+function wpCreatePane(type,obj)
 {
+	//delete if re-creating
+	if (panes[type]) panes.dispose(type);
+
+	var str = '';
+
 	switch (type)
 	{
 		/* public panes */
 		
 		case 'main':
 			var pane = new Pane('main',40,40,225,80,1,true);
-			pane.setContent(wpGuiCreate('main'));
+// 			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
+// 			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
+			str+= '<div style="font-style:italic">DMS workshop tool<br>or whatever</div>';
+			str+= '<div id="menu" style="line-height:20px;">';
+			str+= '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>, ';
+			str+= '<a href="javascript://play" onclick="wpSelect(\'play\')">play</a> and ';
+			str+= '<a href="javascript://view" onclick="wpSelect(\'view\')">view</a>';
+			str+= '</div>';
+			str+= '<div id="login"><a href="javascript://login" onclick="wpLogin()">login</a></div>';
+
+			pane.setContent(str);
 			pane.show();
 			break;
 
 		case 'login':
 			var pane = new Pane('login',310,40,140,115,1,true);
-			pane.setContent(wpGuiCreate('login'));
+
+			str+= '<form name="loginform" method="" action="" onsubmit="return wpDoLogin();">';
+			str+= '<div id="loginerror" style="left:15px; top:2px; width:130px; font-size:10px; color:#dd0000; text-align:center;"></div>';
+			str+= '<div style="left:11px; top:19px;">';
+			str+= '<div class="column" style="width:45px;">name:</div><input type=text name=login value="" class="inputtext" style="width:85px;"><br>';
+			str+= '<div style="margin-top:5px; position:relative"><div class="column" style="width:45px;">pass:</div><input type=password name=password value="" class="inputtext"  style="width:85px;"></div><br>';
+			str+= '&nbsp;&nbsp;<input type="checkbox" name="auto" onclick="wpToggleAutoLogin()" style="vertical-align:middle; border:0px; height:14px; background-color:transparent">&nbsp;';
+ 			str+= '<a href="javascript://toggle_autologin" onclick="wpToggleAutoLogin();this.blur()" title="requires cookies enabled in your browser">remember login</a>';
+			str+= '</div>';
+			str+= '<input type="button" value="cancel" onclick="wpCancelLogin()" style="position:absolute; right:65px; bottom:8px; width:50px;">';
+			str+= '<input type=submit value="login" style="position:absolute; right:11px; bottom:8px; width:50px;">';
+			str+= '</form>';
+
+			pane.setContent(str);
 			//pane.show();
 			break;
-			
 
 		case 'list_games':
-			var pane = new Pane('list_games',100,160,180,140,1,true);
+			var pane = new Pane('list_games',100,160,200,200,1,true);
+			break;
+
+		case 'game_profile':
+			var pane = new Pane('game_profile',100,160,400,300,1,true);
+			str+= '<span class="red" style="font-size:14px; font-weight:bold">game profile</span><br>';
+			pane.setContent(str);
+			pane.show();
 			break;
 
 		case 'list_rounds':
-			var pane = new Pane('list_rounds',320,188,165,140,1,true);
-			pane.setContent(wpGuiCreate('list_rounds'));
-			break;
-			
-		case 'list_locations':
-			var pane = new Pane('list_locations',100,360,120,140,1,true);
+			var pane = new Pane('list_rounds',340,188,165,140,1,true);
+			pane.setContent(wpGuiCreate('list_rounds',obj));
 			break;
 
 		case 'display':
 			var pane = new Pane('display',0,40,230,100,1,true,undefined,true); //auto-size pane
-			pane.setContent(wpGuiCreate('display'));
+
+			str+= '<div id="media_display" style="width:228px; margin-bottom:5px"></div>';
+			pane.setContent(str);
+
 			//align right side of window
 			pane.div.style.left = '';
 			pane.div.style.right = '20px';
-
 			/*			
 			pane.hideMore = function()
 			{
 				//clear pane contents
 				var obj = this;
 				window.setTimeout(function() { obj.content.firstChild.innerHTML = '' },150);
-				
+			
 // 				if (browser.safari && document.getElementById('qtvideo'))
 // 				{
 // 					//qt safari bug (force sound stop)
@@ -63,87 +94,7 @@ function wpCreatePane(type)
 			
 		case 'view':
 			var pane = new Pane('view',100,160,180,135,1,true);
-// 			pane.setContent(wpGuiCreate('view'));
-// 			pane.show();
-			break;
 
-		case 'play':
-			var pane = new Pane('play',110,0,590,80,1,true);
-			pane.setContent(wpGuiCreate('play'));
-			//align bottom if window
-			pane.div.style.top = '';
-			pane.div.style.bottom = '30px';
-			//refs for updating
-			pane.game = pane.content.childNodes[0];
-			pane.play = pane.content.childNodes[1];
-			pane.round = pane.content.childNodes[2];
-			pane.clearContents = function()
-			{
-				this.game.innerHTML = '';
-				this.play.innerHTML = '';
-				this.round.innerHTML = '';
-			}
-			break;
-		
-		default:
-			if (wp_login.id) wpCreatePaneUser(type);
-	}
-}
-
-//pngfixed html
-function wpGuiCreate(type,s,id,n)
-{
-	var str='';
-	
-	switch(type)
-	{
-		case 'main':
- 			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
- 			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
-			str+= '<div id="menu" style="line-height:20px;">';
-			str+= '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>, ';
-			str+= '<a href="javascript://play" onclick="wpSelect(\'play\')">play</a> and ';
-			str+= '<a href="javascript://view" onclick="wpSelect(\'view\')">view</a>';
-			str+= '</div>';
-			str+= '<div id="login"><a href="javascript://login" onclick="wpLogin()">login</a></div>';
-			break;
-
-		case 'login':
-			str+= '<form name="loginform" method="" action="" onsubmit="return wpDoLogin();">';
-			
-			str+= '<div id="loginerror" style="left:15px; top:2px; width:130px; font-size:10px; color:#dd0000; text-align:center;"></div>';
-			
-			str+= '<div style="left:11px; top:19px;">';
-			str+= '<div class="column" style="width:45px;">name:</div><input type=text name=login value="" class="inputtext" style="width:85px;"><br>';
-			str+= '<div style="margin-top:5px; position:relative"><div class="column" style="width:45px;">pass:</div><input type=password name=password value="" class="inputtext"  style="width:85px;"></div><br>';
-			str+= '&nbsp;&nbsp;<input type="checkbox" name="auto" onclick="wpToggleAutoLogin()" style="vertical-align:middle; border:0px; height:14px; background-color:transparent">&nbsp;';
- 			str+= '<a href="javascript://toggle_autologin" onclick="wpToggleAutoLogin();this.blur()" title="requires cookies enabled in your browser">remember login</a>';
-			str+= '</div>';
-
-			str+= '<input type="button" value="cancel" onclick="wpCancelLogin()" style="position:absolute; right:65px; bottom:8px; width:50px;">';
-			str+= '<input type=submit value="login" style="position:absolute; right:11px; bottom:8px; width:50px;">';
-			str+= '</form>';
-			break;
-			
-		case 'display':
-			str+= '<div id="media_display" style="width:228px; margin-bottom:5px"></div>';
-			break;
-			
-		case 'list_games_view':
-			if (wp_viewmode=='archived') str+= '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
-			else str+= '<b><a href="javascript://archived_games">archived</a> or <span class="red">live games</span></b><br><br>';
-			str+= '<div id="list_rounds"></div>';
-			break;
-			
-		case 'play':
-			str+= '<div style="left:11px; top:9px; width:160px">x</div>';
-			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#dbdbdb; height:80px">x</div>';
-			str+= '<div style="left:400px; top:9px; width:215px">x</div>';
-
-			str+= '<div style="position:absolute; right:13px; top:5px"></div>';
-			break;
-			
-		case 'view':
 			var round = 'date';
 			str+= '<div style="position:relative; width:150px; margin-bottom:10px"><span class="title">replay </span> "<b>'+wp_games.game[wp_selected_game].name+'</b>" / <b>'+wp_rounds.round[wp_selected_round].name+'</b></div>';
 			str+= '<a style="position:absolute; right:12px; top:6px" href="javascript://exit" onclick="wpLeaveView()">exit</a>';
@@ -189,13 +140,48 @@ function wpGuiCreate(type,s,id,n)
 			str+= '</div>';
 			
 			str+= '</div>';
+			
+			pane.setContent(str);
+
+// 			pane.setContent(wpGuiCreate('view'));
+// 			pane.show();
+			break;
+
+		case 'play':
+			var pane = new Pane('play',110,0,590,80,1,true);
+			
+			str+= '<div style="left:11px; top:9px; width:160px">x</div>';
+			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#dbdbdb; height:80px">x</div>';
+			str+= '<div style="left:400px; top:9px; width:215px">x</div>';
+			str+= '<div style="position:absolute; right:13px; top:5px"></div>';
+			pane.setContent(str);
+			
+			//align bottom of window
+			pane.div.style.top = '';
+			pane.div.style.bottom = '30px';
+			//refs for updating
+			pane.game = pane.content.childNodes[0];
+			pane.play = pane.content.childNodes[1];
+			pane.round = pane.content.childNodes[2];
+			pane.clearContents = function()
+			{
+				this.game.innerHTML = '';
+				this.play.innerHTML = '';
+				this.round.innerHTML = '';
+			}
+			break;
+			
+		case 'list_games_view':
+			var pane = new Pane('list_games',100,160,200,200,1,true);
+			if (wp_viewmode=='archived') str+= '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
+			else str+= '<b><a href="javascript://archived_games">archived</a> or <span class="red">live games</span></b><br><br>';
+			str+= '<div id="list_rounds"></div>';
+			pane.setContent(str);
 			break;
 		
 		default:
-			if (wp_login.id) str+= wpGuiCreateUser(type,s,id,n);
+			if (wp_login.id) wpCreatePaneUser(type,obj);
 	}
-	
-	return str;
 }
 
 function wpEmbedMedium(type,id)
@@ -225,7 +211,6 @@ function wpEmbedMedium(type,id)
 			str+= '</EMBED>';
 			str+= '</OBJECT>';
 			*/
-
 			//Flash embed
 			str+= '<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="225" height="169" id="world">';
 			str+= '<param name="movie" value="/wp/media.srv?id='+id+'&format=swf&resize=225x169" />';

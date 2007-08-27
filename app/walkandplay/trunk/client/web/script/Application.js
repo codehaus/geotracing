@@ -9,7 +9,7 @@ wp_set_autologin = false;
 wp_login = new Object();
 wp_login_action = false;
 
-wp_mode = 'view'; 
+wp_mode = 'create'; 
 wp_viewmode = 'archived';
 wp_viewstate = 'paused';
 
@@ -252,7 +252,7 @@ function wpLoggedIn()
 
 	if (!wp_autologin && wp_set_autologin) wpSetAutoLogin(true);
 	
-	document.getElementById('login').innerHTML = '<a href="javascript://logout" onclick="wpDologout()" title="logged in as \''+wp_login.loginname+'\'">sign out</a>';
+	document.getElementById('login').innerHTML = '<span class="red">'+wp_login.loginname+'</span><br><a href="javascript://logout" onclick="wpDologout()" title="logged in as \''+wp_login.loginname+'\'">sign out</a>';
 
 
 	/* load registered user gui */

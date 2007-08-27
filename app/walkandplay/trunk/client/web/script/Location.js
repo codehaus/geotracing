@@ -272,7 +272,7 @@ wpLocation.prototype.updateDetails = function(resp)
 		
 		//display pane contents
 		var str = '';
-			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onmousedown="wp_location_expanded.collapse()">close</a>';
+			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onmouseup="wp_location_expanded.collapse()">close</a>';
 			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
 			str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
 			str+= '<div id="display_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
@@ -284,7 +284,7 @@ wpLocation.prototype.updateDetails = function(resp)
 		if (this.type=='task' && wp_mode=='create')
 		{
 			//show answer and score
-			str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+			str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; margin-bottom:10px;" class="setbg">';
 			this.answer = record.getField('answer');
 			this.score = record.getField('score');
 			str+= 'answer: '+this.answer+'<br>';
@@ -297,7 +297,7 @@ wpLocation.prototype.updateDetails = function(resp)
 	if (this.type=='task' && wp_mode!='create')
 	{
 		//add answer pane (updated by gamestate and live events)
-		if (resp) str+= '<div id="display_answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; background-color:#d5d5d5; margin-bottom:10px;">';
+		if (resp) str+= '<div id="display_answer" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; margin-bottom:10px;" class="setbg">';
 		else var str='';
 		
 		//update answer
@@ -364,14 +364,17 @@ wpLocation.prototype.updateAnswer = function(answerstate,answer,medium,score)
 
 wpLocation.prototype.collapse = function()
 {
-	panes['display'].content.firstChild.innerHTML = '';
-	panes['display'].hide(1);
-	
 	this.expanded = false;
 	wp_location_expanded = false;
 	this.changeIcon(this.icon);
 	
 	tmp_debug(1,'collapse ',this.id);
+
+//	panes['display'].setContent('');
+
+//	panes['display'].hide(1);
+	panes['display'].content.firstChild.innerHTML = '';
+	panes.hide('display');
 }
 
 wpLocation.prototype.changeIcon = function(src)
