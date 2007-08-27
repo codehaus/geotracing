@@ -369,8 +369,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 	<!-- Run protocol test client. -->
 	<target name="protocoltest" description="Runs protocol test client">
 		<!-- Copy media files (these will be moved during media uploads in tests -->
-		<copy todir="${deploy.local.dir}/wptest/media" overwrite="true">
-			<fileset dir="${deploy.local.dir}/wptest/media/save"/>
+		<copy todir="${deploy.local.dir}/test/media" overwrite="true">
+			<fileset dir="${deploy.local.dir}/test/media/save"/>
 		</copy>
 
 		<java classname="org.keyworx.amuse.test.protocol.Main"

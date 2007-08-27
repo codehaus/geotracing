@@ -19,7 +19,7 @@
 	the 'searchable' attribute, wich also defaults to false.
 
 -->
-<contenthandler-config context="walkandplay">
+<contenthandler-config context="mlgk">
 
 	<type name="account" table="utopia_account">
 		<field name="loginname" listed="false" searchable="true"/>

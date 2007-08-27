@@ -3,7 +3,7 @@
 	<test id="login-selapp">
 
 		<send id="client1">
-			<login-req name="blue2" password="user" portalname="walkandplay" protocolversion="4.0"/>
+			<login-req name="blue2" password="user" protocolversion="4.0"/>
 			<select-app-req appname="geoapp" rolename="user"/>
 		</send>
 
@@ -15,7 +15,7 @@
 						<portalid>26
 						</portalid>
 
-						<portalname>walkandplay
+						<portalname>mlgk
 						</portalname>
 
 						<personid>${personid}
@@ -248,7 +248,7 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>item1</name>
-						<filename>/var/keyworx/webapps/walkandplay/wptest/media/bentejoes.jpg</filename>
+						<filename>/var/keyworx/webapps/mlgk/test/media/bentejoes.jpg</filename>
 						<size>242652</size>
 						<kind>image</kind>
 						<mime>image/jpeg</mime>
@@ -455,7 +455,7 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>waterland</name>
-						<filename>/var/keyworx/webapps/walkandplay/wptest/media/waterland.jpg</filename>
+						<filename>/var/keyworx/webapps/mlgk/test/media/waterland.jpg</filename>
 						<size>652049</size>
 						<kind>image</kind>
 						<mime>image/jpeg</mime>
@@ -1358,7 +1358,7 @@
 				<medium-insert-req personid="${personid}">
 					<medium>
 						<name>zwijger</name>
-						<filename>/var/keyworx/webapps/walkandplay/wptest/media/zwijger-old.jpg</filename>
+						<filename>/var/keyworx/webapps/mlgk/test/media/zwijger-old.jpg</filename>
 						<size>68323</size>
 						<kind>image</kind>
 						<mime>image/jpeg</mime>

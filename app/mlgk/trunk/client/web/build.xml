@@ -1,10 +1,10 @@
 <!--
 
-ANT Build file for W&P Web Client.
+ANT Build file for MLGK Web Client.
 
 $Id$
 -->
-<project name="WP Web" default="deploy-local" basedir=".">
+<project name="MLGK Web" default="deploy-local" basedir=".">
 
 	<!-- Directory locations -->
 	<property name="home" value="${basedir}"/>
@@ -53,7 +53,7 @@ $Id$
 		<exec executable="scp">
 			<arg line="-r"/>
 			<arg line="${home}/"/>
-			<arg line="keyworx@test.walkandplay.com:${deploy.test.dir}"/>
+			<arg line="keyworx@test.mlgk.nl:${deploy.test.dir}"/>
 		</exec>
 	</target>    -->
 
