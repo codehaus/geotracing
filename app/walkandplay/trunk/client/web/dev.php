@@ -2,7 +2,9 @@
 <?php
 	switch($_SERVER["HTTP_HOST"])
 	{
+		case "local.walkandplay.com":
 		case "test.walkandplay.com":
+		case "www.walkandplay.com":
 			$key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRjLdUAkr7fvd8TLmN5lAekOOCGcRQJIt7caapB5n-IidVPPNGWWOhDTw";
 			break;
 	}
@@ -37,7 +39,7 @@
 
 <script type="text/javascript" src="script/common/utils.js"></script>
 <script type="text/javascript" src="script/common/pane.js"></script>
-<script type="text/javascript" src="script/common/humandate.js"></script> 
+<script type="text/javascript" src="script/common/humandate.js"></script>
 
 <script type="text/javascript" src="script/Application.js"></script>
 <script type="text/javascript" src="script/GuiPublic.js"></script>
