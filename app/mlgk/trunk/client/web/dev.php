@@ -2,8 +2,9 @@
 <?php
 	switch($_SERVER["HTTP_HOST"])
 	{
-		case "test.walkandplay.com":
-			$key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRjLdUAkr7fvd8TLmN5lAekOOCGcRQJIt7caapB5n-IidVPPNGWWOhDTw";
+		case "local.mlgk.nl":
+		case "test.mlgk.nl": 
+			$key = "ABQIAAAA6wAMqFuY8aYUX67TtQkcKRRGAXkkWYA3JiTOCSaqJOEk_4qGkhRYUEVifAgdoyuk3uEfBOCthrNEBg";
 			break;
 	}
 	//needed for google polylines in MSIE
@@ -14,7 +15,7 @@
 	}
 	//for beta development
  	$dev = eregi("dev",$_SERVER["REQUEST_URI"])? "javascript:tmp_debug('toggle')":"";
- 	$title = ($dev=="")? "DMS - Locative Workshop":"DMS - dev";
+ 	$title = ($dev=="")? "Mobile Learning Game Kit":"mlgk - development";
  	$debug = ($dev=="")? "":"tmp_debug('toggle');\n";
  	//$defaultzoom = ($dev=="")? 8:15;
  	$defaultzoom = 15;
@@ -36,18 +37,19 @@
 <!-- gui -->
 
 <script type="text/javascript" src="script/common/utils.js"></script>
-<script type="text/javascript" src="script/common/pane.js"></script>
-<script type="text/javascript" src="script/common/humandate.js"></script> 
 
 <script type="text/javascript" src="script/Application.js"></script>
 <script type="text/javascript" src="script/GuiPublic.js"></script>
 
 <script type="text/javascript" src="script/Game.js"></script>
-<script type="text/javascript" src="script/View.js"></script>
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
 
 <script type="text/javascript" src="script/Justs.js"></script>
+
+<script type="text/javascript" src="script/common/ajax.js"></script> 
+<script type="text/javascript" src="script/common/pane.js"></script>
+<script type="text/javascript" src="script/common/humandate.js"></script> 
 
 <!-- development -->
 
@@ -55,16 +57,16 @@
 
 <!-- geotracing -->
 
-<script type="text/javascript" src="/wp/lib/DHTML.js"></script>
-<script type="text/javascript" src="/wp/lib/Server.js"></script>
-<script type="text/javascript" src="/wp/lib/Record.js"></script>
-<script type="text/javascript" src="/wp/lib/ajax-pushlet-client.js"></script>
+<script type="text/javascript" src="/mlgk/lib/DHTML.js"></script>
+<script type="text/javascript" src="/mlgk/lib/Server.js"></script>
+<script type="text/javascript" src="/mlgk/lib/Record.js"></script>
+<script type="text/javascript" src="/mlgk/lib/ajax-pushlet-client.js"></script>
 
-<script type="text/javascript" src="/wp/lib/KWClient.js"></script>
-<script type="text/javascript" src="/wp/lib/KWClientExt.js"></script>
-<script type="text/javascript" src="/wp/lib/KWClientWP.js"></script>
+<script type="text/javascript" src="/mlgk/lib/KWClient.js"></script>
+<script type="text/javascript" src="/mlgk/lib/KWClientExt.js"></script>
+<script type="text/javascript" src="/mlgk/lib/KWClientWP.js"></script>
 
-<!-- init  -->
+<!-- init -->
 
 <script type="text/javascript">
 //<![CDATA[
@@ -108,7 +110,7 @@ function init()
 		
 		//queries
 		SRV.init();
-		SRV.url = '/wp/srv/get.jsp?';
+		SRV.url = '/mlgk/srv/get.jsp?';
 		//requests
 		wp_KW_inited = false; //will be inited at login
 		//live events (pushlet)
