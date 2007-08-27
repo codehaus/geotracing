@@ -11,7 +11,7 @@
 JO = {
 
 	gameCreate: function() {
-		var pane = new Pane('game_create',320,188,300,300,1,true);
+		var pane = new Pane('game_create',340,188,300,300,1,true);
 		var str = '';
 		str+= '<form name="creategameform" method="post" action="#"">';
 		str+= '<span class="title">create new game</span><br><br>';
@@ -50,7 +50,7 @@ JO = {
 	gameUpdate: function(gameId) {
 		var gameRec = SRV.get('q-game', null, 'id', gameId)[0];
 
-		var pane = new Pane('game_update',320,188,300,300,1,true);
+		var pane = new Pane('game_update',340,188,300,300,1,true);
 		var str = '';
 		str+= '<form name="updategameform" method="post" action="#"">';
 		str+= '<span class="title">edit game info</span><br><br>';
@@ -87,7 +87,7 @@ JO = {
 	},
 
 	roundCreate: function(gameId) {
-		var pane = new Pane('round_create',320,188,300,300,1,true);
+		var pane = new Pane('round_create',340,188,300,300,1,true);
 		var str = '';
 		str+= '<form name="createroundform" method="post" action="#"">';
 		str+= '<span class="title">add game round</span><br><br>';
@@ -124,7 +124,7 @@ JO = {
 	roundDelete: function(gameId) {
 		var rounds = SRV.get('q-gamerounds', null, 'gameid', gameId);
 
-		var pane = new Pane('round_delete',320,188,300,300,1,true);
+		var pane = new Pane('round_delete',340,188,300,300,1,true);
 		var str = '';
 		str+= '<form name="deleteroundform" method="post" action="#"">';
 		str+= '<span class="title">delete game round</span><br><br>';

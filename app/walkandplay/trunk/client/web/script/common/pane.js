@@ -67,7 +67,7 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent,autosize)
 	if (parent) parent.appendChild(pane);
 	else document.body.appendChild(pane);
 	
-	var c = 'w'; //default white pane
+	var c = 'lg'; //default white pane
 	if (!this.autosize)
 	{
 		//bg	
@@ -163,11 +163,8 @@ Pane.prototype.setSize = function(w,h)
 
 Pane.prototype.show = function()
 {
-	if (!this.closing)
-	{
-		this.doShow(true);
-		this.visible = true;
-	}
+	this.doShow(true);
+	this.visible = true;
 }
 Pane.prototype.hide = function(force)
 {
@@ -180,7 +177,9 @@ Pane.prototype.doShow = function(show,forcehide)
 {
 	/*	show or hide pane, hide occurs after small delay, 
 		and can be cancelled by calling pane.show() again */
-		
+	
+	if (this.hideTimeout) window.clearTimeout(this.hideTimeout);
+	
 	if (forcehide)
 	{
 		this.div.style.display = 'none';
@@ -191,7 +190,6 @@ Pane.prototype.doShow = function(show,forcehide)
 		
 	if (show)
 	{
-		if (this.hideTimeout) window.clearTimeout(this.hideTimeout);
 		this.div.style.display = 'block';
 	}
 	else

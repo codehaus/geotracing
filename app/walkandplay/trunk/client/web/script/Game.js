@@ -22,8 +22,8 @@ function wpGameInit()
 	//panes
 	wpCreatePane('list_games');
 	wpCreatePane('list_locations');
-	wpCreatePane('play');
-	wpCreatePane('view');
+// 	wpCreatePane('play');
+// 	wpCreatePane('view');
 
 	//game collections	
 	wp_games = new idArray('game');
@@ -63,29 +63,45 @@ function wpListGames(resp)
 		else if (wp_mode=='create')
 		{
 			var id = resp[i].getField('id');
-			list+= bullit+'<a href="javascript://edit_game" onclick="wpSelectGame(\'create\','+id+')" title="'+desc+'">'+shortname+'</a><br>';
+			list+= bullit+'<a href="javascript://edit_game" onclick="wpSelectGame(\'create\','+id+')" title="'+desc+'">'+shortname+'</a>';//<br>';
+			if (resp[i].getField('state')==2) list+= '&nbsp;<img src="media/locked.gif">'
+			list+= '<br>';
 		}
 		else if (wp_mode=='view')
 		{
 			var id = resp[i].getField('id');
 			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="wpListRounds('+id+')" title="'+desc+'">'+shortname+'</a><br>';
-			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="wpSelectGame(\'view_rounds\','+id+')" title="'+desc+'">'+shortname+'</a><br>';
-			list+= bullit+'<a href="javascript://view_gamerounds" onclick="SRV.get(\'q-gamerounds\',function(resp) { wpListRounds('+id+',resp) },\'gameid\','+id+');" title="'+desc+'">'+shortname+'</a><br>';
+			list+= bullit+'<a href="javascript://view_gamerounds" onclick="wpGameProfile('+id+')" title="'+desc+'">'+shortname+'</a><br>';
+			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="SRV.get(\'q-gamerounds\',function(resp) { wpListRounds('+id+',resp) },\'gameid\','+id+');" title="'+desc+'">'+shortname+'</a><br>';
 		}
 	}
 
 	switch(wp_mode)
 	{
-		case 'create': header = '<span class="red">select a game to edit or <br/><a href="javascript://new_game" onclick="JO.gameCreate()">[create new game]</a>:</span><br><br>'; break;
+		case 'create': header = '<span class="red">select a game to edit or <br/><span style="color:black">[<a href="javascript://new_game" onclick="JO.gameCreate()">create new game</a>]</span>:</span><br><br>'; break;
 		case 'play': header = '<span class="red">select a game to play:</span><br>'; break;
 		case 'view': header = '<span class="red">select a game to view:</span><br>'; break;
 	}
 // 	var header = (wp_mode=='create')? '<span class="red">select a game to edit:</span><br>':'<span class="red">select a game to play:</span><br>';
 	if (list=='') list = '- no games available -';
 
-	if (wp_mode=='view') panes['list_games'].setContent(wpGuiCreate('list_games_view')+header+list);
+	if (wp_mode=='view')
+	{
+		//panes['list_games'].setContent(wpGuiCreate('list_games_view')+header+list);
+		panes['list_games'].setContent(wpGuiCreate('list_games_view'));
+		panes['list_games'].content.lastChild.innerHTML = header+list;
+	}
 	else panes['list_games'].setContent(header+list);
 	panes['list_games'].show();
+}
+
+function wpGameProfile(id)
+{
+	panes.hide('list_games');
+	wpCreatePane('game_profile');
+
+
+
 }
 
 function wpSelectGame(type,id,roundid,playid)
@@ -95,11 +111,15 @@ function wpSelectGame(type,id,roundid,playid)
 	wp_selected_play = playid || wp_selected_play;
 
 	//create new if needed, will return to this function
-	if (!wp_games.game[id] && type!='view_rounds')
+	if (!wp_games.game[id])
 	{
 		SRV.get('q-game',wpLoadGame,'id',id);
 		return;
 	}
+// 	else
+// 	{
+// 		
+// 	}
 
 	var game = wp_games.game[id];
 
@@ -382,272 +402,6 @@ function wpLeavePlay()
 
 
 
-/* view functions */
-
-function wpSelectView(type)
-{
-	wp_selected_view = type; //live or archived
-	
-	//get games
-	//-> need other query here!
-//	SRV.get('q-play-status-by-user',wpListGames,'user','green2');
-	
- 	SRV.get('q-games',wpListGames);
-//	SRV.get('q-',wpListGames,'','');
-}
-
-function wpListRounds(id,resp)
-{
-//	alert('list round id='+id);
-
-	if (!panes['list_rounds']) wpCreatePane('list_rounds');
-	var list = '';
-		
-	for (var i in resp)
-	{
-		var roundid = resp[i].getField('id');
-		var name = resp[i].getField('name');
-		var desc = name;
-		
-		var shortname = (name.length>26)? name.substring(0,25)+'..':name;
-		
-		list+= '&bull; <a href="javascript://view_round" onclick="wpSelectGame(\'view\','+id+','+roundid+')" title="'+desc+'">'+shortname+'</a><br>';
-	}
-
-	//->there are no queries for viewable rounds and plays yet, hardcoded for now
-// 	var gameid = 22435;
-// 	var roundid = 22451;
-// 	var name = 'game2round';
-// 	var desc = name;
-// 	
-// 	list+= '&bull; <a href="javascript://view_round" onclick="wpSelectGame(\'view\','+gameid+','+roundid+')" title="'+desc+'">'+name+'</a><br>';
-
-	var header = '<span class="red">select a gameround:</span><br>';
-	if (list=='') list = '- no rounds available -';
-
-	panes['list_rounds'].setContent(header+list);
-	panes['list_rounds'].show();
-}
-
-function wpCreateView(resp)
-{
-// 	if (!resp)
-// 	{
-// 		//get game-events
-// 		SRV.get('get-gameplay-events',function(resp) { wpGetView(id,resp) },'id',id);
-// 		return;
-// 	}
-
-	//make game-events collection
-	var events = resp.getElementsByTagName('event')
-	
-	if (events.length==0)
-	{
-		document.getElementById('view_ctls').style.display = 'none';
-		alert('team has not played yet')
-	}
-	else
-	{
-	
-		wp_view = new wpView();
-		for (var i=0; i<events.length; i++)
-		{
-			wp_view.events.push( new wpEvent(events[i]) );
-		}
-		wp_view.begin = Number(events[0].getAttribute('time'));
-		wp_view.end = Number(events[events.length-1].getAttribute('time'));
-		
-		var d =  (wp_view.end - wp_view.begin)/1000; //seconds total
-		var hrs = Math.floor(d/3600);
-		var mins = Math.floor(d/60) - (hrs*60);
-		var secs = Math.floor(d - (hrs*60*60) - (mins*60));
-		if (hrs<10) hrs = '0'+hrs;
-		if (mins<10) mins = '0'+mins;
-		if (secs<10) secs = '0'+secs;
-		wp_view.duration = hrs+':'+mins+':'+secs;
-		
-		document.getElementById('view_duration').innerHTML = '<span class="grey">playtime:</span> '+wp_view.duration;
-	
-		//enable playback controls
-		document.getElementById('view_ctls').style.display = 'block';
-	}
-}
-
-function wpView()
-{
-	this.events = new Array();
-	
-	this.state = 'paused';
-	this.step = 0;
-	this.progress = 0;
-	this.rate = 1; //==realtime, smaller = faster
-	this.rate_change = false;
-	this.viewing = false;
-}
-wpView.prototype.startstop = function()
-{
-	this.state = (this.state=='paused')? 'playing':'paused';
-
-	if (this.state=='playing')
-	{
-		if (this.step<this.events.length-1)
-		{
-			//start
-			this.playback();
-			//progress
-			this.update(true);
-			//restart blinking
-			if (this.step>0) for (var id in wp_players.player) wp_players.player[id].blink();
-		}
-		else this.state = 'paused';
-	}
-	else
-	{
-		//stop
-		if (this.viewing) window.clearTimeout(this.viewing);
-		if (this.updating) window.clearTimeout(this.updating);
-		this.viewing = false;
-		this.updating = false;
-		//stop smoothing, blinking players
-		wp_players.update();
-		for (var id in wp_players.player) wp_players.player[id].blink(1);
-	}
-
-	//update play/pause button
-	var img = (this.state=='paused')? 'play':'pause';
-	document.getElementById('view_start').src = (browser.properpngsupport)? 'media/button_'+img+'.png':'media/button_'+img+'.gif';
-}
-
-wpView.prototype.update = function(sync)
-{
-	if (sync || this.rate_change)
-	{
-		this.rate_change = false;
-		this.progress = (this.events[this.step].timestamp-this.begin) * this.rate;
-	}
-	
- 	var progress = this.progress / ((this.end-this.begin)*this.rate);
- 	document.getElementById('view_progress_bar').style.width = Math.min(180,Math.round(progress * 180)) +'px';
-	
-	this.progress+=200;
-	
-	var obj = this;
-	this.updating = window.setTimeout(function() { obj.update() },200);
-}
-
-wpView.prototype.playback = function()
-{
-
-// 	var progress = (time - this.begin) / (this.end-this.begin);
-// 	document.getElementById('view_progress_bar').style.width = Math.round(progress * 180) +'px';
-	
-	//document.getElementById('view_ctls').lastChild.innerHTML = new Date(time).format('time in game: ','longtime'); //->move to round pane
-	
-	//var time = this.events[this.step].timestamp;
-	//wpUpdatePlayRound(new Date(time).format('time in game: ','longtime'));
-	
-	wpUpdatePlayRound('time in game: '+this.events[this.step].time);
-	
-	//send event to live handler
-	wpLive( this.events[this.step] );
-
-	if (this.step<this.events.length-1)
-	{
-		this.step++;
-		var interval = this.events[this.step].timestamp - this.events[this.step-1].timestamp;
-		
-		tmp_debug(3,'playback: step=',this.step,',interval=',(interval/1000),'s)');
-		
-		//continue playback
-		var obj = this;
-		this.viewing = window.setTimeout(function() { obj.playback() },interval * this.rate);
-	}
-	else
-	{
-		//stop view playback;
-		if (this.state=='playing') this.startstop();
-	}
-}
-
-wpView.prototype.setRate = function(r)
-{
-	this.rate = 1/r;
-	this.rate_change = true;
-}
-
-wpView.prototype.rset = function()
-{
-	if (this.state=='playing') this.startstop();
-// 	{
-// 		var restart = true;
-// 		this.startstop();
-// 	}
-// 	else var restart = false;
-
-	//progress
-	this.step = 0;
-	this.progress = 0;
-	document.getElementById('view_progress_bar').style.width = '0px';
-	//kill players
-	for (var id in wp_players.player) wp_players.del(id);
-	//disable locations
-	for (var id in wp_games.game[wp_selected_game].locations.location) wp_games.game[wp_selected_game].locations.location[id].enable(false);
-	//update play display
-	wpUpdatePlay();
-	panes.hide('display');
-	
-	//if (restart) this.startstop();
-}
-
-function wpEvent(xml)
-{
-	this.timestamp = Number(xml.getAttribute('time'));
-	this.time = new Date(Number(this.timestamp)).format('date',', ','longtime');
-	this.xml = xml;
-}
-wpEvent.prototype.get = function(name)
-{
-	//for wpLive()
-	return this.xml.getAttribute(name);
-}
-
-function wpSelectPlay(id)
-{
-	if (wp_view)
-	{
-		//if (wp_view.state=='playing') wp_view.startstop();
-		wp_view.rset();
-	}
-
-	//select team, get team events, reset playback to start
-	if (id!='')
-	{
-		wp_selected_play = Number(id);
-		wp_view_state = 'paused';
-		if (!wp_plays[wp_selected_play]) wp_plays.push( new wpPlay(wp_selected_play) );
-		
-		//get game events for this gameplay
-		SRV.get('get-gameplay-events',wpCreateView,'id',id);
-	}
-	else 
-	{
-		wp_selected_play = false;
-		document.getElementById('view_ctls').style.display = 'none';
-		document.getElementById('view_duration').innerHTML = '';
-	}
-	
-	wpUpdatePlay();
-}
-
-function wpLeaveView()
-{
-	if (wp_view) 
-	{
-		//if (wp_view.state=='playing') wp_view.startstop();
-		wp_view.rset();
-	}
-	wpSelect('view');
-}
 
 
 
@@ -768,7 +522,7 @@ wpGame.prototype.updateLocations = function(resp,center)
 		document.getElementById('edit_game_media_cnt').innerHTML = media;
 	}
 	//update locations list
-	if (panes['list_locations'].visible) this.listLocations();
+	if (panes['list_locations'] && panes['list_locations'].visible) this.listLocations();
 	
 	//center game in mapview
 	if (center && this.locations.length>0) this.locations.center();
@@ -780,18 +534,9 @@ wpGame.prototype.updateLocations = function(resp,center)
 
 wpGame.prototype.listLocations = function()
 {
-	var str = '';
-		str+= '<span class="title">locations</span>';
-		str+= '<div style="left:11px; top:30px; width:128px; height:123px; overflow:auto;">';
-		for (var id in this.locations.location)
-		{
-			var location = this.locations.location[id];
-			str+= '<a href="javascript://show_location" onclick="wp_games.game['+this.id+'].selectLocation('+location.id+');this.blur()">'+location.name+'</a><br>';
-		}
-		str+= '</div>';
-		str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes[\'list_locations\'].hide(0)">close</a></div>';
-	
-	panes['list_locations'].content.innerHTML = str;
+	wpCreatePane('list_locations',this);
+
+	//panes['list_locations'].setContent(str);
 	panes['list_locations'].show();
 }
 
@@ -805,34 +550,45 @@ wpGame.prototype.selectLocation = function(id)
 wpGame.prototype.edit = function()
 {
 	wp_game_edit = this.id;
+	wpCreatePane('edit_game',this);
 
-	panes['list_games'].hide(1);
+	panes.hide('list_games');
+	panes.show('edit_game');
 	
-	var str = '';
-		str+= '<span class="red" style="font-size:14px; font-weight:bold">edit game</span><br>';
-		str+= '<div style="position:relative; width:130px;">"<b>'+this.name+'</b>"</div>';
-		str+= '<div style="position:relative; width:175px; margin-top:5px">';
-		str+= '<span class="grey">description:</span><br>'+this.description.substr(0,50)+'...<br>';
-		str+= '<span class="grey">locations:</span><br><span id="edit_game_tasks_cnt">0</span> tasks and <span id="edit_game_media_cnt">0</span> media. ';
-		str+= '</div>';
-		
-		//add location button
-		if (!browser.cssfilter) str+= '<img src="media/icon_add_location.png" title="add new location to game" style="cursor:pointer; position:absolute; right:15px; top:12px;" onclick="wpAddLocation()" onmouseover="this.src=\'media/icon_add_locationX.png\'" onmouseout="this.src=\'media/icon_add_location.png\'">';
-		else
-		{
-			str+= '<div title="add new location to game" style="cursor:pointer; right:15px; top:12px; width:38px; height:38px; '+PNGbgImage('icon_add_location.png')+'" onclick="wpAddLocation()" onmouseover="this.style.filter=PNGbgImage(\'icon_add_locationX.png\').substr(7)" onmouseout="this.style.filter=PNGbgImage(\'icon_add_location.png\').substr(7)"></div>';
-		}
-		
-		str+= '<br><a href="javascript://list_locations" onclick="wp_games.game['+this.id+'].listLocations()">[edit locations]</a>';
-		str+= '&nbsp;&nbsp;<a href="javascript://edit_info" onclick="JO.gameUpdate(' + this.id + ')">[edit info]</a>';
-		str+= '<br><a href="javascript://add_round" onclick="JO.roundCreate(' + this.id + ')">[add round]</a>&nbsp;&nbsp;<a href="javascript://del_round" onclick="JO.roundDelete(' + this.id +')">[del round]</a>';
-		str+= '<input type=button value="done" onclick="wpSelect(\'create\');this.blur()" style="position:absolute; right:11px; bottom:8px; width:50px;">';
-
-	var pane = panes['edit_game'];
-		pane.setContent(str);
-		pane.show();
-		
 	this.getLocations(true);
+}
+
+wpGame.prototype.editProfile = function()
+{
+	//edit game info	
+
+}
+
+wpGame.prototype.editRounds = function()
+{
+	//list game rounds, functions: edit,del,add
+	
+	wpCreatePane('list_rounds',this);
+	
+
+}
+
+wpGame.prototype.editRound = function()
+{
+	//add or remove players to round
+
+}
+
+wpGame.prototype.addRound = function()
+{
+	//create a new gameround
+
+}
+
+wpGame.prototype.deleteRound = function()
+{
+	//remove entire gameround (and related gameplays)
+	
 }
 
 wpGame.prototype.editLocation = function(p)
@@ -995,14 +751,6 @@ function wpRound(id,name)
 	this.name = name || 'gameround';
 
 	this.teams = new idArray('team');
-	
-	//->need query for this!
-	//
-//	SRV.get('q-game'
-	
-// 	this.teams.push( {id:27515, name:'red2'} );
-// 	this.teams.push( {id:27520, name:'blue2'} );
-// 	this.teams.push( {id:150608, name:'green2'} );
 }
 
 wpRound.prototype.addTeams = function(resp)

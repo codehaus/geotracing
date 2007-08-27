@@ -1,11 +1,11 @@
 <?php
 	// Detect and redirect mobile browsers
-	include("mobile-check.php");
+	include("mob/mobile-check.php");
 	if(detect_mobile_device()){
   		header('Location:mob');
   		exit;
   	}
 
-	header("Location:stable");
-	//include("dev.php");
+	//header("Location:stable");
+	header("Location:dev");
 ?>
