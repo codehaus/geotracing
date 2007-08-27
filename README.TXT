@@ -8,10 +8,6 @@ base       - core framework
   branches
 
 app             - geotracing applications
-  bliin         - bliin app
-    trunk       - main branch for bliin
-    tags
-    branches
   geoskating    - geoskating app
     trunk       - main branch for geoskating
     tags
