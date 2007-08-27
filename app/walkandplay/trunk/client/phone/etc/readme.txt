@@ -4,7 +4,7 @@ nokia 6600 NL
 - open app "Beheer"
 - kies "Opties | Toep.downloads"
 - kies "Opties | Bookmarkbeheer | Bookm. toevoegen"
-- vul in Adres: http://www.mlgk.nl/gt/ota/wp.jsp?u=red (afh van usernaam)
+- vul in Adres: http://www.walkandplay.com/wp/ota/wp.jsp?u=red (afh van usernaam)
 - kies "opslaan"
 - kies "Opties | downloaden"
 - volg installatie stappen (doorgaan, Ja, Ja, kies geh krt, betssande teop. geg opslaan, wachten.....)

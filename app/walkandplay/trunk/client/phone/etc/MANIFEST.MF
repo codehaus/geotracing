@@ -8,7 +8,7 @@ MicroEdition-Configuration: ${midlet.cldc}
 MicroEdition-Profile: ${midlet.midp}
 MIDlet-Permissions: ${midlet.permissions}
 MIDlet-Permissions-Opt: ${midlet.permissions.opt}
-kw-url: http://test.mlgk.nl/wp
+kw-url: http://test.walkandplay.com/wp
 kw-timeout: 20
 kw-user: yellow2
 kw-password: user

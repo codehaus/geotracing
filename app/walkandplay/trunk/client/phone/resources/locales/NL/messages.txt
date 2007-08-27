@@ -29,14 +29,16 @@ menu.Help=Help
 menu.Quit=Sluit af
 menu.Log=Log
 
-help.Topic1=Lost your GPS connection?
-help.Topic1Text=This can happen for several reasons. \n\n1)First the obvious make sure it's turned on and within bluetooth range (5-7 mtrs). \n\n2)If you have never used a GPS with this phone before then go to the GPS section and connect to the device first. After a reset the GPS is automatically found and connected. \n\n3)Sometimes the GPS-device can hang - just reset it.
-help.Topic2=Application 'hangs'?
-help.Topic2Text=Yes sometimes software hangs. Sometimes you can press the red 'cancel call' button to close the application. If that doesn't work just reboot your phone and simply start over again.
-help.Topic3=Login problems?
-help.Topic3Text=Make sure that your username and password correspond with those you can find under Settings/Account.
-help.Topic4=Where is my application?
-help.Topic4Text=Sometimes you think your application has disappeared all of a sudden. This can happen because another application like a mediaplayer has started up and now has the focus. Or a call or sms came in between. Most of the time when you close the 'upper' app this application appears again. Most Nokia's will also let you switch applications when holding the down the menu-button for a few secs.
+help.Topic1=Geen GPS verbinding?
+help.Topic1Text=Dit kan om een aantal verschillende redenen gebeuren. \n\n1)Als je een externe GPS ontvanger (staat aan toch ;) ) gebruikt moet je binnen bluetooth afstand zijn (5-7m). \n\n2)Als je je GPS nog nooit hebt verbonden met de applicatie zul je dat eerst onder 'GPS' moeten doen.\n\n3)Soms 'hangt' zelfs de GPS ontvanger - start deze opnieuw op.
+help.Topic2=Applicatie 'bevroren'?
+help.Topic2Text=Ja soms gebeurt dat :(. Tijd om opnieuw op te starten. Sommige telefoons sluiten applicaties af door op de 'hang op'-knop in te drukken.
+help.Topic3=Aanmeld problemen?
+help.Topic3Text=Zorg dat je gebruikersnaam en wachtwoord waarmee je je op de website hebt aangemeld corresponderen met deze in 'instellingen'/'gegevens'.
+help.Topic4=Waar is mijn applicatie?
+help.Topic4Text=Soms lijkt de applicatie te zijn verdwenen. Dat kan gebeuren doordat er bv een andere applicatie overheen is geopend.
+help.Topic5=Insturen media?
+help.Topic5Text=Je kunt foto's, video's en audio insturen door het te emailen. Je media wordt dan gekoppeld aan de lokatie waar je op dat moment bent.
 
 create.New=Nieuw spel
 create.Edit=Wijzig spel

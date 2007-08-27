@@ -34,9 +34,11 @@ help.Topic1Text=This can happen for several reasons. \n\n1)First the obvious mak
 help.Topic2=Application 'hangs'?
 help.Topic2Text=Yes sometimes software hangs. Sometimes you can press the red 'cancel call' button to close the application. If that doesn't work just reboot your phone and simply start over again.
 help.Topic3=Login problems?
-help.Topic3Text=Make sure that your username and password correspond with those you can find under Settings/Account.
+help.Topic3Text=Check if the username and password with which you signed up on the website correspond with those under 'settings'/'account'.
 help.Topic4=Where is my application?
 help.Topic4Text=Sometimes you think your application has disappeared all of a sudden. This can happen because another application like a mediaplayer has started up and now has the focus. Or a call or sms came in between. Most of the time when you close the 'upper' app this application appears again. Most Nokia's will also let you switch applications when holding the down the menu-button for a few secs.
+help.Topic5=Uploading media?
+help.Topic5Text=You can upload photo's, video's and audio by sending it by email. The media is then related to the position where you're at at that moment.
 
 create.New=New game
 create.Edit=Edit game
