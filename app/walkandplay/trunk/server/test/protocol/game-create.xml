@@ -191,7 +191,7 @@
 	<test id="game-del-medium-req">
 		<send id="client1">
 			<utopia-req>
-				<game-delete-medium-req id="${mediumid1}" />
+				<game-delete-medium-req id="${mediumid1}"/>
 			</utopia-req>
 		</send>
 
@@ -246,10 +246,127 @@
 		</expect>
 	</test>
 
-   	<test id="game-del-task-req">
+	<test id="game-update-task-content-req">
 		<send id="client1">
 			<utopia-req>
-				<game-delete-task-req id="${taskid}" />
+				<game-update-task-req id="${taskid}">
+					<task>
+						<name>strikvraag</name>
+						<description>wat wordt het meest in amsterdam gestolen ?</description>
+						<answer>fietsen</answer>
+					</task>
+				</game-update-task-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-task-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-update-task-location-req">
+		<send id="client1">
+			<utopia-req>
+				<game-update-task-req id="${taskid}">
+					<task>
+						<lon>5.92204666137695</lon>
+						<lat>53.3764702870686</lat>
+					</task>
+				</game-update-task-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-task-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="medium-insert-req-3">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>item3</name>
+						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<size>2758</size>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${mediumid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-update-task-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<game-update-task-req id="${taskid}">
+					<task>
+						<mediumid>${mediumid3}</mediumid>
+					</task>
+				</game-update-task-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-task-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-get-task-req">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-task" id="${taskid}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp cmd="q-task">
+					<record>
+						<id>${taskid}
+						</id>
+
+						<mediumid>${mediumid3}
+						</mediumid>
+
+						<mediumtype>binary
+						</mediumtype>
+
+						<name>strikvraag
+						</name>
+
+						<description>wat wordt het meest in amsterdam gestolen ?
+						</description>
+
+						<answer>fietsen
+						</answer>
+
+						<score>10
+						</score>
+
+					</record>
+
+				</query-store-rsp>
+
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-del-task-req">
+		<send id="client1">
+			<utopia-req>
+				<game-delete-task-req id="${taskid}"/>
 			</utopia-req>
 		</send>
 
@@ -307,9 +424,9 @@
 
 	<test id="game-get-list-req">
 		<send id="client1">
-				<utopia-req>
-					<query-store-req cmd="q-games-by-user" user="geoapp-user"/>
-				</utopia-req>
+			<utopia-req>
+				<query-store-req cmd="q-games-by-user" user="geoapp-user"/>
+			</utopia-req>
 		</send>
 
 		<expect id="client1">
