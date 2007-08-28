@@ -1,4 +1,4 @@
-<project name="WP Phone" default="run">
+<project name="MLGK Phone" default="run">
 
     <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
@@ -30,7 +30,7 @@
     <property name="project.etc.dir" value="${basedir}/etc"/>
     <property name="btsend" value="${project.etc.dir}/btsend.sh"/>
 
-    <property name="project.name" value="walkandplay"/>
+    <property name="project.name" value="mlgk"/>
     <!--<property name="projectname" value="mlgk"/>-->
 
     <!-- import user specific properties -->
