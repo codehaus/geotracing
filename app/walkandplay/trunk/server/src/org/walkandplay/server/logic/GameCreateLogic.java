@@ -2,6 +2,7 @@ package org.walkandplay.server.logic;
 
 import nl.justobjects.jox.dom.JXElement;
 import org.geotracing.handler.Location;
+import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.IO;
@@ -10,6 +11,7 @@ import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
 
 import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * Manage game objects.
@@ -286,6 +288,83 @@ public class GameCreateLogic implements Constants {
 		modifier.update(game);
 	}
 
+	/**
+	 * Update a task content, location and or medium.
+	 *
+	 * @param aPersonId person id doing the add
+	 * @throws OaseException Standard Utopia exception
+	 */
+	public void updateGameTask(int aPersonId, int aTaskId, JXElement aTaskElm) throws OaseException {
+		Record game = WPQueryLogic.getGameForGameTask(aTaskId);
+
+		// Throws exception if game cannot be updated by this person
+		verifyGameUpdate(aPersonId, game);
+
+		Finder finder = oase.getFinder();
+		Modifier modifier = oase.getModifier();
+		Relater relater = oase.getRelater();
+
+		Record task = finder.read(aTaskId, TASK_TABLE);
+
+		Transaction transaction = oase.getOaseSession().createTransaction();
+
+		try {
+			transaction.begin();
+
+			Vector fields = aTaskElm.getChildren();
+			JXElement nextField;
+			String nextFieldName, nextFieldValue, lat=null, lon=null, mediumId=null;
+			for (int i=0; i < fields.size(); i++) {
+				nextField = (JXElement) fields.get(i);
+				nextFieldName = nextField.getTag();
+				nextFieldValue = nextField.getText();
+				if (nextFieldValue == null)  {
+					continue;
+				}
+
+				if (task.hasField(nextFieldName)) {
+					task.setField(nextFieldName, nextFieldValue);
+				} else if (nextFieldName.equals(LON_FIELD)) {
+					// update location
+					lon = nextFieldValue;
+				} else if (nextFieldName.equals(LAT_FIELD)) {
+					// update location
+					lat = nextFieldValue;
+				} else if (nextFieldName.equals(MEDIUM_ID_FIELD)) {
+					// update medium
+					mediumId = nextFieldValue;
+				}
+			}
+
+			// Check what updates are required
+			if (task.isModified()) {
+				// task update
+				modifier.update(task);
+			}
+
+			// Location update
+			if (lon != null && lat != null) {
+				// Get location related to task and update
+				Record location = relater.getRelated(task, LOCATION_TABLE, null)[0];
+				location.setObjectField(Location.FIELD_POINT, PostGISUtil.createPointGeom(lon, lat));
+				modifier.update(location);
+			}
+
+			// Medium update
+			if (mediumId != null) {
+				// Replace old with new medium ;-)                         
+				Record newMedium = finder.read(Integer.parseInt(mediumId), MEDIUM_TABLE);
+				Record oldMedium = relater.getRelated(task, MEDIUM_TABLE, null)[0];
+				modifier.delete(oldMedium);
+				relater.relate(task, newMedium, RELTAG_MEDIUM);
+			}
+
+			transaction.commit();
+		} catch (Throwable t) {
+			transaction.cancel();
+			throw new OaseException("updateGameTask transaction failed", t);
+		}
+	}
 
 
 	/**

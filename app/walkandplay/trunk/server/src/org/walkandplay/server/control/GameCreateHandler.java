@@ -33,6 +33,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 	public final static String GAME_ADD_MEDIUM_SERVICE = "game-add-medium";
 	public final static String GAME_DEL_MEDIUM_SERVICE = "game-delete-medium";
 	public final static String GAME_ADD_TASK_SERVICE = "game-add-task";
+	public final static String GAME_UPDATE_TASK_SERVICE = "game-update-task";
 	public final static String GAME_DEL_TASK_SERVICE = "game-delete-task";
 
 	private Log log = Logging.getLog("GameCreateHandler");
@@ -64,6 +65,8 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 				response = deleteMediumReq(anUtopiaReq);
 			} else if (service.equals(GAME_ADD_TASK_SERVICE)) {
 				response = addTaskReq(anUtopiaReq);
+			} else if (service.equals(GAME_UPDATE_TASK_SERVICE)) {
+				response = updateTaskReq(anUtopiaReq);
 			} else if (service.equals(GAME_DEL_TASK_SERVICE)) {
 				response = deleteTaskReq(anUtopiaReq);
 			} else {
@@ -234,6 +237,30 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 		return createResponse(GAME_UPDATE_SERVICE);
 	}
 
+
+	/**
+	 * Update game task.
+	 *
+	 * @param anUtopiaReq
+	 * @return response
+	 * @throws OaseException
+	 * @throws UtopiaException
+	 */
+	public JXElement updateTaskReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
+		JXElement requestElement = anUtopiaReq.getRequestCommand();
+
+		// Id is required
+		HandlerUtil.throwOnNonNumAttr(requestElement, ID_FIELD);
+		HandlerUtil.throwOnMissingChildElement(requestElement, TAG_TASK);
+
+		JXElement taskElm = requestElement.getChildByTag(TAG_TASK);
+
+		int gameId = requestElement.getIntAttr(ID_FIELD);
+		int personId = HandlerUtil.getUserId(anUtopiaReq);
+		createLogic(anUtopiaReq).updateGameTask(personId, gameId, taskElm);
+
+		return createResponse(GAME_UPDATE_TASK_SERVICE);
+	}
 
 	protected GameCreateLogic createLogic(UtopiaRequest anUtopiaReq) {
 		return new GameCreateLogic(HandlerUtil.getOase(anUtopiaReq));

@@ -164,6 +164,32 @@ KW.WP = {
 	},
 
 /**
+ * Update task in Game.
+ * @param callback - user callback function or null
+ * @param taskId - id of task to be updated
+ * @param mediumId - id of medium  (optional)
+ * @param lon - x-coordinate (longitude)
+ * @param lat - y-coordinate (latitude)
+ */
+	gameUpdateTask: function(callback, taskId, name, desc, score, answer, mediumId, lon, lat) {
+		var req = KW.createRequest('game-update-task-req');
+
+		KW.UTIL.setAttr(req, 'id', taskId);
+
+		// Add medium element
+		var task = req.createElement('task');
+		KW.UTIL.addOptTextElement(task, 'name', name);
+		KW.UTIL.addOptTextElement(task, 'description', desc);
+		KW.UTIL.addOptTextElement(task, 'score', score);
+		KW.UTIL.addOptTextElement(task, 'answer', answer);
+		KW.UTIL.addOptTextElement(task, 'mediumid', mediumId);
+		KW.UTIL.addOptTextElement(task, 'lon', lon);
+		KW.UTIL.addOptTextElement(task, 'lat', lat);
+
+		req.documentElement.appendChild(task);
+		KW.utopia(req, callback);
+	},
+/**
  * Delete task from Game.
  * @param callback - user callback function or null
  * @param taskId - id of task
