@@ -428,11 +428,11 @@
 			</filterchain>
 		</concat>
 
-		<echo message="Copying jars to ${deploy.test.server}:${deploy.test.dir}/mob"/>
+		<echo message="Copying jars to ${deploy.test.server}:${deploy.test.dir}"/>
 		<exec executable="scp">
 			<arg line="-r"/>
 			<arg line="dist"/>
-			<arg line="${deploy.test.server}:${deploy.test.dir}/mob" />
+			<arg line="${deploy.test.server}:${deploy.test.dir}" />
 		</exec>
 	</target>
 
