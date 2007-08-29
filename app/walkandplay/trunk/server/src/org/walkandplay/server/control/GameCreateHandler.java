@@ -31,6 +31,7 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 	public final static String GAME_UPDATE_SERVICE = "game-update";
 	public final static String GAME_DELETE_SERVICE = "game-delete";
 	public final static String GAME_ADD_MEDIUM_SERVICE = "game-add-medium";
+	public final static String GAME_UPDATE_MEDIUM_SERVICE = "game-update-medium";
 	public final static String GAME_DEL_MEDIUM_SERVICE = "game-delete-medium";
 	public final static String GAME_ADD_TASK_SERVICE = "game-add-task";
 	public final static String GAME_UPDATE_TASK_SERVICE = "game-update-task";
@@ -61,6 +62,8 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 				response = deleteGame(anUtopiaReq);
 			} else if (service.equals(GAME_ADD_MEDIUM_SERVICE)) {
 				response = addMediumReq(anUtopiaReq);
+			} else if (service.equals(GAME_UPDATE_MEDIUM_SERVICE)) {
+				response = updateMediumReq(anUtopiaReq);
 			} else if (service.equals(GAME_DEL_MEDIUM_SERVICE)) {
 				response = deleteMediumReq(anUtopiaReq);
 			} else if (service.equals(GAME_ADD_TASK_SERVICE)) {
@@ -237,6 +240,29 @@ public class GameCreateHandler extends DefaultHandler implements Constants, Thre
 		return createResponse(GAME_UPDATE_SERVICE);
 	}
 
+	/**
+	 * Adds an medium to the game based with its location.
+	 *
+	 * @param anUtopiaReq
+	 * @return
+	 * @throws OaseException
+	 * @throws UtopiaException
+	 */
+	public JXElement updateMediumReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
+		// Check required input data
+		JXElement requestElement = anUtopiaReq.getRequestCommand();
+		HandlerUtil.throwOnNonNumAttr(requestElement, ID_FIELD);
+		HandlerUtil.throwOnMissingChildElement(requestElement, Medium.XML_TAG);
+
+		JXElement mediumElm = requestElement.getChildByTag(Medium.XML_TAG);
+
+		// Input data ok: let logic add medium with location
+		int mediumId = requestElement.getIntAttr(ID_FIELD);
+		int personId = HandlerUtil.getUserId(anUtopiaReq);
+		createLogic(anUtopiaReq).updateGameMedium(personId, mediumId, mediumElm);
+
+		return createResponse(GAME_UPDATE_MEDIUM_SERVICE);
+	}
 
 	/**
 	 * Update game task.

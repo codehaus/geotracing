@@ -5,6 +5,7 @@ import nl.justobjects.jox.parser.JXBuilder;
 import nl.justobjects.jox.parser.JXBuilderListener;
 import org.geotracing.handler.QueryLogic;
 import org.geotracing.handler.Track;
+import org.geotracing.handler.QueryHandler;
 import org.keyworx.amuse.core.Protocol;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Finder;
@@ -59,8 +60,19 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 					throw new IllegalArgumentException("Cannot find game with id=" + id);
 				}
 
-				result = Protocol.createResponse(QueryLogic.QUERY_STORE_SERVICE);
-				result.addChild(game.toXML());
+				result = createResponse(game);
+				addOwnerFields(result);
+			} else if ("q-game-medium".equals(aQueryName)) {
+				String id = getParameter(theParms, ATTR_ID, null);
+				throwOnMissingParm(ATTR_ID, id);
+
+				Record medium = getOase().getFinder().read(Integer.parseInt(id), MEDIUM_TABLE);
+				if (medium == null) {
+					throw new IllegalArgumentException("Cannot find medium with id=" + id);
+				}
+
+				result = createResponse(medium);
+				addLocationAttrs(result, MEDIUM_TABLE);
 			} else if ("q-gamerounds".equals(aQueryName)) {
 				String id = getParameter(theParms, "gameid", null);
 				throwOnMissingParm("gameid", id);
@@ -71,8 +83,37 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 					throw new IllegalArgumentException("Cannot find game with id=" + id);
 				}
 
+
 				Record[] gameRounds = getOase().getRelater().getRelated(game, GAMEROUND_TABLE, null);
 				result = createResponse(gameRounds);
+			} else if ("q-gameround".equals(aQueryName)) {
+				String id = getParameter(theParms, "id", null);
+				throwOnMissingParm("id", id);
+				Finder finder = getOase().getFinder();
+
+				Record gameRound = finder.read(Integer.parseInt(id), GAMEROUND_TABLE);
+				if (gameRound == null) {
+
+					throw new IllegalArgumentException("Cannot find game with id=" + id);
+				}
+
+				JXElement gameRoundElm = gameRound.toXML();
+				String players = getPlayerNamesForGameRound(gameRound.getId());
+				gameRoundElm.setChildText("players", players);
+				result = createResponse();
+				result.addChild(gameRoundElm);
+				addOwnerFields(result);
+			} else if ("q-players-for-gameround".equals(aQueryName)) {
+				String id = getParameter(theParms, ATTR_ID, null);
+				throwOnMissingParm(ATTR_ID, id);
+
+				String tables = "wp_gameround,utopia_person,utopia_account";
+				String fields = "utopia_account.loginname AS player";
+				String where = "wp_gameround.id = " + id;
+				String relations = "wp_gameround,utopia_person;utopia_account,utopia_person";
+				String postCond = null;
+				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
+				// log.info(result.toString());
 			} else if ("q-gameplays".equals(aQueryName) ||"q-scores".equals(aQueryName)) {
 				String id = getParameter(theParms, ATTR_ROUNDID, null);
 				throwOnMissingParm(ATTR_ROUNDID, id);
@@ -499,6 +540,28 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 			}
 		} catch (Throwable t) {
 			log.warn("Error query getMediumResultForMedium mediumId=" + aMediumId + " gamplayid=" + aGamePlayId, t);
+		}
+
+		return result;
+	}
+
+	public static String getPlayerNamesForGameRound(int aGameRoundId) throws UtopiaException {
+		String result = "";
+		try {
+			String tables = "wp_gameround,utopia_person,utopia_account";
+			String fields = "utopia_account.loginname AS name";
+			String where = "wp_gameround.id = " + aGameRoundId;
+			String relations = "wp_gameround,utopia_person;utopia_account,utopia_person";
+			String postCond = null;
+			Record[] records = QueryLogic.queryStore(tables, fields, where, relations, postCond);
+			for (int i=0; i < records.length; i++) {
+				result += records[i].getStringField(NAME_FIELD);
+				if (records.length > 0 && i < records.length-1) {
+					result += ",";
+				}
+			}
+		} catch (Throwable t) {
+			log.warn("Error query getPlayerNamesForGameRound roundId=" + aGameRoundId , t);
 		}
 
 		return result;

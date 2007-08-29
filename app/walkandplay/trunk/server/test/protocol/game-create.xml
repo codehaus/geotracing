@@ -167,6 +167,172 @@
 		</expect>
 	</test>
 
+	<test id="game-update-medium-attrs-req">
+		<send id="client1">
+			<utopia-req>
+				<game-update-medium-req id="${mediumid1}">
+					<medium>
+						<name>newname</name>
+					</medium>
+				</game-update-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-medium-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-update-medium-location-req">
+		<send id="client1">
+			<utopia-req>
+				<game-update-medium-req id="${mediumid1}">
+					<medium>
+						<lon>5.0</lon>
+						<lat>53.0</lat>
+					</medium>
+				</game-update-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-medium-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="game-check-updated-medium-1">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-game-medium" id="${mediumid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp cmd="q-game-medium">
+					<record>
+						<id>${mediumid1}
+						</id>
+
+						<owner>unknown
+						</owner>
+
+						<file>${mediumid1}.file
+						</file>
+
+						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg
+						</filename>
+
+						<name>newname
+						</name>
+
+						<description/>
+						<kind>binary
+						</kind>
+
+						<mime>application/octet-stream
+						</mime>
+
+						<state>0
+						</state>
+
+						<size>2758
+						</size>
+
+						<creationdate>1188395995110
+						</creationdate>
+
+						<modificationdate>1188395995323
+						</modificationdate>
+
+						<extra/>
+						<lon>5.0
+						</lon>
+
+						<lat>53.0
+						</lat>
+
+					</record>
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="medium-insert-req-new">
+		<send id="client1">
+			<utopia-req>
+				<medium-insert-req personid="${personid}">
+					<medium>
+						<name>replacedmediumname</name>
+						<filename>/var/keyworx/webapps/walkandplay/test/media/just-1964.jpg</filename>
+						<size>2758</size>
+					</medium>
+				</medium-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<medium-insert-rsp id="${newmediumid1}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-update-medium-replace-req">
+		<send id="client1">
+			<utopia-req>
+				<game-update-medium-req id="${mediumid1}">
+					<medium>
+						<mediumid>${newmediumid1}</mediumid>
+					</medium>
+				</game-update-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-medium-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-check-updated-medium-2">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-game-medium" id="${newmediumid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp cmd="q-game-medium">
+				</query-store-rsp>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="game-del-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<game-delete-medium-req id="${newmediumid1}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-delete-medium-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<!-- *** START TEXT MEDIA TESTS *** -->
+
 	<test id="game-add-text-medium-req">
 		<send id="client1">
 			<utopia-req>
@@ -183,15 +349,33 @@
 
 		<expect id="client1">
 			<utopia-rsp>
-				<game-add-medium-rsp id="${mediumid1}"/>
+				<game-add-medium-rsp id="${textmediumid1}"/>
 			</utopia-rsp>
 		</expect>
 	</test>
 
-	<test id="game-del-medium-req">
+	<test id="game-update-text-medium-replace-req">
 		<send id="client1">
 			<utopia-req>
-				<game-delete-medium-req id="${mediumid1}"/>
+				<game-update-medium-req id="${textmediumid1}">
+					<medium>
+						<text>de nieuwe text</text>
+					</medium>
+				</game-update-medium-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<game-update-medium-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="game-del-text-medium-req">
+		<send id="client1">
+			<utopia-req>
+				<game-delete-medium-req id="${textmediumid1}"/>
 			</utopia-req>
 		</send>
 

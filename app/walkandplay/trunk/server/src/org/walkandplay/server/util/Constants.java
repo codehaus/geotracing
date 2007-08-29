@@ -36,6 +36,7 @@ public interface Constants {
 	public final static String ATTR_TASKID = "taskid";
 	public final static String ATTR_MEDIUMID = "mediumid";
 	public final static String ATTR_ROUNDID = "roundid";
+	public final static String ATTR_ID = "id";
 
 	// table fields
 	public final static String ANSWER_FIELD = "answer";
@@ -60,6 +61,7 @@ public interface Constants {
 	public final static String ENDDATE_FIELD = "enddate";
 	public final static String POINT_FIELD = "point";
 	public final static String EVENTS_FIELD = "events";
+	public final static String FILE_FIELD = "file";
 	public final static String PLAYERS_FIELD = "players";
 	public final static String PLAY_STATE_FIELD = "playstate";
 	public final static String MEDIA_STATE_FIELD = "mediastate";
@@ -71,6 +73,7 @@ public interface Constants {
 	public final static String LAT_FIELD = "lat";
 	public final static String TEXT_FIELD = "text";
 	public final static String RESULT_FIELD = "result";
+	public final static String SIZE_FIELD = "size";
 	public final static String START_DATE_FIELD = "startdate";
 	public final static String TIME_FIELD = "time";
 	public final static String TASK_ID_FIELD = "taskid";
