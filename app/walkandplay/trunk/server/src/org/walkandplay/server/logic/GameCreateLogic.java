@@ -6,12 +6,14 @@ import org.geotracing.gis.PostGISUtil;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.common.util.IO;
+import org.keyworx.common.util.Sys;
 import org.keyworx.oase.api.*;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
 
 import java.util.HashMap;
 import java.util.Vector;
+import java.io.File;
 
 /**
  * Manage game objects.
@@ -235,7 +237,6 @@ public class GameCreateLogic implements Constants {
 	}
 
 
-
 	/**
 	 * Delete a game task and its location.
 	 *
@@ -289,6 +290,99 @@ public class GameCreateLogic implements Constants {
 	}
 
 	/**
+	 * Add medium and its location to a game.
+	 *
+	 * @param aPersonId person id creating the gameround
+	 * @throws OaseException Standard Utopia exception
+	 */
+	public Record updateGameMedium(int aPersonId, int aMediumId, JXElement aMediumElm) throws OaseException {
+		Record game = WPQueryLogic.getGameForGameMedium(aMediumId);
+
+		// Throws exception if game cannot be updated by this person
+		verifyGameUpdate(aPersonId, game);
+		Finder finder = oase.getFinder();
+		Modifier modifier = oase.getModifier();
+		Relater relater = oase.getRelater();
+
+		Record medium = finder.read(aMediumId, MEDIUM_TABLE);
+
+		Transaction transaction = oase.getOaseSession().createTransaction();
+		Record mediumRecord = null;
+		try {
+			transaction.begin();
+
+			Vector fields = aMediumElm.getChildren();
+			JXElement nextField;
+			String nextFieldName, nextFieldValue, lat = null, lon = null, newMediumId = null, text = null;
+			// Go through fields to see what needs to be updated/replaced
+			// i.e. a location and/or the medium itself
+			for (int i = 0; i < fields.size(); i++) {
+				nextField = (JXElement) fields.get(i);
+				nextFieldName = nextField.getTag();
+				nextFieldValue = nextField.getText();
+				if (nextFieldValue == null) {
+					continue;
+				}
+
+				if (medium.hasField(nextFieldName)) {
+					// update standard medium field
+					medium.setField(nextFieldName, nextFieldValue);
+				} else if (nextFieldName.equals(LON_FIELD)) {
+					// update location
+					lon = nextFieldValue;
+				} else if (nextFieldName.equals(LAT_FIELD)) {
+					// update location
+					lat = nextFieldValue;
+				} else if (nextFieldName.equals(TEXT_FIELD)) {
+					// replace text medium
+					text = nextFieldValue;
+				} else if (nextFieldName.equals(MEDIUM_ID_FIELD)) {
+					// replace medium
+					newMediumId = nextFieldValue;
+				}
+			}
+
+			// Check if we should replace the medium or just update attrs
+			if (newMediumId != null) {
+				// replace current medium with a new medium using supplied medium id
+				Record  newMedium = finder.read(Integer.parseInt(newMediumId), MEDIUM_TABLE);
+
+				// Always replace old with new medium ;-)
+				Record location = relater.getRelated(medium, LOCATION_TABLE, null)[0];
+				modifier.delete(medium);
+				relater.relate(location, newMedium, RELTAG_MEDIUM);
+			} else if (text != null) {
+				// Replace file with new text by making new file
+				text = IO.forHTMLTag(text);
+				File file = Sys.string2File(System.getProperty("java.io.tmpdir") + "/r" + aMediumId + ".txt", text);
+
+				FileField fileField = medium.createFileField(file);
+				medium.setFileField(FILE_FIELD, fileField);
+				medium.setLongField(SIZE_FIELD, file.length());
+			}
+
+			if (medium.isModified()) {
+				// medium update, e.g. name description or text file replaced
+				modifier.update(medium);
+			}
+
+			// Location update
+			if (lon != null && lat != null) {
+				// Get location related to task and update
+				Record location = relater.getRelated(medium, LOCATION_TABLE, null)[0];
+				location.setObjectField(Location.FIELD_POINT, PostGISUtil.createPointGeom(lon, lat));
+				modifier.update(location);
+			}
+
+			transaction.commit();
+		} catch (Throwable t) {
+			transaction.cancel();
+			throw new OaseException("updateGameMedium transaction failed", t);
+		}
+		return mediumRecord;
+	}
+
+	/**
 	 * Update a task content, location and or medium.
 	 *
 	 * @param aPersonId person id doing the add
@@ -313,12 +407,12 @@ public class GameCreateLogic implements Constants {
 
 			Vector fields = aTaskElm.getChildren();
 			JXElement nextField;
-			String nextFieldName, nextFieldValue, lat=null, lon=null, mediumId=null;
-			for (int i=0; i < fields.size(); i++) {
+			String nextFieldName, nextFieldValue, lat = null, lon = null, mediumId = null;
+			for (int i = 0; i < fields.size(); i++) {
 				nextField = (JXElement) fields.get(i);
 				nextFieldName = nextField.getTag();
 				nextFieldValue = nextField.getText();
-				if (nextFieldValue == null)  {
+				if (nextFieldValue == null) {
 					continue;
 				}
 
@@ -352,7 +446,7 @@ public class GameCreateLogic implements Constants {
 
 			// Medium update
 			if (mediumId != null) {
-				// Replace old with new medium ;-)                         
+				// Replace old with new medium ;-)
 				Record newMedium = finder.read(Integer.parseInt(mediumId), MEDIUM_TABLE);
 				Record oldMedium = relater.getRelated(task, MEDIUM_TABLE, null)[0];
 				modifier.delete(oldMedium);
@@ -371,7 +465,7 @@ public class GameCreateLogic implements Constants {
 	 * Throw exception if game cannot be updated.
 	 *
 	 * @param aPersonId person id to check
-	 * @param aGameId record id of game to be checked
+	 * @param aGameId   record id of game to be checked
 	 * @throws OaseException thrown if verify failed
 	 */
 	public void verifyGameUpdate(int aPersonId, int aGameId) throws OaseException {
@@ -381,7 +475,7 @@ public class GameCreateLogic implements Constants {
 	/**
 	 * Throw exception if game cannot be updated.
 	 *
-	 * @param aPersonId person id to check
+	 * @param aPersonId   person id to check
 	 * @param aGameRecord record of game to be checked
 	 * @throws OaseException thrown if verify failed
 	 */
@@ -538,7 +632,7 @@ public class GameCreateLogic implements Constants {
 	 * Throw exception if person id is not the owner
 	 *
 	 * @param aPersonId person id to check
-	 * @param aRecord record to be checked
+	 * @param aRecord   record to be checked
 	 * @throws OaseException Standard Utopia exception
 	 */
 	protected void throwIfNotOwner(int aPersonId, Record aRecord) throws OaseException {

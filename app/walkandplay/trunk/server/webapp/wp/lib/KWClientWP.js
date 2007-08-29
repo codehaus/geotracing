@@ -63,6 +63,10 @@ KW.WP = {
  * Add task to Game.
  * @param callback - user callback function or null
  * @param gameId - id of item to be commented
+ * @param name - name
+ * @param desc - description
+ * @param score - score
+ * @param answer - answer 
  * @param mediumId - id of medium
  * @param lon - x-coordinate (longitude)
  * @param lat - y-coordinate (latitude)
@@ -164,12 +168,70 @@ KW.WP = {
 	},
 
 /**
+ * Update medium in Game.
+ * @param callback - user callback function or null
+ * @param mediumId - id of medium to be updated
+ * @param newMediumId - id of medium to replace existing medium (optional)
+ * @param name - name (optional)
+ * @param desc - description (optional)
+ * @param lon - x-coordinate (longitude) (optional)
+ * @param lat - y-coordinate (latitude)  (optional)
+ */
+	gameUpdateMedium: function(callback, mediumId, newMediumId, name, desc, lon, lat) {
+		var req = KW.createRequest('game-update-medium-req');
+
+		KW.UTIL.setAttr(req, 'id', mediumId);
+
+		// Create medium element with supplied fields
+		var medium = req.createElement('medium');
+		KW.UTIL.addOptTextElement(medium, 'mediumid', newMediumId);
+		KW.UTIL.addOptTextElement(medium, 'name', name);
+		KW.UTIL.addOptTextElement(medium, 'description', desc);
+		KW.UTIL.addOptTextElement(medium, 'lon', lon);
+		KW.UTIL.addOptTextElement(medium, 'lat', lat);
+
+		req.documentElement.appendChild(medium);
+		KW.utopia(req, callback);
+	},
+
+		/**
+ * Update medium in Game.
+ * @param callback - user callback function or null
+ * @param mediumId - id of medium to be updated
+ * @param newText - new text to replace existing medium text (optional)
+ * @param name - name (optional)
+ * @param desc - description (optional)
+ * @param lon - x-coordinate (longitude) (optional)
+ * @param lat - y-coordinate (latitude)  (optional)
+ */
+	gameUpdateTextMedium: function(callback, mediumId, newText, name, desc, lon, lat) {
+		var req = KW.createRequest('game-update-medium-req');
+
+		KW.UTIL.setAttr(req, 'id', mediumId);
+
+		// Create medium element with supplied fields
+		var medium = req.createElement('medium');
+		KW.UTIL.addOptTextElement(medium, 'text', newText);
+		KW.UTIL.addOptTextElement(medium, 'name', name);
+		KW.UTIL.addOptTextElement(medium, 'description', desc);
+		KW.UTIL.addOptTextElement(medium, 'lon', lon);
+		KW.UTIL.addOptTextElement(medium, 'lat', lat);
+
+		req.documentElement.appendChild(medium);
+		KW.utopia(req, callback);
+	},
+		
+/**
  * Update task in Game.
  * @param callback - user callback function or null
  * @param taskId - id of task to be updated
+ * @param name - name (optional)
+ * @param desc - description (optional)
+ * @param score - score (optional)
+ * @param answer - answer (optional)
  * @param mediumId - id of medium  (optional)
- * @param lon - x-coordinate (longitude)
- * @param lat - y-coordinate (latitude)
+ * @param lon - x-coordinate (longitude) (optional)
+ * @param lat - y-coordinate (latitude) (optional)
  */
 	gameUpdateTask: function(callback, taskId, name, desc, score, answer, mediumId, lon, lat) {
 		var req = KW.createRequest('game-update-task-req');
