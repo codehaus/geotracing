@@ -299,9 +299,18 @@ input, textarea
 }
 
 
-#list_rounds
+.list
 {
 	width:208px;
 	height:170px;
 	overflow:auto;
+}
+.framed
+{
+	position:absolute;
+	
+	width:220px;
+	height:150px;
+	
+	border:2px solid #ffffff;
 }

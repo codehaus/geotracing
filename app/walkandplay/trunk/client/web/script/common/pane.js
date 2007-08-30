@@ -58,6 +58,7 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent,autosize)
 
 	var pane = document.createElement('div');
 		pane.style.visibility = 'hidden'; //hide during creation
+		pane.id = this.id;
 		pane.style.display = 'none';
 		pane.className = (!this.autosize)? 'pane':'pane_autosize';
 		pane.style.left = this.x +"px";

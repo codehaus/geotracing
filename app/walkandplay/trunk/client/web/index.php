@@ -51,7 +51,7 @@
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
 
-<script type="text/javascript" src="script/Justs.js"></script>
+<!-- <script type="text/javascript" src="script/Justs.js"></script> -->
 
 <!-- development -->
 
@@ -119,9 +119,6 @@ function init()
 		PL._showStatus = function() { }; //no pushlet statusbar updates
 
 		wpStartup();
-
-		//login
- 		wpAutoLogin();
 
 		/* route gmap events */
 		

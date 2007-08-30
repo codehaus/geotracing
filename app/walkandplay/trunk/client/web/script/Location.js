@@ -108,8 +108,10 @@ function wpLocation(collection,id,p,type,state,name)
 				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
 				//delete button
 				//if (obj.collection.name=='game' && wp_mode=='create')
-				if (wp_mode=='create')
+				if (wp_mode=='create' && wp_games.game[wp_selected_game].state!=2)
 				{
+					//str+= ' <a href="javascript://edit_location" onclick="wp_games.game['+wp_game_edit+'].locations.location['+obj.id+'].edit()" class="red">edit</a> ';
+					str+= ' <a href="javascript://edit_location" onclick="wp_games.game['+wp_game_edit+'].editLocation('+obj.id+')" class="red">edit</a> ';
 					str+= ' <a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')" class="red">delete</a>';
 				}
 			infopane.content.innerHTML = str;
@@ -226,6 +228,18 @@ wpLocation.prototype.zoomTo = function()
 	gmap.setCenter(this.geo,17);
 }
 
+wpLocation.prototype.refresh = function(name)
+{
+	/*	update name of location
+		and refresh display (if open)
+	*/
+	
+	this.name = name;
+	if (this.expanded) this.expand();
+	
+	if (panes['list_locations'] && panes['list_locations'].visible) wp_games.game[wp_selected_game].listLocations();
+}
+
 wpLocation.prototype.expand = function()
 {
 	if (this.state!='enabled')
@@ -250,10 +264,90 @@ wpLocation.prototype.expand = function()
 	tmp_debug(2,'expand ',this.id);
 }
 
+
+
+wpLocation.prototype.updateContents = function(elm)
+{
+	var form = document.forms['locationform'];
+	var type = form.type.value;
+	var obj = this;	
+
+	//validate form
+	var msg = '';
+	if (form.name.value=='') msg = 'please add a name for this location';
+	//else if (type!='text' && form.file.value=='') msg = 'please select a mediafile for upload';
+	else if (type=='task')
+	{
+		if (form.desc.value=='') msg = 'please add a task description';
+		else if (form.answer.value=='') msg = 'please add an answer';
+	}
+	else if (type=='text')
+	{
+		if (form.text.value=='') msg = 'please add a text';
+	}
+	if (msg!='')
+	{
+		alert(msg);
+		return false;
+	}
+
+	//is there a medium to upload?
+	if (form.file.value!='' && !elm)
+	{
+		KW.MEDIA.upload(function(elm) { obj.updateContents(elm) },form);
+		return false;
+	}
+	
+	//new medium is uploaded (or failed)
+	if (elm)
+	{
+		var mediumid = elm.getAttribute('id');
+		tmp_debug(1,'uploaded new medium, id=',mediumid);
+
+		if (!mediumid)
+		{
+			alert('sorry, error while uploading.\nplease try again');
+			return false;
+		}
+	}
+	else var mediumid = null;
+	
+	
+	//apply update
+	var name = form.name.value;
+	var desc = form.desc.value;
+	
+	switch (type)
+	{
+		case 'task':
+			var answer = form.answer.value;
+			var score = form.score.value;
+			KW.WP.gameUpdateTask(function() { wp_games.game[wp_selected_game].getLocations() },this.id,name,desc,score,answer,mediumid);
+			break;
+		
+		case 'medium':
+			KW.WP.gameUpdateMedium(function() { wp_games.game[wp_selected_game].getLocations() },this.id,mediumid,name,desc);
+			break;
+			
+		case 'text':
+			var text = form.text.value;
+			KW.WP.gameUpdateTextMedium(function() { wp_games.game[wp_selected_game].getLocations() },mediumid,text,name,desc);
+			break;
+	}
+	
+	return false;
+	
+	
+}
+
+
 wpLocation.prototype.updateDetails = function(resp)
 {
 	if (resp)
 	{
+		//clear first;
+		panes['display'].setContent('<div id="media_display" style="width:228px; margin-bottom:5px"></div>');	
+	
 		var record = resp[0];
 		
 		this.mediumid = (this.type=='medium')? this.id:record.getField('mediumid');
@@ -272,7 +366,7 @@ wpLocation.prototype.updateDetails = function(resp)
 		
 		//display pane contents
 		var str = '';
-			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onmouseup="wp_location_expanded.collapse()">close</a>';
+			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onclick="wp_location_expanded.collapse()">close</a>';
 			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
 			str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
 			str+= '<div id="display_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
@@ -284,7 +378,7 @@ wpLocation.prototype.updateDetails = function(resp)
 		if (this.type=='task' && wp_mode=='create')
 		{
 			//show answer and score
-			str+= '<div id="taskform" style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; margin-bottom:10px;" class="setbg">';
+			str+= '<div style="position:relative; margin-left:-5px; padding:5px; width:225px; margin-top:6px; margin-bottom:10px;" class="setbg">';
 			this.answer = record.getField('answer');
 			this.score = record.getField('score');
 			str+= 'answer: '+this.answer+'<br>';
@@ -364,6 +458,8 @@ wpLocation.prototype.updateAnswer = function(answerstate,answer,medium,score)
 
 wpLocation.prototype.collapse = function()
 {
+	panes.hide('display');
+	
 	this.expanded = false;
 	wp_location_expanded = false;
 	this.changeIcon(this.icon);
@@ -373,8 +469,8 @@ wpLocation.prototype.collapse = function()
 //	panes['display'].setContent('');
 
 //	panes['display'].hide(1);
-	panes['display'].content.firstChild.innerHTML = '';
-	panes.hide('display');
+	//panes['display'].content.firstChild.innerHTML = '';
+
 }
 
 wpLocation.prototype.changeIcon = function(src)
@@ -385,6 +481,13 @@ wpLocation.prototype.changeIcon = function(src)
 		this.div.style.filter = PNGbgImage(src).substr(7);
 	}
 }
+
+// wpLocation.prototype.edit = function()
+// {
+// 	//edit location task or medium
+// 	alert('edit location id='+this.id);
+// 	
+// }
 
 wpLocation.prototype.dispose = function()
 {
