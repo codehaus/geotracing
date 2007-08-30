@@ -69,10 +69,10 @@ function wpCreatePaneUser(type,obj)
 				else str+= '<div title="add new location to game" style="cursor:pointer; right:15px; top:12px; width:38px; height:38px; '+PNGbgImage('icon_add_location_w.png')+'" onclick="wpAddLocation()" onmouseover="this.style.filter=PNGbgImage(\'icon_add_location_wX.png\').substr(7)" onmouseout="this.style.filter=PNGbgImage(\'icon_add_location_w.png\').substr(7)"></div>';
 			}
 			str+= '<br>';
-			if (obj.state==2) str+= '<img src="media/locked.gif"> <span class="red">remove all gamerounds to unlock and edit game locations</span>';
+			if (obj.state==2) str+= '<img src="media/locked.gif"> <span class="red">remove all gamerounds to unlock and edit game..</span>';
 
 			if (obj.state!=2) str+= '<br>[<a href="javascript://edit_profile" onclick="wp_games.game['+obj.id+'].editProfile()">edit profile</a>]';
-			str+= '<br>[<a href="javascript://edit_rounds" onclick="wp_games.game['+obj.id+'].editRounds();this.blur()">edit gamerounds</a>]';
+			str+= '<br>[<a href="javascript://edit_rounds" onclick="wp_games.game['+obj.id+'].editRounds();this.blur()">edit/add gamerounds</a>]';
 			str+= '<br>[<a href="javascript://delete_game" onclick="wpDeleteGame('+obj.id+');this.blur()">delete game</a>]';
 			 
 			str+= '<input type=button value="done" onclick="wpSelect(\'create\');this.blur()" style="position:absolute; right:11px; bottom:8px; width:50px;">';

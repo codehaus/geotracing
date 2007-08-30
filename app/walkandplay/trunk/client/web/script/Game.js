@@ -194,7 +194,7 @@ function wpSelectGame(type,id,roundid,playid)
 			if (!wp_plays[wp_selected_play]) wp_plays.push( new wpPlay(wp_selected_play) );
 
 			//close list, open play display
-			panes.hide('list_games');
+			panes.hide('list_play');
 			panes['play'].clearContents();
 			panes.show('play');
 			
