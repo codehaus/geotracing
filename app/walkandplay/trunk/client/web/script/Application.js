@@ -9,10 +9,10 @@ wp_set_autologin = false;
 wp_login = new Object();
 wp_login_action = false;
 
-wp_mode = 'create'; 
+//defaults
+wp_mode = 'view'; 
 wp_viewmode = 'archived';
 wp_viewstate = 'paused';
-
 
 function wpStartup()
 {
@@ -25,8 +25,13 @@ function wpStartup()
  	wpToggleAutoLogin(); //auto-login enabled by default
  	
  	wpGameInit();
- 	
- 	wpSelect(wp_mode);
+
+	wp_login_action = 'create'; //switch to create mode if autologin
+	wpAutoLogin();
+	
+	
+	
+	//wpSelect(wp_mode);
 }
 
 function wpSelect(mode)
@@ -67,6 +72,10 @@ function wpSelect(mode)
 	}
 	
 	//hide panes
+	panes.hide('list_create','list_play','list_view');
+	panes.hide('edit_game','edit_rounds','edit_round','edit_profile');
+	panes.hide('game_profile','display');
+	
 	panes.hide('edit_game','list_games','list_rounds','list_locations','display','play','view');
 	
 	wp_mode = mode;
@@ -88,7 +97,8 @@ function wpSelect(mode)
 			
 		case 'play':
 			play = '<span class="red" style="cursor:pointer" onclick="wpSelect()">play</span>';
-			panes['play'].content.lastChild.innerHTML = '<a href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
+			panes['play'].clearContents();
+			//panes['play'].content.lastChild.innerHTML = '<a href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
 			
 			//get scheduled games for user
 			SRV.get('q-play-status-by-user',wpListGames,'user',wp_login.loginname);
@@ -96,7 +106,8 @@ function wpSelect(mode)
 			
 		case 'view':
 			view = '<span class="red" style="cursor:pointer" onclick="wpSelect()">view</span>';
-			panes['play'].content.lastChild.innerHTML = '';
+			panes['play'].clearContents();
+			//panes['play'].content.lastChild.innerHTML = '';
 			
 			//get available games (live or archived)
 			var select = wp_viewmode;
@@ -134,10 +145,13 @@ function wpAutoLogin()
 		wpDoLogin(true);
 		return true;
 	}
+	else wpSelect('view');
 }
 
 function wpLogin()
 {
+	wpSelect();
+	//panes.hide('list_view');
 	panes['login'].show();
 	if (!(browser.cssfilter&&browser.pngsupport)) document.forms['loginform'].login.focus();
 }
@@ -258,13 +272,6 @@ function wpLoggedIn()
 	/* load registered user gui */
 
 	wpLoadScript('GuiPrivate.js');
-	
-	//switch mode
-	if (wp_login_action)
-	{
-		wpSelect(wp_login_action);
-		wp_login_action = false;
-	}
 }
 
 function wpLoadScript(src)
@@ -325,7 +332,7 @@ function wpMapClick(m,p)
 		document.onmousemove = null;
 
 		//add tmp location and edit
-		wp_games.game[wp_game_selected].editLocation(p);
+		wp_games.game[wp_game_selected].newLocation(p);
 	}
 }
 
@@ -351,9 +358,10 @@ function wpMapZoomend(b,e)
 	tmp_debug(3,'zoomend');
 	
 	//position editLocation pane
-	if (wp_locations.location['new'])
+	if (panes['edit_location'] && panes['edit_location'].visible)
 	{
-		var px = gmap.fromLatLngToDivPixel(wp_locations.location['new'].geo);
+		var geo = (wp_locations.location['new'])? wp_locations.location['new'].geo:wp_selected_location.geo;
+		var px = gmap.fromLatLngToDivPixel(geo);
 		panes['edit_location'].setPosition(px.x,px.y);
 	}
 }

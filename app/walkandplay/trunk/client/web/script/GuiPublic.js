@@ -55,10 +55,33 @@ function wpCreatePane(type,obj)
 			break;
 
 		case 'game_profile':
-			var pane = new Pane('game_profile',100,160,400,300,1,true);
-			str+= '<span class="red" style="font-size:14px; font-weight:bold">game profile</span><br>';
+			var pane = new Pane('game_profile',340,110,500,400,1,true);
+			str+= '<span class="red" style="font-size:14px; font-weight:bold">game profile</span>&nbsp; <b>"'+obj.game.name+'"</b><br>';
+			str+= 'created by <span class="red">'+obj.game.ownername+'</span><br><br>';
+			str+= '<a style="position:absolute; right:12px; top:6px" href="javascript://close" onclick="wpSelect(\'view\')">close</a>';
+			
+//			str+= '<br><div id="profile_data"></div>';
+
+			str+= '<div style="position:relative; margin-left:-5px; padding:5px; width:498px; background-color:#eeeeee; margin-bottom:10px;">';
+			str+= obj.game.description+'<br>';
+			str+= '</div>';
+
+			str+= '<div style="font-style:italic"><br>'+obj.game.intro+'<br><br></div>';
+			
+			str+= '<br><fieldset style="position:absolute; left:10px; bottom:10px;" class="framed"><legend> <b>stats</b> </legend>';
+			str+= '<div id="profile_stats" style="width:226px; height:145px; overflow:auto;">';
+			str+= obj.stats;
+			str+= '</div></fieldset>';
+			str+= '<br><fieldset style="position:absolute; right:10px; bottom:10px;"  class="framed"><legend> <b>gamerounds</b> </legend>';
+			str+= '<div id="profile_rounds" style="width:226px; height:145px; overflow:auto;">';
+			str+= obj.rounds;
+			str+= '</div></fieldset>';
+			
+			
+			str+= '<div id="profile_submit" style="right:15px; bottom:15px;"></div>';
 			pane.setContent(str);
 			pane.show();
+			//pane.update = function(str) { this.content.lastChild.innerHTML = str; };
 			break;
 
 		case 'list_rounds':
@@ -91,6 +114,17 @@ function wpCreatePane(type,obj)
 			}
 			*/
 			break
+			
+			
+		case 'location_info':
+			var pane = new Pane('location_info',0,0,140,20,250,false,gmap.getPane(G_MAP_FLOAT_PANE));
+			pane.content.onmousedown = function(e)
+			{
+				if (!e) e = event;
+				cancelEvents(e);
+			}
+			pane.content.style.paddingTop = '4px';
+			break;
 			
 		case 'view':
 			var pane = new Pane('view',100,160,180,135,1,true);
@@ -171,14 +205,34 @@ function wpCreatePane(type,obj)
 			}
 			break;
 			
-		case 'list_games_view':
-			var pane = new Pane('list_games',100,160,200,200,1,true);
-			if (wp_viewmode=='archived') str+= '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
-			else str+= '<b><a href="javascript://archived_games">archived</a> or <span class="red">live games</span></b><br><br>';
-			str+= '<div id="list_rounds"></div>';
+// 		case 'list_games_view':
+// 			var pane = new Pane('list_games',100,160,200,200,1,true);
+// 			if (wp_viewmode=='archived') str+= '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
+// 			else str+= '<b><a href="javascript://archived_games">archived</a> or <span class="red">live games</span></b><br><br>';
+// 			str+= '<div id="list_rounds"></div>';
+// 			pane.setContent(str);
+// 			break;
+
+		case 'list_view':
+			var pane = new Pane('list_view',100,160,200,200,1,true);
+			//header
+			if (wp_viewmode=='archived')
+			{
+				var header = '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
+			}
+			else
+			{
+				var header = '<a href="javascript://archived_games">archived</a> or <span class="red">live games</span><br><br>';
+			}
+			str+= header;
+			str+= '<div class="list"></div>';
 			pane.setContent(str);
+			pane.updateList = function(list)
+			{
+				this.content.lastChild.innerHTML = list;
+			}
 			break;
-		
+
 		default:
 			if (wp_login.id) wpCreatePaneUser(type,obj);
 	}
@@ -191,7 +245,7 @@ function wpEmbedMedium(type,id)
 	switch (type)
 	{
 		case 'text':
-			str+= DH.getURL('/wp/media.srv?id='+id);
+			str+= DH.getURL('/wp/media.srv?id='+id+'&t='+new Date().getTime());
 			break;
 		
 		case 'image':

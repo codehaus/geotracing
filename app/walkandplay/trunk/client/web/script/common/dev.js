@@ -64,4 +64,18 @@ function tmp_debug(target)
 	return t;
 }
 
+function tmp_print_object(obj,html)
+{
+	var str = '';
+	var val = '';
+	for (var p in obj)
+	{
+		val = typeof(obj[p])=='function'? 'function()':obj[p];
+		str+= p+' = '+val;
+		str+= html? '<br>':'\n';
+	}
+	
+	return str;
+}
+
 //haveqt = false;
