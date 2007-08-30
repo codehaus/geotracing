@@ -185,7 +185,7 @@ function wpCreatePane(type,obj)
 			var pane = new Pane('play',110,0,590,80,1,true);
 			
 			str+= '<div style="left:11px; top:9px; width:160px">x</div>';
-			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#dbdbdb; height:80px">x</div>';
+			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#eeeeee; height:80px">x</div>';
 			str+= '<div style="left:400px; top:9px; width:215px">x</div>';
 			str+= '<div style="position:absolute; right:13px; top:5px"></div>';
 			pane.setContent(str);

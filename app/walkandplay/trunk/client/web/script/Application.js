@@ -98,7 +98,7 @@ function wpSelect(mode)
 		case 'play':
 			play = '<span class="red" style="cursor:pointer" onclick="wpSelect()">play</span>';
 			panes['play'].clearContents();
-			//panes['play'].content.lastChild.innerHTML = '<a href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
+			panes['play'].content.lastChild.innerHTML = '<a href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
 			
 			//get scheduled games for user
 			SRV.get('q-play-status-by-user',wpListGames,'user',wp_login.loginname);
@@ -107,7 +107,7 @@ function wpSelect(mode)
 		case 'view':
 			view = '<span class="red" style="cursor:pointer" onclick="wpSelect()">view</span>';
 			panes['play'].clearContents();
-			//panes['play'].content.lastChild.innerHTML = '';
+			panes['play'].content.lastChild.innerHTML = '';
 			
 			//get available games (live or archived)
 			var select = wp_viewmode;
