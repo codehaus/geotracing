@@ -70,11 +70,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public void setHome() {
         //#style mainScreen
-        menuScreen = new List("Walk and Play", List.IMPLICIT);
+        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
-        //#style mainTraceCommand
-        menuScreen.append(Locale.get("menu.Create"), null);
         //#style mainGPSCommand
         menuScreen.append(Locale.get("menu.GPS"), null);
         //#style mainSettingsCommand
@@ -85,16 +83,6 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Quit"), null);
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
-       /* //#style mainLogCommand
-        menuScreen.append("test display", null);
-        //#style mainLogCommand
-        menuScreen.append("video display", null);
-        //#style mainLogCommand
-        menuScreen.append("video form", null);
-        //#style mainLogCommand
-        menuScreen.append("GPS test display", null);
-        //#style mainLogCommand
-        menuScreen.append("Friend Finder", null);*/
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
@@ -193,52 +181,26 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 Display.getDisplay(this).setCurrent(activeApp);
                 break;
             case 1:
-                // Create
-                createDisplay = new CreateDisplay(this);
-                activeApp = createDisplay;
-                Display.getDisplay(this).setCurrent(activeApp);
-                break;
-            case 2:
                 // GPS
                 Display.getDisplay(this).setCurrent(new GPSDisplay(this));
                 break;
-            case 3:
+            case 2:
                 // Settings
                 Display.getDisplay(this).setCurrent(new SettingsDisplay(this));
                 break;
-            case 4:
+            case 3:
                 // Help
                 Display.getDisplay(this).setCurrent(new HelpDisplay(this));
                 break;
-            case 5:
+            case 4:
                 // Quit
                 Display.getDisplay(this).setCurrent(new SplashDisplay(this, -1));
                 //notifyDestroyed();
                 break;
-            case 6:
+            case 5:
                 // Log
                 Log.view(this);
-                break;
-            case 7:
-                // test display
-                Display.getDisplay(this).setCurrent(new TestDisplay(this));
-                break;
-            case 8:
-                // video canvas
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() +"/media.srv?id=26527", null));
-                break;
-            case 9:
-                // video form
-                Display.getDisplay(this).setCurrent(new VideoForm(this, getKWUrl() + "/media.srv?id=26527"));
-                break;
-            case 10:
-                // gps test display
-                Display.getDisplay(this).setCurrent(new GPSTestDisplay(this));
-                break;
-            case 11:
-                // friendfinder display
-                Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
-                break;
+                break;            
         }
     }
 
