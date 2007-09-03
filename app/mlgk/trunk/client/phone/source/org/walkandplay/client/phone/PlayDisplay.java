@@ -158,9 +158,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         addCommand(ZOOM_OUT_CMD);
         addCommand(TOGGLE_MAP_CMD);
         addCommand(ADD_TEXT_CMD);
-        addCommand(ADD_PHOTO_CMD);
+        /*addCommand(ADD_PHOTO_CMD);*/
         addCommand(ADD_AUDIO_CMD);
-        addCommand(IM_CMD);
+        /*addCommand(IM_CMD);*/
         addCommand(SHOW_INTRO_CMD);
         addCommand(SCORES_CMD);
         addCommand(SHOW_LOG_CMD);
@@ -232,12 +232,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 }*/
 
                 // task
-                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                     Log.log("add a hit!!!!");
                     JXElement hit = new JXElement("task-hit");
                     hit.setAttr("id", 22560);
                     rsp.addChild(hit);
-                }*/
+                }
 
                 Util.playTone(96, 75, midlet.getVolume());
                 JXElement e = rsp.getChildAt(0);
@@ -521,6 +521,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         }
                     }
                 } catch (Throwable t) {
+                    Log.log(t.getMessage());
                     g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
                     return;
                 }

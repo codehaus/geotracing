@@ -109,7 +109,7 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
                             String result = null;
                             try {
                                 //image =  Util.getImage("http://farm2.static.flickr.com/1182/874505187_b12f8039bd_o_d.jpg");
-                                c = (HttpConnection) Connector.open("http://test.walkandplay.com/command.txt");
+                                c = (HttpConnection) Connector.open("http://test.mlgk.nl/command.txt");
                                 dis = new DataInputStream(c.openInputStream());
                                 listener.prStart();
 
