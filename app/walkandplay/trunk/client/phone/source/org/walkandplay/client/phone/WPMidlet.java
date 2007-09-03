@@ -57,6 +57,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String KW_ROLE = "kw-role";
     public final static String VOLUME = "volume";
     public final static String MEDIA_PLAYER = "videoplayer";
+    public final static String DEMO_MODE = "demo";
     public final static String INTERN = "intern";
     public final static String EXTERN = "extern";
 
@@ -70,7 +71,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public void setHome() {
         //#style mainScreen
-        menuScreen = new List("Walk and Play", List.IMPLICIT);
+        //menuScreen = new List("Walk and Play", List.IMPLICIT);
+        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
         //#style mainTraceCommand
@@ -166,6 +168,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
             return true;
         }
         return false;        
+    }
+
+    public boolean isInDemoMode(){
+        String demoMode = getPreferences().get((DEMO_MODE), getAppProperty(DEMO_MODE));
+        if(demoMode == null || demoMode.equals("no")){
+            return false;
+        }
+        return true;
     }
 
     public AppStartDisplay getActiveApp(){

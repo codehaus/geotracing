@@ -199,45 +199,48 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     }
                 }
             } else if (rsp.getTag().equals("play-location-rsp")) {
-                /*// video
-                if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                    Log.log("add a hit!!!!");
-                    JXElement hit = new JXElement("medium-hit");
-                    hit.setAttr("id", 26527);
-                    rsp.addChild(hit);
-                }*/
+                Log.log("Demo mode:" + midlet.isInDemoMode());
+                if(midlet.isInDemoMode()){
+                    // video
+                    /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 26527);
+                        rsp.addChild(hit);
+                    }
 
-                // audio
-                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                    Log.log("add a hit!!!!");
-                    JXElement hit = new JXElement("medium-hit");
-                    hit.setAttr("id", 221499);
-                    rsp.addChild(hit);
-                }*/
+                    // audio
+                    if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 221499);
+                        rsp.addChild(hit);
+                    }*/
 
-                // image
-                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                    Log.log("add a hit!!!!");
-                    JXElement hit = new JXElement("medium-hit");
-                    hit.setAttr("id", 22578);
-                    rsp.addChild(hit);
-                }*/
+                    // image
+                    if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 22578);
+                        rsp.addChild(hit);
+                    }
 
-                // text
-                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                    Log.log("add a hit!!!!");
-                    JXElement hit = new JXElement("medium-hit");
-                    hit.setAttr("id", 531414);
-                    rsp.addChild(hit);
-                }*/
+                    // text
+                    if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 531414);
+                        rsp.addChild(hit);
+                    }
 
-                // task
-                /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                    Log.log("add a hit!!!!");
-                    JXElement hit = new JXElement("task-hit");
-                    hit.setAttr("id", 22560);
-                    rsp.addChild(hit);
-                }*/
+                    // task
+                    if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("task-hit");
+                        hit.setAttr("id", 22560);
+                        rsp.addChild(hit);
+                    }
+                }
 
                 Util.playTone(96, 75, midlet.getVolume());
                 JXElement e = rsp.getChildAt(0);
