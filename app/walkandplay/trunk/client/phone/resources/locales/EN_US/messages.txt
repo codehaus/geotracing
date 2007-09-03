@@ -76,3 +76,5 @@ settings.MediaPlayerIntern=Inline mediaplayer ON
 settings.MediaPlayerExtern=Inline mediaplayer OFF
 settings.Account=Account
 settings.Version=Version
+settings.DemoModeOff=Demo Mode OFF
+settings.DemoModeOn=Demo Mode ON
