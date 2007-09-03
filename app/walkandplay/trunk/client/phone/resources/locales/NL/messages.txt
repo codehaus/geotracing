@@ -76,5 +76,7 @@ settings.MediaPlayerIntern=Speel media intern AAN
 settings.MediaPlayerExtern=Speel media intern UIT
 settings.Account=Gegevens
 settings.Version=Versie
+settings.DemoModeOff=Demo Mode OFF
+settings.DemoModeOn=Demo Mode ON
 
 

@@ -272,12 +272,13 @@
 					<attribute name="kw-url" value="http://test.${project.name}.com/wp" />
 					<attribute name="kw-server" value="test.${project.name}.com" />
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="yellow2" />
+					<attribute name="kw-user" value="red2" />
 					<attribute name="kw-password" value="user" />
 					<attribute name="kw-port" value="6050" />
 					<attribute name="kw-app" value="geoapp" />
 					<attribute name="kw-role" value="user" />
 					<attribute name="volume" value="70" />
+					<attribute name="demo" value="yes" />
 					<attribute name="audio-rate" value="8000" />
 					<attribute name="audio-bits" value="8" />
 					<attribute name="gps-sample-interval" value="15000" />
