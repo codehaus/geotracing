@@ -220,7 +220,7 @@ KW.WP = {
 		req.documentElement.appendChild(medium);
 		KW.utopia(req, callback);
 	},
-		
+
 /**
  * Update task in Game.
  * @param callback - user callback function or null
@@ -345,6 +345,20 @@ KW.WP = {
 
 		// Only game id is required
 		KW.UTIL.setAttr(req, 'id', roundId);
+
+		KW.utopia(req, callback);
+	},
+
+	/**
+ * Delete all Gamerounds of Game (only gameround owner is allowed to do this).
+ * @param callback - user callback function or null
+ * @param gameId* - id of game
+ */
+	roundDeleteAll: function(callback, gameId) {
+		var req = KW.createRequest('round-delete-all-req');
+
+		// Only game id is required
+		KW.UTIL.setAttr(req, 'gameid', gameId);
 
 		KW.utopia(req, callback);
 	}

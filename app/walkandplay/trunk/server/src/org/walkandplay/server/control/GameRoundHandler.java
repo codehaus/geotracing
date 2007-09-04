@@ -27,6 +27,7 @@ public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Cons
 
 	public final static String ROUND_CREATE_SERVICE = "round-create";
 	public final static String ROUND_DELETE_SERVICE = "round-delete";
+	public final static String ROUND_DELETE_ALL_SERVICE = "round-delete-all";
 	public final static String ROUND_ADD_PLAYERS_SERVICE = "round-add-players";
 	public final static String ROUND_REMOVE_PLAYERS_SERVICE = "round-remove-players";
 
@@ -51,6 +52,8 @@ public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Cons
 				response = createRound(anUtopiaRequest);
 			} else if (service.equals(ROUND_DELETE_SERVICE)) {
 				response = deleteRound(anUtopiaRequest);
+			} else if (service.equals(ROUND_DELETE_ALL_SERVICE)) {
+				response = deleteRounds(anUtopiaRequest);
 			} else if (service.equals(ROUND_ADD_PLAYERS_SERVICE)) {
 				response = addPlayers(anUtopiaRequest);
 			} else if (service.equals(ROUND_REMOVE_PLAYERS_SERVICE)) {
@@ -109,6 +112,20 @@ public class GameRoundHandler extends DefaultHandler implements ThreadSafe, Cons
 		HandlerUtil.throwOnNonNumAttr(requestElm, ID_FIELD);
 		createLogic(anUtopiaReq).deleteRound(HandlerUtil.getUserId(anUtopiaReq), requestElm.getIntAttr(ID_FIELD));
 		return createResponse(ROUND_DELETE_SERVICE);
+	}
+
+	/**
+	 * Delete all gamerounds for a game.
+	 *
+	 * @param anUtopiaReq A UtopiaRequest
+	 * @return a response.
+	 * @throws UtopiaException Standard Utopia exception
+	 */
+	public JXElement deleteRounds(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
+		JXElement requestElm = anUtopiaReq.getRequestCommand();
+		HandlerUtil.throwOnNonNumAttr(requestElm, GAME_ID_FIELD);
+		createLogic(anUtopiaReq).deleteRounds(HandlerUtil.getUserId(anUtopiaReq), requestElm.getIntAttr(GAME_ID_FIELD));
+		return createResponse(ROUND_DELETE_ALL_SERVICE);
 	}
 
 	/**

@@ -120,6 +120,26 @@ public class GameRoundLogic implements Constants {
 	}
 
 	/**
+	 * Delete all gamerounds for a game.
+	 *
+	 * @param aGameId game record id
+	 * @throws UtopiaException Standard Utopia exception
+	 */
+	public void deleteRounds(int aPersonId, int aGameId) throws OaseException, UtopiaException {
+		Finder finder = oase.getFinder();
+		Relater relater = oase.getRelater();
+
+		// Get game record
+		Record game = finder.read(aGameId, GAME_TABLE);
+
+		// Get all rounds related to game and delete each
+		Record[] rounds = relater.getRelated(game, GAMEROUND_TABLE, null);		
+		for (int i=0; i < rounds.length; i++) {
+			deleteRound(aPersonId, rounds[i]);
+		}
+	}
+
+	/**
 	 * Add players (persons) to gameround.
 	 *
 	 * @param aRoundId	  gameround record id

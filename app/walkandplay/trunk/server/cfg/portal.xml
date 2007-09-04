@@ -110,10 +110,10 @@
 				<property name="pois2textmedia">false</property>
 			</daemon> -->
 
-            <!-- Tracer Bot
-			<daemon id="tracerdaemon" class="org.geotracing.daemon.TracerDaemon">
-				<property name="intervalMillis">25000</property>
-			</daemon>              -->
+            <!-- Game Bots -->
+			<daemon id="testerdaemon" class="org.geotracing.daemon.TesterDaemon">
+				<!-- <property name="intervalMillis">25000</property>   -->
+			</daemon>
         </daemons>
     </application>
 </portal>
