@@ -63,6 +63,10 @@ input, textarea
 	
 	background-color:rgb(153,179,204);
 }
+#map a
+{
+	border:0px;
+}
 #powered_by
 {
 	position:absolute;
@@ -304,6 +308,8 @@ input, textarea
 	width:208px;
 	height:170px;
 	overflow:auto;
+	
+	/*background-color:white;*/
 }
 .framed
 {

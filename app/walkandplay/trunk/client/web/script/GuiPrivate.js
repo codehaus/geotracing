@@ -73,7 +73,7 @@ function wpCreatePaneUser(type,obj)
 
 			if (obj.state!=2) str+= '<br>[<a href="javascript://edit_profile" onclick="wp_games.game['+obj.id+'].editProfile()">edit profile</a>]';
 			str+= '<br>[<a href="javascript://edit_rounds" onclick="wp_games.game['+obj.id+'].editRounds();this.blur()">edit/add gamerounds</a>]';
-			str+= '<br>[<a href="javascript://delete_game" onclick="wpDeleteGame('+obj.id+');this.blur()">delete game</a>]';
+			str+= '<br>[<a href="javascript://delete_game" onclick="wpDeleteGame('+obj.id+');this.blur()">delete game</a>]<br><br>';
 			 
 			str+= '<input type=button value="done" onclick="wpSelect(\'create\');this.blur()" style="position:absolute; right:11px; bottom:8px; width:50px;">';
 

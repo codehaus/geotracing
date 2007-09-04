@@ -75,8 +75,8 @@ function wpSelect(mode)
 	panes.hide('list_create','list_play','list_view');
 	panes.hide('edit_game','edit_rounds','edit_round','edit_profile');
 	panes.hide('game_profile','display');
-	
 	panes.hide('edit_game','list_games','list_rounds','list_locations','display','play','view');
+	if (mode=='view') panes.hide('login');
 	
 	wp_mode = mode;
 	

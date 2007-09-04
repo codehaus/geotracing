@@ -114,7 +114,7 @@ function wpLocation(collection,id,p,type,state,name)
 					str+= ' <a href="javascript://edit_location" onclick="wp_games.game['+wp_game_edit+'].editLocation('+obj.id+')" class="red">edit</a> ';
 					str+= ' <a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')" class="red">delete</a>';
 				}
-			infopane.content.innerHTML = str;
+			infopane.content.innerHTML = str+'<br><br>';
 			infopane.setPosition(obj.x+12,obj.y-46);
 			infopane.show();
 		}
