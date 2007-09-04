@@ -2,7 +2,7 @@
    <!--   <testset file="profile.xml" />
    testset file="license.xml" /
     <testset file="game-create.xml"/>  -->
-	<testset file="game-play.xml"/>
+	<testset file="game-play-blue.xml"/>
     <!-- <testset file="tourschedule.xml"/> -->
     <!--<testset file="content.xml" />-->
     <!--<testset file="assignment.xml" />-->
