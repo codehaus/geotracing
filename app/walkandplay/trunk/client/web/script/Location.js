@@ -416,7 +416,10 @@ wpLocation.prototype.updateDetails = function(resp)
 
 	if (!resp) //only update answer, not entire pane
 	{
-		document.getElementById('display_answer').innerHTML = str;
+		if (document.getElementById('display_answer')
+		{
+			document.getElementById('display_answer').innerHTML = str;
+		}
 	}
 	else
 	{	
