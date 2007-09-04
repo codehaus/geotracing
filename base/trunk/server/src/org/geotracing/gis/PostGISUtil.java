@@ -40,11 +40,26 @@ public class PostGISUtil {
 	public static final int SRID_WGS84 = 4326;
 	public static final int SRID_DEFAULT = SRID_WGS84;
 	public static Log log = Logging.getLog("PostGISUtil");
+
 	/**
 	 * Create PostGIS geometry object wrapped with Point.
 	 */
 	public static PGgeometryLW createPointGeom(int anSRID, double aLon, double aLat, double anEle, long aTime) {
 		return new PGgeometryLW(createPoint(anSRID, aLon, aLat, anEle, aTime));
+	}
+
+	/**
+	 * Create PostGIS geometry object wrapped with Point.
+	 */
+	public static PGgeometryLW createPointGeom(double aLon, double aLat) {
+		return new PGgeometryLW(createPoint(aLon, aLat));
+	}
+
+	/**
+	 * Create PostGIS geometry object wrapped with Point.
+	 */
+	public static PGgeometryLW createPointGeom(String aLon, String aLat) {
+		return new PGgeometryLW(createPoint(aLon, aLat));
 	}
 
 	/**
