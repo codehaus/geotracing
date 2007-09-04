@@ -33,6 +33,7 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 	<property name="home.cfg.dir" value="${home}/cfg"/>
 	<property name="home.data.dir" value="${home}/data"/>
 	<property name="home.client.web.dir" value="${home}/../client/web"/>
+	<property name="home.test.dir" value="${home}/test"/>
 	<property name="home.webapp.dir" value="${home}/webapp/${war.name}"/>
 
 	<property name="build.war.dir" value="${build.dir}/war"/>
@@ -164,9 +165,6 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/videoconv.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/image-meta.sh" overwrite="true"/>
 		<copy todir="${build.war.dir}/WEB-INF/bin" file="${keyworx.dir}/server/admin/exifdate.sh" overwrite="true"/>
-		<copy todir="${build.war.dir}/WEB-INF/data" overwrite="true">
-			<fileset dir="${home.data.dir}"/>
-		</copy>
 
 		<copy todir="${build.war.dir}/WEB-INF/lib" overwrite="true">
 			<fileset dir="${pushlet.dir}/lib">
@@ -216,8 +214,8 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		<copy todir="${build.war.dir}" overwrite="true">
 			<fileset dir="${geotracing.server.dir}/webapp/gt">
 				<include name="lib/**"/>
-				<include name="map/**"/>
-				<include name="my/**"/>
+<!--				<include name="map/**"/>
+				<include name="my/**"/>  -->
 				<include name="srv/**"/>
 			</fileset>
 		</copy>
@@ -251,6 +249,11 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 				<exclude name="cc_tagrelation.xml"/>
 			</fileset>
 			<fileset dir="${kwx-tagging.dir}/cfg/tables"/>
+		</copy>
+
+		<!-- copy automatic test bots config, scripts and data -->
+		<copy todir="${build.war.dir}/WEB-INF/data/testerdaemon" overwrite="true">
+			<fileset dir="${home.test.dir}/bot"/>
 		</copy>
 
 		<!-- Set version numbers and build info in version/index.html. -->

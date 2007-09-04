@@ -147,6 +147,49 @@
 		</expect>
 	</test>
 
+	<test id="gameround-create-3">
+		<send id="client1">
+			<utopia-req>
+				<round-create-req gameid="${gameid}" name="myround3"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-create-rsp id="${roundid1}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="gameround-create-4">
+		<send id="client1">
+			<utopia-req>
+				<round-create-req gameid="${gameid}" name="myround4" players="geoapp-user,red2,blue2"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-create-rsp id="${roundid1}" />
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+	<test id="gameround-delete-all">
+		<send id="client1">
+			<utopia-req>
+				<round-delete-all-req gameid="${gameid}" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<round-delete-all-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
 	<test id="game-delete-req">
 		<send id="client1">
 			<utopia-req>
