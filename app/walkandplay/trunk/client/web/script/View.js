@@ -164,7 +164,7 @@ wpView.prototype.playback = function()
 		this.step++;
 		var interval = this.events[this.step].timestamp - this.events[this.step-1].timestamp;
 		
-		tmp_debug(3,'playback: step=',this.step,',interval=',(interval/1000),'s)');
+		tmp_debug(3,'playback: step=',this.step,' (',this.events.length,'),interval=',(interval/1000),'s)');
 		
 		//continue playback
 		var obj = this;

@@ -18,7 +18,7 @@
 	}
 	//for beta development
  	$dev = eregi("dev",$_SERVER["REQUEST_URI"])? "javascript:tmp_debug('toggle')":"";
- 	$title = ($dev=="")? "DMS - Locative Workshop":"DMS - dev";
+ 	$title = ($dev=="")? "Walk and Play - a locative workshop tool":"DMS - dev";
  	$debug = ($dev=="")? "":"tmp_debug('toggle');\n";
  	//$defaultzoom = ($dev=="")? 8:15;
  	$defaultzoom = 15;

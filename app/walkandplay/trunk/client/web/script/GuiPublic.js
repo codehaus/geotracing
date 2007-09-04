@@ -19,8 +19,8 @@ function wpCreatePane(type,obj)
 			var pane = new Pane('main',40,40,225,80,1,true);
 // 			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
 // 			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
-			str+= '<div style="font-style:italic">DMS workshop tool<br>or whatever</div>';
-			str+= '<div id="menu" style="line-height:20px;">';
+			str+= '<div><span class="title">Walk and Play</span><br><em>a locative workshop tool</em></div>';
+			str+= '<div id="menu" style="line-height:24px;height:24px;">';
 			str+= '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>, ';
 			str+= '<a href="javascript://play" onclick="wpSelect(\'play\')">play</a> and ';
 			str+= '<a href="javascript://view" onclick="wpSelect(\'view\')">view</a>';
@@ -168,7 +168,7 @@ function wpCreatePane(type,obj)
 			str+= '</div>';
 
 			str+= '<div id="view_progress" style="position:absolute; left:4px; top:47px; width:180px; height:20px; background-color:white;">';
-			str+= '<div id="view_progress_bar" style="position:absolute; left:0px; top:0px; width:0px; height:20px; background-color:rgb(213,213,213)"></div>';
+			str+= '<div id="view_progress_bar" style="position:absolute; left:0px; top:0px; width:0px; height:20px; background-color:#adadad"></div>';
 			var type = (browser.pngsupport)? 'png':'gif';
 			str+= '<img src="media/progress.'+type+'" style="position:absolute; left:0px; top:0px; z-index:10; width:180px; height:20px;">';
 			str+= '</div>';

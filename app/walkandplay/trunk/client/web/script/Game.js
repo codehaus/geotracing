@@ -90,6 +90,7 @@ function wpListGames(resp)
 // 	}
 // 	var header = (wp_mode=='create')? '<span class="red">select a game to edit:</span><br>':'<span class="red">select a game to play:</span><br>';
 	if (list=='') list = '- no games available -';
+	list+= '<br>'; //otherwise a border-bottom does not show in MSIE
 
 // 	if (wp_mode=='view')
 // 	{
@@ -948,7 +949,7 @@ wpGame.prototype.showProfile = function(resp)
 	}
 	if (list=='') list = '- no rounds available -';
 
-	var stats = '*'
+	var stats = 'n/a'
 
 
 	wpCreatePane('game_profile',{ game:this, rounds:list, stats:stats });
@@ -1058,6 +1059,7 @@ wpGame.prototype.editRounds = function(resp)
 		list+= '&bull; <a href="javascript://edit_round" onclick="wp_games.game[wp_selected_game].editRound(0,'+resp[i].id+')">'+resp[i].getField('name')+'</a><br>';
 	}
 	if (list=='') list = '- no rounds available -';
+	list+= '<br>';
 
 	wpCreatePane('edit_rounds',this);
 	var pane = panes['edit_rounds'];
