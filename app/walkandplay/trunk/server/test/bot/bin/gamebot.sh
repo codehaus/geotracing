@@ -14,7 +14,7 @@ function start() {
   do
     echo "++++++++START BLUE BOT++++++++++`date`"
     cp ${MEDIA}/save/* ${MEDIA}
-    java -cp $KWX  org.keyworx.amuse.test.protocol.Main ../cfg/gamebot.properties &
+    java -cp $KWX  org.keyworx.amuse.test.protocol.Main ../cfg/gamebot-blue.properties &
     echo $! > ${PID_FILE2}
     sleep 120
     echo "++++++++START RED  BOT++++++++++`date`"

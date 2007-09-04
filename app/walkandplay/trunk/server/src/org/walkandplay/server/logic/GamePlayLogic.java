@@ -99,7 +99,7 @@ public class GamePlayLogic implements Constants {
 		String mediumType = medium.getStringField(KIND_FIELD);
 
 		if (task != null) {
-			log.info("HIT task for medium add taskid=" + task.getId());
+			log.trace("HIT task for medium add taskid=" + task.getId());
 
 			// Store result of this task
 			Record taskResult = WPQueryLogic.getTaskResultForTask(task.getId(), gamePlay.getId());
@@ -303,7 +303,7 @@ public class GamePlayLogic implements Constants {
 
 						lastTaskId = task.getId();
 
-						log.info("HIT TASK: id=" + task.getId() + " name=" + task.getStringField(NAME_FIELD));
+						log.trace("HIT TASK: id=" + task.getId() + " name=" + task.getStringField(NAME_FIELD));
 
 						// Store result of this task
 						Record taskResult = WPQueryLogic.getTaskResultForTask(task.getId(), gamePlay.getId());
@@ -346,7 +346,7 @@ public class GamePlayLogic implements Constants {
 							continue;
 						}
 						lastMediumId = medium.getId();
-						log.info("HIT MEDIUM: id=" + medium.getId() + " name=" + medium.getStringField(NAME_FIELD));
+						log.trace("HIT MEDIUM: id=" + medium.getId() + " name=" + medium.getStringField(NAME_FIELD));
 
 						// Store result of this medium
 						Record mediumResult = WPQueryLogic.getMediumResultForMedium(medium.getId(), gamePlay.getId());
