@@ -127,7 +127,7 @@ public class TesterDaemon extends Daemon {
 					// Let all initialize
 					Thread.sleep(Rand.randomLong(3000L, 6000L));
 					String[] command = new String[5];
-					command[0] = "java";
+					command[0] = System.getProperty("java.home") + "/bin/java";
 					command[1] = "-cp";
 					command[2] = webInfDir + "/lib/keyworx.jar";
 					command[3] = "org.keyworx.amuse.test.protocol.Main";
