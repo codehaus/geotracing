@@ -1049,6 +1049,22 @@ public class QueryLogic {
 	}
 
 	/**
+	 * Create query-response XML from Record.
+	 */
+	public JXElement createResponse(Record theRecord) throws Exception {
+		JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+		result.addChild(theRecord.toXML());
+		return result;
+	}
+
+	/**
+	 * Create query-response XML from Record.
+	 */
+	public JXElement createResponse() throws Exception {
+		return Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);
+	}
+
+	/**
 	 * Adds g_location attrs to query response records.
 	 */
 	public void addLocationAttrs(JXElement rsp, String aTableName) throws Exception {
