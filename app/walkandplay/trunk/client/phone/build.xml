@@ -272,7 +272,7 @@
 					<attribute name="kw-url" value="http://test.${project.name}.com/wp" />
 					<attribute name="kw-server" value="test.${project.name}.com" />
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="red2" />
+					<attribute name="kw-user" value="yellow2" />
 					<attribute name="kw-password" value="user" />
 					<attribute name="kw-port" value="6050" />
 					<attribute name="kw-app" value="geoapp" />
@@ -410,7 +410,7 @@
 	</target>
 
     <!-- Copies mobile apps to test server. -->
-	<target name="deploy-test" depends="buildall">
+	<target name="deploy-test" depends="build_Nokia_N73_EN_US">
 		<tstamp/>
 
 		<!-- Set version number. -->
