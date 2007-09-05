@@ -176,7 +176,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
                 }
             }
 
-            tileBaseURL = midlet.getKWUrl() + "/map.srv";
+            tileBaseURL = midlet.getWMSUrl();
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
 

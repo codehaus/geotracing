@@ -50,6 +50,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     private static Preferences preferences;
 
     public final static String KW_URL = "kw-url";
+	public final static String WMS_URL = "wms-url";
     public final static String KW_USER = "kw-user";
     public final static String KW_PASSWORD = "kw-password";
     public final static String KW_SERVER = "kw-server";
@@ -70,7 +71,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //new VersionChecker().check();
     }
 
-    public void setHome() {        
+    public void setHome() {
         if(midlet.isInDemoMode()){
             //#style mainScreen
             menuScreen = new List(TITLE + "(Demo)", List.IMPLICIT);
@@ -148,6 +149,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public String getKWUrl() {
         return getPreferences().get((KW_URL), getAppProperty(KW_URL));
     }
+
+	public String getWMSUrl() {
+		 return getPreferences().get((WMS_URL), getAppProperty(WMS_URL));
+	 }
 
     public String getKWServer() {
         return getPreferences().get((KW_SERVER), getAppProperty(KW_SERVER));
