@@ -70,11 +70,12 @@ public class WPMidlet extends MIDlet implements CommandListener {
         //new VersionChecker().check();
     }
 
-    public void setHome() {
-        //#style mainScreen
+    public void setHome() {        
         if(midlet.isInDemoMode()){
+            //#style mainScreen
             menuScreen = new List(TITLE + "(Demo)", List.IMPLICIT);
         }else{
+            //#style mainScreen
             menuScreen = new List(TITLE, List.IMPLICIT);
         }
         //#style mainPlayCommand
