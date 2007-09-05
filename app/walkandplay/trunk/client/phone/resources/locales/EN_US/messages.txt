@@ -19,7 +19,7 @@ var:MyExampleVariable=Hello World
 # Again MIDlet-attributes defined override the one defined in the <info>-
 # and <jad>-sections of your build.xml
 
-MIDlet-Description=Mobile Learning Game Kit
+MIDlet-Description=WalkAndPlay
 
 menu.Create=Create
 menu.GPS=GPS
