@@ -949,7 +949,7 @@ wpGame.prototype.showProfile = function(resp)
 	}
 	if (list=='') list = '- no rounds available -';
 
-	var stats = 'n/a'
+	var stats = 'n/a';
 
 
 	wpCreatePane('game_profile',{ game:this, rounds:list, stats:stats });

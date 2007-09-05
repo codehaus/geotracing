@@ -67,14 +67,31 @@ function wpCreateView(resp)
 		
 		var d =  (wp_view.end - wp_view.begin)/1000; //seconds total
 		var hrs = Math.floor(d/3600);
+		if (hrs>24)
+		{
+			var days = Math.floor(hrs/24);
+
+			tmp_debug(1,'hrs=',hrs,' days:',days,' hrs=>',hrs-(days*24));
+//			xhrs-=(days*24);
+			
+			var daystr = days+'days ';
+			
+//			xhrs = days+'d, '+(days*24)
+		}
+		else daystr = '';
+		
 		var mins = Math.floor(d/60) - (hrs*60);
 		var secs = Math.floor(d - (hrs*60*60) - (mins*60));
+		if (hrs>24) hrs-=days*24;
 		if (hrs<10) hrs = '0'+hrs;
 		if (mins<10) mins = '0'+mins;
 		if (secs<10) secs = '0'+secs;
-		wp_view.duration = hrs+':'+mins+':'+secs;
 		
-		document.getElementById('view_duration').innerHTML = '<span class="grey">playtime:</span> '+wp_view.duration;
+		
+		wp_view.duration = daystr+hrs+'h '+mins+'m '+secs+'s';
+		if (daystr=='') wp_view.duration = '<span class="grey">time: </span>'+wp_view.duration;
+		
+		document.getElementById('view_duration').innerHTML =  wp_view.duration;//' '+wp_view.duration;
 	
 		//enable playback controls
 		document.getElementById('view_ctls').style.display = 'block';
@@ -102,8 +119,11 @@ wpView.prototype.startstop = function()
 		{
 			//start
 			this.playback();
+			
+			//progress bar
+			
 			//progress
-			this.update(true);
+			//this.update(true);
 			//restart blinking
 			if (this.step>0) for (var id in wp_players.player) wp_players.player[id].blink();
 		}
@@ -165,10 +185,16 @@ wpView.prototype.playback = function()
 		var interval = this.events[this.step].timestamp - this.events[this.step-1].timestamp;
 		
 		tmp_debug(3,'playback: step=',this.step,' (',this.events.length,'),interval=',(interval/1000),'s)');
+
+// 			tmp_debug(1,'step=',this.step,':'+this.step/this.events.length);
+
+		//progressbar
+ 		document.getElementById('view_progress_bar').style.width = Math.min(180,Math.round((this.step/(this.events.length-1)) * 180)) +'px';
 		
 		//continue playback
 		var obj = this;
-		this.viewing = window.setTimeout(function() { obj.playback() },interval * this.rate);
+		//this.viewing = window.setTimeout(function() { obj.playback() },interval * this.rate);
+		this.viewing = window.setTimeout(function() { obj.playback() },1000 * this.rate); //default update every 1 second
 	}
 	else
 	{

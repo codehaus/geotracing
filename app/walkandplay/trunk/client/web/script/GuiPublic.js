@@ -153,16 +153,17 @@ function wpCreatePane(type,obj)
 			str+= '<img src="media/button_begin.'+type+'" onclick="wp_view.rset()" onmouseover="HiImg(this,1,\''+type+'\')" onmouseout="HiImg(this,0,\''+type+'\')" style="cursor:pointer; position:absolute; left:6px; top:10px; width:22px; height:22px;">';
 			str+= '<img id="view_start" src="media/button_play.'+type+'" onclick="wp_view.startstop()"onmouseover="HiImg(this,1,\''+type+'\')" onmouseout="HiImg(this,0,\''+type+'\')" style="cursor:pointer; position:absolute; left:31px; top:3px; width:36px; height:36px;">';
 			
-			str+= '<span id="view_duration" style="position:absolute; left:73px; top:3px;">duration</span>';
+			str+= '<span id="view_duration" style="position:absolute; left:73px; width:120px; top:3px;">duration</span>';
 			
-			str+= '<select name="rate" onchange="wp_view.setRate(Number(this.value))" style="position:absolute; left:91px; top:21px;">';
-			str+= '<option value=".5" style="padding-left:5px">.5 x</option>';
-			str+= '<option value="1" selected>realtime</option>';
-			str+= '<option value="2" style="padding-left:9px">2 x</option>';
-			str+= '<option value="4" style="padding-left:9px">4 x</option>';
-			str+= '<option value="8" style="padding-left:9px">8 x</option>';
-			str+= '<option value="16">16 x</option>';
-			str+= '<option value="32">32 x</option>';
+			str+= '<select name="rate" onchange="wp_view.setRate(Number(this.value))" style="position:absolute; left:91px; top:21px; text-align:right;">';
+			str+= '<option value=".25">1/4 x&nbsp;</option>';
+			str+= '<option value=".5">1/2 x&nbsp;</option>';
+			str+= '<option value="1" selected>1 x&nbsp;</option>';
+			str+= '<option value="2">2 x&nbsp;</option>';
+			str+= '<option value="4">4 x&nbsp;</option>';
+			str+= '<option value="8">8 x&nbsp;</option>';
+			str+= '<option value="16">16 x&nbsp;</option>';
+			str+= '<option value="32">32 x&nbsp;</option>';
 			str+= '<option value=""></option>';
 			str+= '</select>';
 			str+= '</div>';
