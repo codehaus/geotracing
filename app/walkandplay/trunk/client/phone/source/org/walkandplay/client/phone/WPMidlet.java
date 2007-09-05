@@ -276,7 +276,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
             String myVersion = getAppProperty("MIDlet-Version");
 
             String myName = getAppProperty("MIDlet-Name");
-            String versionURL = getKWUrl() + "/dist/version.html";
+
+			String versionURL = "http://" + midlet.getKWServer() + "/dist/version.html";
             try {
                 String theirVersion = Util.getPage(versionURL);
                 if (theirVersion != null){

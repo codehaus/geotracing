@@ -199,7 +199,7 @@
 				name="${project.name}"
 				version="${midlet.version}"
 				description=""
-				vendorName="Waag Society"
+				vendorName="7Scenes"
 				infoUrl="http://www.j2mepolish.org"
 				icon="app.png"
 				jarName="${project.name}-${polish.vendor}-${polish.name}-${polish.locale}.jar"
@@ -269,8 +269,8 @@
 				<jad>
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
-					<attribute name="kw-url" value="http://test.${project.name}.com/wp" />
-					<attribute name="kw-server" value="test.${project.name}.com" />
+					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />
+					<attribute name="kw-server" value="test.walkandplay.com" />
 					<attribute name="kw-timeout" value="20" />
 					<attribute name="kw-user" value="yellow2" />
 					<attribute name="kw-password" value="user" />
