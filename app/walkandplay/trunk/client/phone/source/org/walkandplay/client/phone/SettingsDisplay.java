@@ -92,9 +92,11 @@ public class SettingsDisplay extends DefaultDisplay {
             removeCommand(DEMO_CMD);
             if (midlet.isInDemoMode()) {
                 midlet.getPreferences().put(WPMidlet.DEMO_MODE, "no");
+                midlet.setTitle(false);
                 DEMO_CMD = new Command(Locale.get("settings.DemoModeOn"), Command.ITEM, 2);
             }else{
                 midlet.getPreferences().put(WPMidlet.DEMO_MODE, "yes");
+                midlet.setTitle(true);
                 DEMO_CMD = new Command(Locale.get("settings.DemoModeOff"), Command.ITEM, 2);
             }
             removeAllCommands();
