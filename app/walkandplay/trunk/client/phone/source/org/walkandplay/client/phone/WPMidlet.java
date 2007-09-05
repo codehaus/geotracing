@@ -44,6 +44,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     private CreateDisplay createDisplay;
     private AppStartDisplay activeApp;
 
+    public static final String TITLE = "Walk and Play";
     public static final String RMS_STORE_NAME = "db";
 
     private static Preferences preferences;
@@ -64,15 +65,18 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public WPMidlet() {
         super();
         midlet = this;
-        setHome();
+        //setHome();
         //Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
         //new VersionChecker().check();
     }
 
     public void setHome() {
         //#style mainScreen
-        //menuScreen = new List("Walk and Play", List.IMPLICIT);
-        menuScreen = new List("Mobile Learning Game Kit", List.IMPLICIT);
+        if(midlet.isInDemoMode()){
+            menuScreen = new List(TITLE + "(Demo)", List.IMPLICIT);
+        }else{
+            menuScreen = new List(TITLE, List.IMPLICIT);
+        }
         //#style mainPlayCommand
         menuScreen.append(Locale.get("menu.Play"), null);
         //#style mainTraceCommand
@@ -102,8 +106,18 @@ public class WPMidlet extends MIDlet implements CommandListener {
         Display.getDisplay(this).setCurrent(menuScreen);
     }
 
+    public void setTitle(boolean isDemo){
+        if(isDemo){
+            menuScreen.setTitle(TITLE + "(demo)");
+        }else{
+            menuScreen.setTitle(TITLE);
+        }
+    }
+
     protected void startApp() throws MIDletStateChangeException {
-        Display.getDisplay(this).setCurrent(menuScreen);
+        Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
+        new VersionChecker().check();
+        //Display.getDisplay(this).setCurrent(menuScreen);
     }
 
     protected void pauseApp() {
