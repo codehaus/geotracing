@@ -23,7 +23,7 @@ public class VersionDisplay extends DefaultDisplay {
 
         String myName = midlet.getAppProperty("MIDlet-Name");
 		serverURL = "http://" + midlet.getKWServer();
-		String versionURL = serverURL + "/mob/dist/version.html";
+		String versionURL = serverURL + "/dist/version.html";
         String theirVersion = null;
         try {
             theirVersion = Util.getPage(versionURL);

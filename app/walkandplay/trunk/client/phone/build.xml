@@ -278,7 +278,7 @@
 					<attribute name="kw-app" value="geoapp" />
 					<attribute name="kw-role" value="user" />
 					<attribute name="volume" value="70" />
-					<attribute name="demo" value="yes" />
+					<attribute name="demo" value="no" />
 					<attribute name="audio-rate" value="8000" />
 					<attribute name="audio-bits" value="8" />
 					<attribute name="gps-sample-interval" value="15000" />
