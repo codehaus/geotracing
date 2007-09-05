@@ -407,6 +407,7 @@ public class GamePlayLogic implements Constants {
 		Record runningGamePlay = WPQueryLogic.getRunningGamePlay(aPersonId);
 		if (runningGamePlay != null) {
 			runningGamePlay.setStringField(STATE_FIELD, PLAY_STATE_PAUSED);
+			modifier.update(runningGamePlay);
 		}
 
 		// Game state is scheduled or running
@@ -430,8 +431,9 @@ public class GamePlayLogic implements Constants {
 			gamePlay.createFileField(emptyFile);
 			gamePlay.setFileField(EVENTS_FIELD, fileField);
 
-			modifier.update(gamePlay);
 		}
+
+		modifier.update(gamePlay);
 
 		// Start any track if not already active
 		TrackLogic trackLogic = new TrackLogic(oase);
@@ -619,6 +621,18 @@ public class GamePlayLogic implements Constants {
 			storedEvent.setAttr(name, anEvent.getField(name));
 		}
 		FileField fileField = aGamePlay.getFileField(EVENTS_FIELD);
+		if (fileField == null) {
+			File emptyFile;
+
+			try {
+				emptyFile = File.createTempFile("empty", ".txt");
+			} catch (IOException ioe) {
+				log.warn("Cannot create empty temp file", ioe);
+				throw new UtopiaException("Cannot create temp file", ioe);
+			}
+			aGamePlay.setFileField(EVENTS_FIELD, aGamePlay.createFileField(emptyFile));
+		}
+		fileField = aGamePlay.getFileField(EVENTS_FIELD);
 		String eventStr = storedEvent.toString() + "\n";
 		fileField.append(eventStr.getBytes());
 		anOase.getModifier().update(aGamePlay);
