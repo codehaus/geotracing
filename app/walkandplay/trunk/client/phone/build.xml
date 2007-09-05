@@ -270,6 +270,7 @@
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
 					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />
+					<attribute name="wms-url" value="http://www.senseofthecity.nl/wp/map.srv" />
 					<attribute name="kw-server" value="test.walkandplay.com" />
 					<attribute name="kw-timeout" value="20" />
 					<attribute name="kw-user" value="yellow2" />

@@ -292,7 +292,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
             //tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp?";
             //tileBaseURL = Net.getInstance().getURL() + "/map.srv?";
-            tileBaseURL = midlet.getKWUrl() + "/map.srv";
+            tileBaseURL = midlet.getWMSUrl();
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
 
