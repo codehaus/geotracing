@@ -93,40 +93,28 @@ function wpCreatePaneUser(type,obj)
 			var outro = obj.outro || '';
 			
 			str+= '<span class="red" style="font-size:14px; font-weight:bold">'+header+' game profile</span><br><br>';
-			//str+= 'created by <span class="red">'+obj.ownername+'</span><br><br>';
-			//str+= '<a style="position:absolute; right:12px; top:6px" href="javascript://close" onclick="wpSelect(\'view\')">close</a>';
 			str+= '<form name="editgameform" method="" action="" onsubmit="return '+action+'">';
-
  			str+= '<div class="column">name:</div><input type="text" name="name" value="'+name+'" class="inputtext" style="width:180px; margin-right:10px; margin-top:4px;"><br><br>';
  			str+= '<div style="position:relative; margin-left:-5px; padding:5px; width:498px; background-color:#eeeeee; margin-bottom:10px;">';
  			str+= '<div class="column">desc:</div><textarea name="desc" style="width:430px; height:50px;">'+desc+'</textarea><br>';
 			str+= '</div>';
  			str+= '<div class="column"><em>intro:</em></div><textarea name="intro" style="width:430px; height:80px;">'+intro+'</textarea><br><br>';
  			str+= '<div class="column"><em>outro:</em></div><textarea name="outro" style="width:430px; height:80px;">'+outro+'</textarea><br>';
-
 			str+= '<div style="right:15px; bottom:5px;"><input type="button" value="cancel" onclick="panes.hide(\'edit_profile\');'+cancel+'">&nbsp;<input type="submit" value=" '+submit+' " class="red" onclick=""></div>';
 			str+= '</form>';
 
-// 			str+= '<div id="profile_submit" style="right:15px; bottom:15px;"></div>';
 			pane.setContent(str);
 			pane.show();
 			//pane.update = function(str) { this.content.lastChild.innerHTML = str; };
 			break;
-// 			var pane = new Pane('create_game',100,160,400,300,1,true);
-// 			str+= '<span class="red" style="font-size:14px; font-weight:bold">create new game</span><br>';
-// 			str+= '<div id="profile_submit" style="right:15px; bottom:15px;"></div>';
-// 			pane.setContent(str);
-// 			pane.show();
 			break;
-
 			
 		case 'edit_rounds':
 			var pane = new Pane('edit_rounds',320,160,200,200,1,true);
+
 			str+= '<b><span class="red">edit round</span>, or <a href="javascript://add_round" onclick="wp_games.game[wp_selected_game].addRound()">add new</a></b><br><br>';
-//			str+= 'or <a href="javascript://remove_all_rounds" onclick="wp_games.game[wp_selected_game].deleteAllRounds()">remove all</a></b><br>';
 			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'edit_rounds\')">close</a></div>';
 			str+= '<div style="left:15px; bottom:5px;">[<a href="javascript://remove_all_rounds" onclick="wp_games.game[wp_selected_game].deleteAllRounds()">remove all rounds</a>]</div>';
-
 			str+= '<div class="list" style="height:160px;"></div>';
 			pane.setContent(str);
 			break;
@@ -134,11 +122,11 @@ function wpCreatePaneUser(type,obj)
 		case 'edit_round':
 			var pane = new Pane('edit_round',320,160,260,200,1,true);
 			var header = (obj.mode=='add')? 'add':'edit';
+
 			str+= '<span class="red" style="font-size:14px; font-weight:bold">'+header+' round</span><br>';// "<b>'+obj.name+'</b>"';
-			
 			str+= '<form name="editroundform" method="" action="" onsubmit="return wp_games.game[wp_selected_game].updateRound('+obj.roundid+',\''+obj.mode+'\');">';
  			str+= '<div class="column">name:</div><input type="text" name="name" value="'+obj.name+'" class="inputtext" style="width:180px; margin-right:10px; margin-top:4px;"><br>';
- 			str+= '<div class="column">players: <span class="grey">(select multiple)</span></div>';//<textarea name="players" style="width:230px; height:50px;"></textarea><br><br>';
+ 			str+= '<div class="column">players: <span class="grey">(select multiple)</span></div>';
 			str+= obj.list;
 			str+= '<div style="right:15px; bottom:5px;"><input type="button" value="cancel" onclick="panes.hide(\'edit_round\');panes.show(\'edit_rounds\')">&nbsp;<input type="submit" value=" '+obj.mode+' " class="red" onclick=""></div>';
 			str+= '</form>';
@@ -152,7 +140,6 @@ function wpCreatePaneUser(type,obj)
 			var pane = new Pane('edit_location',310,60,300,210,1,true,gmap.getPane(G_MAP_FLOAT_PANE));
 
 			str+= '<form name="locationform" method="post" action="/wp/media.srv" enctype="multipart/form-data">';
-//			str+= '<form name="locationform" method="post" action="" enctype="multipart/form-data">';
 			str+= '<span class="title">location</span><br><br>';
 			str+= '<div class="column">name:</div><input type="text" name="name" class="inputtext" style="width:130px; margin-right:10px">';
 			str+= '<select name="type" onchange="wpEditLocation(this.value)" style="height:16px;"><option value="task">task</option><option value="medium">medium</option><option value="text">text</option></select><br><br>';
@@ -209,6 +196,7 @@ function wpCreatePaneUser(type,obj)
 			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'list_locations\')">close</a></div>';
 			pane.setContent(str);
 			break;
+
 			
 		/* play */
 			
@@ -222,6 +210,34 @@ function wpCreatePaneUser(type,obj)
 			{
 				this.content.lastChild.innerHTML = list;
 			}
+			break;
+			
+		case 'messaging':
+			var pane = new Pane('messaging',70,160,195,180,1,true);
+
+			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(); return false">';
+			str+= '<span class="title">messaging</span><br><br>';
+			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'messaging\')">close</a><br><br></div>';
+			str+= '<div id="im_list" class="list" style="height:127px; width:203px;"></div>';
+			
+			str+= '<div style="bottom:7px;"><input name="msg" type="text" style="width:160px; height:16px; background-color:#eeeeee">&nbsp;<a href="javascript://send_im" onclick="wp_games.game[wp_selected_game].msgSend()">send</a></div>';
+			str+= '</form>';
+
+			pane.setContent(str);
+
+			pane.div.style.top = '';
+			pane.div.style.bottom = '147px';
+
+			//pane.show();
+			pane.update = function(str)
+			{
+				var div = document.getElementById('im_list');
+				div.innerHTML = str;
+				//scroll to bottom
+				div.scrollTop = div.scrollHeight - 127;
+			}
+
+			
 			break;
 					
 		default:

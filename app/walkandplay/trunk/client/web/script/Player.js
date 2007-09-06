@@ -27,6 +27,7 @@ function wpPlayer(collection,id,p,name,t)
 
  	this.name = name;
  	var color = this.name.substring(0,1);
+ 	if (color=='j') color = 'b'; //->just and joes are blue for now..
 	this.icon = 'icon_player_'+color+'.png';
  	
  	this.trace = new Array(0); //geo points history

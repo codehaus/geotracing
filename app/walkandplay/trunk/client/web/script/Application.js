@@ -26,7 +26,7 @@ function wpStartup()
  	
  	wpGameInit();
 
-	wp_login_action = 'create'; //switch to create mode if autologin
+	wp_login_action = 'play';//'create'; //switch to create mode if autologin
 	wpAutoLogin();
 	
 	
@@ -74,8 +74,9 @@ function wpSelect(mode)
 	//hide panes
 	panes.hide('list_create','list_play','list_view');
 	panes.hide('edit_game','edit_rounds','edit_round','edit_profile');
-	panes.hide('game_profile','display');
-	panes.hide('edit_game','list_games','list_rounds','list_locations','display','play','view');
+	panes.hide('game_profile','list_locations','display','play','view','messaging');
+	
+	
 	if (mode=='view') panes.hide('login');
 	
 	wp_mode = mode;

@@ -59,15 +59,11 @@ function wpCreatePane(type,obj)
 			str+= '<span class="red" style="font-size:14px; font-weight:bold">game profile</span>&nbsp; <b>"'+obj.game.name+'"</b><br>';
 			str+= 'created by <span class="red">'+obj.game.ownername+'</span><br><br>';
 			str+= '<a style="position:absolute; right:12px; top:6px" href="javascript://close" onclick="wpSelect(\'view\')">close</a>';
-			
-//			str+= '<br><div id="profile_data"></div>';
-
 			str+= '<div style="position:relative; margin-left:-5px; padding:5px; width:498px; background-color:#eeeeee; margin-bottom:10px;">';
 			str+= obj.game.description+'<br>';
 			str+= '</div>';
-
 			str+= '<div style="font-style:italic"><br>'+obj.game.intro+'<br><br></div>';
-			
+
 			str+= '<br><fieldset style="position:absolute; left:10px; bottom:10px;" class="framed"><legend> <b>stats</b> </legend>';
 			str+= '<div id="profile_stats" style="width:226px; height:145px; overflow:auto;">';
 			str+= obj.stats;
@@ -76,7 +72,6 @@ function wpCreatePane(type,obj)
 			str+= '<div id="profile_rounds" style="width:226px; height:145px; overflow:auto;">';
 			str+= obj.rounds;
 			str+= '</div></fieldset>';
-			
 			
 			str+= '<div id="profile_submit" style="right:15px; bottom:15px;"></div>';
 			pane.setContent(str);
@@ -185,10 +180,12 @@ function wpCreatePane(type,obj)
 		case 'play':
 			var pane = new Pane('play',110,0,590,80,1,true);
 			
-			str+= '<div style="left:11px; top:9px; width:160px">x</div>';
-			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#eeeeee; height:80px">x</div>';
-			str+= '<div style="left:400px; top:9px; width:215px">x</div>';
-			str+= '<div style="position:absolute; right:13px; top:5px"></div>';
+			str+= '<div style="left:11px; top:9px; width:160px"></div>';
+			str+= '<div style="left:175px; top:5px; width:190px; padding:4px 10px 5px 10px; background-color:#eeeeee; height:80px"></div>';
+			str+= '<div style="left:400px; top:9px; width:215px"></div>';
+			var style = browser.windows ? 'style="font-family:sans-serif; padding-top:1px"':'';
+			str+= '<div id="im" '+style+' onclick="wp_games.game[wp_selected_game].showMessages()"></div>';
+			str+= '<div style="right:13px; top:5px"></div>';
 			pane.setContent(str);
 			
 			//align bottom of window
