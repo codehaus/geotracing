@@ -199,8 +199,12 @@ function wpSelectGame(type,id,roundid,playid)
 			panes['play'].clearContents();
 			panes.show('play');
 			
+			wpCreatePane('messaging');
+			
 			//get current gamestate
 			game.getLocations(true); //will update playstate when loaded
+			
+			
 			break;
 			
 		case 'create':
@@ -406,12 +410,18 @@ function wpUpdatePlay(resp)
 			wp_live = true;
 			wp_live_subscribed = true;
 			//start live events listener
-			PL.joinListen('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play);
+//			PL.joinListen('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play); //+',/person/'+wp_login.id);
+			PL.joinListen('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play+',/person/'+wp_login.id);
 			onData = wpLive;
+			
+			//update msg status
+			wp_games.game[wp_selected_game].updateMessages();	
+
 		}
 		else if (!wp_live_subscribed)
 		{
-			PL.subscribe('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play);
+//			PL.subscribe('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play); //+',/person/'+wp_login.id);
+			PL.subscribe('/wp/round/'+wp_selected_round+',/wp/play/'+wp_selected_play+',/person/'+wp_login.id);
 			wp_live_subscribed = true;
 		}
 	}
@@ -1210,6 +1220,90 @@ wpGame.prototype.deleteAllRounds = function()
 	}
 }
 
+wpGame.prototype.showMessages = function()
+{
+	/*	show msg pane
+	*/
+	
+	panes.show('messaging');
+	
+	this.updateMessages();
+}
+
+wpGame.prototype.msgSend = function()
+{
+	/*	send a message and update msg list
+	*/
+	
+	var form = document.forms['messageform'];
+	var msg = form.msg.value;
+	var req = SRV.createXMLReq('cmt-insert-req','target',wp_selected_play,'content',msg,'author','web');
+	
+	//reset form
+	form.msg.value = '';
+
+	//post message
+	var obj = this;
+	KW.utopia(req, function() { obj.updateMessages() } );
+}
+
+wpGame.prototype.updateMessages = function(resp)
+{
+	/*	get (all) messages and update msg pane
+	*/
+
+	if (!resp)
+	{
+		var obj = this;
+		var id = wp_selected_play;
+		SRV.get('q-comments-for-target',function(resp) { obj.updateMessages(resp) },'target',id,'ownerinfo',true);
+		return;
+	}
+
+	var str = '';
+	for (var i in resp)
+	{
+		var id = resp[i].getField('id');
+		var from = resp[i].getField('author');
+		var text = resp[i].getField('content');
+		var time = new Date(Number(resp[i].getField('creationdate'))).format('relative','nonbreaking');
+
+		if (from=='HQ') from = 'web'; //fix
+//		var del = (from=='web')? 'left':'right';
+//		var del = '&nbsp;<a href="javascript://delete_msg" style="color:rgb(100,100,100)" onclick="wp_games.game[wp_selected_game].msgDelete()">delete</a>';
+		var del = '&nbsp;<img src="media/icon_trash.gif" style="vertical-align:text-bottom; cursor:pointer" onclick="wp_games.game[wp_selected_game].msgDelete('+id+')" onmouseover="this.src=\'media/icon_trashX.gif\'" onmouseout="this.src=\'media/icon_trash.gif\'">';
+		
+		str+= '<div class="'+from+'" style="position:relative;">';
+		str+= text+'<br><span>';
+		//str+= (from=='web')? del+time:time+del;
+		str+= '<em>'+time+'</em>'+del+'</span></div>';	
+	}
+		
+	//document.getElementById('im_list').innerHTML = str;
+	panes['messaging'].update(str);
+	document.getElementById('im').innerHTML = resp.length || '';
+}
+
+wpGame.prototype.msgMarkAsRead = function()
+{
+	//mark all as read?
+
+}
+wpGame.prototype.msgDelete = function(id)
+{
+	/*	delete a message
+	*/
+	
+	if (confirm('delete message, are you sure?\nthere\'s no undo'))
+	{
+		var req = KW.createRequest('cmt-delete-req');
+			req.documentElement.setAttribute('id',id);
+		var obj = this;
+		KW.utopia(req, function() { obj.updateMessages() });
+	}
+}
+
+
 wpGame.prototype.unLoad = function()
 {
 	//remove all locations
@@ -1297,7 +1391,10 @@ function wpLive(event)
 	¥	answer-submit: (common), taskid, taskresultid, answer
 	¥	medium-add (common), mediumid (if medium only added to trace)
 	¥	medium-add (common), mediumid, taskid, taskresultid (if medium added to trace AND part of anwering task)
-	¥	message (later) 	*/
+	¥	message (later) 	
+	
+	¥	"comment-add": id, target, ownerid, ownername */
+
 
 	var playid = event.get('gameplayid');
 
@@ -1427,8 +1524,12 @@ function wpLive(event)
 			
 			break;
 			
+		case 'comment-add':
+			wp_games.game[wp_selected_game].updateMessages();
+			break;
+			
 		default:
-			//tmp_debug(2,'<span style="color:#dd0000">wpLive:&gt; type=',eventType,'</span>');
+			//tmp_debug(1,'<span style="color:#dd0000">wpLive:&gt; type=',eventType,'</span>');
 			break;
 		
 	}
