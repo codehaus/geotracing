@@ -27,7 +27,6 @@ function wpGameInit()
  	wpCreatePane('play');
  	
 	wpCreatePane('location_info');
-	
 
 // 	wpCreatePane('view');
 
@@ -146,26 +145,16 @@ function wpDeleteGame(id)
 
 function wpGameProfile(id,list_index)
 {
+	/*	select game from view list (and hilight selection)
+	*/
+	
 	var list = panes['list_view'].content.lastChild.getElementsByTagName('A');
 
 	var str = '';
 	for (var i=0; i<list.length; i++) list[i].style.color = 'black';
-// 	{
-// 		str+= elm+' ('+typeof(elm)+'), ';
-// 		//typeof(list);
-// 		//elm.
-// 	}
-// 	alert(str);
 	list[list_index].style.color = 'rgb(200,0,20)';
 
-	//panes.hide('list_games');
-	//wpCreatePane('game_profile');
-	
-	//panes.show('game_profile');
-	
 	wpSelectGame('view',id);
-
-	//get game details
 }
 
 function wpSelectGame(type,id,roundid,playid)
@@ -272,7 +261,21 @@ function wpLoadGame(resp)
 
 function wpAddLocation()
 {
-	if (wp_locations.location['new']) wpCancelLocation(true);
+// 	if (!skip_check)
+// 	{
+	//unsaved location? cancel it
+	var editing = false;
+	var locations = wp_games.game[wp_selected_game].locations.location
+	for (var id in locations)
+	{
+		if (locations[id].editing)
+		{
+			editing = true;
+			break;
+		}
+	}
+	if (wp_locations.location['new'] || editing) wpCancelLocation(true,editing);
+
 	
 	//show tooltip and editLocation at (single) map click
 	document.getElementById('map').firstChild.firstChild.style.cursor = 'crosshair';
@@ -287,17 +290,31 @@ function wpAddLocation()
 	}
 }
 
-function wpCancelLocation(check)
+function wpCancelLocation(check,edit)
 {
-	if (check)
-	{
-		if (!confirm('warning, there\'s an unsaved new location which will be deleted\n\ncontinue?')) return true;
-	}
+	/*	cancel adding (or updating) location
+	*/
 	
-	//remove temporary location
-	wp_locations.del('new');
-	panes['edit_location'].hide(1);
-	//wp_add_location.enable(0);
+	if (edit)
+	{
+		//if (check && confirm('warning, there\'s a location with unsaved changes (which will be lost)\n\ncontinue?')) check(1);
+		
+		//reset original geo
+		wp_selected_location.geo = wp_selected_location.prevgeo;
+		wp_selected_location.update();
+		wp_selected_location.drag.setEnabled(false);
+		wp_selected_location.editing = false;
+	}
+	else
+	{
+		//if (check && confirm('warning, there\'s an unsaved new location which will be deleted\n\ncontinue?')) check(1);
+		
+		//remove temporary location
+		wp_locations.del('new');
+	}
+
+	wp_selected_location = false;
+	panes.hide('edit_location');
 }
 
 function wpEditLocation(type)
@@ -358,6 +375,7 @@ function wpUpdatePlay(resp)
 			{
 				lastanswer = tasks[i].getAttribute('answer');
 				score = tasks[i].getAttribute('score');
+				if (score==0) score = undefined;
 			}
 			if (mediastate!='open')
 			{
@@ -669,6 +687,10 @@ wpGame.prototype.editLocation = function(id)
 	//get location
 	var location = this.locations.location[id];
 	wp_selected_location = location;
+	
+	//set editing mode and enable drag drop
+	location.editing = true;
+	location.drag.setEnabled(true);
 
 
 	panes.hide('location_info');
@@ -676,24 +698,18 @@ wpGame.prototype.editLocation = function(id)
 //	alert( tmp_print_object(location) );
 
 	
-	//get location info if needed
-// 	if (location.desc==undefined)
-// 	{
-		var resp = SRV.get('q-'+location.type,null,'id',location.id);
-		var record = resp[0];
+	//get (current) location info 
+	var resp = SRV.get('q-'+location.type,null,'id',location.id);
+	var record = resp[0];
 
-		location.mediumid = (location.type=='medium')? location.id:record.getField('mediumid');
-		location.desc = record.getField('description');
-		location.mediumtype = (location.type=='medium')? record.getField('type'):record.getField('mediumtype');
-		if (location.type=='task')
-		{
-			location.answer = record.getField('answer');
-			location.score = record.getField('score');
-		}
-		
-		//update original object
-//		this.locations.location[id] = location;
-// 	}
+	location.mediumid = (location.type=='medium')? location.id:record.getField('mediumid');
+	location.desc = record.getField('description');
+	location.mediumtype = (location.type=='medium')? record.getField('type'):record.getField('mediumtype');
+	if (location.type=='task')
+	{
+		location.answer = record.getField('answer');
+		location.score = record.getField('score');
+	}
 
 	//set form type
 	var form = document.forms['locationform'];
@@ -722,29 +738,10 @@ wpGame.prototype.editLocation = function(id)
 		form.description.value = location.desc;
 	}
 
-
-
-
-
-
-	
-//  	form.desc.value = '';
-//  	form.file.value = '';
-//  	form.description.value = '';
-//  	form.text.value = '';
-
-
-
-	
 	
 	var px = gmap.fromLatLngToDivPixel(location.geo);
 	var pane = panes['edit_location'];
 	pane.setType('update');
-	
-	
-	
-	
-	
 	pane.setPosition(px.x,px.y);
 	pane.show();
 	
@@ -752,6 +749,7 @@ wpGame.prototype.editLocation = function(id)
 	form.onsubmit = function() { return obj.updateLocation() };
 	//form.onsubmit = function() { return location.updateContents() };
 	//
+
 
 }
 
@@ -808,6 +806,8 @@ wpGame.prototype.updateLocation = function(elm)
 	
 	//apply update
 	var name = form.name.value;
+	var lon = wp_selected_location.geo.lng();
+	var lat = wp_selected_location.geo.lat();
 	
 	switch (type)
 	{
@@ -815,7 +815,7 @@ wpGame.prototype.updateLocation = function(elm)
 			var desc = form.desc.value;
 			var answer = form.answer.value;
 			var score = form.score.value;
-			KW.WP.gameUpdateTask(function() { wp_selected_location.refresh(name) },wp_selected_location.id,name,desc,score,answer,mediumid);
+			KW.WP.gameUpdateTask(function() { wp_selected_location.refresh(name) },wp_selected_location.id,name,desc,score,answer,mediumid,lon,lat);
 			break;
 		
 		case 'medium':
@@ -823,14 +823,14 @@ wpGame.prototype.updateLocation = function(elm)
 			if (mediumid)
 			{
 				wp_selected_location.collapse();
-				KW.WP.gameUpdateMedium(function() { wp_games.game[wp_selected_game].getLocations() },wp_selected_location.id,mediumid,name,desc);
+				KW.WP.gameUpdateMedium(function() { wp_games.game[wp_selected_game].getLocations() },wp_selected_location.id,mediumid,name,desc,lon,lat);
 			}
-			else KW.WP.gameUpdateMedium(function() { wp_selected_location.refresh(name) },wp_selected_location.id,mediumid,name,desc);
+			else KW.WP.gameUpdateMedium(function() { wp_selected_location.refresh(name) },wp_selected_location.id,mediumid,name,desc,lon,lat);
 			break;
 			
 		case 'text':
 			var text = form.text.value;
-			KW.WP.gameUpdateTextMedium(function() { wp_selected_location.refresh(name) },wp_selected_location.id,text,name,desc);
+			KW.WP.gameUpdateTextMedium(function() { wp_selected_location.refresh(name) },wp_selected_location.id,text,name,desc,lon,lat);
 			break;
 	}
 	
@@ -1107,7 +1107,7 @@ wpGame.prototype.editRound = function(resp,id,add)
 	else var selected = [];
 
 	//build multi select
-	var str = '<select name="players" multiple size=10 style="width:199px; margin-top:4px;">';
+	var str = '<select name="players" multiple size=10 style="width:199px; margin-top:4px;" onchange="wpCheckMaxPlayers()">';
 	for (var i in players)
 	{
 		var player = players[i].getField('loginname');
@@ -1132,6 +1132,19 @@ wpGame.prototype.editRound = function(resp,id,add)
 	wpCreatePane('edit_round',{ gameid:this.id, roundid:id, name:name, list:str, mode:mode });
 	panes.hide('edit_rounds');
 	panes.show('edit_round');
+}
+
+function wpCheckMaxPlayers()
+{
+	/*	not more than 6 players in gameround
+		warn if more.. (change later?) 
+	*/
+	
+ 	var form = document.forms['editroundform'];
+ 	var total = 0;
+	for (var i=0; i<form.players.length; i++) if (form.players[i].selected) total++;
+
+	if (total>6) alert('NOTE: there\'s a maximum of 6 players in a game round!\n\nyou have '+total+' players selected');
 }
 
 wpGame.prototype.updateRound = function(id,type)
@@ -1230,12 +1243,11 @@ wpGame.prototype.showMessages = function()
 	this.updateMessages();
 }
 
-wpGame.prototype.msgSend = function()
+wpGame.prototype.msgSend = function(form)
 {
 	/*	send a message and update msg list
 	*/
 	
-	var form = document.forms['messageform'];
 	var msg = form.msg.value;
 	var req = SRV.createXMLReq('cmt-insert-req','target',wp_selected_play,'content',msg,'author','web');
 	
@@ -1525,7 +1537,7 @@ function wpLive(event)
 			break;
 			
 		case 'comment-add':
-			wp_games.game[wp_selected_game].updateMessages();
+			wp_games.game[wp_selected_game].showMessages();
 			break;
 			
 		default:

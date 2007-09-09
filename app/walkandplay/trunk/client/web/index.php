@@ -41,6 +41,7 @@
 
 <script type="text/javascript" src="script/common/utils.js"></script>
 <script type="text/javascript" src="script/common/pane.js"></script>
+<script type="text/javascript" src="script/common/dragdrop.js"></script> 
 <script type="text/javascript" src="script/common/humandate.js"></script> 
 
 <script type="text/javascript" src="script/Application.js"></script>
@@ -51,7 +52,6 @@
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
 
-<!-- <script type="text/javascript" src="script/Justs.js"></script> -->
 
 <!-- development -->
 
@@ -154,19 +154,6 @@ function init()
 	<!-- Gmap -->
 	
 	<div id="map"></div>
-	
-
-<!-- label test
-	<div style="position:absolute; left:700px; top:50px;">
-
-		<div class="tag" style="position: relative; float: left;">
-			<img src="media/bg_tag_leftX.png"/>
-			<span style="color: black; background-color: rgb(161, 203, 226);">label</span>
-			<img style="margin-right: 3px;" src="media/bg_tag_rightX.png"/>
-		</div>
-
-    </div>
--->
 
 </body>	
 </html>

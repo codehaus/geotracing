@@ -116,7 +116,7 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent,autosize)
 	
 	//keep visible onmousover
 	var obj = this;
-	pane.onmouseover = function() { if (!obj.closing) obj.show() };
+	if (!keep_visible) pane.onmouseover = function() { if (!obj.closing) obj.show() };
 	pane.onmouseout = function() { if (!obj.keep_visible) obj.hide() };
 	
 	//refs

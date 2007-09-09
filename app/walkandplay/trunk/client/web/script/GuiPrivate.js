@@ -11,6 +11,7 @@ function wpGuiUserInit()
 	wpCreatePane('list_create');
  	wpCreatePane('list_play');
  	wpCreatePane('edit_location');
+ 	wpCreatePane('answer');
  	
 	//send heartbeats
 	wp_hb = window.setInterval('wpHeartBeat()',60000*5) //send hb every minute (=idle user)
@@ -170,7 +171,8 @@ function wpCreatePaneUser(type,obj)
 			pane.setType = function(type)
 			{
 				if (type=='add') var str= '<input type="button" value="cancel" onclick="wpCancelLocation()">&nbsp;<input type="submit" value=" add " class="red">';
-				else var str='<input type="button" value="cancel" onclick="panes.hide(\'edit_location\');wp_selected_location=false;">&nbsp;<input type="submit" value=" update " class="red">';
+//				else var str='<input type="button" value="cancel" onclick="panes.hide(\'edit_location\');wp_selected_location=false;">&nbsp;<input type="submit" value=" update " class="red">';
+				else var str='<input type="button" value="cancel" onclick="wpCancelLocation(false,true)">&nbsp;<input type="submit" value=" update " class="red">';
 				document.getElementById('location_submit').innerHTML = str;
 			}
 			pane.content.style.lineHeight = '9px';
@@ -215,7 +217,7 @@ function wpCreatePaneUser(type,obj)
 		case 'messaging':
 			var pane = new Pane('messaging',70,160,195,180,1,true);
 
-			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(); return false">';
+			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(this); return false">';
 			str+= '<span class="title">messaging</span><br><br>';
 			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'messaging\')">close</a><br><br></div>';
 			str+= '<div id="im_list" class="list" style="height:127px; width:203px;"></div>';
@@ -236,7 +238,21 @@ function wpCreatePaneUser(type,obj)
 				//scroll to bottom
 				div.scrollTop = div.scrollHeight - 127;
 			}
+			break;
+			
+		case 'answer':
+			var pane = new Pane('answer',0,40,195,70,1,true);
 
+			str+= '<form name="answerform" method="" action="" onsubmit="wp_location_expanded.answer(this); return false">';
+			str+= '<span class="title">answer</span><br><br>';
+			str+= '<div><input name="answer" type="text" style="width:190px; height:16px; background-color:#eeeeee"></div>';
+			str+= '<div style="right:15px; bottom:10px;"><input type="button" value="cancel" onclick="panes.hide(\'answer\');">&nbsp;<input type="submit" value=" send " class="red" onclick=""></div>';
+
+			pane.setContent(str);
+
+			//align right side of window
+			pane.div.style.left = '';
+			pane.div.style.right = '290px';
 			
 			break;
 					
