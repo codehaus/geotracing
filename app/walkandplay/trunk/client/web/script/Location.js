@@ -20,44 +20,33 @@ function wpLocations(name)
 	}
 	array.center = function()
 	{
-		var ave_lat = 0;
-		var ave_lon = 0;
-		for (id in this.location)
-		{
-			var p = this.location[id].geo
-			ave_lat += Number(p.lat());
-			ave_lon += Number(p.lng());
-		}
-		ave_lat = ave_lat/this.length;
-		ave_lon = ave_lon/this.length;
+// 		var ave_lat = 0;
+// 		var ave_lon = 0;
+// 		for (id in this.location)
+// 		{
+// 			var p = this.location[id].geo
+// 			ave_lat += Number(p.lat());
+// 			ave_lon += Number(p.lng());
+// 		}
+// 		ave_lat = ave_lat/this.length;
+// 		ave_lon = ave_lon/this.length;
+// 		
+// 		gmap.panTo( new GLatLng(ave_lat,ave_lon) );
+
+		//gmap center and zoom method
+		var locations = [];
+		for (id in this.location) locations.push(this.location[id].geo);
 		
-		gmap.panTo( new GLatLng(ave_lat,ave_lon) );
+		var bounds = new GPolyline(locations).getBounds();
+		var zoom = gmap.getBoundsZoomLevel(bounds);
+		zoom--;
+		gmap.setCenter(bounds.getCenter(),zoom);
+
 	}
 	
 	return array;
 }
 
-// function wpLocations(name)
-// {
-// 	this.location = new Object();
-// 	this.name = name;
-// 	this.length = 0;
-// }
-// wpLocations.prototype.push = function(obj)
-// {
-// 	this.location[obj.id] = obj;
-// 	this.length++;
-// }
-// wpLocations.prototype.del = function(id)
-// {
-// 	this.location[id].dispose();
-// 	delete this.location[id];
-// 	this.lenght--;
-// }
-// wpLocations.prototype.update = function()
-// {
-// 	for (id in this.location) this.location[id].update();
-// }
 
 /* location object */
 
@@ -65,7 +54,7 @@ function wpLocation(collection,id,p,type,state,name)
 {
 	this.collection = collection;
 	this.id = id;
-	this.geo = p;
+	this.prevgeo = this.geo = p;
 	this.type = type;
 	this.state = state || 'disabled';
 	this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
@@ -80,6 +69,7 @@ function wpLocation(collection,id,p,type,state,name)
 	//create marker
 	var location = document.createElement('IMG');
 		location.className = 'location';
+		//location.style.border = '1px dotted red';
 		location.style.width = this.w +'px';
 		location.style.height = this.h +'px';
 		location.style.zIndex = this.z = parseInt(this.geo.lat()  * -100000);
@@ -90,7 +80,7 @@ function wpLocation(collection,id,p,type,state,name)
 			location.src = 'media/blank.gif';
 			location.style.filter = PNGbgImage(this.icon).substr(7);
 		}
-		
+
 	//add type icon ..?
 	//..
 	
@@ -100,6 +90,8 @@ function wpLocation(collection,id,p,type,state,name)
 	var infopane = this.collection.info;
 	location.onmouseover = function()
 	{
+		if (obj.editing) return;
+		
 		if (infopane)
 		{
 			var str = '';
@@ -111,8 +103,8 @@ function wpLocation(collection,id,p,type,state,name)
 				if (wp_mode=='create' && wp_games.game[wp_selected_game].state!=2)
 				{
 					//str+= ' <a href="javascript://edit_location" onclick="wp_games.game['+wp_game_edit+'].locations.location['+obj.id+'].edit()" class="red">edit</a> ';
-					str+= ' <a href="javascript://edit_location" onclick="wp_games.game['+wp_game_edit+'].editLocation('+obj.id+')" class="red">edit</a> ';
-					str+= ' <a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')" class="red">delete</a>';
+					str+= ' <a href="javascript://edit_location" onclick="wp_games.game['+wp_game_edit+'].editLocation('+obj.id+')" style="color:rgb(200,0,20)">edit</a> ';
+					str+= ' <a href="javascript://delete_location" onclick="wp_games.game['+wp_game_edit+'].deleteLocation('+obj.id+')" style="color:rgb(200,0,20)">delete</a>';
 				}
 			infopane.content.innerHTML = str+'<br><br>';
 			infopane.setPosition(obj.x+12,obj.y-46);
@@ -126,6 +118,8 @@ function wpLocation(collection,id,p,type,state,name)
 	//detail view
 	location.onclick = function ()
 	{
+		if (obj.editing) return;
+		
 		if (obj.expanded) obj.collapse()
 		else obj.expand();
 	}
@@ -151,10 +145,46 @@ function wpLocation(collection,id,p,type,state,name)
 	this.div = location;
 	this.shadow_div = shadow;
 	
+
+
+	//make location dragable (??)
+	this.drag = makeDragableItem(location);
+	this.drag.dragging = function(e)
+	{
+		//update location object
+		obj.x = this.x;
+		obj.y = this.y;
+		//move shadow along
+		obj.shadow_div.style.left = obj.x +'px';
+		obj.shadow_div.style.top = obj.y +obj.h -(obj.scale*40) +'px';
+		//move edit pane along
+		panes['edit_location'].setPosition(obj.x + obj.w/1.4, obj.y + obj.h);
+		
+// 		var x = obj.x - obj.w/1.4;
+// 		var y = obj.y - obj.h;
+// 		
+// //		panes[''].
+
+
+	}
+	this.drag.drop = function()
+	{
+		//update location geo
+		//obj.geo = new GlatLng()
+		
+		var p = gmap.fromDivPixelToLatLng(new GPoint(obj.x + obj.w/1.4,obj.y + obj.h)) //-> get correct offset here!
+		obj.geo = p;
+		//var px = gmap.fromLatLngToDivPixel(this.geo);
+		
+		
+		
+		tmp_debug(2,'drop location, geo=',obj.geo);
+	}
+	this.drag.setEnabled(false);
+		
 	this.update();
 
-
-	//->debug
+	//->debugging info
 	location.title = 'debug: id='+this.id+', type='+this.type;
 
 	
@@ -184,6 +214,10 @@ wpLocation.prototype.update = function()
 	var px = gmap.fromLatLngToDivPixel(this.geo);
 	this.x = px.x - this.w/1.4;
 	this.y = px.y - this.h;
+	
+	//update drag-drop elm
+	this.drag.x = this.x;
+	this.drag.y = this.y;
 	
 	//apply to elm
 	this.div.style.left = this.x +'px'; 
@@ -238,6 +272,12 @@ wpLocation.prototype.refresh = function(name)
 	if (this.expanded) this.expand();
 	
 	if (panes['list_locations'] && panes['list_locations'].visible) wp_games.game[wp_selected_game].listLocations();
+	
+	//update prev geo to current
+	this.prevgeo = this.geo;
+	this.editing = false;
+	
+	wp_selected_location = false;
 }
 
 wpLocation.prototype.expand = function()
@@ -336,10 +376,7 @@ wpLocation.prototype.updateContents = function(elm)
 	}
 	
 	return false;
-	
-	
 }
-
 
 wpLocation.prototype.updateDetails = function(resp)
 {
@@ -367,12 +404,14 @@ wpLocation.prototype.updateDetails = function(resp)
 		//display pane contents
 		var str = '';
 			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onclick="wp_location_expanded.collapse()">close</a>';
-			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo()">zoom to</a><br>';
+			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo();this.blur()">zoom to</a><br>';
 			str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
 			str+= '<div id="display_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
 			str+= wpEmbedMedium(this.mediumtype,this.mediumid);
 			str+= '</div>';
 			if (this.desc) str+= this.desc+'<br>';
+			//answer button for tasks in play-mode
+			if (this.type=='task' && wp_mode=='play') str+= '<a href="javascript://add_answer" onclick="panes.show(\'answer\');this.blur()" style="color:rgb(200,0,20); float:right">add answer</a><br>';
 			
 		//create
 		if (this.type=='task' && wp_mode=='create')
@@ -436,6 +475,30 @@ wpLocation.prototype.updateDetails = function(resp)
 	}
 }
 
+wpLocation.prototype.answer = function(form)
+{
+	var answer = form.answer.value;
+	
+	tmp_debug(1,'add answer, task=',this.id,', answer=',answer);
+	
+	if (answer=='')
+	{
+		alert('you didn\'t insert an answer!');
+		return;
+	}
+	
+	//reset form
+	form.answer.value = '';
+	panes.hide('answer');
+
+	//submit answer (<play-answertask-req id="[taskid]" answer="blabla" />)
+	var req = KW.createRequest('play-answertask-req');
+		req.documentElement.setAttribute('id',id);
+		req.documentElement.setAttribute('answer',answer);
+
+	KW.utopia(req,null);
+}
+
 wpLocation.prototype.updateAnswer = function(answerstate,answer,medium,score)
 {
 	if (answerstate!='score-update' && answerstate!='medium-add')
@@ -443,7 +506,7 @@ wpLocation.prototype.updateAnswer = function(answerstate,answer,medium,score)
 		this.play_answerstate = answerstate;
 		this.play_answer = answer || '';
 	}
-	this.play_score = score || '';
+	this.play_score = score || '<em style="font-weight:normal">waiting for medium upload</em>';
 
 	if (answerstate!='score-update' && medium)
 	{

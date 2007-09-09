@@ -26,7 +26,7 @@ function wpStartup()
  	
  	wpGameInit();
 
-	wp_login_action = 'play';//'create'; //switch to create mode if autologin
+	wp_login_action = 'play'; //switch to mode if autologin
 	wpAutoLogin();
 	
 	
@@ -100,6 +100,7 @@ function wpSelect(mode)
 			play = '<span class="red" style="cursor:pointer" onclick="wpSelect()">play</span>';
 			panes['play'].clearContents();
 			panes['play'].content.lastChild.innerHTML = '<a href="javascript://exit" onmouseup="wpLeavePlay()">exit</a>';
+			document.getElementById('im').style.display = 'block';
 			
 			//get scheduled games for user
 			SRV.get('q-play-status-by-user',wpListGames,'user',wp_login.loginname);
@@ -109,6 +110,7 @@ function wpSelect(mode)
 			view = '<span class="red" style="cursor:pointer" onclick="wpSelect()">view</span>';
 			panes['play'].clearContents();
 			panes['play'].content.lastChild.innerHTML = '';
+			document.getElementById('im').style.display = 'none';
 			
 			//get available games (live or archived)
 			var select = wp_viewmode;

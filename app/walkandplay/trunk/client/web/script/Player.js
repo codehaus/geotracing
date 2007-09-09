@@ -27,7 +27,7 @@ function wpPlayer(collection,id,p,name,t)
 
  	this.name = name;
  	var color = this.name.substring(0,1);
- 	if (color=='j') color = 'b'; //->just and joes are blue for now..
+ 	if (color=='j') color = 'p'; //->just and joes are purple for now..
 	this.icon = 'icon_player_'+color+'.png';
  	
  	this.trace = new Array(0); //geo points history
@@ -39,6 +39,8 @@ function wpPlayer(collection,id,p,name,t)
 		case 'g': c = '#2daa4b'; break;
 		case 'b': c = '#3264c8'; break;
 		case 'y': c = '#ffd02b'; break;
+		case 'o': c = '#df8021'; break;
+		case 'p': c = '#8d2bcb'; break;
 	}
  	this.trace_color = c; //(color=='r')? '#c80014':(color=='b')? '#3264c8':'#ffd02b'; //'#2daa4b';
 
