@@ -65,10 +65,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public WPMidlet() {
         super();
-        midlet = this;
-        //setHome();
-        //Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
-        //new VersionChecker().check();
+        midlet = this;        
     }
 
     public void setHome() {
@@ -89,10 +86,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Settings"), null);
         //#style mainHelpCommand
         menuScreen.append(Locale.get("menu.Help"), null);
-        //#style mainQuitCommand
-        menuScreen.append(Locale.get("menu.Quit"), null);
         //#style mainLogCommand
         menuScreen.append(Locale.get("menu.Log"), null);
+        //#style mainQuitCommand
+        menuScreen.append(Locale.get("menu.Quit"), null);
        /* //#style mainLogCommand
         menuScreen.append("test display", null);
         //#style mainLogCommand
@@ -116,10 +113,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
         }
     }
 
-    protected void startApp() throws MIDletStateChangeException {
-        Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
-        new VersionChecker().check();
-        //Display.getDisplay(this).setCurrent(menuScreen);
+    protected void startApp() throws MIDletStateChangeException {        
+        if(new VersionChecker().check()){
+            Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
+        }
     }
 
     protected void pauseApp() {
@@ -241,13 +238,13 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 Display.getDisplay(this).setCurrent(new HelpDisplay(this));
                 break;
             case 5:
+                // Log
+                Log.view(this);
+                break;
+            case 6:
                 // Quit
                 Display.getDisplay(this).setCurrent(new SplashDisplay(this, -1));
                 //notifyDestroyed();
-                break;
-            case 6:
-                // Log
-                Log.view(this);
                 break;
             case 7:
                 // test display
@@ -278,7 +275,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
         private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
 
         private Form form;
-        public void check() {
+        public boolean check() {
             String myVersion = getAppProperty("MIDlet-Version");
 
             String myName = getAppProperty("MIDlet-Name");
@@ -299,14 +296,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
                         form.setCommandListener(this);
                         Display.getDisplay(midlet).setCurrent(form);
+                        return false;
                     }else{
-                        setHome();
+                        return true;
                     }
                 }else{
-                    setHome();
+                    return true;
                 }
             } catch (Throwable t) {
-                setHome();
+                return true;
             }
 		}
 
