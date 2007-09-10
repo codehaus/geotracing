@@ -73,6 +73,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
     private int IMCounter;
     private int prevIMCounter;
+    private boolean hasCommands;
 
     public PlayDisplay(WPMidlet aMidlet) {
         super(false);
@@ -165,6 +166,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         addCommand(SCORES_CMD);
         addCommand(SHOW_LOG_CMD);
         addCommand(BACK_CMD);
+        hasCommands = true;
+    }
+
+    private void removeCommands(){
+        removeCommand(ZOOM_IN_CMD);
+        removeCommand(ZOOM_OUT_CMD);
+        removeCommand(TOGGLE_MAP_CMD);
+        removeCommand(ADD_TEXT_CMD);
+        removeCommand(ADD_PHOTO_CMD);
+        removeCommand(ADD_AUDIO_CMD);
+        hasCommands = false;
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -199,6 +211,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     }
                 }
             } else if (rsp.getTag().equals("play-location-rsp")) {
+                // only active if we have a rsp
+                //
+                if(hasLocation() && !hasCommands){                    
+                    setCommands();
+                }
+
                 Log.log("Demo mode:" + midlet.isInDemoMode());
                 if(midlet.isInDemoMode()){
                     // video
@@ -290,8 +308,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             // start polling for IM messages
             startPoll();
 
-            //tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp?";
-            //tileBaseURL = Net.getInstance().getURL() + "/map.srv?";
             tileBaseURL = midlet.getWMSUrl();
             Display.getDisplay(midlet).setCurrent(this);
             active = true;
@@ -341,6 +357,11 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     }
 
     public void onGPSInfo(GPSInfo theInfo) {
+        // only start when we have good gps data!!
+        if(gpsStatus.equals("no signal") || gpsStatus.equals("fixing")){
+            return;
+        }
+
         setLocation(theInfo.lon.toString(), theInfo.lat.toString());
         if (!showGPSInfo) {
             return;
@@ -349,11 +370,18 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     }
 
     public void onGPSStatus(String s) {
+        Log.log("onGPSStatus:" + s);
         gpsStatus = "GPS:" + s;
-        if(s.equals("GPS connected")){
-            setCommands();
-        }else if(s.equals("No GPS") || s.indexOf("error")!=-1){
+        if(s.equals("No GPS")){
             errorMsg = "No GPS signal - please go back and setup your GPS (again).";
+        }else if(s.equals("conn error")){
+            errorMsg = "Problem connecting to GPS - check the device.";
+        }else if(s.equals("connecting")){
+            errorMsg = "Connecting to GPS...";
+        }else if(s.equals("no signal")){
+            errorMsg = "Lost GPS signal. Trying to recover automatically.";
+            removeCommands();
+            lonLat = null;
         }
         show();
     }
@@ -460,6 +488,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     s = errorMsg;
                 }
                 g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                //repaint();
                 return;
             }
 
@@ -475,6 +504,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                 String loading = "Loading map...";
                 g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                //repaint();
                 return;
             }
 
@@ -524,7 +554,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         }
                     }
                 } catch (Throwable t) {
-                    g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+                    String s = t.getMessage();
+                    if(s == null || s.equals("null")){
+                        s = "Could not get a map image - please zoom in or out.";
+                    }
+                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
                     return;
                 }
             }
@@ -569,9 +605,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             }
 
         } catch (Throwable t) {
-            log("Paint exception:" + t.getMessage(), true);
-            //g.drawString("ERROR", 10, 10, Graphics.TOP | Graphics.LEFT);
-            //g.drawString(t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+            String s = t.getMessage();
+            if(s == null || s.equals("null")){
+               s = "Could not get a map image - please zoom in or out.";
+            }
+            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
         }
     }
 
@@ -595,7 +635,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             gpsEngine.stop();
             stopPoll();
             midlet.getActiveApp().removeTCPClientListener(this);
-            Display.getDisplay(midlet).setCurrent(prevScreen);            
+            // TODO: check if there is a better way to do a clean refresh of the SelectGameDisplay
+            //Display.getDisplay(midlet).setCurrent(new SelectGameDisplay(midlet));
+            Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == ADD_PHOTO_CMD) {
             new ImageCaptureDisplayOld(midlet, this, true);
         } else if (cmd == ADD_AUDIO_CMD) {
