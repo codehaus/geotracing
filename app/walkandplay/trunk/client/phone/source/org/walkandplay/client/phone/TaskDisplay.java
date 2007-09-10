@@ -8,6 +8,8 @@ import org.walkandplay.client.phone.TCPClientListener;
 
 import javax.microedition.lcdui.*;
 
+import de.enough.polish.util.Locale;
+
 public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
@@ -90,6 +92,8 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     }
 
     private void drawScreen() {
+        //#style labelinfo
+        append(Locale.get("task.Info"));
         //#style formbox
         append(task.getChildText("name"));
         //#style formbox
