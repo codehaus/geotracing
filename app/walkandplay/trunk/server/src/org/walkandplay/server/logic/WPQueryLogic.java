@@ -118,7 +118,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				String id = getParameter(theParms, ATTR_ROUNDID, null);
 				throwOnMissingParm(ATTR_ROUNDID, id);
 				String tables = "utopia_person,wp_gameplay,wp_gameround";
-				String fields = "wp_gameplay.id,wp_gameplay.state,wp_gameplay.score";
+				String fields = "wp_gameplay.id,wp_gameplay.state,wp_gameplay.score,wp_gameplay.color";
 				String where = "wp_gameround.id = " + id;
 				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,utopia_person";
 				String postCond = null;
@@ -195,7 +195,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				Record person = getPersonForLoginName(loginName);
 				String tables = "utopia_person,wp_gameplay,wp_gameround,wp_game";
-				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_gameround.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate";
+				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_gameround.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate,wp_gameplay.color";
 				String where = "utopia_person.id = " + person.getId();
 				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,wp_game";
 				String postCond = null;
@@ -228,6 +228,20 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 	/**
 	 * ************* Data Queries ***********************
 	 */
+	public static Record[] getColorsInUseForGameRound(int aRoundId) throws OaseException {
+		try {
+			String tables = "wp_gameround,wp_gameplay";
+			String fields = "wp_gameplay.id,wp_gameplay.color";
+			String where = "wp_gameround.id = " + aRoundId;
+			String relations = "wp_gameround,wp_gameplay";
+			String postCond = null;
+			return QueryLogic.queryStore(tables, fields, where, relations, postCond);
+		} catch (Throwable t) {
+			log.warn("Error getColorsInUseForGameRound for game=" + aRoundId, t);
+			throw new OaseException("Error in getColorsInUseForGameRound game=" + aRoundId, t);
+		}
+	}
+
 	static public Record getGamePlayForTrack(Track aTrack) throws OaseException, UtopiaException {
 		try {
 			return getOase().getRelater().getRelated(aTrack.getRecord(), GAMEPLAY_TABLE, null)[0];
@@ -424,27 +438,6 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		return result;
 	}
 
-	public static Record getRunningGamePlay(int aPersonId) throws UtopiaException {
-		Record result = null;
-		try {
-			String tables = "utopia_person,wp_gameplay";
-			String fields = "wp_gameplay.id,wp_gameplay.name,wp_gameplay.state,wp_gameplay.score";
-			String where = "utopia_person.id = " + aPersonId + " AND wp_gameplay.state = '" + PLAY_STATE_RUNNING + "'";
-			String relations = "utopia_person,wp_gameplay";
-			String postCond = null;
-			Record[] records = QueryLogic.queryStore(getOase(), tables, fields, where, relations, postCond);
-			if (records.length == 1) {
-				result = getOase().getFinder().read(records[0].getId(), GAMEPLAY_TABLE);
-			} else if (records.length > 1) {
-				throw new UtopiaException("More than one running gameplay for person=" + aPersonId);
-			}
-		} catch (Throwable t) {
-			log.warn("Error get running gameplay for person=" + aPersonId, t);
-		}
-
-		return result;
-	}
-
 	public static Record[] getLocationsHitForGame(Point aPoint, int aGameId) throws UtopiaException {
 		try {
 			String distanceClause = "distance_sphere(GeomFromText('POINT(" + aPoint.x + " " + aPoint.y + ")',4326),point)";
@@ -545,7 +538,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		return result;
 	}
 
-	public static String getPlayerNamesForGameRound(int aGameRoundId) throws UtopiaException {
+	public static String  getPlayerNamesForGameRound(int aGameRoundId) throws UtopiaException {
 		String result = "";
 		try {
 			String tables = "wp_gameround,utopia_person,utopia_account";
@@ -562,6 +555,28 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 			}
 		} catch (Throwable t) {
 			log.warn("Error query getPlayerNamesForGameRound roundId=" + aGameRoundId , t);
+		}
+
+		return result;
+	}
+
+
+	public static Record getRunningGamePlay(int aPersonId) throws UtopiaException {
+		Record result = null;
+		try {
+			String tables = "utopia_person,wp_gameplay";
+			String fields = "wp_gameplay.id,wp_gameplay.name,wp_gameplay.state,wp_gameplay.score";
+			String where = "utopia_person.id = " + aPersonId + " AND wp_gameplay.state = '" + PLAY_STATE_RUNNING + "'";
+			String relations = "utopia_person,wp_gameplay";
+			String postCond = null;
+			Record[] records = QueryLogic.queryStore(getOase(), tables, fields, where, relations, postCond);
+			if (records.length == 1) {
+				result = getOase().getFinder().read(records[0].getId(), GAMEPLAY_TABLE);
+			} else if (records.length > 1) {
+				throw new UtopiaException("More than one running gameplay for person=" + aPersonId);
+			}
+		} catch (Throwable t) {
+			log.warn("Error get running gameplay for person=" + aPersonId, t);
 		}
 
 		return result;

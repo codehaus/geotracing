@@ -8,6 +8,8 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.walkandplay.server.util.Constants;
 
+import java.util.HashMap;
+
 /**
  * Manage gamerounds.
  * <p/>
@@ -18,10 +20,89 @@ import org.walkandplay.server.util.Constants;
  */
 public class GameRoundLogic implements Constants {
 	static private Log log = Logging.getLog("GameRoundLogic");
+	static private final String[] PLAYER_COLORS = {"red", "blue", "yellow", "green", "purple", "orange"};
+
 	private Oase oase;
 
 	public GameRoundLogic(Oase anOase) {
 		oase = anOase;
+	}
+
+
+	/**
+	 * Add players (persons) to gameround.
+	 *
+	 * @param aRoundId	  gameround record id
+	 * @param somePlayers comma-separated list of player account names
+	 * @throws OaseException Standard exception
+	 */
+	public void addPlayers(int aRoundId, String somePlayers) throws OaseException {
+		addPlayers(oase.getFinder().read(aRoundId, GAMEROUND_TABLE), somePlayers);
+
+	}
+
+	/**
+	 * Add players (persons) to gameround.
+	 *
+	 * @param aGameRound	gameround record
+	 * @param somePlayers comma-separated list of playe ids
+	 * @throws OaseException Standard exception
+	 */
+	public void addPlayers(Record aGameRound, String somePlayers) throws OaseException {
+		Modifier modifier = oase.getModifier();
+		Relater relater = oase.getRelater();
+		Record[] persons = WPQueryLogic.getPersonsForLoginNames(somePlayers);
+		Record[] colorRecs = WPQueryLogic.getColorsInUseForGameRound(aGameRound.getId());
+
+		// Make HashMap of colors in use
+		HashMap usedColors = new HashMap(colorRecs.length);
+		String nextColor;
+		for (int i=0; i < colorRecs.length; i++) {
+			nextColor = colorRecs[i].getStringField(COLOR_FIELD);
+			usedColors.put(nextColor, nextColor);
+		}
+
+
+		Transaction transaction = oase.getOaseSession().createTransaction();
+		Record gamePlay;
+		try {
+			transaction.begin();
+
+			for (int i = 0; i < persons.length; i++) {
+
+				// Get color available
+				String useColor = null;
+				for (int j=0; j < PLAYER_COLORS.length; j++) {
+					if (!usedColors.containsKey(PLAYER_COLORS[j])) {
+						// Color is free
+						useColor = PLAYER_COLORS[j];
+
+						// Reserve this color locally first
+						usedColors.put(useColor, useColor);
+						break;
+					}
+				}
+
+				// Check if color found
+				if (useColor == null) {
+					throw new OaseException("no colors available for this gameround id=" + aGameRound.getId());
+				}
+
+				// Assign player color for this round
+				gamePlay = modifier.create(GAMEPLAY_TABLE);
+				gamePlay.setStringField(COLOR_FIELD, useColor);					
+				modifier.insert(gamePlay);
+
+				// Relate player to gameround and gameplay
+				relater.relate(aGameRound, gamePlay);
+				relater.relate(persons[i], aGameRound, RELTAG_PLAYER);
+				relater.relate(persons[i], gamePlay, RELTAG_PLAYER);
+			}
+			transaction.commit();
+		} catch (Throwable t) {
+			transaction.cancel();
+			throw new OaseException("addplayers transaction failed", t);
+		}
 	}
 
 	/**
@@ -133,56 +214,12 @@ public class GameRoundLogic implements Constants {
 		Record game = finder.read(aGameId, GAME_TABLE);
 
 		// Get all rounds related to game and delete each
-		Record[] rounds = relater.getRelated(game, GAMEROUND_TABLE, null);		
+		Record[] rounds = relater.getRelated(game, GAMEROUND_TABLE, null);
 		for (int i=0; i < rounds.length; i++) {
 			deleteRound(aPersonId, rounds[i]);
 		}
 	}
 
-	/**
-	 * Add players (persons) to gameround.
-	 *
-	 * @param aRoundId	  gameround record id
-	 * @param somePlayers comma-separated list of player account names
-	 * @throws OaseException Standard exception
-	 */
-	public void addPlayers(int aRoundId, String somePlayers) throws OaseException {
-		addPlayers(oase.getFinder().read(aRoundId, GAMEROUND_TABLE), somePlayers);
-
-	}
-
-	/**
-	 * Add players (persons) to gameround.
-	 *
-	 * @param aGameRound	gameround record
-	 * @param somePlayers comma-separated list of playe ids
-	 * @throws OaseException Standard exception
-	 */
-	public void addPlayers(Record aGameRound, String somePlayers) throws OaseException {
-		Modifier modifier = oase.getModifier();
-		Relater relater = oase.getRelater();
-		Record[] persons = WPQueryLogic.getPersonsForLoginNames(somePlayers);
-
-		Transaction transaction = oase.getOaseSession().createTransaction();
-		Record gamePlay;
-		try {
-			transaction.begin();
-
-			for (int i = 0; i < persons.length; i++) {
-				gamePlay = modifier.create(GAMEPLAY_TABLE);
-				modifier.insert(gamePlay);
-
-				// Relate player to gameround and gameplay
-				relater.relate(aGameRound, gamePlay);
-				relater.relate(persons[i], aGameRound, RELTAG_PLAYER);
-				relater.relate(persons[i], gamePlay, RELTAG_PLAYER);
-			}
-			transaction.commit();
-		} catch (Throwable t) {
-			transaction.cancel();
-			throw new OaseException("addplayers transaction failed", t);
-		}
-	}
 
 	/**
 	 * Remove players (persons) from gameround.
