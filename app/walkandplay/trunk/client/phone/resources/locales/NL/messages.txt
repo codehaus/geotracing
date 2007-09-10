@@ -79,4 +79,6 @@ settings.Version=Versie
 settings.DemoModeOff=Demo Mode OFF
 settings.DemoModeOn=Demo Mode ON
 
+task.Info=Vul het juiste antwoord in en stuur een foto, video of audioclip op om de opdracht te voltooien.
+
 

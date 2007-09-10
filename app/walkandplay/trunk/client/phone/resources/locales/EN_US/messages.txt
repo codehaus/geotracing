@@ -78,3 +78,5 @@ settings.Account=Account
 settings.Version=Version
 settings.DemoModeOff=Demo Mode OFF
 settings.DemoModeOn=Demo Mode ON
+
+task.Info=Fill in the right answer and send a photo, video or audioclip to fullfill the task.
