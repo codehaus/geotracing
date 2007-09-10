@@ -41,6 +41,7 @@ public interface Constants {
 	// table fields
 	public final static String ANSWER_FIELD = "answer";
 	public final static String ANSWER_STATE_FIELD = "answerstate";
+	public final static String COLOR_FIELD = "color";
 	public final static String END_DATE_FIELD = "enddate";
 	public final static String GAME_ID_FIELD = "gameid";
 	public final static String ID_FIELD = "id";

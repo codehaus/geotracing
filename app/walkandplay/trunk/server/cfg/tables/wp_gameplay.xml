@@ -46,6 +46,7 @@
  		<field name="events" type="FILE"  />
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="color" type="STRING" size="12" default="red" required="true" />
 	</data>
 	<!--}data -->
 </table>
