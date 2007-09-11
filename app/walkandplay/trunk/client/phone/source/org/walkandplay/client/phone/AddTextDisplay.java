@@ -47,6 +47,10 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         addCommand(SUBMIT_CMD);
     }
 
+    public void start(){
+        Display.getDisplay(midlet).setCurrent(this);
+    }
+
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {

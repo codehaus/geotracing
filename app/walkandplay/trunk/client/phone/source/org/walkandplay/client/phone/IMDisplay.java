@@ -15,35 +15,44 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
     private final static String AUTHOR_TYPE_MOBILE = "mobile";
 
     private TextField messageField = new TextField("", "", 32, TextField.ANY);
-    private Vector messages = new Vector(0);
+    private JXElement message;
 
     private boolean active;
 
-    public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, Vector theMessages) {
+    public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Messaging");
         prevScreen = aPrevScreen;
         midlet.getActiveApp().addTCPClientListener(this);
+    }
 
-        setInputBox();
+    public void start(JXElement aMessage){
+        // start clean
+        deleteAll();
 
-        if(theMessages!=null){
-            setMessages(theMessages);
-        }
+        if(aMessage!=null) message = aMessage;
 
-        addCommand(SUBMIT_CMD);
+        drawScreen();
 
         active = true;
+        Display.getDisplay(midlet).setCurrent(this);    
     }
 
     public boolean isActive() {
         return active;
     }
 
-    private void setInputBox(){
+    private void drawScreen(){
         //#style labelinfo
         append("send message to web player");
         //#style textbox
         append(messageField);
+        if(message!=null){
+            //#style labelinfo
+            append("last message from web player");
+            //#style formbox
+            append(message.getChildText("content"));
+        }
+        addCommand(SUBMIT_CMD);
     }
 
     /*<cmt-read-rsp>
@@ -65,45 +74,23 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
         </record>
     </cmt-read-rsp>
     */
-    public void setMessages(Vector theMessages) {
-        messages = theMessages;
-        String messagesString = "";
-
-        for(int i=0;i>theMessages.size();i++){
-            JXElement msg = ((JXElement)theMessages.elementAt(i));
-            String content = msg.getChildText("content");
-            String author = msg.getChildText("author");
-            if(author.equals(AUTHOR_TYPE_MOBILE)){
-                content = "mob:" + content;
-            }else{
-                content = "web:" + content;
-            }
-
-            messagesString += content + "\n";
-
-            messagesString += (new Date(Long.parseLong(msg.getChildText("creationdate")))).toString() + "\n";
-        }
-
-        //#style formbox
-        append(messagesString);
-    }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
             JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("-nrsp")) {
-
+            if (rsp.getTag().equals("cmt-insert-rsp")) {
+                deleteAll();
+                //#style alertinfo
+                append("Message sent succesfully");
+                addCommand(BACK_CMD);
+            }else if (rsp.getTag().equals("cmt-insert-nrsp")) {
                 deleteAll();
 
                 //#style alertinfo
                 append("Error sending message. Please try again");
 
-                setInputBox();
-
-                addCommand(SUBMIT_CMD);
-
-                setMessages(messages);
+                drawScreen();
             }
         }
     }
@@ -153,18 +140,13 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
     public void commandAction(Command command, Displayable screen) {
         if (command == SUBMIT_CMD) {
             String msg = messageField.getString();
-            if (msg == null) {
+            if (msg == null || msg.length() == 0) {
                 deleteAll();
 
                 //#style alertinfo
                 append("Enter a message...");
 
-                setInputBox();
-
-                addCommand(SUBMIT_CMD);
-
-                setMessages(messages);
-
+                drawScreen();
             } else {
                 sendMessage(msg);
             }

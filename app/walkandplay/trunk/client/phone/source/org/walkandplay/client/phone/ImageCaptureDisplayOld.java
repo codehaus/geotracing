@@ -38,9 +38,12 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
         playing = isPlaying;
         midlet.getActiveApp().addTCPClientListener(this);
 
-        showCamera();
-
         addCommand(CAPTURE_CMD);
+    }
+
+    public void start(){
+        showCamera();
+        Display.getDisplay(midlet).setCurrent(this);    
     }
 
     public void commandAction(Command c, Displayable d) {

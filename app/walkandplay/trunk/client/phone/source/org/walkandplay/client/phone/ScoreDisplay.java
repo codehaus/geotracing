@@ -20,9 +20,11 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
         maxScore = aMaxScore;
         prevScreen = aPrevScreen;
         midlet.getPlayApp().addTCPClientListener(this);
+    }
 
-        // get the scores
+    public void start(){
         getScores();
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {

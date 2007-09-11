@@ -69,6 +69,7 @@ play.IM=Verstuur bericht
 play.Back=Stop spel
 play.ShowIntro=Toon intro
 play.HideIntro=Verberg intro
+play.LastHit=Laatste object
 
 settings.SoundOn=Geluid AAN
 settings.SoundOff=Geluid UIT
@@ -80,5 +81,7 @@ settings.DemoModeOff=Demo Mode OFF
 settings.DemoModeOn=Demo Mode ON
 
 task.Info=Vul het juiste antwoord in en stuur een foto, video of audioclip op om de opdracht te voltooien.
-
+task.TaskDone=Je hebt deze opdracht al voltooid.
+task.TryAgain=Probeer opnieuw
+task.UploadMedia=Stuur nog media in.
 

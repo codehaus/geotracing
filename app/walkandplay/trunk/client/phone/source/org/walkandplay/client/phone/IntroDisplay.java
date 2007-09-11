@@ -14,6 +14,10 @@ public class IntroDisplay extends DefaultDisplay {
         append(midlet.getPlayApp().getGame().getChildText("intro"));
     }
 
+    public void start(){
+        Display.getDisplay(midlet).setCurrent(this);
+    }
+
     /*
          * The commandAction method is implemented by this midlet to
          * satisfy the CommandListener interface and handle the Exit action.

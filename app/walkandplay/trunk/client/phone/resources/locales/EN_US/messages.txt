@@ -69,6 +69,7 @@ play.IM=Send message
 play.Back=Stop game
 play.ShowIntro=Show intro
 play.HideIntro=Hide intro
+play.LastHit=Last hit object
 
 settings.SoundOn=Sound ON
 settings.SoundOff=Sound OFF
@@ -80,3 +81,6 @@ settings.DemoModeOff=Demo Mode OFF
 settings.DemoModeOn=Demo Mode ON
 
 task.Info=Fill in the right answer and send a photo, video or audioclip to fullfill the task.
+task.TaskDone=You already completed this task.
+task.TryAgain=Try again
+task.UploadMedia=You still have to upload media.

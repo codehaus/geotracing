@@ -35,8 +35,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	private Timer pollTimer;
 	private Vector IMMessages;
 	private long lastRetrievalTime = -1;
-	private static long POLL_INTERVAL = 60000L;
-	private IMDisplay imDisplay;
+	private static long POLL_INTERVAL = 10000L;
 
 	private Image transBar;
 	private int maxScore;
@@ -67,12 +66,29 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	private Command BACK_CMD = new Command(Locale.get("play.Back"), Command.ITEM, 2);
 	private Command SHOW_INTRO_CMD = new Command(Locale.get("play.ShowIntro"), Command.ITEM, 2);
 	private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
+	private Command LAST_HIT_CMD = new Command(Locale.get("play.LastHit"), Command.ITEM, 2);
 
-	private int IMCounter;
-	private int prevIMCounter;
-	private boolean hasCommands;
+	/*private int IMCounter;
+	private int prevIMCounter;*/
+    private JXElement imMessage;
+    private boolean hasCommands;
 
-	public PlayDisplay(WPMidlet aMidlet) {
+    private TaskDisplay taskDisplay;
+    private IMDisplay imDisplay;
+    private MediumDisplay mediumDisplay;
+    private ScoreDisplay scoreDisplay;
+    private IntroDisplay introDisplay;
+    private AudioCaptureDisplay audioCaptureDisplay;
+    private AddTextDisplay addTextDisplay;
+    private ImageCaptureDisplayOld imageCaptureDisplay;
+
+
+    private JXElement lastObject;
+    private String lastObjectType;
+
+    private boolean demoTaskSent; 
+
+    public PlayDisplay(WPMidlet aMidlet) {
 		super(false);
 		setFullScreenMode(true);
 
@@ -81,28 +97,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		midlet.getActiveApp().addTCPClientListener(this);
 
 		try {
-			String user = midlet.getKWUser();
-
 			//#ifdef polish.images.directLoad
-			if (user.indexOf("red") != -1) {
-				playerDot1 = Image.createImage("/icon_player_r_1.png");
-				playerDot2 = Image.createImage("/icon_player_r_2.png");
-				playerDot3 = Image.createImage("/icon_player_r_3.png");
-			} else if (user.indexOf("green") != -1) {
-				playerDot1 = Image.createImage("/icon_player_g_1.png");
-				playerDot2 = Image.createImage("/icon_player_g_2.png");
-				playerDot3 = Image.createImage("/icon_player_g_3.png");
-			} else if (user.indexOf("blue") != -1) {
-				playerDot1 = Image.createImage("/icon_player_b_1.png");
-				playerDot2 = Image.createImage("/icon_player_b_2.png");
-				playerDot3 = Image.createImage("/icon_player_b_3.png");
-			} else if (user.indexOf("yellow") != -1) {
-				//playerDot = Image.createImage("/icon_player_y.png");
-				playerDot1 = Image.createImage("/icon_player_y_1.png");
-				playerDot2 = Image.createImage("/icon_player_y_2.png");
-				playerDot3 = Image.createImage("/icon_player_y_3.png");
-			}
-
 			transBar = Image.createImage("/trans_bar.png");
 			taskDot1 = Image.createImage("/task_dot_1.png");
 			taskDot2 = Image.createImage("/task_dot_2.png");
@@ -112,25 +107,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			mediumDot3 = Image.createImage("/medium_dot_3.png");
 			bg = Image.createImage("/bg.png");
 			//#else
-			if (user.indexOf("red") != -1) {
-				playerDot1 = scheduleImage("/icon_player_r_1.png");
-				playerDot2 = scheduleImage("/icon_player_r_2.png");
-				playerDot3 = scheduleImage("/icon_player_r_3.png");
-			} else if (user.indexOf("green") != -1) {
-				playerDot1 = scheduleImage("/icon_player_g_1.png");
-				playerDot2 = scheduleImage("/icon_player_g_2.png");
-				playerDot3 = scheduleImage("/icon_player_g_3.png");
-			} else if (user.indexOf("blue") != -1) {
-				playerDot1 = scheduleImage("/icon_player_b_1.png");
-				playerDot2 = scheduleImage("/icon_player_b_2.png");
-				playerDot3 = scheduleImage("/icon_player_b_3.png");
-			} else if (user.indexOf("yellow") != -1) {
-				//playerDot = scheduleImage("/icon_player_y.png");
-				playerDot1 = scheduleImage("/icon_player_y_1.png");
-				playerDot2 = scheduleImage("/icon_player_y_2.png");
-				playerDot3 = scheduleImage("/icon_player_y_3.png");
-			}
-
 			taskDot1 = scheduleImage("/task_dot_1.png");
 			taskDot2 = scheduleImage("/task_dot_2.png");
 			taskDot3 = scheduleImage("/task_dot_3.png");
@@ -162,6 +138,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		addCommand(SHOW_INTRO_CMD);
 		addCommand(SCORES_CMD);
 		addCommand(SHOW_LOG_CMD);
+		addCommand(LAST_HIT_CMD);
 		addCommand(BACK_CMD);
 		hasCommands = true;
 	}
@@ -173,7 +150,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		removeCommand(ADD_TEXT_CMD);
 		removeCommand(ADD_PHOTO_CMD);
 		removeCommand(ADD_AUDIO_CMD);
-		hasCommands = false;
+        addCommand(LAST_HIT_CMD);
+        hasCommands = false;
 	}
 
 	public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -195,38 +173,39 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 							maxScore += Integer.parseInt(r.getChildText("score"));
 						}
 					}
-				}
-			} else if (rsp.getTag().equals("cmt-read-rsp")) {
-				IMMessages = rsp.getChildren();
-				IMCounter = rsp.getChildren().size();
-				if (IMCounter > prevIMCounter) {
-					prevIMCounter = IMCounter;
-					if (imDisplay.isActive()) {
-						imDisplay.setMessages(IMMessages);
-					} else {
-						imDisplay = new IMDisplay(midlet, this, IMMessages);
-					}
+				}else if (cmd.equals("q-comments-for-target")) {
+					JXElement rec = rsp.getChildByTag("record");
+                    if(imMessage != null && (!imMessage.getChildText("id").equals(rec.getChildText("id")))){
+                        imMessage = rec;
+                        if(imDisplay == null){
+                            imDisplay = new IMDisplay(midlet, this);
+                        }
+                        imDisplay.start(imMessage);
+                    }else if(imMessage == null){
+                        imMessage = rec;                        
+                    }
 				}
 			} else if (rsp.getTag().equals("play-location-rsp")) {
-				if (midlet.isInDemoMode()) {
+                JXElement hitElm = null;
+                if (midlet.isInDemoMode()) {
 					// video
 					/*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-											Log.log("add a hit!!!!");
-											JXElement hit = new JXElement("medium-hit");
-											hit.setAttr("id", 26527);
-											rsp.addChild(hit);
-										}
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 26527);
+                        rsp.addChild(hit);
+                    }
 
-										// audio
-										if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-											Log.log("add a hit!!!!");
-											JXElement hit = new JXElement("medium-hit");
-											hit.setAttr("id", 221499);
-											rsp.addChild(hit);
-										}*/
+                    // audio
+                    if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                        Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 221499);
+                        rsp.addChild(hit);
+                    }*/
 
 					// image
-					if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+					/*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
 						Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("medium-hit");
 						hit.setAttr("id", 22578);
@@ -239,40 +218,53 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 						JXElement hit = new JXElement("medium-hit");
 						hit.setAttr("id", 531414);
 						rsp.addChild(hit);
-					}
+					}*/
 
 					// task
-					if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+					//if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+					if (!demoTaskSent) {
 						Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("task-hit");
 						hit.setAttr("id", 22560);
+                        // open | done
+                        hit.setAttr("state", "open");
+                        // open | notok | ok
+                        hit.setAttr("answerstate", "open");
+                        // open | done
+                        hit.setAttr("mediastate", "open");
 						rsp.addChild(hit);
-					}
-				}
-
-				JXElement e = rsp.getChildAt(0);
-
-				if (e != null) {
-					String t = e.getTag();
+                        demoTaskSent = true;
+                        hitElm = rsp.getChildAt(0);
+                    }
+				}else{
+                    hitElm = rsp.getChildAt(0);
+                }
+             
+                if (hitElm != null && (lastObject!=null && hitElm.getAttr("id").equals(lastObject.getAttr("id")))) {
+                    lastObject = hitElm;
+                    String t = lastObject.getTag();
 					if (t.equals("task-hit")) {
-						String state = e.getAttr("state");
-						String answerState = e.getAttr("answerstate");
-
-						Util.playTone(80, 50, midlet.getVolume());
+                        lastObjectType = "task";
+                        String state = lastObject.getAttr("state");
+						String answerState = lastObject.getAttr("answerstate");
+                        String mediaState = lastObject.getAttr("mediastate");
+						
+                        Util.playTone(80, 50, midlet.getVolume());
 						Util.playTone(90, 250, midlet.getVolume() );
-
-						// Do nothing if task done or right answer already given
-						if (state.equals("done") || answerState.equals("ok")) {
-							return;
-						}
 
 						log("we found a task!!", false);
-						new TaskDisplay(midlet, Integer.parseInt(e.getAttr("id")), w, this);
-
+                        if(taskDisplay == null){
+                            taskDisplay = new TaskDisplay(midlet, w, this);
+                        }
+                        taskDisplay.start(lastObject.getAttr("id"), state, answerState, mediaState);
 					} else if (t.equals("medium-hit")) {
-						Util.playTone(80, 50, midlet.getVolume());
+                        lastObjectType = "medium";
+                        Util.playTone(80, 50, midlet.getVolume());
 						Util.playTone(90, 250, midlet.getVolume() );
-						new MediumDisplay(midlet, e.getAttr("id"), w, this);
+                        if(mediumDisplay == null){
+                            mediumDisplay = new MediumDisplay(midlet, w, this);
+                        }
+                        mediumDisplay.start(lastObject.getAttr("id"));
 					}
 				}
 			}
@@ -295,16 +287,22 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	/**
 	 * User is now ready to start playing
 	 */
-	void start() {
+	void start(String aColor) {
 		try {
-			// start the traceEngine
+            // make sure we don't show any locations from previous games
+            gameLocations = null;
+            repaint();
+
+            setColor(aColor);            
+            
+            // start the traceEngine
 			gpsEngine = GPSEngine.getInstance();
 			gpsEngine.addListener(this);
 			gpsEngine.start(midlet);
 
 			// get the game and all game locations for this game
 			getGame();
-			getGameLocations();
+            getGameLocations();
 			// start polling for IM messages
 			startPoll();
 
@@ -312,14 +310,75 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			Display.getDisplay(midlet).setCurrent(this);
 			active = true;
 
-			show();
+            show();
 
 		} catch (Throwable t) {
 			log("Exception in start():" + t.getMessage(), true);
 		}
 	}
 
-	private void getGameLocations() {
+    private void setColor(String aColor){
+        Log.log("#############Color:" + aColor);
+        try{
+        //#ifdef polish.images.directLoad
+        if (aColor.indexOf("red") != -1) {
+            playerDot1 = Image.createImage("/icon_player_r_1.png");
+            playerDot2 = Image.createImage("/icon_player_r_2.png");
+            playerDot3 = Image.createImage("/icon_player_r_3.png");
+        } else if (aColor.indexOf("green") != -1) {
+            playerDot1 = Image.createImage("/icon_player_g_1.png");
+            playerDot2 = Image.createImage("/icon_player_g_2.png");
+            playerDot3 = Image.createImage("/icon_player_g_3.png");
+        } else if (aColor.indexOf("blue") != -1) {
+            playerDot1 = Image.createImage("/icon_player_b_1.png");
+            playerDot2 = Image.createImage("/icon_player_b_2.png");
+            playerDot3 = Image.createImage("/icon_player_b_3.png");
+        } else if (aColor.indexOf("yellow") != -1) {
+            playerDot1 = Image.createImage("/icon_player_y_1.png");
+            playerDot2 = Image.createImage("/icon_player_y_2.png");
+            playerDot3 = Image.createImage("/icon_player_y_3.png");
+        }else if (aColor.indexOf("orange") != -1) {
+            playerDot1 = Image.createImage("/icon_player_o_1.png");
+            playerDot2 = Image.createImage("/icon_player_o_2.png");
+            playerDot3 = Image.createImage("/icon_player_o_3.png");
+        } else if (aColor.indexOf("purple") != -1) {
+            playerDot1 = Image.createImage("/icon_player_p_1.png");
+            playerDot2 = Image.createImage("/icon_player_p_2.png");
+            playerDot3 = Image.createImage("/icon_player_p_3.png");
+        }
+        //#else
+        if (aColor.indexOf("red") != -1) {
+            playerDot1 = scheduleImage("/icon_player_r_1.png");
+            playerDot2 = scheduleImage("/icon_player_r_2.png");
+            playerDot3 = scheduleImage("/icon_player_r_3.png");
+        } else if (aColor.indexOf("green") != -1) {
+            playerDot1 = scheduleImage("/icon_player_g_1.png");
+            playerDot2 = scheduleImage("/icon_player_g_2.png");
+            playerDot3 = scheduleImage("/icon_player_g_3.png");
+        } else if (aColor.indexOf("blue") != -1) {
+            playerDot1 = scheduleImage("/icon_player_b_1.png");
+            playerDot2 = scheduleImage("/icon_player_b_2.png");
+            playerDot3 = scheduleImage("/icon_player_b_3.png");
+        } else if (aColor.indexOf("yellow") != -1) {
+            playerDot1 = scheduleImage("/icon_player_y_1.png");
+            playerDot2 = scheduleImage("/icon_player_y_2.png");
+            playerDot3 = scheduleImage("/icon_player_y_3.png");
+        }else if (aColor.indexOf("orange") != -1) {
+            playerDot1 = scheduleImage("/icon_player_o_1.png");
+            playerDot2 = scheduleImage("/icon_player_o_2.png");
+            playerDot3 = scheduleImage("/icon_player_o_3.png");
+        } else if (aColor.indexOf("purple") != -1) {
+            playerDot1 = scheduleImage("/icon_player_p_1.png");
+            playerDot2 = scheduleImage("/icon_player_p_2.png");
+            playerDot3 = scheduleImage("/icon_player_p_3.png");
+        }
+        //#endif
+        }catch(Throwable t){
+            Log.log("Exception setting the color");
+        }
+    }
+
+    private void getGameLocations() {
 		JXElement req = new JXElement("query-store-req");
 		req.setAttr("cmd", "q-game-locations");
 		req.setAttr("id", midlet.getPlayApp().getGameRound().getChildText("gameid"));
@@ -360,7 +419,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	}
 
 	public void onGPSInfo(GPSInfo theInfo) {
-		Log.log("onGPSInfo:" + theInfo.toString());
+		//Log.log("onGPSInfo:" + theInfo.toString());
 		// only start when we have good gps data!!
 		/*if(gpsStatus.equals("no signal") || gpsStatus.equals("fixing") || gpsStatus.equals("bad signal")){
 					return;
@@ -383,22 +442,22 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		Log.log("onGPSStatus:" + s);
 		gpsStatus = "GPS:" + s;
 		/*if(s.equals("No GPS")){
-					errorMsg = "No GPS signal - go back and setup your GPS (again).";
-					removeCommands();
-					lonLat = null;
-				}else if(s.equals("conn error")){
-					errorMsg = "Problems connecting to GPS!";
-					removeCommands();
-					lonLat = null;
-				}else if(s.equals("connecting")){
-					errorMsg = "(Re)connecting to GPS...";
-					removeCommands();
-					lonLat = null;
-				}else if(s.equals("no signal")){
-					errorMsg = "Waiting for GPS signal...";
-					removeCommands();
-					lonLat = null;
-					mapImage = null;
+            errorMsg = "No GPS signal - go back and setup your GPS (again).";
+            removeCommands();
+            lonLat = null;
+        }else if(s.equals("conn error")){
+            errorMsg = "Problems connecting to GPS!";
+            removeCommands();
+            lonLat = null;
+        }else if(s.equals("connecting")){
+            errorMsg = "(Re)connecting to GPS...";
+            removeCommands();
+            lonLat = null;
+        }else if(s.equals("no signal")){
+            errorMsg = "Waiting for GPS signal...";
+            removeCommands();
+            lonLat = null;
+            mapImage = null;
 				}*/
 		show();
 	}
@@ -438,7 +497,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		JXElement req = new JXElement("query-store-req");
 		req.setAttr("cmd", "q-comments-for-target");
 		req.setAttr("target", midlet.getPlayApp().getGamePlayId());
-		req.setAttr("max", 3);
+		req.setAttr("max", 1);
 		req.setAttr("last", true);
 
 		lastRetrievalTime = Util.getTime();
@@ -578,13 +637,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					}
 				} catch (Throwable t) {
 					/*String s = t.getMessage();
-										if(s == null || s.equals("null")){
-											s = "Could not get a map image - please zoom in or out.";
-										}
-										g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-										g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-										g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-										return;*/
+                    if(s == null || s.equals("null")){
+                        s = "Could not get a map image - please zoom in or out.";
+                    }
+                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    return;*/
 				}
 			}
 
@@ -595,12 +654,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			// System.out.println("xy=" + xy);
 			// If we have previous point: draw line from there to current
 			/*if (prevXY != null && prevXY.x < 1000) {
-							// Draw trace
-							Graphics mapGraphics = mapImage.getGraphics();
-							mapGraphics.setColor(0, 0, 255);
-							mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
-							mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
-						}*/
+                // Draw trace
+                Graphics mapGraphics = mapImage.getGraphics();
+                mapGraphics.setColor(0, 0, 255);
+                mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
+                mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
+            }*/
 
 			// Draw background map
 			g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
@@ -630,12 +689,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 		} catch (Throwable t) {
 			/*String s = t.getMessage();
-						if(s == null || s.equals("null")){
-						   s = "Could not get a map image - please zoom in or out.";
-						}
-						g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-						g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-						g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
+            if(s == null || s.equals("null")){
+               s = "Could not get a map image - please zoom in or out.";
+            }
+            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
 		}
 	}
 
@@ -669,21 +728,43 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			//Display.getDisplay(midlet).setCurrent(new SelectGameDisplay(midlet));
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (cmd == ADD_PHOTO_CMD) {
-			new ImageCaptureDisplayOld(midlet, this, true);
+            if(imageCaptureDisplay == null){
+                imageCaptureDisplay = new ImageCaptureDisplayOld(midlet, this, true);
+            }
+            imageCaptureDisplay.start();
 		} else if (cmd == ADD_AUDIO_CMD) {
-			new AudioCaptureDisplay(midlet, this, true);
-		} else if (cmd == ADD_TEXT_CMD) {
-			new AddTextDisplay(midlet, this, true);
+            if(audioCaptureDisplay == null){
+                audioCaptureDisplay = new AudioCaptureDisplay(midlet, this, true);
+            }
+            audioCaptureDisplay.start();
+        } else if (cmd == ADD_TEXT_CMD) {
+            if(addTextDisplay == null){
+                addTextDisplay = new AddTextDisplay(midlet, this, true);
+            }
+            addTextDisplay.start();
 		} else if (cmd == ZOOM_IN_CMD) {
 			zoomIn();
 		} else if (cmd == ZOOM_OUT_CMD) {
 			zoomOut();
+		} else if (cmd == LAST_HIT_CMD) {
+            Log.log("lastobject:" + lastObject);
+            Log.log("lastobjecttype:" + lastObjectType);
+            if(lastObject == null) return;
+            
+            if(lastObjectType.equals("task")){
+                taskDisplay.start(lastObject.getAttr("id"), lastObject.getAttr("state"), lastObject.getAttr("answerstate"), lastObject.getAttr("mediastate"));
+            }else if(lastObjectType.equals("medium")){
+                mediumDisplay.start(lastObject.getAttr("id"));
+            }
 		} else if (cmd == TOGGLE_MAP_CMD) {
 			mapType = mapType.equals("sat") ? "map" : "sat";
 			resetMap();
 			show();
 		} else if (cmd == SCORES_CMD) {
-			new ScoreDisplay(midlet, maxScore, this);
+            if(scoreDisplay == null){
+                scoreDisplay = new ScoreDisplay(midlet, maxScore, this);
+            }
+            scoreDisplay.start();
 		} else if (cmd == SHOW_LOG_CMD) {
 			removeCommand(SHOW_LOG_CMD);
 			addCommand(HIDE_LOG_CMD);
@@ -693,9 +774,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			addCommand(SHOW_LOG_CMD);
 			SHOW_STATE = 0;
 		} else if (cmd == IM_CMD) {
-			imDisplay = new IMDisplay(midlet, this, IMMessages);
+            if(imDisplay == null){
+                imDisplay = new IMDisplay(midlet, this);
+            }
+            imDisplay.start(imMessage);
 		} else if (cmd == SHOW_INTRO_CMD) {
-			new IntroDisplay(midlet, this);
+            if(introDisplay == null){
+                introDisplay = new IntroDisplay(midlet, this);
+            }
+            introDisplay.start();
 		}
 	}
 
