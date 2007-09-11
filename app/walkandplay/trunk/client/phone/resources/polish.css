@@ -21,27 +21,30 @@
 colors {
     /**
 	WHITE:  rgb(132,143,96);
-	LIGHTBLUE:  rgb(238,241,229);
-	LIGHTBLUE:  argb(130, 238,241,229);
+	LIGHT:  rgb(238,241,229);
+	LIGHT:  argb(130, 238,241,229);
 	BLACK: rgb(238,241,229);
 	GREY: rgb( 30, 85, 86 );
     */
 
     /*WHITE: rgb( 153, 179, 204 );
-    LIGHTBLUE: argb( 130, 231, 243, 255 );
-    LIGHTBLUE: argb( 130, 238, 241, 229 );
+    LIGHT: argb( 130, 231, 243, 255 );
+    LIGHT: argb( 130, 238, 241, 229 );
     BLACK: rgb( 40, 40, 40 );
     GREY: rgb( 77, 84, 90 );*/
 
     WHITE: rgb(255,255,255);
-    LIGHTBLUE: argb(130,197,219,237);
+    BGCOLOR: rgb(204,204,204);
+    /*BGCOLOR: rgb(221,221,221);*/
+    LIGHT: rgb(238,238,238);
+    DARK: rgb(51,51,51);
+    /*LIGHT: argb(130,197,219,237);*/
     TRANSWHITE: argb(130,255,255,255);
-    /*LIGHTBLUE: argb(130,153,179,204);*/
+    /*LIGHT: argb(130,153,179,204);*/
     BLACK: rgb(0,0,0);
-    RED: rgb(255,0,0);
+    RED: rgb(200,0,20);
     GREEN: rgb(0,255,55);
     ORANGE: rgb(255,200,35);
-    GREY: rgb(60,60,60);
 }
 
 /**
@@ -63,7 +66,7 @@ menu {
     padding: 2;
     background {
         type: round-rect;
-        color: LIGHTBLUE;
+        color: LIGHT;
         border-width: 1;
         border-color: BLACK;
     }
@@ -85,7 +88,7 @@ menuItem {
     padding: 2;
     padding-left: 2;
     font {
-        color: GREY;
+        color: DARK;
         size: small;
         style: bold;
     }
@@ -99,8 +102,8 @@ menuItem {
   * been defined in the menu style.
   */
 .menuFocused extends .menuItem {
-    background-color: WHITE;
-    font-color: BLACK;
+    background-color: DARK;
+    font-color: WHITE;
     layout: left | horizontal-expand;
 }
 
@@ -136,14 +139,14 @@ focused {
     background {
         type: round-rect;
         arc: 8;
-        color: LIGHTBLUE;
+        color: LIGHT;
         border-color: BLACK;
         border-width: 1;
     }
 
     font {
         style: bold;
-        color: GREY;
+        color: DARK;
         size: small;
     }
 
@@ -169,8 +172,8 @@ focused {
     layout: horizontal-expand | top | horizontal-center;
     columns:3;
     columns-width: equal;
-    background-color: WHITE;
-    background-image:url(bg.png);
+    background-color: BGCOLOR;
+    /*background-image:url(bg.png);*/
     /*background-image:url(bg-stripe.png);*/
     /*background-repeat:repeat;*/
     font-size: small;
@@ -182,15 +185,16 @@ focused {
     /*padding-left: 5;
     padding-right: 5;*/
     /*background {
-        *//*color: LIGHTBLUE;*//*
+        *//*color: LIGHT;*//*
         type: smooth-color;
         color: blue;
         gradient-color: white;
     }*/
 
     layout: horizontal-expand | top | left;
+    background-color: BGCOLOR;
     columns:1;
-    background-image:url(bg.png);
+    /*background-image:url(bg.png);*/
     background{
         /*image:url(bg-stripe.png);
         border-width:2;
@@ -215,7 +219,7 @@ focused {
     margin: 2; /* for the missing border of the focused style */
     padding: 2;
     background: none;
-    font-color: GREY;
+    font-color: DARK;
     font-style: bold;
     font-size: small;
     layout: center;
@@ -295,6 +299,7 @@ focused {
     padding:2;
     font-color: BLACK;
     font-size: small;
+    font-style:bold;
     background-color: WHITE;
     layout: horizontal-expand | left | top;
 }
@@ -302,9 +307,9 @@ focused {
 .alertinfo{
     margin:2;
     padding:2;
-    font-color: BLACK;
+    font-color: WHITE;
     font-size: small;
-    background-color: ORANGE;
+    background-color: RED;
     layout: horizontal-expand | left | top;
 }
 
@@ -319,8 +324,8 @@ focused {
         /*offset: 2;*/
         arc:6;        
     }
-    background-color:LIGHTBLUE;
-    font-color: GREY;
+    background-color:LIGHT;
+    font-color: DARK;
     font-size: small;
     layout: horizontal-expand | left | top;
     /*textfield-direct-input: true;*/
@@ -344,47 +349,47 @@ focused {
 .button {
     margin: 2;
     padding: 2;
-    font-color: GREY;
+    font-color: DARK;
     font-size: small;
     layout: center;
     border{
         width:1;
-        color:GREY;
+        color:DARK;
         type:round-rect;
         arc:6;
     }
-    background-color:LIGHTBLUE;
-    font-color: GREY;
+    background-color:LIGHT;
+    font-color: DARK;
 }
 
 .gpsstat {
     margin: 2;
     padding: 2;
-    font-color: GREY;
+    font-color: DARK;
     font-size: small;
     layout: horizontal-expand | horizontal-center | top;
     border{
         width:1;
-        color:GREY;
+        color:DARK;
         type:round-rect;
         arc:6;
     }
-    background-color:LIGHTBLUE;
+    background-color:LIGHT;
 }
 
 .netstat {
     margin: 2;
     padding: 2;
-    font-color: GREY;
+    font-color: DARK;
     font-size: small;
     layout: horizontal-expand | horizontal-center | top;
     border{
         width:1;
-        color:GREY;
+        color:DARK;
         type:round-rect;
         arc:6;
     }
-    background-color:LIGHTBLUE;
+    background-color:LIGHT;
 }
 
 
