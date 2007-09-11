@@ -211,13 +211,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     }
                 }
             } else if (rsp.getTag().equals("play-location-rsp")) {
-                // only active if we have a rsp
-                //
-                if(hasLocation() && !hasCommands){                    
-                    setCommands();
-                }
-
-                Log.log("Demo mode:" + midlet.isInDemoMode());
                 if(midlet.isInDemoMode()){
                     // video
                     /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
@@ -335,6 +328,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
     public void setLocation(String aLon, String aLat) {
         lonLat = new GoogleMap.LonLat(aLon, aLat);
+        if(!hasCommands){
+            setCommands();
+        }
         show();
     }
 
@@ -357,32 +353,41 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     }
 
     public void onGPSInfo(GPSInfo theInfo) {
+        Log.log("onGPSInfo:" + theInfo.toString());
         // only start when we have good gps data!!
-        if(gpsStatus.equals("no signal") || gpsStatus.equals("fixing")){
+        /*if(gpsStatus.equals("no signal") || gpsStatus.equals("fixing") || gpsStatus.equals("bad signal")){
             return;
-        }
+        }*/
 
         setLocation(theInfo.lon.toString(), theInfo.lat.toString());
         if (!showGPSInfo) {
             return;
         }
-        gpsStatus = theInfo.toString();
+        // TODO: usefull info but needs to be formatted better
+        //gpsStatus = theInfo.toString();
     }
 
     public void onGPSStatus(String s) {
         Log.log("onGPSStatus:" + s);
         gpsStatus = "GPS:" + s;
-        if(s.equals("No GPS")){
-            errorMsg = "No GPS signal - please go back and setup your GPS (again).";
-        }else if(s.equals("conn error")){
-            errorMsg = "Problem connecting to GPS - check the device.";
-        }else if(s.equals("connecting")){
-            errorMsg = "Connecting to GPS...";
-        }else if(s.equals("no signal")){
-            errorMsg = "Lost GPS signal. Trying to recover automatically.";
+        /*if(s.equals("No GPS")){
+            errorMsg = "No GPS signal - go back and setup your GPS (again).";
             removeCommands();
             lonLat = null;
-        }
+        }else if(s.equals("conn error")){
+            errorMsg = "Problems connecting to GPS!";
+            removeCommands();
+            lonLat = null;
+        }else if(s.equals("connecting")){
+            errorMsg = "(Re)connecting to GPS...";
+            removeCommands();
+            lonLat = null;
+        }else if(s.equals("no signal")){
+            errorMsg = "Waiting for GPS signal...";
+            removeCommands();
+            lonLat = null;
+            mapImage = null;
+        }*/
         show();
     }
 
@@ -554,35 +559,36 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         }
                     }
                 } catch (Throwable t) {
-                    String s = t.getMessage();
+                    /*String s = t.getMessage();
                     if(s == null || s.equals("null")){
                         s = "Could not get a map image - please zoom in or out.";
                     }
                     g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-                    return;
+                    return;*/
                 }
             }
 
+
             // Draw location and trace.
-            GoogleMap.XY prevXY = xy;
+            //GoogleMap.XY prevXY = xy;
             xy = bbox.getPixelXY(lonLat);
 
             // System.out.println("xy=" + xy);
             // If we have previous point: draw line from there to current
-            if (prevXY != null && prevXY.x < 1000) {
+            /*if (prevXY != null && prevXY.x < 1000) {
                 // Draw trace
                 Graphics mapGraphics = mapImage.getGraphics();
                 mapGraphics.setColor(0, 0, 255);
                 mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
                 mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
-            }
+            }*/
 
             // Draw background map
             g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-            // draw the player            
+            // draw the player
             if (zoom >= 0 && zoom < 6) {
                 g.drawImage(playerDot1, xy.x - (playerDot1.getWidth()) / 2, xy.y - (playerDot1.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
             } else if (zoom >= 6 && zoom < 12) {
@@ -605,29 +611,35 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             }
 
         } catch (Throwable t) {
-            String s = t.getMessage();
+            /*String s = t.getMessage();
             if(s == null || s.equals("null")){
                s = "Could not get a map image - please zoom in or out.";
             }
             g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
             g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
         }
     }
 
     public void keyPressed(int key) {
 		switch (key) {
 			case KEY_NUM0:
-				mapType = mapType.equals("sat") ? "map" : "sat";
-                resetMap();
-                show();
-				return;
-			case KEY_STAR:
-				zoomIn();
-				return;
-			case KEY_POUND:
-				zoomOut();						
-		}
+                if(hasCommands){
+                    mapType = mapType.equals("sat") ? "map" : "sat";
+                    resetMap();
+                    show();
+                    return;
+                }
+            case KEY_STAR:
+                if(hasCommands){
+                    zoomIn();
+                    return;
+                }
+            case KEY_POUND:
+                if(hasCommands){
+                    zoomOut();
+                }
+        }
     }
 
     public void commandAction(Command cmd, Displayable screen) {
