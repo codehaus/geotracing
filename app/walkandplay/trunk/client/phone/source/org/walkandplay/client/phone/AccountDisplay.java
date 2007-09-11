@@ -23,7 +23,7 @@ public class AccountDisplay extends DefaultDisplay {
 
         userField = new TextField("", user, 16, TextField.ANY);
         passwordField = new TextField("", password, 16, TextField.PASSWORD);
-        urlField = new TextField("", url, 512, TextField.UNEDITABLE);
+        /*urlField = new TextField("", url, 512, TextField.UNEDITABLE);*/
 
         //#style labelinfo
         append("user");
@@ -33,10 +33,10 @@ public class AccountDisplay extends DefaultDisplay {
         append("password");
         //#style textbox
         append(passwordField);
-        //#style labelinfo
+        /*//#style labelinfo
         append("server");
         //#style labelinfo
-        append(urlField);
+        append(urlField);*/
 
         addCommand(OK_CMD);
         setCommandListener(this);

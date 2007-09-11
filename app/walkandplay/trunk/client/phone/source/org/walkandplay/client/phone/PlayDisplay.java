@@ -70,7 +70,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 	/*private int IMCounter;
 	private int prevIMCounter;*/
-    private JXElement imMessage;
+    private String imMessage;
     private boolean hasCommands;
 
     private TaskDisplay taskDisplay;
@@ -174,15 +174,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 						}
 					}
 				}else if (cmd.equals("q-comments-for-target")) {
-					JXElement rec = rsp.getChildByTag("record");
-                    if(imMessage != null && (!imMessage.getChildText("id").equals(rec.getChildText("id")))){
-                        imMessage = rec;
+					Vector recs = rsp.getChildrenByTag("record");
+                    // if we have one or more messages and the last one is NOT sent by the mobile
+                    if(recs.size() >= 1){
+                        imMessage = ((JXElement)recs.elementAt(0)).getChildText("content");
                         if(imDisplay == null){
                             imDisplay = new IMDisplay(midlet, this);
                         }
-                        imDisplay.start(imMessage);
-                    }else if(imMessage == null){
-                        imMessage = rec;                        
+
+                        if(!imMessage.equals(imDisplay.getMyMessage()) && imDisplay.getMyMessage().length()>0){
+                            imDisplay.start(imMessage);
+                        }                        
                     }
 				}
 			} else if (rsp.getTag().equals("play-location-rsp")) {
@@ -240,7 +242,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     hitElm = rsp.getChildAt(0);
                 }
              
-                if (hitElm != null && (lastObject!=null && hitElm.getAttr("id").equals(lastObject.getAttr("id")))) {
+                if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
                     lastObject = hitElm;
                     String t = lastObject.getTag();
 					if (t.equals("task-hit")) {
@@ -497,7 +499,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		JXElement req = new JXElement("query-store-req");
 		req.setAttr("cmd", "q-comments-for-target");
 		req.setAttr("target", midlet.getPlayApp().getGamePlayId());
-		req.setAttr("max", 1);
+		req.setAttr("max", 2);
 		req.setAttr("last", true);
 
 		lastRetrievalTime = Util.getTime();
@@ -636,14 +638,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 						}
 					}
 				} catch (Throwable t) {
-					/*String s = t.getMessage();
+					String s = t.getMessage();
                     if(s == null || s.equals("null")){
                         s = "Could not get a map image - please zoom in or out.";
                     }
                     g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-                    return;*/
+                    return;
 				}
 			}
 
@@ -687,14 +689,19 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					break;
 			}
 
-		} catch (Throwable t) {
-			/*String s = t.getMessage();
+            g.setColor(255, 255, 255);
+		    g.fillRect(0, h - 20, w, h);
+            g.setColor(0, 0, 0);
+            g.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
+
+        } catch (Throwable t) {
+			String s = t.getMessage();
             if(s == null || s.equals("null")){
                s = "Could not get a map image - please zoom in or out.";
             }
             g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
             g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
+            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
 		}
 	}
 

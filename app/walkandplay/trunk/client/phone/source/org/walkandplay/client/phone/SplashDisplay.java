@@ -11,7 +11,7 @@ public class SplashDisplay extends Canvas {
     int w = -1, h = -1;
     private Delayer delayer;
     // image objects
-    private Image bg, logoBanner;
+    private Image logoBanner;
 
     // screenstates
     private int screenName;
@@ -22,10 +22,8 @@ public class SplashDisplay extends Canvas {
             midlet = aMidlet;
             // load all images
             //#ifdef polish.images.directLoad
-            bg = Image.createImage("/bg.png");
             logoBanner = Image.createImage("/logo.png");
             //#else
-            bg = scheduleImage("/bg.png");
             logoBanner = scheduleImage("/logo.png");
             //#endif
 
@@ -46,7 +44,7 @@ public class SplashDisplay extends Canvas {
             w = getWidth();
             h = getHeight();
         }
-        g.setColor(255, 255, 255);
+        g.setColor(221, 221, 221);
         g.fillRect(0, 0, w, h);
         //g.drawImage(bg, (w - bg.getWidth()) / 2, (h - bg.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);        
         g.drawImage(logoBanner, (w - logoBanner.getWidth()) / 2, (h - logoBanner.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);

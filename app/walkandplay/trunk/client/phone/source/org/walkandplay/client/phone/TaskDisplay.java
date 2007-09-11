@@ -14,7 +14,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
     private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
-    private Command TRY_AGAIN_CMD = new Command(Locale.get("task.TryAgain"), Command.BACK, 1);
+    private Command TRY_AGAIN_CMD = new Command(Locale.get("task.TryAgain"), Command.CANCEL, 1);
     private String MEDIUM_BASE_URL;
 
     private TextField inputField;

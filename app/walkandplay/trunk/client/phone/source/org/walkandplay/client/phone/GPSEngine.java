@@ -26,8 +26,9 @@ public class GPSEngine implements GPSFetcherListener{
     private Vector listeners = new Vector(3);
 
     private Vector points = new Vector(3);
-    public static final long DEFAULT_LOC_SEND_INTERVAL_MILLIS = 25000;
-    private long locSendIntervalMillis = DEFAULT_LOC_SEND_INTERVAL_MILLIS;
+    //public static final long DEFAULT_LOC_SEND_INTERVAL_MILLIS = 25000;
+    //private long locSendIntervalMillis = DEFAULT_LOC_SEND_INTERVAL_MILLIS;
+    private long locSendIntervalMillis;
     private long lastTimeLocSent;
 
     private static final GPSEngine instance = new GPSEngine();
@@ -60,6 +61,7 @@ public class GPSEngine implements GPSFetcherListener{
      */
     public void start(WPMidlet aMIDlet) {
         midlet = aMIDlet;
+        locSendIntervalMillis = midlet.getGPSSendInterval();
         startGPSFetcher();
         Log.log("time=" + Calendar.getInstance().getTime() + " timezone=" + TimeZone.getDefault().getID());
     }
@@ -69,7 +71,6 @@ public class GPSEngine implements GPSFetcherListener{
      */
     public void stop() {
         try {
-
             if (gpsFetcher != null) {
                 gpsFetcher.stop();
                 gpsFetcher = null;
@@ -178,11 +179,11 @@ public class GPSEngine implements GPSFetcherListener{
                     ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("gpsURL=\n" + gpsURL);
             }
 
-            long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
+            //long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
             gpsFetcher = GPSFetcher.getInstance();
             gpsFetcher.setListener(this);
             gpsFetcher.setURL(gpsURL);
-            gpsFetcher.start(GPS_SAMPLE_INTERVAL);            
+            gpsFetcher.start(midlet.getGPSSampleInterval());
         } catch (Throwable t) {
              for (int i = 0; i < listeners.size(); i++) {
                     ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("start error");
