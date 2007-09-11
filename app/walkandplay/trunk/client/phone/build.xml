@@ -401,7 +401,7 @@
 		<delete dir="dist" includes="**/*" />
 	</target>
 
-	<target name="install" depends="init,clean,build_Nokia_N73_EN_US">
+	<target name="install" depends="build_Nokia_N73_EN_US">
 
 		<chmod file="${btsend}" perm="ugo+x"/>
 
