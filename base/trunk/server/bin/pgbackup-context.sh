@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Backup single Oase context into backup file (PostGIS-based only!!).
 #

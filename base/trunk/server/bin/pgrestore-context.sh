@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Restore single Oase context from backup file.
 #
