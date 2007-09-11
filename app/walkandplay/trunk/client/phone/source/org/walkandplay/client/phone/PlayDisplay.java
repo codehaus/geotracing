@@ -70,7 +70,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 	/*private int IMCounter;
 	private int prevIMCounter;*/
-    private String imMessage;
+    private String imMessage = "";
     private boolean hasCommands;
 
     private TaskDisplay taskDisplay;
@@ -156,11 +156,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 	public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
 		String tag = aResponse.getTag();
-		if (tag.equals("utopia-rsp")) {
+        Log.log("# PlayDisplay!!!! " + tag);
+        if (tag.equals("utopia-rsp")) {
 			JXElement rsp = aResponse.getChildAt(0);
 			if (rsp.getTag().equals("query-store-rsp")) {
 				String cmd = rsp.getAttr("cmd");
-				if (cmd.equals("q-game")) {
+                Log.log("# cmd: " + cmd);
+                if (cmd.equals("q-game")) {
 					Log.log("Seting game record");
 					midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
 				} else if (cmd.equals("q-game-locations")) {
@@ -177,14 +179,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					Vector recs = rsp.getChildrenByTag("record");
                     // if we have one or more messages and the last one is NOT sent by the mobile
                     if(recs.size() >= 1){
-                        imMessage = ((JXElement)recs.elementAt(0)).getChildText("content");
+                        String msg = ((JXElement)recs.elementAt(0)).getChildText("content");
+                        Log.log("Found a msg: " + msg);
                         if(imDisplay == null){
                             imDisplay = new IMDisplay(midlet, this);
                         }
 
-                        if(!imMessage.equals(imDisplay.getMyMessage()) && imDisplay.getMyMessage().length()>0){
+                        if((!msg.equals(imDisplay.getMyMessage()) && !imMessage.equals(msg) && imDisplay.getMyMessage().length()>0)
+                                || (!msg.equals(imDisplay.getMyMessage()) && imMessage.length()>0 && !imMessage.equals(msg))){
+                            imMessage = msg;
                             imDisplay.start(imMessage);
-                        }                        
+                        }
                     }
 				}
 			} else if (rsp.getTag().equals("play-location-rsp")) {
@@ -227,7 +232,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					if (!demoTaskSent) {
 						Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("task-hit");
-						hit.setAttr("id", 22560);
+						hit.setAttr("id", 22619);
                         // open | done
                         hit.setAttr("state", "open");
                         // open | notok | ok
@@ -570,7 +575,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					s = errorMsg;
 				}
 				g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-				//repaint();
+                drawBar(g);
+                //repaint();
 				return;
 			}
 
@@ -588,7 +594,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
 				String loading = "Loading map...";
 				g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-				//repaint();
+                drawBar(g);
+                //repaint();
 				return;
 			}
 
@@ -645,6 +652,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
                     g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
                     g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    drawBar(g);
                     return;
 				}
 			}
@@ -689,10 +697,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					break;
 			}
 
-            g.setColor(255, 255, 255);
-		    g.fillRect(0, h - 20, w, h);
-            g.setColor(0, 0, 0);
-            g.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
+            drawBar(g);
 
         } catch (Throwable t) {
 			String s = t.getMessage();
@@ -702,10 +707,18 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
             g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
             g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
-		}
+            drawBar(g);
+        }
 	}
 
-	public void keyPressed(int key) {
+    private void drawBar(Graphics aGraphics){
+        aGraphics.setColor(255, 255, 255);
+        aGraphics.fillRect(0, h - 22, w, h);
+        aGraphics.setColor(0, 0, 0);
+        aGraphics.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
+    }
+
+    public void keyPressed(int key) {
 		switch (key) {
 			case KEY_NUM0:
 				if (hasCommands) {

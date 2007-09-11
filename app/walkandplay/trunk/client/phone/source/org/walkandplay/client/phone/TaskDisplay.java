@@ -93,20 +93,24 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 if (answerState.equals("ok") && mediaState.equals("open")) {
                     //#style alertinfo
                     append("Right answer! You still have to sent in media though. Good luck!");
+                    removeCommand(OK_CMD);
                 } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("open")) {
                     //#style alertinfo
                     append("Right answer and you already sent in media!\nYou scored " + score + " points");
                     answer = inputField.getString();
+                    removeCommand(OK_CMD);
                 } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("done")) {
                     //#style alertinfo
                     append("Right answer and you already sent in media!\nYou scored " + score + " points\n" +
                             "You have now also finished the last task!!!\nThe Game is finished...");
                     removeCommand(BACK_CMD);
+                    removeCommand(OK_CMD);
                     addCommand(OUTRO_CMD);
                 } else {
                     //#style alertinfo
                     append("Oops, wrong answer! Try again...");
                     removeCommand(BACK_CMD);
+                    removeCommand(OK_CMD);
                     addCommand(TRY_AGAIN_CMD);
                 }
             }else if (rsp.getTag().equals("play-answertask-nrsp")) {
@@ -203,6 +207,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
             deleteAll();
             removeCommand(TRY_AGAIN_CMD);
             addCommand(BACK_CMD);
+            addCommand(OK_CMD);
             drawScreen();
         }
     }

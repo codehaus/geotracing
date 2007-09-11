@@ -43,6 +43,7 @@ public class VersionDisplay extends DefaultDisplay {
         }
 
         Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void commandAction(Command command, Displayable screen) {

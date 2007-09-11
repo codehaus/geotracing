@@ -40,6 +40,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     private WPMidlet midlet;
     private List menuScreen;
+    private SettingsDisplay settingsDisplay;
+    private HelpDisplay helpDisplay;
+    private GPSDisplay gpsDisplay;
     private SelectGameDisplay selectGameDisplay;
     private CreateDisplay createDisplay;
     private AppStartDisplay activeApp;
