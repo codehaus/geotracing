@@ -10,7 +10,7 @@ package org.geotracing.client;
  * @version $Id$
  */
 public class GPSInfo {
-	static MFloat NULL = new MFloat(0);
+	public static MFloat NULL = new MFloat(0);
 
 	String msg = "";
 	public MFloat lat = NULL;
