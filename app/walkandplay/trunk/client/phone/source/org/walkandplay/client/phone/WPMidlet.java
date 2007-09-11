@@ -116,10 +116,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     protected void startApp() throws MIDletStateChangeException {        
-        /*if(new VersionChecker().check()){
+        if(new VersionChecker().check()){
             Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
-        }*/
-        Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
+        }
+        /*Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));*/
     }
 
     protected void pauseApp() {

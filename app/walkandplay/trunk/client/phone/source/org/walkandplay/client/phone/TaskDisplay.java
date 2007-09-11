@@ -39,7 +39,8 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         // start clean
         deleteAll();
         removeAllCommands();
-        
+
+        // only set the state for the first time
         if(state.length() == 0) state = aState;
         if(answerState.length() == 0) answerState = anAnswerState;
         if(mediaState.length() == 0) mediaState = aMediaState;

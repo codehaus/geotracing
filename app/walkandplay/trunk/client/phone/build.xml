@@ -282,8 +282,9 @@
 					<attribute name="demo" value="yes" />
 					<attribute name="audio-rate" value="8000" />
 					<attribute name="audio-bits" value="8" />
-					<attribute name="gps-sample-interval" value="15000" />
-					<attribute name="gps-min-sats" value="4" />
+					<attribute name="gps-sample-interval" value="3000" />
+					<attribute name="gps-send-interval" value="5000" />
+                    <attribute name="gps-min-sats" value="4" />
 					<attribute name="gps-min-hdop" value="2" />
 					<attribute name="device-screen-width" value="240" />
 					<attribute name="device-screen-height" value="320" />
