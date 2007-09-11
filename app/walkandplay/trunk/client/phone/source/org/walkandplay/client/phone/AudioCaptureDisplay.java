@@ -22,6 +22,8 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
     private TextField name = new TextField("", null, 24, TextField.ANY);
     private static final String MIME = "audio/x-wav";
     private long startTime;
+    final int rate;
+    final int bits;
     final int kbPerSec;
     private boolean playing;
 
@@ -44,10 +46,12 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
         playing = isPlaying;
         midlet.getActiveApp().addTCPClientListener(this);
 
-        int rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
-        int bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
+        rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
+        bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
         kbPerSec = (rate * bits / 8) / 1000;
+    }
 
+    public void start(){
         try {
             player = Manager.createPlayer("capture://audio?rate=" + rate + "&bits=" + bits);
             player.realize();
@@ -65,6 +69,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
         }
 
         addCommand(START_CMD);
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {

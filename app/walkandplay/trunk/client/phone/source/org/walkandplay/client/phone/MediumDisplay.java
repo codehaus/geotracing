@@ -26,18 +26,26 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
     private StringItem mediumLabel = new StringItem("", "");
 
-    public MediumDisplay(WPMidlet aMIDlet, String aMediumId, int theScreenWidth, Displayable aPrevScreen) {
+    public MediumDisplay(WPMidlet aMIDlet, int theScreenWidth, Displayable aPrevScreen) {
         super(aMIDlet, "Media");
         screenWidth = theScreenWidth;
         prevScreen = aPrevScreen;
         midlet.getActiveApp().addTCPClientListener(this);
-        mediumUrl = midlet.getKWUrl() + "/media.srv?id=" + aMediumId;
 
         mediumLabel.setText("Loading...");
         //#style labelinfo
         append(mediumLabel);
 
+    }
+
+    public void start(String aMediumId){
+        // start clean
+        deleteAll();
+        removeAllCommands();
+
+        mediumUrl = midlet.getKWUrl() + "/media.srv?id=" + aMediumId;
         getMedium(aMediumId);
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     private void drawMedium() {

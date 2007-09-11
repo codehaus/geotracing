@@ -14,8 +14,10 @@ public class SelectGameDisplay extends AppStartDisplay {
     private int gamePlayId;
     private JXElement game;
     private JXElement gameRound;
+    private String color;
 
     private Image logo;
+    private PlayDisplay playDisplay;
 
     Command PLAY_CMD = new Command(Locale.get("selectGame.Play"), Command.SCREEN, 2);
     Command DESCRIPTION_CMD = new Command(Locale.get("selectGame.Description"), Command.SCREEN, 2);
@@ -81,9 +83,11 @@ public class SelectGameDisplay extends AppStartDisplay {
             } else if (rsp.getTag().equals("play-start-rsp")) {
 
                 // start the playdisplay
-                PlayDisplay d = new PlayDisplay(midlet);
-                Display.getDisplay(midlet).setCurrent(d);
-                d.start();
+                if(playDisplay == null){
+                    playDisplay = new PlayDisplay(midlet);
+                }
+                Display.getDisplay(midlet).setCurrent(playDisplay);
+                playDisplay.start(color);
             }
         }
     }
@@ -136,6 +140,7 @@ public class SelectGameDisplay extends AppStartDisplay {
         } else if (cmd == PLAY_CMD) {
             gameRound = (JXElement) gameRounds.get(gamesGroup.getString(gamesGroup.getSelectedIndex()));
             gamePlayId = Integer.parseInt(gameRound.getChildText("gameplayid"));
+            color = gameRound.getChildText("color");
 
             // now start the game
             startGameRound();
