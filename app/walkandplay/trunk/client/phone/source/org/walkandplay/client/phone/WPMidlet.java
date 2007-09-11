@@ -58,6 +58,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String KW_APP = "kw-app";
     public final static String KW_ROLE = "kw-role";
     public final static String VOLUME = "volume";
+    public final static String GPS_SAMPLE_INTERVAL = "gps-sample-interval";
+    public final static String GPS_SEND_INTERVAL = "gps-send-interval";
     public final static String MEDIA_PLAYER = "videoplayer";
     public final static String DEMO_MODE = "demo";
     public final static String INTERN = "intern";
@@ -114,9 +116,10 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     protected void startApp() throws MIDletStateChangeException {        
-        if(new VersionChecker().check()){
+        /*if(new VersionChecker().check()){
             Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
-        }
+        }*/
+        Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
     }
 
     protected void pauseApp() {
@@ -177,6 +180,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public int getVolume() {
         return Integer.parseInt(getAppProperty(VOLUME));
+    }
+
+    public long getGPSSendInterval() {
+        return Long.parseLong(getPreferences().get((GPS_SEND_INTERVAL), getAppProperty(GPS_SEND_INTERVAL)));
+    }
+
+    public long getGPSSampleInterval() {
+        return Long.parseLong(getPreferences().get((GPS_SAMPLE_INTERVAL), getAppProperty(GPS_SAMPLE_INTERVAL)));
     }
 
     public boolean useInternalMediaPlayer(){

@@ -15,7 +15,8 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
     private final static String AUTHOR_TYPE_MOBILE = "mobile";
 
     private TextField messageField = new TextField("", "", 32, TextField.ANY);
-    private JXElement message;
+    private String myMessage = "";
+    private String message = "";
 
     private boolean active;
 
@@ -25,7 +26,7 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
         midlet.getActiveApp().addTCPClientListener(this);
     }
 
-    public void start(JXElement aMessage){
+    public void start(String aMessage){
         // start clean
         deleteAll();
 
@@ -41,6 +42,10 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
         return active;
     }
 
+    public String getMyMessage(){
+        return myMessage;
+    }
+
     private void drawScreen(){
         //#style labelinfo
         append("send message to web player");
@@ -50,7 +55,7 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
             //#style labelinfo
             append("last message from web player");
             //#style formbox
-            append(message.getChildText("content"));
+            append(message);
         }
         addCommand(SUBMIT_CMD);
     }
@@ -148,6 +153,7 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
 
                 drawScreen();
             } else {
+                myMessage = msg;
                 sendMessage(msg);
             }
         } else if (command == BACK_CMD) {

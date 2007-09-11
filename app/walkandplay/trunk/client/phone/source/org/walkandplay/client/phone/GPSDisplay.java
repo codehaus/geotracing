@@ -49,7 +49,12 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         OK_CMD = new Command("OK", Command.OK, 1);
 
         addCommand(SEARCH_CMD);
-        log("Pairing your GPS to the program.\nYour Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu.");
+        //#style labelinfo
+        append("Pairing your GPS to the program");
+
+        //#style formbox
+        append(new StringItem("", "Your Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu." + "\n"));
+        
     }
 
     public void commandAction(Command c, Displayable d) {
