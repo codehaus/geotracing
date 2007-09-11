@@ -2,6 +2,7 @@ package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Display;
 
 public class OutroDisplay extends DefaultDisplay {
 
@@ -15,6 +16,7 @@ public class OutroDisplay extends DefaultDisplay {
 
         addCommand(CONTINUE_CMD);
         removeCommand(BACK_CMD);
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     /*

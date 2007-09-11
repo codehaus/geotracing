@@ -29,6 +29,7 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
         append(nameField);
 
         addCommand(OK_CMD);
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {

@@ -55,6 +55,7 @@ public class SettingsDisplay extends DefaultDisplay {
         append(clock);
 
         setCommands();
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     private void setCommands(){

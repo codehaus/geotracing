@@ -63,6 +63,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
             append("Use the menu to start and stop recording.");
             //#style formbox
             append("Settings: " + rate / 1000 + "kHz " + bits + " bits " + kbPerSec + " kb/sec");
+            Display.getDisplay(midlet).setCurrent(this);
         } catch (Exception e) {
             Util.showAlert(midlet, "Error", "Cannot create player. Maybe audio (MMAPI) is not supported.");
             back();

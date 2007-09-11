@@ -20,6 +20,7 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
     public EditGameDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Edit a game");
         prevScreen = aPrevScreen;
+        Display.getDisplay(midlet).setCurrent(this);
 
         try {
             //#ifdef polish.images.directLoad

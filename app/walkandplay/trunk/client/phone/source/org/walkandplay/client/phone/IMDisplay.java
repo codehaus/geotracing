@@ -23,10 +23,11 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
     public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "Messaging");
         prevScreen = aPrevScreen;
-        midlet.getActiveApp().addTCPClientListener(this);
     }
 
     public void start(String aMessage){
+        midlet.getActiveApp().addTCPClientListener(this);
+        
         // start clean
         deleteAll();
 
@@ -155,6 +156,8 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
             } else {
                 myMessage = msg;
                 sendMessage(msg);
+                //clear the messagefield
+                messageField.setString("");
             }
         } else if (command == BACK_CMD) {
             active = false;

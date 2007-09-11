@@ -20,8 +20,7 @@ public class DefaultDisplay extends Form implements CommandListener {
         prevScreen = Display.getDisplay(midlet).getCurrent();
 
         addCommand(BACK_CMD);
-        setCommandListener(this);
-        Display.getDisplay(midlet).setCurrent(this);
+        setCommandListener(this);        
     }
 
     public void commandAction(Command command, Displayable screen) {

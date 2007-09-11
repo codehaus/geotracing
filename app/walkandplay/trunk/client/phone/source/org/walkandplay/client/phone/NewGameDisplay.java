@@ -20,6 +20,7 @@ public class NewGameDisplay extends DefaultDisplay implements TCPClientListener 
     public NewGameDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
         super(aMIDlet, "New game");
         prevScreen = aPrevScreen;
+        Display.getDisplay(midlet).setCurrent(this);
         midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
@@ -39,6 +40,7 @@ public class NewGameDisplay extends DefaultDisplay implements TCPClientListener 
                 midlet.getCreateApp().setGameId(rsp.getAttr("id"));
                 midlet.getCreateApp().setGameName(gameName);
                 deleteAll();
+                removeCommand(OK_CMD);
                 addCommand(BACK_CMD);
                 //#style alertinfo
                 append("Created new game '" + gameName + "'");
