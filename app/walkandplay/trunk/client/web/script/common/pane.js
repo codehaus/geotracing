@@ -114,10 +114,13 @@ function Pane(id,x,y,w,h,hide_delay,keep_visible,parent,autosize)
 		pane.style.visibility = 'visible';
 	}
 	
-	//keep visible onmousover
-	var obj = this;
-	if (!keep_visible) pane.onmouseover = function() { if (!obj.closing) obj.show() };
-	pane.onmouseout = function() { if (!obj.keep_visible) obj.hide() };
+	//event handling (rollover panes, not for static panes)
+	if (!keep_visible)
+	{
+		var obj = this;
+		pane.onmouseover = function() { if (!obj.closing) obj.show() };
+		pane.onmouseout = function() { obj.hide() };
+	}
 	
 	//refs
 	this.div = pane;

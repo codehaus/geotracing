@@ -410,8 +410,15 @@ wpLocation.prototype.updateDetails = function(resp)
 			str+= wpEmbedMedium(this.mediumtype,this.mediumid);
 			str+= '</div>';
 			if (this.desc) str+= this.desc+'<br>';
+			
+//			str+= 'answrstate:'+this.play_answerstate;
+			
 			//answer button for tasks in play-mode
-			if (this.type=='task' && wp_mode=='play') str+= '<a href="javascript://add_answer" onclick="panes.show(\'answer\');this.blur()" style="color:rgb(200,0,20); float:right">add answer</a><br>';
+			if (this.type=='task' && wp_mode=='play')
+			{
+				var display = (this.play_answerstate=='notok' || this.play_answerstate=='open')? 'block':'none';
+				str+= '<a id="add_answer" style="display:'+display+'; color:rgb(200,0,20); float:right" href="javascript://add_answer" onclick="panes.show(\'answer\');this.blur()">add answer</a><br>';
+			}
 			
 		//create
 		if (this.type=='task' && wp_mode=='create')
@@ -458,6 +465,9 @@ wpLocation.prototype.updateDetails = function(resp)
 		if (document.getElementById('display_answer'))
 		{
 			document.getElementById('display_answer').innerHTML = str;
+			
+			//show/hide 'add answer' button
+			document.getElementById('add_answer').style.display = (this.play_answerstate=='notok' || this.play_answerstate=='open')? 'block':'none';
 		}
 	}
 	else
@@ -493,7 +503,7 @@ wpLocation.prototype.answer = function(form)
 
 	//submit answer (<play-answertask-req id="[taskid]" answer="blabla" />)
 	var req = KW.createRequest('play-answertask-req');
-		req.documentElement.setAttribute('id',id);
+		req.documentElement.setAttribute('id',this.id);
 		req.documentElement.setAttribute('answer',answer);
 
 	KW.utopia(req,null);

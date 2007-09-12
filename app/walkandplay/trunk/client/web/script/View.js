@@ -12,31 +12,6 @@ function wpSelectView(type)
  	SRV.get('q-games',wpListGames);
 }
 
-// function wpListRounds(id,resp)
-// {
-// //	alert('list round id='+id);
-// 
-// 	if (!panes['list_rounds']) wpCreatePane('list_rounds');
-// 	var list = '';
-// 		
-// 	for (var i in resp)
-// 	{
-// 		var roundid = resp[i].getField('id');
-// 		var name = resp[i].getField('name');
-// 		var desc = name;
-// 		
-// 		var shortname = (name.length>26)? name.substring(0,25)+'..':name;
-// 		
-// 		list+= '&bull; <a href="javascript://view_round" onclick="wpSelectGame(\'view_round\','+id+','+roundid+')" title="'+desc+'">'+shortname+'</a><br>';
-// 	}
-// 
-// 	var header = '<span class="red">select a gameround:</span><br>';
-// 	if (list=='') list = '- no rounds available -';
-// 
-// 	panes['list_rounds'].setContent(header+list);
-// 	panes['list_rounds'].show();
-// }
-
 function wpCreateView(resp)
 {
 // 	if (!resp)

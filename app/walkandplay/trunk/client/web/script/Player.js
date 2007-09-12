@@ -14,26 +14,63 @@ function wpPlayers()
 		for (id in this.player) this.player[id].update();
 	}
 	
+	//start reality checking (there's no server side logout for users -> client-side timeout after 2 mins no user-move)
+	//var obj = this;
+	//this.check = window.setTimeout(function() { obj.realityCheck() },60000*2);
+	
 	return array;
 }
 
+
+wpPlayers.prototype.realityCheck = function()
+{
+	/*	timeout (live) players
+	*/
+
+	var t,expired;
+	t = new Date().getTime();
+ 	expired = new Array(0);
+
+	 var str = '';
+
+	//check live users
+	for (var name in this.user) 
+	{
+		if ((t-this.user[name].timestamp)/1000 > ii_user_livetimeout) expired.push(name);
+ 		str+= ', '+name+':time='+this.user[name].time+', ts='+this.user[name].timestamp+', diff='+((this.user[name].time-this.user[name].timestamp)/1000)+', check='+((t-this.user[name].timestamp)/1000);
+	}
+	//kill live users
+//	for (var id in wp_players.player) wp_players.del(id);
+	for (var i in expired) wp_players.del(expired[i]);
+	
+//debug
+// var expired_live = expired.length; 
+}
+
+
+
 /* location object */
 
-function wpPlayer(collection,id,p,name,t)
+function wpPlayer(collection,id,p,name,t,playid)
 {
 	this.collection = collection;
 	this.id = id;
 	this.geo = p;
 
  	this.name = name;
- 	var color = this.name.substring(0,1);
- 	if (color=='j') color = 'p'; //->just and joes are purple for now..
-	this.icon = 'icon_player_'+color+'.png';
+ 	
+ 	//get color (from gameplay id)
+ 	var gameplay = SRV.get('q-gameplay', null,'id',playid);
+ 	this.color = gameplay[0].getField('color');
+ 	
+//  	var color = this.name.substring(0,1);
+//  	if (color=='j') color = 'p'; //->just and joes are purple for now..
+	this.icon = 'icon_player_'+this.color.substring(0,1)+'.png';
  	
  	this.trace = new Array(0); //geo points history
  	if (wp_mode=='view') this.trace.push(p);
 	var c;
-	switch (color)
+	switch (this.color.substring(0,1))
 	{
 		case 'r': c = '#c80014'; break;
 		case 'g': c = '#2daa4b'; break;
@@ -45,8 +82,12 @@ function wpPlayer(collection,id,p,name,t)
  	this.trace_color = c; //(color=='r')? '#c80014':(color=='b')? '#3264c8':'#ffd02b'; //'#2daa4b';
 
 	//animation settings 	
-	this.x_smoothing = .03;
-	this.y_smoothing = .03;
+// 	this.x_smoothing = .03;
+// 	this.y_smoothing = .03;
+	
+	this.x_smoothing = .1;
+	this.y_smoothing = .1;
+
 	this.smooth_timeout = 150;
 	this.blinkdelay = 1500;
 	
@@ -122,7 +163,7 @@ function wpPlayer(collection,id,p,name,t)
 
 	//->debug
 	var obj = this;
-	location.onclick = function() { alert('debug: player, id='+obj.id+', name='+obj.name) };
+	location.onclick = function() { alert('debug: player, id='+obj.id+', name='+obj.name+', color='+obj.color) };
 }
 
 wpPlayer.prototype.updateLocation = function(p,t)
