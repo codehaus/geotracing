@@ -157,9 +157,9 @@ public class GamePlayHandler extends DefaultHandler implements ThreadSafe, Const
 
 	public JXElement getGamePlayReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
 /*
-        <gplay-get-gameplay-req id="[gameplayid]"  />
+        <play-get-gameplay-req id="[gameplayid]"  />
 
-        <gameplay team="red2" score="123" state="running" trackid="456">
+        <gameplay team="red2" score="123" state="running" trackid="456" color="red" >
         	  <taskresult taskid="8787" state="done" answerstate="ok" mediastate="done" answer="fjkdaf" />
     	      <taskresult taskid="8890" state="hit" answerstate="notok" mediastate="done" answer="wrong" />
 	          <mediumresult mediumid="341" state="open" />

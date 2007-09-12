@@ -43,6 +43,7 @@ public interface Constants {
 	public final static String ANSWER_STATE_FIELD = "answerstate";
 	public final static String COLOR_FIELD = "color";
 	public final static String END_DATE_FIELD = "enddate";
+	public final static String EVENT_COUNT_FIELD = "eventcount";
 	public final static String GAME_ID_FIELD = "gameid";
 	public final static String ID_FIELD = "id";
 	public final static String OWNER_FIELD = "owner";
@@ -80,6 +81,7 @@ public interface Constants {
 	public final static String TASK_ID_FIELD = "taskid";
 	public final static String TASK_RESULT_ID_FIELD = "taskresultid";
 	public final static String TASK_STATE_FIELD = "taskstate";
+	public final static String TRACKID_FIELD = "trackid";
 	public final static String OUTRO_FIELD = "outro";
 
 	public final static String INVITATION_FIELD = "invitation";

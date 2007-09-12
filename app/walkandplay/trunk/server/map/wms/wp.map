@@ -1,0 +1,67 @@
+#
+# Map File for WalkAndPlay
+#
+# This file defines layers used by UMN MapServer in WGS 84 (lat/lon).
+#
+# Author: Just van den Broecke
+# $Id:$
+#
+
+NAME WPMAP
+STATUS ON
+# SIZE 600 600
+# TODO: make extent match extent of project area
+EXTENT 4.724717 51.813062 5.752441 52.486596
+# UNITS DEGREES
+# SHAPEPATH "data"
+IMAGECOLOR 125 125 125
+
+PROJECTION
+   "init=epsg:4326"
+END
+
+
+WEB
+    IMAGEPATH "/var/keyworx/webapps/walkandplay/map/tmp/"
+#    IMAGEURL ...
+END
+
+# maps TOP 25 Geodan
+# http://www.geoserver.nl/kaartdienst/basiskaart/Voorbeelden.htm
+LAYER
+	GROUP geodan1
+	NAME geodan_map
+	TYPE RASTER
+	STATUS ON
+	CONNECTIONTYPE WMS
+	CONNECTION "http://geoserver.nl/top25/sclmapserver.exe?"
+	METADATA
+		"wms_name" "layer_1"
+		"wms_srs" "EPSG:4326"
+		"wms_server_version" "1.1.1"
+		"wms_request" "GetMap"
+		"wms_format" "image/jpeg"
+		"wms_connectiontimeout" "60"
+	END
+END
+
+# maps TOP 25 Geodan
+# http://www.geoserver.nl/kaartdienst/basiskaart/Voorbeelden.htm
+LAYER
+	GROUP geodan2
+	NAME geodan_sat
+	TYPE RASTER
+	STATUS ON
+	CONNECTIONTYPE WMS
+	CONNECTION "http://geoserver.nl/sat5/sclmapserver.exe?"
+	METADATA
+		"wms_name" "layer_1"
+		"wms_srs" "EPSG:4326"
+		"wms_server_version" "1.1.1"
+		"wms_request" "GetMap"
+		"wms_format" "image/jpeg"
+		"wms_connectiontimeout" "60"
+	END
+END
+
+END

@@ -316,14 +316,14 @@ $Id: build.xml,v 1.1 2006-04-16 15:04:44 just Exp $
 		<copy file="${project.war}" todir="${deploy.test.dir}" overwrite="true"/>
 	</target>
 
-	<target name="deploy-berlin" depends="build">
+<!--	<target name="deploy-lola" depends="build">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
 			<arg line="${deploy.test.server}:${deploy.test.dir}"/>
 		</exec>
-	</target>
+	</target>          -->
 
-	<target name="copy-berlin" depends="build">
+	<target name="copy-lola" depends="build">
 		<exec executable="scp">
 			<arg line="${project.war}"/>
 			<arg line="${deploy.test.server}:versions"/>

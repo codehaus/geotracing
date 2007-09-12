@@ -30,5 +30,8 @@
 		<!-- 1=open 2=running 3=done  -->
         <field name="state" type="INTEGER" default="1" required="true" />
 		<field name="owner" type="INTEGER" required="true" foreignkey="cascade" default="-1"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="eventcount" type="INTEGER" default="0" required="true" />
 	</data>
 </table>

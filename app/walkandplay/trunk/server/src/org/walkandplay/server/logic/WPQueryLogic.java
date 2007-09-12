@@ -62,6 +62,53 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				result = createResponse(game);
 				addOwnerFields(result);
+			} else if ("q-game-stats".equals(aQueryName)) {
+				String strId = getParameter(theParms, PAR_ID, null);
+				throwOnMissingParm(PAR_ID, strId);
+				int id = Integer.parseInt(strId);
+
+				// Make custom response
+				JXElement recElm = new JXElement("record");
+
+				// Get tasks and media stats
+				Record[] tasks = getTasksForGame(id);
+				recElm.setChildText("taskcount", tasks.length+"");
+
+				Record[] media = getMediaForGame(id);
+				recElm.setChildText("mediacount", media.length+"");
+
+				// Calc max score
+				int maxScore = 0;
+				for (int i=0; i < tasks.length; i++) {
+					maxScore += tasks[i].getIntField(SCORE_FIELD);
+				}
+				recElm.setChildText("maxscore", maxScore+"");
+
+				// Game play stats
+				Record[] gamePlays = getGamePlaysForGame(id);
+				recElm.setChildText("playcount", gamePlays.length+"");
+
+				// Find hiscore
+				int score, hiScore = 0, hiScoreGamePlayId = -1;
+				for (int i=0; i < gamePlays.length; i++) {
+					score = gamePlays[i].getIntField(SCORE_FIELD);
+					if (score > hiScore) {
+						hiScore = score;
+						hiScoreGamePlayId = gamePlays[i].getId();
+					}
+				}
+
+				// If there is a high score set it and related info
+				if (hiScoreGamePlayId > 0) {
+					// Set hiscore
+					recElm.setChildText("hiscore", hiScore+"");
+					recElm.setChildText("hiscoregameplayid", hiScoreGamePlayId+"");
+					recElm.setChildText("hiscoreplayer", getRelatedUserName(hiScoreGamePlayId, GAMEPLAY_TABLE));
+				}
+
+				// Finally make response
+				result = createResponse();
+				result.addChild(recElm);
 			} else if ("q-game-medium".equals(aQueryName)) {
 				String id = getParameter(theParms, ATTR_ID, null);
 				throwOnMissingParm(ATTR_ID, id);
@@ -114,15 +161,45 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 				String postCond = null;
 				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
 				// log.info(result.toString());
+			} else if ("q-gameplay".equals(aQueryName)) {
+				String id = getParameter(theParms, "id", null);
+				throwOnMissingParm("id", id);
+				Finder finder = getOase().getFinder();
+
+				Record gamePlay = finder.read(Integer.parseInt(id), GAMEPLAY_TABLE);
+				if (gamePlay == null) {
+					throw new IllegalArgumentException("Cannot find gamePlay with id=" + id);
+				}
+
+				JXElement gamePlayElm = gamePlay.toXML();
+				result = createResponse();
+				result.addChild(gamePlayElm);
+				addUserAttrs(result, GAMEPLAY_TABLE);
 			} else if ("q-gameplays".equals(aQueryName) ||"q-scores".equals(aQueryName)) {
 				String id = getParameter(theParms, ATTR_ROUNDID, null);
 				throwOnMissingParm(ATTR_ROUNDID, id);
-				String tables = "utopia_person,wp_gameplay,wp_gameround";
-				String fields = "wp_gameplay.id,wp_gameplay.state,wp_gameplay.score,wp_gameplay.color";
+				Finder finder = getOase().getFinder();
+				Relater relater = getOase().getRelater();
+				Record round = finder.read(Integer.parseInt(id), GAMEROUND_TABLE);
+				if (round == null) {
+					throw new IllegalArgumentException("Cannot find game round with id=" + id);
+				}
+
+				Record[] gamePlays = relater.getRelated(round, GAMEPLAY_TABLE, null);
+				result = createResponse(gamePlays);
+				Record[] tracks = null;
+				for (int i=0; i < gamePlays.length; i++) {
+					tracks = relater.getRelated(gamePlays[i], TRACK_TABLE, null);
+					if (tracks.length > 0) {
+						result.getChildAt(i).setChildText(TRACKID_FIELD, tracks[0].getId()+"");
+					}
+				}
+				/* String tables = "wp_gameplay,g_track,wp_gameround";
+				String fields = "wp_gameplay.id,wp_gameplay.state,wp_gameplay.score,wp_gameplay.color,wp_gameplay.eventcount,wp_gameplay.modificationdate,g_track.id AS trackid";
 				String where = "wp_gameround.id = " + id;
-				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,utopia_person";
+				String relations = "wp_gameplay,wp_gameround;wp_gameplay,g_track";
 				String postCond = null;
-				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
+				result = QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);   */
 				addUserAttrs(result, GAMEPLAY_TABLE);
 			} else if ("q-game-locations".equals(aQueryName)) {
 				// All locations within game
@@ -195,7 +272,7 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 
 				Record person = getPersonForLoginName(loginName);
 				String tables = "utopia_person,wp_gameplay,wp_gameround,wp_game";
-				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_gameround.id AS  roundid,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate,wp_gameplay.color";
+				String fields = "wp_game.name AS name,wp_game.description AS description,wp_game.id AS gameid,wp_gameround.id AS  roundid,wp_gameround.name AS roundname,wp_gameplay.id AS gameplayid,wp_gameplay.state AS gameplaystate,wp_gameplay.color";
 				String where = "utopia_person.id = " + person.getId();
 				String relations = "utopia_person,wp_gameplay;wp_gameplay,wp_gameround;wp_gameround,wp_game";
 				String postCond = null;
@@ -242,6 +319,21 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		}
 	}
 
+
+	public static Record[] getGamePlaysForGame(int aGameId) throws OaseException {
+		try {
+			String tables = "wp_game,wp_gameround,wp_gameplay";
+			String fields = "wp_gameplay.id,wp_gameplay.score";
+			String where = "wp_game.id = " + aGameId;
+			String relations = "wp_game,wp_gameround;wp_gameround,wp_gameplay";
+			String postCond = null;
+			return QueryLogic.queryStore(tables, fields, where, relations, postCond);
+		} catch (Throwable t) {
+			log.warn("Error query getGamePlaysForGame aGameId=" + aGameId, t);
+			throw new OaseException("Error in getGamePlaysForGame aGameId=" + aGameId, t);
+		}
+	}
+
 	static public Record getGamePlayForTrack(Track aTrack) throws OaseException, UtopiaException {
 		try {
 			return getOase().getRelater().getRelated(aTrack.getRecord(), GAMEPLAY_TABLE, null)[0];
@@ -260,81 +352,6 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		}
 	}
 
-	public static JXElement getResultForTeam(String aTeamName, int aGamePlayId) throws UtopiaException {
-		JXElement result = null;
-		try {
-			Finder finder = getOase().getFinder();
-			Relater relater = getOase().getRelater();
-			Record gamePlay = finder.read(aGamePlayId, GAMEPLAY_TABLE);
-
-			// Gameplay attrs
-			result = new JXElement(TAG_GAMEPLAY);
-			result.setAttr(ATTR_TEAM, aTeamName);
-			result.setAttr(SCORE_FIELD, gamePlay.getIntField(SCORE_FIELD));
-			result.setAttr(STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
-			Record[] tracks = relater.getRelated(gamePlay, TRACK_TABLE, null);
-			if (tracks.length > 0) {
-				result.setAttr(ATTR_TRACKID, tracks[0].getId());
-			}
-
-			// Get all result records
-			Record[] results = relater.getRelated(gamePlay, null, null);
-			Record nextResult;
-			for (int i = 0; i < results.length; i++) {
-				nextResult = results[i];
-				JXElement resultElm = null;
-
-				// Determine result type from tablename and create element
-				// for each result
-				String tableName = nextResult.getTableName();
-				if (tableName.equals(TASKRESULT_TABLE)) {
-					// Add task result element
-					resultElm = new JXElement(TAG_TASK_RESULT);
-					resultElm.setAttr(TASK_RESULT_ID_FIELD, nextResult.getId());
-					resultElm.setAttr(TIME_FIELD, nextResult.getLongField(TIME_FIELD));
-					resultElm.setAttr(STATE_FIELD, nextResult.getStringField(STATE_FIELD));
-					resultElm.setAttr(ANSWER_STATE_FIELD, nextResult.getStringField(ANSWER_STATE_FIELD));
-					resultElm.setAttr(MEDIA_STATE_FIELD, nextResult.getStringField(MEDIA_STATE_FIELD));
-					resultElm.setAttr(ANSWER_FIELD, nextResult.getStringField(ANSWER_FIELD));
-					resultElm.setAttr(SCORE_FIELD, nextResult.getIntField(SCORE_FIELD));
-
-					// If media submitted set medium id in medium result
-					if (nextResult.getStringField(MEDIA_STATE_FIELD).equals(VAL_DONE)) {
-						Record media[] = relater.getRelated(nextResult, MEDIUM_TABLE, null);
-						if (media.length > 0) {
-							resultElm.setAttr(MEDIUM_ID_FIELD, media[0].getId());
-						} else {
-							log.warn("Wrong number of media: (" + media.length + ") related to taskresult id=" + nextResult.getId());
-						}
-					}
-
-					Record taskAndLocactionId = getTaskAndLocationIdForTaskResult(nextResult.getId());
-					resultElm.setAttr(TASK_ID_FIELD, taskAndLocactionId.getIntField(TASK_ID_FIELD));
-					resultElm.setAttr(LOCATION_ID_FIELD, taskAndLocactionId.getIntField(LOCATION_ID_FIELD));
-				} else if (tableName.equals(MEDIUMRESULT_TABLE)) {
-					// Add medium result element
-					resultElm = new JXElement(TAG_MEDIUM_RESULT);
-					resultElm.setAttr(MEDIUM_RESULT_ID_FIELD, nextResult.getId());
-					resultElm.setAttr(STATE_FIELD, nextResult.getStringField(STATE_FIELD));
-					resultElm.setAttr(TIME_FIELD, nextResult.getLongField(TIME_FIELD));
-					Record mediumAndLocactionId = getMediumAndLocationIdForMediumResult(nextResult.getId());
-					resultElm.setAttr(MEDIUM_ID_FIELD, mediumAndLocactionId.getIntField(MEDIUM_ID_FIELD));
-					resultElm.setAttr(LOCATION_ID_FIELD, mediumAndLocactionId.getIntField(LOCATION_ID_FIELD));
-				}
-
-				// Add to total result
-				if (resultElm != null) {
-					result.addChild(resultElm);
-				}
-			}
-
-		} catch (Throwable t) {
-			log.warn("Error getResultForTeam gamplayid=" + aGamePlayId, t);
-			throw new UtopiaException("Error getResultForTeam gamplayid=" + aGamePlayId, t);
-		}
-
-		return result;
-	}
 
 	public static Record getGameForGamePlay(int aGamePlayId) {
 		Record game = null;
@@ -433,6 +450,26 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 			}
 		} catch (Throwable t) {
 			new UtopiaException("Error query getGamePlayEvents gamePlayId=" + aGamePlayId, t);
+		}
+
+		return result;
+	}
+
+
+	public static Record getLastOpenTaskResult(int aGamePlayId) throws UtopiaException {
+		Record result = null;
+		try {
+			String tables = "wp_gameplay,wp_taskresult";
+			String fields = "wp_taskresult.id";
+			String where = "wp_gameplay.id = " + aGamePlayId + " AND wp_taskresult.state = '" + VAL_OPEN + "'";
+			String relations = "wp_gameplay,wp_taskresult";
+			String postCond = "ORDER BY wp_taskresult.time DESC";
+			Record[] records = QueryLogic.queryStore(getOase(), tables, fields, where, relations, postCond);
+			if (records.length > 0) {
+				result = getOase().getFinder().read(records[0].getId(), TASKRESULT_TABLE);
+			}
+		} catch (Throwable t) {
+			log.warn("getLastOpenTask error for aGamePlayId=" + aGamePlayId, t);
 		}
 
 		return result;
@@ -560,6 +597,83 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		return result;
 	}
 
+
+	public static JXElement getResultForTeam(String aTeamName, int aGamePlayId) throws UtopiaException {
+		JXElement result;
+		try {
+			Finder finder = getOase().getFinder();
+			Relater relater = getOase().getRelater();
+			Record gamePlay = finder.read(aGamePlayId, GAMEPLAY_TABLE);
+
+			// Gameplay attrs
+			result = new JXElement(TAG_GAMEPLAY);
+			result.setAttr(ATTR_TEAM, aTeamName);
+			result.setAttr(SCORE_FIELD, gamePlay.getIntField(SCORE_FIELD));
+			result.setAttr(STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
+			result.setAttr(COLOR_FIELD, gamePlay.getStringField(COLOR_FIELD));
+			Record[] tracks = relater.getRelated(gamePlay, TRACK_TABLE, null);
+			if (tracks.length > 0) {
+				result.setAttr(ATTR_TRACKID, tracks[0].getId());
+			}
+
+			// Get all result records
+			Record[] results = relater.getRelated(gamePlay, null, null);
+			Record nextResult;
+			for (int i = 0; i < results.length; i++) {
+				nextResult = results[i];
+				JXElement resultElm = null;
+
+				// Determine result type from tablename and create element
+				// for each result
+				String tableName = nextResult.getTableName();
+				if (tableName.equals(TASKRESULT_TABLE)) {
+					// Add task result element
+					resultElm = new JXElement(TAG_TASK_RESULT);
+					resultElm.setAttr(TASK_RESULT_ID_FIELD, nextResult.getId());
+					resultElm.setAttr(TIME_FIELD, nextResult.getLongField(TIME_FIELD));
+					resultElm.setAttr(STATE_FIELD, nextResult.getStringField(STATE_FIELD));
+					resultElm.setAttr(ANSWER_STATE_FIELD, nextResult.getStringField(ANSWER_STATE_FIELD));
+					resultElm.setAttr(MEDIA_STATE_FIELD, nextResult.getStringField(MEDIA_STATE_FIELD));
+					resultElm.setAttr(ANSWER_FIELD, nextResult.getStringField(ANSWER_FIELD));
+					resultElm.setAttr(SCORE_FIELD, nextResult.getIntField(SCORE_FIELD));
+
+					// If media submitted set medium id in medium result
+					if (nextResult.getStringField(MEDIA_STATE_FIELD).equals(VAL_DONE)) {
+						Record media[] = relater.getRelated(nextResult, MEDIUM_TABLE, null);
+						if (media.length > 0) {
+							resultElm.setAttr(MEDIUM_ID_FIELD, media[0].getId());
+						} else {
+							log.warn("Wrong number of media: (" + media.length + ") related to taskresult id=" + nextResult.getId());
+						}
+					}
+
+					Record taskAndLocactionId = getTaskAndLocationIdForTaskResult(nextResult.getId());
+					resultElm.setAttr(TASK_ID_FIELD, taskAndLocactionId.getIntField(TASK_ID_FIELD));
+					resultElm.setAttr(LOCATION_ID_FIELD, taskAndLocactionId.getIntField(LOCATION_ID_FIELD));
+				} else if (tableName.equals(MEDIUMRESULT_TABLE)) {
+					// Add medium result element
+					resultElm = new JXElement(TAG_MEDIUM_RESULT);
+					resultElm.setAttr(MEDIUM_RESULT_ID_FIELD, nextResult.getId());
+					resultElm.setAttr(STATE_FIELD, nextResult.getStringField(STATE_FIELD));
+					resultElm.setAttr(TIME_FIELD, nextResult.getLongField(TIME_FIELD));
+					Record mediumAndLocactionId = getMediumAndLocationIdForMediumResult(nextResult.getId());
+					resultElm.setAttr(MEDIUM_ID_FIELD, mediumAndLocactionId.getIntField(MEDIUM_ID_FIELD));
+					resultElm.setAttr(LOCATION_ID_FIELD, mediumAndLocactionId.getIntField(LOCATION_ID_FIELD));
+				}
+
+				// Add to total result
+				if (resultElm != null) {
+					result.addChild(resultElm);
+				}
+			}
+
+		} catch (Throwable t) {
+			log.warn("Error getResultForTeam gamplayid=" + aGamePlayId, t);
+			throw new UtopiaException("Error getResultForTeam gamplayid=" + aGamePlayId, t);
+		}
+
+		return result;
+	}
 
 	public static Record getRunningGamePlay(int aPersonId) throws UtopiaException {
 		Record result = null;
@@ -691,37 +805,21 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 		return result;
 	}
 
-	/*
-
-	public JXElement playLocationDbgReq(UtopiaRequest anUtopiaReq) throws OaseException, UtopiaException {
-		JXElement response = createResponse(PLAY_LOCATION_SERVICE);
-
-		if (Rand.randomInt(0, 2) == 1) {
-			JXElement hit = new JXElement(TAG_TASK_HIT);
-			hit.setAttr(ID_FIELD, 22560);
-			response.addChild(hit);
+	public static String getRelatedUserName(int anId, String aTableName) throws OaseException, UtopiaException {
+		try {
+			String tables = "utopia_account,utopia_person," + aTableName;
+			String fields = "utopia_account.loginname AS name";
+			String where = aTableName + ".id = " + anId;
+			String relations = "utopia_account,utopia_person;utopia_person," + aTableName;
+			String postCond = null;
+			Record[] records = QueryLogic.queryStore(tables, fields, where, relations, postCond);
+			if (records.length != 1) {
+				throw new OaseException("No person found related to =" + anId + " for table=" + aTableName);
+			}
+			return records[0].getStringField("name");
+		} catch (Throwable t) {
+			log.warn("Error query getRelatedUserName; No person found related to =" + anId + " for table=" + aTableName, t);
+			throw new UtopiaException("Error in getRelatedUserName; No person found related to =" + anId + " for table=" + aTableName, t);
 		}
-
-		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
-			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
-			hit.setAttr(ID_FIELD, 22629);
-			response.addChild(hit);
-		}
-
-		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
-			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
-			hit.setAttr(ID_FIELD, 4497);
-			response.addChild(hit);
-		}
-
-		if (Rand.randomInt(0, 4) == 1 && !response.hasChildren()) {
-			JXElement hit = new JXElement(TAG_MEDIUM_HIT);
-			hit.setAttr(ID_FIELD, 26527);
-			response.addChild(hit);
-		}
-
-		return response;
 	}
-
-	*/
 }

@@ -47,6 +47,7 @@
 		<field name="modificationdate" type="TIMESTAMP"/>
 		<field name="creationdate" type="TIMESTAMP"/>
 		<field name="color" type="STRING" size="12" default="red" required="true" />
+		<field name="eventcount" type="INTEGER" default="0" required="true" />
 	</data>
 	<!--}data -->
 </table>

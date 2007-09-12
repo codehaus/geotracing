@@ -71,8 +71,10 @@
 						<description/>
 						<gameid>${gameid}</gameid>
 						<roundid>${roundid}</roundid>
+						<roundname/>
 						<gameplayid>${gameplayid}</gameplayid>
 						<gameplaystate/>
+						<color/>
 					</record>
 				</query-store-rsp>
 			</utopia-rsp>

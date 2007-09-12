@@ -98,6 +98,14 @@ public class GamePlayLogic implements Constants {
 		String accountName = relater.getRelated(person, "utopia_account", null)[0].getStringField("loginname"); //HandlerUtil.getAccountName(anUtopiaReq);
 		String mediumType = medium.getStringField(KIND_FIELD);
 
+		// If not at location of task try get open last task with possibly medium still open
+		if (task == null) {
+			Record taskResult = WPQueryLogic.getLastOpenTaskResult(gamePlay.getId());
+			if (taskResult != null && taskResult.getStringField(MEDIA_STATE_FIELD).equals(VAL_OPEN)) {
+				task = relater.getRelated(taskResult, TASK_TABLE, null)[0];
+			}
+		}
+		
 		if (task != null) {
 			log.trace("HIT task for medium add taskid=" + task.getId());
 
@@ -435,21 +443,11 @@ public class GamePlayLogic implements Constants {
 
 		modifier.update(gamePlay);
 
-		// Start any track if not already active
-		TrackLogic trackLogic = new TrackLogic(oase);
-		Track track = trackLogic.getActiveTrack(aPersonId);
-		if (track == null) {
-			track = trackLogic.create(aPersonId, gamePlay.getStringField(NAME_FIELD), Track.VAL_NORMAL_TRACK, Sys.now());
-
-			// Relate track to gameplay
-			relater.relate(gamePlay, track.getRecord());
-		}
+		// Initialize results if not present
+		initGamePlayResults(oase, gamePlay, aPersonId);
 
 		// Resume current Track for this user
-		trackLogic.resume(aPersonId, Track.VAL_NORMAL_TRACK, Sys.now());
-
-		// Initialize results if not present
-		initGamePlayResults(oase, gamePlay);
+		new TrackLogic(oase).resume(aPersonId, Track.VAL_NORMAL_TRACK, Sys.now());
 
 		// playStart(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId)
 		Record round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
@@ -565,9 +563,18 @@ public class GamePlayLogic implements Constants {
 	}
 
 	// Initialize results if not present
-	protected void initGamePlayResults(Oase anOase, Record aGamePlay) throws OaseException, UtopiaException {
+	protected void initGamePlayResults(Oase anOase, Record aGamePlay, int aPersonId) throws OaseException, UtopiaException {
 		Modifier modifier = anOase.getModifier();
 		Relater relater = anOase.getRelater();
+
+		// Create new track if not already related to gameplay
+		if (!relater.isRelated(aGamePlay, TRACK_TABLE)) {
+			Track track = new TrackLogic(oase).create(aPersonId, aGamePlay.getStringField(NAME_FIELD), Track.VAL_NORMAL_TRACK, Sys.now());
+
+			// Relate track to gameplay
+			relater.relate(aGamePlay, track.getRecord());
+		}
+
 		Record[] taskResults = WPQueryLogic.getTaskResultsForGamePlay(aGamePlay);
 
 		// Check if results already present
@@ -635,7 +642,19 @@ public class GamePlayLogic implements Constants {
 		fileField = aGamePlay.getFileField(EVENTS_FIELD);
 		String eventStr = storedEvent.toString() + "\n";
 		fileField.append(eventStr.getBytes());
+		aGamePlay.setIntField(EVENT_COUNT_FIELD, aGamePlay.getIntField(EVENT_COUNT_FIELD) + 1);
 		anOase.getModifier().update(aGamePlay);
+
+		try {
+			Record gameRound = anOase.getRelater().getRelated(aGamePlay, GAMEROUND_TABLE, null)[0];
+			Record game = anOase.getRelater().getRelated(gameRound, GAME_TABLE, null)[0];
+			gameRound.setIntField(EVENT_COUNT_FIELD, gameRound.getIntField(EVENT_COUNT_FIELD) + 1);
+			game.setIntField(EVENT_COUNT_FIELD, game.getIntField(EVENT_COUNT_FIELD) + 1);
+			anOase.getModifier().update(gameRound);
+			anOase.getModifier().update(game);
+		} catch (Throwable ignore) {
+			log.warn("Cannot update eventcounts for gameplayid=" + aGamePlay.getId());
+		}
 	}
 
 
