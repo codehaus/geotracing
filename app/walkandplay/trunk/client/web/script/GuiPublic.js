@@ -136,7 +136,7 @@ function wpCreatePane(type,obj)
 				str+= '<select name="play" onchange="wpSelectPlay(this.value)">';
 				str+= '<option value="">select a team..</option>';
 				str+= '<option value=""></option>';			
-				for (var id in round.teams.team) str+= '<option value="'+id+'">'+round.teams.team[id].name+'</option>';
+				for (var id in round.teams.team) str+= '<option value="'+id+'">team '+round.teams.team[id].name+' ('+round.teams.team[id].color+')</option>';
 				str+= '<option value=""></option>';
 				str+= '</select><!--<span id="view_duration" style="margin-left:10px;"></span>--><br>';
 			}
@@ -270,6 +270,10 @@ function wpEmbedMedium(type,id)
 			str+= '<param name="bgcolor" value="#ffffff" />';
 			str+= '<embed src="/wp/media.srv?id='+id+'&format=swf&resize=225x169" quality="high" bgcolor="#ffffff" width="225" height="169" name="world" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />';
 			str+= '</object>';
+			
+			//Flash flv embed
+			
+			
 			break;
 			
 		case 'audio':

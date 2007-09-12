@@ -6,7 +6,7 @@
 
 function wpGuiUserInit()
 {
-	tmp_debug('2','GuiUser.js loaded','querytime');
+	tmp_debug('2','GuiPrivate.js loaded','querytime');
 
 	wpCreatePane('list_create');
  	wpCreatePane('list_play');
@@ -101,7 +101,7 @@ function wpCreatePaneUser(type,obj)
 			str+= '</div>';
  			str+= '<div class="column"><em>intro:</em></div><textarea name="intro" style="width:430px; height:80px;">'+intro+'</textarea><br><br>';
  			str+= '<div class="column"><em>outro:</em></div><textarea name="outro" style="width:430px; height:80px;">'+outro+'</textarea><br>';
-			str+= '<div style="right:15px; bottom:5px;"><input type="button" value="cancel" onclick="panes.hide(\'edit_profile\');'+cancel+'">&nbsp;<input type="submit" value=" '+submit+' " class="red" onclick=""></div>';
+			str+= '<div style="right:15px; bottom:8px;"><input type="button" value="cancel" onclick="panes.hide(\'edit_profile\');'+cancel+'">&nbsp;<input type="submit" value=" '+submit+' " class="red" onclick=""></div>';
 			str+= '</form>';
 
 			pane.setContent(str);
@@ -115,7 +115,7 @@ function wpCreatePaneUser(type,obj)
 
 			str+= '<b><span class="red">edit round</span>, or <a href="javascript://add_round" onclick="wp_games.game[wp_selected_game].addRound()">add new</a></b><br><br>';
 			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'edit_rounds\')">close</a></div>';
-			str+= '<div style="left:15px; bottom:5px;">[<a href="javascript://remove_all_rounds" onclick="wp_games.game[wp_selected_game].deleteAllRounds()">remove all rounds</a>]</div>';
+			str+= '<div style="left:15px; bottom:8px;">[<a href="javascript://remove_all_rounds" onclick="wp_games.game[wp_selected_game].deleteAllRounds()">remove all rounds</a>]</div>';
 			str+= '<div class="list" style="height:160px;"></div>';
 			pane.setContent(str);
 			break;
@@ -129,10 +129,10 @@ function wpCreatePaneUser(type,obj)
  			str+= '<div class="column">name:</div><input type="text" name="name" value="'+obj.name+'" class="inputtext" style="width:180px; margin-right:10px; margin-top:4px;"><br>';
  			str+= '<div class="column">players: <span class="grey">(select multiple)</span></div>';
 			str+= obj.list;
-			str+= '<div style="right:15px; bottom:5px;"><input type="button" value="cancel" onclick="panes.hide(\'edit_round\');panes.show(\'edit_rounds\')">&nbsp;<input type="submit" value=" '+obj.mode+' " class="red" onclick=""></div>';
+			str+= '<div style="right:15px; bottom:8px;"><input type="button" value="cancel" onclick="panes.hide(\'edit_round\');panes.show(\'edit_rounds\')">&nbsp;<input type="submit" value=" '+obj.mode+' " class="red" onclick=""></div>';
 			str+= '</form>';
 
-			if (obj.mode!='add') str+= '<div style="left:15px; bottom:5px;">[<a href="javascript://delete_round" onclick="wp_games.game['+obj.gameid+'].deleteRound('+obj.roundid+')">delete round</a>]</div>';
+			if (obj.mode!='add') str+= '<div style="left:15px; bottom:8px;">[<a href="javascript://delete_round" onclick="wp_games.game['+obj.gameid+'].deleteRound('+obj.roundid+')">delete round</a>]</div>';
 
 			pane.setContent(str);
 			break;
@@ -217,7 +217,7 @@ function wpCreatePaneUser(type,obj)
 		case 'messaging':
 			var pane = new Pane('messaging',70,160,195,180,1,true);
 
-			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(this); return false">';
+			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(); return false">';
 			str+= '<span class="title">messaging</span><br><br>';
 			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'messaging\')">close</a><br><br></div>';
 			str+= '<div id="im_list" class="list" style="height:127px; width:203px;"></div>';
