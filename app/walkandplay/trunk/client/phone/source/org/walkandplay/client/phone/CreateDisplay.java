@@ -31,6 +31,14 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     private Command SHOW_STATE_CMD = new Command(Locale.get("create.ShowState"), Command.ITEM, 2);
     private Command HIDE_STATE_CMD = new Command(Locale.get("create.HideState"), Command.ITEM, 2);
 
+    private AddTextDisplay addTextDisplay;
+    private AudioCaptureDisplay audioCaptureDisplay;
+    private AddRoundDisplay addRoundDisplay;
+    private NewGameDisplay newGameDisplay;
+    private EditGameDisplay editGameDisplay;
+    private ImageCaptureDisplayOld imageCaptureDisplay;
+    private MapDisplay mapDisplay;
+
     private Image logo;
 
     public CreateDisplay(WPMidlet aMidlet) {
@@ -48,7 +56,9 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
         append(logo);
         //#style labelinfo
         append(gameLabel);
+    }
 
+    public void start(){
         connect();
     }
 
@@ -88,6 +98,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     }
 
     public void onError(String anErrorMessage){
+        deleteAll();
         //#style alertinfo
         append(anErrorMessage);
     }
@@ -130,26 +141,44 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     public void commandAction(Command cmd, Displayable screen) {
         try{
             if (cmd == BACK_CMD) {
-                gpsEngine.stop();
-                tcpClient.stop();
+                if(gpsEngine!=null) gpsEngine.stop();
+                if(tcpClient!=null) tcpClient.stop();
                 Display.getDisplay(midlet).setCurrent(prevScreen);
             } else if (cmd == NEW_GAME_CMD) {
-                new NewGameDisplay(midlet, this);
+                if(newGameDisplay == null){
+                    newGameDisplay = new NewGameDisplay(midlet);
+                }
+                newGameDisplay.start(this);                
             } else if (cmd == EDIT_GAME_CMD) {
-                new EditGameDisplay(midlet, this);
+                if(editGameDisplay == null){
+                    editGameDisplay = new EditGameDisplay(midlet);
+                }
+                editGameDisplay.start(this);
             } else if (cmd == ADD_ROUND_CMD) {
-                new AddRoundDisplay(midlet, this);
+                if(addRoundDisplay == null){
+                    addRoundDisplay = new AddRoundDisplay(midlet);
+                }
+                addRoundDisplay.start(this);
             } else if (cmd == ADD_PHOTO_CMD) {
-                Display.getDisplay(midlet).setCurrent(new ImageCaptureDisplay(midlet));
-                /*new ImageCaptureDisplay(midlet, this, false);*/
+                if(imageCaptureDisplay == null){
+                    imageCaptureDisplay = new ImageCaptureDisplayOld(midlet);
+                }
+                imageCaptureDisplay.start( this, false);
             } else if (cmd == ADD_AUDIO_CMD) {
-                new AudioCaptureDisplay(midlet, this, false);
+                if(audioCaptureDisplay == null){
+                    audioCaptureDisplay = new AudioCaptureDisplay(midlet);
+                }
+                audioCaptureDisplay.start(this, false);
             } else if (cmd == ADD_TEXT_CMD) {
-                new AddTextDisplay(midlet, this, false);
+                if(addTextDisplay == null){
+                    addTextDisplay = new AddTextDisplay(midlet);
+                }
+                addTextDisplay.start(this, false);
             } else if (cmd == SHOW_MAP_CMD) {
-                MapDisplay md = new MapDisplay(midlet, this);
-                Display.getDisplay(midlet).setCurrent(md);
-                md.start();
+                if(mapDisplay == null){
+                    mapDisplay = new MapDisplay(midlet);
+                }
+                mapDisplay.start(this);
             }else if (cmd == SHOW_STATE_CMD) {
                 new StateHandler().showState();
             }

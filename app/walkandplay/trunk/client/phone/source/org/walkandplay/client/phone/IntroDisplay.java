@@ -6,24 +6,28 @@ import javax.microedition.lcdui.Displayable;
 
 public class IntroDisplay extends DefaultDisplay {
 
-    public IntroDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    private boolean active;
+
+    public IntroDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Intro");
-        prevScreen = aPrevScreen;
 
         //#style formbox
         append(midlet.getPlayApp().getGame().getChildText("intro"));
     }
 
-    public void start(){
+    public void start(Displayable aPrevScreen){
+        active = true;
+        prevScreen = aPrevScreen;
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    /*
-         * The commandAction method is implemented by this midlet to
-         * satisfy the CommandListener interface and handle the Exit action.
-         */
+    public boolean isActive(){
+        return active;
+    }
+
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
+            active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

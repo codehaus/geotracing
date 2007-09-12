@@ -273,7 +273,7 @@
 					<attribute name="wms-url" value="http://www.senseofthecity.nl/wp/map.srv" />
 					<attribute name="kw-server" value="test.walkandplay.com" />
 					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="yellow2" />
+					<attribute name="kw-user" value="yelloww2" />
 					<attribute name="kw-password" value="user" />
 					<attribute name="kw-port" value="6050" />
 					<attribute name="kw-app" value="geoapp" />

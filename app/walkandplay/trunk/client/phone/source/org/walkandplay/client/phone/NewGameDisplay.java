@@ -17,11 +17,8 @@ public class NewGameDisplay extends DefaultDisplay implements TCPClientListener 
     private TextField inputField;
     private String gameName;
 
-    public NewGameDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public NewGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "New game");
-        prevScreen = aPrevScreen;
-        Display.getDisplay(midlet).setCurrent(this);
-        midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
         append("Create a new game");
@@ -30,6 +27,12 @@ public class NewGameDisplay extends DefaultDisplay implements TCPClientListener 
         append(inputField);
 
         addCommand(OK_CMD);
+    }
+
+    public void start(Displayable aPrevScreen){
+        midlet.getActiveApp().addTCPClientListener(this);
+        prevScreen = aPrevScreen;
+        Display.getDisplay(midlet).setCurrent(this);                
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {

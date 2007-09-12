@@ -32,11 +32,14 @@ public class SelectGameDisplay extends AppStartDisplay {
             logo = scheduleImage("/play_icon_small.png");
             //#endif
 
-            connect();
         } catch (Throwable t) {
             //#style alertinfo
             append("Oops, could not start you up. \n " + t.getMessage());
         }
+    }
+
+    public void start(){
+        connect();        
     }
 
     public void onConnected(){

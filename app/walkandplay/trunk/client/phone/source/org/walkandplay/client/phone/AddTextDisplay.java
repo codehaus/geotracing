@@ -16,13 +16,10 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
     private TextField textField;
     private StringItem alertField = new StringItem("", "");
     private boolean playing;
+    private boolean active;
 
-    public AddTextDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
+    public AddTextDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Add Text");
-        prevScreen = aPrevScreen;
-        playing = isPlaying;
-
-        midlet.getActiveApp().addTCPClientListener(this);
 
         //#style labelinfo
         append("Enter Title");
@@ -47,8 +44,16 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         addCommand(SUBMIT_CMD);
     }
 
-    public void start(){
+    public void start(Displayable aPrevScreen, boolean isPlaying){
+        prevScreen = aPrevScreen;
+        active = true;
+        playing = isPlaying;
+        midlet.getActiveApp().addTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(this);
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -137,6 +142,7 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
                 }
             }
         } else if (command == BACK_CMD) {
+            active = false;
             midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }

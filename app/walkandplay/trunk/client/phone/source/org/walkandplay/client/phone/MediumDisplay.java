@@ -23,29 +23,37 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
     private String mediumUrl;
     private Image mediumImage;
     private MediumDisplay mediumDisplay = this;
+    private VideoDisplay videoDisplay;
+    private AudioPlayer audioPlayer;
+    private boolean active;
 
     private StringItem mediumLabel = new StringItem("", "");
 
-    public MediumDisplay(WPMidlet aMIDlet, int theScreenWidth, Displayable aPrevScreen) {
+    public MediumDisplay(WPMidlet aMIDlet, int theScreenWidth) {
         super(aMIDlet, "Media");
         screenWidth = theScreenWidth;
-        prevScreen = aPrevScreen;
+    }
+
+    public void start(String aMediumId, Displayable aPrevScreen){
         midlet.getActiveApp().addTCPClientListener(this);
+        prevScreen = aPrevScreen;
+        // start clean
+        deleteAll();
+        removeAllCommands();
 
         mediumLabel.setText("Loading...");
         //#style labelinfo
         append(mediumLabel);
 
-    }
-
-    public void start(String aMediumId){
-        // start clean
-        deleteAll();
-        removeAllCommands();
-
         mediumUrl = midlet.getKWUrl() + "/media.srv?id=" + aMediumId;
         getMedium(aMediumId);
+        active = true;
+
         Display.getDisplay(midlet).setCurrent(this);
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     private void drawMedium() {
@@ -167,10 +175,14 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
             midlet.getActiveApp().removeTCPClientListener(this);
+            active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == PLAY_VIDEO_CMD) {
             if (midlet.useInternalMediaPlayer()) {
-                new VideoDisplay(midlet, mediumName, mediumUrl, this);
+                if(videoDisplay == null){
+                    videoDisplay = new VideoDisplay(midlet);
+                }
+                videoDisplay.start(this, mediumName, mediumUrl);
             } else {
                 try {
                     midlet.platformRequest(mediumUrl);
@@ -182,7 +194,10 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         } else if (command == PLAY_AUDIO_CMD) {
             try {
                 if (midlet.useInternalMediaPlayer()) {
-                    new AudioPlayer().play(mediumName, mediumUrl);
+                    if(audioPlayer == null){
+                        audioPlayer = new AudioPlayer();
+                    }
+                    audioPlayer.play(mediumName, mediumUrl);
                 } else {
                     midlet.platformRequest(mediumUrl);
                 }

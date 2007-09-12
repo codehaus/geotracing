@@ -16,10 +16,8 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
     private StringItem alertField = new StringItem("", "");
     private String gameRoundName;
 
-    public AddRoundDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
-        super(aMIDlet, "Add game round");
-        prevScreen = aPrevScreen;
-        midlet.getActiveApp().addTCPClientListener(this);
+    public AddRoundDisplay(WPMidlet aMIDlet) {
+        super(aMIDlet, "Add game round");        
 
         //#style labelinfo
         append("Enter Title");
@@ -29,6 +27,12 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
         append(nameField);
 
         addCommand(OK_CMD);
+
+    }
+
+    public void start(Displayable aPrevScreen){
+        prevScreen = aPrevScreen;
+        midlet.getActiveApp().addTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(this);
     }
 

@@ -17,11 +17,9 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
 
     Command OK_CMD = new Command("Ok", Command.SCREEN, 2);
 
-    public EditGameDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public EditGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Edit a game");
-        prevScreen = aPrevScreen;
-        Display.getDisplay(midlet).setCurrent(this);
-
+        
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/play_icon_small.png");
@@ -29,14 +27,18 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
             logo = scheduleImage("/play_icon_small.png");
             //#endif
 
-            midlet.getActiveApp().addTCPClientListener(this);
             addCommand(OK_CMD);
-
-            getGamesByUser();
         } catch (Throwable t) {
             //#style alertinfo
             append("Oops, could not start you up. \n " + t.getMessage());
         }
+    }
+
+    public void start(Displayable aPrevScreen){
+        midlet.getActiveApp().addTCPClientListener(this);
+        prevScreen = aPrevScreen;
+        getGamesByUser();
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {

@@ -39,7 +39,10 @@ public class AccountDisplay extends DefaultDisplay {
         append(urlField);*/
 
         addCommand(OK_CMD);
-        setCommandListener(this);
+        setCommandListener(this);        
+    }
+
+    public void start(){
         Display.getDisplay(midlet).setCurrent(this);
     }
 

@@ -17,7 +17,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
     private String url;
     private Image bg;
     private String title;
-    private VideoDisplay instance;
+    private VideoDisplay instance;    
 
     Font f;
     int fh, w, h;
@@ -25,16 +25,10 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
     private Command BACK_CMD = new Command("Back", Command.ITEM, 2);
     private Command REPLAY_CMD = new Command("Replay", Command.ITEM, 2);
 
-    public VideoDisplay(WPMidlet aMidlet, String aName, String aUrl, Displayable aPrevScreen) {
+    public VideoDisplay(WPMidlet aMidlet) {
         super(false);
         midlet = aMidlet;
-        url = aUrl;
-        name = aName;
         instance = this;
-        prevScreen = aPrevScreen;
-        title = "Video:" + name;
-        setFullScreenMode(true);
-        Display.getDisplay(midlet).setCurrent(this);
 
         try {
             //#ifdef polish.images.directLoad
@@ -47,7 +41,17 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
         }
 
         addCommand(BACK_CMD);
-        setCommandListener(this);
+        setCommandListener(this);        
+    }
+
+    public void start(Displayable aPrevScreen, String aName, String aUrl){
+        prevScreen = aPrevScreen;
+        url = aUrl;
+        name = aName;
+        title = "Video:" + name;
+
+        setFullScreenMode(true);
+        Display.getDisplay(midlet).setCurrent(this);
         play();
     }
 
