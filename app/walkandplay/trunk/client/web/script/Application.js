@@ -65,7 +65,12 @@ function wpSelect(mode)
 			if (wp_view) wp_view.rset();
 		}
 		//unload game
-		wp_games.game[wp_selected_game].unLoad();
+		//wp_games.game[wp_selected_game].unLoad();
+		wp_games.del(wp_selected_game);
+
+		//delete game object...
+		//?
+
 		wp_selected_game = false;
 		wp_selected_round = false;
 		wp_selected_play = false;
@@ -335,7 +340,7 @@ function wpMapClick(m,p)
 		document.onmousemove = null;
 
 		//add tmp location and edit
-		wp_games.game[wp_game_selected].newLocation(p);
+		wp_games.game[wp_selected_game].newLocation(p);
 	}
 }
 
@@ -348,9 +353,9 @@ function wpMapMoveend()
 	wp_players.update();
 
 	//game locations	
-	if (wp_game_selected)
+	if (wp_selected_game)
 	{
-		var game = wp_games.game[wp_game_selected];
+		var game = wp_games.game[wp_selected_game];
 
 		game.locations.update();
 	}

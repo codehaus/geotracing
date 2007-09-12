@@ -20,19 +20,6 @@ function wpLocations(name)
 	}
 	array.center = function()
 	{
-// 		var ave_lat = 0;
-// 		var ave_lon = 0;
-// 		for (id in this.location)
-// 		{
-// 			var p = this.location[id].geo
-// 			ave_lat += Number(p.lat());
-// 			ave_lon += Number(p.lng());
-// 		}
-// 		ave_lat = ave_lat/this.length;
-// 		ave_lon = ave_lon/this.length;
-// 		
-// 		gmap.panTo( new GLatLng(ave_lat,ave_lon) );
-
 		//gmap center and zoom method
 		var locations = [];
 		for (id in this.location) locations.push(this.location[id].geo);
@@ -96,8 +83,8 @@ function wpLocation(collection,id,p,type,state,name)
 		{
 			var str = '';
 				str+= '"<b>'+obj.name+'</b>"<br>'; // ('+obj.type.substring(0,1)+'='+obj.id+')<br>';
-				if (obj.state=='enabled') str+= '<a href="javascript://view" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
-				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
+				if (obj.state=='enabled') str+= '<a href="javascript://view" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
+				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
 				//delete button
 				//if (obj.collection.name=='game' && wp_mode=='create')
 				if (wp_mode=='create' && wp_games.game[wp_selected_game].state!=2)
@@ -295,7 +282,7 @@ wpLocation.prototype.expand = function()
 	this.expanded = true;
 	this.changeIcon('icon_location_r.png');
 	
-	panes['display'].show();
+//	panes['display'].show();
 
 	//get location info
 	var obj = this;
@@ -404,20 +391,21 @@ wpLocation.prototype.updateDetails = function(resp)
 		//display pane contents
 		var str = '';
 			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onclick="wp_location_expanded.collapse()">close</a>';
-			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+this.id+'].zoomTo();this.blur()">zoom to</a><br>';
+			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_selected_game+'].locations.location['+this.id+'].zoomTo();this.blur()">zoom to</a><br>';
 			str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
 			str+= '<div id="display_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
 			str+= wpEmbedMedium(this.mediumtype,this.mediumid);
 			str+= '</div>';
 			if (this.desc) str+= this.desc+'<br>';
 			
-//			str+= 'answrstate:'+this.play_answerstate;
+			//str+= '[answrstate:'+this.play_answerstate+']<br>';
+			//str+= '[mediastate:'+this.play_answerstate+']<br>';
 			
 			//answer button for tasks in play-mode
 			if (this.type=='task' && wp_mode=='play')
 			{
 				var display = (this.play_answerstate=='notok' || this.play_answerstate=='open')? 'block':'none';
-				str+= '<a id="add_answer" style="display:'+display+'; color:rgb(200,0,20); float:right" href="javascript://add_answer" onclick="panes.show(\'answer\');this.blur()">add answer</a><br>';
+				str+= '<a id="add_answer" style="display:'+display+'; color:rgb(200,0,20); float:right" href="javascript://add_answer" onclick="this.blur();panes.show(\'answer\');document.forms[\'answerform\'].answer.focus();">add answer</a><br>';
 			}
 			
 		//create
@@ -467,7 +455,7 @@ wpLocation.prototype.updateDetails = function(resp)
 			document.getElementById('display_answer').innerHTML = str;
 			
 			//show/hide 'add answer' button
-			document.getElementById('add_answer').style.display = (this.play_answerstate=='notok' || this.play_answerstate=='open')? 'block':'none';
+			if (wp_mode=='play') document.getElementById('add_answer').style.display = (this.play_answerstate=='notok' || this.play_answerstate=='open')? 'block':'none';
 		}
 	}
 	else
@@ -483,6 +471,8 @@ wpLocation.prototype.updateDetails = function(resp)
 			div.style.lineHeight = '0px';
 		}
 	}
+	
+	panes.show('display');
 }
 
 wpLocation.prototype.answer = function(form)

@@ -125,8 +125,8 @@ function wpPlayer(collection,id,p,name,t,playid)
 		{
 			var str = '';
 				str+= '"<b>'+obj.name+'</b>"<br>'; // ('+obj.type.substring(0,1)+'='+obj.id+')<br>';
-				str+= '<a href="javascript://view" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
-				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_game_selected+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
+				str+= '<a href="javascript://view" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
+				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
 				//delete button
 				if (obj.collection.name=='game' && wp_game_edit)
 				{
@@ -352,3 +352,24 @@ wpPlayer.prototype.dispose = function()
 
 	gmap.getPane(G_MAP_MARKER_PANE).removeChild(this.div);
 }
+
+
+// function wpTraces()
+// {
+// 
+// 
+// 
+// }
+// 
+// function wpTrace(id)
+// {
+// 	this.id = id;
+// //	this.segments = segments;
+// 
+// }
+// 
+// wpTrace.prototype.show = function()
+// {
+// 
+// }
+

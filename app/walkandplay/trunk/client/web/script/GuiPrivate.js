@@ -219,7 +219,10 @@ function wpCreatePaneUser(type,obj)
 
 			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(); return false">';
 			str+= '<span class="title">messaging</span><br><br>';
-			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'messaging\')">close</a><br><br></div>';
+			str+= '<div style="right:11px; top:8px">';
+			str+= '<a href="javascript://delete_all" onclick="alert(\'not yet\')" style="margin-right:20px"><img src="media/icon_trash.gif" style="vertical-align:text-bottom; border:0px; padding-bottom:1px"> all</a>';
+			str+= '<a href="javascript://close" onclick="panes.hide(\'messaging\')">close</a><br><br>';
+			str+= '</div>';
 			str+= '<div id="im_list" class="list" style="height:127px; width:203px;"></div>';
 			
 			str+= '<div style="bottom:7px;"><input name="msg" type="text" style="width:160px; height:16px; background-color:#eeeeee">&nbsp;<a href="javascript://send_im" onclick="wp_games.game[wp_selected_game].msgSend()">send</a></div>';
@@ -245,7 +248,7 @@ function wpCreatePaneUser(type,obj)
 
 			str+= '<form name="answerform" method="" action="" onsubmit="wp_location_expanded.answer(this); return false">';
 			str+= '<span class="title">answer</span><br><br>';
-			str+= '<div><input name="answer" type="text" style="width:190px; height:16px; background-color:#eeeeee"></div>';
+			str+= '<div><input id="answer_input" name="answer" type="text" style="width:190px; height:16px; background-color:#eeeeee"></div>';
 			str+= '<div style="right:15px; bottom:10px;"><input type="button" value="cancel" onclick="panes.hide(\'answer\');">&nbsp;<input type="submit" value=" send " class="red" onclick=""></div>';
 
 			pane.setContent(str);
