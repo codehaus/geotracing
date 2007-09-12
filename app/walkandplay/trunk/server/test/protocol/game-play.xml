@@ -57,7 +57,7 @@
 		</expect>
 	</test>
 
-	<test id="q-play-status">
+	<test id="q-play-status-by-user">
 		<send id="client1">
 			<utopia-req>
 				<query-store-req cmd="q-play-status-by-user" user="blue2"/>
@@ -72,8 +72,10 @@
 						<description/>
 						<gameid>${gameid}</gameid>
 						<roundid>${roundid}</roundid>
+						<roundname/>
 						<gameplayid>${gameplayid}</gameplayid>
 						<gameplaystate/>
+						<color/>
 					</record>
 				</query-store-rsp>
 			</utopia-rsp>
@@ -1423,9 +1425,11 @@
 						<score>0
 						</score>
 
+						<color/>
+						<eventcount/>
 						<loginname>red2
 						</loginname>
-
+						<trackid/>
 					</record>
 
 					<record>
@@ -1438,8 +1442,11 @@
 						<score>0
 						</score>
 
+						<color/>
+						<eventcount/>
 						<loginname>yellow2
 						</loginname>
+						<trackid/>
 
 					</record>
 
@@ -1453,8 +1460,11 @@
 						<score>125
 						</score>
 
+						<color/>
+						<eventcount/>
 						<loginname>green2
 						</loginname>
+						<trackid/>
 
 					</record>
 
@@ -1468,9 +1478,12 @@
 						<score>125
 						</score>
 
+						<color/>
+						<eventcount/>
 						<loginname>blue2
 						</loginname>
-
+						<trackid/>
+ 
 					</record>
 
 				</query-store-rsp>

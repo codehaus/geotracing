@@ -1,14 +1,14 @@
 <portal name="walkandplay">
 
     <!-- Standard host-dependent container properties -->
-    <property name="siteurl" host="ronaldinho.local">http://local.mlgk.nl</property>
-    <property name="webappurl" host="ronaldinho.local">http://local.mlgk.nl/wp</property>
-    <property name="siteurl" host="suwa">http://local.mlgk.nl</property>
-    <property name="webappurl" host="suwa">http://local.mlgk.nl/wp</property>
-    <property name="siteurl" host="berlin">http://test.mlgk.nl</property>
-    <property name="webappurl" host="berlin">http://test.mlgk.nl/wp</property>
-    <property name="siteurl" host="prod">http://www.mlgk.nl</property>
-    <property name="webappurl" host="prod">http://www.mlgk.nl/wp</property>
+    <property name="siteurl" host="ronaldinho.local">http://local.walkandplay.com</property>
+    <property name="webappurl" host="ronaldinho.local">http://local.walkandplay.com/wp</property>
+    <property name="siteurl" host="suwa">http://local.walkandplay.com</property>
+    <property name="webappurl" host="suwa">http://local.walkandplay.com/wp</property>
+    <property name="siteurl" host="lola">http://test.walkandplay.com</property>
+    <property name="webappurl" host="lola">http://test.walkandplay.com/wp</property>
+    <property name="siteurl" host="gina">http://walkandplay.com</property>
+    <property name="webappurl" host="gina">http://walkandplay.com/wp</property>
 
 	<!-- not used: see Constants.java <property name="hit.radius">30</property>  -->
 
@@ -97,9 +97,9 @@
                 <property name="host">email.upload.host</property>
 
                 <!-- Production-server context -->
-                <property name="email" host="berlin">email.upload.email.berlin</property>
-                <property name="user" host="berlin">email.upload.user.berlin</property>
-                <property name="password" host="berlin">email.upload.password.berlin</property>
+                <property name="email" host="lola">email.upload.email.lola</property>
+                <property name="user" host="lola">email.upload.user.lola</property>
+                <property name="password" host="lola">email.upload.password.lola</property>
 
 				<!-- application request to use -->
 				<property name="useService" >play-add-medium</property>

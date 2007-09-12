@@ -1,0 +1,23 @@
+<!--
+
+ANT Build file for Diwi maps stuff.
+
+$Id$
+-->
+<project name="wp-maps" default="deploy-gina" basedir=".">
+
+	<!-- Initialization of properties (dirs, files) -->
+
+	<property file="../../build.properties"/>
+	<property name="home" value="${basedir}"/>
+
+
+    <target name="deploy-gina" >
+		<exec executable="scp">
+			<arg line="${home}/wms/index.cgi"/>
+			<arg line="${home}/wms/wp.map"/>
+			<arg line="${deploy.prod.server}:/var/keyworx/webapps/walkandplay/map"/>
+		</exec>
+	</target>
+
+</project>

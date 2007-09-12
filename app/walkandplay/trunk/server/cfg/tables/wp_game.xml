@@ -47,6 +47,7 @@
 		<field name="creationdate" type="TIMESTAMP"/>
         <field name="modificationdate" type="TIMESTAMP"/>
 		<field name="extra" type="XML"/>
+		<field name="eventcount" type="INTEGER" default="0" required="true" />
 	</data>
 	<!--}data -->
 
