@@ -20,12 +20,12 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
 
     private boolean active;
 
-    public IMDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public IMDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Messaging");
-        prevScreen = aPrevScreen;
     }
 
-    public void start(String aMessage){
+    public void start(Displayable aPrevScreen, String aMessage){
+        prevScreen = aPrevScreen;
         midlet.getActiveApp().addTCPClientListener(this);
         
         // start clean

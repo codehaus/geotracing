@@ -14,6 +14,7 @@ import org.walkandplay.client.phone.TCPClientListener;
 public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
 
     private int maxScore;
+    private boolean active;
 
     public ScoreDisplay(WPMidlet aMIDlet, int aMaxScore, Displayable aPrevScreen) {
         super(aMIDlet, "Scores");
@@ -23,8 +24,13 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
     }
 
     public void start(){
+        active = true;
         getScores();
         Display.getDisplay(midlet).setCurrent(this);
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -81,6 +87,7 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
     */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
+            active = false;
             midlet.getPlayApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }

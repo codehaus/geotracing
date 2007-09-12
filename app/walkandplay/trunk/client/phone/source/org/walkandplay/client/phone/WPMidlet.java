@@ -32,7 +32,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.rms.RecordStoreException;
 
-import org.walkandplay.client.phone.Log;
 import org.geotracing.client.Util;
 import org.geotracing.client.Preferences;
 
@@ -95,8 +94,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Log"), null);
         //#style mainQuitCommand
         menuScreen.append(Locale.get("menu.Quit"), null);
-       /* //#style mainLogCommand
-        menuScreen.append("test display", null);
+        //#style mainLogCommand
+        menuScreen.append("test", null);
+        /*
         //#style mainLogCommand
         menuScreen.append("video display", null);
         //#style mainLogCommand
@@ -230,26 +230,38 @@ public class WPMidlet extends MIDlet implements CommandListener {
             case 0:
                 // Play
                 selectGameDisplay = new SelectGameDisplay(this);
+                selectGameDisplay.start();
                 activeApp = selectGameDisplay;
                 Display.getDisplay(this).setCurrent(activeApp);
                 break;
             case 1:
                 // Create
                 createDisplay = new CreateDisplay(this);
+                createDisplay.start();
                 activeApp = createDisplay;
                 Display.getDisplay(this).setCurrent(activeApp);
                 break;
             case 2:
                 // GPS
-                Display.getDisplay(this).setCurrent(new GPSDisplay(this));
+                if(gpsDisplay == null){
+                    gpsDisplay = new GPSDisplay(this);
+                }
+                gpsDisplay.start();
+                Display.getDisplay(this).setCurrent(gpsDisplay);
                 break;
             case 3:
                 // Settings
-                Display.getDisplay(this).setCurrent(new SettingsDisplay(this));
+                if(settingsDisplay == null){
+                    settingsDisplay = new SettingsDisplay(this);
+                }
+                Display.getDisplay(this).setCurrent(settingsDisplay);
                 break;
             case 4:
                 // Help
-                Display.getDisplay(this).setCurrent(new HelpDisplay(this));
+                if(helpDisplay == null){
+                    helpDisplay = new HelpDisplay(this);
+                }
+                Display.getDisplay(this).setCurrent(helpDisplay);
                 break;
             case 5:
                 // Log
@@ -266,7 +278,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 8:
                 // video canvas
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() +"/media.srv?id=26527", null));
+                VideoDisplay videoDisplay = new VideoDisplay(this);
+                videoDisplay.start(selectGameDisplay, "Untitled",  getKWUrl() + "/media.srv?id=26527");                
                 break;
             case 9:
                 // video form

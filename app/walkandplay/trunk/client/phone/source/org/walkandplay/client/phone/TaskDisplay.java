@@ -26,26 +26,32 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     private String state = "";
     private String answerState = "";
     private String mediaState = "";
+    private boolean active;
 
     public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, Displayable aPrevScreen) {
         super(aMIDlet, "Task");
         screenWidth = theScreenWidth;
         prevScreen = aPrevScreen;
-        midlet.getActiveApp().addTCPClientListener(this);
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
     }
 
     public void start(String aTaskId, String aState, String anAnswerState, String aMediaState){
+        Log.log("start - taskId:" + aTaskId + ", state: " + state + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
         // start clean
         deleteAll();
         removeAllCommands();
 
-        // only set the state for the first time
+        // set the tcp listemer
+        midlet.getActiveApp().addTCPClientListener(this);
+
+        // only set the state for the first time - after 'start' state updates are done by play-answertask-rsp
         if(state.length() == 0) state = aState;
         if(answerState.length() == 0) answerState = anAnswerState;
         if(mediaState.length() == 0) mediaState = aMediaState;
 
-        // only get the task if not done
+        Log.log("Used state: " + state + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
+
+        // only get and display the task if it's not done yet
         if(!state.equals("done")){
             if(task == null || !taskId.equals(aTaskId)) {
                 taskId = aTaskId;
@@ -53,8 +59,18 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
             }else{
                 drawScreen();
             }
+        }else{
+            drawScreen();
         }
+
+        // display is active
+        active = true;
+        // now show the display
         Display.getDisplay(midlet).setCurrent(this);
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -63,12 +79,14 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("query-store-rsp")) {
                 String cmd = rsp.getAttr("cmd");
+
                 if(cmd.equals("q-task")){
                     task = rsp.getChildByTag("record");
                     if (task != null) {
                         String mediumId = task.getChildText("mediumid");
                         String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
                         try {
+                            // TODO: do this in a separate thread??
                             taskImage = Util.getImage(url);
                         } catch (Throwable t) {
                             //#style alertinfo
@@ -80,31 +98,34 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                         deleteAll();
                         addCommand(BACK_CMD);
                         //#style alertinfo
-                        append("Serious error: No task found");
+                        append("No task found with id:" + taskId);
                     }
                 }
+
             } else if (rsp.getTag().equals("play-answertask-rsp")) {
+                // start fresh
                 deleteAll();
-                addCommand(BACK_CMD);
+                removeAllCommands();
+
                 answerState = rsp.getAttr("answerstate");
                 mediaState = rsp.getAttr("mediastate");
                 state = rsp.getAttr("state");
-                String score = task.getChildText("score");                
+
+                String score = task.getChildText("score");
+
                 if (answerState.equals("ok") && mediaState.equals("open")) {
                     //#style alertinfo
                     append("Right answer! You still have to sent in media though. Good luck!");
-                    removeCommand(OK_CMD);
+                    addCommand(BACK_CMD);
                 } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("open")) {
                     //#style alertinfo
                     append("Right answer and you already sent in media!\nYou scored " + score + " points");
                     answer = inputField.getString();
-                    removeCommand(OK_CMD);
+                    addCommand(BACK_CMD);
                 } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("done")) {
                     //#style alertinfo
                     append("Right answer and you already sent in media!\nYou scored " + score + " points\n" +
                             "You have now also finished the last task!!!\nThe Game is finished...");
-                    removeCommand(BACK_CMD);
-                    removeCommand(OK_CMD);
                     addCommand(OUTRO_CMD);
                 } else {
                     //#style alertinfo
@@ -115,6 +136,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 }
             }else if (rsp.getTag().equals("play-answertask-nrsp")) {
                 deleteAll();
+                removeAllCommands();
                 addCommand(BACK_CMD);
                 //#style alertinfo
                 append("Serious error: " + rsp.getAttr("details"));
@@ -129,6 +151,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         if(state.equals("done")){
             //#style alertinfo
             append(Locale.get("task.TaskDone"));
+            removeCommand(OK_CMD);
         }else{
             if(answerState.equals("ok")){
                 //#style alertinfo
@@ -153,9 +176,9 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 inputField = new TextField("", "", 1024, TextField.ANY);
             }
             append(inputField);
+
+            addCommand(OK_CMD);
         }
-        
-        addCommand(OK_CMD);
     }
 
     public void onNetStatus(String aStatus){
@@ -190,7 +213,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 deleteAll();
                 drawScreen();
                 //#style alertinfo
-                append("Don't forget to fill in your answer");                                
+                append("Don't forget to fill in your answer");
                 addCommand(BACK_CMD);
             } else {
                 //<play-answertask-rsp state="hit" mediastate="open|done" answerstate="notok|ok" score="75" playstate="open|done"/>
@@ -200,8 +223,11 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 midlet.getActiveApp().sendRequest(req);
             }
         } else if (command == OUTRO_CMD) {
+            active = false;
             new OutroDisplay(midlet);
         } else if (command == BACK_CMD) {
+            active = false;
+            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }else if (command == TRY_AGAIN_CMD) {
             deleteAll();

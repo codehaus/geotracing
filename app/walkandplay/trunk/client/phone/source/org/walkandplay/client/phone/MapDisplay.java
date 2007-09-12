@@ -24,6 +24,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     private GoogleMap.LonLat lonLat;
     private GoogleMap.BBox bbox;
 
+    private GoogleMap.XY xy;
 
     private int zoom = 12;
     private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3, bg;
@@ -53,37 +54,17 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     private Command TOGGLE_MAP_CMD = new Command(Locale.get("play.ToggleMap"), Command.ITEM, 2);
     private Command BACK_CMD = new Command("Back", Command.ITEM, 2);
 
-    public MapDisplay(WPMidlet aMidlet, Displayable aPrevScreen) {
+    public MapDisplay(WPMidlet aMidlet) {
         super(false);
         setFullScreenMode(true);
 
         midlet = aMidlet;
-        prevScreen = aPrevScreen;
-        midlet.getActiveApp().addTCPClientListener(this);
-        GPSEngine.getInstance().addListener(this);
 
         try {
-            String user = midlet.getKWUser();
-
             //#ifdef polish.images.directLoad
-            if (user.indexOf("red") != -1) {
-                playerDot1 = Image.createImage("/icon_player_r_1.png");
-                playerDot2 = Image.createImage("/icon_player_r_2.png");
-                playerDot3 = Image.createImage("/icon_player_r_3.png");
-            } else if (user.indexOf("green") != -1) {
-                playerDot1 = Image.createImage("/icon_player_g_1.png");
-                playerDot2 = Image.createImage("/icon_player_g_2.png");
-                playerDot3 = Image.createImage("/icon_player_g_3.png");
-            } else if (user.indexOf("blue") != -1) {
-                playerDot1 = Image.createImage("/icon_player_b_1.png");
-                playerDot2 = Image.createImage("/icon_player_b_2.png");
-                playerDot3 = Image.createImage("/icon_player_b_3.png");
-            } else if (user.indexOf("yellow") != -1) {
-                //playerDot = Image.createImage("/icon_player_y.png");
-                playerDot1 = Image.createImage("/icon_player_y_1.png");
-                playerDot2 = Image.createImage("/icon_player_y_2.png");
-                playerDot3 = Image.createImage("/icon_player_y_3.png");
-            }
+            playerDot1 = Image.createImage("/icon_player_r_1.png");
+            playerDot2 = Image.createImage("/icon_player_r_2.png");
+            playerDot3 = Image.createImage("/icon_player_r_3.png");
 
             transBar = Image.createImage("/trans_bar.png");
             taskDot1 = Image.createImage("/task_dot_1.png");
@@ -94,25 +75,10 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
             mediumDot3 = Image.createImage("/medium_dot_3.png");
             bg = Image.createImage("/bg.png");
             //#else
-            if (user.indexOf("red") != -1) {
-                playerDot1 = scheduleImage("/icon_player_r_1.png");
-                playerDot2 = scheduleImage("/icon_player_r_2.png");
-                playerDot3 = scheduleImage("/icon_player_r_3.png");
-            } else if (user.indexOf("green") != -1) {
-                playerDot1 = scheduleImage("/icon_player_g_1.png");
-                playerDot2 = scheduleImage("/icon_player_g_2.png");
-                playerDot3 = scheduleImage("/icon_player_g_3.png");
-            } else if (user.indexOf("blue") != -1) {
-                playerDot1 = scheduleImage("/icon_player_b_1.png");
-                playerDot2 = scheduleImage("/icon_player_b_2.png");
-                playerDot3 = scheduleImage("/icon_player_b_3.png");
-            } else if (user.indexOf("yellow") != -1) {
-                //playerDot = scheduleImage("/icon_player_y.png");
-                playerDot1 = scheduleImage("/icon_player_y_1.png");
-                playerDot2 = scheduleImage("/icon_player_y_2.png");
-                playerDot3 = scheduleImage("/icon_player_y_3.png");
-            }
-
+            playerDot1 = scheduleImage("/icon_player_r_1.png");
+            playerDot2 = scheduleImage("/icon_player_r_2.png");
+            playerDot3 = scheduleImage("/icon_player_r_3.png");
+        
             taskDot1 = scheduleImage("/task_dot_1.png");
             taskDot2 = scheduleImage("/task_dot_2.png");
             taskDot3 = scheduleImage("/task_dot_3.png");
@@ -144,6 +110,10 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
                 if(cmd.equals("q-game-locations")){
                     Log.log("setting the gamelocations");
                     gameLocations = rsp.getChildrenByTag("record");
+                    // only now show
+                    Display.getDisplay(midlet).setCurrent(this);
+                    active = true;
+                    show();
                 }
             }
         }
@@ -166,8 +136,12 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     /**
      * User is now ready to start playing
      */
-    void start() {
+    void start(Displayable aPrevScreen) {
         try {
+            prevScreen = aPrevScreen;
+            midlet.getActiveApp().addTCPClientListener(this);
+            GPSEngine.getInstance().addListener(this);
+
             // get all game locations for this game
             String gameId = midlet.getCreateApp().getGameId();
             if(gameId !=null && gameId.length() >0){
@@ -177,11 +151,6 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
             }
 
             tileBaseURL = midlet.getWMSUrl();
-            Display.getDisplay(midlet).setCurrent(this);
-            active = true;
-
-            show();
-
         } catch (Throwable t) {
             log("Exception in start():\n" + t.getMessage(), true);
         }
@@ -305,105 +274,140 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
 
         try {
             // No use proceeding if we don't have location
-            if (!hasLocation()) {
-                g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                String s = "Retrieving current location...";
-                g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+			if (!hasLocation()) {
+				g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+				String s = "Waiting for GPS location...";
+				if (errorMsg.length() > 0) {
+					s = errorMsg;
+				}
+				g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                drawBar(g);
                 //repaint();
-                return;
-            }
+				return;
+			}
 
-            Log.log("dbg 8");
-            // ASSERT: we have a valid location
+			// ASSERT: we have a valid location
 
-            // Create bbox if not present
-            if (bbox == null) {
-                resetMap();
+			// Create bbox if not present
+			if (bbox == null) {
+				resetMap();
 
-                // Create bbox around our location for given zoom and w,h
-                bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
-                if (mapImage == null) g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                String loading = "Loading map...";
-                g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+				// Create bbox around our location for given zoom and w,h
+				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
+				if (mapImage == null) {
+					g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+				}
+				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+				String loading = "Loading map...";
+				g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                drawBar(g);
                 //repaint();
-                return;
-            }
+				return;
+			}
 
-            Log.log("dbg 9");
-            // Should we fetch new map image ?
-            if (mapImage == null) {
-                try {
-                    // Create WMS URL and fetch image
-                    String mapURL = GoogleMap.createWMSURL(tileBaseURL, bbox, mapType, w, h, "image/jpeg");
-                    Image wmsImage = Util.getImage(mapURL);
+			// Should we fetch new map image ?
+			if (mapImage == null) {
+				try {
+					// Create WMS URL and fetch image
+					String mapURL = GoogleMap.createWMSURL(tileBaseURL, bbox, mapType, w, h, "image/jpeg");
+					Image wmsImage = Util.getImage(mapURL);
 
-                    // Create offscreen image
-                    mapImage = Image.createImage(wmsImage.getWidth(), wmsImage.getHeight());
-                    mapImage.getGraphics().drawImage(wmsImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+					// Create offscreen image
+					mapImage = Image.createImage(wmsImage.getWidth(), wmsImage.getHeight());
+					mapImage.getGraphics().drawImage(wmsImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-                    if (gameLocations != null) {
-                        for (int i = 0; i < gameLocations.size(); i++) {
-                            JXElement loc = (JXElement) gameLocations.elementAt(i);
+					if (gameLocations != null) {
+						for (int i = 0; i < gameLocations.size(); i++) {
+							JXElement loc = (JXElement) gameLocations.elementAt(i);
 
-                            GoogleMap.LonLat ll = new GoogleMap.LonLat(loc.getChildText("lon"), loc.getChildText("lat"));
-                            GoogleMap.XY gameLocXY = bbox.getPixelXY(ll);
+							GoogleMap.LonLat ll = new GoogleMap.LonLat(loc.getChildText("lon"), loc.getChildText("lat"));
+							GoogleMap.XY gameLocXY = bbox.getPixelXY(ll);
 
-                            if (loc.getChildText("type").equals("task")) {
-                                if (zoom >= 0 && zoom < 6) {
-                                    mapImage.getGraphics().drawImage(taskDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (zoom >= 6 && zoom < 12) {
-                                    mapImage.getGraphics().drawImage(taskDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(taskDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                }
-                            } else if (loc.getChildText("type").equals("medium")) {
-                                if (zoom >= 0 && zoom < 6) {
-                                    mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (zoom >= 6 && zoom < 12) {
-                                    mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                }
-                            } else {
-                                if (zoom >= 0 && zoom < 6) {
-                                    mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (zoom >= 6 && zoom < 12) {
-                                    mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                }
-                            }
-                        }
+							if (loc.getChildText("type").equals("task")) {
+								if (zoom >= 0 && zoom < 6) {
+									mapImage.getGraphics().drawImage(taskDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								} else if (zoom >= 6 && zoom < 12) {
+									mapImage.getGraphics().drawImage(taskDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								} else {
+									mapImage.getGraphics().drawImage(taskDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								}
+							} else if (loc.getChildText("type").equals("medium")) {
+								if (zoom >= 0 && zoom < 6) {
+									mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								} else if (zoom >= 6 && zoom < 12) {
+									mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								} else {
+									mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								}
+							} else {
+								if (zoom >= 0 && zoom < 6) {
+									mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								} else if (zoom >= 6 && zoom < 12) {
+									mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								} else {
+									mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+								}
+							}
+						}
+					}
+				} catch (Throwable t) {
+					String s = t.getMessage();
+                    if(s == null || s.equals("null")){
+                        s = "Could not get a map image - please zoom in or out.";
                     }
-                } catch (Throwable t) {
-                    g.drawString("error: " + t.getMessage(), 10, 30, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                    g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    drawBar(g);
                     return;
-                }
-            }
+				}
+			}
 
-            GoogleMap.XY xy = bbox.getPixelXY(lonLat);
+			// Draw location and trace.
+			//GoogleMap.XY prevXY = xy;
+			xy = bbox.getPixelXY(lonLat);
 
-            // Draw background map
-            g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+			// System.out.println("xy=" + xy);
+			// If we have previous point: draw line from there to current
+			/*if (prevXY != null && prevXY.x < 1000) {
+                // Draw trace
+                Graphics mapGraphics = mapImage.getGraphics();
+                mapGraphics.setColor(0, 0, 255);
+                mapGraphics.drawLine(prevXY.x - 1, prevXY.y - 1, xy.x - 1, xy.y - 1);
+                mapGraphics.drawLine(prevXY.x, prevXY.y, xy.x, xy.y);
+            }*/
 
-            // draw the player
-            if (zoom >= 0 && zoom < 6) {
-                g.drawImage(playerDot1, xy.x - (playerDot1.getWidth()) / 2, xy.y - (playerDot1.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
-            } else if (zoom >= 6 && zoom < 12) {
-                g.drawImage(playerDot2, xy.x - (playerDot2.getWidth()) / 2, xy.y - (playerDot2.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
-            } else {
-                g.drawImage(playerDot3, xy.x - (playerDot3.getWidth()) / 2, xy.y - (playerDot3.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
-            }
+			// Draw background map
+			g.drawImage(mapImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 
-            // If moving off map refresh
-            if (xy.x < OFF_MAP_TOLERANCE || w - xy.x < OFF_MAP_TOLERANCE || xy.y < OFF_MAP_TOLERANCE || h - xy.y < OFF_MAP_TOLERANCE) {
-                resetMap();
-            }
+			// draw the player
+			if (zoom >= 0 && zoom < 6) {
+				g.drawImage(playerDot1, xy.x - (playerDot1.getWidth()) / 2, xy.y - (playerDot1.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+			} else if (zoom >= 6 && zoom < 12) {
+				g.drawImage(playerDot2, xy.x - (playerDot2.getWidth()) / 2, xy.y - (playerDot2.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+			} else {
+				g.drawImage(playerDot3, xy.x - (playerDot3.getWidth()) / 2, xy.y - (playerDot3.getHeight()) / 2, Graphics.TOP | Graphics.LEFT);
+			}
+
+			// If moving off map refresh
+			if (xy.x < OFF_MAP_TOLERANCE || w - xy.x < OFF_MAP_TOLERANCE || xy.y < OFF_MAP_TOLERANCE || h - xy.y < OFF_MAP_TOLERANCE)
+			{
+				resetMap();
+			}
+
+            drawBar(g);
+
         } catch (Throwable t) {
             log("Paint exception:" + t.getMessage(), true);
         }
+    }
+
+    private void drawBar(Graphics aGraphics){
+        aGraphics.setColor(255, 255, 255);
+        aGraphics.fillRect(0, h - 22, w, h);
+        aGraphics.setColor(0, 0, 0);
+        aGraphics.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
     }
 
     /*

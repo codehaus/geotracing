@@ -13,6 +13,8 @@ public class SettingsDisplay extends DefaultDisplay {
 
     StringItem text = new StringItem("", "Choose settings from the menu to change");
     private Image logo;
+    private AccountDisplay accountDisplay;
+    private VersionDisplay versionDisplay;
 
     public SettingsDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Settings");
@@ -103,9 +105,15 @@ public class SettingsDisplay extends DefaultDisplay {
             removeAllCommands();
             setCommands();
         } else if (cmd == ACCOUNT_CMD) {
-            new AccountDisplay(midlet);
+            if(accountDisplay == null){
+                accountDisplay = new AccountDisplay(midlet);
+            }
+            accountDisplay.start();
         } else if (cmd == VERSION_CMD) {
-            new VersionDisplay(midlet, this);
+            if(versionDisplay == null){
+                versionDisplay = new VersionDisplay(midlet);
+            }
+            versionDisplay.start(this);
         }
     }
 

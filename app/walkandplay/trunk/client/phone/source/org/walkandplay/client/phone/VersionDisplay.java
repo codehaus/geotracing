@@ -12,10 +12,12 @@ public class VersionDisplay extends DefaultDisplay {
 
     private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
 
-    public VersionDisplay(WPMidlet aMIDlet, Displayable aPrevScreen) {
+    public VersionDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Version check");
-        prevScreen = aPrevScreen;
+    }
 
+    public void start(Displayable aPrevScreen){
+        prevScreen = aPrevScreen;
         String myVersion = midlet.getAppProperty("MIDlet-Version");
 
         //#style labelinfo
@@ -43,7 +45,7 @@ public class VersionDisplay extends DefaultDisplay {
         }
 
         Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
-        Display.getDisplay(midlet).setCurrent(this);
+        Display.getDisplay(midlet).setCurrent(this);        
     }
 
     public void commandAction(Command command, Displayable screen) {

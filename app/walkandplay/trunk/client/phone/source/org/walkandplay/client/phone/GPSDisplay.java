@@ -42,7 +42,12 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         } catch (Throwable t) {
             Log.log("Could not load the images on GPSDisplay");
         }
+    }
 
+    public void start(){
+        // start fresh
+        deleteAll();
+        
         append(logo);
 
         SEARCH_CMD = new Command("Search", Command.SCREEN, 1);
@@ -54,9 +59,8 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 
         //#style formbox
         append(new StringItem("", "Your Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu." + "\n"));
-        
     }
-
+    
     public void commandAction(Command c, Displayable d) {
 
         if (c == SEARCH_CMD) {

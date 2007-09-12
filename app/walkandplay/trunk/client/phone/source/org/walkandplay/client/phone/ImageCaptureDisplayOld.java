@@ -31,19 +31,25 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
     private StringItem status = new StringItem("", "Photo Capture");
     private boolean playing;
     private StringItem alertField = new StringItem("", "");
+    private boolean active;
 
-    public ImageCaptureDisplayOld(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
+    public ImageCaptureDisplayOld(WPMidlet aMIDlet) {
         super(aMIDlet, "Take a picture");
-        prevScreen = aPrevScreen;
-        playing = isPlaying;
-        midlet.getActiveApp().addTCPClientListener(this);
 
         addCommand(CAPTURE_CMD);
     }
 
-    public void start(){
+    public void start(Displayable aPrevScreen, boolean isPlaying){
+        midlet.getActiveApp().addTCPClientListener(this);
+        prevScreen = aPrevScreen;
+        playing = isPlaying;
+        active = true;
         showCamera();
         Display.getDisplay(midlet).setCurrent(this);    
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     public void commandAction(Command c, Displayable d) {
@@ -51,6 +57,7 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
             capture();
             Display.getDisplay(midlet).setCurrent(new PhotoPreview());
         } else if (c == BACK_CMD) {
+            active = false;
             if(player!=null){
                 try{
                     player.stop();

@@ -68,8 +68,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	private Command IM_CMD = new Command(Locale.get("play.IM"), Command.ITEM, 2);
 	private Command LAST_HIT_CMD = new Command(Locale.get("play.LastHit"), Command.ITEM, 2);
 
-	/*private int IMCounter;
-	private int prevIMCounter;*/
+	private boolean newIMMMessage;
     private String imMessage = "";
     private boolean hasCommands;
 
@@ -87,14 +86,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private String lastObjectType;
 
     private boolean demoTaskSent; 
+    private boolean firstTime; 
 
     public PlayDisplay(WPMidlet aMidlet) {
 		super(false);
-		setFullScreenMode(true);
 
 		midlet = aMidlet;
 		prevScreen = Display.getDisplay(midlet).getCurrent();
-		midlet.getActiveApp().addTCPClientListener(this);
 
 		try {
 			//#ifdef polish.images.directLoad
@@ -125,7 +123,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 	}
 
-	private void setCommands() {
+    private void setCommands() {
 		removeCommand(BACK_CMD);
 
 		addCommand(ZOOM_IN_CMD);
@@ -154,7 +152,20 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         hasCommands = false;
 	}
 
-	public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+    private boolean hasActiveDisplays(){
+        if((taskDisplay!=null && taskDisplay.isActive())
+                || (mediumDisplay!=null && mediumDisplay.isActive())
+                || (scoreDisplay!=null && scoreDisplay.isActive())
+                || (introDisplay!=null && introDisplay.isActive())
+                || (audioCaptureDisplay!=null && audioCaptureDisplay.isActive())
+                || (addTextDisplay!=null && addTextDisplay.isActive())
+                || (imageCaptureDisplay!=null && imageCaptureDisplay.isActive())){
+            return true;
+        }
+        return false;
+    }
+
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
 		String tag = aResponse.getTag();
         Log.log("# PlayDisplay!!!! " + tag);
         if (tag.equals("utopia-rsp")) {
@@ -176,20 +187,40 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 						}
 					}
 				}else if (cmd.equals("q-comments-for-target")) {
-					Vector recs = rsp.getChildrenByTag("record");
+                    Vector recs = rsp.getChildrenByTag("record");
                     // if we have one or more messages and the last one is NOT sent by the mobile
                     if(recs.size() >= 1){
                         String msg = ((JXElement)recs.elementAt(0)).getChildText("content");
                         Log.log("Found a msg: " + msg);
                         if(imDisplay == null){
-                            imDisplay = new IMDisplay(midlet, this);
+                            imDisplay = new IMDisplay(midlet);
                         }
 
-                        if((!msg.equals(imDisplay.getMyMessage()) && !imMessage.equals(msg) && imDisplay.getMyMessage().length()>0)
+                        // if we have a new message and make sure it's not the last message you send yourself
+                        if(!imMessage.equals(msg) && !msg.equals(imDisplay.getMyMessage())){
+                            imMessage = msg;
+                            if(imDisplay.isActive()){
+                                // ok so show it on the screen
+                                imDisplay.start(this, imMessage);
+                            }else{
+                                // if there are no other displays active
+                                if(hasActiveDisplays()){
+                                    // now show that there's a new message
+                                    newIMMMessage = true;
+                                }else if(!firstTime){
+                                    // we show the IM message
+                                    imDisplay.start(this, imMessage);
+                                }
+                            }
+                        }
+
+                        firstTime = false;
+
+                        /*if((!msg.equals(imDisplay.getMyMessage()) && !imMessage.equals(msg) && imDisplay.getMyMessage().length()>0)
                                 || (!msg.equals(imDisplay.getMyMessage()) && imMessage.length()>0 && !imMessage.equals(msg))){
                             imMessage = msg;
                             imDisplay.start(imMessage);
-                        }
+                        }*/
                     }
 				}
 			} else if (rsp.getTag().equals("play-location-rsp")) {
@@ -230,7 +261,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					// task
 					//if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
 					if (!demoTaskSent) {
-						Log.log("add a hit!!!!");
+
+                    	Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("task-hit");
 						hit.setAttr("id", 22619);
                         // open | done
@@ -240,6 +272,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         // open | done
                         hit.setAttr("mediastate", "open");
 						rsp.addChild(hit);
+						
                         demoTaskSent = true;
                         hitElm = rsp.getChildAt(0);
                     }
@@ -269,9 +302,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         Util.playTone(80, 50, midlet.getVolume());
 						Util.playTone(90, 250, midlet.getVolume() );
                         if(mediumDisplay == null){
-                            mediumDisplay = new MediumDisplay(midlet, w, this);
+                            mediumDisplay = new MediumDisplay(midlet, w);
                         }
-                        mediumDisplay.start(lastObject.getAttr("id"));
+                        mediumDisplay.start(lastObject.getAttr("id"), this);
 					}
 				}
 			}
@@ -296,6 +329,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	 */
 	void start(String aColor) {
 		try {
+            firstTime = true;
+            setFullScreenMode(true);
+            midlet.getActiveApp().addTCPClientListener(this);
+        
             // make sure we don't show any locations from previous games
             gameLocations = null;
             repaint();
@@ -716,6 +753,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         aGraphics.fillRect(0, h - 22, w, h);
         aGraphics.setColor(0, 0, 0);
         aGraphics.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
+        if(newIMMMessage){
+            String m = "*m*";
+            aGraphics.drawString(m, w - 2 - f.stringWidth(m)  , h - fh - 2, Graphics.TOP | Graphics.LEFT);
+        }
     }
 
     public void keyPressed(int key) {
@@ -749,19 +790,19 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (cmd == ADD_PHOTO_CMD) {
             if(imageCaptureDisplay == null){
-                imageCaptureDisplay = new ImageCaptureDisplayOld(midlet, this, true);
+                imageCaptureDisplay = new ImageCaptureDisplayOld(midlet);
             }
-            imageCaptureDisplay.start();
+            imageCaptureDisplay.start(this, true);
 		} else if (cmd == ADD_AUDIO_CMD) {
             if(audioCaptureDisplay == null){
-                audioCaptureDisplay = new AudioCaptureDisplay(midlet, this, true);
+                audioCaptureDisplay = new AudioCaptureDisplay(midlet);
             }
-            audioCaptureDisplay.start();
+            audioCaptureDisplay.start(this, true);
         } else if (cmd == ADD_TEXT_CMD) {
             if(addTextDisplay == null){
-                addTextDisplay = new AddTextDisplay(midlet, this, true);
+                addTextDisplay = new AddTextDisplay(midlet);
             }
-            addTextDisplay.start();
+            addTextDisplay.start(this, true);
 		} else if (cmd == ZOOM_IN_CMD) {
 			zoomIn();
 		} else if (cmd == ZOOM_OUT_CMD) {
@@ -774,7 +815,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             if(lastObjectType.equals("task")){
                 taskDisplay.start(lastObject.getAttr("id"), lastObject.getAttr("state"), lastObject.getAttr("answerstate"), lastObject.getAttr("mediastate"));
             }else if(lastObjectType.equals("medium")){
-                mediumDisplay.start(lastObject.getAttr("id"));
+                mediumDisplay.start(lastObject.getAttr("id"), this);
             }
 		} else if (cmd == TOGGLE_MAP_CMD) {
 			mapType = mapType.equals("sat") ? "map" : "sat";
@@ -795,14 +836,16 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			SHOW_STATE = 0;
 		} else if (cmd == IM_CMD) {
             if(imDisplay == null){
-                imDisplay = new IMDisplay(midlet, this);
+                imDisplay = new IMDisplay(midlet);
             }
-            imDisplay.start(imMessage);
+            // once we go to the IMDisplay clear the newMessage boolean
+            newIMMMessage = false;
+            imDisplay.start(this, imMessage);
 		} else if (cmd == SHOW_INTRO_CMD) {
             if(introDisplay == null){
-                introDisplay = new IntroDisplay(midlet, this);
+                introDisplay = new IntroDisplay(midlet);
             }
-            introDisplay.start();
+            introDisplay.start(this);
 		}
 	}
 

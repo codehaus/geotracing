@@ -177,7 +177,7 @@ focused {
     /*background-image:url(bg-stripe.png);*/
     /*background-repeat:repeat;*/
     font-size: small;
-    /*show-text-in-title: true;*/
+    /*show-text-in-title: false;*/
 }
 
 .defaultScreen {

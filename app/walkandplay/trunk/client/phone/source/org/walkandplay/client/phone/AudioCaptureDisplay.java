@@ -26,6 +26,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
     final int bits;
     final int kbPerSec;
     private boolean playing;
+    private boolean active;
 
     private StringItem alertField = new StringItem("", "");
 
@@ -40,19 +41,21 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
     private int progressCounter;
     private int progressMax = 100;
 
-    public AudioCaptureDisplay(WPMidlet aMIDlet, Displayable aPrevScreen, boolean isPlaying) {
+    public AudioCaptureDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Record and send audio");
-        prevScreen = aPrevScreen;
-        playing = isPlaying;
-        midlet.getActiveApp().addTCPClientListener(this);
 
         rate = Integer.parseInt(midlet.getAppProperty("audio-rate"));
         bits = Integer.parseInt(midlet.getAppProperty("audio-bits"));
         kbPerSec = (rate * bits / 8) / 1000;
     }
 
-    public void start(){
+    public void start(Displayable aPrevScreen, boolean isPlaying){
         try {
+            midlet.getActiveApp().addTCPClientListener(this);
+            prevScreen = aPrevScreen;
+            playing = isPlaying;
+            
+            active = true;
             player = Manager.createPlayer("capture://audio?rate=" + rate + "&bits=" + bits);
             player.realize();
             recordcontrol = (RecordControl) player.getControl("RecordControl");
@@ -71,6 +74,10 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
 
         addCommand(START_CMD);
         Display.getDisplay(midlet).setCurrent(this);
+    }
+
+    public boolean isActive(){
+        return active;
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -254,6 +261,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
 
 
     private void back() {
+        active = false;
         midlet.getActiveApp().removeTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(prevScreen);
     }
