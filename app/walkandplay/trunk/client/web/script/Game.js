@@ -6,7 +6,7 @@
 
 wp_add_location = false;
 
-wp_game_selected = false;
+wp_selected_game = false;
 wp_game_edit = false;
 
 wp_selected_game = false;
@@ -154,6 +154,9 @@ function wpGameProfile(id,list_index)
 {
 	/*	select game from view list (and hilight selection)
 	*/
+	
+	if (wp_selected_game) wp_games.del(wp_selected_game);
+	wp_selected_game = false;
 	
 	var list = panes['list_view'].content.lastChild.getElementsByTagName('A');
 
@@ -461,13 +464,31 @@ function wpUpdatePlayTraces(resp)
 	/*	draw (past) traces of active players
 	*/
 	
+	var traces = [];
 	var str = '';
+	
 	for (var i in resp)
 	{
+		if (resp[i].getField('status')!='scheduled' && resp[i].getField('trackid')!=null)
+		{
+			var user = resp[i].getField('loginname');
+			var track = resp[i].getField('trackid');
+			var color = resp[i].getField('color');
+			
+			traces.push( { user:user, track:track, color:color } );
+		}
+
+		//debug
 		str+= resp[i].getField('loginname')+':track='+resp[i].getField('trackid')+', ';
 	}
 	
-	tmp_debug(3,str);
+	tmp_debug(3,str,' traces=',traces.length);
+	
+	//load traces
+	for (var i in traces)
+	{
+		wp_games.game[wp_selected_game].traces.push( new wpTrace(traces[i].track,traces[i].user,traces[i].color) );
+	}
 }
 
 function wpUpdatePlayScore()
@@ -580,6 +601,7 @@ function wpGame(record)
 	
 	//this.loaded = false;
 	this.locations = new wpLocations('game');
+	this.traces = new wpTraces();
 	
 	//location rollover
 //	panes.dispose('location_info');
@@ -603,7 +625,7 @@ wpGame.prototype.getLocations = function(center)
 	//remove edit location dialogue	
 	if (wp_locations.location['new']) wpCancelLocation();
 	
-	wp_game_selected = this.id;
+	wp_selected_game = this.id;
 	var obj = this;
 	SRV.get('q-game-locations',function(resp) { obj.updateLocations(resp,center) },'id',this.id);	
 }
@@ -1390,6 +1412,20 @@ wpGame.prototype.msgDelete = function(id)
 			req.documentElement.setAttribute('id',id);
 		var obj = this;
 		KW.utopia(req, function() { obj.updateMessages() });
+	}
+}
+
+wpGame.prototype.msgDeleteAll = function(id)
+{
+	/*	delete all messages
+	*/
+	
+	if (confirm('delete all messages, are you sure?\nthere\'s no undo'))
+	{
+// 		var req = KW.createRequest('cmt-delete-req');
+// 			req.documentElement.setAttribute('id',id);
+// 		var obj = this;
+// 		KW.utopia(req, function() { obj.updateMessages() });
 	}
 }
 

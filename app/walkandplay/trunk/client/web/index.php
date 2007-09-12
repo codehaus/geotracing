@@ -51,6 +51,7 @@
 <script type="text/javascript" src="script/View.js"></script>
 <script type="text/javascript" src="script/Location.js"></script>
 <script type="text/javascript" src="script/Player.js"></script>
+<script type="text/javascript" src="script/Trace.js"></script>
 
 
 <!-- development -->
