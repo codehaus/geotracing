@@ -274,26 +274,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
             case 7:
                 // test display
                 /*Display.getDisplay(this).setCurrent(new TestDisplay(this));*/
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
-                break;
-            case 8:
-                // video canvas
-                /*VideoDisplay videoDisplay = new VideoDisplay(this);
-                videoDisplay.start(selectGameDisplay, "Untitled",  getKWUrl() + "/media.srv?id=26527");*/      
-                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
-                break;
-            case 9:
-                // video form
-                Display.getDisplay(this).setCurrent(new VideoForm(this, getKWUrl() + "/media.srv?id=26527"));
-                break;
-            case 10:
-                // gps test display
-                Display.getDisplay(this).setCurrent(new GPSTestDisplay(this));
-                break;
-            case 11:
-                // friendfinder display
-                Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
-                break;
+                try{
+                    Util.playStream("http://test.walkandplay.com/wp/media.srv?id=831815");
+                }catch(Throwable t){
+                    //
+                    menuScreen.setTitle("Error: " + t.getMessage());
+                }
+                //Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
+                //Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
+                break;            
         }
     }
 
