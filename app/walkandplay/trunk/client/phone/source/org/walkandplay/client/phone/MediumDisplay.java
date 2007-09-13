@@ -109,7 +109,8 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
                 /*append("When you click on 'play audio' the audio will be " +
                         "downloaded. This might take a while.... Afterwards continue " +
                         "here by pressing 'back'");*/
-                append("The audio will be downloaded automatically - please be patient");
+                //#style formbox
+                append("The audio will be downloaded automatically - please be patient.");
                 try{
                     Util.playStream(mediumUrl);
                 }catch(Throwable t){
