@@ -162,6 +162,9 @@ public class MapServlet extends HttpServlet {
 
 		public Tile(String aType, String aKHRef, GoogleTiles.LonLat aLL) {
 			type = aType;
+			if (type.equals("streets")) {
+				type = "map";
+			}
 			khRef = aKHRef;
 			ll = aLL;
 			zoom = GoogleTiles.getTileZoom(khRef);
