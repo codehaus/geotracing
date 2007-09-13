@@ -25,7 +25,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 	private int zoom = 12;
 	private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3;
-	private String mapType = "map";
+	private String mapType = "streets";
 	private boolean active;
 
 	private int OFF_MAP_TOLERANCE = 15;
@@ -84,8 +84,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private JXElement lastObject;
     private String lastObjectType;
 
-    private boolean demoTaskSent; 
-    private boolean firstTime; 
+    private boolean demoTaskSent;
+    private boolean firstTime;
 
     public PlayDisplay(WPMidlet aMidlet) {
 		super(false);
@@ -107,7 +107,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			taskDot3 = scheduleImage("/task_dot_3.png");
 			mediumDot1 = scheduleImage("/medium_dot_1.png");
 			mediumDot2 = scheduleImage("/medium_dot_2.png");
-			mediumDot3 = scheduleImage("/medium_dot_3.png");			
+			mediumDot3 = scheduleImage("/medium_dot_3.png");
 			//#endif
 		} catch (Throwable t) {
 			log("Could not load the images on PlayDisplay", true);
@@ -260,7 +260,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         JXElement hit = new JXElement("medium-hit");
                         hit.setAttr("id", 831815);
                         rsp.addChild(hit);
-                        
+
                         /*Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("task-hit");
 						hit.setAttr("id", 831651);
@@ -272,14 +272,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         hit.setAttr("mediastate", "done");
 						rsp.addChild(hit);
                         */
-                        
+
                         demoTaskSent = true;
                         hitElm = rsp.getChildAt(0);
                     }
 				}else{
                     hitElm = rsp.getChildAt(0);
                 }
-             
+
                 if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
                     lastObject = hitElm;
                     String t = lastObject.getTag();
@@ -288,7 +288,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                         String state = lastObject.getAttr("state");
 						String answerState = lastObject.getAttr("answerstate");
                         String mediaState = lastObject.getAttr("mediastate");
-						
+
                         Util.playTone(80, 50, midlet.getVolume());
 						Util.playTone(90, 250, midlet.getVolume() );
 
@@ -332,13 +332,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             firstTime = true;
             setFullScreenMode(true);
             midlet.getActiveApp().addTCPClientListener(this);
-        
+
             // make sure we don't show any locations from previous games
             gameLocations = null;
             repaint();
 
-            setColor(aColor);            
-            
+            setColor(aColor);
+
             // start the traceEngine
 			gpsEngine = GPSEngine.getInstance();
 			gpsEngine.addListener(this);
@@ -507,6 +507,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             lonLat = null;
             mapImage = null;
 				}*/
+		// setLocation("4.92", "52.35");
 		show();
 	}
 
@@ -761,7 +762,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		switch (key) {
 			case KEY_NUM0:
 				if (hasCommands) {
-					mapType = mapType.equals("sat") ? "map" : "sat";
+					mapType = mapType.equals("sat") ? "streets" : "sat";
 					resetMap();
 					show();
 					return;
@@ -816,7 +817,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                 mediumDisplay.start(lastObject.getAttr("id"), this);
             }
 		} else if (cmd == TOGGLE_MAP_CMD) {
-			mapType = mapType.equals("sat") ? "map" : "sat";
+			mapType = mapType.equals("sat") ? "streets" : "sat";
 			resetMap();
 			show();
 		} else if (cmd == SCORES_CMD) {
