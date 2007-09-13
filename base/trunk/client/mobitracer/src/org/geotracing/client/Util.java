@@ -33,7 +33,7 @@ public class Util {
 	/**
 	 * Constant representing earth radius: 60 * 1.1515 * 1609.344
 	 */
-	private static MFloat DIST_CONST = new MFloat(111189, 5769);
+	private static MFloat DIST_CONST = new MFloat(111190L);
 	private static MFloat DIST_FRACTION = new MFloat(10, -1);
 
 	/**
@@ -45,15 +45,30 @@ public class Util {
 			return MFloat.ZERO;
 		}
 
+		/*
+		 double theta = lon1 - lon2;
+		double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+		dist = Math.acos(dist);
+		dist = rad2deg(dist);
+		dist = dist * 60 * 1.1515;
+		if (unit == 'K') {
+			dist = dist * 1.609344;
+		} else if (unit == 'N') {
+			dist = dist * 0.8684;
+		}
+		*/
 		MFloat theta = MFloat.toRadians(lon1.Sub(lon2));
 		lat1 = MFloat.toRadians(lat1);
 		lat2 = MFloat.toRadians(lat2);
 
-		MFloat dist = MFloat.sin(lat1).Mul(MFloat.sin(lat2).Add(MFloat.cos(lat1).Mul(MFloat.cos(lat2)).Mul(MFloat.cos(theta))));
+		MFloat d1 = MFloat.sin(lat1).Mul(MFloat.sin(lat2));
+		MFloat d2 = MFloat.cos(lat1).Mul(MFloat.cos(lat2)).Mul(MFloat.cos(theta));
+		MFloat dist = d1.Add(d2);
 
 		dist = MFloat.acos(dist);
 		dist = MFloat.toDegrees(dist);
 		dist = dist.Mul(DIST_CONST);
+		System.out.println("distance: " + dist + " meters");
 		return dist;
 	}
 

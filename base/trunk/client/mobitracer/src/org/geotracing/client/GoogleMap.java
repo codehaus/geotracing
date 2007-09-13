@@ -39,6 +39,16 @@ public class GoogleMap {
 	final static public MFloat DEG_360 = new MFloat(360L);
 	final static public MFloat DEG_PER_RAD = DEG_180.Div(MFloat.PI);
 
+	/**
+	 * Zoom resolutions in meters per pixel.
+	 */
+	final static public MFloat[] ZOOM_RESOS = {
+			new MFloat(2L, -1L), ONE, TWO, FOUR, new MFloat(8L),
+			new MFloat(16L), new MFloat(32L), new MFloat(64L), new MFloat(128L), new MFloat(256L),
+			new MFloat(512L), new MFloat(1024L), new MFloat(2048L), new MFloat(4096L), new MFloat(8192L),
+			new MFloat(16384L), new MFloat(65536L), new MFloat(131072L), new MFloat(262144L)
+	};
+
 	public static class XY {
 		public int x;
 		public int y;
@@ -69,6 +79,10 @@ public class GoogleMap {
 		public LonLat(String aLon, String aLat) {
 			this(MFloat.parse(aLon, 10), MFloat.parse(aLat, 10));
 		}
+
+		public String toString() {
+			return lon +  "," + lat;
+		}
 	}
 
 	public static class BBox {
@@ -77,10 +91,14 @@ public class GoogleMap {
 		public LonLat ne;
 		public MFloat width = F_GMAP_TILE_SIZE;
 		public MFloat height = F_GMAP_TILE_SIZE;
-		/** Resolution in pixels/lon */
+		/**
+		 * Resolution in pixels/lon
+		 */
 		private MFloat resolX;
 
-		/** Resolution in pixels/lat */
+		/**
+		 * Resolution in pixels/lat
+		 */
 		private MFloat resolY;
 
 		public BBox(LonLat aSW, LonLat aNE) {
@@ -96,6 +114,7 @@ public class GoogleMap {
 			ne = aNE;
 			width = aWidth;
 			height = aHeight;
+			System.out.println("BBOX=" + sw + " " + ne);
 		}
 
 		public MFloat getLatHeight() {
@@ -130,29 +149,63 @@ public class GoogleMap {
 	}
 
 	/**
-	 * Create OGC WMS request.
+	 * Create bounding box.
 	 */
 	public static BBox createCenteredBBox(LonLat aLonLat, int aZoom) {
 		return createCenteredBBox(aLonLat, aZoom, I_GMAP_TILE_SIZE, I_GMAP_TILE_SIZE);
 	}
 
 	/**
-	 * Create OGC WMS request.
+	 * Create bounding box.
 	 */
 	public static BBox createCenteredBBox(LonLat aLonLat, int aZoom, int aWidth, int aHeight) {
-		BBox bboxStd = getBBox(getKeyholeRef(aLonLat, aZoom));
-		MFloat halfTileWidth = bboxStd.getLonWidth().Div(2L);
-		MFloat halfTileHeight = bboxStd.getLatHeight().Div(2L);
+		return createCenteredBBox(aLonLat, aZoom, aWidth, aHeight, false);
+	}
+
+	/**
+	 * Create OGC WMS request.
+	 */
+	public static BBox createCenteredBBox(LonLat aLonLat, int aZoom, int aWidth, int aHeight, boolean equalDist) {
+		MFloat halfTileWidth;
+		MFloat halfTileHeight;
+
+		if (equalDist) {
+			if (aZoom < 1 || aZoom > ZOOM_RESOS.length - 1) {
+				throw new IllegalArgumentException("Illegal zoomlevel");
+			}
+
+			// meters per pixel
+			MFloat resol = ZOOM_RESOS[ZOOM_RESOS.length - 1 - aZoom];
+
+			// meters per degree longitude
+			MFloat mPerLon = Util.metersPerDegreeLon(aLonLat.lon, aLonLat.lat);
+
+			// meters per degree latitude
+			MFloat mPerLat = Util.metersPerDegreeLat(aLonLat.lon, aLonLat.lat);
+
+			// longitude tile width
+			halfTileWidth = resol.Mul(new MFloat(aWidth)).Div(mPerLon).Div(TWO);
+
+			// latitude width
+			halfTileHeight = resol.Mul(new MFloat(aHeight)).Div(mPerLat).Div(TWO);
+
+			System.out.println("zoom=" + aZoom + " resol=" + resol + " mPerLon=" + mPerLon + " mPerLat=" + mPerLat + " halfTileWidth=" + halfTileWidth);
+		} else {
+			BBox bboxStd = getBBox(getKeyholeRef(aLonLat, aZoom));
+			halfTileWidth = bboxStd.getLonWidth().Div(TWO);
+			halfTileHeight = bboxStd.getLatHeight().Div(TWO);
+		}
 		LonLat sw = new LonLat(aLonLat.lon.Sub(halfTileWidth), aLonLat.lat.Sub(halfTileHeight));
 		LonLat ne = new LonLat(aLonLat.lon.Add(halfTileWidth), aLonLat.lat.Add(halfTileHeight));
 		return new BBox(sw, ne, aWidth, aHeight);
+
 	}
 
 	/**
 	 * Create OGC WMS request.
 	 */
 	public static String createWMSURL(String wmsBaseURL, BBox bbox, String mapType, int w, int h, String format) {
-		return wmsBaseURL + "?service=WMS&version=1.1.1&request=GetMap&bbox=" + bbox + "&layers=" + mapType + "&width=" + w + "&height=" + h +"&format=" + format + "&srs=EPSG:4326&exceptions=application/vnd.ogc.inimage";
+		return wmsBaseURL + "?service=WMS&version=1.1.1&request=GetMap&bbox=" + bbox + "&layers=" + mapType + "&width=" + w + "&height=" + h + "&format=" + format + "&srs=EPSG:4326&exceptions=application/vnd.ogc.inimage";
 	}
 
 	/**
