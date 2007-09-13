@@ -152,7 +152,7 @@ public class GoogleMap {
 	 * Create OGC WMS request.
 	 */
 	public static String createWMSURL(String wmsBaseURL, BBox bbox, String mapType, int w, int h, String format) {
-		return wmsBaseURL + "?service=WMS&request=GetMap&bbox=" + bbox + "&layers=" + mapType + "&width=" + w + "&height=" + h +"&format=" + format;
+		return wmsBaseURL + "?service=WMS&version=1.1.1&request=GetMap&bbox=" + bbox + "&layers=" + mapType + "&width=" + w + "&height=" + h +"&format=" + format + "&srs=EPSG:4326&exceptions=application/vnd.ogc.inimage";
 	}
 
 	/**
