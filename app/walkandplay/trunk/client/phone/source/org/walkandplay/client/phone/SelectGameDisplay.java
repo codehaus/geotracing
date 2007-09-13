@@ -9,21 +9,26 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 public class SelectGameDisplay extends AppStartDisplay {
-    private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
-    private Hashtable gameRounds = new Hashtable(2);
+    private ChoiceGroup gamesGroup;
+    private Hashtable gameRounds;
     private int gamePlayId;
     private JXElement game;
     private JXElement gameRound;
     private String color;
 
+    private SelectGameDisplay instance;
+    private ErrorHandler errorHandler;
+
     private Image logo;
     private PlayDisplay playDisplay;
+
 
     Command PLAY_CMD = new Command(Locale.get("selectGame.Play"), Command.SCREEN, 2);
     Command DESCRIPTION_CMD = new Command(Locale.get("selectGame.Description"), Command.SCREEN, 2);
 
     public SelectGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Play a game!");
+        instance = this;
 
         try {
             //#ifdef polish.images.directLoad
@@ -62,6 +67,12 @@ public class SelectGameDisplay extends AppStartDisplay {
             if (rsp.getTag().equals("query-store-rsp")) {
                 String cmd = rsp.getAttr("cmd");
                 if(cmd.equals("q-play-status-by-user")){
+
+                    // always start clean
+                    deleteAll();
+                    gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
+                    gameRounds = new Hashtable(2);
+
                     // draw the screen
                     append(logo);
                     //#style labelinfo
@@ -74,14 +85,24 @@ public class SelectGameDisplay extends AppStartDisplay {
                     for (int i = 0; i < elms.size(); i++) {
                         JXElement elm = (JXElement) elms.elementAt(i);
                         String name = elm.getChildText("name");
+                        String roundName = elm.getChildText("roundname");
                         String gameplayState = elm.getChildText("gameplaystate");
-                        String displayName = name + " | " + gameplayState;
-                        //#style formbox
-                        gamesGroup.append(displayName, null);
-                        gameRounds.put(displayName, elm);
+                        String displayName = name + " | " + roundName;
+                        if(gameplayState.equals("running")){
+                            displayName += " *";
+                        }
+                        
+                        if(!gameplayState.equals("done")){
+                            //#style formbox
+                            gamesGroup.append(displayName, null);
+                            gameRounds.put(displayName, elm);
+                        }
                     }
                     // select the first
                     gamesGroup.setSelectedIndex(0, true);
+                    
+                    // now show the screen
+                    Display.getDisplay(midlet).setCurrent(this);
                 }
             } else if (rsp.getTag().equals("play-start-rsp")) {
 
@@ -91,6 +112,8 @@ public class SelectGameDisplay extends AppStartDisplay {
                 }
                 Display.getDisplay(midlet).setCurrent(playDisplay);
                 playDisplay.start(color);
+            } else if (rsp.getTag().equals("play-start-nrsp")) {
+                getErrorHandler().showGoBack(rsp.getAttr("details"));
             }
         }
     }
@@ -158,6 +181,36 @@ public class SelectGameDisplay extends AppStartDisplay {
             append(desc);
         }
     }
+
+    private ErrorHandler getErrorHandler(){
+        if(errorHandler == null){
+            errorHandler = new ErrorHandler();
+        }
+        return errorHandler;
+    }
+
+    private class ErrorHandler implements CommandListener {
+		private Command BACK_CMD = new Command("Back", Command.CANCEL, 1);
+
+        private Form form;
+
+        public void showGoBack(String aMsg) {
+            //#style defaultscreen
+			form = new Form("TaskDisplay");
+
+            //#style alertinfo
+            form.append(aMsg);
+			form.addCommand(BACK_CMD);
+
+			form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+		}
+
+        public void commandAction(Command command, Displayable screen) {
+            midlet.getActiveApp().removeTCPClientListener(instance);
+            Display.getDisplay(midlet).setCurrent(prevScreen);            
+		}
+	}
 
 
 }

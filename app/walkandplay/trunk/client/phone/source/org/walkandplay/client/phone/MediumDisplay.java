@@ -18,13 +18,16 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
     private int screenWidth;
     private JXElement medium;
+    private String mediumId;
     private String mediumName;
     private String mediumType;
     private String mediumUrl;
     private Image mediumImage;
+    private String mediumText;
+    //private Image mediumAudio;
     private MediumDisplay mediumDisplay = this;
     private VideoDisplay videoDisplay;
-    private AudioPlayer audioPlayer;
+    private AudioDisplay audioDisplay;
     private boolean active;
 
     private StringItem mediumLabel = new StringItem("", "");
@@ -37,19 +40,20 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
     public void start(String aMediumId, Displayable aPrevScreen){
         midlet.getActiveApp().addTCPClientListener(this);
         prevScreen = aPrevScreen;
-        // start clean
-        deleteAll();
-        removeAllCommands();
 
-        mediumLabel.setText("Loading...");
-        //#style labelinfo
-        append(mediumLabel);
-
-        mediumUrl = midlet.getKWUrl() + "/media.srv?id=" + aMediumId;
-        getMedium(aMediumId);
         active = true;
-
         Display.getDisplay(midlet).setCurrent(this);
+
+        if(mediumId==null || !mediumId.equals(aMediumId)){
+            mediumId = aMediumId;
+            mediumLabel.setText("Loading...");
+            //#style labelinfo
+            append(mediumLabel);
+
+            mediumUrl = midlet.getKWUrl() + "/media.srv?id=" + aMediumId;
+            getMedium(aMediumId);
+        }
+
     }
 
     public boolean isActive(){
@@ -57,6 +61,9 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
     }
 
     private void drawMedium() {
+        // start fresh for when a new medium is drawn
+        deleteAll();
+
         if (mediumName != null && mediumName.length() > 0) {
             mediumLabel.setText(mediumName);
         } else {
@@ -75,7 +82,9 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
             append(mediumImage);
 
         } else if (mediumType.equals("text")) {
-            setTitle("Text");            
+            setTitle("Text");
+            //#style formbox    
+            append(mediumText);
 
         } else if (mediumType.equals("video")) {
             setTitle("Video");
@@ -97,9 +106,16 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
             setTitle("Audio");
             if (midlet.useInternalMediaPlayer()) {
                 //#style formbox
-                append("When you click on 'play audio' the audio will be " +
+                /*append("When you click on 'play audio' the audio will be " +
                         "downloaded. This might take a while.... Afterwards continue " +
-                        "here by pressing 'back'");
+                        "here by pressing 'back'");*/
+                append("The audio will be downloaded automatically - please be patient");
+                try{
+                    Util.playStream(mediumUrl);
+                }catch(Throwable t){
+                    //#style alertinfo
+                    append("Could not play the audio:" + t.getMessage());                    
+                }
             } else {
                 //#style formbox
                 append("When you click on 'play audio' the audio will be " +
@@ -120,11 +136,15 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
                 String cmd = rsp.getAttr("cmd");
                 if (cmd.equals("q-medium")) {
                     medium = rsp.getChildByTag("record");
+                    
+                    // get the name
                     mediumName = medium.getChildText("name");
                     if(mediumName == null || mediumName.length() == 0){
                         mediumName = "Untitled";
                     }
+                    // store the mediumType
                     mediumType = medium.getChildText("type");
+
                     if (mediumType.equals("image")) {
                         try {
                             mediumUrl += "&resize=" + (screenWidth - 12);
@@ -134,7 +154,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
                         }
                     } else if (mediumType.equals("text")) {
                         try {
-                            medium.setChildText("description", Util.getPage(mediumUrl));
+                            mediumText = Util.getPage(mediumUrl);                            
                         } catch (Throwable t) {
                             Log.log("Error fetching text url=");
                         }
@@ -142,6 +162,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
                     // now draw the info
                     drawMedium();
+                    
                 }
             }
         }
@@ -179,10 +200,11 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == PLAY_VIDEO_CMD) {
             if (midlet.useInternalMediaPlayer()) {
-                if(videoDisplay == null){
+                new VideoDisplay(midlet, mediumName, mediumUrl, this);
+                /*if(videoDisplay == null){
                     videoDisplay = new VideoDisplay(midlet);
                 }
-                videoDisplay.start(this, mediumName, mediumUrl);
+                videoDisplay.start(this, mediumName, mediumUrl);*/
             } else {
                 try {
                     midlet.platformRequest(mediumUrl);
@@ -194,10 +216,11 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         } else if (command == PLAY_AUDIO_CMD) {
             try {
                 if (midlet.useInternalMediaPlayer()) {
-                    if(audioPlayer == null){
-                        audioPlayer = new AudioPlayer();
+                    if(audioDisplay == null){
+                        audioDisplay = new AudioDisplay(midlet, this);
                     }
-                    audioPlayer.play(mediumName, mediumUrl);
+                    audioDisplay.play(mediumName, mediumUrl);
+
                 } else {
                     midlet.platformRequest(mediumUrl);
                 }
@@ -208,70 +231,4 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         }
     }
 
-    private class AudioPlayer implements CommandListener, PlayerListener {
-		private Command BACK_CMD = new Command("Back", Command.BACK, 1);
-        private Player player;
-        private Gauge progressBar = new Gauge("", false, 100, 0);
-        private StringItem state = new StringItem("", "");
-        private Form form;
-        private String name;
-
-        public void playerUpdate(Player aPlayer, String anEvent, Object theDate) {
-            form.setTitle("Audio: " + name + " [" + anEvent + "]");
-            //state.setText(anEvent);
-        }
-
-        public void play(String aName, String anUrl) {
-            try {
-                name = aName;
-                //#style defaultscreen
-                form = new Form("Audio: " + name + " [downloading]");
-                //#style labelinfo
-                form.append(aName);
-                /*//#style labelinfo
-                form.append(state);*/
-                //#style labelinfo
-                form.append(progressBar);
-
-                form.addCommand(BACK_CMD);
-                form.setCommandListener(this);
-                Display.getDisplay(midlet).setCurrent(form);
-
-                progressBar.setValue(25);
-                player = Manager.createPlayer(mediumUrl);
-                player.addPlayerListener(this);
-                progressBar.setValue(40);
-                
-                new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            player.prefetch();
-                            progressBar.setValue(80);
-                            player.start();
-                            progressBar.setValue(100);
-                        }catch(Throwable t){
-                            Log.log(t.getMessage());
-                            state.setText("Error:" + t.getMessage());
-                        }
-                    }
-                }).start();
-            } catch (Throwable t) {
-                // nada
-            }
-		}
-
-		public void commandAction(Command command, Displayable screen) {
-            try{
-                if(player!=null){
-                    player.stop();
-                    player.deallocate();
-                    player.close();
-                    player = null;
-                }
-            }catch(Throwable t){
-                // nada
-            }
-            Display.getDisplay(midlet).setCurrent(mediumDisplay);
-        }
-	}
 }

@@ -3,8 +3,6 @@ package org.walkandplay.client.phone;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Util;
-import org.walkandplay.client.phone.Log;
-import org.walkandplay.client.phone.TCPClientListener;
 
 import javax.microedition.lcdui.*;
 
@@ -13,8 +11,6 @@ import de.enough.polish.util.Locale;
 public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
-    private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
-    private Command TRY_AGAIN_CMD = new Command(Locale.get("task.TryAgain"), Command.CANCEL, 1);
     private String MEDIUM_BASE_URL;
 
     private TextField inputField;
@@ -27,19 +23,20 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     private String answerState = "";
     private String mediaState = "";
     private boolean active;
+    private TaskDisplay instance;
+    private ErrorHandler errorHandler;
 
     public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, Displayable aPrevScreen) {
         super(aMIDlet, "Task");
+        instance = this;
         screenWidth = theScreenWidth;
         prevScreen = aPrevScreen;
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
+        addCommand(OK_CMD);
     }
 
     public void start(String aTaskId, String aState, String anAnswerState, String aMediaState){
-        Log.log("start - taskId:" + aTaskId + ", state: " + state + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
-        // start clean
-        deleteAll();
-        removeAllCommands();
+        Log.log("start - taskId:" + aTaskId + ", state: " + aState + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
 
         // set the tcp listemer
         midlet.getActiveApp().addTCPClientListener(this);
@@ -49,28 +46,66 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         if(answerState.length() == 0) answerState = anAnswerState;
         if(mediaState.length() == 0) mediaState = aMediaState;
 
-        Log.log("Used state: " + state + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
+        Log.log("Used state: " + state + ", answerState: " + answerState + ", mediaState:" + mediaState);
 
         // only get and display the task if it's not done yet
-        if(!state.equals("done")){
-            if(task == null || !taskId.equals(aTaskId)) {
+        if(state.equals("done")){
+            getErrorHandler().showGoBack("You already completed this task.");
+            return;
+        }else{
+            if(task == null || !taskId.equals(aTaskId)){
                 taskId = aTaskId;
                 getTask();
-            }else{
-                drawScreen();
+                return;
             }
-        }else{
+        }
+
+        // a right answer was given
+        if(answerState.equals("ok") && !anAnswerState.equals(answerState)){
+            deleteAll();
             drawScreen();
         }
 
-        // display is active
+        // show the display
         active = true;
-        // now show the display
         Display.getDisplay(midlet).setCurrent(this);
     }
 
     public boolean isActive(){
         return active;
+    }
+
+    private void drawScreen(){
+        if(answerState.equals("ok")){
+            //#style alertinfo
+            append(Locale.get("task.UploadMedia"));
+            removeCommand(OK_CMD);
+        }else{
+            //#style alertinfo
+            append(Locale.get("task.Info"));
+        }
+        //#style formbox
+        append(task.getChildText("name"));
+        //#style formbox
+        append(task.getChildText("description"));
+
+        append(taskImage);
+
+        if(answerState.equals("ok")){
+            if(answer.length()>0){
+                //#style labelinfo
+                append("your answer");
+                //#style textbox
+                inputField = new TextField("", answer, 1024, TextField.UNEDITABLE);
+                append(inputField);
+            }
+        }else{
+            //#style labelinfo
+            append("your answer");
+            //#style textbox
+            inputField = new TextField("", "", 1024, TextField.ANY);
+            append(inputField);
+        }        
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
@@ -83,6 +118,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 if(cmd.equals("q-task")){
                     task = rsp.getChildByTag("record");
                     if (task != null) {
+
                         String mediumId = task.getChildText("mediumid");
                         String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
                         try {
@@ -93,91 +129,44 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                             append("Could not get the image for this task");
                             Log.log("Error fetching task image url: " + url);
                         }
-                        drawScreen();
-                    } else {
+
+                        // start fresh for when a new task is drawn
                         deleteAll();
-                        addCommand(BACK_CMD);
-                        //#style alertinfo
-                        append("No task found with id:" + taskId);
+
+                        drawScreen();
+
+                        // show the display
+                        active = true;
+                        Display.getDisplay(midlet).setCurrent(this);
+
+                    } else {
+                        getErrorHandler().showGoBack("No task found with id:" + taskId);
                     }
                 }
 
             } else if (rsp.getTag().equals("play-answertask-rsp")) {
-                // start fresh
-                deleteAll();
-                removeAllCommands();
+                //<utopia-rsp logts="1189673784658" ><play-answertask-rsp state="open" mediastate="open" answerstate="notok" score="0" playstate="running" /></utopia-rsp>
 
                 answerState = rsp.getAttr("answerstate");
                 mediaState = rsp.getAttr("mediastate");
                 state = rsp.getAttr("state");
 
+                Log.log("state set: " + state + ", answerState: " + answerState + ", mediaState:" + mediaState);
                 String score = task.getChildText("score");
 
                 if (answerState.equals("ok") && mediaState.equals("open")) {
-                    //#style alertinfo
-                    append("Right answer! You still have to sent in media though. Good luck!");
-                    addCommand(BACK_CMD);
+                    getErrorHandler().showGoBack("Right answer! You still have to sent in media though. Good luck!");
                 } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("open")) {
-                    //#style alertinfo
-                    append("Right answer and you already sent in media!\nYou scored " + score + " points");
                     answer = inputField.getString();
-                    addCommand(BACK_CMD);
+                    getErrorHandler().showGoBack("Right answer and you already sent in media!\nYou scored " + score + " points");
                 } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("done")) {
-                    //#style alertinfo
-                    append("Right answer and you already sent in media!\nYou scored " + score + " points\n" +
-                            "You have now also finished the last task!!!\nThe Game is finished...");
-                    addCommand(OUTRO_CMD);
+                    getErrorHandler().showOutro(score);
                 } else {
-                    //#style alertinfo
-                    append("Oops, wrong answer! Try again...");
-                    removeCommand(BACK_CMD);
-                    removeCommand(OK_CMD);
-                    addCommand(TRY_AGAIN_CMD);
+                    getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
                 }
             }else if (rsp.getTag().equals("play-answertask-nrsp")) {
-                deleteAll();
-                removeAllCommands();
-                addCommand(BACK_CMD);
-                //#style alertinfo
-                append("Serious error: " + rsp.getAttr("details"));
+                getErrorHandler().showGoBack(rsp.getAttr("details"));
             }
-        }
-    }
-
-    private void drawScreen() {
-        Log.log("state: " + state);
-        Log.log("answerState: " + answerState);
-        Log.log("mediaState: " + mediaState);
-        if(state.equals("done")){
-            //#style alertinfo
-            append(Locale.get("task.TaskDone"));
-            removeCommand(OK_CMD);
-        }else{
-            if(answerState.equals("ok")){
-                //#style alertinfo
-                append(Locale.get("task.UploadMedia"));
-            }else{
-                //#style alertinfo
-                append(Locale.get("task.Info"));
-            }
-            //#style formbox
-            append(task.getChildText("name"));
-            //#style formbox
-            append(task.getChildText("description"));
-            //<task-hit id="54232" state="open|hit|done" answerstate="open" mediastate="open"/>
-            append(taskImage);
-            //#style labelinfo
-            append("answer");
-            if(answerState.equals("ok")){
-                //#style textbox
-                inputField = new TextField("", answer, 1024, TextField.UNEDITABLE);
-            }else{
-                //#style textbox
-                inputField = new TextField("", "", 1024, TextField.ANY);
-            }
-            append(inputField);
-
-            addCommand(OK_CMD);
         }
     }
 
@@ -190,8 +179,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     }
 
     public void onError(String anErrorMessage){
-        //#style alertinfo
-        append(anErrorMessage);
+        new ErrorHandler().showGoBack(anErrorMessage);
     }
 
     public void onFatal(){
@@ -210,11 +198,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         if (command == OK_CMD) {
             answer = inputField.getString();
             if (answer == null || answer.equals("")) {
-                deleteAll();
-                drawScreen();
-                //#style alertinfo
-                append("Don't forget to fill in your answer");
-                addCommand(BACK_CMD);
+                getErrorHandler().showTryAgain("Don't forget to fill in your answer");
             } else {
                 //<play-answertask-rsp state="hit" mediastate="open|done" answerstate="notok|ok" score="75" playstate="open|done"/>
                 JXElement req = new JXElement("play-answertask-req");
@@ -222,20 +206,78 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 req.setAttr("answer", inputField.getString());
                 midlet.getActiveApp().sendRequest(req);
             }
-        } else if (command == OUTRO_CMD) {
-            active = false;
-            new OutroDisplay(midlet);
         } else if (command == BACK_CMD) {
             active = false;
             midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if (command == TRY_AGAIN_CMD) {
-            deleteAll();
-            removeCommand(TRY_AGAIN_CMD);
-            addCommand(BACK_CMD);
-            addCommand(OK_CMD);
-            drawScreen();
         }
     }
+
+    private ErrorHandler getErrorHandler(){
+        if(errorHandler == null){
+            errorHandler = new ErrorHandler();
+        }
+        return errorHandler;
+    }
+
+    private class ErrorHandler implements CommandListener {
+		private Command BACK_CMD = new Command("Back", Command.CANCEL, 1);
+        private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
+        private Command TRY_AGAIN_CMD = new Command(Locale.get("task.TryAgain"), Command.CANCEL, 1);
+
+        private Form form;
+
+        public void showTryAgain(String aMsg) {
+            //#style defaultscreen
+			form = new Form("TaskDisplay");
+
+            //#style alertinfo
+            form.append(aMsg);
+			form.addCommand(TRY_AGAIN_CMD);
+
+			form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+		}
+
+        public void showGoBack(String aMsg) {
+            //#style defaultscreen
+			form = new Form("TaskDisplay");
+
+            //#style alertinfo
+            form.append(aMsg);
+			form.addCommand(BACK_CMD);
+
+			form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+		}
+
+        public void showOutro(String aScore) {
+            //#style defaultscreen
+			form = new Form("TaskDisplay");
+
+            //#style alertinfo
+            form.append("Right answer and you already sent in media!\nYou scored " + aScore + " points\n" +
+                    "You have now also finished the last task!!!\nThe Game is finished...");
+			form.addCommand(OUTRO_CMD);
+
+			form.setCommandListener(this);
+            Display.getDisplay(midlet).setCurrent(form);
+		}
+
+        public void commandAction(Command command, Displayable screen) {
+            if (command == TRY_AGAIN_CMD) {
+                inputField.setString("");
+                answer = "";
+                Display.getDisplay(midlet).setCurrent(instance);
+            }else if (command == BACK_CMD) {
+                active = false;
+                midlet.getActiveApp().removeTCPClientListener(instance);
+                Display.getDisplay(midlet).setCurrent(prevScreen);
+            }else if (command == OUTRO_CMD) {
+                active = false;
+                new OutroDisplay(midlet);
+            }            
+		}
+	}
 
 }

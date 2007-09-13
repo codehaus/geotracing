@@ -24,7 +24,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	private String errorMsg = "";
 
 	private int zoom = 12;
-	private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3, bg;
+	private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3;
 	private String mapType = "map";
 	private boolean active;
 
@@ -37,7 +37,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	private long lastRetrievalTime = -1;
 	private static long POLL_INTERVAL = 10000L;
 
-	private Image transBar;
 	private int maxScore;
 
 	private Vector gameLocations = new Vector(3);
@@ -96,23 +95,19 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 		try {
 			//#ifdef polish.images.directLoad
-			transBar = Image.createImage("/trans_bar.png");
 			taskDot1 = Image.createImage("/task_dot_1.png");
 			taskDot2 = Image.createImage("/task_dot_2.png");
 			taskDot3 = Image.createImage("/task_dot_3.png");
 			mediumDot1 = Image.createImage("/medium_dot_1.png");
 			mediumDot2 = Image.createImage("/medium_dot_2.png");
 			mediumDot3 = Image.createImage("/medium_dot_3.png");
-			bg = Image.createImage("/bg.png");
 			//#else
 			taskDot1 = scheduleImage("/task_dot_1.png");
 			taskDot2 = scheduleImage("/task_dot_2.png");
 			taskDot3 = scheduleImage("/task_dot_3.png");
-			transBar = scheduleImage("/trans_bar.png");
 			mediumDot1 = scheduleImage("/medium_dot_1.png");
 			mediumDot2 = scheduleImage("/medium_dot_2.png");
-			mediumDot3 = scheduleImage("/medium_dot_3.png");
-			bg = scheduleImage("/bg.png");
+			mediumDot3 = scheduleImage("/medium_dot_3.png");			
 			//#endif
 		} catch (Throwable t) {
 			log("Could not load the images on PlayDisplay", true);
@@ -230,7 +225,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					/*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                         Log.log("add a hit!!!!");
                         JXElement hit = new JXElement("medium-hit");
-                        hit.setAttr("id", 26527);
+                        hit.setAttr("id", 831882);
                         rsp.addChild(hit);
                     }
 
@@ -238,7 +233,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
                         Log.log("add a hit!!!!");
                         JXElement hit = new JXElement("medium-hit");
-                        hit.setAttr("id", 221499);
+                        hit.setAttr("id", 831815);
                         rsp.addChild(hit);
                     }*/
 
@@ -246,7 +241,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					/*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
 						Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("medium-hit");
-						hit.setAttr("id", 22578);
+						hit.setAttr("id", 831905);
 						rsp.addChild(hit);
 					}
 
@@ -254,7 +249,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
 						Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("medium-hit");
-						hit.setAttr("id", 531414);
+						hit.setAttr("id", 831820);
 						rsp.addChild(hit);
 					}*/
 
@@ -262,17 +257,22 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					//if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
 					if (!demoTaskSent) {
 
-                    	Log.log("add a hit!!!!");
+                        JXElement hit = new JXElement("medium-hit");
+                        hit.setAttr("id", 831815);
+                        rsp.addChild(hit);
+                        
+                        /*Log.log("add a hit!!!!");
 						JXElement hit = new JXElement("task-hit");
-						hit.setAttr("id", 22619);
+						hit.setAttr("id", 831651);
                         // open | done
-                        hit.setAttr("state", "open");
+                        hit.setAttr("state", "done");
                         // open | notok | ok
-                        hit.setAttr("answerstate", "open");
+                        hit.setAttr("answerstate", "ok");
                         // open | done
-                        hit.setAttr("mediastate", "open");
+                        hit.setAttr("mediastate", "done");
 						rsp.addChild(hit);
-						
+                        */
+                        
                         demoTaskSent = true;
                         hitElm = rsp.getChildAt(0);
                     }
@@ -455,9 +455,13 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	}
 
 	public void onGPSLocation(Vector thePoints) {
-		// send the request
+        if(thePoints == null || thePoints.size() == 0) return;
+
+        // send the request
 		JXElement req = new JXElement("play-location-req");
-		req.addChildren(thePoints);
+
+        req.addChild((JXElement)thePoints.elementAt(0));
+        //req.addChildren(thePoints);
 
 		midlet.getActiveApp().sendRequest(req);
 	}
@@ -594,7 +598,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			}
 		}
 
-		g.setColor(255, 255, 255);
+		g.setColor(204, 204, 204);
 		g.fillRect(0, 0, w, h);
 		g.setColor(0, 0, 0);
 
@@ -605,13 +609,11 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		try {
 			// No use proceeding if we don't have location
 			if (!hasLocation()) {
-				g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
 				String s = "Waiting for GPS location...";
 				if (errorMsg.length() > 0) {
 					s = errorMsg;
 				}
-				g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                drawMessage(g, s, 50);
                 drawBar(g);
                 //repaint();
 				return;
@@ -625,12 +627,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 				// Create bbox around our location for given zoom and w,h
 				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
-				if (mapImage == null) {
-					g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-				}
-				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-				String loading = "Loading map...";
-				g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+
+				drawMessage(g, "Loading map...", 50);
                 drawBar(g);
                 //repaint();
 				return;
@@ -686,9 +684,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
                     if(s == null || s.equals("null")){
                         s = "Could not get a map image - please zoom in or out.";
                     }
-                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    drawMessage(g, s, 50);
                     drawBar(g);
                     return;
 				}
@@ -728,25 +724,27 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 
 			switch (SHOW_STATE) {
 				case SHOW_LOG:
-					g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
+                    drawMessage(g, netStatus + " | " + gpsStatus, 50);
+                    /*g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
 					g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
-					g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+					g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
 					break;
 			}
 
             drawBar(g);
 
         } catch (Throwable t) {
-			String s = t.getMessage();
-            if(s == null || s.equals("null")){
-               s = "Could not get a map image - please zoom in or out.";
-            }
-            g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-            g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-            g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+            drawMessage(g, "Could not get a map image - please zoom in or out.", 50);
             drawBar(g);
         }
 	}
+
+    private void drawMessage(Graphics aGraphics, String aMsg, int aHeight){
+        aGraphics.setColor(238, 238, 238);
+        aGraphics.fillRect(0, (h/2 - aHeight/2), w, aHeight);
+        aGraphics.setColor(0, 0, 0);
+        aGraphics.drawString(aMsg, w / 2 - f.stringWidth(aMsg) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+    }
 
     private void drawBar(Graphics aGraphics){
         aGraphics.setColor(255, 255, 255);
@@ -754,7 +752,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         aGraphics.setColor(0, 0, 0);
         aGraphics.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
         if(newIMMMessage){
-            String m = "*m*";
+            String m = "*msg*";
             aGraphics.drawString(m, w - 2 - f.stringWidth(m)  , h - fh - 2, Graphics.TOP | Graphics.LEFT);
         }
     }

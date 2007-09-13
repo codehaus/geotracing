@@ -86,7 +86,8 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
                 clearScreen();
-                alertField.setText("Audio sent successfully");
+                removeCommand(PLAY_CMD);
+                alertField.setText("Audio sent successfully");                
             } else if (rsp.getTag().equals("play-add-medium-nrsp")) {
                 clearScreen();
                 alertField.setText("Error sending audio - please try again.");
