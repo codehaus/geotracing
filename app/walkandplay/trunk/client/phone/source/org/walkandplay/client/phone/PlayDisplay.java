@@ -507,7 +507,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             lonLat = null;
             mapImage = null;
 				}*/
-		// setLocation("4.92", "52.35");
+		//setLocation("4.92", "52.35");
 		show();
 	}
 
@@ -627,7 +627,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 				resetMap();
 
 				// Create bbox around our location for given zoom and w,h
-				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
+				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h, true);
 
 				drawMessage(g, "Loading map...", 50);
                 drawBar(g);
@@ -683,7 +683,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 				} catch (Throwable t) {
 					String s = t.getMessage();
                     if(s == null || s.equals("null")){
-                        s = "Could not get a map image - please zoom in or out.";
+                        s = "Error " + t;
                     }
                     drawMessage(g, s, 50);
                     drawBar(g);
