@@ -231,8 +231,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 // Play
                 selectGameDisplay = new SelectGameDisplay(this);
                 selectGameDisplay.start();
-                activeApp = selectGameDisplay;
-                Display.getDisplay(this).setCurrent(activeApp);
+                activeApp = selectGameDisplay;                
                 break;
             case 1:
                 // Create
@@ -274,12 +273,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 7:
                 // test display
-                Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                /*Display.getDisplay(this).setCurrent(new TestDisplay(this));*/
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
                 break;
             case 8:
                 // video canvas
-                VideoDisplay videoDisplay = new VideoDisplay(this);
-                videoDisplay.start(selectGameDisplay, "Untitled",  getKWUrl() + "/media.srv?id=26527");                
+                /*VideoDisplay videoDisplay = new VideoDisplay(this);
+                videoDisplay.start(selectGameDisplay, "Untitled",  getKWUrl() + "/media.srv?id=26527");*/      
+                Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
                 break;
             case 9:
                 // video form

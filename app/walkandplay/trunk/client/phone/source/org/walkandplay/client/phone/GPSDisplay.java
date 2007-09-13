@@ -65,7 +65,6 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
 
         if (c == SEARCH_CMD) {
             removeCommand(SEARCH_CMD);
-            addCommand(OK_CMD);
             searchDevices();
         } else if (c == OK_CMD) {
             if (remoteDevice == null) {
@@ -157,6 +156,7 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         //#style labelinfo
         append("Select a device and press Ok in menu");
         choiceNum = append(deviceCG);
+        addCommand(OK_CMD);
     }
 
     public synchronized void servicesDiscovered(int transId, ServiceRecord[] records) {

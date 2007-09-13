@@ -15,9 +15,8 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
     private String name;
     protected Displayable prevScreen;
     private String url;
-    private Image bg;
     private String title;
-    private VideoDisplay instance;    
+    private VideoDisplay instance;
 
     Font f;
     int fh, w, h;
@@ -25,33 +24,19 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
     private Command BACK_CMD = new Command("Back", Command.ITEM, 2);
     private Command REPLAY_CMD = new Command("Replay", Command.ITEM, 2);
 
-    public VideoDisplay(WPMidlet aMidlet) {
+    public VideoDisplay(WPMidlet aMidlet, String aName, String aUrl, Displayable aPrevScreen) {
         super(false);
         midlet = aMidlet;
-        instance = this;
-
-        try {
-            //#ifdef polish.images.directLoad
-            bg = Image.createImage("/bg.png");
-            //#else
-            bg = scheduleImage("/bg.png");
-            //#endif
-        } catch (Throwable t) {
-            Log.log(t.getMessage());
-        }
-
-        addCommand(BACK_CMD);
-        setCommandListener(this);        
-    }
-
-    public void start(Displayable aPrevScreen, String aName, String aUrl){
-        prevScreen = aPrevScreen;
         url = aUrl;
         name = aName;
+        instance = this;
+        prevScreen = aPrevScreen;
         title = "Video:" + name;
-
         setFullScreenMode(true);
         Display.getDisplay(midlet).setCurrent(this);
+
+        addCommand(BACK_CMD);
+        setCommandListener(this);
         play();
     }
 
@@ -148,18 +133,24 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
             if (h == 0) h = 320;
         }
 
-        g.setColor(255, 255, 255);
-        g.fillRect(0, 0, w, h);
+        g.setColor(204, 204, 204);
+        g.fillRect(0, 0, w, 22);
         g.setColor(0, 0, 0);
 
         f = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         fh = f.getHeight();
         g.setFont(f);
 
-        g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
+//        /g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
         Font font = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);
         g.setFont(font);
         g.setColor(0);
-        g.drawString(title, (getWidth() - font.stringWidth(title)) / 2, 2, Graphics.TOP | Graphics.LEFT);        
+        g.drawString(title, (getWidth() - font.stringWidth(title)) / 2, 2, Graphics.TOP | Graphics.LEFT);
+
+        g.setColor(255, 255, 255);
+        g.fillRect(0, h - 22, w, h);
+        g.setColor(0, 0, 0);
+        g.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
     }
+    
 }

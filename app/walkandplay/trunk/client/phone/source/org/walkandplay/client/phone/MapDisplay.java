@@ -27,15 +27,13 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
     private GoogleMap.XY xy;
 
     private int zoom = 12;
-    private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3, bg;
+    private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3;
     private String mapType = "map";
     private boolean active;
 
     private int OFF_MAP_TOLERANCE = 15;
 
     private WPMidlet midlet;
-
-    private Image transBar;
 
     private Vector gameLocations;
 
@@ -65,28 +63,24 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
             playerDot1 = Image.createImage("/icon_player_r_1.png");
             playerDot2 = Image.createImage("/icon_player_r_2.png");
             playerDot3 = Image.createImage("/icon_player_r_3.png");
-
-            transBar = Image.createImage("/trans_bar.png");
             taskDot1 = Image.createImage("/task_dot_1.png");
             taskDot2 = Image.createImage("/task_dot_2.png");
             taskDot3 = Image.createImage("/task_dot_3.png");
             mediumDot1 = Image.createImage("/medium_dot_1.png");
             mediumDot2 = Image.createImage("/medium_dot_2.png");
             mediumDot3 = Image.createImage("/medium_dot_3.png");
-            bg = Image.createImage("/bg.png");
+
             //#else
             playerDot1 = scheduleImage("/icon_player_r_1.png");
             playerDot2 = scheduleImage("/icon_player_r_2.png");
             playerDot3 = scheduleImage("/icon_player_r_3.png");
-        
             taskDot1 = scheduleImage("/task_dot_1.png");
             taskDot2 = scheduleImage("/task_dot_2.png");
             taskDot3 = scheduleImage("/task_dot_3.png");
-            transBar = scheduleImage("/trans_bar.png");
             mediumDot1 = scheduleImage("/medium_dot_1.png");
             mediumDot2 = scheduleImage("/medium_dot_2.png");
             mediumDot3 = scheduleImage("/medium_dot_3.png");
-            bg = scheduleImage("/bg.png");
+
             //#endif
         } catch (Throwable t) {
             log("Could not load the images on PlayDisplay", true);
@@ -264,7 +258,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
             if (h == 0) h = 320;
         }
 
-        g.setColor(255, 255, 255);
+        g.setColor(204, 204, 204);
         g.fillRect(0, 0, w, h);
         g.setColor(0, 0, 0);
 
@@ -275,13 +269,12 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         try {
             // No use proceeding if we don't have location
 			if (!hasLocation()) {
-				g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-				String s = "Waiting for GPS location...";
+
+                String s = "Waiting for GPS location...";
 				if (errorMsg.length() > 0) {
 					s = errorMsg;
 				}
-				g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+				drawMessage(g, s, 50);
                 drawBar(g);
                 //repaint();
 				return;
@@ -295,12 +288,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
 
 				// Create bbox around our location for given zoom and w,h
 				bbox = GoogleMap.createCenteredBBox(lonLat, zoom, w, h);
-				if (mapImage == null) {
-					g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-				}
-				g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-				String loading = "Loading map...";
-				g.drawString(loading, w / 2 - f.stringWidth(loading) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+				drawMessage(g, "Loading map...", 50);
                 drawBar(g);
                 //repaint();
 				return;
@@ -356,9 +344,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
                     if(s == null || s.equals("null")){
                         s = "Could not get a map image - please zoom in or out.";
                     }
-                    g.drawImage(bg, 0, 0, Graphics.TOP | Graphics.LEFT);
-                    g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
-                    g.drawString(s, w / 2 - f.stringWidth(s) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
+                    drawMessage(g, s, 50);
                     drawBar(g);
                     return;
 				}
@@ -401,6 +387,13 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         } catch (Throwable t) {
             log("Paint exception:" + t.getMessage(), true);
         }
+    }
+
+    private void drawMessage(Graphics aGraphics, String aMsg, int aHeight){
+        aGraphics.setColor(238, 238, 238);
+        aGraphics.fillRect(0, h/2 - aHeight/2, w, h/2 + aHeight/2);
+        aGraphics.setColor(0, 0, 0);
+        aGraphics.drawString(aMsg, w / 2 - f.stringWidth(aMsg) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
     }
 
     private void drawBar(Graphics aGraphics){
