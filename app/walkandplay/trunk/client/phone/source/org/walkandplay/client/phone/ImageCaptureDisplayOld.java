@@ -5,11 +5,15 @@ import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Util;
 
-import javax.microedition.lcdui.*;
+/*import javax.microedition.lcdui.*;*/
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.GUIControl;
 import javax.microedition.media.control.VideoControl;
+import javax.microedition.lcdui.*;
+
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 
 /**
  * Capture image from phone camera.
@@ -130,8 +134,10 @@ public class ImageCaptureDisplayOld extends DefaultDisplay implements TCPClientL
             player.start();
 
         } catch (Throwable e) {
-            Util.showAlert(midlet, "cannot start camera", e.getMessage());
-            back();
+            //setTitle("ShowCamera Error:" + e.getMessage());
+            setTitle("ShowCamera Error:" + e.toString());
+            /*Util.showAlert(midlet, "cannot start camera", e.getMessage());
+            back();*/
         }
     }
 

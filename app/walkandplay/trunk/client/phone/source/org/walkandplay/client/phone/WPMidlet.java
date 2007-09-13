@@ -31,6 +31,8 @@ import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.rms.RecordStoreException;
+import javax.microedition.media.Player;
+import javax.microedition.media.Manager;
 
 import org.geotracing.client.Util;
 import org.geotracing.client.Preferences;
@@ -242,10 +244,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 2:
                 // GPS
-                if(gpsDisplay == null){
+                /*if(gpsDisplay == null){
                     gpsDisplay = new GPSDisplay(this);
                 }
-                gpsDisplay.start();
+                gpsDisplay.start();*/
+                gpsDisplay = new GPSDisplay(this);
                 Display.getDisplay(this).setCurrent(gpsDisplay);
                 break;
             case 3:
@@ -274,12 +277,17 @@ public class WPMidlet extends MIDlet implements CommandListener {
             case 7:
                 // test display
                 /*Display.getDisplay(this).setCurrent(new TestDisplay(this));*/
-                try{
-                    Util.playStream("http://test.walkandplay.com/wp/media.srv?id=831815");
+                Display.getDisplay(this).setCurrent(new AudioDisplay2(this, "test", "http://test.walkandplay.com/wp/media.srv?id=831815", selectGameDisplay));
+                /*try{
+                    Player player = Manager.createPlayer("http://test.walkandplay.com/wp/media.srv?id=831815"); 
+                    player.realize();
+                    player.prefetch();
+                    player.start();
+                    //Util.playStream("http://test.walkandplay.com/wp/media.srv?id=831815");
                 }catch(Throwable t){
                     //
                     menuScreen.setTitle("Error: " + t.getMessage());
-                }
+                }*/
                 //Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
                 //Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
                 break;            
