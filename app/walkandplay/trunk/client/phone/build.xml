@@ -75,7 +75,7 @@
 		<property name="deploy-url" value="http://www.company.com/download/" />
 	</target>
 
-	<target name="init" depends="externals">
+	<target name="init" depends="clean,externals">
 	  	<property name="test" value="false" />
 		<property name="dir.work" value="build/${customization}_${localization}" />
         <property name="dir.dist" value="dist/${customization}_${localization}" />
@@ -270,7 +270,7 @@
                     <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
 					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
 					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />
-					<attribute name="wms-url" value="http://www.senseofthecity.nl/wp/map.srv" />
+					<attribute name="wms-url" value="http://walkandplay.com/map" />
 					<attribute name="kw-server" value="test.walkandplay.com" />
 					<attribute name="kw-timeout" value="20" />
 					<attribute name="kw-user" value="yellow2" />
@@ -398,8 +398,8 @@
 	</target>
 
 	<target name="clean" description="Allows a clean build.">
-		<delete dir="build" />
-		<delete dir="dist" includes="**/*" />
+		<delete dir="${basedir}/build" />
+		<delete dir="${basedir}/dist" includes="**/*" />
 	</target>
 
 	<target name="install" depends="build_Nokia_N73_EN_US">
