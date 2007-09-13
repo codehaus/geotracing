@@ -42,29 +42,21 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         } catch (Throwable t) {
             Log.log("Could not load the images on GPSDisplay");
         }
-    }
 
-    public void start(){
-        // start fresh
-        deleteAll();
-        
         append(logo);
 
         SEARCH_CMD = new Command("Search", Command.SCREEN, 1);
         OK_CMD = new Command("OK", Command.OK, 1);
 
         addCommand(SEARCH_CMD);
-        //#style labelinfo
-        append("Pairing your GPS to the program");
-
-        //#style formbox
-        append(new StringItem("", "Your Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu." + "\n"));
+        log("Pairing your GPS to the program.\nYour Bluetooth GPS should be switched on.\nPress Search in menu to start and wait for choice-menu.");
     }
-    
+
     public void commandAction(Command c, Displayable d) {
 
         if (c == SEARCH_CMD) {
             removeCommand(SEARCH_CMD);
+            addCommand(OK_CMD);
             searchDevices();
         } else if (c == OK_CMD) {
             if (remoteDevice == null) {
@@ -156,7 +148,6 @@ public class GPSDisplay extends DefaultDisplay implements DiscoveryListener {
         //#style labelinfo
         append("Select a device and press Ok in menu");
         choiceNum = append(deviceCG);
-        addCommand(OK_CMD);
     }
 
     public synchronized void servicesDiscovered(int transId, ServiceRecord[] records) {

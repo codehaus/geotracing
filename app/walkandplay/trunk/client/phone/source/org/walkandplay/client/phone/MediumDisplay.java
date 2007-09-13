@@ -6,10 +6,6 @@ import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.media.Player;
-import javax.microedition.media.Manager;
-import javax.microedition.media.PlayerListener;
-import java.util.Date;
 
 public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
@@ -25,7 +21,6 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
     private Image mediumImage;
     private String mediumText;
     //private Image mediumAudio;
-    private MediumDisplay mediumDisplay = this;
     private VideoDisplay videoDisplay;
     private AudioDisplay audioDisplay;
     private boolean active;
