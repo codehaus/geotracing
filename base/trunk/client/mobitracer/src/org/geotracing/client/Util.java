@@ -34,6 +34,7 @@ public class Util {
 	 * Constant representing earth radius: 60 * 1.1515 * 1609.344
 	 */
 	private static MFloat DIST_CONST = new MFloat(111189, 5769);
+	private static MFloat DIST_FRACTION = new MFloat(10, -1);
 
 	/**
 	 * Great circle distance in meters between two lon/lat points.
@@ -54,6 +55,18 @@ public class Util {
 		dist = MFloat.toDegrees(dist);
 		dist = dist.Mul(DIST_CONST);
 		return dist;
+	}
+
+	/** Calculates meters per degree at GeoPoint. */
+	public static MFloat metersPerDegreeLon(MFloat lon, MFloat lat) {
+		// Calc meters per degree longitude
+		return distanceMeters(lon.Add(DIST_FRACTION), lat, lon, lat).Div(DIST_FRACTION);
+	}
+
+	/** Calculates meters per degree at GeoPoint. */
+	public static MFloat metersPerDegreeLat(MFloat lon, MFloat lat) {
+	// Calc meters per degree longitude
+		return distanceMeters(lon, lat.Add(DIST_FRACTION), lon, lat).Div(DIST_FRACTION);
 	}
 
 	/**
