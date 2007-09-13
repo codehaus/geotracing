@@ -30,14 +30,17 @@ END
 # http://www.geoserver.nl/kaartdienst/basiskaart/Voorbeelden.htm
 LAYER
 	GROUP geodan1
-	NAME geodan_map
+	NAME streets
 	TYPE RASTER
 	STATUS ON
 	CONNECTIONTYPE WMS
-	CONNECTION "http://geoserver.nl/top25/sclmapserver.exe?"
+	CONNECTION "http://geoserver.nl/geostreets/sclmapserver.exe/softtone?"
+#	CONNECTION "http://geoserver.nl/geostreets/sclmapserver.exe/falk?"
+#	CONNECTION "http://geoserver.nl/top25/sclmapserver.exe?"
+
 	METADATA
-		"wms_name" "layer_1"
-		"wms_srs" "EPSG:4326"
+		"wms_name" "layer_1,layer_2,layer_3,layer_4,layer_5,layer_6"
+		"wms_srs" "EPSG:28992"
 		"wms_server_version" "1.1.1"
 		"wms_request" "GetMap"
 		"wms_format" "image/jpeg"
@@ -49,14 +52,14 @@ END
 # http://www.geoserver.nl/kaartdienst/basiskaart/Voorbeelden.htm
 LAYER
 	GROUP geodan2
-	NAME geodan_sat
+	NAME sat
 	TYPE RASTER
 	STATUS ON
 	CONNECTIONTYPE WMS
 	CONNECTION "http://geoserver.nl/sat5/sclmapserver.exe?"
 	METADATA
 		"wms_name" "layer_1"
-		"wms_srs" "EPSG:4326"
+		"wms_srs" "EPSG:28992"
 		"wms_server_version" "1.1.1"
 		"wms_request" "GetMap"
 		"wms_format" "image/jpeg"
