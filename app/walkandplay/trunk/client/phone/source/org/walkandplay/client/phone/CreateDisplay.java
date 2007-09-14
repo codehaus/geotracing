@@ -13,7 +13,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     private String netStatus = "disconnected";
     private StringItem netStatusBT = new StringItem("", netStatus, Item.BUTTON);
     private StringItem gpsStatusBT = new StringItem("", netStatus, Item.BUTTON);
-    private StringItem gameLabel = new StringItem("", "Create an new game or select one to edit");
+    private StringItem gameLabel = new StringItem("", "loading...");
 
     private GPSEngine gpsEngine;
     private String gameId;
@@ -59,6 +59,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     }
 
     public void start(){
+        gameLabel.setText("Connecting to GPS...");
         connect();
     }
 
@@ -119,6 +120,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
             addCommand(EDIT_GAME_CMD);
             addCommand(SHOW_STATE_CMD);
             addCommand(BACK_CMD);
+            gameLabel.setText("Create an new game or select one to edit");            
         }else if(s.equals("No GPS") || s.indexOf("error")!=-1){
             //#style alertinfo
             append("No GPS signal - please go back and setup your GPS (again).");            
