@@ -89,10 +89,10 @@ public class SettingsDisplay extends DefaultDisplay {
             setCommands();
         } else if (cmd == MAP_CMD) {
             if(midlet.useGoogleMaps()){
-                midlet.getPreferences().put(WPMidlet.WMS_URL, WPMidlet.GEODAN_WMS_URL);
+                midlet.getPreferences().put(WPMidlet.WMS_URL, midlet.getAppProperty(WPMidlet.GEODAN_WMS_URL));
                 MAP_CMD = new Command(Locale.get("settings.SwitchToGoogleMaps"), Command.ITEM, 2);
             }else{
-                midlet.getPreferences().put(WPMidlet.WMS_URL, WPMidlet.GOOGLE_WMS_URL);
+                midlet.getPreferences().put(WPMidlet.WMS_URL, midlet.getAppProperty(WPMidlet.GOOGLE_WMS_URL));
                 MAP_CMD = new Command(Locale.get("settings.SwitchToGeodan"), Command.ITEM, 2);
             }
             removeAllCommands();
