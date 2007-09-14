@@ -27,11 +27,12 @@
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
 	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
 	<property name="cameralib.jar" value="${basedir}/external/lib/cameralib.jar"/>
-	
+
     <property name="project.etc.dir" value="${basedir}/etc"/>
     <property name="btsend" value="${project.etc.dir}/btsend.sh"/>
 
     <property name="project.name" value="walkandplay"/>
+	<property name="test" value="false"/>
     <!--<property name="projectname" value="mlgk"/>-->
 
     <!-- import user specific properties -->
@@ -103,7 +104,7 @@
 	<!--       process.                                           -->
 	<target name="j2mepolish" depends="init,externals" description="This is the controller for the J2ME build process.">
         <echo message="Camera Lib - ${cameralib.jar}" />
-        <j2mepolish>            
+        <j2mepolish>
             <!-- general settings, these settings basically form the JAD-attributes. -->
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
@@ -144,11 +145,10 @@
 				fullscreen="menu"
 				usePolishGui="true"
 				workDir="${dir.work}"
+				binaryLibraries="${basedir}/external/lib"
 
-            >
-                <compiler>
-                    <classpath refid="compile.classpath"/>
-                </compiler>
+			>
+                <!-- <compiler classpathref="compile.classpath"/> -->
 
                 <!-- midlets definition -->
 				<midlet class="org.walkandplay.client.phone.WPMidlet" name="${project.name}" />
@@ -164,7 +164,7 @@
 
                     <!-- add the localization element for created localized versions of your application: -->
 					<localization locales="${localization}" />
-					
+
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
