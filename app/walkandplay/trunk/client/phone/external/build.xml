@@ -40,7 +40,7 @@
             <classpath refid="compile.classpath"/>
         </javac>
 
-        <jar basedir="${build.dir}"
+        <jar basedir="${build.dir}/classes"
 			 jarfile="${build.dir}/cameralib.jar">
 		</jar>
 
