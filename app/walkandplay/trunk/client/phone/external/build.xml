@@ -20,7 +20,7 @@
     </path>
 
     <path id="compile.sourcepath">
-		<pathelement location="${basedir}"/>
+		<pathelement location="${basedir}/source"/>
     </path>
 
     <target name="build" depends="clean">
