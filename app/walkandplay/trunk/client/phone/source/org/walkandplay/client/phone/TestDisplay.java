@@ -6,7 +6,7 @@ import javax.microedition.lcdui.*;
 import java.io.DataInputStream;
 
 import org.walkandplay.client.phone.ProgressListener;
-import org.walkandplay.client.external.CameraHandler;
+//import org.walkandplay.client.external.CameraHandler;
 
 /**
  * MobiTracer main GUI.
@@ -49,13 +49,13 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
 */
         setCommandListener(this);
 
-        camera();
+        //camera();
         //append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
         //append(new ClockItem(""));
 
     }
 
-    public void camera() {
+    /*public void camera() {
         try {
             CameraHandler.takeSnapshot(display);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
                 CameraHandler.end();
             }
         }.start();
-    }
+    }*/
 
     public void prStart() {
         progressBar.setMaxValue(progressMax);

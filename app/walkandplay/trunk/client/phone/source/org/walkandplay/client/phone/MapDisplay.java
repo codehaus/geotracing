@@ -134,6 +134,7 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
         try {
             prevScreen = aPrevScreen;
             midlet.getActiveApp().addTCPClientListener(this);
+            Display.getDisplay(midlet).setCurrent(this);
             GPSEngine.getInstance().addListener(this);
 
             // get all game locations for this game
