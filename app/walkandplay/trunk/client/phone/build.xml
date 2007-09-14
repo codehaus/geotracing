@@ -26,7 +26,8 @@
     <property name="jsr179.jar" value="${geotracing.external.dir}/jsr179/lib/jsr179.jar"/>
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
 	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
-
+	<property name="cameralib.jar" value="${basedir}/external/lib/cameralib.jar"/>
+	
     <property name="project.etc.dir" value="${basedir}/etc"/>
     <property name="btsend" value="${project.etc.dir}/btsend.sh"/>
 
@@ -50,8 +51,9 @@
 
 	<path id="compile.classpath">
         <pathelement location="${jsr179.jar}"/>
-        <!--<pathelement location="${mmapi.jar}"/>
-        <pathelement location="${jsr82.zip}"/>-->
+        <pathelement location="${mmapi.jar}"/>
+        <pathelement location="${cameralib.jar}"/>
+        <!--<pathelement location="${jsr82.zip}"/>-->
     </path>
 
     <path id="emulator.classpath">
@@ -63,6 +65,7 @@
         <pathelement location="${cldcemu.jar}"/>
         <pathelement location="${midpemu.jar}"/>
         <pathelement location="${emulator.jar}"/>
+        <pathelement location="${cameralib.jar}"/>
     </path>
 
     <!-- Definition of the J2ME Polish task:-->
@@ -89,98 +92,7 @@
 		<pathelement location="${mobitracer.src}"/>
 		<pathelement location="${kwclient.src}"/>
 		<pathelement location="${mjox.src}"/>
-	</path>
-
-    <target name="j2me" depends="clean,externals">
-        <!-- set dirs -->
-        <property name="build.dir" value="${basedir}/buildj2me"/>
-        <property name="classes.dir" value="${build.dir}/classes"/>
-        <property name="obf.dir" value="${build.dir}/obf"/>
-        <property name="preverify.dir" value="${build.dir}/preverify"/>
-        <property name="proguard.jar" value="${proguard.dir}/lib/proguard.jar"/>
-        <property name="boot.classpath" value="${midp2.dir}/classes"/>
-        <property name="preverify.classpath" value="${midp2.dir}/classes${path.separator}${jsr82.zip}"/>
-        <property name="preverify" value="${mppsdk.dir}/osx/preverify/preverify"/>
-
-        <mkdir dir="${classes.dir}"/>
-
-        <!-- compile -->
-        <javac destdir="${classes.dir}" target="1.1" bootclasspath="${boot.classpath}" >
-
-			<src refid="compile.sourcepath"/>
-			<include name="org/walkandplay/client/phone/**.java"/>
-			<include name="**/GPSFetcher.java"/>
-			<include name="**/GPSFetcherListener.java"/>
-			<include name="**/GPSInfo.java"/>
-			<include name="**/GPSLocation.java"/>
-			<include name="**/GPSSmoother.java"/>
-			<include name="**/Log.java"/>
-			<include name="**/MFloat.java"/>
-			<include name="**/Net.java"/>
-			<include name="**/NetListener.java"/>
-			<include name="**/Preferences.java"/>
-			<include name="**/Util.java"/>
-
-			<classpath refid="compile.classpath"/>
-		</javac>
-
-        <!-- obfuscate -->
-        <java fork="yes" classname="proguard.ProGuard" classpath="${proguard.jar}">
-            <arg line="-libraryjars ${boot.classpath}${path.separator}${jsr82.zip}"/>
-            <arg line="-injars ${classes.dir}"/>
-            <arg line="-outjar ${obf.dir}"/>
-            <arg line="-keep 'public class * extends javax.microedition.midlet.MIDlet'"/>
-        </java>
-
-        <!-- preverify -->
-        <mkdir dir="${preverify.dir}"/>
-		<exec executable="${preverify}">
-			<arg line="-classpath ${preverify.classpath}"/>
-			<arg line="-d ${preverify.dir}"/>
-			<!--<arg line="${obf.dir}"/>-->
-			<arg line="${classes.dir}"/>
-		</exec>
-
-        <!-- jar -->
-        <property name="manifest.file" value="${build.dir}/MANIFEST.MF"/>
-		<property name="jad.file" value="${build.dir}/mt.jad"/>
-		<property name="version.file" value="${build.dir}/version.html"/>
-
-		<!-- Set essential MIDlet properties. -->
-		<concat destfile="${manifest.file}">
-			<filelist dir="${project.etc.dir}" files="MANIFEST.MF"/>
-			<filterchain>
-				<expandproperties/>
-			</filterchain>
-		</concat>
-
-		<!-- Set essential MIDlet properties. -->
-		<concat destfile="${jad.file}">
-			<filelist dir="${project.etc.dir}" files="wp.jad"/>
-			<filterchain>
-				<expandproperties/>
-			</filterchain>
-		</concat>
-
-		<!-- Generate version file. -->
-		<concat destfile="${version.file}">
-			<filelist dir="${project.etc.dir}" files="version.html"/>
-			<filterchain>
-				<expandproperties/>
-			</filterchain>
-		</concat>
-
-		<jar basedir="${preverify.dir}"
-			 jarfile="${project.name}.jar"
-			 manifest="${manifest.file}">
-			<fileset dir="${resource.dir}">
-				<include name="*.png"/>
-			</fileset>
-		</jar>
-
-    </target>
-
-
+    </path>
 
     <!-- In this target the J2ME Polish task is used.             -->
 	<!-- It has 3 sections:                                       -->
@@ -189,9 +101,10 @@
 	<!--       for which the application is optimized.            -->
 	<!--    3. The build-section controls the actual build        -->
 	<!--       process.                                           -->
-	<target name="j2mepolish" depends="init" description="This is the controller for the J2ME build process.">
-		<j2mepolish>
-		    <!-- general settings, these settings basically form the JAD-attributes. -->
+	<target name="j2mepolish" depends="init,externals" description="This is the controller for the J2ME build process.">
+        <echo message="Camera Lib - ${cameralib.jar}" />
+        <j2mepolish>            
+            <!-- general settings, these settings basically form the JAD-attributes. -->
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
             <info
@@ -267,31 +180,33 @@
 				</debug>
                 <!-- user defined JAD attributes can also be used: -->
 				<jad>
-                    <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.http"/>
-					<attribute name="MIDlet-Permissions-Opt" value="javax.microedition.io.Connector.bluetooth.client,javax.microedition.media.control.VideoControl.getSnapshot" />
-					<attribute name="kw-url" value="http://test.walkandplay.com/wp" />
-					<attribute name="wms-url" value="http://walkandplay.com/map/" />
-					<attribute name="kw-server" value="test.walkandplay.com" />
-					<attribute name="kw-timeout" value="20" />
-					<attribute name="kw-user" value="yellow2" />
-					<attribute name="kw-password" value="user" />
-					<attribute name="kw-port" value="6050" />
-					<attribute name="kw-app" value="geoapp" />
-					<attribute name="kw-role" value="user" />
-					<attribute name="volume" value="70" />
-					<attribute name="demo" value="yes" />
-					<attribute name="audio-rate" value="8000" />
-					<attribute name="audio-bits" value="8" />
-					<attribute name="gps-sample-interval" value="3000" />
-					<attribute name="gps-send-interval" value="5000" />
-                    <attribute name="gps-min-sats" value="4" />
-					<attribute name="gps-min-hdop" value="2" />
-					<attribute name="device-screen-width" value="240" />
-					<attribute name="device-screen-height" value="320" />
-					<attribute name="MPP-Show-Keypad" value="true" />
-                    <attribute name="MPP-Width" value="240" />
-					<attribute name="MPP-Height" value="320" />
-					<attribute name="mt-options" value="full" />
+                    <attribute name="MIDlet-Permissions" value="${midlet.permissions}"/>
+					<attribute name="MIDlet-Permissions-Opt" value="${midlet.permissions.opt}" />
+					<attribute name="kw-url" value="${kw-url}" />
+					<attribute name="geodan-wms-url" value="${geodan-wms-url}" />
+					<attribute name="google-wms-url" value="${google-wms-url}" />
+					<attribute name="kw-server" value="${kw-server}" />
+					<attribute name="kw-timeout" value="${kw-timeout}" />
+					<attribute name="kw-user" value="${kw-user}" />
+					<attribute name="kw-password" value="${kw-password}" />
+					<attribute name="kw-port" value="${kw-port}" />
+					<attribute name="kw-app" value="${kw-app}" />
+					<attribute name="kw-role" value="${kw-role}" />
+					<attribute name="volume" value="${volume}" />
+					<attribute name="demo" value="${demo}" />
+					<attribute name="external-player" value="${external-player}" />
+					<attribute name="audio-rate" value="${audio-rate}" />
+					<attribute name="audio-bits" value="${audio-bits}" />
+					<attribute name="gps-sample-interval" value="${gps-sample-interval}" />
+					<attribute name="gps-send-interval" value="${gps-send-interval}" />
+                    <attribute name="gps-min-sats" value="${gps-min-sats}" />
+					<attribute name="gps-min-hdop" value="${gps-min-hdop}" />
+					<attribute name="device-screen-width" value="${device-screen-width}" />
+					<attribute name="device-screen-height" value="${device-screen-height}" />
+					<attribute name="MPP-Show-Keypad" value="${MPP-Show-Keypad}" />
+                    <attribute name="MPP-Width" value="${MPP-Width}" />
+					<attribute name="MPP-Height" value="${MPP-Height}" />
+					<attribute name="mt-options" value="${mt-options}" />
 
                     <attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
 				</jad>

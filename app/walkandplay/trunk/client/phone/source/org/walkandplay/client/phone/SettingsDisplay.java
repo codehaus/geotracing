@@ -7,10 +7,10 @@ import org.geotracing.client.Util;
 import javax.microedition.lcdui.*;
 
 public class SettingsDisplay extends DefaultDisplay {
-    private Command SOUND_CMD, MEDIAPLAYER_CMD, DEMO_CMD;
+    private Command SOUND_CMD, MEDIAPLAYER_CMD, DEMO_CMD, MAP_CMD;
     private Command ACCOUNT_CMD = new Command(Locale.get("settings.Account"), Command.ITEM, 2);
     private Command VERSION_CMD = new Command(Locale.get("settings.Version"), Command.ITEM, 2);
-
+    
     StringItem text = new StringItem("", "Choose settings from the menu to change");
     private Image logo;
     private AccountDisplay accountDisplay;
@@ -37,16 +37,22 @@ public class SettingsDisplay extends DefaultDisplay {
             SOUND_CMD = new Command(Locale.get("settings.SoundOn"), Command.ITEM, 2);
         }
 
-        if (midlet.useInternalMediaPlayer()) {
-            MEDIAPLAYER_CMD = new Command(Locale.get("settings.MediaPlayerIntern"), Command.ITEM, 2);
-        } else {
+        if (midlet.useExternalPlayer()) {
             MEDIAPLAYER_CMD = new Command(Locale.get("settings.MediaPlayerExtern"), Command.ITEM, 2);
+        } else {
+            MEDIAPLAYER_CMD = new Command(Locale.get("settings.MediaPlayerIntern"), Command.ITEM, 2);
         }
 
         if (midlet.isInDemoMode()) {
             DEMO_CMD = new Command(Locale.get("settings.DemoModeOff"), Command.ITEM, 2);
         } else {
             DEMO_CMD = new Command(Locale.get("settings.DemoModeOn"), Command.ITEM, 2);
+        }
+
+        if (midlet.useGoogleMaps()) {
+            MAP_CMD = new Command(Locale.get("settings.SwitchToGeodan"), Command.ITEM, 2);
+        } else {
+            MAP_CMD = new Command(Locale.get("settings.SwitchToGoogleMaps"), Command.ITEM, 2);
         }
 
         //#style formbox
@@ -66,6 +72,7 @@ public class SettingsDisplay extends DefaultDisplay {
         addCommand(MEDIAPLAYER_CMD);
         addCommand(DEMO_CMD);
         addCommand(VERSION_CMD);
+        addCommand(MAP_CMD);
     }
 
     public void commandAction(Command cmd, Displayable screen) {
@@ -80,14 +87,24 @@ public class SettingsDisplay extends DefaultDisplay {
             }
             removeAllCommands();
             setCommands();
+        } else if (cmd == MAP_CMD) {
+            if(midlet.useGoogleMaps()){
+                midlet.getPreferences().put(WPMidlet.WMS_URL, WPMidlet.GEODAN_WMS_URL);
+                MAP_CMD = new Command(Locale.get("settings.SwitchToGoogleMaps"), Command.ITEM, 2);
+            }else{
+                midlet.getPreferences().put(WPMidlet.WMS_URL, WPMidlet.GOOGLE_WMS_URL);
+                MAP_CMD = new Command(Locale.get("settings.SwitchToGeodan"), Command.ITEM, 2);
+            }
+            removeAllCommands();
+            setCommands();
         } else if (cmd == MEDIAPLAYER_CMD) {
             removeCommand(MEDIAPLAYER_CMD);
-            if (midlet.useInternalMediaPlayer()) {
-                midlet.getPreferences().put(WPMidlet.MEDIA_PLAYER, WPMidlet.EXTERN);
-                MEDIAPLAYER_CMD = new Command(Locale.get("settings.MediaPlayerExtern"), Command.ITEM, 2);
-            }else{
-                midlet.getPreferences().put(WPMidlet.MEDIA_PLAYER, WPMidlet.INTERN);
+            if (midlet.useExternalPlayer()) {
+                midlet.getPreferences().put(WPMidlet.EXTERNAL_PLAYER, "false");
                 MEDIAPLAYER_CMD = new Command(Locale.get("settings.MediaPlayerIntern"), Command.ITEM, 2);
+            }else{
+                midlet.getPreferences().put(WPMidlet.EXTERNAL_PLAYER, "true");
+                MEDIAPLAYER_CMD = new Command(Locale.get("settings.MediaPlayerExtern"), Command.ITEM, 2);
             }
             removeAllCommands();
             setCommands();
