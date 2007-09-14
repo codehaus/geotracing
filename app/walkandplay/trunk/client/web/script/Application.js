@@ -349,21 +349,36 @@ function wpMapMoveend()
 	tmp_debug(3,'moveend');
 	
 	//locations, players
+//	wp_locations.update();
+//	wp_players.update();
+
+	//game locations	
+// 	if (wp_selected_game)
+// 	{
+// 		var game = wp_games.game[wp_selected_game];
+// 
+// 		game.locations.update();
+// 		
+// 		game.traces.update();
+// 	}
+}
+
+function wpMapZoomend(b,e)
+{
+	tmp_debug(3,'zoomend');
+
+	//locations, players
 	wp_locations.update();
 	wp_players.update();
-
 	//game locations	
 	if (wp_selected_game)
 	{
 		var game = wp_games.game[wp_selected_game];
 
 		game.locations.update();
+		game.traces.update();
 	}
-}
 
-function wpMapZoomend(b,e)
-{
-	tmp_debug(3,'zoomend');
 	
 	//position editLocation pane
 	if (panes['edit_location'] && panes['edit_location'].visible)

@@ -1,52 +1,59 @@
-/* usemedia.com . joes koppers . 04.2007 */
+/* usemedia.com . joes koppers . 04.2007 [rev 09.2007] */
 /* thnx for reading this code */
 
 
-//wp game players (locations)
+//wp game players (user icons)
 
 function wpPlayers()
 {
 	var array = new idArray('player');
 	
-	//extend obj with update function
+	//extend obj
 	array.update = function()
 	{
 		for (id in this.player) this.player[id].update();
 	}
 	
+	array.del = function(id,playeronly)
+	{
+		this[this.collection][id].dispose(playeronly);
+		delete this[this.collection][id];
+		this.length--;	
+	}
+
+	array.realityCheck = function()
+	{
+		var timeout = 30; //seconds
+
+		var t,expired;
+		t = new Date().getTime();
+		expired = new Array(0);
+		
+		var str = '';
+	
+		//check live users
+		for (var id in this.player) 
+		{
+			var condition = (t-this.player[id].timestamp)/1000 > timeout;
+			if (condition) expired.push(id);
+	
+			str+= this.player[id].name+' expired='+condition+' ('+(t-this.player[id].timestamp)+'), ';
+		}
+		//kill obsolete players
+		for (var i in expired) this.del(expired[i],true);
+		
+		tmp_debug(3,'[realityCheck] ',str);
+		
+		var obj = this;
+		this.check = window.setTimeout(function() { obj.realityCheck() },timeout*1000);
+	}
+	
 	//start reality checking (there's no server side logout for users -> client-side timeout after 2 mins no user-move)
-	//var obj = this;
-	//this.check = window.setTimeout(function() { obj.realityCheck() },60000*2);
+	
 	
 	return array;
-}
-
-
-wpPlayers.prototype.realityCheck = function()
-{
-	/*	timeout (live) players
-	*/
-
-	var t,expired;
-	t = new Date().getTime();
- 	expired = new Array(0);
-
-	 var str = '';
-
-	//check live users
-	for (var name in this.user) 
-	{
-		if ((t-this.user[name].timestamp)/1000 > ii_user_livetimeout) expired.push(name);
- 		str+= ', '+name+':time='+this.user[name].time+', ts='+this.user[name].timestamp+', diff='+((this.user[name].time-this.user[name].timestamp)/1000)+', check='+((t-this.user[name].timestamp)/1000);
-	}
-	//kill live users
-//	for (var id in wp_players.player) wp_players.del(id);
-	for (var i in expired) wp_players.del(expired[i]);
 	
-//debug
-// var expired_live = expired.length; 
 }
-
 
 
 /* location object */
@@ -68,6 +75,11 @@ function wpPlayer(collection,id,p,name,t,playid)
 	this.icon = 'icon_player_'+this.color.substring(0,1)+'.png';
  	
  	this.trace = new Array(0); //geo points history
+ 	
+ 	this.addTrace();
+ 	
+	
+ 	
  	if (wp_mode=='view') this.trace.push(p);
 	var c;
 	switch (this.color.substring(0,1))
@@ -82,11 +94,11 @@ function wpPlayer(collection,id,p,name,t,playid)
  	this.trace_color = c; //(color=='r')? '#c80014':(color=='b')? '#3264c8':'#ffd02b'; //'#2daa4b';
 
 	//animation settings 	
-// 	this.x_smoothing = .03;
-// 	this.y_smoothing = .03;
+	this.x_smoothing = .06;
+	this.y_smoothing = .06;
 	
-	this.x_smoothing = .1;
-	this.y_smoothing = .1;
+// 	this.x_smoothing = .1;
+// 	this.y_smoothing = .1;
 
 	this.smooth_timeout = 150;
 	this.blinkdelay = 1500;
@@ -166,8 +178,45 @@ function wpPlayer(collection,id,p,name,t,playid)
 	location.onclick = function() { alert('debug: player, id='+obj.id+', name='+obj.name+', color='+obj.color) };
 }
 
-wpPlayer.prototype.updateLocation = function(p,t)
+
+wpPlayer.prototype.addTrace = function()
 {
+	/*	attach existing trace or add new (for live tracing)
+	*/
+	
+	var trace = false;
+	var traces = wp_games.game[wp_selected_game].traces;
+	
+	
+	for (var id in traces.trace)
+	{
+		if (traces.trace[id].user==this.name) 
+		{
+			trace = id;
+			break;
+		}
+	}
+
+	if (trace)
+	{
+		tmp_debug(3,'user:',this.name,', found trace');
+		this.trace_obj = traces.trace[id];
+	}
+	else
+	{
+		tmp_debug(3,'user:',this.name,', create new trace obj');
+
+	  	this.trace_obj = new wpTrace('livetrace',this.name,this.color)
+ 	  	wp_games.game[wp_selected_game].traces.push( this.trace_obj );
+
+	}
+}
+
+
+wpPlayer.prototype.updateLocation = function(p,t,timestamp)
+{
+	this.timestamp = timestamp; //for realityCheck
+	
 	if (p.equals(this.geo)) return; //no update needed
 	
 	//save previous and new location
@@ -223,6 +272,7 @@ wpPlayer.prototype.update = function(p,t)
 	this.div.style.height = this.h +'px';
 	
 	this.showTrace();
+
 }
 
 wpPlayer.prototype.smooth = function(obj)
@@ -274,8 +324,6 @@ wpPlayer.prototype.animate = function(show)
 
 wpPlayer.prototype.blink = function(stop)
 {
-	//if (wp_mode=='view' && wp_viewmode=='archived') return; //player icons don't blink in playback (archived view)
-
 	this.div.style.visibility = (this.blinkdelay==500 || stop)? 'visible':'hidden';
 
 	//show is longer than hide
@@ -293,6 +341,14 @@ wpPlayer.prototype.speed = function()
 
 wpPlayer.prototype.showTrace = function()
 {
+ 	//add point to trace obj
+ 	var geo = (wp_mode=='play')? this.prevgeo:this.geo;
+ 	if (geo) this.trace_obj.addLivePoint(geo);
+	return;
+
+/*	
+	tmp_debug(1,'player (',this.id,') trace update')
+
 	if (this.trace.length<2) return; //we need two points minimum
 	//remove current trace
  	if (this.traceOverlay) gmap.removeOverlay(this.traceOverlay);
@@ -306,6 +362,7 @@ wpPlayer.prototype.showTrace = function()
  	this.traceOverlay = new GPolyline(trace,this.trace_color,Math.max(1,w),0.8);
 	//add new trace
  	gmap.addOverlay(this.traceOverlay);
+*/
 }
 
 wpPlayer.prototype.zoomTo = function()
@@ -343,33 +400,19 @@ wpPlayer.prototype.changeIcon = function(src)
 	}
 }
 
-wpPlayer.prototype.dispose = function()
+wpPlayer.prototype.dispose = function(playeronly)
 {
 	if (this.animating) window.clearInterval(this.animating);
 	if (this.blinking) window.clearTimeout(this.blinking);
 	
-	if (this.traceOverlay) gmap.removeOverlay(this.traceOverlay);
+//	if (this.traceOverlay) gmap.removeOverlay(this.traceOverlay);
+
+	//remove trace
+//	if (wp_selected_game && this.trace_obj && !playeronly) 
+	if (wp_selected_game && this.trace_obj) //->change this back to playeronly!
+	{
+		wp_games.game[wp_selected_game].traces.del( this.trace_obj.id );
+	}
 
 	gmap.getPane(G_MAP_MARKER_PANE).removeChild(this.div);
 }
-
-
-// function wpTraces()
-// {
-// 
-// 
-// 
-// }
-// 
-// function wpTrace(id)
-// {
-// 	this.id = id;
-// //	this.segments = segments;
-// 
-// }
-// 
-// wpTrace.prototype.show = function()
-// {
-// 
-// }
-
