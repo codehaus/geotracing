@@ -5,15 +5,11 @@ import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Util;
 
-/*import javax.microedition.lcdui.*;*/
 import javax.microedition.media.Manager;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.GUIControl;
 import javax.microedition.media.control.VideoControl;
 import javax.microedition.lcdui.*;
-
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.StringItem;
 
 /**
  * Capture image from phone camera.

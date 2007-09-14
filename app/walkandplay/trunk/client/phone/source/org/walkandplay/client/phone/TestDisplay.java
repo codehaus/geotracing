@@ -6,6 +6,7 @@ import javax.microedition.lcdui.*;
 import java.io.DataInputStream;
 
 import org.walkandplay.client.phone.ProgressListener;
+import org.walkandplay.client.external.CameraHandler;
 
 /**
  * MobiTracer main GUI.
@@ -32,7 +33,7 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
 
     public TestDisplay(WPMidlet aMidlet) {
         //#style defaultscreen
-        super("");
+        super("Test");
         midlet = aMidlet;
         prevScreen = Display.getDisplay(midlet).getCurrent();
         display = Display.getDisplay(midlet);
@@ -40,17 +41,40 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
         System.out.println("constructor TestDisplay");
 
         addCommand(BACK_CMD);
-        addCommand(START_CMD);
+        //addCommand(START_CMD);
 
-        //#style formbox
+        /*//#style formbox
         append(gaugeInf);
         append(progressBar);
-
+*/
         setCommandListener(this);
 
+        camera();
         //append(new Gauge( null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING ));
         //append(new ClockItem(""));
 
+    }
+
+    public void camera() {
+        try {
+            CameraHandler.takeSnapshot(display);
+        } catch (Exception e) {
+            setTitle("Error:"+ e.getMessage());
+        }
+
+        //Create a new thread here to get notified when the photo is taken
+        new Thread() {
+            public void run() {
+                while (!CameraHandler.isFinished) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ie) {
+                    }
+                }
+                //addPhoto();
+                CameraHandler.end();
+            }
+        }.start();
     }
 
     public void prStart() {

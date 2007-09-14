@@ -79,6 +79,8 @@ settings.Account=Gegevens
 settings.Version=Versie
 settings.DemoModeOff=Demo Mode OFF
 settings.DemoModeOn=Demo Mode ON
+settings.SwitchToGoogleMaps=Gebruik GoogleMaps
+settings.SwitchToGeodan=Gebruik Geodan Maps
 
 task.Info=Vul het juiste antwoord in en stuur een foto, video of audioclip op om de opdracht te voltooien.
 task.TaskDone=Je hebt deze opdracht al voltooid.

@@ -135,6 +135,8 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
 
         g.setColor(204, 204, 204);
         g.fillRect(0, 0, w, 22);
+        g.setColor(204, 204, 204);
+        g.fillRect(0, 0, w, 22);
         g.setColor(0, 0, 0);
 
         f = Font.getFont(Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL);

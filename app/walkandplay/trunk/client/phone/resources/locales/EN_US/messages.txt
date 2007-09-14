@@ -79,6 +79,8 @@ settings.Account=Account
 settings.Version=Version
 settings.DemoModeOff=Demo Mode OFF
 settings.DemoModeOn=Demo Mode ON
+settings.SwitchToGoogleMaps=Switch to GoogleMaps
+settings.SwitchToGeodan=Switch to Geodan Maps
 
 task.Info=Fill in the right answer and send a photo, video or audioclip to fullfill the task.
 task.TaskDone=You already completed this task.

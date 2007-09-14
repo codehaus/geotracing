@@ -88,6 +88,15 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/external/lib/cameralib.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntryProperties />
     <javadoc-paths>
       <root url="file://$MODULE_DIR$/../../../../../../../mobstuff/projects/external/sun/wtk20/docs/api" />

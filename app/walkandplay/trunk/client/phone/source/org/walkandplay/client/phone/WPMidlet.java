@@ -55,6 +55,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     public final static String KW_URL = "kw-url";
 	public final static String WMS_URL = "wms-url";
+	public final static String GOOGLE_WMS_URL = "google-wms-url";
+	public final static String GEODAN_WMS_URL = "geodan-wms-url";
     public final static String KW_USER = "kw-user";
     public final static String KW_PASSWORD = "kw-password";
     public final static String KW_SERVER = "kw-server";
@@ -64,11 +66,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String VOLUME = "volume";
     public final static String GPS_SAMPLE_INTERVAL = "gps-sample-interval";
     public final static String GPS_SEND_INTERVAL = "gps-send-interval";
-    public final static String MEDIA_PLAYER = "videoplayer";
+    public final static String EXTERNAL_PLAYER = "external-player";
     public final static String DEMO_MODE = "demo";
-    public final static String INTERN = "intern";
-    public final static String EXTERN = "extern";
-
+    
     public WPMidlet() {
         super();
         midlet = this;        
@@ -156,7 +156,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
 	public String getWMSUrl() {
-		 return getPreferences().get((WMS_URL), getAppProperty(WMS_URL));
+		 return getPreferences().get((WMS_URL), getAppProperty(GEODAN_WMS_URL));
 	 }
 
     public String getKWServer() {
@@ -187,20 +187,24 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return Integer.parseInt(getAppProperty(VOLUME));
     }
 
+    public boolean useGoogleMaps(){
+        return getWMSUrl().equals(GOOGLE_WMS_URL);
+    }
+
+    public boolean useExternalPlayer() {
+        String bool = getPreferences().get((EXTERNAL_PLAYER), getAppProperty(EXTERNAL_PLAYER));
+        if(bool.equals("true")){
+            return true;
+        }
+        return false;
+    }
+
     public long getGPSSendInterval() {
         return Long.parseLong(getPreferences().get((GPS_SEND_INTERVAL), getAppProperty(GPS_SEND_INTERVAL)));
     }
 
     public long getGPSSampleInterval() {
         return Long.parseLong(getPreferences().get((GPS_SAMPLE_INTERVAL), getAppProperty(GPS_SAMPLE_INTERVAL)));
-    }
-
-    public boolean useInternalMediaPlayer(){
-        String type = getPreferences().get((MEDIA_PLAYER));
-        if(type == null || type.equals(INTERN)){
-            return true;
-        }
-        return false;        
     }
 
     public boolean isInDemoMode(){
@@ -276,8 +280,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 7:
                 // test display
-                /*Display.getDisplay(this).setCurrent(new TestDisplay(this));*/
-                Display.getDisplay(this).setCurrent(new AudioDisplay2(this, "test", "http://test.walkandplay.com/wp/media.srv?id=831815", selectGameDisplay));
+                Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                /*Display.getDisplay(this).setCurrent(new AudioDisplay2(this, "test", "http://test.walkandplay.com/wp/media.srv?id=831815", selectGameDisplay));*/
+                
                 /*try{
                     Player player = Manager.createPlayer("http://test.walkandplay.com/wp/media.srv?id=831815"); 
                     player.realize();

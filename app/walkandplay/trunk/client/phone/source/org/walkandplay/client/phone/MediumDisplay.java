@@ -83,23 +83,29 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
         } else if (mediumType.equals("video")) {
             setTitle("Video");
-            if (midlet.useInternalMediaPlayer()) {
-                //#style formbox
-                append("When you click on 'play video' the video will be " +
-                        "downloaded. This might take a while.... Afterwards continue " +
-                        "here by pressing 'back'");
-            } else {
+            if (midlet.useExternalPlayer()) {
                 //#style formbox
                 append("When you click on 'play video' the video will be " +
                 "downloaded and played in your default media player." +
                 " Afterwards close the media player and continue " +
                 "here by pressing 'back'");
+            } else {
+                //#style formbox
+                append("When you click on 'play video' the video will be " +
+                        "downloaded. This might take a while.... Afterwards continue " +
+                        "here by pressing 'back'");
             }
 
             addCommand(PLAY_VIDEO_CMD);
         } else if (mediumType.equals("audio")) {
             setTitle("Audio");
-            if (midlet.useInternalMediaPlayer()) {
+            if (midlet.useExternalPlayer()) {
+                //#style formbox
+                append("When you click on 'play audio' the audio will be " +
+                        "downloaded and played in your default media player. " +
+                        " Afterwards close the media player and continue " +
+                        "here by pressing 'back'");
+            } else {
                 //#style formbox
                 /*append("When you click on 'play audio' the audio will be " +
                         "downloaded. This might take a while.... Afterwards continue " +
@@ -110,14 +116,8 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
                     Util.playStream(mediumUrl);
                 }catch(Throwable t){
                     //#style alertinfo
-                    append("Could not play the audio:" + t.getMessage());                    
+                    append("Could not play the audio:" + t.getMessage());
                 }
-            } else {
-                //#style formbox
-                append("When you click on 'play audio' the audio will be " +
-                        "downloaded and played in your default media player. " +
-                        " Afterwards close the media player and continue " +
-                        "here by pressing 'back'");
             }
 
             addCommand(PLAY_AUDIO_CMD);
@@ -195,30 +195,29 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
             active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == PLAY_VIDEO_CMD) {
-            if (midlet.useInternalMediaPlayer()) {
-                new VideoDisplay(midlet, mediumName, mediumUrl, this);
-                /*if(videoDisplay == null){
-                    videoDisplay = new VideoDisplay(midlet);
-                }
-                videoDisplay.start(this, mediumName, mediumUrl);*/
-            } else {
+            if (midlet.useExternalPlayer()) {
                 try {
                     midlet.platformRequest(mediumUrl);
                 } catch (Throwable t) {
                     //#style alertinfo
                     append("Can not play video (" + t.getMessage() + ")");
                 }
+            } else {
+                new VideoDisplay(midlet, mediumName, mediumUrl, this);
+                /*if(videoDisplay == null){
+                    videoDisplay = new VideoDisplay(midlet);
+                }
+                videoDisplay.start(this, mediumName, mediumUrl);*/
             }
         } else if (command == PLAY_AUDIO_CMD) {
             try {
-                if (midlet.useInternalMediaPlayer()) {
+                if (midlet.useExternalPlayer()) {
+                    midlet.platformRequest(mediumUrl);
+                } else {
                     if(audioDisplay == null){
                         audioDisplay = new AudioDisplay(midlet, this);
                     }
                     audioDisplay.play(mediumName, mediumUrl);
-
-                } else {
-                    midlet.platformRequest(mediumUrl);
                 }
             } catch (Throwable t) {
                 //#style alertinfo
