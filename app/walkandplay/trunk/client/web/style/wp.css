@@ -283,6 +283,18 @@ input, textarea
 	height:12px;
 }
 
+.pane ul
+{
+	list-style-type:circle;
+	padding-left:15px;
+	margin:0px;
+
+}
+.pane li
+{
+	margin-top:0px;
+	margin-bottom:1px;
+}
 
 .pane_autosize div
 {

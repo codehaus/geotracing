@@ -28,7 +28,13 @@ function wpLocations(name)
 		var zoom = gmap.getBoundsZoomLevel(bounds);
 		zoom--;
 		gmap.setCenter(bounds.getCenter(),zoom);
-
+		
+		//update locations
+		if (wp_selected_game)
+		{
+			wp_games.game[wp_selected_game].locations.update();
+			//wp_games.game[wp_selected_game].traces.update(); //-> ??
+		}
 	}
 	
 	return array;
@@ -44,11 +50,17 @@ function wpLocation(collection,id,p,type,state,name)
 	this.prevgeo = this.geo = p;
 	this.type = type;
 	this.state = state || 'disabled';
-	this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
+	if (collection.trace)
+	{
+		//trace media icons
+		this.icon = 'icon_media_black.png';
+	}
+	else this.icon = (this.type=='task')? 'icon_location_b_task_'+this.state+'.png':'icon_location_b_'+this.state+'.png';
+	
 	this.name = name;
 	this.scale = .5;
-	this.maxw = 40;
-	this.maxh = 68;
+	this.maxw = (collection.trace)? 20:40;
+	this.maxh = (collection.trace)? 48:68;
 	
 	this.w = this.scale * this.maxw;
 	this.h = this.scale * this.maxh;
@@ -85,7 +97,8 @@ function wpLocation(collection,id,p,type,state,name)
 				str+= '"<b>'+obj.name+'</b>"<br>'; // ('+obj.type.substring(0,1)+'='+obj.id+')<br>';
 				if (obj.state=='enabled') str+= '<a href="javascript://view" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
 				if (gmap.getZoom()<17) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].zoomTo()">zoom to</a>&nbsp;';
-				//delete button
+
+				//edit/delete button
 				//if (obj.collection.name=='game' && wp_mode=='create')
 				if (wp_mode=='create' && wp_games.game[wp_selected_game].state!=2)
 				{
@@ -113,17 +126,22 @@ function wpLocation(collection,id,p,type,state,name)
 	
 		
 	//create shadow
+	var w = (this.collection.trace)? (this.scale*40):(this.scale*82);
+	var h = (this.collection.trace)? (this.scale*22):(this.scale*40);
+	var img = (this.collection.trace)? 'icon_media_shadow.png':'icon_location_shadow.png';
+
 	var shadow = document.createElement('IMG');
 		shadow.style.position = 'absolute';
-		shadow.style.width = (this.scale*82) +'px';
-		shadow.style.height = (this.scale*40) +'px';
+		shadow.style.width =  w +'px';
+		shadow.style.height = h +'px';
 		shadow.style.zIndex = this.z;
 		//shadow.style.border = '1px dotted red';
-		if (browser.properpngsupport) shadow.src = 'media/icon_location_shadow.png';
+		
+		if (browser.properpngsupport) shadow.src = 'media/'+img;
 		else
 		{
 			shadow.src = 'media/blank.gif';
-			shadow.style.filter = PNGbgImage('icon_location_shadow.png').substr(7);
+			shadow.style.filter = PNGbgImage(img).substr(7);
 		}
 
 	gmap.getPane(G_MAP_MARKER_PANE).appendChild(location);
@@ -212,10 +230,12 @@ wpLocation.prototype.update = function()
 	this.div.style.width = this.w +'px';
 	this.div.style.height = this.h +'px';
 
+	var w = (this.collection.trace)? this.scale*40:this.scale*82;
+	var h = (this.collection.trace)? this.scale*22:this.scale*40;
 	this.shadow_div.style.left = this.x +'px';
-	this.shadow_div.style.top = this.y +this.h -(this.scale*40) +'px';
-	this.shadow_div.style.width = (this.scale*82) +'px';
-	this.shadow_div.style.height = (this.scale*40) +'px';
+	this.shadow_div.style.top = this.y +this.h - h +'px';
+	this.shadow_div.style.width = w +'px';
+	this.shadow_div.style.height = h +'px';
 
 }
 
@@ -280,7 +300,8 @@ wpLocation.prototype.expand = function()
 	
 	wp_location_expanded = this;
 	this.expanded = true;
-	this.changeIcon('icon_location_r.png');
+	var icon = (this.collection.trace)? 'icon_media_red.png':'icon_location_r.png';
+	this.changeIcon(icon);
 	
 //	panes['display'].show();
 
@@ -391,7 +412,7 @@ wpLocation.prototype.updateDetails = function(resp)
 		//display pane contents
 		var str = '';
 			str+= '<a style="float:right; margin-right:2px;" href="javascript://close" onclick="wp_location_expanded.collapse()">close</a>';
-			str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_selected_game+'].locations.location['+this.id+'].zoomTo();this.blur()">zoom to</a><br>';
+			if (!this.collection.trace) str+= '<a href="javascript://zoom_to" onclick="wp_games.game['+wp_selected_game+'].locations.location['+this.id+'].zoomTo();this.blur()">zoom to</a><br>';
 			str+= '<br><span class="title">'+title+'</span> "<b>'+this.name+'</b>"<br>';
 			str+= '<div id="display_medium" style="position:relative; margin-top:6px; width:225px; margin-bottom:2px;">';
 			str+= wpEmbedMedium(this.mediumtype,this.mediumid);
