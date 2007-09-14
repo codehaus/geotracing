@@ -1,0 +1,56 @@
+<project name="WP Phone externals" default="build">
+
+    <property name="geotracing.base.dir" value="${basedir}/../../../../../../base/trunk"/>
+	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
+
+	<!-- sets paths to all external package dirs. -->
+	<property file="${geotracing.external.dir}/build.properties"/>
+
+	<!-- sets project-wide props. -->
+	<property file="${basedir}/../../../build.properties"/>
+
+
+    <property file="../build.properties"/>
+	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
+
+    <property name="project.name" value="cameralib"/>
+
+    <path id="compile.classpath">
+        <pathelement location="${mmapi.jar}"/>        
+    </path>
+
+    <path id="compile.sourcepath">
+		<pathelement location="${basedir}"/>
+    </path>
+
+    <target name="build" depends="clean">
+        <!-- set dirs -->
+        <property name="build.dir" value="${basedir}/build/cameralib"/>
+        <property name="classes.dir" value="${build.dir}/classes"/>
+        <property name="boot.classpath" value="${midp2.dir}/classes"/>
+
+        <delete dir="${classes.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+
+        <!-- compile -->
+        <javac destdir="${classes.dir}" target="1.1" bootclasspath="${boot.classpath}" >
+			<src refid="compile.sourcepath"/>
+			<include name="org/walkandplay/client/external/**.java"/>
+
+            <classpath refid="compile.classpath"/>
+        </javac>
+
+        <jar basedir="${build.dir}"
+			 jarfile="${build.dir}/cameralib.jar">
+		</jar>
+
+        <copy file="${build.dir}/cameralib.jar" todir="${basedir}/lib" />
+        
+    </target>
+
+
+	<target name="clean" description="Allows a clean build.">
+		<delete dir="${basedir}/build" />
+	</target>
+
+</project>
