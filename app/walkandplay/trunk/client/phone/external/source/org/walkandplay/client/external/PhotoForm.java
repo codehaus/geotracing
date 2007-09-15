@@ -50,7 +50,6 @@ public class PhotoForm extends Form implements CommandListener {
 
         //in case that "OK" button is pressed
         else if (cmd == okCommand) {
-            append("Ending*");
             CameraHandler.isFinished = true;
             CameraHandler.finish();
         }
