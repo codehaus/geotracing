@@ -33,7 +33,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	private WPMidlet midlet;
 
 	private Timer pollTimer;
-	private Vector IMMessages;
 	private long lastRetrievalTime = -1;
 	private static long POLL_INTERVAL = 10000L;
 
@@ -78,7 +77,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private IntroDisplay introDisplay;
     private AudioCaptureDisplay audioCaptureDisplay;
     private AddTextDisplay addTextDisplay;
-    private ImageCaptureDisplayOld imageCaptureDisplay;
+    private ImageCaptureDisplay imageCaptureDisplay;
 
 
     private JXElement lastObject;
@@ -258,7 +257,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 					if (!demoTaskSent) {
 
                         JXElement hit = new JXElement("medium-hit");
-                        hit.setAttr("id", 831815);
+                        hit.setAttr("id", 831882);
                         rsp.addChild(hit);
 
                         /*Log.log("add a hit!!!!");
@@ -743,6 +742,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private void drawMessage(Graphics aGraphics, String aMsg, int aHeight){
         aGraphics.setColor(238, 238, 238);
         aGraphics.fillRect(0, (h/2 - aHeight/2), w, aHeight);
+        aGraphics.setColor(51, 51, 51);
+        aGraphics.fillRect(0, (h/2 - aHeight/2), w, 1);
+        aGraphics.fillRect(0, (h/2 + aHeight/2), w, 1);
         aGraphics.setColor(0, 0, 0);
         aGraphics.drawString(aMsg, w / 2 - f.stringWidth(aMsg) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
     }
@@ -789,7 +791,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (cmd == ADD_PHOTO_CMD) {
             if(imageCaptureDisplay == null){
-                imageCaptureDisplay = new ImageCaptureDisplayOld(midlet);
+                imageCaptureDisplay = new ImageCaptureDisplay(midlet);
             }
             imageCaptureDisplay.start(this, true);
 		} else if (cmd == ADD_AUDIO_CMD) {

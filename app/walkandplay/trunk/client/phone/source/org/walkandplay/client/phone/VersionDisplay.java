@@ -54,6 +54,8 @@ public class VersionDisplay extends DefaultDisplay {
         } else if (command == GET_CMD) {
             try {
                 midlet.platformRequest(serverURL);
+                // and exit
+                Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
             } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());

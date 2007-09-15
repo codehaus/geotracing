@@ -1,220 +1,179 @@
 package org.walkandplay.client.phone;
 
-import org.geotracing.client.GPSLocation;
-import org.geotracing.client.Util;
-import org.geotracing.client.GPSFetcher;
-import org.geotracing.client.Net;
-import org.keyworx.mclient.Protocol;
-
-import javax.microedition.media.Player;
-import javax.microedition.media.Manager;
-import javax.microedition.media.control.VideoControl;
-import javax.microedition.media.control.GUIControl;
-import javax.microedition.midlet.MIDlet;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.StringItem;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.TextField;
-import javax.microedition.lcdui.ImageItem;
-/*import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.StringItem;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.TextField;
-import javax.microedition.lcdui.ImageItem;*/
-
 import nl.justobjects.mjox.JXElement;
+import nl.justobjects.mjox.XMLChannel;
+import org.geotracing.client.GPSFetcher;
+import org.geotracing.client.Util;
+import org.walkandplay.client.external.CameraHandler;
+import org.walkandplay.client.external.CameraListener;
 
-public class ImageCaptureDisplay extends Form implements CommandListener {
+import javax.microedition.lcdui.*;
 
-    private Command capture;
-    private Command skip;
+/**
+ * Capture image from phone camera.
+ *
+ * @author Just van den Broecke
+ * @version $Id: ImageCapture.java 254 2007-01-11 17:13:03Z just $
+ */
+public class ImageCaptureDisplay extends DefaultDisplay implements TCPClientListener, CameraListener {
 
-    private Player player = null;
-    private VideoControl video = null;
-    private Image photoPreview;
-    private byte[] photoData;
-    private String photoMime;
-    private long photoTime;
-    private MIDlet midlet;
+    private Command SEND_CMD = new Command("Send", Command.OK, 1);
+
     private Displayable prevScreen;
-    private StringItem status = new StringItem("", "Photo Capture");
-    private GPSLocation location;
+    private boolean playing;
+    private TextField name = new TextField("", null, 24, TextField.ANY);
+    private boolean active;
+    private Display display;
 
-    public ImageCaptureDisplay(MIDlet aMIDlet) {
-        super("Take a picture");
-        midlet = aMIDlet;
-        prevScreen = Display.getDisplay(midlet).getCurrent();
-        showCamera();
-
-        capture = new Command("Capture", Command.OK, 1);
-        skip = new Command("Cancel", Command.CANCEL, 1);
-        addCommand(capture);
-        addCommand(skip);
-        setCommandListener(this);
+    public ImageCaptureDisplay(WPMidlet aMIDlet) {
+        super(aMIDlet, "Image Capture");        
+        display = Display.getDisplay(midlet);
     }
 
-    public void commandAction(Command c, Displayable d) {
-        if (c == capture) {
-            capture();
-            Display.getDisplay(midlet).setCurrent(new PhotoPreview());
-        } else if (c == skip) {
-            player.close();
-            // Set the current display of the midlet to the textBox screen
-            back();
+    public void camera() {
+        try {
+            CameraHandler.addListener(this);
+            CameraHandler.takeSnapshot(display);
+        } catch (Exception e) {
+            //#style alertinfo
+            append("Error:"+ e.getMessage());
         }
+
+        //Create a new thread here to get notified when the photo is taken
+        /*new Thread() {
+            public void run() {
+                while (!CameraHandler.isFinished) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ie) {
+                        //#style alertinfo
+                        append("Error:" + ie.getMessage());
+                    }
+                }
+                drawScreen();
+                CameraHandler.end();                
+            }
+        }.start();*/
     }
 
-    private void back() {
+    public void onFinish(){
+        display.setCurrent(this);
+        drawScreen();
+        CameraHandler.end();
+    }
+    
+    public void onCancel(){
+        active = false;
+        midlet.getActiveApp().removeTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(prevScreen);
     }
 
-    private void showCamera() {
-        try {
-            player = Manager.createPlayer("capture://video");
-            player.realize();
+    private void drawScreen(){
+        display.setCurrent(this);
+        deleteAll();
+        name.setString("");
+        //append(CameraHandler.getPhoto());
+        //#style labelinfo
+        append("Name your photo");
+        //#style textbox
+        append(name);
 
-            // Add the video playback window (item)
-            video = (VideoControl) player.getControl("VideoControl");
-            Item item = (Item) video.initDisplayMode(
-                    GUIControl.USE_GUI_PRIMITIVE, null);
-            item.setLayout(Item.LAYOUT_CENTER |
-                    Item.LAYOUT_NEWLINE_AFTER);
-            append(item);
-            // Add a caption
-            status.setText("Press Fire to take photo");
-            status.setLayout(Item.LAYOUT_CENTER);
-            append(status);
-
-            player.start();
-
-        } catch (Throwable e) {
-            Util.showAlert(midlet, "cannot start camera", e.getMessage());
-            back();
-        }
+        addCommand(SEND_CMD);
     }
 
-    private void capture() {
-        try {
-            // PNG, 160x120
-            // BlogClient.photoData = video.getSnapshot(null);
-            //      OR
-            // BlogClient.photoData = video.getSnapshot(
-            //     "encoding=png&width=160&height=120");
+    private void sendPhoto(byte[] theBytes){
+        try{
+            Uploader uploader = new Uploader();
+			long photoTime = Util.getTime();
+            JXElement rsp = uploader.uploadMedium(TCPClient.getInstance().getAgentKey(), midlet.getKWUrl(), name.getString(), null, "image", "image/jpeg", photoTime, theBytes, false);
+            JXElement addMediumReq;
+            if (playing) {
+                addMediumReq = new JXElement("play-add-medium-req");
+                addMediumReq.setAttr("id", rsp.getAttr("id"));
 
-            // BlogClient.photoPreview = BlogClient.photoData;
-            // BlogClient.photoMime = "png";
- // http://archives.java.sun.com/cgi-bin/wa?A2=ind0607&L=kvm-interest&F=&S=&P=2488
-            status.setText("WAIT, taking photo...");
+            } else {
+                addMediumReq = new JXElement("game-add-medium-req");
+                addMediumReq.setAttr("id", midlet.getCreateApp().getGameId());
+                JXElement medium = new JXElement("medium");
+                addMediumReq.addChild(medium);
 
-            location = GPSFetcher.getInstance().getCurrentLocation();
-            photoTime = Util.getTime();
+                JXElement id = new JXElement("id");
+                id.setText(rsp.getAttr("id"));
+                medium.addChild(id);
 
-            try {
-                photoData = video.getSnapshot(
-                        "encoding=jpeg&width=320&height=240");
-            } catch(Throwable t) {
-                // Some phones don't support specific encodings
-                // This should fix at least SonyEricsson K800i...
-                photoData = video.getSnapshot(null);
+                JXElement lat = new JXElement("lat");
+                lat.setText("" + GPSFetcher.getInstance().getCurrentLocation().lat);
+                medium.addChild(lat);
+
+                JXElement lon = new JXElement("lon");
+                lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
+                medium.addChild(lon);
             }
-
-            photoMime = "image/jpeg";
-
-            player.stop();
-            player.close();
-
-            photoPreview =
-                    createPreview(
-                            Image.createImage(photoData, 0, photoData.length));
-            status.setText("OK done...");
-
-        } catch (Throwable e) {
-            Util.showAlert(midlet, "capture error", e.getMessage());
-            back();
+            midlet.getActiveApp().sendRequest(addMediumReq);
+        }catch(Throwable t){
+            //#style alertinfo
+            append("Error:" + t.getMessage());
         }
     }
 
-    // Scale down the image by skipping pixels
-    public static Image createPreview(Image image) {
-        int sw = image.getWidth();
-        int sh = image.getHeight();
-
-        int pw = 160;
-        int ph = pw * sh / sw;
-
-        Image temp = Image.createImage(pw, ph);
-        Graphics g = temp.getGraphics();
-
-        for (int y = 0; y < ph; y++) {
-            for (int x = 0; x < pw; x++) {
-                g.setClip(x, y, 1, 1);
-                int dx = x * sw / pw;
-                int dy = y * sh / ph;
-                g.drawImage(image, x - dx, y - dy,
-                        Graphics.LEFT | Graphics.TOP);
-            }
-        }
-
-        Image preview = Image.createImage(temp);
-        return preview;
+    public void start(Displayable aPrevScreen, boolean isPlaying){
+        midlet.getActiveApp().addTCPClientListener(this);
+        prevScreen = aPrevScreen;
+        playing = isPlaying;
+        active = true;
+        display.setCurrent(this);
+        camera();
     }
 
-    private class PhotoPreview extends Form implements CommandListener {
+    public boolean isActive(){
+        return active;
+    }
 
-        private Command cancel;
-        private Command submit;
-        private TextField name = new TextField("Photo Name (below)", null, 24, TextField.ANY);
-
-        public PhotoPreview() {
-            super("Photo Preview");
-            cancel = new Command("Back", Command.CANCEL, 1);
-            submit = new Command("Submit", Command.OK, 1);
-            addCommand(cancel);
-            addCommand(submit);
-            setCommandListener(this);
-
-            append(new ImageItem("", photoPreview, ImageItem.LAYOUT_CENTER, "image"));
-            append(name);
-            append("press Submit to send or Back to cancel");
+    public void commandAction(Command c, Displayable d) {
+        if (c == BACK_CMD) {
+            active = false;
+            midlet.getActiveApp().removeTCPClientListener(this);
+            Display.getDisplay(midlet).setCurrent(prevScreen);
+        }else if (c == SEND_CMD) {
+            sendPhoto(CameraHandler.getPhotoBytes());
         }
+    }
 
-        public void commandAction(Command c, Displayable d) {
-            if (c == cancel) {
-                photoData = null;
-                photoPreview = null;
-                back();
+    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
+        String tag = aResponse.getTag();
+        if (tag.equals("utopia-rsp")) {
 
-            } else if (c == submit) {
+            JXElement rsp = aResponse.getChildAt(0);
+            if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                // TODO: need a notify here if we finished a task
                 deleteAll();
-                append("SENDING PHOTO...(takes a while)");
-                JXElement rsp = Net.getInstance().addMedium(name.getString(), "image", photoMime, photoTime, photoData, null);
-                if (rsp == null) {
-                    append("error submitting photo !");
-                } else if (Protocol.isPositiveResponse(rsp)) {
-                    append("submit photo OK ");
-                    append("\nsize=" + photoData.length / 1024 + " kb name= " + name.getString() + " id=" + rsp.getAttr("id"));
-
-                } else {
-                    append("submit failed: error is " + rsp.getAttr("error"));
-                }
-
+                removeCommand(SEND_CMD);
+                //#style alertinfo
+                append("Image sent successfully");
+            } else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {
+                deleteAll();
+                //#style alertinfo
+                append("Error sending Image - please try again.");
             }
-            append("\npress Back to go back");
         }
+    }
+
+    public void onNetStatus(String aStatus){
 
     }
 
+    public void onConnected(){
+
+    }
+
+    public void onError(String anErrorMessage){
+        //#style alertinfo
+        append(anErrorMessage);
+    }
+
+    public void onFatal(){
+        midlet.getActiveApp().exit();
+        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
+    }
 
 }

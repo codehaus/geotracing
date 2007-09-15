@@ -36,7 +36,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     private AddRoundDisplay addRoundDisplay;
     private NewGameDisplay newGameDisplay;
     private EditGameDisplay editGameDisplay;
-    private ImageCaptureDisplayOld imageCaptureDisplay;
+    private ImageCaptureDisplay imageCaptureDisplay;
     private MapDisplay mapDisplay;
 
     private Image logo;
@@ -163,7 +163,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
                 addRoundDisplay.start(this);
             } else if (cmd == ADD_PHOTO_CMD) {
                 if(imageCaptureDisplay == null){
-                    imageCaptureDisplay = new ImageCaptureDisplayOld(midlet);
+                    imageCaptureDisplay = new ImageCaptureDisplay(midlet);
                 }
                 imageCaptureDisplay.start( this, false);
             } else if (cmd == ADD_AUDIO_CMD) {
