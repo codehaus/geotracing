@@ -208,11 +208,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     public boolean isInDemoMode(){
-        String demoMode = getPreferences().get((DEMO_MODE), getAppProperty(DEMO_MODE));
-        if(demoMode == null || demoMode.equals("no")){
-            return false;
+        String bool = getPreferences().get((DEMO_MODE), getAppProperty(DEMO_MODE));
+        if(bool.equals("true")){
+            return true;
         }
-        return true;
+        return false;
     }
 
     public AppStartDisplay getActiveApp(){
