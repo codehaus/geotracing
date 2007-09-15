@@ -1,9 +1,6 @@
 package org.walkandplay.client.external;
 
-import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.StringItem;
+import javax.microedition.lcdui.*;
 import javax.microedition.media.Player;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Manager;
@@ -28,11 +25,18 @@ public class CameraHandler {
     private static Player player = null;
     private static VideoControl videoControl = null;
 
+    private static CameraListener listener;
+
     /**
      * Indicate whether the user already takes the snapshot or not.
      * True if yes, otherwise false.
      */
     public static boolean isFinished = false;
+
+
+    public static void addListener(CameraListener aListener){
+        listener = aListener;
+    }
 
     /**
      * Start the camera utility.
@@ -58,6 +62,14 @@ public class CameraHandler {
             player.close();
             player = null;
         }
+    }
+
+    public static void finish(){
+        listener.onFinish();
+    }
+
+    public static void cancel(){
+        listener.onCancel();
     }
 
     /**
@@ -100,18 +112,18 @@ public class CameraHandler {
      */
     protected static void showVideo() throws IOException, MediaException {
 
-//initialize the player
+        //initialize the player
         if (player == null) {
             player = Manager.createPlayer("capture://video");
             player.realize();
         }
 
-//initialize the VideoControl
+        //initialize the VideoControl
         if (videoControl == null) {
             videoControl = (VideoControl) player.getControl("VideoControl");
         }
 
-//start the video and display it
+        //start the video and display it
         if (player != null && videoControl != null) {
             if (cameraForm == null) {
                 cameraForm = new CameraForm("Capture a Photo");
@@ -122,6 +134,8 @@ public class CameraHandler {
             display.setCurrent(cameraForm);
         } else {
             System.out.println("can't establish player or videoControl");
+            photoForm.append("can't establish player or videoControl");
+            photoForm.append("can't establish player or videoControl");
         }
     }
 
@@ -132,14 +146,16 @@ public class CameraHandler {
 
         photoForm = new PhotoForm("Confirm Photo");
 
-//take a snapshot, use the default image format of the specific phone
+        //take a snapshot, use the default image format of the specific phone
         try {
-            photoBytes = videoControl.getSnapshot(null);
+            photoBytes = videoControl.getSnapshot("encoding=jpeg&width=320&height=240");
+            //photoBytes = videoControl.getSnapshot(null);
 
-//create the image and append it to the form
+            //create the image and append it to the form
             if (photoBytes != null) {
                 photo = Image.createImage(photoBytes, 0, photoBytes.length);
-                photoForm.append(photo);
+                Image preview = createPreview(photo);
+                photoForm.append(preview);
             } else {
                 StringItem warnMsg = new StringItem("Camera is currently unavailable. ",
                         "Check your camera and try later.");
@@ -151,8 +167,31 @@ public class CameraHandler {
             photoForm.append(warnMsg);
         }
 
-//display the form
+        //display the form
         display.setCurrent(photoForm);
     }
+
+    public static Image createPreview(Image image) {
+		int sw = image.getWidth();
+		int sh = image.getHeight();
+
+		int pw = 240;
+		int ph = pw * sh / sw;
+
+		Image temp = Image.createImage(pw, ph);
+		Graphics g = temp.getGraphics();
+
+		for (int y = 0; y < ph; y++) {
+			for (int x = 0; x < pw; x++) {
+				g.setClip(x, y, 1, 1);
+				int dx = x * sw / pw;
+				int dy = y * sh / ph;
+				g.drawImage(image, x - dx, y - dy,
+						Graphics.LEFT | Graphics.TOP);
+			}
+		}
+
+		return Image.createImage(temp);
+	}
 
 }

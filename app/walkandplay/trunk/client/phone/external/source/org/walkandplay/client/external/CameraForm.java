@@ -23,10 +23,10 @@ public class CameraForm extends Form implements CommandListener {
      */
     public CameraForm(String name) {
 
-//set the title of this form
+        //set the title of this form
         super(name);
 
-//Configure the CommandListener
+        //Configure the CommandListener
         captureCommand = new Command("Capture", Command.ITEM, 1);
         backCommand = new Command("Back", Command.BACK, 0);
         setCommandListener(this);
@@ -40,12 +40,13 @@ public class CameraForm extends Form implements CommandListener {
      */
     public void commandAction(Command cmd, Displayable disp) {
 
-//in case that "Back" button is pressed
+        //in case that "Back" button is pressed
         if (cmd.getCommandType() == Command.BACK) {
             CameraHandler.isFinished = true;
+            CameraHandler.cancel();
         }
 
-//in case that "Capture" button is pressed
+        //in case that "Capture" button is pressed
         else if (cmd == captureCommand) {
             CameraHandler.capturePhoto();
         }

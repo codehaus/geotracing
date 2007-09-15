@@ -22,10 +22,10 @@ public class PhotoForm extends Form implements CommandListener {
      */
     public PhotoForm(String name) {
 
-//set the title of the form
+        //set the title of the form
         super(name);
 
-//configure the CommandListener
+        //configure the CommandListener
         okCommand = new Command("OK", Command.ITEM, 1);
         cancelCommand = new Command("Cancel", Command.BACK, 0);
         setCommandListener(this);
@@ -38,18 +38,21 @@ public class PhotoForm extends Form implements CommandListener {
      */
     public void commandAction(Command cmd, Displayable disp) {
 
-//in case that "Back" button is pressed
+        //in case that "Back" button is pressed
         if (cmd.getCommandType() == Command.BACK) {
             try {
                 CameraHandler.showVideo();
                 CameraHandler.setPhotoNull();
             } catch (Exception e) {
+                append("PhotoForm error:" + e.toString());                
             }
         }
 
-//in case that "OK" button is pressed
+        //in case that "OK" button is pressed
         else if (cmd == okCommand) {
+            append("Ending*");
             CameraHandler.isFinished = true;
+            CameraHandler.finish();
         }
     }
 
