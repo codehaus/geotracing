@@ -346,6 +346,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
             } else if (command == GET_CMD) {
                 try {
                     midlet.platformRequest("http://" + midlet.getKWServer());
+                    // and exit
+                    Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
                 } catch (Throwable t) {
                     //#style alertinfo
                     form.append("Could not get new version...sorry.");

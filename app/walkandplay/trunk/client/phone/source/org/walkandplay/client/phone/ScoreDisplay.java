@@ -45,11 +45,15 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
                         JXElement e = (JXElement) elms.elementAt(i);
                         String team = e.getChildText("loginname");
                         String points = e.getChildText("score");
-
-                        //#style labelinfo
-                        append(team);
-                        //#style formbox
-                        append(new Gauge("", false, maxScore, Integer.parseInt(points)));
+                        try{
+                            //#style labelinfo
+                            append(team);
+                            //#style formbox                            
+                            append(new Gauge("", false, maxScore, Integer.parseInt(points)));
+                        }catch(Throwable t){
+                            //#style alertinfo
+                            append("Error:" + t.toString() + ":" + t.getMessage());
+                        }
                     }
                 }
             }
@@ -81,10 +85,6 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
         midlet.getPlayApp().sendRequest(req);
     }
 
-    /*
-    * The commandAction method is implemented by this midlet to
-    * satisfy the CommandListener interface and handle the Exit action.
-    */
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
             active = false;

@@ -392,7 +392,10 @@ public class MapDisplay extends GameCanvas implements CommandListener, TCPClient
 
     private void drawMessage(Graphics aGraphics, String aMsg, int aHeight){
         aGraphics.setColor(238, 238, 238);
-        aGraphics.fillRect(0, h/2 - aHeight/2, w, h/2 + aHeight/2);
+        aGraphics.fillRect(0, (h/2 - aHeight/2), w, aHeight);
+        aGraphics.setColor(51, 51, 51);
+        aGraphics.fillRect(0, (h/2 - aHeight/2), w, 1);
+        aGraphics.fillRect(0, (h/2 + aHeight/2), w, 1);
         aGraphics.setColor(0, 0, 0);
         aGraphics.drawString(aMsg, w / 2 - f.stringWidth(aMsg) / 2, h / 2, Graphics.TOP | Graphics.LEFT);
     }

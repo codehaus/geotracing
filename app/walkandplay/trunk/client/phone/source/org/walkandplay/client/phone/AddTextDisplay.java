@@ -20,7 +20,9 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
 
     public AddTextDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Add Text");
+    }
 
+    private void drawScreen(){
         //#style labelinfo
         append("Enter Title");
 
@@ -40,7 +42,6 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         //#style textbox
         tagsField = new TextField("", "", 32, TextField.ANY);
         form.append(tagsField);*/
-
         addCommand(SUBMIT_CMD);
     }
 
@@ -49,6 +50,10 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         active = true;
         playing = isPlaying;
         midlet.getActiveApp().addTCPClientListener(this);
+        // start fresh
+        deleteAll();
+        drawScreen();
+        
         Display.getDisplay(midlet).setCurrent(this);
     }
 
@@ -62,14 +67,14 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
                 deleteAll();
-                addCommand(BACK_CMD);
+                //addCommand(BACK_CMD);
                 //#style alertinfo
                 append(alertField);
                 
                 alertField.setText("Text sent successfully");
             } else if (rsp.getTag().indexOf("-nrsp")!=-1) {
                 deleteAll();
-                addCommand(BACK_CMD);
+                //addCommand(BACK_CMD);
                 //#style alertinfo
                 append(alertField);
 
