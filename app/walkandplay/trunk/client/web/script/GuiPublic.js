@@ -47,7 +47,6 @@ function wpCreatePane(type,obj)
 			str+= '</form>';
 
 			pane.setContent(str);
-			//pane.show();
 			break;
 
 		case 'list_games':
@@ -76,7 +75,6 @@ function wpCreatePane(type,obj)
 			str+= '<div id="profile_submit" style="right:15px; bottom:15px;"></div>';
 			pane.setContent(str);
 			pane.show();
-			//pane.update = function(str) { this.content.lastChild.innerHTML = str; };
 			break;
 
 		case 'list_rounds':
@@ -96,20 +94,15 @@ function wpCreatePane(type,obj)
 			/*			
 			pane.hideMore = function()
 			{
-				//clear pane contents
-				var obj = this;
-				window.setTimeout(function() { obj.content.firstChild.innerHTML = '' },150);
-			
-// 				if (browser.safari && document.getElementById('qtvideo'))
-// 				{
-// 					//qt safari bug (force sound stop)
-// 					tmp_debug(1,'QT STOP');
-// 					document.getElementById('qtvideo').Stop();
-// 				}
+				if (browser.safari && document.getElementById('qtvideo'))
+				{
+					//qt safari bug (force sound stop)
+					tmp_debug(1,'QT STOP');
+					document.getElementById('qtvideo').Stop();
+				}
 			}
 			*/
 			break
-			
 			
 		case 'location_info':
 			var pane = new Pane('location_info',0,0,140,20,250,false,gmap.getPane(G_MAP_FLOAT_PANE));
@@ -203,25 +196,13 @@ function wpCreatePane(type,obj)
 			}
 			break;
 			
-// 		case 'list_games_view':
-// 			var pane = new Pane('list_games',100,160,200,200,1,true);
-// 			if (wp_viewmode=='archived') str+= '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
-// 			else str+= '<b><a href="javascript://archived_games">archived</a> or <span class="red">live games</span></b><br><br>';
-// 			str+= '<div id="list_rounds"></div>';
-// 			pane.setContent(str);
-// 			break;
-
 		case 'list_view':
 			var pane = new Pane('list_view',100,160,200,200,1,true);
+
 			//header
-			if (wp_viewmode=='archived')
-			{
-				var header = '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
-			}
-			else
-			{
-				var header = '<a href="javascript://archived_games">archived</a> or <span class="red">live games</span><br><br>';
-			}
+			if (wp_viewmode=='archived') var header = '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
+			else var header = '<a href="javascript://archived_games">archived</a> or <span class="red">live games</span><br><br>';
+
 			str+= header;
 			str+= '<div class="list"></div>';
 			pane.setContent(str);
@@ -229,6 +210,19 @@ function wpCreatePane(type,obj)
 			{
 				this.content.lastChild.innerHTML = list;
 			}
+			break;
+			
+		case 'finish':
+			var pane = new Pane('finish',340,110,500,100,1,true,undefined,true); //auto-size pane);
+			
+			str+= '<span class="title">game finished!</span><br><br>';
+			str+= '<div style="position:relative; margin-left:-5px; padding:5px; width:493px; background-color:#eeeeee; margin-bottom:10px;">';
+			str+= wp_games.game[wp_selected_game].outro+'<br>';
+			str+= '</div>';
+			str+= '<input type=button value=" ok! " onclick="panes.hide(\'finish\')" style="float:right; margin-right:10px">';
+
+			pane.setContent(str);
+			pane.show();
 			break;
 
 		default:
@@ -270,10 +264,16 @@ function wpEmbedMedium(type,id)
 			str+= '<param name="bgcolor" value="#ffffff" />';
 			str+= '<embed src="/wp/media.srv?id='+id+'&format=swf&resize=225x169" quality="high" bgcolor="#ffffff" width="225" height="169" name="world" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />';
 			str+= '</object>';
-			
-			//Flash flv embed
-			
-			
+
+			/*			
+			//Flash flv embed //-> FLV PLAYER DOESN'T WORK BECAUSE OF THE &'s IN THE FILENAME
+			var str = '<div id="flvplayer"><a href="http://www.macromedia.com/go/getflashplayer" style="color:rgb(150,150,150)">Get Flash</a> to see this player.</div>';
+			var file = '/wp/media.srv?id='+id+'&format=flv&resize=225x169';
+			wp_flvplayer = new SWFObject('media/flvplayer.swf','flvplayer',225,169,'7');
+			wp_flvplayer.addParam('allowfullscreen','true');
+			wp_flvplayer.addVariable('file',file);
+			wp_flvplayer.addVariable('autostart','true');
+			*/
 			break;
 			
 		case 'audio':

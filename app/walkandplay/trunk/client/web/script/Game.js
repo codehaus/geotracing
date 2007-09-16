@@ -11,6 +11,7 @@ wp_game_edit = false;
 
 wp_selected_game = false;
 wp_selected_round = false;
+wp_selected_roundname = false;
 wp_selected_play = false;
 wp_selected_location = false;
 
@@ -39,7 +40,7 @@ function wpGameInit()
 	//locations and players
  	wp_locations = new wpLocations();
  	wp_players = new wpPlayers();
- 	wp_players.realityCheck();
+ 	//wp_players.realityCheck();
 
 	wp_view = false;
 }
@@ -149,11 +150,12 @@ function wpGameProfile(id,list_index)
 	wpSelectGame('view',id);
 }
 
-function wpSelectGame(type,id,roundid,playid)
+function wpSelectGame(type,id,roundid,playid,roundname)
 {
 	wp_selected_game = id || wp_selected_game;
 	wp_selected_round = roundid || wp_selected_round;
 	wp_selected_play = playid || wp_selected_play;
+	//wp_selected_roundname = roundname || wp_selected_roundname;
 
 	//create new if needed, will return to this function
 	if (!wp_games.game[id])
@@ -180,6 +182,9 @@ function wpSelectGame(type,id,roundid,playid)
 			
 			//get current game(state)
 			game.getLocations(true); //will update playstate when loaded
+		
+			//start checking for timed out live players
+			wp_players.realityCheck();
 
 			break;
 			
@@ -350,7 +355,7 @@ function wpUpdatePlay(resp)
 			
 			if (enabled) tasks_hit++;
 			if (answerstate=='ok') tasks_done++;
-			wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
+			game.locations.location[id].enable(enabled);
 			
 			var lastanswer = '';
 			var score= '';
@@ -366,7 +371,7 @@ function wpUpdatePlay(resp)
 			{
 				mediumid = tasks[i].getAttribute('mediumid');
 			}
-			wp_games.game[wp_selected_game].locations.location[id].updateAnswer(answerstate,lastanswer,mediumid,score);
+			game.locations.location[id].updateAnswer(answerstate,lastanswer,mediumid,score);
 		}
 	
 		for (var i=0; i<media.length; i++)
@@ -375,7 +380,7 @@ function wpUpdatePlay(resp)
 			var enabled = (media[i].getAttribute('state')!='open')
 	
 			if (enabled) media_hit++;
-			wp_games.game[wp_selected_game].locations.location[id].enable(enabled);
+			game.locations.location[id].enable(enabled);
 		}
 
 		var state = gameplay.getAttribute('state');
@@ -383,11 +388,7 @@ function wpUpdatePlay(resp)
 		var color = gameplay.getAttribute('color');
 		var score = gameplay.getAttribute('score');
 		var trackid = gameplay.getAttribute('trackid');
-		
-		//get trace until now
-		//if (trackid!=null) SRV.get('get-track',function(resp) { wpTrace=resp; alert('got track') },'id',trackid);
 	}
-
 
 	//update play (and play display)
 	if (wp_selected_play)
@@ -513,6 +514,7 @@ function wpUpdatePlayRound(msg,scores)
 	}
 	
 	var str = '<span class="title">round</span><br>';
+//	var str = '<span class="title">round</span> "<b>'+wp_selected_roundname+'</b>"<br>';
 	if (wp_mode=='play')
 	{
 		str+= new Date().format('time');
@@ -543,25 +545,15 @@ function wpUpdatePlayRound(msg,scores)
 	panes['play'].round.innerHTML = str;
 }
 
-// function wpUpdatePlayScores(resp)
-// {	
-// 	if (!resp)
-// 	{
-// 		SRV.get('q-scores',wpUpdatePlayScores,'roundid',wp_selected_round);
-// 		return;
-// 	}
-// 	
-// 	//
-// 
-// }
-
 function wpLeavePlay()
 {
-	if (confirm('leave this gameplay?'))
-	{
-		wpSelect('play');
-		window.setTimeout("panes.hide('play')",250); //to force hide in IE, //->fix in future version?
-	}
+	wpSelect('play');
+	panes.hide('play');
+// 	if (confirm('leave this gameplay?'))
+// 	{
+// 		wpSelect('play');
+// 		window.setTimeout("panes.hide('play')",250); //to force hide in IE, //->fix in future version?
+// 	}
 }
 
 
@@ -1242,9 +1234,9 @@ wpGame.prototype.updateRound = function(id,type)
 		return false;
 	}
 	
-	//get selected players
+	//get selected players /* gamebots red2 and blue2 are excluded from adding */
 	var selected = [];
-	for (var i=0; i<form.players.length; i++) if (form.players[i].selected) selected.push(form.players[i].value);
+	for (var i=0; i<form.players.length; i++) if (form.players[i].selected && form.players[i].value!='red2' && form.players[i].value!='blue2') selected.push(form.players[i].value);
 	
 	if (type=='add')
 	{
@@ -1514,6 +1506,7 @@ function wpLive(event)
 
 
 	var playid = event.get('gameplayid');
+	var game = wp_games.game[wp_selected_game];
 
 
 	switch (eventType)
@@ -1542,7 +1535,7 @@ function wpLive(event)
 			if (wp_selected_play==playid)
 			{
 				//update score
-				wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer('score-update',false,false,score);
+				game.locations.location[taskid].updateAnswer('score-update',false,false,score);
 				wp_plays.play[wp_selected_play].tasks_done++;
 				wp_plays.play[wp_selected_play].score += Number(score);
 				wpUpdatePlayScore();
@@ -1563,6 +1556,12 @@ function wpLive(event)
 			break;
 	
 		case 'play-finish':
+			var team = (wp_plays.play[wp_selected_play].team==event.get('username'))? 'you':event.get('username');
+
+			//show outro
+		 	if (team=='you') wpCreatePane('finish');
+		 	if (wp_location_expanded) wp_location_expanded.collapse(); //less clutter in gui
+		
 			if (wp_mode=='view')
 			{
 				document.getElementById('view_progress_bar').style.width = '180px';
@@ -1570,33 +1569,34 @@ function wpLive(event)
 				return;
 			}
 			
-			var team = (wp_plays.play[wp_selected_play].team==event.get('username'))? 'you':event.get('username');
+			//notify
 			wpUpdatePlayRound(team+' finished the game!');
-
-			//remove trace
-			var id = event.get('userid');
-			var player = wp_players.player[id];
-			//GLog.write('play-finish, '+event.get('username')+' id='+id+', player='+player)
-			if (player)
-			{
-				wp_players.del(id); //will remove trace
-				
-				player.trace = new Array(0);
-				if (player.traceOverlay) gmap.removeOverlay(player.traceOverlay);
-			}
 			
 			break;
 			
 		case 'play-start':
-			//->this is for gamebot demo only -> change later
-			//..
 			if (wp_mode=='view') return;
-			
-			if (wp_selected_play==playid)
+				
+			if (playid==27515 || playid==27520)
 			{
-				//reset gameplay
-// 				KW.WP.playGetGamePlay(wpUpdatePlay,wp_selected_play);
-// 				panes['display'].hide(1);
+				/*	reset gameplay at play-start for gamebots "rondje zwijger" (bots re-play same game all the time..)
+					27515 (red2), 
+					27520 (blue2) 
+				*/
+				panes.hide('finish'); //outro pane is open if interface is untouched (demo-mode)
+				
+				//remove player and trace 
+				var id = event.get('userid');
+				var name = event.get('username');
+				if (wp_players.player[id]) wp_players.del(id); //will also remove attached trace
+				
+				//remove all traces (gameplay reset will reload them)
+				for (var id in  game.traces.trace) game.traces.del(id);
+
+				//reset game play
+				KW.WP.playGetGamePlay(wpUpdatePlay,wp_selected_play);
+				
+				tmp_debug(3,'gamebot ',name,' play-start -> reset game');
 			}
 			else
 			{
@@ -1612,7 +1612,7 @@ function wpLive(event)
 			
 			var taskid = (eventType=='task-hit')? event.get('taskid'):event.get('mediumid');
 			
-			var location = wp_games.game[wp_selected_game].locations.location[taskid];
+			var location = game.locations.location[taskid];
 			//update score
 			if (location.state=='disabled')
 			{
@@ -1621,7 +1621,8 @@ function wpLive(event)
 				wpUpdatePlayScore();
 			}
 			
-			location.enable(true,true);
+			if (wp_location_expanded && wp_location_expanded.id==taskid) break;
+			else location.enable(true,true);
 			break;
 			
 		case 'answer-submit':
@@ -1629,7 +1630,7 @@ function wpLive(event)
 			var answer = event.get('answer');
 			var answerstate = event.get('answerstate');
 			
-			wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer(answerstate,answer);
+			game.locations.location[taskid].updateAnswer(answerstate,answer);
 			
 			break;
 			
@@ -1641,28 +1642,25 @@ function wpLive(event)
 			{
 				//answer medium
 				var type = event.get('kind');
-				wp_games.game[wp_selected_game].locations.location[taskid].updateAnswer('medium-add',false,mediumid);
+				game.locations.location[taskid].updateAnswer('medium-add',false,mediumid);
 			}
-			else
+
+			//add to trace
+			if (event.get('lat'))
 			{
-				//trace medium //->NEED LAT,LON HERE !!
-				
- 				var medium = { id:mediumid, name:event.get('name'), lat:event.get('lat'), lon:event.get('lon') };
-				wp_games.game[wp_selected_game].traces.trace['livetrace'].addLiveMedium(medium);
+				var medium = { id:mediumid, name:event.get('name'), lat:event.get('lat'), lon:event.get('lon') };
+				game.traces.trace[event.get('username')].addLiveMedium(medium);
 			}
+
 			break;
 			
 		case 'comment-add':
-			wp_games.game[wp_selected_game].showMessages();
+			game.showMessages();
 			break;
-			
-		default:
-			//tmp_debug(1,'<span style="color:#dd0000">wpLive:&gt; type=',eventType,'</span>');
-			break;
-		
+
 	}
-	
-	
+
 	tmp_debug(2,'<span style="color:#dd0000">wpLive:&gt; type=',eventType,' (',event.get('username'),')</span>');
+	
 	//GLog.write(eventType+' ('+event.get('username')+')');
 }

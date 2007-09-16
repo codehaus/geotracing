@@ -45,7 +45,7 @@ function wpTrace(id,trackid,color)
  	/// this.tracecolor = '#00ff00'; //debug
  	
  	var obj = this;
- 	SRV.get('get-track',function(resp) { obj.parse(resp) },'id',this.trackid,'mindist',25);
+ 	if (trackid!='livetrace') SRV.get('get-track',function(resp) { obj.parse(resp) },'id',this.trackid,'mindist',25);
 }
 
 wpTrace.prototype.parse = function(resp)

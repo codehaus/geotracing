@@ -474,6 +474,8 @@ wpLocation.prototype.updateDetails = function(resp)
 		if (document.getElementById('display_answer'))
 		{
 			document.getElementById('display_answer').innerHTML = str;
+			//init flv player
+			//if (this.play_answer_medium && this.play_answer_mediumtype=='video') wp_flvplayer.write('flvplayer');
 			
 			//show/hide 'add answer' button
 			if (wp_mode=='play') document.getElementById('add_answer').style.display = (this.play_answerstate=='notok' || this.play_answerstate=='open')? 'block':'none';
@@ -483,6 +485,9 @@ wpLocation.prototype.updateDetails = function(resp)
 	{	
 		//update pane
 		panes['display'].content.firstChild.innerHTML = str;
+		//init flv player
+		//if (this.type=='medium' && this.mediumtype=='video') wp_flvplayer.write('flvplayer');
+		
 		//center medium
 		if (this.mediumtype!='text')
 		{
