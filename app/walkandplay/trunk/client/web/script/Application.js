@@ -67,19 +67,21 @@ function wpSelect(mode)
 		//unload game
 		//wp_games.game[wp_selected_game].unLoad();
 		wp_games.del(wp_selected_game);
+		
+		//stop checking for timed out live players
+		wp_players.stopRealityCheck();
 
-		//delete game object...
-		//?
 
 		wp_selected_game = false;
 		wp_selected_round = false;
+		wp_selected_roundname = false;
 		wp_selected_play = false;
 	}
 	
 	//hide panes
 	panes.hide('list_create','list_play','list_view');
 	panes.hide('edit_game','edit_rounds','edit_round','edit_profile');
-	panes.hide('game_profile','list_locations','display','play','view','messaging');
+	panes.hide('game_profile','list_locations','display','play','view','messaging','finish');
 	
 	
 	if (mode=='view') panes.hide('login');

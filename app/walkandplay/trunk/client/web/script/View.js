@@ -203,7 +203,7 @@ wpView.prototype.rset = function()
 	for (var id in wp_games.game[wp_selected_game].locations.location) wp_games.game[wp_selected_game].locations.location[id].enable(false);
 	//update play display
 	wpUpdatePlay();
-	panes.hide('display');
+	panes.hide('display','finish');
 	
 	//if (restart) this.startstop();
 }
@@ -226,6 +226,7 @@ function wpSelectPlay(id)
 	{
 		//if (wp_view.state=='playing') wp_view.startstop();
 		wp_view.rset();
+		panes.hide('finish')
 	}
 
 	//select team, get team events, reset playback to start

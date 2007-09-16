@@ -258,7 +258,7 @@ function wpCreatePaneUser(type,obj)
 			pane.div.style.right = '290px';
 			
 			break;
-					
+				
 		default:
 			break;
 	}

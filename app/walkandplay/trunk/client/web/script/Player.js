@@ -42,13 +42,19 @@ function wpPlayers()
 		//kill obsolete players
 		for (var i in expired) this.del(expired[i],true);
 		
+		if (str=='') str = 'no live players';
+		
 		tmp_debug(3,'[realityCheck] ',str);
 		
 		var obj = this;
 		this.check = window.setTimeout(function() { obj.realityCheck() },timeout*1000);
 	}
 	
-	//start reality checking (there's no server side logout for users -> client-side timeout after 2 mins no user-move)
+	array.stopRealityCheck = function()
+	{
+		if (this.check) window.clearTimeout(this.check);
+		tmp_debug(3,'[realityCheck] stop');
+	}
 	
 	
 	return array;
@@ -206,7 +212,7 @@ wpPlayer.prototype.addTrace = function()
 	{
 		tmp_debug(3,'user:',this.name,', create new trace obj');
 
-	  	this.trace_obj = new wpTrace('livetrace',this.name,this.color)
+	  	this.trace_obj = new wpTrace(this.name,'livetrace',this.color)
  	  	wp_games.game[wp_selected_game].traces.push( this.trace_obj );
 
 	}
@@ -408,8 +414,8 @@ wpPlayer.prototype.dispose = function(playeronly)
 //	if (this.traceOverlay) gmap.removeOverlay(this.traceOverlay);
 
 	//remove trace
-//	if (wp_selected_game && this.trace_obj && !playeronly) 
-	if (wp_selected_game && this.trace_obj) //->change this back to playeronly!
+	if (wp_selected_game && this.trace_obj && !playeronly) 
+//	if (wp_selected_game && this.trace_obj) //->change this back to playeronly!
 	{
 		wp_games.game[wp_selected_game].traces.del( this.trace_obj.id );
 	}
