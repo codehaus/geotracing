@@ -9,9 +9,10 @@ import java.util.Date;
 
 import org.walkandplay.client.phone.TCPClientListener;
 
-public class IMDisplay extends DefaultDisplay implements TCPClientListener {
+public class IMDisplay extends DefaultDisplay{
 
     private Command SUBMIT_CMD = new Command("Send", Command.OK, 1);
+    private Command NEW_MSG_CMD = new Command("New message", Command.SCREEN, 1);
     private final static String AUTHOR_TYPE_MOBILE = "mobile";
 
     private TextField messageField = new TextField("", "", 32, TextField.ANY);
@@ -26,8 +27,7 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
 
     public void start(Displayable aPrevScreen, String aMessage){
         prevScreen = aPrevScreen;
-        midlet.getActiveApp().addTCPClientListener(this);
-        
+
         // start clean
         deleteAll();
 
@@ -81,42 +81,21 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
     </cmt-read-rsp>
     */
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("cmt-insert-rsp")) {
-                deleteAll();
-                //#style alertinfo
-                append("Message sent succesfully");
-                addCommand(BACK_CMD);
-            }else if (rsp.getTag().equals("cmt-insert-nrsp")) {
-                deleteAll();
-
-                //#style alertinfo
-                append("Error sending message. Please try again");
-
-                drawScreen();
-            }
-        }
-    }
-
-    public void onNetStatus(String aStatus){
-
-    }
-
-    public void onConnected(){
-
-    }
-
-    public void onError(String anErrorMessage){
+    public void handleCommentInsertRsp(JXElement aResponse){
+        deleteAll();
         //#style alertinfo
-        append(anErrorMessage);
+        append("Message sent succesfully");
+        removeCommand(SUBMIT_CMD);
+        addCommand(NEW_MSG_CMD);
     }
 
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
+    public void handleCommentInsertNrsp(JXElement aResponse){
+        deleteAll();
+
+        //#style alertinfo
+        append("Error sending message. Please try again");
+
+        drawScreen();
     }
 
     /*
@@ -160,9 +139,13 @@ public class IMDisplay extends DefaultDisplay implements TCPClientListener {
                 messageField.setString("");
             }
         } else if (command == BACK_CMD) {
-            active = false;
-            midlet.getActiveApp().removeTCPClientListener(this);
+            active = false;            
             Display.getDisplay(midlet).setCurrent(prevScreen);
+        }else if (command == NEW_MSG_CMD) {
+            deleteAll();
+            drawScreen();
+            removeCommand(NEW_MSG_CMD);
+            addCommand(SUBMIT_CMD);
         }
     }
 }

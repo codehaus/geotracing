@@ -8,7 +8,7 @@ import org.geotracing.client.GPSFetcher;
 
 import javax.microedition.lcdui.*;
 
-public class AddTextDisplay extends DefaultDisplay implements TCPClientListener {
+public class AddTextDisplay extends DefaultDisplay{
 
     private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
 
@@ -48,8 +48,7 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
     public void start(Displayable aPrevScreen, boolean isPlaying){
         prevScreen = aPrevScreen;
         active = true;
-        playing = isPlaying;
-        midlet.getActiveApp().addTCPClientListener(this);
+        playing = isPlaying;        
         // start fresh
         deleteAll();
         drawScreen();
@@ -61,46 +60,23 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
         return active;
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
-                deleteAll();
-                //addCommand(BACK_CMD);
-                //#style alertinfo
-                append(alertField);
-                
-                alertField.setText("Text sent successfully");
-            } else if (rsp.getTag().indexOf("-nrsp")!=-1) {
-                deleteAll();
-                //addCommand(BACK_CMD);
-                //#style alertinfo
-                append(alertField);
-
-                textField.setString("");
-                nameField.setString("");
-                alertField.setText("Error sending text - please try again.\n" + rsp.getAttr("details"));
-            }
-        }
-    }
-
-    public void onNetStatus(String aStatus){
-
-    }
-
-    public void onConnected(){
-
-    }
-
-    public void onError(String anErrorMessage){
+    public void handleAddMediumRsp(JXElement aResponse){
+        deleteAll();
+        removeCommand(SUBMIT_CMD);
+        
         //#style alertinfo
-        append(anErrorMessage);
+        append(alertField);
+
+        alertField.setText("Text sent successfully");
     }
 
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
+    public void handleAddMediumNrsp(JXElement aResponse){
+        //#style alertinfo
+        append(alertField);
+
+        textField.setString("");
+        nameField.setString("");
+        alertField.setText("Error sending text - please try again.\n" + aResponse.getAttr("details"));
     }
 
     public void commandAction(Command command, Displayable screen) {
@@ -112,12 +88,9 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
                 append(alertField);
                 alertField.setText("Please type some text...");
             } else {
-                //String tags = tagsField.getString();
                 Uploader uploader = new Uploader();
                 JXElement rsp = uploader.uploadMedium(TCPClient.getInstance().getAgentKey(), midlet.getKWUrl(), name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);
-                /*Net net = Net.getInstance();
-                net.setProperties(midlet);
-                JXElement rsp = net.uploadMedium(name, text, "text", "text/plain", Util.getTime(), text.getBytes(), false);*/
+
                 if (Protocol.isPositiveResponse(rsp)) {
                     //now do an add medium
                     if (playing) {
@@ -147,8 +120,7 @@ public class AddTextDisplay extends DefaultDisplay implements TCPClientListener 
                 }
             }
         } else if (command == BACK_CMD) {
-            active = false;
-            midlet.getActiveApp().removeTCPClientListener(this);
+            active = false;            
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

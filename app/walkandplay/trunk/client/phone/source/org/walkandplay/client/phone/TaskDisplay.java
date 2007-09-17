@@ -1,14 +1,13 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
 
 import de.enough.polish.util.Locale;
 
-public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
+public class TaskDisplay extends DefaultDisplay {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
     private String MEDIUM_BASE_URL;
@@ -17,6 +16,9 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     private int screenWidth;
     private JXElement task;
     private String taskId;
+    private String taskName = "";
+    private String taskDescription = "";
+    private String taskScore = "";    
     private Image taskImage;
     private String answer = "";
     private String state = "";
@@ -38,9 +40,6 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
     public void start(String aTaskId, String aState, String anAnswerState, String aMediaState){
         Log.log("start - taskId:" + aTaskId + ", state: " + aState + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
 
-        // set the tcp listemer
-        midlet.getActiveApp().addTCPClientListener(this);
-
         // only set the state for the first time - after 'start' state updates are done by play-answertask-rsp
         if(state.length() == 0) state = aState;
         if(answerState.length() == 0) answerState = anAnswerState;
@@ -55,7 +54,7 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         }else{
             if(task == null || !taskId.equals(aTaskId)){
                 taskId = aTaskId;
-                getTask();
+                queryTask();
                 return;
             }
         }
@@ -75,6 +74,39 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         return active;
     }
 
+    public String getState(){
+        return state;
+    }
+
+    public String getMediaState(){
+        return mediaState;
+    }
+
+    public void setState(String aState){
+        state = aState;
+    }
+
+    public void setMediaState(String aMediaState){
+        mediaState = aMediaState;
+    }
+
+    public String getAnswerState(){
+        return answerState;
+    }
+
+    public void setStates(String aState, String anAnswerState, String aMediaState){
+        if(state!=null) state = aState;
+        if(answerState!=null) answerState = anAnswerState;
+        if(mediaState!=null) mediaState = aMediaState;
+    }
+
+    public JXElement getTask(){
+        task.setAttr("state", state);
+        task.setAttr("answerstate", answerState);
+        task.setAttr("mediastate", mediaState);
+        return task;
+    }
+
     private void drawScreen(){
         if(answerState.equals("ok")){
             //#style alertinfo
@@ -85,9 +117,9 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
             append(Locale.get("task.Info"));
         }
         //#style formbox
-        append(task.getChildText("name"));
+        append(taskName + "(" + taskScore + " pts)");
         //#style formbox
-        append(task.getChildText("description"));
+        append(taskDescription);
 
         append(taskImage);
 
@@ -108,86 +140,79 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
         }        
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("query-store-rsp")) {
-                String cmd = rsp.getAttr("cmd");
+    public String getTaskName(){
+        return taskName;
+    }
 
-                if(cmd.equals("q-task")){
-                    task = rsp.getChildByTag("record");
-                    if (task != null) {
+    public String getTaskScore(){
+        return taskScore;
+    }
 
-                        String mediumId = task.getChildText("mediumid");
-                        String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
-                        try {
-                            // TODO: do this in a separate thread??
-                            taskImage = Util.getImage(url);
-                        } catch (Throwable t) {
-                            //#style alertinfo
-                            append("Could not get the image for this task");
-                            Log.log("Error fetching task image url: " + url);
-                        }
+    public void handleGetTaskRsp(JXElement aResponse){
+        task = aResponse.getChildByTag("record");
+        if (task != null) {
 
-                        // start fresh for when a new task is drawn
-                        deleteAll();
+            taskName = task.getChildText("name");
+            taskDescription = task.getChildText("description");
+            taskScore = task.getChildText("score");
 
-                        drawScreen();
-
-                        // show the display
-                        active = true;
-                        Display.getDisplay(midlet).setCurrent(this);
-
-                    } else {
-                        getErrorHandler().showGoBack("No task found with id:" + taskId);
-                    }
-                }
-
-            } else if (rsp.getTag().equals("play-answertask-rsp")) {
-                //<utopia-rsp logts="1189673784658" ><play-answertask-rsp state="open" mediastate="open" answerstate="notok" score="0" playstate="running" /></utopia-rsp>
-
-                answerState = rsp.getAttr("answerstate");
-                mediaState = rsp.getAttr("mediastate");
-                state = rsp.getAttr("state");
-
-                Log.log("state set: " + state + ", answerState: " + answerState + ", mediaState:" + mediaState);
-                String score = task.getChildText("score");
-
-                if (answerState.equals("ok") && mediaState.equals("open")) {
-                    getErrorHandler().showGoBack("Right answer! You still have to sent in media though. Good luck!");
-                } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("open")) {
-                    answer = inputField.getString();
-                    getErrorHandler().showGoBack("Right answer and you already sent in media!\nYou scored " + score + " points");
-                } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("done")) {
-                    getErrorHandler().showOutro(score);
-                } else {
-                    getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
-                }
-            }else if (rsp.getTag().equals("play-answertask-nrsp")) {
-                getErrorHandler().showGoBack(rsp.getAttr("details"));
+            String mediumId = task.getChildText("mediumid");
+            String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
+            try {
+                // TODO: do this in a separate thread??
+                taskImage = Util.getImage(url);
+            } catch (Throwable t) {
+                //#style alertinfo
+                append("Could not get the image for this task");
+                Log.log("Error fetching task image url: " + url);
             }
+
+            // start fresh for when a new task is drawn
+            deleteAll();
+
+            drawScreen();
+
+            // show the display
+            active = true;
+            Display.getDisplay(midlet).setCurrent(this);
+
+        } else {
+            getErrorHandler().showGoBack("No task found with id:" + taskId);
         }
     }
 
-    public void onNetStatus(String aStatus){
+    public void handleGetTaskNrsp(JXElement aResponse){
+        getErrorHandler().showGoBack("Could not get the task");
+    }
+
+    public void handleAnswerTaskRsp(JXElement aResponse){
+        //<utopia-rsp logts="1189673784658" ><play-answertask-rsp state="open" mediastate="open" answerstate="notok" score="0" playstate="running" /></utopia-rsp>
+        answerState = aResponse.getAttr("answerstate");
+        mediaState = aResponse.getAttr("mediastate");
+        state = aResponse.getAttr("state");
+
+        Log.log("state set: " + state + ", answerState: " + answerState + ", mediaState:" + mediaState);
+        String score = task.getChildText("score");
+
+        if (answerState.equals("ok") && mediaState.equals("open")) {
+            getErrorHandler().showGoBack("Right answer! You still have to sent in media though. Good luck!");
+        } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("open")) {
+            answer = inputField.getString();
+            getErrorHandler().showGoBack("Right answer and you already sent in media!\nYou scored " + score + " points");
+        } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("done")) {
+            getErrorHandler().showOutro(score);
+        } else {
+            getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
+        }
+
 
     }
 
-    public void onConnected(){
-
+    public void handleAnswerTaskNrsp(JXElement aResponse){
+        getErrorHandler().showGoBack("Problem answering the task:" + aResponse.getAttr("details"));
     }
 
-    public void onError(String anErrorMessage){
-        new ErrorHandler().showGoBack(anErrorMessage);
-    }
-
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
-    }
-
-    private void getTask() {
+    private void queryTask() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-task");
         req.setAttr("id", taskId);
@@ -208,7 +233,6 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
             }
         } else if (command == BACK_CMD) {
             active = false;
-            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
@@ -271,7 +295,6 @@ public class TaskDisplay extends DefaultDisplay implements TCPClientListener {
                 Display.getDisplay(midlet).setCurrent(instance);
             }else if (command == BACK_CMD) {
                 active = false;
-                midlet.getActiveApp().removeTCPClientListener(instance);
                 Display.getDisplay(midlet).setCurrent(prevScreen);
             }else if (command == OUTRO_CMD) {
                 active = false;

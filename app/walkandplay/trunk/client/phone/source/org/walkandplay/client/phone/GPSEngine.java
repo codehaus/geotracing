@@ -26,8 +26,6 @@ public class GPSEngine implements GPSFetcherListener{
     private Vector listeners = new Vector(3);
 
     private Vector points = new Vector(3);
-    //public static final long DEFAULT_LOC_SEND_INTERVAL_MILLIS = 25000;
-    //private long locSendIntervalMillis = DEFAULT_LOC_SEND_INTERVAL_MILLIS;
     private long locSendIntervalMillis;
     private long lastTimeLocSent;
 
@@ -36,7 +34,6 @@ public class GPSEngine implements GPSFetcherListener{
     /**
      * Starts GPS fetching and KW client.
      */
-
     private GPSEngine() {
 
     }
