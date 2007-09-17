@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-public class PlayDisplay extends GameCanvas implements CommandListener, TCPClientListener, GPSEngineListener {
+public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngineListener {
 	private GoogleMap.XY xy;
 	private Image mapImage;
 	private Displayable prevScreen;
@@ -70,14 +70,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
     private String imMessage = "";
     private boolean hasCommands;
 
-    private TaskDisplay taskDisplay;
-    private IMDisplay imDisplay;
-    private MediumDisplay mediumDisplay;
-    private ScoreDisplay scoreDisplay;
-    private IntroDisplay introDisplay;
-    private AudioCaptureDisplay audioCaptureDisplay;
-    private AddTextDisplay addTextDisplay;
-    private ImageCaptureDisplay imageCaptureDisplay;
+    protected TaskDisplay taskDisplay;
+    protected IMDisplay imDisplay;
+    protected MediumDisplay mediumDisplay;
+    protected ScoreDisplay scoreDisplay;
+    protected IntroDisplay introDisplay;
+    protected AudioCaptureDisplay audioCaptureDisplay;
+    protected AddTextDisplay addTextDisplay;
+    protected ImageCaptureDisplay imageCaptureDisplay;
 
 
     private JXElement lastObject;
@@ -109,13 +109,17 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 			mediumDot3 = scheduleImage("/medium_dot_3.png");
 			//#endif
 		} catch (Throwable t) {
-			log("Could not load the images on PlayDisplay", true);
+            Log.log("Could not load the images on PlayDisplay");
 		}
 
 		addCommand(BACK_CMD);
 		setCommandListener(this);
 
 	}
+
+    public boolean isActive(){
+        return active;
+    }
 
     private void setCommands() {
 		removeCommand(BACK_CMD);
@@ -159,179 +163,157 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
         return false;
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-		String tag = aResponse.getTag();
-        Log.log("# PlayDisplay!!!! " + tag);
-        if (tag.equals("utopia-rsp")) {
-			JXElement rsp = aResponse.getChildAt(0);
-			if (rsp.getTag().equals("query-store-rsp")) {
-				String cmd = rsp.getAttr("cmd");
-                Log.log("# cmd: " + cmd);
-                if (cmd.equals("q-game")) {
-					Log.log("Seting game record");
-					midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
-				} else if (cmd.equals("q-game-locations")) {
-					Log.log("Getting game locations");
-					gameLocations = rsp.getChildrenByTag("record");
-					// now determine the maximum attainable score
-					for (int i = 0; i < gameLocations.size(); i++) {
-						JXElement r = (JXElement) gameLocations.elementAt(i);
-						if (r.getChildText("type").equals("task")) {
-							maxScore += Integer.parseInt(r.getChildText("score"));
-						}
-					}
-				}else if (cmd.equals("q-comments-for-target")) {
-                    Vector recs = rsp.getChildrenByTag("record");
-                    // if we have one or more messages and the last one is NOT sent by the mobile
-                    if(recs.size() >= 1){
-                        String msg = ((JXElement)recs.elementAt(0)).getChildText("content");
-                        Log.log("Found a msg: " + msg);
-                        if(imDisplay == null){
-                            imDisplay = new IMDisplay(midlet);
-                        }
+    public void handlePlayLocationRsp(JXElement aResponse){
+        JXElement hitElm = null;
+        if (midlet.isInDemoMode()) {
+            // video
+            /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                Log.log("add a hit!!!!");
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 831882);
+                rsp.addChild(hit);
+            }
 
-                        // if we have a new message and make sure it's not the last message you send yourself
-                        if(!imMessage.equals(msg) && !msg.equals(imDisplay.getMyMessage())){
-                            imMessage = msg;
-                            if(imDisplay.isActive()){
-                                // ok so show it on the screen
-                                imDisplay.start(this, imMessage);
-                            }else{
-                                // if there are no other displays active
-                                if(hasActiveDisplays()){
-                                    // now show that there's a new message
-                                    newIMMMessage = true;
-                                }else if(!firstTime){
-                                    // we show the IM message
-                                    imDisplay.start(this, imMessage);
-                                }
-                            }
-                        }
+            // audio
+            if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                Log.log("add a hit!!!!");
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 831815);
+                rsp.addChild(hit);
+            }*/
 
-                        firstTime = false;
+            // image
+            /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                Log.log("add a hit!!!!");
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 831905);
+                rsp.addChild(hit);
+            }
 
-                        /*if((!msg.equals(imDisplay.getMyMessage()) && !imMessage.equals(msg) && imDisplay.getMyMessage().length()>0)
-                                || (!msg.equals(imDisplay.getMyMessage()) && imMessage.length()>0 && !imMessage.equals(msg))){
-                            imMessage = msg;
-                            imDisplay.start(imMessage);
-                        }*/
-                    }
-				}
-			} else if (rsp.getTag().equals("play-location-rsp")) {
-                JXElement hitElm = null;
-                if (midlet.isInDemoMode()) {
-					// video
-					/*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                        Log.log("add a hit!!!!");
-                        JXElement hit = new JXElement("medium-hit");
-                        hit.setAttr("id", 831882);
-                        rsp.addChild(hit);
-                    }
+            // text
+            if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+                Log.log("add a hit!!!!");
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 831820);
+                rsp.addChild(hit);
+            }*/
 
-                    // audio
-                    if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                        Log.log("add a hit!!!!");
-                        JXElement hit = new JXElement("medium-hit");
-                        hit.setAttr("id", 831815);
-                        rsp.addChild(hit);
-                    }*/
+            // task
+            //if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
+            if (!demoTaskSent) {
+                /*JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 831882);
+                aResponse.addChild(hit);*/
 
-					// image
-					/*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-						Log.log("add a hit!!!!");
-						JXElement hit = new JXElement("medium-hit");
-						hit.setAttr("id", 831905);
-						rsp.addChild(hit);
-					}
+                Log.log("add a hit!!!!");
+                JXElement hit = new JXElement("task-hit");
+                hit.setAttr("id", 831651);
+                // open | done
+                hit.setAttr("state", "open");
+                // open | notok | ok
+                hit.setAttr("answerstate", "open");
+                // open | done
+                hit.setAttr("mediastate", "open");
+                aResponse.addChild(hit);
 
-					// text
-					if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-						Log.log("add a hit!!!!");
-						JXElement hit = new JXElement("medium-hit");
-						hit.setAttr("id", 831820);
-						rsp.addChild(hit);
-					}*/
+                demoTaskSent = true;
+                hitElm = aResponse.getChildAt(0);
+            }
+        }else{
+            hitElm = aResponse.getChildAt(0);
+        }
 
-					// task
-					//if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-					if (!demoTaskSent) {
+        if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
+            lastObject = hitElm;
+            String t = lastObject.getTag();
+            if (t.equals("task-hit")) {
+                lastObjectType = "task";
+                String state = lastObject.getAttr("state");
+                String answerState = lastObject.getAttr("answerstate");
+                String mediaState = lastObject.getAttr("mediastate");
 
-                        JXElement hit = new JXElement("medium-hit");
-                        hit.setAttr("id", 831882);
-                        rsp.addChild(hit);
+                Util.playTone(80, 50, midlet.getVolume());
+                Util.playTone(90, 250, midlet.getVolume() );
 
-                        /*Log.log("add a hit!!!!");
-						JXElement hit = new JXElement("task-hit");
-						hit.setAttr("id", 831651);
-                        // open | done
-                        hit.setAttr("state", "done");
-                        // open | notok | ok
-                        hit.setAttr("answerstate", "ok");
-                        // open | done
-                        hit.setAttr("mediastate", "done");
-						rsp.addChild(hit);
-                        */
-
-                        demoTaskSent = true;
-                        hitElm = rsp.getChildAt(0);
-                    }
-				}else{
-                    hitElm = rsp.getChildAt(0);
+                Log.log("we found a task!!");
+                if(taskDisplay == null){
+                    taskDisplay = new TaskDisplay(midlet, w, this);
                 }
+                taskDisplay.start(lastObject.getAttr("id"), state, answerState, mediaState);
+            } else if (t.equals("medium-hit")) {
+                lastObjectType = "medium";
+                Util.playTone(80, 50, midlet.getVolume());
+                Util.playTone(90, 250, midlet.getVolume() );
+                if(mediumDisplay == null){
+                    mediumDisplay = new MediumDisplay(midlet, w);
+                }
+                mediumDisplay.start(lastObject.getAttr("id"), this);
+            }
+        }
+    }
 
-                if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
-                    lastObject = hitElm;
-                    String t = lastObject.getTag();
-					if (t.equals("task-hit")) {
-                        lastObjectType = "task";
-                        String state = lastObject.getAttr("state");
-						String answerState = lastObject.getAttr("answerstate");
-                        String mediaState = lastObject.getAttr("mediastate");
+    public void handlePlayLocationNrsp(JXElement aResponse){
 
-                        Util.playTone(80, 50, midlet.getVolume());
-						Util.playTone(90, 250, midlet.getVolume() );
+    }
 
-						log("we found a task!!", false);
-                        if(taskDisplay == null){
-                            taskDisplay = new TaskDisplay(midlet, w, this);
-                        }
-                        taskDisplay.start(lastObject.getAttr("id"), state, answerState, mediaState);
-					} else if (t.equals("medium-hit")) {
-                        lastObjectType = "medium";
-                        Util.playTone(80, 50, midlet.getVolume());
-						Util.playTone(90, 250, midlet.getVolume() );
-                        if(mediumDisplay == null){
-                            mediumDisplay = new MediumDisplay(midlet, w);
-                        }
-                        mediumDisplay.start(lastObject.getAttr("id"), this);
-					}
-				}
-			}
-		}
-	}
+    public void handleGetGameLocationsRsp(JXElement aResponse){
+        gameLocations = aResponse.getChildrenByTag("record");
+        // now determine the maximum attainable score
+        for (int i = 0; i < gameLocations.size(); i++) {
+            JXElement r = (JXElement) gameLocations.elementAt(i);
+            if (r.getChildText("type").equals("task")) {
+                maxScore += Integer.parseInt(r.getChildText("score"));
+            }
+        }
+    }
 
-	public void onConnected() {
+    public void handleGetGameLocationsNrsp(JXElement aResponse){
 
-	}
+    }
 
-	public void onError(String anErrorMessage) {
+    public void handleCommentsForTargetRsp(JXElement aResponse){
+        Vector recs = aResponse.getChildrenByTag("record");
+        // if we have one or more messages and the last one is NOT sent by the mobile
+        if(recs.size() >= 1){
+            String msg = ((JXElement)recs.elementAt(0)).getChildText("content");
+            if(imDisplay == null){
+                imDisplay = new IMDisplay(midlet);
+            }
 
-	}
+            // if we have a new message and make sure it's not the last message you send yourself
+            if(!imMessage.equals(msg) && !msg.equals(imDisplay.getMyMessage())){
+                imMessage = msg;
+                if(imDisplay.isActive()){
+                    // ok so show it on the screen
+                    imDisplay.start(this, imMessage);
+                }else{
+                    // if there are no other displays active
+                    if(hasActiveDisplays()){
+                        // now show that there's a new message
+                        newIMMMessage = true;
+                    }else if(!firstTime){
+                        // we show the IM message
+                        imDisplay.start(this, imMessage);
+                    }
+                }
+            }
 
-	public void onFatal() {
-		midlet.getActiveApp().exit();
-		Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
-	}
+            firstTime = false;
+        }
+    }
 
-	/**
+    public void handleCommentsForTargetNrsp(JXElement aResponse){
+
+    }
+
+    /**
 	 * User is now ready to start playing
 	 */
 	void start(String aColor) {
 		try {
             firstTime = true;
             setFullScreenMode(true);
-            midlet.getActiveApp().addTCPClientListener(this);
-
+            
             // make sure we don't show any locations from previous games
             gameLocations = null;
             repaint();
@@ -339,9 +321,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             setColor(aColor);
 
             // start the traceEngine
-			gpsEngine = GPSEngine.getInstance();
-			gpsEngine.addListener(this);
-			gpsEngine.start(midlet);
+            gpsEngine = GPSEngine.getInstance();
+            gpsEngine.addListener(this);
+            gpsEngine.start(midlet);
 
 			// get the game and all game locations for this game
 			getGame();
@@ -356,7 +338,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
             show();
 
 		} catch (Throwable t) {
-			log("Exception in start():" + t.getMessage(), true);
+			Log.log("Exception in start():" + t.getMessage());
 		}
 	}
 
@@ -425,14 +407,14 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		JXElement req = new JXElement("query-store-req");
 		req.setAttr("cmd", "q-game-locations");
 		req.setAttr("id", midlet.getPlayApp().getGameRound().getChildText("gameid"));
-		midlet.getPlayApp().sendRequest(req);
+		midlet.getActiveApp().sendRequest(req);
 	}
 
 	private void getGame() {
 		JXElement req = new JXElement("query-store-req");
 		req.setAttr("cmd", "q-game");
 		req.setAttr("id", midlet.getPlayApp().getGameRound().getChildText("gameid"));
-		midlet.getPlayApp().sendRequest(req);
+		midlet.getActiveApp().sendRequest(req);
 	}
 
 	public void setLocation(String aLon, String aLat) {
@@ -510,16 +492,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		show();
 	}
 
-	public void onNetStatus(String s) {
-		netStatus = "NET:" + s;
+    public void setNetStatus(String aNetStatus){
+        netStatus = "NET:" + aNetStatus;
 		show();
-	}
+    }
 
-	private void log(String aMsg, boolean isError) {
-		Log.log(aMsg);
-	}
-
-	private void zoomIn() {
+    private void zoomIn() {
 		zoom++;
 		resetMap();
 		show();
@@ -536,11 +514,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		mapImage = null;
 	}
 
-	/*
-		<utopia-req>
-		   <query-store-req cmd="q-comments-for-target" target="219881" max="2"  last="true"/>
-		</utopia-req>
-		 */
+	/* <utopia-req>
+       <query-store-req cmd="q-comments-for-target" target="219881" max="2"  last="true"/>
+    </utopia-req> */
 	private void getIMMessages() {
 		JXElement req = new JXElement("query-store-req");
 		req.setAttr("cmd", "q-comments-for-target");
@@ -580,11 +556,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 		}
 	}
 
-	/**
-	 * Draws the map.
-	 *
-	 * @param g The graphics object.
-	 */
 	public void paint(Graphics g) {
 		if (f == null) {
 			w = getWidth();
@@ -784,16 +755,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener, TCPClien
 	public void commandAction(Command cmd, Displayable screen) {
 		if (cmd == BACK_CMD) {
 			gpsEngine.stop();
-			stopPoll();
-			midlet.getActiveApp().removeTCPClientListener(this);
-			// TODO: check if there is a better way to do a clean refresh of the SelectGameDisplay
-			//Display.getDisplay(midlet).setCurrent(new SelectGameDisplay(midlet));
+			stopPoll();						
 			Display.getDisplay(midlet).setCurrent(prevScreen);
 		} else if (cmd == ADD_PHOTO_CMD) {
             if(imageCaptureDisplay == null){
                 imageCaptureDisplay = new ImageCaptureDisplay(midlet);
             }
-            imageCaptureDisplay.start(this, true);
+            if(lastObjectType.equals("task")){
+                imageCaptureDisplay.start(this, true);
+            }            
 		} else if (cmd == ADD_AUDIO_CMD) {
             if(audioCaptureDisplay == null){
                 audioCaptureDisplay = new AudioCaptureDisplay(midlet);

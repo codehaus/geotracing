@@ -13,7 +13,7 @@ import javax.microedition.media.control.RecordControl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientListener, ProgressListener {
+public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListener {
 
     private Player player;
     private RecordControl recordcontrol;
@@ -51,10 +51,8 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
 
     public void start(Displayable aPrevScreen, boolean isPlaying){
         try {
-            midlet.getActiveApp().addTCPClientListener(this);
             prevScreen = aPrevScreen;
             playing = isPlaying;
-            
             active = true;
             player = Manager.createPlayer("capture://audio?rate=" + rate + "&bits=" + bits);
             player.realize();
@@ -80,19 +78,15 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
         return active;
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
-                clearScreen();
-                removeCommand(PLAY_CMD);
-                alertField.setText("Audio sent successfully");                
-            } else if (rsp.getTag().equals("play-add-medium-nrsp")) {
-                clearScreen();
-                alertField.setText("Error sending audio - please try again.");
-            }
-        }
+    public void handleAddMediumRsp(JXElement aResponse){
+        clearScreen();
+        removeCommand(PLAY_CMD);
+        alertField.setText("Audio sent successfully");
+    }
+
+    public void handleAddMediumNrsp(JXElement aResponse){
+        clearScreen();
+        alertField.setText("Error sending audio - please try again.");
     }
 
     private void clearScreen(){
@@ -100,24 +94,6 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
         addCommand(BACK_CMD);
         //#style alertinfo
         append(alertField);
-    }
-
-    public void onNetStatus(String aStatus){
-
-    }
-
-    public void onConnected(){
-
-    }
-
-    public void onError(String anErrorMessage){
-        //#style alertinfo
-        append(anErrorMessage);
-    }
-
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     public void prStart() {
@@ -263,7 +239,6 @@ public class AudioCaptureDisplay extends DefaultDisplay implements TCPClientList
 
     private void back() {
         active = false;
-        midlet.getActiveApp().removeTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(prevScreen);
     }
 

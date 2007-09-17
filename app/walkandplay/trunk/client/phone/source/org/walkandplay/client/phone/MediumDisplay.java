@@ -7,7 +7,7 @@ import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
 
-public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
+public class MediumDisplay extends DefaultDisplay{
 
     private Command PLAY_VIDEO_CMD = new Command(Locale.get("medium.playVideo"), Command.SCREEN, 2);
     private Command PLAY_AUDIO_CMD = new Command(Locale.get("medium.playAudio"), Command.SCREEN, 2);    
@@ -33,7 +33,6 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
     }
 
     public void start(String aMediumId, Displayable aPrevScreen){
-        midlet.getActiveApp().addTCPClientListener(this);
         prevScreen = aPrevScreen;
 
         active = true;
@@ -53,6 +52,49 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
     public boolean isActive(){
         return active;
+    }
+
+    public void handleGetMediumRsp(JXElement aResponse){
+
+        medium = aResponse.getChildByTag("record");
+
+        // get the name
+        mediumName = medium.getChildText("name");
+        if(mediumName == null || mediumName.length() == 0){
+            mediumName = "Untitled";
+        }
+        // store the mediumType
+        mediumType = medium.getChildText("type");
+
+        if (mediumType.equals("image")) {
+            try {
+                mediumUrl += "&resize=" + (screenWidth - 12);
+                mediumImage = Util.getImage(mediumUrl);
+            } catch (Throwable t) {
+                Log.log("Error retrieving image");
+            }
+        } else if (mediumType.equals("text")) {
+            try {
+                mediumText = Util.getPage(mediumUrl);
+            } catch (Throwable t) {
+                Log.log("Error fetching text url=");
+            }
+        }
+
+        // now draw the info
+        drawMedium();
+
+    }
+
+    public void handleGetMediumNrsp(JXElement aResponse){
+        
+    }
+
+    private void getMedium(String aMediumId) {
+        JXElement req = new JXElement("query-store-req");
+        req.setAttr("cmd", "q-medium");
+        req.setAttr("id", aMediumId);
+        midlet.getActiveApp().sendRequest(req);
     }
 
     private void drawMedium() {
@@ -78,7 +120,7 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
 
         } else if (mediumType.equals("text")) {
             setTitle("Text");
-            //#style formbox    
+            //#style formbox
             append(mediumText);
 
         } else if (mediumType.equals("video")) {
@@ -124,74 +166,10 @@ public class MediumDisplay extends DefaultDisplay implements TCPClientListener{
         }
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("query-store-rsp")) {
-                String cmd = rsp.getAttr("cmd");
-                if (cmd.equals("q-medium")) {
-                    medium = rsp.getChildByTag("record");
-                    
-                    // get the name
-                    mediumName = medium.getChildText("name");
-                    if(mediumName == null || mediumName.length() == 0){
-                        mediumName = "Untitled";
-                    }
-                    // store the mediumType
-                    mediumType = medium.getChildText("type");
-
-                    if (mediumType.equals("image")) {
-                        try {
-                            mediumUrl += "&resize=" + (screenWidth - 12);
-                            mediumImage = Util.getImage(mediumUrl);
-                        } catch (Throwable t) {
-                            Log.log("Error retrieving image");
-                        }
-                    } else if (mediumType.equals("text")) {
-                        try {
-                            mediumText = Util.getPage(mediumUrl);                            
-                        } catch (Throwable t) {
-                            Log.log("Error fetching text url=");
-                        }
-                    }
-
-                    // now draw the info
-                    drawMedium();
-                    
-                }
-            }
-        }
-    }
-
-    public void onNetStatus(String aStatus) {
-
-    }
-
-    public void onConnected() {
-
-    }
-
-    public void onError(String anErrorMessage) {
-        //#style alertinfo
-        append(anErrorMessage);
-    }
-
-    public void onFatal() {
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
-    }
-
-    private void getMedium(String aMediumId) {
-        JXElement req = new JXElement("query-store-req");
-        req.setAttr("cmd", "q-medium");
-        req.setAttr("id", aMediumId);
-        midlet.getActiveApp().sendRequest(req);
-    }
-
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
-            midlet.getActiveApp().removeTCPClientListener(this);
+            midlet.getActiveApp().connect();
+            midlet.getPlayApp().setPlayDisplay();
             active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == PLAY_VIDEO_CMD) {

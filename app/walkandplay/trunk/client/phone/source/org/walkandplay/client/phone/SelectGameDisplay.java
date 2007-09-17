@@ -20,7 +20,7 @@ public class SelectGameDisplay extends AppStartDisplay {
     private ErrorHandler errorHandler;
 
     private Image logo;
-    private PlayDisplay playDisplay;
+    protected PlayDisplay playDisplay;
 
 
     Command PLAY_CMD = new Command(Locale.get("selectGame.Play"), Command.SCREEN, 2);
@@ -60,6 +60,11 @@ public class SelectGameDisplay extends AppStartDisplay {
         exit();
     }
 
+   public void onNetStatus(String aNetStatus){
+        if(playDisplay!=null) playDisplay.setNetStatus(aNetStatus);
+    }
+
+    // all responses for the Play widget are handle here centrally
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
         String tag = aResponse.getTag();
         if (tag.equals("utopia-rsp")) {
@@ -103,10 +108,61 @@ public class SelectGameDisplay extends AppStartDisplay {
                     
                     // now show the screen
                     Display.getDisplay(midlet).setCurrent(this);
+                } else if (cmd.equals("q-game")) {
+					Log.log("Seting game record");
+					midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
+				} else if (cmd.equals("q-game-locations")) {
+                    Log.log("Getting game locations");
+                    if(playDisplay!=null && playDisplay.isActive()) {
+                        playDisplay.handleGetGameLocationsRsp(rsp);
+                    }
+				}else if (cmd.equals("q-comments-for-target")) {
+                    if(playDisplay!=null) {
+                        playDisplay.handleCommentsForTargetRsp(rsp);
+                    }
+                } else if(cmd.equals("q-task")){
+                    if(playDisplay!=null && playDisplay.taskDisplay!=null){
+                        playDisplay.taskDisplay.handleGetTaskRsp(rsp);
+                    }
+                } else if (cmd.equals("q-medium")) {
+                    if(playDisplay!=null && playDisplay.mediumDisplay!=null){
+                        playDisplay.mediumDisplay.handleGetMediumRsp(rsp);
+                    }
+
+                } else if(cmd.equals("q-scores")){
+                    if(playDisplay!=null && playDisplay.scoreDisplay!=null){
+                        playDisplay.scoreDisplay.handleGetScoresRsp(rsp);
+                    }
+                }
+            } else if (rsp.getTag().equals("query-store-nrsp")) {
+                String cmd = rsp.getAttr("cmd");
+                if(cmd.equals("q-play-status-by-user")){
+                    getErrorHandler().showGoBack("Could not retrieve play status:" + rsp.getAttr("details"));
+                } else if (cmd.equals("q-game")) {
+					getErrorHandler().showGoBack("Could not retrieve play status:" + rsp.getAttr("details"));
+				} else if (cmd.equals("q-game-locations")) {
+                    if(playDisplay!=null && playDisplay.isActive()) {
+                        playDisplay.handleGetGameLocationsNrsp(rsp);
+                    }
+				}else if (cmd.equals("q-comments-for-target")) {
+                    if(playDisplay!=null) {
+                        playDisplay.handleCommentsForTargetNrsp(rsp);
+                    }
+                } else if(cmd.equals("q-task")){
+                    if(playDisplay!=null && playDisplay.taskDisplay!=null){
+                        playDisplay.taskDisplay.handleGetTaskNrsp(rsp);
+                    }
+                } else if (cmd.equals("q-medium")) {
+                    if(playDisplay!=null && playDisplay.mediumDisplay!=null){
+                        playDisplay.mediumDisplay.handleGetMediumNrsp(rsp);
+                    }
+
+                } else if(cmd.equals("q-scores")){
+                    if(playDisplay!=null && playDisplay.scoreDisplay!=null){
+                        playDisplay.scoreDisplay.handleGetScoresRsp(rsp);
+                    }
                 }
             } else if (rsp.getTag().equals("play-start-rsp")) {
-
-                // start the playdisplay
                 if(playDisplay == null){
                     playDisplay = new PlayDisplay(midlet);
                 }
@@ -114,8 +170,69 @@ public class SelectGameDisplay extends AppStartDisplay {
                 playDisplay.start(color);
             } else if (rsp.getTag().equals("play-start-nrsp")) {
                 getErrorHandler().showGoBack(rsp.getAttr("details"));
+            } else if (rsp.getTag().equals("play-location-rsp")) {
+                if(playDisplay!=null) {
+                    playDisplay.handlePlayLocationRsp(rsp);
+                }
+            } else if (rsp.getTag().equals("play-location-nrsp")) {
+                if(playDisplay!=null) {
+                    playDisplay.handlePlayLocationNrsp(rsp);
+                }
+            } else if (rsp.getTag().equals("play-answertask-rsp")) {
+                if(playDisplay!=null && playDisplay.taskDisplay!=null) {
+                    playDisplay.taskDisplay.handleAnswerTaskRsp(rsp);
+                }
+            } else if (rsp.getTag().equals("play-answertask-nrsp")) {
+                if(playDisplay!=null && playDisplay.taskDisplay!=null) {
+                    playDisplay.taskDisplay.handleAnswerTaskNrsp(rsp);
+                }
+            } else if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                if(playDisplay!=null){
+                    if(playDisplay.addTextDisplay!=null && playDisplay.addTextDisplay.isActive()){
+                        playDisplay.addTextDisplay.handleAddMediumRsp(rsp);
+                    }else if(playDisplay.imageCaptureDisplay!=null && playDisplay.imageCaptureDisplay.isActive()){
+                        String text = "Image sent succesfully.";                        
+                        if(playDisplay.taskDisplay!=null){
+                            if(playDisplay.taskDisplay.getMediaState().equals("open")){
+                                playDisplay.taskDisplay.setMediaState("done");
+                                if(playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok")){
+                                    text += " You still have to answer the question though - good luck!";
+                                }else if(playDisplay.taskDisplay.getAnswerState().equals("ok")){
+                                    playDisplay.taskDisplay.setState("done");
+                                    text += "Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() +" points.";
+                                }
+                            }
+
+                            playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);
+                        }
+                    }else if(playDisplay.audioCaptureDisplay!=null && playDisplay.audioCaptureDisplay.isActive()){
+                        playDisplay.audioCaptureDisplay.handleAddMediumRsp(rsp);
+                    }
+                }
+            }else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {
+                if(playDisplay!=null){
+                    if(playDisplay.addTextDisplay!=null && playDisplay.addTextDisplay.isActive()){
+                        playDisplay.addTextDisplay.handleAddMediumNrsp(rsp);
+                    }else if(playDisplay.imageCaptureDisplay!=null && playDisplay.imageCaptureDisplay.isActive()){
+                        playDisplay.imageCaptureDisplay.handleAddImageNrsp(rsp);
+                    }else if(playDisplay.audioCaptureDisplay!=null && playDisplay.audioCaptureDisplay.isActive()){
+                        playDisplay.audioCaptureDisplay.handleAddMediumNrsp(rsp);    
+                    }
+                }
+            } else if (rsp.getTag().equals("cmt-insert-rsp")) {
+                if(playDisplay!=null && playDisplay.imDisplay!=null) {
+                    playDisplay.imDisplay.handleCommentInsertRsp(rsp);
+                }
+            } else if (rsp.getTag().equals("cmt-insert-nrsp")) {
+                if(playDisplay!=null && playDisplay.imDisplay!=null) {
+                    playDisplay.imDisplay.handleCommentInsertRsp(rsp);
+                }
             }
         }
+    }
+
+    public void setPlayDisplay(){
+        Display.getDisplay(midlet).setCurrent(playDisplay);
     }
 
     public void setGame(JXElement aGame) {
@@ -196,7 +313,7 @@ public class SelectGameDisplay extends AppStartDisplay {
 
         public void showGoBack(String aMsg) {
             //#style defaultscreen
-			form = new Form("TaskDisplay");
+			form = new Form("Play a game!");
 
             //#style alertinfo
             form.append(aMsg);

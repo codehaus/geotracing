@@ -11,7 +11,7 @@ import java.util.Vector;
 
 import org.walkandplay.client.phone.TCPClientListener;
 
-public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
+public class ScoreDisplay extends DefaultDisplay {
 
     private int maxScore;
     private boolean active;
@@ -20,11 +20,12 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
         super(aMIDlet, "Scores");
         maxScore = aMaxScore;
         prevScreen = aPrevScreen;
-        midlet.getPlayApp().addTCPClientListener(this);
     }
 
     public void start(){
         active = true;
+        // start fresh
+        deleteAll();
         getScores();
         Display.getDisplay(midlet).setCurrent(this);
     }
@@ -33,49 +34,27 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
         return active;
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("query-store-rsp")) {
-                String cmd = rsp.getAttr("cmd");
-                if(cmd.equals("q-scores")){
-                    Vector elms = rsp.getChildrenByTag("record");
-                    for (int i = 0; i < elms.size(); i++) {
-                        JXElement e = (JXElement) elms.elementAt(i);
-                        String team = e.getChildText("loginname");
-                        String points = e.getChildText("score");
-                        try{
-                            //#style labelinfo
-                            append(team);
-                            //#style formbox                            
-                            append(new Gauge("", false, maxScore, Integer.parseInt(points)));
-                        }catch(Throwable t){
-                            //#style alertinfo
-                            append("Error:" + t.toString() + ":" + t.getMessage());
-                        }
-                    }
-                }
+    public void handleGetScoresRsp(JXElement aResponse){
+        Vector elms = aResponse.getChildrenByTag("record");
+        for (int i = 0; i < elms.size(); i++) {
+            JXElement e = (JXElement) elms.elementAt(i);
+            String team = e.getChildText("loginname");
+            String points = e.getChildText("score");
+            try{
+                //#style labelinfo
+                append(team);
+                //#style formbox
+                append(new Gauge("", false, maxScore, Integer.parseInt(points)));
+            }catch(Throwable t){
+                //#style alertinfo
+                append("Error:" + t.toString() + ":" + t.getMessage());
             }
         }
     }
 
-    public void onNetStatus(String aStatus){
-
-    }
-    
-    public void onConnected(){
-
-    }
-
-    public void onError(String anErrorMessage){
+    public void handleGetScoresNrsp(JXElement aResponse){
         //#style alertinfo
-        append(anErrorMessage);
-    }
-
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
+        append("Could not get the scores:" + aResponse.getAttr("details"));
     }
 
     private void getScores() {
@@ -88,7 +67,6 @@ public class ScoreDisplay extends DefaultDisplay implements TCPClientListener {
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
             active = false;
-            midlet.getPlayApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }
