@@ -15,7 +15,7 @@ public class IMDisplay extends DefaultDisplay{
     private Command NEW_MSG_CMD = new Command("New message", Command.SCREEN, 1);
     private final static String AUTHOR_TYPE_MOBILE = "mobile";
 
-    private TextField messageField = new TextField("", "", 32, TextField.ANY);
+    private TextField messageField;
     private String myMessage = "";
     private String message = "";
 
@@ -33,6 +33,7 @@ public class IMDisplay extends DefaultDisplay{
 
         if(aMessage!=null) message = aMessage;
 
+        messageField = new TextField("", "", 32, TextField.ANY);
         drawScreen();
 
         active = true;
@@ -58,6 +59,7 @@ public class IMDisplay extends DefaultDisplay{
             //#style formbox
             append(message);
         }
+        removeCommand(NEW_MSG_CMD);
         addCommand(SUBMIT_CMD);
     }
 

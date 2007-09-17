@@ -56,6 +56,10 @@ public class TCPClient extends Protocol implements XMLChannelListener {
             midlet = aMIDlet;
             panicCounter = 0;
 
+            if(xmlChannel!=null){
+                xmlChannel.stop();
+                xmlChannel = null;
+            }
             xmlChannel = new SocketXMLChannel(midlet.getKWServer(), midlet.getKWPort());
             xmlChannel.start();
             xmlChannel.setListener(this);

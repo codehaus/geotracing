@@ -36,12 +36,11 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
     protected void connect() {
         try {
             if(tcpClient!=null){
-                tcpClient.stop();
-                tcpClient = null;
+                tcpClient.stop();                
             }
             tcpClient = TCPClient.getInstance();
-            tcpClient.addListener(this);
             tcpClient.start(midlet);
+            tcpClient.addListener(this);
         } catch (Throwable t) {
             deleteAll();
             addCommand(BACK_CMD);
