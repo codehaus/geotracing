@@ -78,9 +78,16 @@ public class GamePlayLogic implements Constants {
 		// (where the player was at that time)
 		Location location = trackLogic.createLocation(personId, aMediumId, timestamp, TrackLogic.REL_TAG_MEDIUM);
 
+		Point point = null;
+		if (location != null) {
+			point = location.getPoint();
+		}
+
 		// We either have location or an exception here
 		JXElement result = new JXElement("medium-add");
-		result.setAttr(LOCATION_ID_FIELD, location.getId());
+		if (location != null) {
+			result.setAttr(LOCATION_ID_FIELD, location.getId());
+		}
 
 		// We must have a running GamePlay record
 		Record gamePlay = WPQueryLogic.getRunningGamePlay(personId);
@@ -90,9 +97,12 @@ public class GamePlayLogic implements Constants {
 
 		// Figure out if location is near a task
 		Record game = WPQueryLogic.getGameForGamePlay(gamePlay.getId());
-		Point point = location.getPoint();
-		Record task = WPQueryLogic.getTaskHitForGame(point, game.getId());
 		Record round = relater.getRelated(gamePlay, GAMEROUND_TABLE, null)[0];
+
+		Record task = null;
+		if (point != null) {
+			task = WPQueryLogic.getTaskHitForGame(point, game.getId());
+		}
 
 		// Use account related to medium (request may come from admin when email medium upload)
 		String accountName = relater.getRelated(person, "utopia_account", null)[0].getStringField("loginname"); //HandlerUtil.getAccountName(anUtopiaReq);
@@ -100,12 +110,13 @@ public class GamePlayLogic implements Constants {
 
 		// If not at location of task try get open last task with possibly medium still open
 		if (task == null) {
-			Record taskResult = WPQueryLogic.getLastOpenTaskResult(gamePlay.getId());
-			if (taskResult != null && taskResult.getStringField(MEDIA_STATE_FIELD).equals(VAL_OPEN)) {
+			Record taskResult = WPQueryLogic.getLastHitTaskResultWithMediaOpen(gamePlay.getId());
+			if (taskResult != null) {
 				task = relater.getRelated(taskResult, TASK_TABLE, null)[0];
+				// log.trace("using getLastHitTaskResultWithMediaOpen taskid=" + task.getId());
 			}
 		}
-		
+
 		if (task != null) {
 			log.trace("HIT task for medium add taskid=" + task.getId());
 
@@ -129,7 +140,7 @@ public class GamePlayLogic implements Constants {
 			relater.relate(taskResult, medium, RELTAG_RESULT);
 
 			// Publish event with related task/taskresult
-			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), aMediumId, mediumType, task.getId(), taskResult.getId()));
+			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), medium, point, task.getId(), taskResult.getId()));
 
 			// Set scores if we are totally done and task result was not already done
 			if (answerState.equals(VAL_OK) && !totalState.equals(VAL_DONE)) {
@@ -154,7 +165,7 @@ public class GamePlayLogic implements Constants {
 			result.setAttr(PLAY_STATE_FIELD, gamePlay.getStringField(STATE_FIELD));
 		} else {
 			// Medium is not part of answering task: just publish id's
-			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), aMediumId, mediumType));
+			storeEvent(oase, gamePlay, WPEventPublisher.mediumAdd(personId, accountName, round.getId(), gamePlay.getId(), medium, point));
 		}
 		return result;
 	}
