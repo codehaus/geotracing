@@ -168,14 +168,14 @@ public class WPEventPublisher {
 	/**
 	 * Publish medium submit for trace to Pushlet framework.
 	 */
-	public static Event mediumAdd(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int theMediumId, String theMediumType) {
-		 return mediumAdd(aUserId, aUserName, aGameRoundId, aGamePlayId, theMediumId, theMediumType, -1, -1);
+	public static Event mediumAdd(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, Record theMedium, Point aPoint) {
+		 return mediumAdd(aUserId, aUserName, aGameRoundId, aGamePlayId, theMedium, aPoint, -1, -1);
 	}
 
 	/**
 	 * Publish medium submit to Pushlet framework, optional task.
 	 */
-	public static Event mediumAdd(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, int theMediumId, String theMediumType, int aTaskId, int aTaskResultId) {
+	public static Event mediumAdd(int aUserId, String aUserName, int aGameRoundId, int aGamePlayId, Record theMedium, Point aPoint, int aTaskId, int aTaskResultId) {
 
 		// Pushlet subject (topic) is e.g. "/location/piet"
 		Event event = Event.createDataEvent(GAME_PLAY_SUBJECT + aGamePlayId);
@@ -186,8 +186,15 @@ public class WPEventPublisher {
 			event.setField(FIELD_USER_NAME, aUserName);
 			event.setField(FIELD_GAMEROUND_ID, aGameRoundId);
 			event.setField(FIELD_GAMEPLAY_ID, aGamePlayId);
-			event.setField(FIELD_MEDIUM_ID, theMediumId);
-			event.setField(FIELD_TYPE, theMediumType);
+			event.setField(FIELD_MEDIUM_ID, theMedium.getId());
+			event.setField(FIELD_NAME, theMedium.getStringField(FIELD_NAME));
+			event.setField(FIELD_TYPE, theMedium.getStringField(FIELD_KIND));
+
+			// Optional medium location
+			if (aPoint != null) {
+				event.setField(FIELD_LON, aPoint.x + "");
+				event.setField(FIELD_LAT, aPoint.y + "");
+			}
 
 			// Optional if medium was also part of answering task
 			if (aTaskId > 0) {

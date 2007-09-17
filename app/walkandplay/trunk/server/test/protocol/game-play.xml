@@ -473,7 +473,23 @@
 		</expect>
 	</test>
 
-	<test id="play-add-medium-task-2">
+	<test id="play-location-req-after-hit">
+		<send id="client1">
+			<utopia-req>
+				<play-location-req>
+					<pt lon="4.930887222290039" lat="52.37850717742566"/>
+				</play-location-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<play-location-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="play-add-medium-task-2-at-other-loc">
 		<send id="client1">
 			<utopia-req>
 				<play-add-medium-req id="${mediumid2}"/>

@@ -456,12 +456,12 @@ public class WPQueryLogic extends QueryLogic implements Constants {
 	}
 
 
-	public static Record getLastOpenTaskResult(int aGamePlayId) throws UtopiaException {
+	public static Record getLastHitTaskResultWithMediaOpen(int aGamePlayId) throws UtopiaException {
 		Record result = null;
 		try {
 			String tables = "wp_gameplay,wp_taskresult";
 			String fields = "wp_taskresult.id";
-			String where = "wp_gameplay.id = " + aGamePlayId + " AND wp_taskresult.state = '" + VAL_OPEN + "'";
+			String where = "wp_gameplay.id = " + aGamePlayId + " AND wp_taskresult.state = '" + VAL_HIT + "'" + " AND wp_taskresult.mediastate = '" + VAL_OPEN + "'";
 			String relations = "wp_gameplay,wp_taskresult";
 			String postCond = "ORDER BY wp_taskresult.time DESC";
 			Record[] records = QueryLogic.queryStore(getOase(), tables, fields, where, relations, postCond);
