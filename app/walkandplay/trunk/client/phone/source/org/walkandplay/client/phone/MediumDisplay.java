@@ -24,6 +24,7 @@ public class MediumDisplay extends DefaultDisplay{
     private VideoDisplay videoDisplay;
     private AudioDisplay audioDisplay;
     private boolean active;
+    private boolean hitPlay;
 
     private StringItem mediumLabel = new StringItem("", "");
 
@@ -168,13 +169,18 @@ public class MediumDisplay extends DefaultDisplay{
 
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
-            midlet.getActiveApp().connect();
-            midlet.getPlayApp().setPlayDisplay();
             active = false;
+            if(hitPlay){
+                hitPlay = false;
+                midlet.getPlayApp().setBypass();
+                midlet.getActiveApp().connect();
+            }
+
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (command == PLAY_VIDEO_CMD) {
             if (midlet.useExternalPlayer()) {
                 try {
+                    hitPlay = true;
                     midlet.platformRequest(mediumUrl);
                 } catch (Throwable t) {
                     //#style alertinfo
@@ -190,6 +196,7 @@ public class MediumDisplay extends DefaultDisplay{
         } else if (command == PLAY_AUDIO_CMD) {
             try {
                 if (midlet.useExternalPlayer()) {
+                    hitPlay = true;
                     midlet.platformRequest(mediumUrl);
                 } else {
                     if(audioDisplay == null){

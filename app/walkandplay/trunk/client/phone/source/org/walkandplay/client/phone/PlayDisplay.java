@@ -201,12 +201,12 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             // task
             //if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
             if (!demoTaskSent) {
-                /*JXElement hit = new JXElement("medium-hit");
-                hit.setAttr("id", 831882);
-                aResponse.addChild(hit);*/
+                JXElement hit = new JXElement("medium-hit");
+                hit.setAttr("id", 831815);
+                aResponse.addChild(hit);
 
                 Log.log("add a hit!!!!");
-                JXElement hit = new JXElement("task-hit");
+                /*JXElement hit = new JXElement("task-hit");
                 hit.setAttr("id", 831651);
                 // open | done
                 hit.setAttr("state", "open");
@@ -214,7 +214,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                 hit.setAttr("answerstate", "open");
                 // open | done
                 hit.setAttr("mediastate", "open");
-                aResponse.addChild(hit);
+                aResponse.addChild(hit);*/
 
                 demoTaskSent = true;
                 hitElm = aResponse.getChildAt(0);
@@ -761,9 +761,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             if(imageCaptureDisplay == null){
                 imageCaptureDisplay = new ImageCaptureDisplay(midlet);
             }
-            if(lastObjectType.equals("task")){
-                imageCaptureDisplay.start(this, true);
-            }            
+            imageCaptureDisplay.start(this, true);            
 		} else if (cmd == ADD_AUDIO_CMD) {
             if(audioCaptureDisplay == null){
                 audioCaptureDisplay = new AudioCaptureDisplay(midlet);

@@ -21,6 +21,7 @@ public class SelectGameDisplay extends AppStartDisplay {
 
     private Image logo;
     protected PlayDisplay playDisplay;
+    private boolean bypass;
 
 
     Command PLAY_CMD = new Command(Locale.get("selectGame.Play"), Command.SCREEN, 2);
@@ -48,7 +49,12 @@ public class SelectGameDisplay extends AppStartDisplay {
     }
 
     public void onConnected(){
-        getGameRoundsByUser();
+        // TODO: o so nasty hack - need to change this.
+        if(bypass){
+            bypass = false;            
+        }else{
+            getGameRoundsByUser();
+        }
     }
 
     public void onError(String anErrorMessage){
@@ -192,19 +198,20 @@ public class SelectGameDisplay extends AppStartDisplay {
                         playDisplay.addTextDisplay.handleAddMediumRsp(rsp);
                     }else if(playDisplay.imageCaptureDisplay!=null && playDisplay.imageCaptureDisplay.isActive()){
                         String text = "Image sent succesfully.";                        
-                        if(playDisplay.taskDisplay!=null){
-                            if(playDisplay.taskDisplay.getMediaState().equals("open")){
-                                playDisplay.taskDisplay.setMediaState("done");
-                                if(playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok")){
-                                    text += " You still have to answer the question though - good luck!";
-                                }else if(playDisplay.taskDisplay.getAnswerState().equals("ok")){
-                                    playDisplay.taskDisplay.setState("done");
-                                    text += "Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() +" points.";
-                                }
-                            }
 
-                            playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);
+                        if(playDisplay.taskDisplay!=null && playDisplay.taskDisplay.getMediaState().equals("open")){
+                            playDisplay.taskDisplay.setMediaState("done");
                         }
+
+                        if(playDisplay.taskDisplay!=null && (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok"))){
+                            text += " You still have to answer the question though - good luck!";
+                        }else if(playDisplay.taskDisplay!=null && playDisplay.taskDisplay.getAnswerState().equals("ok")){
+                            if(playDisplay.taskDisplay!=null) playDisplay.taskDisplay.setState("done");
+                            text += "Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() +" points.";
+                        }                        
+
+                        playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);
+
                     }else if(playDisplay.audioCaptureDisplay!=null && playDisplay.audioCaptureDisplay.isActive()){
                         playDisplay.audioCaptureDisplay.handleAddMediumRsp(rsp);
                     }
@@ -233,6 +240,10 @@ public class SelectGameDisplay extends AppStartDisplay {
 
     public void setPlayDisplay(){
         Display.getDisplay(midlet).setCurrent(playDisplay);
+    }
+
+    public void setBypass(){
+        bypass = true;
     }
 
     public void setGame(JXElement aGame) {
