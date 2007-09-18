@@ -1,14 +1,10 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 
 import javax.microedition.lcdui.*;
 
-import org.walkandplay.client.phone.Log;
-import org.walkandplay.client.phone.TCPClientListener;
-
-public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener {
+public class AddRoundDisplay extends DefaultDisplay {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
 
@@ -17,7 +13,7 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
     private String gameRoundName;
 
     public AddRoundDisplay(WPMidlet aMIDlet) {
-        super(aMIDlet, "Add game round");        
+        super(aMIDlet, "Add game round");
 
         //#style labelinfo
         append("Enter Title");
@@ -30,49 +26,26 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
 
     }
 
-    public void start(Displayable aPrevScreen){
+    public void start(Displayable aPrevScreen) {
         prevScreen = aPrevScreen;
-        midlet.getActiveApp().addTCPClientListener(this);
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("round-create-rsp")) {
-                clearScreen();
-                alertField.setText("Game round '" + gameRoundName + "' added");
-            } else if (rsp.getTag().equals("round-create-nrsp")) {
-                clearScreen();
-                alertField.setText("Error adding game round '" + gameRoundName + "'. Please try again.");
-            }
-        }
+    public void handleRoundCreateRsp(JXElement aResponse) {
+        clearScreen();
+        alertField.setText("Game round '" + gameRoundName + "' added");
     }
 
-    private void clearScreen(){
+    public void handleRoundCreateNrsp(JXElement aResponse) {
+        clearScreen();
+        alertField.setText("Error adding game round '" + gameRoundName + "'. Please try again.");
+    }
+
+    private void clearScreen() {
         deleteAll();
         addCommand(BACK_CMD);
         //#style alertinfo
         append(alertField);
-    }
-
-    public void onNetStatus(String aStatus){
-
-    }
-
-    public void onConnected(){
-
-    }
-
-    public void onError(String anErrorMessage){
-        //#style alertinfo
-        append(anErrorMessage);
-    }
-
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }
 
     private void createGameRound(String aGameRoundName) {
@@ -95,7 +68,6 @@ public class AddRoundDisplay extends DefaultDisplay implements TCPClientListener
                 createGameRound(gameRoundName);
             }
         } else if (command == BACK_CMD) {
-            midlet.getActiveApp().removeTCPClientListener(this);
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

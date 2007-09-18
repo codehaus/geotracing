@@ -1,15 +1,13 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 
-import javax.microedition.lcdui.*;
-import java.util.Vector;
-import java.util.Date;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.TextField;
 
-import org.walkandplay.client.phone.TCPClientListener;
-
-public class IMDisplay extends DefaultDisplay{
+public class IMDisplay extends DefaultDisplay {
 
     private Command SUBMIT_CMD = new Command("Send", Command.OK, 1);
     private Command NEW_MSG_CMD = new Command("New message", Command.SCREEN, 1);
@@ -25,35 +23,35 @@ public class IMDisplay extends DefaultDisplay{
         super(aMIDlet, "Messaging");
     }
 
-    public void start(Displayable aPrevScreen, String aMessage){
+    public void start(Displayable aPrevScreen, String aMessage) {
         prevScreen = aPrevScreen;
 
         // start clean
         deleteAll();
 
-        if(aMessage!=null) message = aMessage;
+        if (aMessage != null) message = aMessage;
 
         messageField = new TextField("", "", 32, TextField.ANY);
         drawScreen();
 
         active = true;
-        Display.getDisplay(midlet).setCurrent(this);    
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public boolean isActive() {
         return active;
     }
 
-    public String getMyMessage(){
+    public String getMyMessage() {
         return myMessage;
     }
 
-    private void drawScreen(){
+    private void drawScreen() {
         //#style labelinfo
         append("send message to web player");
         //#style textbox
         append(messageField);
-        if(message!=null){
+        if (message != null) {
             //#style labelinfo
             append("last message from web player");
             //#style formbox
@@ -83,7 +81,7 @@ public class IMDisplay extends DefaultDisplay{
     </cmt-read-rsp>
     */
 
-    public void handleCommentInsertRsp(JXElement aResponse){
+    public void handleCommentInsertRsp(JXElement aResponse) {
         deleteAll();
         //#style alertinfo
         append("Message sent succesfully");
@@ -91,7 +89,7 @@ public class IMDisplay extends DefaultDisplay{
         addCommand(NEW_MSG_CMD);
     }
 
-    public void handleCommentInsertNrsp(JXElement aResponse){
+    public void handleCommentInsertNrsp(JXElement aResponse) {
         deleteAll();
 
         //#style alertinfo
@@ -141,9 +139,9 @@ public class IMDisplay extends DefaultDisplay{
                 messageField.setString("");
             }
         } else if (command == BACK_CMD) {
-            active = false;            
+            active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if (command == NEW_MSG_CMD) {
+        } else if (command == NEW_MSG_CMD) {
             deleteAll();
             drawScreen();
             removeCommand(NEW_MSG_CMD);

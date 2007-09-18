@@ -13,7 +13,7 @@ public class AccountDisplay extends DefaultDisplay {
     private TextField userField;
     private TextField passwordField;
     private Command OK_CMD = new Command("OK", Command.OK, 1);
-    
+
     public AccountDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Account");
 
@@ -39,10 +39,10 @@ public class AccountDisplay extends DefaultDisplay {
         append(urlField);*/
 
         addCommand(OK_CMD);
-        setCommandListener(this);        
+        setCommandListener(this);
     }
 
-    public void start(){
+    public void start() {
         Display.getDisplay(midlet).setCurrent(this);
     }
 

@@ -1,8 +1,8 @@
 package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.*;
-import javax.microedition.media.Player;
 import javax.microedition.media.Manager;
+import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 
 public class AudioDisplay extends DefaultDisplay implements PlayerListener {
@@ -30,13 +30,13 @@ public class AudioDisplay extends DefaultDisplay implements PlayerListener {
     public void play(String aName, String aUrl) {
         try {
             // if it's audio we already downloaded - just start playing
-            if(audioUrl!=null && audioUrl.equals(aUrl)){
+            if (audioUrl != null && audioUrl.equals(aUrl)) {
                 Log.log("Already downloaded this one");
                 //#style alertinfo
                 form.append("Already downloaded - so play!");
                 Display.getDisplay(midlet).setCurrent(form);
                 player.start();
-            }else{
+            } else {
                 // start fresh
                 deleteAll();
 
@@ -73,7 +73,7 @@ public class AudioDisplay extends DefaultDisplay implements PlayerListener {
                             player.start();
                             progressBar.setValue(100);
                             form.addCommand(REPLAY_CMD);
-                        }catch(Throwable t){
+                        } catch (Throwable t) {
                             //#style alertinfo
                             form.append(t.getMessage());
                             Log.log(t.getMessage());
@@ -95,22 +95,22 @@ public class AudioDisplay extends DefaultDisplay implements PlayerListener {
     }
 
     public void commandAction(Command command, Displayable screen) {
-        if(command == BACK_CMD){
-            try{
-                if(player!=null){
+        if (command == BACK_CMD) {
+            try {
+                if (player != null) {
                     player.stop();
                     player.deallocate();
                     player.close();
                     player = null;
                 }
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 // nada
             }
             Display.getDisplay(midlet).setCurrent(prevScreen);
-        }else if(command == REPLAY_CMD){
-            try{
+        } else if (command == REPLAY_CMD) {
+            try {
                 player.start();
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 //#style alertinfo
                 form.append("Could not replay audio");
             }

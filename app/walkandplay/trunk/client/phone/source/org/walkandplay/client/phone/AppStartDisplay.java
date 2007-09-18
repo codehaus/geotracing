@@ -2,9 +2,6 @@ package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import org.walkandplay.client.phone.Log;
-import org.walkandplay.client.phone.TCPClientListener;
-import org.walkandplay.client.phone.TCPClient;
 
 public class AppStartDisplay extends DefaultDisplay implements TCPClientListener {
 
@@ -15,7 +12,7 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
     }
 
     public void addTCPClientListener(TCPClientListener aListener) {
-        tcpClient.addListener(aListener);        
+        tcpClient.addListener(aListener);
     }
 
     public void removeTCPClientListener(TCPClientListener aListener) {
@@ -26,7 +23,7 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
         return tcpClient;
     }
 
-    public void exit(){
+    public void exit() {
         deleteAll();
         addCommand(BACK_CMD);
         //#style alertinfo
@@ -35,8 +32,8 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
 
     protected void connect() {
         try {
-            if(tcpClient!=null){
-                tcpClient.stop();                
+            if (tcpClient != null) {
+                tcpClient.stop();
             }
             tcpClient = TCPClient.getInstance();
             tcpClient.start(midlet);
@@ -49,20 +46,20 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
         }
     }
 
-    public void onNetStatus(String aStatus){
+    public void onNetStatus(String aStatus) {
 
     }
 
-    public void onConnected(){
+    public void onConnected() {
 
     }
 
-    public void onError(String anErrorMessage){
+    public void onError(String anErrorMessage) {
 
     }
 
-    public void onFatal(){
-        
+    public void onFatal() {
+
     }
 
     public void sendRequest(JXElement aRequest) {
@@ -74,7 +71,7 @@ public class AppStartDisplay extends DefaultDisplay implements TCPClientListener
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        
+
     }
 
 }

@@ -7,8 +7,6 @@ import javax.microedition.lcdui.*;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.walkandplay.client.phone.TCPClientListener;
-
 public class EditGameDisplay extends DefaultDisplay implements TCPClientListener {
     private ChoiceGroup gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
     private Hashtable games = new Hashtable(2);
@@ -19,7 +17,7 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
 
     public EditGameDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Edit a game");
-        
+
         try {
             //#ifdef polish.images.directLoad
             logo = Image.createImage("/play_icon_small.png");
@@ -34,7 +32,7 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
         }
     }
 
-    public void start(Displayable aPrevScreen){
+    public void start(Displayable aPrevScreen) {
         midlet.getActiveApp().addTCPClientListener(this);
         prevScreen = aPrevScreen;
         getGamesByUser();
@@ -69,20 +67,20 @@ public class EditGameDisplay extends DefaultDisplay implements TCPClientListener
         }
     }
 
-    public void onNetStatus(String aStatus){
+    public void onNetStatus(String aStatus) {
 
     }
 
-    public void onConnected(){
+    public void onConnected() {
 
     }
 
-    public void onError(String anErrorMessage){
+    public void onError(String anErrorMessage) {
         //#style alertinfo
         append(anErrorMessage);
     }
 
-    public void onFatal(){
+    public void onFatal() {
         midlet.getActiveApp().exit();
         Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
     }

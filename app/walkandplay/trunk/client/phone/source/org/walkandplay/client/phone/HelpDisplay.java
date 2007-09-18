@@ -1,9 +1,8 @@
 package org.walkandplay.client.phone;
 
-import javax.microedition.lcdui.*;
-
-import org.walkandplay.client.phone.Log;
 import de.enough.polish.util.Locale;
+
+import javax.microedition.lcdui.*;
 
 
 /**

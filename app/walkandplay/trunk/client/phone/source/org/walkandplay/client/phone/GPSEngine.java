@@ -3,7 +3,6 @@ package org.walkandplay.client.phone;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.*;
 import org.geotracing.client.Log;
-import org.walkandplay.client.phone.WPMidlet;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -15,7 +14,7 @@ import java.util.Vector;
  * @author Just van den Broecke
  * @version $Id: Tracer.java 222 2006-12-10 00:17:59Z just $
  */
-public class GPSEngine implements GPSFetcherListener{
+public class GPSEngine implements GPSFetcherListener {
 
     /**
      * instance of GPSFetcher
@@ -54,6 +53,7 @@ public class GPSEngine implements GPSFetcherListener{
 
     /**
      * Starts GPS fetching and KW client.
+     *
      * @param aMIDlet the main midlet
      */
     public void start(WPMidlet aMIDlet) {
@@ -71,15 +71,15 @@ public class GPSEngine implements GPSFetcherListener{
             if (gpsFetcher != null) {
                 gpsFetcher.stop();
                 gpsFetcher = null;
-            }                     
+            }
         } catch (Throwable t) {
-            Log.log("Exception stopping GPS:" + t.toString());            
+            Log.log("Exception stopping GPS:" + t.toString());
         }
     }
 
     public void onGPSConnect() {
         for (int i = 0; i < listeners.size(); i++) {
-            ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("GPS connected");
+            ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("GPS connected");
         }
         Util.playTone(60, 250, midlet.getVolume());
     }
@@ -89,7 +89,7 @@ public class GPSEngine implements GPSFetcherListener{
      */
     synchronized public void onGPSInfo(GPSInfo theInfo) {
         for (int i = 0; i < listeners.size(); i++) {
-            ((GPSEngineListener)listeners.elementAt(i)).onGPSInfo(theInfo);
+            ((GPSEngineListener) listeners.elementAt(i)).onGPSInfo(theInfo);
         }
     }
 
@@ -114,9 +114,9 @@ public class GPSEngine implements GPSFetcherListener{
             lastTimeLocSent = now;
 
             for (int i = 0; i < listeners.size(); i++) {
-                ((GPSEngineListener)listeners.elementAt(i)).onGPSLocation(points);
+                ((GPSEngineListener) listeners.elementAt(i)).onGPSLocation(points);
             }
-            
+
             points.removeAllElements();
         }
     }
@@ -126,7 +126,7 @@ public class GPSEngine implements GPSFetcherListener{
      */
     public void onGPSDisconnect() {
         for (int i = 0; i < listeners.size(); i++) {
-            ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("GPS disconnected");
+            ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("GPS disconnected");
         }
     }
 
@@ -136,7 +136,7 @@ public class GPSEngine implements GPSFetcherListener{
     public void onGPSError(String aReason, Throwable anException) {
         Log.log("GPS error: " + aReason + " e=" + anException);
         for (int i = 0; i < listeners.size(); i++) {
-            ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("error");
+            ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("error");
         }
         Util.playTone(72, 100, midlet.getVolume());
         Util.playTone(71, 100, midlet.getVolume());
@@ -148,13 +148,13 @@ public class GPSEngine implements GPSFetcherListener{
      */
     public void onGPSStatus(String aStatusMsg) {
         for (int i = 0; i < listeners.size(); i++) {
-            ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus(aStatusMsg);
+            ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus(aStatusMsg);
         }
     }
 
     public void onGPSTimeout() {
         for (int i = 0; i < listeners.size(); i++) {
-            ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("GPS timeout");
+            ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("GPS timeout");
         }
     }
 
@@ -167,13 +167,13 @@ public class GPSEngine implements GPSFetcherListener{
             String gpsURL = GPSSelector.getGPSURL();
             if (gpsURL == null) {
                 for (int i = 0; i < listeners.size(); i++) {
-                    ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("No GPS");
+                    ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("No GPS");
                 }
                 return;
             }
 
             for (int i = 0; i < listeners.size(); i++) {
-                    ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("gpsURL=\n" + gpsURL);
+                ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("gpsURL=\n" + gpsURL);
             }
 
             //long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
@@ -182,9 +182,9 @@ public class GPSEngine implements GPSFetcherListener{
             gpsFetcher.setURL(gpsURL);
             gpsFetcher.start(midlet.getGPSSampleInterval());
         } catch (Throwable t) {
-             for (int i = 0; i < listeners.size(); i++) {
-                    ((GPSEngineListener)listeners.elementAt(i)).onGPSStatus("start error");
-             }
+            for (int i = 0; i < listeners.size(); i++) {
+                ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("start error");
+            }
             gpsFetcher = null;
         }
     }

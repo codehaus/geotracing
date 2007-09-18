@@ -2,10 +2,10 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.ui.Form;
 
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 
 
 public class DefaultDisplay extends Form implements CommandListener {
@@ -20,7 +20,7 @@ public class DefaultDisplay extends Form implements CommandListener {
         prevScreen = Display.getDisplay(midlet).getCurrent();
 
         addCommand(BACK_CMD);
-        setCommandListener(this);        
+        setCommandListener(this);
     }
 
     public void commandAction(Command command, Displayable screen) {

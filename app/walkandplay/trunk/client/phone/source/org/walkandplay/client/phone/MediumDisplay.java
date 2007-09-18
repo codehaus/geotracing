@@ -2,15 +2,14 @@ package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
 
-public class MediumDisplay extends DefaultDisplay{
+public class MediumDisplay extends DefaultDisplay {
 
     private Command PLAY_VIDEO_CMD = new Command(Locale.get("medium.playVideo"), Command.SCREEN, 2);
-    private Command PLAY_AUDIO_CMD = new Command(Locale.get("medium.playAudio"), Command.SCREEN, 2);    
+    private Command PLAY_AUDIO_CMD = new Command(Locale.get("medium.playAudio"), Command.SCREEN, 2);
 
     private int screenWidth;
     private JXElement medium;
@@ -33,13 +32,13 @@ public class MediumDisplay extends DefaultDisplay{
         screenWidth = theScreenWidth;
     }
 
-    public void start(String aMediumId, Displayable aPrevScreen){
+    public void start(String aMediumId, Displayable aPrevScreen) {
         prevScreen = aPrevScreen;
 
         active = true;
         Display.getDisplay(midlet).setCurrent(this);
 
-        if(mediumId==null || !mediumId.equals(aMediumId)){
+        if (mediumId == null || !mediumId.equals(aMediumId)) {
             mediumId = aMediumId;
             mediumLabel.setText("Loading...");
             //#style labelinfo
@@ -51,17 +50,17 @@ public class MediumDisplay extends DefaultDisplay{
 
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active;
     }
 
-    public void handleGetMediumRsp(JXElement aResponse){
+    public void handleGetMediumRsp(JXElement aResponse) {
 
         medium = aResponse.getChildByTag("record");
 
         // get the name
         mediumName = medium.getChildText("name");
-        if(mediumName == null || mediumName.length() == 0){
+        if (mediumName == null || mediumName.length() == 0) {
             mediumName = "Untitled";
         }
         // store the mediumType
@@ -87,8 +86,8 @@ public class MediumDisplay extends DefaultDisplay{
 
     }
 
-    public void handleGetMediumNrsp(JXElement aResponse){
-        
+    public void handleGetMediumNrsp(JXElement aResponse) {
+
     }
 
     private void getMedium(String aMediumId) {
@@ -129,9 +128,9 @@ public class MediumDisplay extends DefaultDisplay{
             if (midlet.useExternalPlayer()) {
                 //#style formbox
                 append("When you click on 'play video' the video will be " +
-                "downloaded and played in your default media player." +
-                " Afterwards close the media player and continue " +
-                "here by pressing 'back'");
+                        "downloaded and played in your default media player." +
+                        " Afterwards close the media player and continue " +
+                        "here by pressing 'back'");
             } else {
                 //#style formbox
                 append("When you click on 'play video' the video will be " +
@@ -155,9 +154,9 @@ public class MediumDisplay extends DefaultDisplay{
                         "here by pressing 'back'");*/
                 //#style formbox
                 append("The audio will be downloaded automatically - please be patient.");
-                try{
+                try {
                     Util.playStream(mediumUrl);
-                }catch(Throwable t){
+                } catch (Throwable t) {
                     //#style alertinfo
                     append("Could not play the audio:" + t.getMessage());
                 }
@@ -170,7 +169,7 @@ public class MediumDisplay extends DefaultDisplay{
     public void commandAction(Command command, Displayable screen) {
         if (command == BACK_CMD) {
             active = false;
-            if(hitPlay){
+            if (hitPlay) {
                 hitPlay = false;
                 midlet.getPlayApp().setBypass();
                 midlet.getActiveApp().connect();
@@ -199,7 +198,7 @@ public class MediumDisplay extends DefaultDisplay{
                     hitPlay = true;
                     midlet.platformRequest(mediumUrl);
                 } else {
-                    if(audioDisplay == null){
+                    if (audioDisplay == null) {
                         audioDisplay = new AudioDisplay(midlet, this);
                     }
                     audioDisplay.play(mediumName, mediumUrl);
