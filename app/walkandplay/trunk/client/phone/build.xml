@@ -15,6 +15,7 @@
 	<property name="mobitracer.src" value="${geotracing.base.dir}/client/mobitracer/src"/>
 
     <property file="build.properties"/>
+	<property file="build.testserver.properties"/>
     <property name="connbridge.jar" value="${mppsdk.dir}/bluetooth/connbridge/lib/connbridge.jar"/>
     <property name="emulator.jar" value="${mppsdk.dir}/player.jar"/>
 	<property name="emulator.class" value="com.mpp.player.PowerPlayerApp"/>
@@ -49,6 +50,9 @@
     <!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Generic/midp1"/>
+
+	<!-- The .jar -->
+	<property name="package.zip" value="${basedir}/build/${project.id}-mobile-${midlet.version}.zip"/>
 
 	<path id="compile.classpath">
         <pathelement location="${jsr179.jar}"/>
@@ -326,25 +330,32 @@
 		</exec>
 	</target>
 
-    <!-- Copies mobile apps to test server. -->
-	<target name="deploy-test" depends="build_Nokia_N73_EN_US">
+     <!-- Copies mobile apps to test server. -->
+	<target name="versioninfo">
+		<echo message="Version info"/>
 		<tstamp/>
 
 		<!-- Set version number. -->
-		<concat destfile="dist/version.html">
-			<filelist dir="etc" files="version.html"/>
+		<concat destfile="${basedir}/dist/version.html">
+			<filelist dir="${basedir}/etc" files="version.html"/>
 			<filterchain>
 				<expandproperties/>
 			</filterchain>
 		</concat>
 
 		<!-- Set version numbers and build info. -->
-		<concat destfile="dist/build.html">
-			<filelist dir="etc" files="build.html"/>
+		<concat destfile="${basedir}/dist/build.html">
+			<filelist dir="${basedir}/etc" files="build.html"/>
 			<filterchain>
 				<expandproperties/>
 			</filterchain>
 		</concat>
+
+	</target>
+
+	<!-- Copies mobile apps to test server. -->
+	<target name="deploy-test" depends="versioninfo,build_Nokia_N73_EN_US">
+		<tstamp/>
 
 		<echo message="Copying jars to ${deploy.test.server}:${deploy.test.dir}"/>
 		<exec executable="scp">
@@ -352,6 +363,20 @@
 			<arg line="dist"/>
 			<arg line="${deploy.test.server}:${deploy.test.dir}" />
 		</exec>
+	</target>
+
+	<!-- Copies mobile apps to test server. -->
+	<target name="set-prod-props">
+		<property file="build.prodserver.properties"/>
+	</target>
+
+	<!-- Packages apps for production server deployment. -->
+	<target name="package" depends="set-prod-props,versioninfo">
+		<echo message="Packaging distribution into ${kw-url}"/>
+		<delete file="${package.zip}"/>
+		<zip zipfile="${package.zip}">
+			<zipfileset dir="${basedir}/dist" prefix="dist"/>
+		</zip>
 	</target>
 
 </project>
