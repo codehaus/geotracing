@@ -44,30 +44,30 @@ public class SelectGameDisplay extends AppStartDisplay {
         }
     }
 
-    public void start(){
-        connect();        
+    public void start() {
+        connect();
     }
 
-    public void onConnected(){
+    public void onConnected() {
         // TODO: o so nasty hack - need to change this.
-        if(bypass){
-            bypass = false;            
-        }else{
+        if (bypass) {
+            bypass = false;
+        } else {
             getGameRoundsByUser();
         }
     }
 
-    public void onError(String anErrorMessage){
+    public void onError(String anErrorMessage) {
         //#style alertinfo
         append(anErrorMessage);
     }
 
-    public void onFatal(){
+    public void onFatal() {
         exit();
     }
 
-   public void onNetStatus(String aNetStatus){
-        if(playDisplay!=null) playDisplay.setNetStatus(aNetStatus);
+    public void onNetStatus(String aNetStatus) {
+        if (playDisplay != null) playDisplay.setNetStatus(aNetStatus);
     }
 
     // all responses for the Play widget are handle here centrally
@@ -77,7 +77,7 @@ public class SelectGameDisplay extends AppStartDisplay {
             JXElement rsp = aResponse.getChildAt(0);
             if (rsp.getTag().equals("query-store-rsp")) {
                 String cmd = rsp.getAttr("cmd");
-                if(cmd.equals("q-play-status-by-user")){
+                if (cmd.equals("q-play-status-by-user")) {
 
                     // always start clean
                     deleteAll();
@@ -99,11 +99,11 @@ public class SelectGameDisplay extends AppStartDisplay {
                         String roundName = elm.getChildText("roundname");
                         String gameplayState = elm.getChildText("gameplaystate");
                         String displayName = name + " | " + roundName;
-                        if(gameplayState.equals("running")){
+                        if (gameplayState.equals("running")) {
                             displayName += " *";
                         }
-                        
-                        if(!gameplayState.equals("done")){
+
+                        if (!gameplayState.equals("done")) {
                             //#style formbox
                             gamesGroup.append(displayName, null);
                             gameRounds.put(displayName, elm);
@@ -111,65 +111,65 @@ public class SelectGameDisplay extends AppStartDisplay {
                     }
                     // select the first
                     gamesGroup.setSelectedIndex(0, true);
-                    
+
                     // now show the screen
                     Display.getDisplay(midlet).setCurrent(this);
                 } else if (cmd.equals("q-game")) {
-					Log.log("Seting game record");
-					midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
-				} else if (cmd.equals("q-game-locations")) {
+                    Log.log("Seting game record");
+                    midlet.getPlayApp().setGame(rsp.getChildByTag("record"));
+                } else if (cmd.equals("q-game-locations")) {
                     Log.log("Getting game locations");
-                    if(playDisplay!=null && playDisplay.isActive()) {
+                    if (playDisplay != null && playDisplay.isActive()) {
                         playDisplay.handleGetGameLocationsRsp(rsp);
                     }
-				}else if (cmd.equals("q-comments-for-target")) {
-                    if(playDisplay!=null) {
+                } else if (cmd.equals("q-comments-for-target")) {
+                    if (playDisplay != null) {
                         playDisplay.handleCommentsForTargetRsp(rsp);
                     }
-                } else if(cmd.equals("q-task")){
-                    if(playDisplay!=null && playDisplay.taskDisplay!=null){
+                } else if (cmd.equals("q-task")) {
+                    if (playDisplay != null && playDisplay.taskDisplay != null) {
                         playDisplay.taskDisplay.handleGetTaskRsp(rsp);
                     }
                 } else if (cmd.equals("q-medium")) {
-                    if(playDisplay!=null && playDisplay.mediumDisplay!=null){
+                    if (playDisplay != null && playDisplay.mediumDisplay != null) {
                         playDisplay.mediumDisplay.handleGetMediumRsp(rsp);
                     }
 
-                } else if(cmd.equals("q-scores")){
-                    if(playDisplay!=null && playDisplay.scoreDisplay!=null){
+                } else if (cmd.equals("q-scores")) {
+                    if (playDisplay != null && playDisplay.scoreDisplay != null) {
                         playDisplay.scoreDisplay.handleGetScoresRsp(rsp);
                     }
                 }
             } else if (rsp.getTag().equals("query-store-nrsp")) {
                 String cmd = rsp.getAttr("cmd");
-                if(cmd.equals("q-play-status-by-user")){
+                if (cmd.equals("q-play-status-by-user")) {
                     getErrorHandler().showGoBack("Could not retrieve play status:" + rsp.getAttr("details"));
                 } else if (cmd.equals("q-game")) {
-					getErrorHandler().showGoBack("Could not retrieve play status:" + rsp.getAttr("details"));
-				} else if (cmd.equals("q-game-locations")) {
-                    if(playDisplay!=null && playDisplay.isActive()) {
+                    getErrorHandler().showGoBack("Could not retrieve play status:" + rsp.getAttr("details"));
+                } else if (cmd.equals("q-game-locations")) {
+                    if (playDisplay != null && playDisplay.isActive()) {
                         playDisplay.handleGetGameLocationsNrsp(rsp);
                     }
-				}else if (cmd.equals("q-comments-for-target")) {
-                    if(playDisplay!=null) {
+                } else if (cmd.equals("q-comments-for-target")) {
+                    if (playDisplay != null) {
                         playDisplay.handleCommentsForTargetNrsp(rsp);
                     }
-                } else if(cmd.equals("q-task")){
-                    if(playDisplay!=null && playDisplay.taskDisplay!=null){
+                } else if (cmd.equals("q-task")) {
+                    if (playDisplay != null && playDisplay.taskDisplay != null) {
                         playDisplay.taskDisplay.handleGetTaskNrsp(rsp);
                     }
                 } else if (cmd.equals("q-medium")) {
-                    if(playDisplay!=null && playDisplay.mediumDisplay!=null){
+                    if (playDisplay != null && playDisplay.mediumDisplay != null) {
                         playDisplay.mediumDisplay.handleGetMediumNrsp(rsp);
                     }
 
-                } else if(cmd.equals("q-scores")){
-                    if(playDisplay!=null && playDisplay.scoreDisplay!=null){
+                } else if (cmd.equals("q-scores")) {
+                    if (playDisplay != null && playDisplay.scoreDisplay != null) {
                         playDisplay.scoreDisplay.handleGetScoresRsp(rsp);
                     }
                 }
             } else if (rsp.getTag().equals("play-start-rsp")) {
-                if(playDisplay == null){
+                if (playDisplay == null) {
                     playDisplay = new PlayDisplay(midlet);
                 }
                 Display.getDisplay(midlet).setCurrent(playDisplay);
@@ -177,72 +177,73 @@ public class SelectGameDisplay extends AppStartDisplay {
             } else if (rsp.getTag().equals("play-start-nrsp")) {
                 getErrorHandler().showGoBack(rsp.getAttr("details"));
             } else if (rsp.getTag().equals("play-location-rsp")) {
-                if(playDisplay!=null) {
+                if (playDisplay != null) {
                     playDisplay.handlePlayLocationRsp(rsp);
                 }
             } else if (rsp.getTag().equals("play-location-nrsp")) {
-                if(playDisplay!=null) {
+                if (playDisplay != null) {
                     playDisplay.handlePlayLocationNrsp(rsp);
                 }
             } else if (rsp.getTag().equals("play-answertask-rsp")) {
-                if(playDisplay!=null && playDisplay.taskDisplay!=null) {
+                if (playDisplay != null && playDisplay.taskDisplay != null) {
                     playDisplay.taskDisplay.handleAnswerTaskRsp(rsp);
                 }
             } else if (rsp.getTag().equals("play-answertask-nrsp")) {
-                if(playDisplay!=null && playDisplay.taskDisplay!=null) {
+                if (playDisplay != null && playDisplay.taskDisplay != null) {
                     playDisplay.taskDisplay.handleAnswerTaskNrsp(rsp);
                 }
             } else if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
-                if(playDisplay!=null){
-                    if(playDisplay.addTextDisplay!=null && playDisplay.addTextDisplay.isActive()){
+                if (playDisplay != null) {
+                    if (playDisplay.addTextDisplay != null && playDisplay.addTextDisplay.isActive()) {
                         playDisplay.addTextDisplay.handleAddMediumRsp(rsp);
-                    }else if(playDisplay.imageCaptureDisplay!=null && playDisplay.imageCaptureDisplay.isActive()){
-                        String text = "Image sent succesfully.";                        
+                    } else if (playDisplay.imageCaptureDisplay != null && playDisplay.imageCaptureDisplay.isActive()) {
+                        String text = "Image sent succesfully.";
 
-                        if(playDisplay.taskDisplay!=null && playDisplay.taskDisplay.getMediaState().equals("open")){
+                        if (playDisplay.taskDisplay != null && playDisplay.taskDisplay.getMediaState().equals("open")) {
                             playDisplay.taskDisplay.setMediaState("done");
                         }
 
-                        if(playDisplay.taskDisplay!=null && (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok"))){
+                        if (playDisplay.taskDisplay != null && (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok"))) {
                             text += " You still have to answer the question though - good luck!";
-                        }else if(playDisplay.taskDisplay!=null && playDisplay.taskDisplay.getAnswerState().equals("ok")){
-                            if(playDisplay.taskDisplay!=null) playDisplay.taskDisplay.setState("done");
-                            text += "Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() +" points.";
-                        }                        
+                        } else
+                        if (playDisplay.taskDisplay != null && playDisplay.taskDisplay.getAnswerState().equals("ok")) {
+                            if (playDisplay.taskDisplay != null) playDisplay.taskDisplay.setState("done");
+                            text += "Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
+                        }
 
                         playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);
 
-                    }else if(playDisplay.audioCaptureDisplay!=null && playDisplay.audioCaptureDisplay.isActive()){
+                    } else if (playDisplay.audioCaptureDisplay != null && playDisplay.audioCaptureDisplay.isActive()) {
                         playDisplay.audioCaptureDisplay.handleAddMediumRsp(rsp);
                     }
                 }
-            }else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {
-                if(playDisplay!=null){
-                    if(playDisplay.addTextDisplay!=null && playDisplay.addTextDisplay.isActive()){
+            } else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {
+                if (playDisplay != null) {
+                    if (playDisplay.addTextDisplay != null && playDisplay.addTextDisplay.isActive()) {
                         playDisplay.addTextDisplay.handleAddMediumNrsp(rsp);
-                    }else if(playDisplay.imageCaptureDisplay!=null && playDisplay.imageCaptureDisplay.isActive()){
+                    } else if (playDisplay.imageCaptureDisplay != null && playDisplay.imageCaptureDisplay.isActive()) {
                         playDisplay.imageCaptureDisplay.handleAddImageNrsp(rsp);
-                    }else if(playDisplay.audioCaptureDisplay!=null && playDisplay.audioCaptureDisplay.isActive()){
-                        playDisplay.audioCaptureDisplay.handleAddMediumNrsp(rsp);    
+                    } else if (playDisplay.audioCaptureDisplay != null && playDisplay.audioCaptureDisplay.isActive()) {
+                        playDisplay.audioCaptureDisplay.handleAddMediumNrsp(rsp);
                     }
                 }
             } else if (rsp.getTag().equals("cmt-insert-rsp")) {
-                if(playDisplay!=null && playDisplay.imDisplay!=null) {
+                if (playDisplay != null && playDisplay.imDisplay != null) {
                     playDisplay.imDisplay.handleCommentInsertRsp(rsp);
                 }
             } else if (rsp.getTag().equals("cmt-insert-nrsp")) {
-                if(playDisplay!=null && playDisplay.imDisplay!=null) {
+                if (playDisplay != null && playDisplay.imDisplay != null) {
                     playDisplay.imDisplay.handleCommentInsertRsp(rsp);
                 }
             }
         }
     }
 
-    public void setPlayDisplay(){
+    public void setPlayDisplay() {
         Display.getDisplay(midlet).setCurrent(playDisplay);
     }
 
-    public void setBypass(){
+    public void setBypass() {
         bypass = true;
     }
 
@@ -310,35 +311,35 @@ public class SelectGameDisplay extends AppStartDisplay {
         }
     }
 
-    private ErrorHandler getErrorHandler(){
-        if(errorHandler == null){
+    private ErrorHandler getErrorHandler() {
+        if (errorHandler == null) {
             errorHandler = new ErrorHandler();
         }
         return errorHandler;
     }
 
     private class ErrorHandler implements CommandListener {
-		private Command BACK_CMD = new Command("Back", Command.CANCEL, 1);
+        private Command BACK_CMD = new Command("Back", Command.CANCEL, 1);
 
         private Form form;
 
         public void showGoBack(String aMsg) {
             //#style defaultscreen
-			form = new Form("Play a game!");
+            form = new Form("Play a game!");
 
             //#style alertinfo
             form.append(aMsg);
-			form.addCommand(BACK_CMD);
+            form.addCommand(BACK_CMD);
 
-			form.setCommandListener(this);
+            form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
         public void commandAction(Command command, Displayable screen) {
             midlet.getActiveApp().removeTCPClientListener(instance);
-            Display.getDisplay(midlet).setCurrent(prevScreen);            
-		}
-	}
+            Display.getDisplay(midlet).setCurrent(prevScreen);
+        }
+    }
 
 
 }

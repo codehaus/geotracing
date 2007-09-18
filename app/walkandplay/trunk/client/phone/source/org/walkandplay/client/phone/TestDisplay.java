@@ -1,12 +1,11 @@
 package org.walkandplay.client.phone;
 
+import org.walkandplay.client.external.CameraHandler;
+
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.lcdui.*;
 import java.io.DataInputStream;
-
-// import org.walkandplay.client.phone.ProgressListener;
-import org.walkandplay.client.external.CameraHandler;
 
 /**
  * MobiTracer main GUI.
@@ -59,7 +58,7 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
         try {
             CameraHandler.takeSnapshot(display);
         } catch (Exception e) {
-            setTitle("Error:"+ e.getMessage());
+            setTitle("Error:" + e.getMessage());
         }
 
         //Create a new thread here to get notified when the photo is taken

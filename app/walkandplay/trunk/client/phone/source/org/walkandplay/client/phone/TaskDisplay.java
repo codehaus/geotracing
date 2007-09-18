@@ -1,11 +1,10 @@
 package org.walkandplay.client.phone;
 
+import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
-
-import de.enough.polish.util.Locale;
 
 public class TaskDisplay extends DefaultDisplay {
 
@@ -18,7 +17,7 @@ public class TaskDisplay extends DefaultDisplay {
     private String taskId;
     private String taskName = "";
     private String taskDescription = "";
-    private String taskScore = "";    
+    private String taskScore = "";
     private Image taskImage;
     private String answer = "";
     private String state = "";
@@ -37,22 +36,22 @@ public class TaskDisplay extends DefaultDisplay {
         addCommand(OK_CMD);
     }
 
-    public void start(String aTaskId, String aState, String anAnswerState, String aMediaState){
+    public void start(String aTaskId, String aState, String anAnswerState, String aMediaState) {
         Log.log("start - taskId:" + aTaskId + ", state: " + aState + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
 
         // only set the state for the first time - after 'start' state updates are done by play-answertask-rsp
-        if(state.length() == 0) state = aState;
-        if(answerState.length() == 0) answerState = anAnswerState;
-        if(mediaState.length() == 0) mediaState = aMediaState;
+        if (state.length() == 0) state = aState;
+        if (answerState.length() == 0) answerState = anAnswerState;
+        if (mediaState.length() == 0) mediaState = aMediaState;
 
         Log.log("Used state: " + state + ", answerState: " + answerState + ", mediaState:" + mediaState);
 
         // only get and display the task if it's not done yet
-        if(state.equals("done")){
+        if (state.equals("done")) {
             getErrorHandler().showGoBack("You already completed this task.");
             return;
-        }else{
-            if(task == null || !taskId.equals(aTaskId)){
+        } else {
+            if (task == null || !taskId.equals(aTaskId)) {
                 taskId = aTaskId;
                 queryTask();
                 return;
@@ -60,7 +59,7 @@ public class TaskDisplay extends DefaultDisplay {
         }
 
         // a right answer was given
-        if(answerState.equals("ok") && !anAnswerState.equals(answerState)){
+        if (answerState.equals("ok") && !anAnswerState.equals(answerState)) {
             deleteAll();
             drawScreen();
         }
@@ -70,49 +69,49 @@ public class TaskDisplay extends DefaultDisplay {
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active;
     }
 
-    public String getState(){
+    public String getState() {
         return state;
     }
 
-    public String getMediaState(){
+    public String getMediaState() {
         return mediaState;
     }
 
-    public void setState(String aState){
+    public void setState(String aState) {
         state = aState;
     }
 
-    public void setMediaState(String aMediaState){
+    public void setMediaState(String aMediaState) {
         mediaState = aMediaState;
     }
 
-    public String getAnswerState(){
+    public String getAnswerState() {
         return answerState;
     }
 
-    public void setStates(String aState, String anAnswerState, String aMediaState){
-        if(state!=null) state = aState;
-        if(answerState!=null) answerState = anAnswerState;
-        if(mediaState!=null) mediaState = aMediaState;
+    public void setStates(String aState, String anAnswerState, String aMediaState) {
+        if (state != null) state = aState;
+        if (answerState != null) answerState = anAnswerState;
+        if (mediaState != null) mediaState = aMediaState;
     }
 
-    public JXElement getTask(){
+    public JXElement getTask() {
         task.setAttr("state", state);
         task.setAttr("answerstate", answerState);
         task.setAttr("mediastate", mediaState);
         return task;
     }
 
-    private void drawScreen(){
-        if(answerState.equals("ok")){
+    private void drawScreen() {
+        if (answerState.equals("ok")) {
             //#style alertinfo
             append(Locale.get("task.UploadMedia"));
             removeCommand(OK_CMD);
-        }else{
+        } else {
             //#style alertinfo
             append(Locale.get("task.Info"));
         }
@@ -123,32 +122,32 @@ public class TaskDisplay extends DefaultDisplay {
 
         append(taskImage);
 
-        if(answerState.equals("ok")){
-            if(answer.length()>0){
+        if (answerState.equals("ok")) {
+            if (answer.length() > 0) {
                 //#style labelinfo
                 append("your answer");
                 //#style textbox
                 inputField = new TextField("", answer, 1024, TextField.UNEDITABLE);
                 append(inputField);
             }
-        }else{
+        } else {
             //#style labelinfo
             append("your answer");
             //#style textbox
             inputField = new TextField("", "", 1024, TextField.ANY);
             append(inputField);
-        }        
+        }
     }
 
-    public String getTaskName(){
+    public String getTaskName() {
         return taskName;
     }
 
-    public String getTaskScore(){
+    public String getTaskScore() {
         return taskScore;
     }
 
-    public void handleGetTaskRsp(JXElement aResponse){
+    public void handleGetTaskRsp(JXElement aResponse) {
         task = aResponse.getChildByTag("record");
         if (task != null) {
 
@@ -181,11 +180,11 @@ public class TaskDisplay extends DefaultDisplay {
         }
     }
 
-    public void handleGetTaskNrsp(JXElement aResponse){
+    public void handleGetTaskNrsp(JXElement aResponse) {
         getErrorHandler().showGoBack("Could not get the task");
     }
 
-    public void handleAnswerTaskRsp(JXElement aResponse){
+    public void handleAnswerTaskRsp(JXElement aResponse) {
         //<utopia-rsp logts="1189673784658" ><play-answertask-rsp state="open" mediastate="open" answerstate="notok" score="0" playstate="running" /></utopia-rsp>
         answerState = aResponse.getAttr("answerstate");
         mediaState = aResponse.getAttr("mediastate");
@@ -208,7 +207,7 @@ public class TaskDisplay extends DefaultDisplay {
 
     }
 
-    public void handleAnswerTaskNrsp(JXElement aResponse){
+    public void handleAnswerTaskNrsp(JXElement aResponse) {
         getErrorHandler().showGoBack("Problem answering the task:" + aResponse.getAttr("details"));
     }
 
@@ -237,15 +236,15 @@ public class TaskDisplay extends DefaultDisplay {
         }
     }
 
-    private ErrorHandler getErrorHandler(){
-        if(errorHandler == null){
+    private ErrorHandler getErrorHandler() {
+        if (errorHandler == null) {
             errorHandler = new ErrorHandler();
         }
         return errorHandler;
     }
 
     private class ErrorHandler implements CommandListener {
-		private Command BACK_CMD = new Command("Back", Command.CANCEL, 1);
+        private Command BACK_CMD = new Command("Back", Command.CANCEL, 1);
         private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
         private Command TRY_AGAIN_CMD = new Command(Locale.get("task.TryAgain"), Command.CANCEL, 1);
 
@@ -253,54 +252,54 @@ public class TaskDisplay extends DefaultDisplay {
 
         public void showTryAgain(String aMsg) {
             //#style defaultscreen
-			form = new Form("TaskDisplay");
+            form = new Form("TaskDisplay");
 
             //#style alertinfo
             form.append(aMsg);
-			form.addCommand(TRY_AGAIN_CMD);
+            form.addCommand(TRY_AGAIN_CMD);
 
-			form.setCommandListener(this);
+            form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
         public void showGoBack(String aMsg) {
             //#style defaultscreen
-			form = new Form("TaskDisplay");
+            form = new Form("TaskDisplay");
 
             //#style alertinfo
             form.append(aMsg);
-			form.addCommand(BACK_CMD);
+            form.addCommand(BACK_CMD);
 
-			form.setCommandListener(this);
+            form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
         public void showOutro(String aScore) {
             //#style defaultscreen
-			form = new Form("TaskDisplay");
+            form = new Form("TaskDisplay");
 
             //#style alertinfo
             form.append("Right answer and you already sent in media!\nYou scored " + aScore + " points\n" +
                     "You have now also finished the last task!!!\nThe Game is finished...");
-			form.addCommand(OUTRO_CMD);
+            form.addCommand(OUTRO_CMD);
 
-			form.setCommandListener(this);
+            form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
         public void commandAction(Command command, Displayable screen) {
             if (command == TRY_AGAIN_CMD) {
                 inputField.setString("");
                 answer = "";
                 Display.getDisplay(midlet).setCurrent(instance);
-            }else if (command == BACK_CMD) {
+            } else if (command == BACK_CMD) {
                 active = false;
                 Display.getDisplay(midlet).setCurrent(prevScreen);
-            }else if (command == OUTRO_CMD) {
+            } else if (command == OUTRO_CMD) {
                 active = false;
                 new OutroDisplay(midlet);
-            }            
-		}
-	}
+            }
+        }
+    }
 
 }

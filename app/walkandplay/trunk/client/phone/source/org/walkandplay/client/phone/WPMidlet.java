@@ -26,16 +26,13 @@
 package org.walkandplay.client.phone;
 
 import de.enough.polish.util.Locale;
+import org.geotracing.client.Preferences;
+import org.geotracing.client.Util;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.media.Player;
-import javax.microedition.media.Manager;
-
-import org.geotracing.client.Util;
-import org.geotracing.client.Preferences;
 
 public class WPMidlet extends MIDlet implements CommandListener {
 
@@ -54,9 +51,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
     private static Preferences preferences;
 
     public final static String KW_URL = "kw-url";
-	public final static String WMS_URL = "wms-url";
-	public final static String GOOGLE_WMS_URL = "google-wms-url";
-	public final static String GEODAN_WMS_URL = "geodan-wms-url";
+    public final static String WMS_URL = "wms-url";
+    public final static String GOOGLE_WMS_URL = "google-wms-url";
+    public final static String GEODAN_WMS_URL = "geodan-wms-url";
     public final static String KW_USER = "kw-user";
     public final static String KW_PASSWORD = "kw-password";
     public final static String KW_SERVER = "kw-server";
@@ -68,17 +65,17 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String GPS_SEND_INTERVAL = "gps-send-interval";
     public final static String EXTERNAL_PLAYER = "external-player";
     public final static String DEMO_MODE = "demo";
-    
+
     public WPMidlet() {
         super();
-        midlet = this;        
+        midlet = this;
     }
 
     public void setHome() {
-        if(midlet.isInDemoMode()){
+        if (midlet.isInDemoMode()) {
             //#style mainScreen
             menuScreen = new List(TITLE + "(Demo)", List.IMPLICIT);
-        }else{
+        } else {
             //#style mainScreen
             menuScreen = new List(TITLE, List.IMPLICIT);
         }
@@ -112,16 +109,16 @@ public class WPMidlet extends MIDlet implements CommandListener {
         Display.getDisplay(this).setCurrent(menuScreen);
     }
 
-    public void setTitle(boolean isDemo){
-        if(isDemo){
+    public void setTitle(boolean isDemo) {
+        if (isDemo) {
             menuScreen.setTitle(TITLE + "(demo)");
-        }else{
+        } else {
             menuScreen.setTitle(TITLE);
         }
     }
 
-    protected void startApp() throws MIDletStateChangeException {        
-        if(new VersionChecker().check()){
+    protected void startApp() throws MIDletStateChangeException {
+        if (new VersionChecker().check()) {
             Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
         }
         /*Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));*/
@@ -155,9 +152,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return getPreferences().get((KW_URL), getAppProperty(KW_URL));
     }
 
-	public String getWMSUrl() {
-		 return getPreferences().get((WMS_URL), getAppProperty(GEODAN_WMS_URL));
-	 }
+    public String getWMSUrl() {
+        return getPreferences().get((WMS_URL), getAppProperty(GEODAN_WMS_URL));
+    }
 
     public String getKWServer() {
         return getPreferences().get((KW_SERVER), getAppProperty(KW_SERVER));
@@ -187,13 +184,13 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return Integer.parseInt(getAppProperty(VOLUME));
     }
 
-    public boolean useGoogleMaps(){
+    public boolean useGoogleMaps() {
         return getWMSUrl().equals(GOOGLE_WMS_URL);
     }
 
     public boolean useExternalPlayer() {
         String bool = getPreferences().get((EXTERNAL_PLAYER), getAppProperty(EXTERNAL_PLAYER));
-        if(bool.equals("true")){
+        if (bool.equals("true")) {
             return true;
         }
         return false;
@@ -207,15 +204,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
         return Long.parseLong(getPreferences().get((GPS_SAMPLE_INTERVAL), getAppProperty(GPS_SAMPLE_INTERVAL)));
     }
 
-    public boolean isInDemoMode(){
+    public boolean isInDemoMode() {
         String bool = getPreferences().get((DEMO_MODE), getAppProperty(DEMO_MODE));
-        if(bool.equals("true")){
+        if (bool.equals("true")) {
             return true;
         }
         return false;
     }
 
-    public AppStartDisplay getActiveApp(){
+    public AppStartDisplay getActiveApp() {
         return activeApp;
     }
 
@@ -237,7 +234,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 // Play
                 selectGameDisplay = new SelectGameDisplay(this);
                 selectGameDisplay.start();
-                activeApp = selectGameDisplay;                
+                activeApp = selectGameDisplay;
                 break;
             case 1:
                 // Create
@@ -257,14 +254,14 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 break;
             case 3:
                 // Settings
-                if(settingsDisplay == null){
+                if (settingsDisplay == null) {
                     settingsDisplay = new SettingsDisplay(this);
                 }
                 Display.getDisplay(this).setCurrent(settingsDisplay);
                 break;
             case 4:
                 // Help
-                if(helpDisplay == null){
+                if (helpDisplay == null) {
                     helpDisplay = new HelpDisplay(this);
                 }
                 Display.getDisplay(this).setCurrent(helpDisplay);
@@ -282,7 +279,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 // test display
                 Display.getDisplay(this).setCurrent(new TestDisplay(this));
                 /*Display.getDisplay(this).setCurrent(new AudioDisplay2(this, "test", "http://test.walkandplay.com/wp/media.srv?id=831815", selectGameDisplay));*/
-                
+
                 /*try{
                     Player player = Manager.createPlayer("http://test.walkandplay.com/wp/media.srv?id=831815"); 
                     player.realize();
@@ -295,51 +292,52 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 }*/
                 //Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
                 //Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
-                break;            
+                break;
         }
     }
 
     private class VersionChecker implements CommandListener {
-		private Command EXIT_CMD = new Command("Exit", Command.EXIT, 1);
-		private Command CONTINUE_CMD = new Command("Continue at you own risk", Command.SCREEN, 1);
+        private Command EXIT_CMD = new Command("Exit", Command.EXIT, 1);
+        private Command CONTINUE_CMD = new Command("Continue at you own risk", Command.SCREEN, 1);
         private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
 
         private Form form;
+
         public boolean check() {
             String myVersion = getAppProperty("MIDlet-Version");
 
             String myName = getAppProperty("MIDlet-Name");
 
-			String versionURL = "http://" + midlet.getKWServer() + "/dist/version.html";
+            String versionURL = "http://" + midlet.getKWServer() + "/dist/version.html";
             try {
                 String theirVersion = Util.getPage(versionURL);
-                if (theirVersion != null){
-                    if(!theirVersion.trim().equals(myVersion)) {
+                if (theirVersion != null) {
+                    if (!theirVersion.trim().equals(myVersion)) {
                         //#style defaultscreen
                         form = new Form("Version check");
 
                         //#style alertinfo
                         form.append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
-                        form.addCommand(EXIT_CMD);                        
+                        form.addCommand(EXIT_CMD);
                         form.addCommand(GET_CMD);
                         form.addCommand(CONTINUE_CMD);
 
                         form.setCommandListener(this);
                         Display.getDisplay(midlet).setCurrent(form);
                         return false;
-                    }else{
+                    } else {
                         return true;
                     }
-                }else{
+                } else {
                     return true;
                 }
             } catch (Throwable t) {
                 return true;
             }
-		}
+        }
 
-		public void commandAction(Command command, Displayable screen) {
-			if (command == EXIT_CMD) {
+        public void commandAction(Command command, Displayable screen) {
+            if (command == EXIT_CMD) {
                 Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
             } else if (command == CONTINUE_CMD) {
                 setHome();
@@ -354,6 +352,6 @@ public class WPMidlet extends MIDlet implements CommandListener {
                     Log.log(t.getMessage());
                 }
             }
-		}
-	}
+        }
+    }
 }
