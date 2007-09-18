@@ -488,7 +488,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             lonLat = null;
             mapImage = null;
 				}*/
-		setLocation("4.92", "52.35");
+		// setLocation("4.92", "52.35");
 		show();
 	}
 
