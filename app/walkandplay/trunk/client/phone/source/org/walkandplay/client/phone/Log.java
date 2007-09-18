@@ -14,18 +14,26 @@ public class Log {
     private static final int LOG_SZ = 16;
     private static String[] logMsgs = new String[LOG_SZ];
     private static int logIndex = 0;
+    private static boolean inDemoMode;
 
     private Log() {
     }
 
-    public static void log(String aMsg) {
-        System.out.println(aMsg);
-        synchronized (logMsgs) {
-            logMsgs[logIndex++] = aMsg;
+    public static void setDemoMode(boolean demoOn){
+        inDemoMode = demoOn;
+    }
 
-            // Rotate if full
-            if (logIndex == LOG_SZ) {
-                logIndex = 0;
+
+    public static void log(String aMsg) {
+        if(inDemoMode){
+            System.out.println(aMsg);
+            synchronized (logMsgs) {
+                logMsgs[logIndex++] = aMsg;
+
+                // Rotate if full
+                if (logIndex == LOG_SZ) {
+                    logIndex = 0;
+                }
             }
         }
     }

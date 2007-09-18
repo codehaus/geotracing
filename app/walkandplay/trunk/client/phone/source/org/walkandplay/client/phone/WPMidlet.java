@@ -38,6 +38,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     private WPMidlet midlet;
     private List menuScreen;
+    private SplashDisplay splashDisplay;
     private SettingsDisplay settingsDisplay;
     private HelpDisplay helpDisplay;
     private GPSDisplay gpsDisplay;
@@ -72,7 +73,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     public void setHome() {
-        if (midlet.isInDemoMode()) {
+        if (isInDemoMode()) {
             //#style mainScreen
             menuScreen = new List(TITLE + "(Demo)", List.IMPLICIT);
         } else {
@@ -89,21 +90,23 @@ public class WPMidlet extends MIDlet implements CommandListener {
         menuScreen.append(Locale.get("menu.Settings"), null);
         //#style mainHelpCommand
         menuScreen.append(Locale.get("menu.Help"), null);
-        //#style mainLogCommand
-        menuScreen.append(Locale.get("menu.Log"), null);
         //#style mainQuitCommand
         menuScreen.append(Locale.get("menu.Quit"), null);
-        //#style mainLogCommand
-        menuScreen.append("test", null);
-        /*
-        //#style mainLogCommand
-        menuScreen.append("video display", null);
-        //#style mainLogCommand
-        menuScreen.append("video form", null);
-        //#style mainLogCommand
-        menuScreen.append("GPS test display", null);
-        //#style mainLogCommand
-        menuScreen.append("Friend Finder", null);*/
+        if(isInDemoMode()){
+            //#style mainLogCommand
+            menuScreen.append(Locale.get("menu.Log"), null);
+            //#style mainLogCommand
+            menuScreen.append("test", null);
+            /*
+            //#style mainLogCommand
+            menuScreen.append("video display", null);
+            //#style mainLogCommand
+            menuScreen.append("video form", null);
+            //#style mainLogCommand
+            menuScreen.append("GPS test display", null);
+            //#style mainLogCommand
+            menuScreen.append("Friend Finder", null);*/
+        }
 
         menuScreen.setCommandListener(this);
         Display.getDisplay(this).setCurrent(menuScreen);
@@ -118,10 +121,15 @@ public class WPMidlet extends MIDlet implements CommandListener {
     }
 
     protected void startApp() throws MIDletStateChangeException {
+        Log.setDemoMode(isInDemoMode());
         if (new VersionChecker().check()) {
-            Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
+            if(splashDisplay == null){
+                splashDisplay = new SplashDisplay(this);
+            }
+            splashDisplay.start(SplashDisplay.STATE_SPLASH_HOME);
+            Display.getDisplay(this).setCurrent(splashDisplay);
+            //setHome();
         }
-        /*Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));*/
     }
 
     protected void pauseApp() {
@@ -267,31 +275,23 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 Display.getDisplay(this).setCurrent(helpDisplay);
                 break;
             case 5:
-                // Log
-                Log.view(this);
+                // Quit
+                Log.log("exit");
+                if(splashDisplay == null){
+                    splashDisplay = new SplashDisplay(this);
+                }
+                Display.getDisplay(this).setCurrent(splashDisplay);
+                splashDisplay.start(SplashDisplay.STATE_SPLASH_EXIT);
                 break;
             case 6:
-                // Quit
-                Display.getDisplay(this).setCurrent(new SplashDisplay(this, -1));
-                //notifyDestroyed();
+                if(isInDemoMode()){
+                    Log.view(this);
+                }
                 break;
             case 7:
-                // test display
-                Display.getDisplay(this).setCurrent(new TestDisplay(this));
-                /*Display.getDisplay(this).setCurrent(new AudioDisplay2(this, "test", "http://test.walkandplay.com/wp/media.srv?id=831815", selectGameDisplay));*/
-
-                /*try{
-                    Player player = Manager.createPlayer("http://test.walkandplay.com/wp/media.srv?id=831815"); 
-                    player.realize();
-                    player.prefetch();
-                    player.start();
-                    //Util.playStream("http://test.walkandplay.com/wp/media.srv?id=831815");
-                }catch(Throwable t){
-                    //
-                    menuScreen.setTitle("Error: " + t.getMessage());
-                }*/
-                //Display.getDisplay(this).setCurrent(new VideoDisplay(this, "Untitled", getKWUrl() + "/media.srv?id=26527", helpDisplay));
-                //Display.getDisplay(this).setCurrent(new FriendFinderDisplay(this));
+                if(isInDemoMode()){
+                    Display.getDisplay(this).setCurrent(new TestDisplay(this));
+                }
                 break;
         }
     }
@@ -338,14 +338,22 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
         public void commandAction(Command command, Displayable screen) {
             if (command == EXIT_CMD) {
-                Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
+                if(splashDisplay == null){
+                    splashDisplay = new SplashDisplay(midlet);
+                }
+                Display.getDisplay(midlet).setCurrent(splashDisplay);
+                splashDisplay.start(SplashDisplay.STATE_SPLASH_EXIT);
             } else if (command == CONTINUE_CMD) {
                 setHome();
             } else if (command == GET_CMD) {
                 try {
                     midlet.platformRequest("http://" + midlet.getKWServer());
                     // and exit
-                    Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
+                    if(splashDisplay == null){
+                        splashDisplay = new SplashDisplay(midlet);
+                    }
+                    Display.getDisplay(midlet).setCurrent(splashDisplay);
+                    splashDisplay.start(SplashDisplay.STATE_EXIT);
                 } catch (Throwable t) {
                     //#style alertinfo
                     form.append("Could not get new version...sorry.");
