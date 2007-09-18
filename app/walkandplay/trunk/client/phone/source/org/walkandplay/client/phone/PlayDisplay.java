@@ -325,6 +325,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
             // make sure we don't show any locations from previous games
             gameLocations = null;
+            nrOfTasks = 0;
             repaint();
 
             setColor(aColor);
