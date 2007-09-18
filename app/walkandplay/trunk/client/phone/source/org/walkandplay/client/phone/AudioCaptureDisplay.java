@@ -1,7 +1,6 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 import org.geotracing.client.GPSFetcher;
 import org.geotracing.client.Util;
 import org.keyworx.mclient.Protocol;
@@ -49,7 +48,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
         kbPerSec = (rate * bits / 8) / 1000;
     }
 
-    public void start(Displayable aPrevScreen, boolean isPlaying){
+    public void start(Displayable aPrevScreen, boolean isPlaying) {
         try {
             prevScreen = aPrevScreen;
             playing = isPlaying;
@@ -74,22 +73,22 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active;
     }
 
-    public void handleAddMediumRsp(JXElement aResponse){
+    public void handleAddMediumRsp(JXElement aResponse) {
         clearScreen();
         removeCommand(PLAY_CMD);
         alertField.setText("Audio sent successfully");
     }
 
-    public void handleAddMediumNrsp(JXElement aResponse){
+    public void handleAddMediumNrsp(JXElement aResponse) {
         clearScreen();
         alertField.setText("Error sending audio - please try again.");
     }
 
-    private void clearScreen(){
+    private void clearScreen() {
         deleteAll();
         addCommand(BACK_CMD);
         //#style alertinfo
@@ -101,7 +100,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
     }
 
     public void prProgress(int anAmount) {
-        progressBar.setValue(anAmount);                
+        progressBar.setValue(anAmount);
     }
 
     public void prStop() {
@@ -128,9 +127,9 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
                             try {
                                 listener.prStart();
                                 Uploader uploader = new Uploader();
-                                listener.prProgress(progressMax/4);                                
+                                listener.prProgress(progressMax / 4);
                                 JXElement rsp = uploader.uploadMedium(TCPClient.getInstance().getAgentKey(), midlet.getKWUrl(), name.getString(), null, "audio", MIME, startTime, audioData, false);
-                                listener.prProgress(progressMax/2);
+                                listener.prProgress(progressMax / 2);
                                 if (rsp == null) {
                                     write("cannot submit audio!");
                                 } else if (Protocol.isPositiveResponse(rsp)) {
@@ -158,7 +157,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
 
 
                                     }
-                                    listener.prProgress(progressMax*3/4);
+                                    listener.prProgress(progressMax * 3 / 4);
                                     midlet.getActiveApp().sendRequest(addMediumReq);
                                     listener.prProgress(progressMax);
                                 } else {
@@ -229,7 +228,7 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
             append(progressBar);
 
             new Progress().start(this);
-            
+
             removeCommand(SUBMIT_CMD);
         } else if (c == PLAY_CMD) {
             play();

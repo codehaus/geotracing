@@ -1,14 +1,13 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
-import org.keyworx.mclient.Protocol;
-import org.geotracing.client.Util;
 import org.geotracing.client.GPSFetcher;
+import org.geotracing.client.Util;
+import org.keyworx.mclient.Protocol;
 
 import javax.microedition.lcdui.*;
 
-public class AddTextDisplay extends DefaultDisplay{
+public class AddTextDisplay extends DefaultDisplay {
 
     private Command SUBMIT_CMD = new Command("OK", Command.OK, 1);
 
@@ -22,7 +21,7 @@ public class AddTextDisplay extends DefaultDisplay{
         super(aMIDlet, "Add Text");
     }
 
-    private void drawScreen(){
+    private void drawScreen() {
         //#style labelinfo
         append("Enter Title");
 
@@ -45,32 +44,32 @@ public class AddTextDisplay extends DefaultDisplay{
         addCommand(SUBMIT_CMD);
     }
 
-    public void start(Displayable aPrevScreen, boolean isPlaying){
+    public void start(Displayable aPrevScreen, boolean isPlaying) {
         prevScreen = aPrevScreen;
         active = true;
-        playing = isPlaying;        
+        playing = isPlaying;
         // start fresh
         deleteAll();
         drawScreen();
-        
+
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active;
     }
 
-    public void handleAddMediumRsp(JXElement aResponse){
+    public void handleAddMediumRsp(JXElement aResponse) {
         deleteAll();
         removeCommand(SUBMIT_CMD);
-        
+
         //#style alertinfo
         append(alertField);
 
         alertField.setText("Text sent successfully");
     }
 
-    public void handleAddMediumNrsp(JXElement aResponse){
+    public void handleAddMediumNrsp(JXElement aResponse) {
         //#style alertinfo
         append(alertField);
 
@@ -120,7 +119,7 @@ public class AddTextDisplay extends DefaultDisplay{
                 }
             }
         } else if (command == BACK_CMD) {
-            active = false;            
+            active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         }
     }

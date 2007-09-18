@@ -15,13 +15,13 @@ public class IntroDisplay extends DefaultDisplay {
         append(midlet.getPlayApp().getGame().getChildText("intro"));
     }
 
-    public void start(Displayable aPrevScreen){
+    public void start(Displayable aPrevScreen) {
         active = true;
         prevScreen = aPrevScreen;
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    public boolean isActive(){
+    public boolean isActive() {
         return active;
     }
 

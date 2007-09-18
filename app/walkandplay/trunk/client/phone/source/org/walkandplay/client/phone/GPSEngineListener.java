@@ -1,6 +1,5 @@
 package org.walkandplay.client.phone;
 
-import nl.justobjects.mjox.JXElement;
 import org.geotracing.client.GPSInfo;
 
 import java.util.Vector;

@@ -1,6 +1,7 @@
 package org.walkandplay.client.phone;
 
 import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.StringItem;
 import javax.microedition.location.*;
 
 /**

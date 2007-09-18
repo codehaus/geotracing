@@ -3,7 +3,7 @@ package org.walkandplay.client.phone;
 import de.enough.polish.util.Locale;
 import nl.justobjects.mjox.JXElement;
 import nl.justobjects.mjox.XMLChannel;
-import org.geotracing.client.*;
+import org.geotracing.client.GPSInfo;
 
 import javax.microedition.lcdui.*;
 import java.util.Vector;
@@ -18,9 +18,6 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     private GPSEngine gpsEngine;
     private String gameId;
 
-    private int netId;
-    private int gpsId;
-
     private Command NEW_GAME_CMD = new Command(Locale.get("create.New"), Command.ITEM, 2);
     private Command EDIT_GAME_CMD = new Command(Locale.get("create.Edit"), Command.ITEM, 2);
     private Command ADD_ROUND_CMD = new Command(Locale.get("create.AddRound"), Command.ITEM, 2);
@@ -29,8 +26,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     private Command ADD_AUDIO_CMD = new Command(Locale.get("create.AddAudio"), Command.ITEM, 2);
     private Command SHOW_MAP_CMD = new Command(Locale.get("create.ShowMap"), Command.ITEM, 2);
     private Command SHOW_STATE_CMD = new Command(Locale.get("create.ShowState"), Command.ITEM, 2);
-    private Command HIDE_STATE_CMD = new Command(Locale.get("create.HideState"), Command.ITEM, 2);
-
+    
     private AddTextDisplay addTextDisplay;
     private AudioCaptureDisplay audioCaptureDisplay;
     private AddRoundDisplay addRoundDisplay;
@@ -58,7 +54,7 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
         append(gameLabel);
     }
 
-    public void start(){
+    public void start() {
         gameLabel.setText("Connecting to GPS...");
         connect();
     }
@@ -85,26 +81,76 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     }
 
     public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        
+        String tag = aResponse.getTag();
+        if (tag.equals("utopia-rsp")) {
+            JXElement rsp = aResponse.getChildAt(0);
+            if (rsp.getTag().equals("query-store-rsp")) {
+                String cmd = rsp.getAttr("cmd");
+                if (cmd.equals("q-game-locations")) {
+                    if (mapDisplay != null) {
+                        mapDisplay.handleGetGameLocationsRsp(rsp);
+                    }
+                }
+            } else if (rsp.getTag().equals("query-store-nrsp")) {
+                String cmd = rsp.getAttr("cmd");
+                if (cmd.equals("q-game-locations")) {
+                    if (mapDisplay != null) {
+                        mapDisplay.handleGetGameLocationsNrsp(rsp);
+                    }
+                }
+            } else if (rsp.getTag().equals("round-create-rsp")) {
+                if (addRoundDisplay != null) {
+                    addRoundDisplay.handleRoundCreateRsp(rsp);
+                }
+            } else if (rsp.getTag().equals("round-create-nrsp")) {
+                if (addRoundDisplay != null) {
+                    addRoundDisplay.handleRoundCreateNrsp(rsp);
+                }
+            } else if (rsp.getTag().equals("game-create-rsp")) {
+                if (newGameDisplay != null) {
+                    newGameDisplay.handleGameCreateRsp(rsp);
+                }
+            } else if (rsp.getTag().equals("game-create-nrsp")) {
+                if (newGameDisplay != null) {
+                    newGameDisplay.handleGameCreateNrsp(rsp);
+                }
+            } else if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                if (addTextDisplay != null && addTextDisplay.isActive()) {
+                    addTextDisplay.handleAddMediumRsp(rsp);
+                } else if (imageCaptureDisplay != null && imageCaptureDisplay.isActive()) {
+                    imageCaptureDisplay.handleAddImageRsp(rsp, "Image sent succesfully.");
+                } else if (audioCaptureDisplay != null && audioCaptureDisplay.isActive()) {
+                    audioCaptureDisplay.handleAddMediumRsp(rsp);
+                }
+            } else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {
+                if (addTextDisplay != null && addTextDisplay.isActive()) {
+                    addTextDisplay.handleAddMediumNrsp(rsp);
+                } else if (imageCaptureDisplay != null && imageCaptureDisplay.isActive()) {
+                    imageCaptureDisplay.handleAddImageNrsp(rsp);
+                } else if (audioCaptureDisplay != null && audioCaptureDisplay.isActive()) {
+                    audioCaptureDisplay.handleAddMediumNrsp(rsp);
+                }
+            }
+        }
     }
 
     public void onGPSLocation(Vector thePoints) {
         addCommand(SHOW_MAP_CMD);
     }
 
-    public void onConnected(){
+    public void onConnected() {
         gpsEngine = GPSEngine.getInstance();
         gpsEngine.addListener(this);
-        gpsEngine.start(midlet);        
+        gpsEngine.start(midlet);
     }
 
-    public void onError(String anErrorMessage){
+    public void onError(String anErrorMessage) {
         deleteAll();
         //#style alertinfo
         append(anErrorMessage);
     }
 
-    public void onFatal(String anErrorMessage){
+    public void onFatal(String anErrorMessage) {
         deleteAll();
         addCommand(BACK_CMD);
         //#style alertinfo
@@ -115,24 +161,27 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
         gpsStatus = s;
         gpsStatusBT.setText("GPS:" + gpsStatus);
         Log.log("gps status:" + s);
-        if(s.equals("GPS connected")){
+        if (s.equals("GPS connected")) {
             addCommand(NEW_GAME_CMD);
             addCommand(EDIT_GAME_CMD);
             addCommand(SHOW_STATE_CMD);
             addCommand(BACK_CMD);
-            gameLabel.setText("Create an new game or select one to edit");            
-        }else if(s.equals("No GPS") || s.indexOf("error")!=-1){
+            gameLabel.setText("Create an new game or select one to edit");
+        } else if (s.equals("No GPS") || s.indexOf("error") != -1) {
             //#style alertinfo
-            append("No GPS signal - please go back and setup your GPS (again).");            
-        }        
+            append("No GPS signal - please go back and setup your GPS (again).");
+        }
     }
 
-    public void onNetStatus(String aStatus){
+    public void onNetStatus(String aStatus) {
         netStatus = aStatus;
         netStatusBT.setText("NET:" + netStatus);
+        if (mapDisplay != null) {
+            mapDisplay.setNetStatus(aStatus);
+        }
     }
 
-    public void onStatus(String aStatus){
+    public void onStatus(String aStatus) {
         onNetStatus(aStatus);
     }
 
@@ -141,75 +190,75 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
     }
 
     public void commandAction(Command cmd, Displayable screen) {
-        try{
+        try {
             if (cmd == BACK_CMD) {
-                if(gpsEngine!=null) gpsEngine.stop();
-                if(tcpClient!=null) tcpClient.stop();
+                if (gpsEngine != null) gpsEngine.stop();
+                if (tcpClient != null) tcpClient.stop();
                 Display.getDisplay(midlet).setCurrent(prevScreen);
             } else if (cmd == NEW_GAME_CMD) {
-                if(newGameDisplay == null){
+                if (newGameDisplay == null) {
                     newGameDisplay = new NewGameDisplay(midlet);
                 }
-                newGameDisplay.start(this);                
+                newGameDisplay.start(this);
             } else if (cmd == EDIT_GAME_CMD) {
-                if(editGameDisplay == null){
+                if (editGameDisplay == null) {
                     editGameDisplay = new EditGameDisplay(midlet);
                 }
                 editGameDisplay.start(this);
             } else if (cmd == ADD_ROUND_CMD) {
-                if(addRoundDisplay == null){
+                if (addRoundDisplay == null) {
                     addRoundDisplay = new AddRoundDisplay(midlet);
                 }
                 addRoundDisplay.start(this);
             } else if (cmd == ADD_PHOTO_CMD) {
-                if(imageCaptureDisplay == null){
+                if (imageCaptureDisplay == null) {
                     imageCaptureDisplay = new ImageCaptureDisplay(midlet);
                 }
-                imageCaptureDisplay.start( this, false);
+                imageCaptureDisplay.start(this, false);
             } else if (cmd == ADD_AUDIO_CMD) {
-                if(audioCaptureDisplay == null){
+                if (audioCaptureDisplay == null) {
                     audioCaptureDisplay = new AudioCaptureDisplay(midlet);
                 }
                 audioCaptureDisplay.start(this, false);
             } else if (cmd == ADD_TEXT_CMD) {
-                if(addTextDisplay == null){
+                if (addTextDisplay == null) {
                     addTextDisplay = new AddTextDisplay(midlet);
                 }
                 addTextDisplay.start(this, false);
             } else if (cmd == SHOW_MAP_CMD) {
-                if(mapDisplay == null){
+                if (mapDisplay == null) {
                     mapDisplay = new MapDisplay(midlet);
                 }
                 mapDisplay.start(this);
-            }else if (cmd == SHOW_STATE_CMD) {
+            } else if (cmd == SHOW_STATE_CMD) {
                 new StateHandler().showState();
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             Log.log("damn: " + t.toString());
             t.printStackTrace();
         }
     }
 
     private class StateHandler implements CommandListener {
-		private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
+        private Command cancelCmd = new Command("Back", Command.CANCEL, 1);
 
-		public void showState() {
+        public void showState() {
             //#style defaultscreen
-			Form form = new Form("Net & GPS State");
+            Form form = new Form("Net & GPS State");
 
             //#style formbox
             form.append(netStatusBT);
-			//#style formbox
+            //#style formbox
             form.append(gpsStatusBT);
-			form.addCommand(cancelCmd);
+            form.addCommand(cancelCmd);
 
-			form.setCommandListener(this);
+            form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-		}
+        }
 
-		public void commandAction(Command command, Displayable screen) {
-			Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
-		}
-	}
+        public void commandAction(Command command, Displayable screen) {
+            Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
+        }
+    }
 }
 

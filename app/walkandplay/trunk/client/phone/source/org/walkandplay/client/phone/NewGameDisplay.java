@@ -1,17 +1,13 @@
 package org.walkandplay.client.phone;
 
 import nl.justobjects.mjox.JXElement;
-import nl.justobjects.mjox.XMLChannel;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextField;
 
-import org.walkandplay.client.phone.Log;
-import org.walkandplay.client.phone.TCPClientListener;
-
-public class NewGameDisplay extends DefaultDisplay implements TCPClientListener {
+public class NewGameDisplay extends DefaultDisplay {
 
     private Command OK_CMD = new Command("OK", Command.OK, 1);
     private TextField inputField;
@@ -29,49 +25,26 @@ public class NewGameDisplay extends DefaultDisplay implements TCPClientListener 
         addCommand(OK_CMD);
     }
 
-    public void start(Displayable aPrevScreen){
-        midlet.getActiveApp().addTCPClientListener(this);
+    public void start(Displayable aPrevScreen) {
         prevScreen = aPrevScreen;
-        Display.getDisplay(midlet).setCurrent(this);                
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
-    public void accept(XMLChannel anXMLChannel, JXElement aResponse) {
-        String tag = aResponse.getTag();
-        if (tag.equals("utopia-rsp")) {
-            JXElement rsp = aResponse.getChildAt(0);
-            if (rsp.getTag().equals("game-create-rsp")) {
-                midlet.getCreateApp().setGameId(rsp.getAttr("id"));
-                midlet.getCreateApp().setGameName(gameName);
-                deleteAll();
-                removeCommand(OK_CMD);
-                addCommand(BACK_CMD);
-                //#style alertinfo
-                append("Created new game '" + gameName + "'");
-            } else if (rsp.getTag().equals("game-create-nrsp")) {
-                //#style alertinfo
-                append("Could not create game '" + gameName + "'. Please try again.");
-                gameName = "";
-                inputField.setString("");
-            }
-        }
-    }
-
-    public void onNetStatus(String aStatus){
-
-    }
-
-    public void onConnected(){
-
-    }
-
-    public void onError(String anErrorMessage){
+    public void handleGameCreateRsp(JXElement aResponse) {
+        midlet.getCreateApp().setGameId(aResponse.getAttr("id"));
+        midlet.getCreateApp().setGameName(gameName);
+        deleteAll();
+        removeCommand(OK_CMD);
+        addCommand(BACK_CMD);
         //#style alertinfo
-        append(anErrorMessage);
+        append("Created new game '" + gameName + "'");
     }
 
-    public void onFatal(){
-        midlet.getActiveApp().exit();
-        Display.getDisplay(midlet).setCurrent(midlet.getActiveApp());
+    public void handleGameCreateNrsp(JXElement aResponse) {
+        //#style alertinfo
+        append("Could not create game '" + gameName + "'. Please try again.");
+        gameName = "";
+        inputField.setString("");
     }
 
     private void createGame(String aGameName) {
