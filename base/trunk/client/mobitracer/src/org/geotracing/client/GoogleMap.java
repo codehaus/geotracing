@@ -31,6 +31,7 @@ public class GoogleMap {
 	final static public MFloat ONE = MFloat.ONE;
 	final static public MFloat TWO = new MFloat(2L);
 	final static public MFloat FOUR = new MFloat(4L);
+	final static public MFloat THREE64 = new MFloat(364L);
 	final static public MFloat TWO_PI = TWO.Mul(MFloat.PI);
 	final static public MFloat HALF_PI = MFloat.PI.Div(TWO);
 	final static public MFloat QUART_PI = MFloat.PI.Div(FOUR);
@@ -42,11 +43,18 @@ public class GoogleMap {
 	/**
 	 * Zoom resolutions in meters per pixel.
 	 */
-	final static public MFloat[] ZOOM_RESOS = {
+	/* final static public MFloat[] ZOOM_RESOS = {
 			new MFloat(262144L),new MFloat(131072L),new MFloat(65536L),new MFloat(32768L),new MFloat(16384L),new MFloat(8192L),
 			new MFloat(4096L), new MFloat(2048L),new MFloat(1024L), new MFloat(512L),new MFloat(256L),
 			new MFloat(128L), new MFloat(64L),new MFloat(32L), new MFloat(16L), new MFloat(8L),
 			FOUR, TWO, ONE, HALF
+	};   */
+
+	final static public MFloat[] ZOOM_RESOS = {
+			THREE64,THREE64,
+			THREE64, THREE64,THREE64, THREE64,THREE64,
+			THREE64, THREE64, THREE64, new MFloat(122L), new MFloat(405L, -1L),
+			new MFloat(135L, -1L), new MFloat(45L, -1L), new MFloat(15L, -1L), HALF, HALF, HALF,HALF,HALF
 	};
 
 	public static class XY {
