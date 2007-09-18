@@ -271,6 +271,10 @@ public class SelectGameDisplay extends AppStartDisplay {
         return gamePlayId;
     }
 
+    public void finishGame(){
+        if(playDisplay!=null)playDisplay.exit();
+    }
+
     private void getGameRoundsByUser() {
         JXElement req = new JXElement("query-store-req");
         req.setAttr("cmd", "q-play-status-by-user");
@@ -284,10 +288,6 @@ public class SelectGameDisplay extends AppStartDisplay {
         sendRequest(req);
     }
 
-    /*
-       * The commandAction method is implemented by this midlet to
-       * satisfy the CommandListener interface and handle the Cancel action.
-       */
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
             tcpClient.stop();
