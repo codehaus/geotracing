@@ -66,20 +66,20 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
             stop();
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (cmd == REPLAY_CMD) {
-            try{
+            try {
                 player.start();
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 // nada
             }
         }
     }
 
     public void play() {
-        try{
+        try {
             player = Manager.createPlayer(url);
             player.realize();
             player.addPlayerListener(this);
-        }catch(Throwable t){
+        } catch (Throwable t) {
             Log.log(t.getMessage());
             title = "Error:" + t.getMessage();
         }
@@ -87,18 +87,18 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
             public void run() {
                 try {
                     player.prefetch();
-                    title = "Video:" + name +"(" + (new Date(player.getDuration())).toString() + ")";
+                    title = "Video:" + name + "(" + (new Date(player.getDuration())).toString() + ")";
                     showPlayer();
-                }catch(Throwable t){
+                } catch (Throwable t) {
                     Log.log(t.getMessage());
-                    title = "Error:" + t.getMessage();                    
+                    title = "Error:" + t.getMessage();
                 }
             }
         }).start();
     }
 
-    private void showPlayer(){
-        try{
+    private void showPlayer() {
+        try {
             // get video control instance
             vidc = (VideoControl) player.getControl("VideoControl");
             vidc.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
@@ -117,7 +117,7 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
             player.start();
 
             addCommand(REPLAY_CMD);
-        }catch (Throwable t){
+        } catch (Throwable t) {
             Log.log(t.getMessage());
             title = "Error:" + t.getMessage();
             repaint();
@@ -154,5 +154,5 @@ public class VideoDisplay extends GameCanvas implements CommandListener, PlayerL
         g.setColor(0, 0, 0);
         g.drawString("options", 2, h - fh - 2, Graphics.TOP | Graphics.LEFT);
     }
-    
+
 }

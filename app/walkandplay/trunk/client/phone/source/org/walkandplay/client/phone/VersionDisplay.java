@@ -1,14 +1,13 @@
 package org.walkandplay.client.phone;
 
 import org.geotracing.client.Util;
-import org.walkandplay.client.phone.Log;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 
 public class VersionDisplay extends DefaultDisplay {
-	private String serverURL;
+    private String serverURL;
 
     private Command GET_CMD = new Command("Get new version", Command.SCREEN, 1);
 
@@ -16,7 +15,7 @@ public class VersionDisplay extends DefaultDisplay {
         super(aMIDlet, "Version check");
     }
 
-    public void start(Displayable aPrevScreen){
+    public void start(Displayable aPrevScreen) {
         prevScreen = aPrevScreen;
         String myVersion = midlet.getAppProperty("MIDlet-Version");
 
@@ -24,17 +23,17 @@ public class VersionDisplay extends DefaultDisplay {
         append("Current version: " + myVersion);
 
         String myName = midlet.getAppProperty("MIDlet-Name");
-		serverURL = "http://" + midlet.getKWServer();
-		String versionURL = serverURL + "/dist/version.html";
+        serverURL = "http://" + midlet.getKWServer();
+        String versionURL = serverURL + "/dist/version.html";
         String theirVersion = null;
         try {
             theirVersion = Util.getPage(versionURL);
-            if (theirVersion != null){
-                if(!theirVersion.trim().equals(myVersion)) {
+            if (theirVersion != null) {
+                if (!theirVersion.trim().equals(myVersion)) {
                     //#style alertinfo
                     append("Your " + myName + " version (" + myVersion + ") differs from the version (" + theirVersion + ") available for download. \nYou may want to upgrade to " + theirVersion);
                     addCommand(GET_CMD);
-                }else{
+                } else {
                     //#style alertinfo
                     append("Your have the latest version");
                 }
@@ -45,7 +44,7 @@ public class VersionDisplay extends DefaultDisplay {
         }
 
         Log.log("versionCheck mine=" + myVersion + " theirs=" + theirVersion);
-        Display.getDisplay(midlet).setCurrent(this);        
+        Display.getDisplay(midlet).setCurrent(this);
     }
 
     public void commandAction(Command command, Displayable screen) {

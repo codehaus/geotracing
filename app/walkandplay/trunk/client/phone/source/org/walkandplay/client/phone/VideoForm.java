@@ -1,11 +1,9 @@
 package org.walkandplay.client.phone;
 
-import org.walkandplay.client.phone.ProgressListener;
-
 import javax.microedition.lcdui.*;
 import javax.microedition.media.Manager;
-import javax.microedition.media.Player;
 import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
 
@@ -69,7 +67,7 @@ public class VideoForm extends DefaultDisplay implements ProgressListener, Playe
     public void playerUpdate(Player aPlayer, String anEvent, Object theDate) {
         //#style labelinfo
         append("player update:" + anEvent);
-        
+
         if (anEvent.equals(PlayerListener.END_OF_MEDIA)) {
             try {
                 defPlayer();
@@ -162,7 +160,7 @@ public class VideoForm extends DefaultDisplay implements ProgressListener, Playe
             if (vc != null) {
                 Item video = (Item) vc.initDisplayMode(vc.USE_GUI_PRIMITIVE, null);
                 Form v = new Form("Playing Video...");
-                StringItem si = new StringItem("Status: ","Playing...");
+                StringItem si = new StringItem("Status: ", "Playing...");
                 v.append(si);
                 v.append(video);
                 Display.getDisplay(midlet).setCurrent(v);
