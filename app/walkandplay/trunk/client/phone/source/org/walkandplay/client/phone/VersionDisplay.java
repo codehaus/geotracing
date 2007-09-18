@@ -54,7 +54,12 @@ public class VersionDisplay extends DefaultDisplay {
             try {
                 midlet.platformRequest(serverURL);
                 // and exit
-                Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, -1));
+                try {
+                    midlet.destroyApp(true);
+                    midlet.notifyDestroyed();
+                } catch (Throwable t) {
+                    //
+                }
             } catch (Throwable t) {
                 //#style alertinfo
                 append("Could not get new version:" + t.getMessage());

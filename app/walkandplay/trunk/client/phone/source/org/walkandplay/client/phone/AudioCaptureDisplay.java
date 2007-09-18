@@ -195,6 +195,14 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
         deleteAll();
         if (c == BACK_CMD) {
             audioData = null;
+            if(recordcontrol!=null){
+                recordcontrol = null;
+            }
+            if(player!=null){
+                player.deallocate();
+                player.close();
+                player = null;
+            }
             back();
 
         } else if (c == START_CMD) {

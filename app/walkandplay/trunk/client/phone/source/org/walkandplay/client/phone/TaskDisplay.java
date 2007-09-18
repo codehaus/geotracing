@@ -26,11 +26,13 @@ public class TaskDisplay extends DefaultDisplay {
     private boolean active;
     private TaskDisplay instance;
     private ErrorHandler errorHandler;
+    private int nrOfTasks;
 
-    public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, Displayable aPrevScreen) {
+    public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, int theNrOfTasks, Displayable aPrevScreen) {
         super(aMIDlet, "Task");
         instance = this;
         screenWidth = theScreenWidth;
+        nrOfTasks = theNrOfTasks;
         prevScreen = aPrevScreen;
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
         addCommand(OK_CMD);
@@ -195,11 +197,16 @@ public class TaskDisplay extends DefaultDisplay {
 
         if (answerState.equals("ok") && mediaState.equals("open")) {
             getErrorHandler().showGoBack("Right answer! You still have to sent in media though. Good luck!");
-        } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("open")) {
+        } else if (!answerState.equals("ok") && mediaState.equals("done")) {
             answer = inputField.getString();
-            getErrorHandler().showGoBack("Right answer and you already sent in media!\nYou scored " + score + " points");
-        } else if (answerState.equals("ok") && mediaState.equals("done") && state.equals("done")) {
-            getErrorHandler().showOutro(score);
+            getErrorHandler().showGoBack("Ok you send in media! Now fill in the right answer");
+        } else if (state.equals("done")) {
+            nrOfTasks--;
+            if(nrOfTasks == 0){
+                getErrorHandler().showOutro(score);
+            }else{
+                getErrorHandler().showGoBack("Right answer and you sent in media!\nYou scored " + score + " points. Still " + nrOfTasks + " tasks to go.");
+            }            
         } else {
             getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
         }

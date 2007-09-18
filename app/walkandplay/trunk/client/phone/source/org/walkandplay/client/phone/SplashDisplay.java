@@ -14,10 +14,13 @@ public class SplashDisplay extends Canvas {
     private Image logoBanner;
 
     // screenstates
-    private int screenName;
+    private int state;
+    public final static int STATE_SPLASH_HOME = 0;
+    public final static int STATE_SPLASH_EXIT = 1;
+    public final static int STATE_EXIT = 2;
 
 
-    public SplashDisplay(WPMidlet aMidlet, int aScreenName) {
+    public SplashDisplay(WPMidlet aMidlet) {
         try {
             midlet = aMidlet;
             // load all images
@@ -26,11 +29,18 @@ public class SplashDisplay extends Canvas {
             //#else
             logoBanner = scheduleImage("/logo.png");
             //#endif
-
-            screenName = aScreenName;
         } catch (Throwable t) {
-            System.out.println("could not load all images : " + t.toString());
+            Log.log("could not load all images : " + t.toString());
         }
+    }
+
+    public void start(int aState){
+        state = aState;
+        Log.log(""+state);
+        if(state == STATE_EXIT){
+            exit();
+        }
+        repaint();
     }
 
     /**
@@ -54,6 +64,15 @@ public class SplashDisplay extends Canvas {
         }
     }
 
+    private void exit(){
+        try {
+            midlet.destroyApp(true);
+            midlet.notifyDestroyed();
+        } catch (Throwable t) {
+            //
+        }
+    }
+
     // creates a delay for the splashscreen
     private class Delayer {
         Timer timer;
@@ -65,18 +84,13 @@ public class SplashDisplay extends Canvas {
 
         class RemindTask extends TimerTask {
             public void run() {
-                if (screenName != -1) {
+                if (state == STATE_SPLASH_HOME) {
                     midlet.setHome();
                     repaint();
-                } else {
-                    try {
-                        midlet.destroyApp(true);
-                    } catch (Throwable t) {
-
-                    }
-                    midlet.notifyDestroyed();
+                } else if (state == STATE_SPLASH_EXIT){
+                   exit();
                 }
-                timer.cancel(); //Terminate the timer thread
+                timer.cancel();
             }
         }
     }

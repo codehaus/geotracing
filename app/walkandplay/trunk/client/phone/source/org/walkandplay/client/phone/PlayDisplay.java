@@ -38,6 +38,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
     private static long POLL_INTERVAL = 10000L;
 
     private int maxScore;
+    private int nrOfTasks;
 
     private Vector gameLocations = new Vector(3);
 
@@ -238,7 +239,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
                 Log.log("we found a task!!");
                 if (taskDisplay == null) {
-                    taskDisplay = new TaskDisplay(midlet, w, this);
+                    taskDisplay = new TaskDisplay(midlet, w, nrOfTasks, this);
                 }
                 taskDisplay.start(lastObject.getAttr("id"), state, answerState, mediaState);
             } else if (t.equals("medium-hit")) {
@@ -263,6 +264,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
         for (int i = 0; i < gameLocations.size(); i++) {
             JXElement r = (JXElement) gameLocations.elementAt(i);
             if (r.getChildText("type").equals("task")) {
+                if(!r.getAttr("state").equals("done")){
+                    nrOfTasks++;
+                }
                 maxScore += Integer.parseInt(r.getChildText("score"));
             }
         }
