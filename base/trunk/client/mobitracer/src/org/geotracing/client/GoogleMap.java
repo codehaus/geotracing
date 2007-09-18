@@ -43,10 +43,10 @@ public class GoogleMap {
 	 * Zoom resolutions in meters per pixel.
 	 */
 	final static public MFloat[] ZOOM_RESOS = {
-			new MFloat(2L, -1L), ONE, TWO, FOUR, new MFloat(8L),
-			new MFloat(16L), new MFloat(32L), new MFloat(64L), new MFloat(128L), new MFloat(256L),
-			new MFloat(512L), new MFloat(1024L), new MFloat(2048L), new MFloat(4096L), new MFloat(8192L),
-			new MFloat(16384L), new MFloat(65536L), new MFloat(131072L), new MFloat(262144L)
+			new MFloat(262144L),new MFloat(131072L),new MFloat(65536L),new MFloat(32768L),new MFloat(16384L),new MFloat(8192L),
+			new MFloat(4096L), new MFloat(2048L),new MFloat(1024L), new MFloat(512L),new MFloat(256L),
+			new MFloat(128L), new MFloat(64L),new MFloat(32L), new MFloat(16L), new MFloat(8L),
+			FOUR, TWO, ONE, HALF
 	};
 
 	public static class XY {
@@ -175,7 +175,7 @@ public class GoogleMap {
 			}
 
 			// meters per pixel
-			MFloat resol = ZOOM_RESOS[ZOOM_RESOS.length - 1 - aZoom];
+			MFloat resol = ZOOM_RESOS[aZoom-1];
 
 			// meters per degree longitude
 			MFloat mPerLon = Util.metersPerDegreeLon(aLonLat.lon, aLonLat.lat);
@@ -189,7 +189,7 @@ public class GoogleMap {
 			// latitude width
 			halfTileHeight = resol.Mul(new MFloat(aHeight)).Div(mPerLat).Div(TWO);
 
-			System.out.println("zoom=" + aZoom + " resol=" + resol + " mPerLon=" + mPerLon + " mPerLat=" + mPerLat + " halfTileWidth=" + halfTileWidth);
+			System.out.println("zoom=" + aZoom + " resol=" + resol + " mPerLon=" + mPerLon + " mPerLat=" + mPerLat + " halfTileWidth=" + halfTileWidth+ " halfTileHeight=" + halfTileHeight);
 		} else {
 			BBox bboxStd = getBBox(getKeyholeRef(aLonLat, aZoom));
 			halfTileWidth = bboxStd.getLonWidth().Div(TWO);

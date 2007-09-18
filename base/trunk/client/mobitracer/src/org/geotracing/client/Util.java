@@ -34,7 +34,7 @@ public class Util {
 	 * Constant representing earth radius: 60 * 1.1515 * 1609.344
 	 */
 	private static MFloat DIST_CONST = new MFloat(111190L);
-	private static MFloat DIST_FRACTION = new MFloat(10, -1);
+	private static MFloat DIST_FRACTION = new MFloat(10, -2);
 
 	/**
 	 * Great circle distance in meters between two lon/lat points.
