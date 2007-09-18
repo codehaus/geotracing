@@ -30,7 +30,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
 	private int OFF_MAP_TOLERANCE = 15;
 
-	private WPMidlet midlet;
+    
+    private WPMidlet midlet;
 
 	private Timer pollTimer;
 	private long lastRetrievalTime = -1;
