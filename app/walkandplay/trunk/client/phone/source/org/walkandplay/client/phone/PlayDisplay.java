@@ -24,7 +24,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
     private String errorMsg = "";
 
-    private int zoom = 12;
+    private int zoom = 15;
     private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3;
     private String mapType = "streets";
     private boolean active;
@@ -277,6 +277,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
         // if we have one or more messages and the last one is NOT sent by the mobile
         if (recs.size() >= 1) {
             String msg = ((JXElement) recs.elementAt(0)).getChildText("content");
+            String modDate = ((JXElement) recs.elementAt(0)).getChildText("modificationdate");
             if (imDisplay == null) {
                 imDisplay = new IMDisplay(midlet);
             }
@@ -292,7 +293,10 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                     if (hasActiveDisplays()) {
                         // now show that there's a new message
                         newIMMMessage = true;
-                    } else if (!firstTime) {
+                    } else if (firstTime && ((System.currentTimeMillis() - Long.parseLong(modDate)) < 2*60*1000)) {
+                        // we show the IM message
+                        imDisplay.start(this, imMessage);
+                    }else if (!firstTime) {
                         // we show the IM message
                         imDisplay.start(this, imMessage);
                     }
@@ -487,7 +491,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
               errorMsg = "Waiting for GPS signal...";
               removeCommands();
               lonLat = null;
-              mapImage = null;
+              mapImage = null;      
                   }*/
         //setLocation("4.92", "52.35");
         show();
@@ -752,11 +756,15 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
         }
     }
 
+    public void exit(){
+        gpsEngine.stop();
+        stopPoll();
+        Display.getDisplay(midlet).setCurrent(prevScreen);
+    }
+
     public void commandAction(Command cmd, Displayable screen) {
         if (cmd == BACK_CMD) {
-            gpsEngine.stop();
-            stopPoll();
-            Display.getDisplay(midlet).setCurrent(prevScreen);
+            exit();
         } else if (cmd == ADD_PHOTO_CMD) {
             if (imageCaptureDisplay == null) {
                 imageCaptureDisplay = new ImageCaptureDisplay(midlet);

@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Displayable;
 public class OutroDisplay extends DefaultDisplay {
 
     private Command CONTINUE_CMD = new Command("Continue", Command.SCREEN, 1);
-
+    
     public OutroDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Outro");
 
@@ -19,12 +19,9 @@ public class OutroDisplay extends DefaultDisplay {
         Display.getDisplay(midlet).setCurrent(this);
     }
 
-    /*
-     * The commandAction method is implemented by this midlet to
-     * satisfy the CommandListener interface and handle the Exit action.
-     */
     public void commandAction(Command command, Displayable screen) {
-        midlet.setHome();
+        //midlet.setHome();
+        midlet.getPlayApp().finishGame();
     }
 
 }

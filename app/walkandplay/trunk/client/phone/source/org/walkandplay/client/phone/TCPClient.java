@@ -134,7 +134,9 @@ public class TCPClient extends Protocol implements XMLChannelListener {
 
             }
         } else if (tag.equals("login-nrsp")) {
-            broadCastError("Invalid username and/or password. Please check your settings.");
+            if(aResponse.getAttr("details").indexOf("unknown user")!=-1){
+                broadCastError("Invalid username and/or password. Please check your settings.");
+            }
         } else if (tag.equals("select-app-nrsp")) {
             broadCastFatal();
         } else {
