@@ -12,22 +12,29 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 	<property name="client.phone.dir" value="${client.dir}/phone"/>
 	<property name="client.web.dir" value="${client.dir}/web"/>
 	<property name="server.dir" value="${home}/server"/>
-	<property name="build.dir" value="${home}/build"/>
+	<property name="version.dir" value="${home}/version"/>
 
 	<!-- The .zips for deployment -->
-	<property name="package-all.zip" value="${build.dir}/${project.id}-${version}.zip"/>
-	<property name="package-back.zip" value="${build.dir}/${project.id}-back-${version}.zip"/>
-	<property name="package-front.zip" value="${build.dir}/${project.id}-front-${version}.zip"/>
+	<property name="package-all.zip" value="${version.dir}/${project.id}-${version}.zip"/>
+	<property name="package-back.zip" value="${version.dir}/${project.id}-back-${version}.zip"/>
+	<property name="package-mobile.zip" value="${version.dir}/${project.id}-mobile-${version}.zip"/>
+	<property name="package-web.zip" value="${version.dir}/${project.id}-web-${version}.zip"/>
 
 	<!-- Build all -->
-	<target name="build-front">
-		<echo message="Building front of ${project.name}..."/>
+	<!-- Build all -->
+	<target name="build-mobile">
+		<echo message="Building web of ${project.name}..."/>
+
+		<!-- Build clients. -->
+		<ant antfile="${client.phone.dir}/build.xml" target="buildall" inheritall="false"/>
+	</target>
+
+	<target name="build-web">
+		<echo message="Building web of ${project.name}..."/>
 
 		<!-- Build clients. -->
 		<ant antfile="${client.web.dir}/build.xml" target="build" inheritall="false"/>
 
-		<!-- Build clients. -->
-		<ant antfile="${client.phone.dir}/build.xml" target="build" inheritall="false"/>
 	</target>
 
 	<!-- Build all -->
@@ -41,14 +48,14 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 	</target>
 
 	<!-- Build all -->
-	<target name="build" depends="build-front,build-back">
+	<target name="build" depends="build-mobile,build-web,build-back">
 		<echo message="Building all of ${project.name}..."/>
 	</target>
 
 	<!-- Package into archive files -->
 	<target name="package-back" depends="build-back">
 		<echo message="Packaging distribution into ${package-back.zip}"/>
-		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${version.dir}"/>
 		<delete file="${package-back.zip}"/>
 		<zip zipfile="${package-back.zip}">
 			<zipfileset dir="${server.dir}/build" includes="*.war"/>
@@ -56,23 +63,34 @@ $Id: build.xml 108 2006-10-20 21:45:17Z just $
 	</target>
 
 	<!-- Package into archive files -->
-	<target name="package-front" depends="build-front">
-		<echo message="Packaging distribution into ${package-front.zip}"/>
-		<mkdir dir="${build.dir}"/>
-		<delete file="${package-front.zip}"/>
-		<zip zipfile="${package-front.zip}">
+	<target name="package-mobile" depends="build-mobile">
+		<echo message="Packaging distribution into ${package-mobile.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${package-mobile.zip}"/>
+		<zip zipfile="${package-mobile.zip}">
+			<zipfileset dir="${client.phone.dir}/dist" />
+		</zip>
+	</target>
+
+	<!-- Package into archive files -->
+	<target name="package-web" depends="build-web">
+		<echo message="Packaging distribution into ${package-web.zip}"/>
+		<mkdir dir="${version.dir}"/>
+		<delete file="${package-web.zip}"/>
+		<zip zipfile="${package-web.zip}">
 			<zipfileset dir="${client.web.dir}" excludes="build/**,build.*"/>
 		</zip>
 	</target>
 
 	<!-- Package into archive files -->
-	<target name="package" depends="package-front,package-back">
+	<target name="package" depends="package-mobile,package-web,package-back">
 		<echo message="Packaging distribution into ${package-all.zip}"/>
-		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${version.dir}"/>
 		<delete file="${package-all.zip}"/>
 		<zip zipfile="${package-all.zip}">
+			<zipfileset src="${package-mobile.zip}"/>
 			<zipfileset src="${package-back.zip}"/>
-			<zipfileset src="${package-front.zip}"/>
+			<zipfileset src="${package-web.zip}"/>
 		</zip>
 	</target>
 

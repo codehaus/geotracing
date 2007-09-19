@@ -34,9 +34,13 @@ LAYER
 	TYPE RASTER
 	STATUS ON
 	CONNECTIONTYPE WMS
-	CONNECTION "http://geoserver.nl/geostreets/sclmapserver.exe/softtone?"
+	CONNECTION "http://geoserver.nl/geostreets/sclmapserver.exe/softtone?TRANSPARENT=FALSE"
 #	CONNECTION "http://geoserver.nl/geostreets/sclmapserver.exe/falk?"
 #	CONNECTION "http://geoserver.nl/top25/sclmapserver.exe?"
+
+	PROJECTION
+   		"init=epsg:28992"
+	END
 
 	METADATA
 		"wms_name" "layer_1,layer_2,layer_3,layer_4,layer_5,layer_6"

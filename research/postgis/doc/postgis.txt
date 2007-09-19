@@ -260,6 +260,10 @@ apt-get install php5-pgsql
 restart apache
 (may need to increase memsize php5 to 32M in /etc/php5/apache2/php.ini)
 
+UPGRADE POSTGRESQL 8.1 to 8.2
+see http://www.tienhuis.nl/archives/13
+
+
 
 
 
