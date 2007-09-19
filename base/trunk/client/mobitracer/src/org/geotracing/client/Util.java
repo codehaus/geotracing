@@ -68,7 +68,7 @@ public class Util {
 		dist = MFloat.acos(dist);
 		dist = MFloat.toDegrees(dist);
 		dist = dist.Mul(DIST_CONST);
-		System.out.println("distance: " + dist + " meters");
+		// System.out.println("distance: " + dist + " meters");
 		return dist;
 	}
 

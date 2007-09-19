@@ -4,6 +4,8 @@
 package org.geotracing.handler;
 
 import org.keyworx.common.util.IO;
+import org.keyworx.common.log.Log;
+import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.OaseException;
 import org.keyworx.oase.api.Record;
 import org.keyworx.utopia.core.data.ErrorCode;
@@ -42,6 +44,12 @@ public class CommentLogic {
 	public static final String PROP_THREAD_ALERT = "thread-alert";
 
 	private Oase oase;
+	static private Log log;
+
+	static {
+		// Init once
+		log = Logging.getLog("CommentLogic");
+	}
 
 	/*
 	* <field name="id" type="INTEGER" required="true" key="true" />
@@ -342,12 +350,76 @@ public class CommentLogic {
 	 * @param aCommentId a comment id
 	 * @throws UtopiaException Standard exception
 	 */
-	public void delete(int aCommentId) throws UtopiaException {
+	public void delete(int aPersonId, int aCommentId) throws UtopiaException {
+
+		// Only comment owner or target person can delete a  comment.
+		if (!isOwnerOrTargetPerson(oase, aPersonId, aCommentId))
+		{
+			throw new UtopiaException("You must be owner or target person of comment to delete", ErrorCode.__6007_insufficient_rights_error);
+		}
+
 		try {
 			oase.getModifier().delete(aCommentId);
 		} catch (OaseException oe) {
 			throw new UtopiaException("Cannot delete comment record with id=" + aCommentId, oe, ErrorCode.__6006_database_irregularity_error);
 		}
+	}
+
+
+	/**
+	 * Delete a comment for target record id.
+	 *
+	 * @param aTargetId a target id
+	 * @throws UtopiaException Standard exception
+	 */
+	public void deleteForTarget(int aPersonId, int aTargetId) throws UtopiaException {
+		try {
+			Record[] comments = oase.getFinder().freeQuery("select id from " + TABLE_COMMENT + " where target = " + aTargetId);
+
+			int nextId;
+			for (int i=0; i < comments.length; i++) {
+				nextId = comments[i].getId();
+
+				// Only comment owner or target person can delete a  comment.
+				if (!isOwnerOrTargetPerson(oase, aPersonId, nextId)) {
+					log.warn("Ignoring delete of comment id=" + nextId + " (person id=" + aPersonId + " is not owner or target)");
+					continue;
+				}
+
+				// Do the delete
+				oase.getModifier().delete(nextId);
+			}
+		} catch (OaseException oe) {
+			throw new UtopiaException("Error deleting comments for targetid=" + aTargetId, oe, ErrorCode.__6006_database_irregularity_error);
+		}
+	}
+
+	/**
+	 * Is person the owner or target person of comment ?
+	 */
+	public static boolean isOwnerOrTargetPerson(Oase anOase, int aPersonId, int aCommentId) throws UtopiaException {
+		Record record;
+		try {
+			record = anOase.getFinder().read(aCommentId, CommentLogic.TABLE_COMMENT);
+		} catch (OaseException oe) {
+			throw new UtopiaException("Cannot read comment with id=" + aCommentId, ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		return record.getIntField(CommentLogic.FIELD_OWNER) == aPersonId || record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
+	}
+
+	/**
+	 * Is person target person of comment ?
+	 */
+	public static boolean isTargetPerson(Oase anOase, int aPersonId, int aCommentId) throws UtopiaException {
+		Record record;
+		try {
+			record = anOase.getFinder().read(aCommentId, CommentLogic.TABLE_COMMENT);
+		} catch (OaseException oe) {
+			throw new UtopiaException("Cannot read comment with id=" + aCommentId, ErrorCode.__6004_Invalid_attribute_value);
+		}
+
+		return record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
 	}
 
 	/** Properties passed on from Handler. */

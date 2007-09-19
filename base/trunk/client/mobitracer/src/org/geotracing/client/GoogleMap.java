@@ -122,7 +122,7 @@ public class GoogleMap {
 			ne = aNE;
 			width = aWidth;
 			height = aHeight;
-			System.out.println("BBOX=" + sw + " " + ne);
+			//System.out.println("BBOX=" + sw + " " + ne);
 		}
 
 		public MFloat getLatHeight() {
@@ -197,7 +197,7 @@ public class GoogleMap {
 			// latitude width
 			halfTileHeight = resol.Mul(new MFloat(aHeight)).Div(mPerLat).Div(TWO);
 
-			System.out.println("zoom=" + aZoom + " resol=" + resol + " mPerLon=" + mPerLon + " mPerLat=" + mPerLat + " halfTileWidth=" + halfTileWidth+ " halfTileHeight=" + halfTileHeight);
+			//System.out.println("zoom=" + aZoom + " resol=" + resol + " mPerLon=" + mPerLon + " mPerLat=" + mPerLat + " halfTileWidth=" + halfTileWidth+ " halfTileHeight=" + halfTileHeight);
 		} else {
 			BBox bboxStd = getBBox(getKeyholeRef(aLonLat, aZoom));
 			halfTileWidth = bboxStd.getLonWidth().Div(TWO);

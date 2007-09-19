@@ -90,6 +90,17 @@ KW.CMT = {
 		var req = KW.createRequest('cmt-delete-req');
 		KW.UTIL.setAttr(req, 'id', commentId);
 		KW.utopia(req, callback);
+	},
+
+	/**
+	 * Delete comment for target record.
+	 * @param callback - user callback function or null
+	 * @param targetId - id of target record
+	 */
+	delForTarget: function(callback, targetId) {
+		var req = KW.createRequest('cmt-delete-for-target-req');
+		KW.UTIL.setAttr(req, 'targetid', targetId);
+		KW.utopia(req, callback);
 	}
 }
 
