@@ -496,7 +496,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
               errorMsg = "Waiting for GPS signal...";
               removeCommands();
               lonLat = null;
-              mapImage = null;      
+              mapImage = null;
                   }*/
         //setLocation("4.92", "52.35");
         show();
@@ -675,7 +675,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             //GoogleMap.XY prevXY = xy;
             xy = bbox.getPixelXY(lonLat);
 
-            // System.out.println("xy=" + xy);
+            // Log.pr("xy=" + xy);
             // If we have previous point: draw line from there to current
             /*if (prevXY != null && prevXY.x < 1000) {
                 // Draw trace

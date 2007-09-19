@@ -37,7 +37,7 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
         prevScreen = Display.getDisplay(midlet).getCurrent();
         display = Display.getDisplay(midlet);
 
-        System.out.println("constructor TestDisplay");
+        Log.pr("constructor TestDisplay");
 
         addCommand(BACK_CMD);
         //addCommand(START_CMD);
@@ -101,11 +101,11 @@ public class TestDisplay extends Form implements CommandListener, ProgressListen
     }
 
     private void show(String aMsg) {
-        System.out.println(aMsg);
+        Log.pr(aMsg);
     }
 
     private void download() {
-        System.out.println("download");
+        Log.pr("download");
         try {
             removeCommand(START_CMD);
             addCommand(STOP_CMD);

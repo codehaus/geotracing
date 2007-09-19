@@ -355,7 +355,9 @@ public class FriendFinderDisplay extends GameCanvas implements CommandListener, 
 
     protected void log(String s) {
         // msg = s;
-        if (emulator) System.out.println(s);
+        if (emulator) {
+			System.out.println(s);
+		}
     }
 
     private class DetectTask extends TimerTask {
