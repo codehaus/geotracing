@@ -465,7 +465,7 @@ public class RadarScreen extends GameCanvas {
 				return;
 			}
 
-			log("fetching GPS loc...");
+			log("fetching GPS loc...");                                     
 			setState(STATE_DETECTING);
 			if (!cheating) {
 				GPSLocation myNewLocation = GPSFetcher.getInstance().getCurrentLocation();

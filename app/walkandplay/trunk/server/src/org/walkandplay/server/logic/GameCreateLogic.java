@@ -342,10 +342,27 @@ public class GameCreateLogic implements Constants {
 				}
 			}
 
+			// Location update
+			if (lon != null && lat != null) {
+				// Get location related to task and update
+				Record location = relater.getRelated(medium, LOCATION_TABLE, null)[0];
+				location.setObjectField(Location.FIELD_POINT, PostGISUtil.createPointGeom(lon, lat));
+				modifier.update(location);
+			}
+
+			if (medium.isModified()) {
+				modifier.update(medium);
+			}
+
 			// Check if we should replace the medium or just update attrs
 			if (newMediumId != null) {
 				// replace current medium with a new medium using supplied medium id
 				Record  newMedium = finder.read(Integer.parseInt(newMediumId), MEDIUM_TABLE);
+
+				// Take over name and description from old medium
+				newMedium.setStringField(NAME_FIELD, medium.getStringField(NAME_FIELD));
+				newMedium.setStringField(DESCRIPTION_FIELD, medium.getStringField(DESCRIPTION_FIELD));
+				modifier.update(newMedium);
 
 				// Always replace old with new medium ;-)
 				Record location = relater.getRelated(medium, LOCATION_TABLE, null)[0];
@@ -359,19 +376,7 @@ public class GameCreateLogic implements Constants {
 				FileField fileField = medium.createFileField(file);
 				medium.setFileField(FILE_FIELD, fileField);
 				medium.setLongField(SIZE_FIELD, file.length());
-			}
-
-			if (medium.isModified()) {
-				// medium update, e.g. name description or text file replaced
 				modifier.update(medium);
-			}
-
-			// Location update
-			if (lon != null && lat != null) {
-				// Get location related to task and update
-				Record location = relater.getRelated(medium, LOCATION_TABLE, null)[0];
-				location.setObjectField(Location.FIELD_POINT, PostGISUtil.createPointGeom(lon, lat));
-				modifier.update(location);
 			}
 
 			transaction.commit();

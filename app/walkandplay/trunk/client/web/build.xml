@@ -29,7 +29,10 @@ $Id$
 		<tstamp/>
 	</target>
 
-
+  	<target name="build" >
+		<echo message="web client: nothing special to do for build"/>
+	</target>
+	
 	<!-- Package into archive files -->
 	<target name="package" >
 		<echo message="Packaging distribution into ${package.zip}"/>
