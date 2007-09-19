@@ -26,7 +26,7 @@ function wpStartup()
  	
  	wpGameInit();
 
-	wp_login_action = 'play'; //switch to mode if autologin
+	wp_login_action = 'create'; //switch to mode if autologin
 	wpAutoLogin();
 	
 	

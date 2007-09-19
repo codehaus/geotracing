@@ -321,12 +321,39 @@ function wpCancelLocation(check,edit)
 
 function wpEditLocation(type)
 {
-	//change form contents
-	document.getElementById('taskform').style.display = (type=='task')? 'block':'none';
-	document.getElementById('textform').style.display = (type=='text')? 'block':'none';
-	document.getElementById('mediumform').style.display = (type=='text')? 'none':'block';
-	document.getElementById('mediumdescform').style.display = (type=='medium')? 'block':'none';
-	//document.getElementById('mediumtype').innerHTML = (type=='task')? 'medium:':type+':';
+	/*	set edit location pane form type
+	*/
+	
+	var type = document.forms['locationform'].type.value;
+
+	var text = document.getElementById('textform');
+	var medium = document.getElementById('mediumform');
+	var mediumdesc = document.getElementById('mediumdescform');
+	var task = document.getElementById('taskform');
+
+	switch (type)
+	{
+		case 'task':
+			task.style.display = 'block';
+			text.style.display = 'none';
+			medium.style.display = 'block';
+			mediumdesc.style.display = 'none';
+			break
+			
+		case 'medium':
+			task.style.display = 'none';
+			text.style.display = 'none';
+			medium.style.display = 'block';
+			mediumdesc.style.display = 'block';
+			break;
+			
+		case 'text':
+			task.style.display = 'none';
+			text.style.display = 'block';
+			medium.style.display = 'none';
+			mediumdesc.style.display = 'none';
+			break;
+	}
 }
 
 
@@ -725,10 +752,12 @@ wpGame.prototype.newLocation = function(p)
 
 
 //	var fields = ['name','desc','answer','file','description','text'];
+
  	for (var i=0; i<form.elements.length; i++) 
  	{
  		if (form.elements[i].type=='text' || form.elements[i].type=='textarea' || form.elements[i].type=='file') form.elements[i].value = '';
  	}
+
 //  	form.name.value = '';
 //  	form.desc.value = '';
 //  	form.answer.value = '';
@@ -781,15 +810,17 @@ wpGame.prototype.editLocation = function(id)
 
 	//set form type
 	var form = document.forms['locationform'];
+	form.reset();
+	
+	
 	var type = (location.type=='medium')? (location.mediumtype=='text')? 'text':'medium':'task';
 	form.type.value = type;
 	form.type.disabled = true;
-
-	wpEditLocation(type);
+	
 	
 	//set form contents
+
 	form.name.value = location.name;
-	form.file.value = '';
 	
 	if (location.type=='task')
 	{
@@ -813,12 +844,16 @@ wpGame.prototype.editLocation = function(id)
 	pane.setPosition(px.x,px.y);
 	pane.show();
 	
+	//wpEditLocation();
+	
 	var obj = this;
 	form.onsubmit = function() { return obj.updateLocation() };
 	//form.onsubmit = function() { return location.updateContents() };
 	//
-
-
+	
+	//set edit pane to location type
+	if (browser.cssfilter) window.setTimeout('wpEditLocation();tmp_debug(1,\'[editLocation]\')',100); //delay needed because of display bug in MSIE
+	else wpEditLocation();
 }
 
 wpGame.prototype.updateLocation = function(elm)
@@ -861,7 +896,7 @@ wpGame.prototype.updateLocation = function(elm)
 	if (elm)
 	{
 		var mediumid = elm.getAttribute('id');
-		tmp_debug(1,'uploaded new medium, id=',mediumid);
+		tmp_debug(2,'[updateLocation] uploaded new medium, id=',mediumid);
 
 		if (!mediumid)
 		{
@@ -869,13 +904,17 @@ wpGame.prototype.updateLocation = function(elm)
 			return false;
 		}
 	}
-	else var mediumid = null;
+	else
+	{
+		tmp_debug(2,'[updateLocation] no new medium');
+		var mediumid = null;
+	}
 	
 	
 	//apply update
 	var name = form.name.value;
-	var lon = wp_selected_location.geo.lng();
-	var lat = wp_selected_location.geo.lat();
+	var lon = String(wp_selected_location.geo.lng());
+	var lat = String(wp_selected_location.geo.lat());
 	
 	switch (type)
 	{
@@ -902,6 +941,8 @@ wpGame.prototype.updateLocation = function(elm)
 			break;
 	}
 	
+	form.file.value = '';
+	wp_selected_location.drag.setEnabled(false);
 	panes.hide('edit_location');
 	
 	//prevent form submit
@@ -934,17 +975,17 @@ wpGame.prototype.addLocation = function(elm)
 				var answer = form.answer.value;
 				var score = form.score.value;
 				
-				KW.WP.gameAddTask(function() { obj.getLocations() },this.id,name,desc,score,answer,mediumid,p.lng(),p.lat());
+				KW.WP.gameAddTask(function() { obj.getLocations() },this.id,name,desc,score,answer,mediumid,String(p.lng()),String(p.lat()));
 			}
 			else
 			{
-				KW.WP.gameAddMedium(function() { obj.getLocations() },this.id,mediumid,p.lng(),p.lat());
+				KW.WP.gameAddMedium(function() { obj.getLocations() },this.id,mediumid,String(p.lng()),String(p.lat()));
 			}
 		}
 	}
 	else
 	{
-		tmp_debug(1,'adding location');
+		tmp_debug(1,'adding location, p=',wp_locations.location['new'].geo);
 
 		//form checks
 		var msg = ''
@@ -970,7 +1011,7 @@ wpGame.prototype.addLocation = function(elm)
 		{
 			//add new location with text directly to game
 			var p = wp_locations.location['new'].geo;
-			KW.WP.gameAddTextMedium(function() { obj.getLocations() },this.id,form.name.value,form.text.value,p.lng(),p.lat());	
+			KW.WP.gameAddTextMedium(function() { obj.getLocations() },this.id,form.name.value,form.text.value,String(p.lng()),String(p.lat()));	
 		}
 		else
 		{
@@ -1394,10 +1435,8 @@ wpGame.prototype.msgDelete = function(id)
 	
 	if (confirm('delete message, are you sure?\nthere\'s no undo'))
 	{
-		var req = KW.createRequest('cmt-delete-req');
-			req.documentElement.setAttribute('id',id);
-		var obj = this;
-		KW.utopia(req, function() { obj.updateMessages() });
+ 		var obj = this;
+		KW.CMT.del(function() { obj.updateMessages() }, id);
 	}
 }
 
@@ -1406,12 +1445,10 @@ wpGame.prototype.msgDeleteAll = function(id)
 	/*	delete all messages
 	*/
 	
-	if (confirm('delete all messages, are you sure?\nthere\'s no undo'))
+	if (confirm('delete ALL messages, are you sure?\nthere\'s no undo'))
 	{
-// 		var req = KW.createRequest('cmt-delete-req');
-// 			req.documentElement.setAttribute('id',id);
-// 		var obj = this;
-// 		KW.utopia(req, function() { obj.updateMessages() });
+ 		var obj = this;
+		KW.CMT.delForTarget(function() { obj.updateMessages(); panes.hide('messaging') }, wp_selected_play);
 	}
 }
 
