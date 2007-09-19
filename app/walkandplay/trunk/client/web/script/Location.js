@@ -169,9 +169,11 @@ function wpLocation(collection,id,p,type,state,name)
 // 		var y = obj.y - obj.h;
 // 		
 // //		panes[''].
-
+	
 
 	}
+ 	if (browser.cssfilter) this.drag.appearance = function() { }; //no drag style for IE (opacity doesn't combine with filter)
+	
 	this.drag.drop = function()
 	{
 		//update location geo
@@ -190,7 +192,7 @@ function wpLocation(collection,id,p,type,state,name)
 	this.update();
 
 	//->debugging info
-	location.title = 'debug: id='+this.id+', type='+this.type;
+	if (debugging) location.title = 'debug: id='+this.id+', type='+this.type;
 
 	
 	//default state in play

@@ -50,6 +50,12 @@ function wpListGames(resp)
 	var header = '';
 	var list = '<ul>';
 
+	if (wp_mode=='view')
+	{
+		//order by modificatondate desc
+		resp.sort(function(a,b) { return b.getField('modificationdate')-a.getField('modificationdate') });
+	}
+
 	for (var i in resp)
 	{
 		var name = resp[i].getField('name');
@@ -81,9 +87,13 @@ function wpListGames(resp)
 		else if (wp_mode=='view')
 		{
 			var id = resp[i].getField('id');
-			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="wpListRounds('+id+')" title="'+desc+'">'+shortname+'</a><br>';
-			list+= '<li><a href="javascript://view_gamerounds" onclick="wpGameProfile('+id+','+i+');this.blur()" title="'+desc+'">'+shortname+'</a></li>';
-			//list+= bullit+'<a href="javascript://view_gamerounds" onclick="SRV.get(\'q-gamerounds\',function(resp) { wpListRounds('+id+',resp) },\'gameid\','+id+');" title="'+desc+'">'+shortname+'</a><br>';
+			if (desc.length>30) desc = desc.substring(0,29)+'..';
+			var lastplayed = new Date(Number(resp[i].getField('modificationdate'))).format('shorterhumandate',' at ','time');
+			
+			//highlight 'live' games (modified under 10 mins ago)
+			//if (new Date().getTime()-Number(resp[i].getField('modificationdate'))<10*60*1000) shortname = '<b>'+shortname+'</b>';
+			
+			list+= '<li><a href="javascript://view_game" onclick="wpGameProfile('+id+','+i+');this.blur()" title="'+desc+' (last played: '+lastplayed+')">'+shortname+'</a></li>';
 		}
 	}
 
