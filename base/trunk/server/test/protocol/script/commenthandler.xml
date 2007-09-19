@@ -369,6 +369,91 @@
 		</expect>
 	</test>
 
+
+	<test id="t-trks-create-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-create-req/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-create-rsp id="${trkid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-insert-two-comments2-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid3}</target>
+					<content>comment1 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+			<utopia-req>
+				<cmt-insert-req>
+					<target>${trkid3}</target>
+					<content>comment2 on this track</content>
+				</cmt-insert-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid10}"/>
+			</utopia-rsp>
+			<utopia-rsp>
+				<cmt-insert-rsp id="${cmtid11}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-delete-for-target-req">
+		<send id="client1">
+			<utopia-req>
+				<cmt-delete-for-target-req targetid="${trkid3}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-delete-for-target-rsp targetid="${trkid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="cmt-read-by-id-empty-after-delete-for-target">
+		<send id="client1">
+			<utopia-req>
+				<cmt-read-req>
+					<target>${trkid3}</target>
+				</cmt-read-req>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<cmt-read-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+	<test id="t-trk-delete-req">
+		<send id="client1">
+			<utopia-req>
+				<t-trk-delete-req id="${trkid3}"/>
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<t-trk-delete-rsp id="${trkid3}"/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
 	<test id="logout">
 		<send id="client1">
 			<logout-req/>

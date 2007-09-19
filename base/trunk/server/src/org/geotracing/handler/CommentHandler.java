@@ -27,8 +27,10 @@ public class CommentHandler extends DefaultHandler {
 	public final static String CMT_READ_SERVICE = "cmt-read";
 	public final static String CMT_UPDATE_STATE_SERVICE = "cmt-update-state";
 	public final static String CMT_DELETE_SERVICE = "cmt-delete";
+	public final static String CMT_DELETE_FOR_TARGET_SERVICE = "cmt-delete-for-target";
 	public final static String ATTR_ID = "id";
 	public final static String ATTR_IDS = "ids";
+	public final static String ATTR_TARGET_ID = "targetid";
 	public final static String ATTR_STATE = CommentLogic.FIELD_STATE;
 	public final static String ATTR_TARGET = CommentLogic.FIELD_TARGET;
 	public final static String ATTR_TARGET_PERSON = CommentLogic.FIELD_TARGET_PERSON;
@@ -61,6 +63,9 @@ public class CommentHandler extends DefaultHandler {
 			} else if (service.equals(CMT_DELETE_SERVICE)) {
 				// Delete a comment by id
 				response = deleteReq(anUtopiaReq);
+			} else if (service.equals(CMT_DELETE_FOR_TARGET_SERVICE)) {
+				// Delete a comments for target
+				response = deleteForTargetReq(anUtopiaReq);
 			} else {
 				// May be overridden in subclass
 				response = unknownReq(anUtopiaReq);
@@ -205,7 +210,7 @@ public class CommentHandler extends DefaultHandler {
 	 * <p/>
 	 * Example
 	 * <code>
-	 * &lt;cmt-delete-req [id="cmt-id"] /&gt;
+	 * &lt;cmt-delete-req id="cmt-id" /&gt;
 	 * </code>
 	 *
 	 * @param anUtopiaReq A UtopiaRequest
@@ -216,13 +221,7 @@ public class CommentHandler extends DefaultHandler {
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
 		throwOnNonNumAttr(ATTR_ID, reqElm.getAttr(ATTR_ID));
 
-		// Only comment owner or target person can delete a  comment.
-		if (!isOwnerOrTargetPerson(anUtopiaReq.getUtopiaSession().getContext().getOase(), getPersonId(anUtopiaReq), reqElm.getIntAttr(ATTR_ID)))
-		{
-			throw new UtopiaException("You must be owner or target person of comment to delete", ErrorCode.__6007_insufficient_rights_error);
-		}
-
-		createLogic(anUtopiaReq).delete(reqElm.getIntAttr(ATTR_ID));
+		createLogic(anUtopiaReq).delete(getPersonId(anUtopiaReq), reqElm.getIntAttr(ATTR_ID));
 
 		// Create and return response
 		JXElement response = createResponse(CMT_DELETE_SERVICE);
@@ -231,6 +230,32 @@ public class CommentHandler extends DefaultHandler {
 		return response;
 	}
 
+
+	/**
+	 * Delete comments for target id.
+	 * <p/>
+	 * <p/>
+	 * Example
+	 * <code>
+	 * &lt;cmt-delete-for-target-req targetid="cmt-id"] /&gt;
+	 * </code>
+	 *
+	 * @param anUtopiaReq A UtopiaRequest
+	 * @return A UtopiaResponse.
+	 * @throws UtopiaException standard Utopia exception
+	 */
+	protected JXElement deleteForTargetReq(UtopiaRequest anUtopiaReq) throws UtopiaException {
+		JXElement reqElm = anUtopiaReq.getRequestCommand();
+		throwOnNonNumAttr(ATTR_TARGET_ID, reqElm.getAttr(ATTR_TARGET_ID));
+
+		createLogic(anUtopiaReq).deleteForTarget(getPersonId(anUtopiaReq), reqElm.getIntAttr(ATTR_TARGET_ID));
+
+		// Create and return response
+		JXElement response = createResponse(CMT_DELETE_FOR_TARGET_SERVICE);
+		response.setAttr(ATTR_TARGET_ID, reqElm.getAttr(ATTR_TARGET_ID));
+
+		return response;
+	}
 
 	/**
 	 * Default implementation for unknown service request.
@@ -276,33 +301,6 @@ public class CommentHandler extends DefaultHandler {
 		return Integer.parseInt(anUtopiaReq.getUtopiaSession().getContext().getUserId());
 	}
 
-	/**
-	 * Is person the owner or target person of comment ?
-	 */
-	protected boolean isOwnerOrTargetPerson(Oase anOase, int aPersonId, int aCommentId) throws UtopiaException {
-		Record record;
-		try {
-			record = anOase.getFinder().read(aCommentId, CommentLogic.TABLE_COMMENT);
-		} catch (OaseException oe) {
-			throw new UtopiaException("Cannot read comment with id=" + aCommentId, ErrorCode.__6004_Invalid_attribute_value);
-		}
-
-		return record.getIntField(CommentLogic.FIELD_OWNER) == aPersonId || record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
-	}
-
-	/**
-	 * Is person target person of comment ?
-	 */
-	protected boolean isTargetPerson(Oase anOase, int aPersonId, int aCommentId) throws UtopiaException {
-		Record record;
-		try {
-			record = anOase.getFinder().read(aCommentId, CommentLogic.TABLE_COMMENT);
-		} catch (OaseException oe) {
-			throw new UtopiaException("Cannot read comment with id=" + aCommentId, ErrorCode.__6004_Invalid_attribute_value);
-		}
-
-		return record.getIntField(CommentLogic.FIELD_TARGET_PERSON) == aPersonId;
-	}
 
 	/**
 	 * Throw exception when attribute empty or not present.
