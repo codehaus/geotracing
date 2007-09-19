@@ -220,7 +220,7 @@ function wpCreatePaneUser(type,obj)
 			str+= '<form name="messageform" method="" action="" onsubmit="wp_games.game[wp_selected_game].msgSend(); return false">';
 			str+= '<span class="title">messaging</span><br><br>';
 			str+= '<div style="right:11px; top:8px">';
-			str+= '<a href="javascript://delete_all" onclick="alert(\'not yet\')" style="margin-right:20px"><img src="media/icon_trash.gif" style="vertical-align:text-bottom; border:0px; padding-bottom:1px"> all</a>';
+			str+= '<a href="javascript://delete_all" onclick="wp_games.game[wp_selected_game].msgDeleteAll()" style="margin-right:20px"><img src="media/icon_trash.gif" style="vertical-align:text-bottom; border:0px; padding-bottom:1px"> all</a>';
 			str+= '<a href="javascript://close" onclick="panes.hide(\'messaging\')">close</a><br><br>';
 			str+= '</div>';
 			str+= '<div id="im_list" class="list" style="height:127px; width:203px;"></div>';

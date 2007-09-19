@@ -93,6 +93,8 @@ function wpLocation(collection,id,p,type,state,name)
 		
 		if (infopane)
 		{
+			if (panes['edit_location'].visible) return; //block if in edit/add modus
+		
 			var str = '';
 				str+= '"<b>'+obj.name+'</b>"<br>'; // ('+obj.type.substring(0,1)+'='+obj.id+')<br>';
 				if (obj.state=='enabled') str+= '<a href="javascript://view" onclick="wp_games.game['+wp_selected_game+'].locations.location['+obj.id+'].expand()">view</a>&nbsp;';
@@ -118,6 +120,8 @@ function wpLocation(collection,id,p,type,state,name)
 	//detail view
 	location.onclick = function ()
 	{
+		if (panes['edit_location'].visible) return; //block if in edit/add modus
+		
 		if (obj.editing) return;
 		
 		if (obj.expanded) obj.collapse()
