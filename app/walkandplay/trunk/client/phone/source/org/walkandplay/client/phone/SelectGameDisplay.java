@@ -205,10 +205,14 @@ public class SelectGameDisplay extends AppStartDisplay {
 
                         if (playDisplay.taskDisplay != null && (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok"))) {
                             text += " You still have to answer the question though - good luck!";
-                        } else
-                        if (playDisplay.taskDisplay != null && playDisplay.taskDisplay.getAnswerState().equals("ok")) {
-                            if (playDisplay.taskDisplay != null) playDisplay.taskDisplay.setState("done");
-                            text += "Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
+                        } else if (playDisplay.taskDisplay != null && playDisplay.taskDisplay.getAnswerState().equals("ok")) {
+                            playDisplay.taskDisplay.setState("done");
+                            text += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
+                            // this was the last task!!!!
+                            if(playDisplay.taskDisplay.getNrOfTasks() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
+                                playDisplay.imageCaptureDisplay.completedLastTask();
+                                text += "This was also you're last task! Watch the outro.";
+                            }
                         }
 
                         playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);

@@ -20,12 +20,14 @@ import javax.microedition.lcdui.TextField;
 public class ImageCaptureDisplay extends DefaultDisplay implements CameraListener {
 
     private Command SEND_CMD = new Command("Send", Command.OK, 1);
+    private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
 
     private Displayable prevScreen;
     private boolean playing;
     private TextField name;
     private boolean active;
     private Display display;
+    private boolean lastTaskComplete;
 
     public ImageCaptureDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Image Capture");
@@ -45,7 +47,6 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
     public void onFinish() {
         display.setCurrent(this);
         drawScreen();
-        CameraHandler.end();
     }
 
     public void onCancel() {
@@ -62,7 +63,12 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
         //#style textbox
         append(name);
 
-        addCommand(SEND_CMD);
+        if(lastTaskComplete){
+            removeCommand(BACK_CMD);
+            addCommand(OUTRO_CMD);
+        }else{
+            addCommand(SEND_CMD);
+        }
     }
 
     private void sendPhoto(byte[] theBytes) {
@@ -114,10 +120,14 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
 
     public void commandAction(Command c, Displayable d) {
         if (c == BACK_CMD) {
+            CameraHandler.end();
             active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (c == SEND_CMD) {
             sendPhoto(CameraHandler.getPhotoBytes());
+        } else if (c == OUTRO_CMD) {
+            active = false;
+            new OutroDisplay(midlet);
         }
     }
 
@@ -128,7 +138,13 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
 
             //#style alertinfo
             append(aText);
+
+            // now check if this image was
         }
+    }
+
+    public void completedLastTask(){
+        lastTaskComplete = true;
     }
 
     public void handleAddImageNrsp(JXElement aResponse) {

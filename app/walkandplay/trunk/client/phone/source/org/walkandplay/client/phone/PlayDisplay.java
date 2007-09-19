@@ -242,6 +242,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                     taskDisplay = new TaskDisplay(midlet, w, nrOfTasks, this);
                 }
                 taskDisplay.start(lastObject.getAttr("id"), state, answerState, mediaState);
+                //taskDisplay.start(lastObject.getAttr("id"));
             } else if (t.equals("medium-hit")) {
                 lastObjectType = "medium";
                 Util.playTone(80, 50, midlet.getVolume());
@@ -795,7 +796,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             if (lastObject == null) return;
 
             if (lastObjectType.equals("task")) {
-                taskDisplay.start(lastObject.getAttr("id"), lastObject.getAttr("state"), lastObject.getAttr("answerstate"), lastObject.getAttr("mediastate"));
+                taskDisplay.start(lastObject.getAttr("id"), null, null, null);
             } else if (lastObjectType.equals("medium")) {
                 mediumDisplay.start(lastObject.getAttr("id"), this);
             }

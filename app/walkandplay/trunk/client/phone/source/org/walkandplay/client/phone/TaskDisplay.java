@@ -41,29 +41,19 @@ public class TaskDisplay extends DefaultDisplay {
     public void start(String aTaskId, String aState, String anAnswerState, String aMediaState) {
         Log.log("start - taskId:" + aTaskId + ", state: " + aState + ", answerState: " + anAnswerState + ", mediaState:" + aMediaState);
 
-        // only set the state for the first time - after 'start' state updates are done by play-answertask-rsp
-        if (state.length() == 0) state = aState;
-        if (answerState.length() == 0) answerState = anAnswerState;
-        if (mediaState.length() == 0) mediaState = aMediaState;
-
-        Log.log("Used state: " + state + ", answerState: " + answerState + ", mediaState:" + mediaState);
-
         // only get and display the task if it's not done yet
-        if (state.equals("done")) {
+        if (anAnswerState!=null && anAnswerState.equals("done")) {
             getErrorHandler().showGoBack("You already completed this task.");
             return;
-        } else {
-            if (task == null || !taskId.equals(aTaskId)) {
-                taskId = aTaskId;
-                queryTask();
-                return;
-            }
-        }
+        }else if (task == null || !taskId.equals(aTaskId)) {
+            // if we have no task or a new task - set the states!
+            state = aState;
+            answerState = anAnswerState;
+            mediaState = aMediaState;
 
-        // a right answer was given
-        if (answerState.equals("ok") && !anAnswerState.equals(answerState)) {
-            deleteAll();
-            drawScreen();
+            taskId = aTaskId;
+            queryTask();
+            return;
         }
 
         // show the display
@@ -151,10 +141,12 @@ public class TaskDisplay extends DefaultDisplay {
             taskDescription = task.getChildText("description");
             taskScore = task.getChildText("score");
 
+            answer = "";
+
             // set the states
-            state = task.getAttr("state");
+            /*state = task.getAttr("state");
             answerState = task.getAttr("answerstate");
-            mediaState = task.getAttr("mediastate");
+            mediaState = task.getAttr("mediastate");*/
 
             String mediumId = task.getChildText("mediumid");
             String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
@@ -209,8 +201,14 @@ public class TaskDisplay extends DefaultDisplay {
         } else {
             getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
         }
+    }
 
+    public int getNrOfTasks(){
+        return nrOfTasks;
+    }
 
+    public void setNrOfTasks(int aNrOfTasks){
+        nrOfTasks = aNrOfTasks;
     }
 
     public void handleAnswerTaskNrsp(JXElement aResponse) {
