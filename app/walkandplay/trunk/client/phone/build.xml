@@ -1,6 +1,6 @@
 <project name="WP Phone" default="run">
 
-    <property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
+	<property name="geotracing.base.dir" value="${basedir}/../../../../../base/trunk"/>
 	<property name="geotracing.external.dir" value="${geotracing.base.dir}/external"/>
 
 	<!-- sets paths to all external package dirs. -->
@@ -9,97 +9,98 @@
 	<!-- sets project-wide props. -->
 	<property file="${basedir}/../../build.properties"/>
 
-    <property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
+	<property name="keyworx.j2me.dir" value="${keyworx.dir}/client/j2me"/>
 	<property name="kwclient.src" value="${keyworx.j2me.dir}/kwclient/src"/>
 	<property name="mjox.src" value="${keyworx.j2me.dir}/mjox/src"/>
 	<property name="mobitracer.src" value="${geotracing.base.dir}/client/mobitracer/src"/>
 
-    <property file="build.properties"/>
+	<property file="build.properties"/>
 	<property file="build.testserver.properties"/>
-    <property name="connbridge.jar" value="${mppsdk.dir}/bluetooth/connbridge/lib/connbridge.jar"/>
-    <property name="emulator.jar" value="${mppsdk.dir}/player.jar"/>
+	<property name="connbridge.jar" value="${mppsdk.dir}/bluetooth/connbridge/lib/connbridge.jar"/>
+	<property name="emulator.jar" value="${mppsdk.dir}/player.jar"/>
 	<property name="emulator.class" value="com.mpp.player.PowerPlayerApp"/>
 	<property name="midpemu.jar" value="${mppsdk.dir}/midp.jar"/>
 	<property name="btpemu.jar" value="${mppsdk.dir}/bluetooth/bt.jar"/>
 	<property name="cldcemu.jar" value="${mppsdk.dir}/cldc.jar"/>
 	<property name="adapter.jar" value="${mppsdk.dir}/adapter.jar"/>
-    <property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
-    <property name="jsr179.jar" value="${geotracing.external.dir}/jsr179/lib/jsr179.jar"/>
+	<property name="jsr82.zip" value="${btapi.dir}/lib/jsr82.zip"/>
+	<property name="jsr179.jar" value="${geotracing.external.dir}/jsr179/lib/jsr179.jar"/>
 	<property name="avetana.jar" value="${avetana.dir}/avetanaBluetooth.jar"/>
 	<property name="mmapi.jar" value="${mmapi.dir}/mmapi.jar"/>
 	<property name="cameralib.jar" value="${basedir}/external/lib/cameralib.jar"/>
 
-    <property name="project.etc.dir" value="${basedir}/etc"/>
-    <property name="btsend" value="${project.etc.dir}/btsend.sh"/>
+	<property name="project.etc.dir" value="${basedir}/etc"/>
+	<property name="btsend" value="${project.etc.dir}/btsend.sh"/>
 
-    <property name="project.name" value="walkandplay"/>
+	<property name="project.name" value="walkandplay"/>
 	<property name="test" value="false"/>
-    <!--<property name="projectname" value="mlgk"/>-->
+	<!--<property name="projectname" value="mlgk"/>-->
 
-    <!-- import user specific properties -->
-	<property file="${user.name}.properties" />
+	<!-- import user specific properties -->
+	<property file="${user.name}.properties"/>
 
 	<!-- The wtk.home property should point to the directory      -->
 	<!-- containing the Wireless Toolkit.                         -->
-	<property name="wtk.home" location="%{WTK_HOME}" />
+	<property name="wtk.home" location="%{WTK_HOME}"/>
 
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.-->
-	<property name="polish.home" location="/opt/j2me-polish" />
+	<property name="polish.home" location="/opt/j2me-polish"/>
 
-    <!-- the device for the test mode - you can define it on the command-line
-	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
+	<!-- the device for the test mode - you can define it on the command-line
+			 using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Generic/midp1"/>
 
 	<!-- The .jar -->
 	<property name="package.zip" value="${basedir}/build/${project.id}-mobile-${midlet.version}.zip"/>
 
 	<path id="compile.classpath">
-        <pathelement location="${jsr179.jar}"/>
-        <pathelement location="${mmapi.jar}"/>
-        <pathelement location="${cameralib.jar}"/>
-        <!--<pathelement location="${jsr82.zip}"/>-->
-    </path>
+		<pathelement location="${jsr179.jar}"/>
+		<pathelement location="${mmapi.jar}"/>
+		<pathelement location="${cameralib.jar}"/>
+		<!--<pathelement location="${jsr82.zip}"/>-->
+	</path>
 
-    <path id="emulator.classpath">
-        <pathelement location="${connbridge.jar}"/>
-        <pathelement location="${avetana.jar}"/>
-        <pathelement location="${jsr179.jar}"/>
-        <pathelement location="${emulator.jar}"/>
-        <pathelement location="${adapter.jar}"/>
-        <pathelement location="${cldcemu.jar}"/>
-        <pathelement location="${midpemu.jar}"/>
-        <pathelement location="${emulator.jar}"/>
-        <pathelement location="${cameralib.jar}"/>
-    </path>
+	<path id="emulator.classpath">
+		<pathelement location="${connbridge.jar}"/>
+		<pathelement location="${avetana.jar}"/>
+		<pathelement location="${jsr179.jar}"/>
+		<pathelement location="${emulator.jar}"/>
+		<pathelement location="${adapter.jar}"/>
+		<pathelement location="${cldcemu.jar}"/>
+		<pathelement location="${midpemu.jar}"/>
+		<pathelement location="${emulator.jar}"/>
+		<pathelement location="${cameralib.jar}"/>
+	</path>
 
-    <!-- Definition of the J2ME Polish task:-->
+	<!-- Definition of the J2ME Polish task:-->
 	<taskdef name="j2mepolish" classname="de.enough.polish.ant.PolishTask"
-		classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/enough-j2mepolish-extensions.jar:${polish.home}/lib/jdom.jar"
-	/>
+			 classpath="${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/enough-j2mepolish-extensions.jar:${polish.home}/lib/jdom.jar"
+			/>
 
-    <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
-	<target name="setdeploy" description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish">
-		<property name="deploy-url" value="http://www.company.com/download/" />
+	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
+	<target name="setdeploy"
+			description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish">
+		<property name="deploy-url" value="http://www.company.com/download/"/>
 	</target>
 
 	<target name="init" depends="clean,externals">
-	  	<property name="test" value="false" />
-		<property name="dir.work" value="build/${customization}_${localization}" />
-        <property name="dir.dist" value="dist/${customization}_${localization}" />
-        <property name="deploy-url" value="http://test.${project.name}.nl/wp/ota/" />
-		<property name="resource.dir" value="resources" />
-        <property name="source.dir" value="${basedir}/source" />
-    </target>
+		<property name="test" value="false"/>
+		<property name="dir.work" value="build/${customization}_${localization}"/>
+		<property name="dir.dist" value="dist/${customization}_${localization}"/>
+		<property name="deploy-url" value="http://test.${project.name}.nl/wp/ota/"/>
+		<property name="resource.dir" value="resources"/>
+		<property name="source.dir" value="${basedir}/source"/>
+	</target>
 
-    <path id="compile.sourcepath">
+	<path id="compile.sourcepath">
 		<pathelement location="${basedir}/source"/>
 		<pathelement location="${mobitracer.src}"/>
 		<pathelement location="${kwclient.src}"/>
 		<pathelement location="${mjox.src}"/>
-    </path>
+	</path>
 
-    <!-- In this target the J2ME Polish task is used.             -->
+	<!-- In this target the J2ME Polish task is used.             -->
 	<!-- It has 3 sections:                                       -->
 	<!--    1. The info-section defines some general information  -->
 	<!--    2. The deviceRequirements-section chooses the devices -->
@@ -107,34 +108,39 @@
 	<!--    3. The build-section controls the actual build        -->
 	<!--       process.                                           -->
 	<target name="j2mepolish" depends="init,externals" description="This is the controller for the J2ME build process.">
-        <echo message="Camera Lib - ${cameralib.jar}" />
-        <j2mepolish>
-            <!-- general settings, these settings basically form the JAD-attributes. -->
-		    <!-- Have a look at the <jad>-section for setting specialised attributes.
-		         You can also define localized attributes in the resources/messages.txt files -->
-            <info
-				license="GPL"
-				name="${project.name}"
-				version="${midlet.version}"
-				description=""
-				vendorName="7Scenes"
-				infoUrl="http://www.j2mepolish.org"
-				icon="app.png"
-				jarName="${project.name}-${polish.vendor}-${polish.name}-${polish.locale}.jar"
-				jarUrl="${polish.jarName}"
-				copyright="Copyright 2005 Enough Software. All rights reserved."
-				deleteConfirm="Do you really want to kill me?"
-			/>
+		<echo message="Camera Lib - ${cameralib.jar}"/>
+		
+		<condition property="emulator" value="true" else="false">
+			<isset property="emulator"/>
+		</condition>
+
+		<j2mepolish>
+			<!-- general settings, these settings basically form the JAD-attributes. -->
+			<!-- Have a look at the <jad>-section for setting specialised attributes.
+							 You can also define localized attributes in the resources/messages.txt files -->
+			<info
+					license="GPL"
+					name="${project.name}"
+					version="${midlet.version}"
+					description=""
+					vendorName="7Scenes"
+					infoUrl="http://www.j2mepolish.org"
+					icon="app.png"
+					jarName="${project.name}-${polish.vendor}-${polish.name}-${polish.locale}.jar"
+					jarUrl="${polish.jarName}"
+					copyright="Copyright 2005 Enough Software. All rights reserved."
+					deleteConfirm="Do you really want to kill me?"
+					/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->
 			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
 			<!-- the second deviceRequirements will be used instead. -->
 
-            <deviceRequirements>
-                <requirement name="Identifier" value="${customization}" />
+			<deviceRequirements>
+				<requirement name="Identifier" value="${customization}"/>
 			</deviceRequirements>
 
-            <!-- build settings -->
+			<!-- build settings -->
 			<!--<build
 				sourceDir="${source.dir}:${kwclient.src}:${mjox.src}:${mobitracer.src}"
                 symbols="ExampleSymbol, AnotherExample"
@@ -143,35 +149,35 @@
 				workDir="${dir.work}"
 
             >-->
-            <build
-				sourceDir="${source.dir}:${kwclient.src}:${mjox.src}:${mobitracer.src}"
-                symbols="ExampleSymbol, AnotherExample"
-				fullscreen="menu"
-				usePolishGui="true"
-				workDir="${dir.work}"
-				binaryLibraries="${basedir}/external/lib"
+			<build
+					sourceDir="${source.dir}:${kwclient.src}:${mjox.src}:${mobitracer.src}"
+					symbols="ExampleSymbol, AnotherExample"
+					fullscreen="menu"
+					usePolishGui="true"
+					workDir="${dir.work}"
+					binaryLibraries="${basedir}/external/lib"
 
-			>
-                <!-- <compiler classpathref="compile.classpath"/> -->
+					>
+				<!-- <compiler classpathref="compile.classpath"/> -->
 
-                <!-- midlets definition -->
-				<midlet class="org.walkandplay.client.phone.WPMidlet" name="${project.name}" />
+				<!-- midlets definition -->
+				<midlet class="org.walkandplay.client.phone.WPMidlet" name="${project.name}"/>
 
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
-					dir="${resource.dir}"
-					defaultexcludes="yes"
-					excludes="readme.txt"
-				>
-					<root dir="resources/${customization}" if="build.${customization}" />
-					<root dir="resources/locales/${localization}" />
+						dir="${resource.dir}"
+						defaultexcludes="yes"
+						excludes="readme.txt"
+						>
+					<root dir="resources/${customization}" if="build.${customization}"/>
+					<root dir="resources/locales/${localization}"/>
 
-                    <!-- add the localization element for created localized versions of your application: -->
-					<localization locales="${localization}" />
+					<!-- add the localization element for created localized versions of your application: -->
+					<localization locales="${localization}"/>
 
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
+				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test">
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />
@@ -179,40 +185,41 @@
 				</obfuscator>
 				<!-- debug settings: only include debug setting when the test-property is true -->
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
-					<filter pattern="de.enough.polish.example.*" level="debug" />
-					<filter pattern="de.enough.polish.ui.*" level="warn" />
+					<filter pattern="de.enough.polish.example.*" level="debug"/>
+					<filter pattern="de.enough.polish.ui.*" level="warn"/>
 				</debug>
-                <!-- user defined JAD attributes can also be used: -->
+				<!-- user defined JAD attributes can also be used: -->
 				<jad>
-                    <attribute name="MIDlet-Permissions" value="${midlet.permissions}"/>
-					<attribute name="MIDlet-Permissions-Opt" value="${midlet.permissions.opt}" />
-					<attribute name="kw-url" value="${kw-url}" />
-					<attribute name="geodan-wms-url" value="${geodan-wms-url}" />
-					<attribute name="google-wms-url" value="${google-wms-url}" />
-					<attribute name="kw-server" value="${kw-server}" />
-					<attribute name="kw-timeout" value="${kw-timeout}" />
-					<attribute name="kw-user" value="${kw-user}" />
-					<attribute name="kw-password" value="${kw-password}" />
-					<attribute name="kw-port" value="${kw-port}" />
-					<attribute name="kw-app" value="${kw-app}" />
-					<attribute name="kw-role" value="${kw-role}" />
-					<attribute name="volume" value="${volume}" />
-					<attribute name="demo" value="${demo}" />
-					<attribute name="external-player" value="${external-player}" />
-					<attribute name="audio-rate" value="${audio-rate}" />
-					<attribute name="audio-bits" value="${audio-bits}" />
-					<attribute name="gps-sample-interval" value="${gps-sample-interval}" />
-					<attribute name="gps-send-interval" value="${gps-send-interval}" />
-                    <attribute name="gps-min-sats" value="${gps-min-sats}" />
-					<attribute name="gps-min-hdop" value="${gps-min-hdop}" />
-					<attribute name="device-screen-width" value="${device-screen-width}" />
-					<attribute name="device-screen-height" value="${device-screen-height}" />
-					<attribute name="MPP-Show-Keypad" value="${MPP-Show-Keypad}" />
-                    <attribute name="MPP-Width" value="${MPP-Width}" />
-					<attribute name="MPP-Height" value="${MPP-Height}" />
-					<attribute name="mt-options" value="${mt-options}" />
+					<attribute name="MIDlet-Permissions" value="${midlet.permissions}"/>
+					<attribute name="MIDlet-Permissions-Opt" value="${midlet.permissions.opt}"/>
+					<attribute name="kw-url" value="${kw-url}"/>
+					<attribute name="geodan-wms-url" value="${geodan-wms-url}"/>
+					<attribute name="google-wms-url" value="${google-wms-url}"/>
+					<attribute name="kw-server" value="${kw-server}"/>
+					<attribute name="kw-timeout" value="${kw-timeout}"/>
+					<attribute name="kw-user" value="${kw-user}"/>
+					<attribute name="kw-password" value="${kw-password}"/>
+					<attribute name="kw-port" value="${kw-port}"/>
+					<attribute name="kw-app" value="${kw-app}"/>
+					<attribute name="kw-role" value="${kw-role}"/>
+					<attribute name="volume" value="${volume}"/>
+					<attribute name="demo" value="${demo}"/>
+					<attribute name="external-player" value="${external-player}"/>
+					<attribute name="audio-rate" value="${audio-rate}"/>
+					<attribute name="audio-bits" value="${audio-bits}"/>
+					<attribute name="gps-sample-interval" value="${gps-sample-interval}"/>
+					<attribute name="gps-send-interval" value="${gps-send-interval}"/>
+					<attribute name="gps-min-sats" value="${gps-min-sats}"/>
+					<attribute name="gps-min-hdop" value="${gps-min-hdop}"/>
+					<attribute name="device-screen-width" value="${device-screen-width}"/>
+					<attribute name="device-screen-height" value="${device-screen-height}"/>
+					<attribute name="MPP-Show-Keypad" value="${MPP-Show-Keypad}"/>
+					<attribute name="MPP-Width" value="${MPP-Width}"/>
+					<attribute name="MPP-Height" value="${MPP-Height}"/>
+					<attribute name="mt-options" value="${mt-options}"/>
+					<attribute name="emulator" value="${emulator}"/>
 
-                    <attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
+					<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40"/>
 				</jad>
 				<!--
 				   This is an example for signing MIDlets with J2ME Polish.
@@ -233,7 +240,7 @@
 		</j2mepolish>
 	</target>
 
-    <!-- Optional download/upack of external packages. -->
+	<!-- Optional download/upack of external packages. -->
 	<target name="externals">
 		<echo message="downloading and unpacking external packages"/>
 
@@ -245,11 +252,11 @@
 			<property name="package" value="${btapi}"/>
 		</ant>
 
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${jsr179}"/>
 		</ant>
 
-        <ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
+		<ant antfile="${geotracing.external.dir}/build.xml" target="get-external" inheritall="false">
 			<property name="package" value="${keyworx}"/>
 		</ant>
 
@@ -271,44 +278,49 @@
 
 	</target>
 
-    <!-- ############################################# build targets #############################################-->
-    <target name="buildall" depends="build_Nokia_N73_NL,build_Nokia_N73_EN_US" />
+	<!-- ############################################# build targets #############################################-->
+	<target name="buildall" depends="build_Nokia_N73_NL,build_Nokia_N73_EN_US"/>
 
-    <target name="enable_Nokia_N73_NL">
-		<property name="customization" value="Nokia/N73" />
-		<property name="localization" value="NL" />
-		<property name="build.NokiaN73" value="true" />
+	<target name="enable_Nokia_N73_NL">
+		<property name="customization" value="Nokia/N73"/>
+		<property name="localization" value="NL"/>
+		<property name="build.NokiaN73" value="true"/>
 	</target>
 
-    <target name="enable_Nokia_N73_EN_US">
-		<property name="customization" value="Nokia/N73" />
-		<property name="localization" value="EN_US" />
-		<property name="build.NokiaN73" value="true" />
+	<target name="enable_Nokia_N73_EN_US">
+		<property name="customization" value="Nokia/N73"/>
+		<property name="localization" value="EN_US"/>
+		<property name="build.NokiaN73" value="true"/>
 	</target>
 
-    <target name="enable_SonyEricsson_K700x_NL">
-		<property name="customization" value="SonyEricsson/K700x" />
-		<property name="localization" value="NL" />
-		<property name="build.SonyEricssonK700x" value="true" />
+	<target name="enable_SonyEricsson_K700x_NL">
+		<property name="customization" value="SonyEricsson/K700x"/>
+		<property name="localization" value="NL"/>
+		<property name="build.SonyEricssonK700x" value="true"/>
 	</target>
 
-    <target name="enable_SonyEricsson_K700x_EN_US">
-		<property name="customization" value="SonyEricsson/K700x" />
-		<property name="localization" value="EN_US" />
-		<property name="build.SonyEricssonK700x" value="true" />
+	<target name="enable_SonyEricsson_K700x_EN_US">
+		<property name="customization" value="SonyEricsson/K700x"/>
+		<property name="localization" value="EN_US"/>
+		<property name="build.SonyEricssonK700x" value="true"/>
 	</target>
 
-    <target name="build_Nokia_N73_NL" depends="enable_Nokia_N73_NL, j2mepolish" />
+	<target name="build_Nokia_N73_NL" depends="enable_Nokia_N73_NL, j2mepolish"/>
 
-    <target name="build_Nokia_N73_EN_US" depends="enable_Nokia_N73_EN_US, j2mepolish" />
+	<target name="build_Nokia_N73_EN_US" depends="enable_Nokia_N73_EN_US, j2mepolish"/>
 
-    <target name="build_SonyEricsson_K700x_NL" depends="enable_SonyEricsson_K700x_NL, j2mepolish" />
+	<target name="build_SonyEricsson_K700x_NL" depends="enable_SonyEricsson_K700x_NL, j2mepolish"/>
 
-    <target name="build_SonyEricsson_K700x_EN_US" depends="enable_SonyEricsson_K700x_EN_US, j2mepolish" />
+	<target name="build_SonyEricsson_K700x_EN_US" depends="enable_SonyEricsson_K700x_EN_US, j2mepolish"/>
 
-    <!-- ############################################# build targets #############################################-->
+	<!-- ############################################# build targets #############################################-->
 
-    <target name="run" depends="build_Nokia_N73_EN_US">
+	<target name="setemulator">
+		<property name="emulator" value="true"/>
+	</target>
+
+	<target name="run" depends="setemulator,build_Nokia_N73_EN_US">
+		<echo message="emulator == ${emulator}"/>
 		<java classname="${emulator.class}" fork="true">
 			<classpath refid="emulator.classpath"/>
 			<!-- <arg value="-clearRecordStores"/> -->
@@ -317,12 +329,11 @@
 	</target>
 
 	<target name="clean" description="Allows a clean build.">
-		<delete dir="${basedir}/build" />
-		<delete dir="${basedir}/dist" includes="**/*" />
+		<delete dir="${basedir}/build"/>
+		<delete dir="${basedir}/dist" includes="**/*"/>
 	</target>
 
 	<target name="install" depends="build_Nokia_N73_EN_US">
-
 		<chmod file="${btsend}" perm="ugo+x"/>
 
 		<exec executable="${btsend}">
@@ -330,7 +341,7 @@
 		</exec>
 	</target>
 
-     <!-- Copies mobile apps to test server. -->
+	<!-- Copies mobile apps to test server. -->
 	<target name="versioninfo">
 		<echo message="Version info"/>
 		<tstamp/>
@@ -354,14 +365,14 @@
 	</target>
 
 	<!-- Copies mobile apps to test server. -->
-	<target name="deploy-test" depends="versioninfo,build_Nokia_N73_EN_US">
+	<target name="deploy-test" depends="build_Nokia_N73_EN_US,versioninfo">
 		<tstamp/>
 
-		<echo message="Copying jars to ${deploy.test.server}:${deploy.test.dir}"/>
+		<echo message="Copying dist to ${deploy.test.server}:${deploy.test.dir}"/>
 		<exec executable="scp">
 			<arg line="-r"/>
 			<arg line="dist"/>
-			<arg line="${deploy.test.server}:${deploy.test.dir}" />
+			<arg line="${deploy.test.server}:${deploy.test.dir}"/>
 		</exec>
 	</target>
 

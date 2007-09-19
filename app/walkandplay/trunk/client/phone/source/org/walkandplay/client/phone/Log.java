@@ -15,6 +15,7 @@ public class Log {
     private static String[] logMsgs = new String[LOG_SZ];
     private static int logIndex = 0;
     private static boolean inDemoMode;
+	private static boolean emulator;
 
     private Log() {
     }
@@ -23,10 +24,19 @@ public class Log {
         inDemoMode = demoOn;
     }
 
+	public static void setEmulator(boolean b){
+		  emulator = b;
+	  }
 
-    public static void log(String aMsg) {
+	public static void pr(String aMsg) {
+		if (emulator) {
+			System.out.println(aMsg);
+		}
+	}
+
+	public static void log(String aMsg) {
         if(inDemoMode){
-            System.out.println(aMsg);
+            pr(aMsg);
             synchronized (logMsgs) {
                 logMsgs[logIndex++] = aMsg;
 

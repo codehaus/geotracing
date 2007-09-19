@@ -66,6 +66,7 @@ public class WPMidlet extends MIDlet implements CommandListener {
     public final static String GPS_SEND_INTERVAL = "gps-send-interval";
     public final static String EXTERNAL_PLAYER = "external-player";
     public final static String DEMO_MODE = "demo";
+	public final static String EMULATOR = "emulator";
 
     public WPMidlet() {
         super();
@@ -122,7 +123,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
     protected void startApp() throws MIDletStateChangeException {
         Log.setDemoMode(isInDemoMode());
-        if (new VersionChecker().check()) {
+ 		Log.setEmulator(getAppProperty(EMULATOR).equals("true"));
+		if (new VersionChecker().check()) {
             if(splashDisplay == null){
                 splashDisplay = new SplashDisplay(this);
             }
