@@ -200,8 +200,9 @@ function wpCreatePane(type,obj)
 			var pane = new Pane('list_view',100,160,200,200,1,true);
 
 			//header
-			if (wp_viewmode=='archived') var header = '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
-			else var header = '<a href="javascript://archived_games">archived</a> or <span class="red">live games</span><br><br>';
+// 			if (wp_viewmode=='archived') var header = '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
+// 			else var header = '<a href="javascript://archived_games">archived</a> or <span class="red">live games</span><br><br>';
+			var header = '<b><span class="red">select a game</span><br><br>';
 
 			str+= header;
 			str+= '<div class="list"></div>';
