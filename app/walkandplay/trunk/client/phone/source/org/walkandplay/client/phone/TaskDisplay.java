@@ -95,12 +95,6 @@ public class TaskDisplay extends DefaultDisplay {
         return answerState;
     }
 
-    public void setStates(String aState, String anAnswerState, String aMediaState) {
-        if (state != null) state = aState;
-        if (answerState != null) answerState = anAnswerState;
-        if (mediaState != null) mediaState = aMediaState;
-    }
-
     public JXElement getTask() {
         task.setAttr("state", state);
         task.setAttr("answerstate", answerState);
@@ -156,6 +150,11 @@ public class TaskDisplay extends DefaultDisplay {
             taskName = task.getChildText("name");
             taskDescription = task.getChildText("description");
             taskScore = task.getChildText("score");
+
+            // set the states
+            state = task.getAttr("state");
+            answerState = task.getAttr("answerstate");
+            mediaState = task.getAttr("mediastate");
 
             String mediumId = task.getChildText("mediumid");
             String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
