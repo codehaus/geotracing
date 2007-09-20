@@ -199,7 +199,7 @@ public class SelectGameDisplay extends AppStartDisplay {
 				String playState = rsp.getAttr("playstate");
 				// we done!!
 				if (playState.equals("done")) {
-					new OutroDisplay(midlet);
+					new OutroDisplay(midlet, playDisplay.getMaxScore());
 					return;
 				}
 

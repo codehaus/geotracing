@@ -136,30 +136,23 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 		addCommand(ZOOM_IN_CMD);
 		addCommand(ZOOM_OUT_CMD);
 		addCommand(TOGGLE_MAP_CMD);
-		addCommand(ADD_TEXT_CMD);
+        addCommand(LAST_HIT_CMD);
+        addCommand(ADD_TEXT_CMD);
 		addCommand(ADD_PHOTO_CMD);
 		addCommand(ADD_AUDIO_CMD);
 		addCommand(IM_CMD);
 		addCommand(SHOW_INTRO_CMD);
 		addCommand(SCORES_CMD);
 		addCommand(SHOW_LOG_CMD);
-		addCommand(LAST_HIT_CMD);
 		addCommand(BACK_CMD);
 		hasCommands = true;
 	}
 
-	private void removeCommands() {
-		removeCommand(ZOOM_IN_CMD);
-		removeCommand(ZOOM_OUT_CMD);
-		removeCommand(TOGGLE_MAP_CMD);
-		removeCommand(ADD_TEXT_CMD);
-		removeCommand(ADD_PHOTO_CMD);
-		removeCommand(ADD_AUDIO_CMD);
-		addCommand(LAST_HIT_CMD);
-		hasCommands = false;
-	}
+	public int getMaxScore(){
+        return maxScore;
+    }
 
-	private boolean hasActiveDisplays() {
+    private boolean hasActiveDisplays() {
 		if ((taskDisplay != null && taskDisplay.isActive())
 				|| (mediumDisplay != null && mediumDisplay.isActive())
 				|| (scoreDisplay != null && scoreDisplay.isActive())
@@ -191,7 +184,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
 				Log.log("we found a task!!");
 				if (taskDisplay == null) {
-					taskDisplay = new TaskDisplay(midlet, w, nrOfTasks, this);
+					taskDisplay = new TaskDisplay(midlet, w, maxScore, nrOfTasks, this);
 				}
 				taskDisplay.start(lastObject.getAttr("id"), state, answerState, mediaState);
 				//taskDisplay.start(lastObject.getAttr("id"));

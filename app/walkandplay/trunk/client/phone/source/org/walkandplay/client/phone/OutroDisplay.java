@@ -8,11 +8,13 @@ public class OutroDisplay extends DefaultDisplay {
 
     private Command FINISH_CMD = new Command("Finish", Command.SCREEN, 1);
     
-    public OutroDisplay(WPMidlet aMIDlet) {
+    public OutroDisplay(WPMidlet aMIDlet, int theMaxScore) {
         super(aMIDlet, "Outro");
 
-        //#style alertinfo
+        //#style labelinfo
         append("You completed all your tasks! Congratulations!");
+        //#style alertinfo
+        append("You scored " + theMaxScore + " points");
 
         //#style formbox
         append(midlet.getPlayApp().getGame().getChildText("outro"));

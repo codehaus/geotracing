@@ -42,6 +42,9 @@ public class MediumDisplay extends DefaultDisplay {
         addCommand(BACK_CMD);
         
         if (mediumId == null || !mediumId.equals(aMediumId)) {
+            // start fresh
+            deleteAll();
+            
             mediumId = aMediumId;
             mediumLabel.setText("Loading...");
             //#style labelinfo
@@ -105,9 +108,6 @@ public class MediumDisplay extends DefaultDisplay {
     }
 
     private void drawMedium() {
-        // start fresh for when a new medium is drawn
-        deleteAll();
-        
         if (mediumName != null && mediumName.length() > 0) {
             mediumLabel.setText(mediumName);
         } else {
