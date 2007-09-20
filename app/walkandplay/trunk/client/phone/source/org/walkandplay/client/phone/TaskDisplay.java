@@ -14,7 +14,7 @@ public class TaskDisplay extends DefaultDisplay {
     private TextField inputField;
     private int screenWidth;
     private JXElement task;
-    private String taskId;
+    private String taskId = "";
     private String taskName = "";
     private String taskDescription = "";
     private String taskScore = "";
@@ -26,13 +26,13 @@ public class TaskDisplay extends DefaultDisplay {
     private boolean active;
     private TaskDisplay instance;
     private ErrorHandler errorHandler;
-    private int nrOfTasks;
+    private int nrOfTasksToDo;
 
     public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, int theNrOfTasks, Displayable aPrevScreen) {
         super(aMIDlet, "Task");
         instance = this;
         screenWidth = theScreenWidth;
-        nrOfTasks = theNrOfTasks;
+        nrOfTasksToDo = theNrOfTasks;
         prevScreen = aPrevScreen;
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
         addCommand(OK_CMD);
@@ -59,6 +59,10 @@ public class TaskDisplay extends DefaultDisplay {
         // show the display
         active = true;
         Display.getDisplay(midlet).setCurrent(this);
+    }
+
+    public String getTaskId(){
+        return taskId;
     }
 
     public boolean isActive() {
@@ -141,12 +145,8 @@ public class TaskDisplay extends DefaultDisplay {
             taskDescription = task.getChildText("description");
             taskScore = task.getChildText("score");
 
+            // reset the answer
             answer = "";
-
-            // set the states
-            /*state = task.getAttr("state");
-            answerState = task.getAttr("answerstate");
-            mediaState = task.getAttr("mediastate");*/
 
             String mediumId = task.getChildText("mediumid");
             String url = MEDIUM_BASE_URL + mediumId + "&resize=" + (screenWidth - 13);
@@ -179,6 +179,7 @@ public class TaskDisplay extends DefaultDisplay {
 
     public void handleAnswerTaskRsp(JXElement aResponse) {
         //<utopia-rsp logts="1189673784658" ><play-answertask-rsp state="open" mediastate="open" answerstate="notok" score="0" playstate="running" /></utopia-rsp>
+        // alway set the state after an answer
         answerState = aResponse.getAttr("answerstate");
         mediaState = aResponse.getAttr("mediastate");
         state = aResponse.getAttr("state");
@@ -192,23 +193,23 @@ public class TaskDisplay extends DefaultDisplay {
             answer = inputField.getString();
             getErrorHandler().showGoBack("Ok you send in media! Now fill in the right answer");
         } else if (state.equals("done")) {
-            nrOfTasks--;
-            if(nrOfTasks == 0){
+            nrOfTasksToDo--;
+            if(nrOfTasksToDo == 0){
                 getErrorHandler().showOutro(score);
             }else{
-                getErrorHandler().showGoBack("Right answer and you sent in media!\nYou scored " + score + " points. Still " + nrOfTasks + " tasks to go.");
+                getErrorHandler().showGoBack("Right answer and you sent in media!\nYou scored " + score + " points. Still " + nrOfTasksToDo + " tasks to go.");
             }            
         } else {
             getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
         }
     }
 
-    public int getNrOfTasks(){
-        return nrOfTasks;
+    public int getNrOfTasksToDo(){
+        return nrOfTasksToDo;
     }
 
-    public void setNrOfTasks(int aNrOfTasks){
-        nrOfTasks = aNrOfTasks;
+    public void setNrOfTasksToDo(int aNrOfTasks){
+        nrOfTasksToDo = aNrOfTasks;
     }
 
     public void handleAnswerTaskNrsp(JXElement aResponse) {

@@ -25,7 +25,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
     private String errorMsg = "";
 
     private int zoom = 15;
-    private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3;
+    private Image mediumDot1, mediumDot2, mediumDot3, playerDot1, playerDot2, playerDot3, taskDot1, taskDot2, taskDot3, activeDot1, activeDot2, activeDot3;
     private String mapType = "streets";
     private boolean active;
 
@@ -84,7 +84,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
     private JXElement lastObject;
     private String lastObjectType;
-
+    private boolean repaintHitObject;
+    
     private boolean demoTaskSent;
     private boolean firstTime;
 
@@ -102,6 +103,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             mediumDot1 = Image.createImage("/medium_dot_1.png");
             mediumDot2 = Image.createImage("/medium_dot_2.png");
             mediumDot3 = Image.createImage("/medium_dot_3.png");
+            activeDot1 = Image.createImage("/active_dot_1.png");
+            activeDot2 = Image.createImage("/active_dot_2.png");
+            activeDot3 = Image.createImage("/active_dot_3.png");
             //#else
             taskDot1 = scheduleImage("/task_dot_1.png");
             taskDot2 = scheduleImage("/task_dot_2.png");
@@ -109,6 +113,9 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             mediumDot1 = scheduleImage("/medium_dot_1.png");
             mediumDot2 = scheduleImage("/medium_dot_2.png");
             mediumDot3 = scheduleImage("/medium_dot_3.png");
+            activeDot1 = scheduleImage("/active_dot_1.png");
+            activeDot2 = scheduleImage("/active_dot_2.png");
+            activeDot3 = scheduleImage("/active_dot_3.png");
             //#endif
         } catch (Throwable t) {
             Log.log("Could not load the images on PlayDisplay");
@@ -203,12 +210,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             // task
             //if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
             if (!demoTaskSent) {
-                JXElement hit = new JXElement("medium-hit");
-                hit.setAttr("id", 831815);
-                aResponse.addChild(hit);
-
                 Log.log("add a hit!!!!");
-                /*JXElement hit = new JXElement("task-hit");
+                JXElement hit = new JXElement("task-hit");
                 hit.setAttr("id", 831651);
                 // open | done
                 hit.setAttr("state", "open");
@@ -216,7 +219,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                 hit.setAttr("answerstate", "open");
                 // open | done
                 hit.setAttr("mediastate", "open");
-                aResponse.addChild(hit);*/
+                aResponse.addChild(hit);
 
                 demoTaskSent = true;
                 hitElm = aResponse.getChildAt(0);
@@ -227,6 +230,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
         if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
             lastObject = hitElm;
+            repaintHitObject = true;
+
             String t = lastObject.getTag();
             if (t.equals("task-hit")) {
                 lastObjectType = "task";
@@ -630,35 +635,60 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                     if (gameLocations != null) {
                         for (int i = 0; i < gameLocations.size(); i++) {
                             JXElement loc = (JXElement) gameLocations.elementAt(i);
+                            String id = loc.getChildText("id");
+                            String lastObjectId = "";
+                            if(lastObject!=null){
+                                lastObjectId = lastObject.getAttr("id");
+                            }
+                            String type = loc.getChildText("type");
 
                             GoogleMap.LonLat ll = new GoogleMap.LonLat(loc.getChildText("lon"), loc.getChildText("lat"));
                             GoogleMap.XY gameLocXY = bbox.getPixelXY(ll);
 
-                            if (loc.getChildText("type").equals("task")) {
-                                if (zoom >= 0 && zoom < 6) {
-                                    mapImage.getGraphics().drawImage(taskDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (zoom >= 6 && zoom < 12) {
-                                    mapImage.getGraphics().drawImage(taskDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(taskDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            if (zoom >= 0 && zoom < 6) {
+                                if(lastObjectId.equals(id)){
+                                    /*Log.log("draw active dot");
+                                    Log.log("id:" + id);
+                                    Log.log("last object id:" + lastObjectId);
+                                    Log.log("activeDot1:" + activeDot1);*/
+                                    mapImage.getGraphics().drawImage(activeDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                }else{
+                                    if(type.equals("task")){
+                                        mapImage.getGraphics().drawImage(taskDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                    }else{
+                                        mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                    }
                                 }
-                            } else if (loc.getChildText("type").equals("medium")) {
-                                if (zoom >= 0 && zoom < 6) {
-                                    mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (zoom >= 6 && zoom < 12) {
-                                    mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            }else if (zoom >= 6 && zoom < 12) {
+                                if(lastObjectId.equals(id)){
+                                    /*Log.log("draw active dot");
+                                    Log.log("id:" + id);
+                                    Log.log("last object id:" + lastObjectId);
+                                    Log.log("activeDot1:" + activeDot2);*/
+                                    mapImage.getGraphics().drawImage(activeDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                }else{
+                                    if(type.equals("task")){
+                                        mapImage.getGraphics().drawImage(taskDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                    }else{
+                                        mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                    }
                                 }
-                            } else {
-                                if (zoom >= 0 && zoom < 6) {
-                                    mapImage.getGraphics().drawImage(mediumDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else if (zoom >= 6 && zoom < 12) {
-                                    mapImage.getGraphics().drawImage(mediumDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
-                                } else {
-                                    mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            }else{
+                                 if(lastObjectId.equals(id)){
+                                    /*Log.log("draw active dot");
+                                    Log.log("id:" + id);
+                                    Log.log("last object id:" + lastObjectId);
+                                    Log.log("activeDot3:" + activeDot3);*/
+                                    mapImage.getGraphics().drawImage(activeDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                }else{
+                                    if(type.equals("task")){
+                                        mapImage.getGraphics().drawImage(taskDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                    }else{
+                                        mapImage.getGraphics().drawImage(mediumDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                                    }
                                 }
                             }
+
                         }
                     }
                 } catch (Throwable t) {
@@ -669,6 +699,46 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                     drawMessage(g, s, 50);
                     drawBar(g);
                     return;
+                }
+            }else{
+               // draw anyway!!
+                if (gameLocations != null && lastObject!=null && repaintHitObject) {
+                    //Log.log("######### debug");
+                    for (int i = 0; i < gameLocations.size(); i++) {
+                        JXElement loc = (JXElement) gameLocations.elementAt(i);
+                        String id = loc.getChildText("id");
+                        String lastObjectId = lastObject.getAttr("id");
+
+                        GoogleMap.LonLat ll = new GoogleMap.LonLat(loc.getChildText("lon"), loc.getChildText("lat"));
+                        GoogleMap.XY gameLocXY = bbox.getPixelXY(ll);
+
+                        if (zoom >= 0 && zoom < 6) {
+                            if(lastObjectId.equals(id)){
+                                /*Log.log("######### draw active dot");
+                                Log.log("######### loc:" + new String(loc.toBytes(false)));
+                                Log.log("######### id:" + id);
+                                Log.log("######### last object id:" + lastObjectId);*/
+                                mapImage.getGraphics().drawImage(activeDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            }
+                        }else if (zoom >= 6 && zoom < 12) {
+                            if(lastObjectId.equals(id)){
+                                /*Log.log("######### draw active dot");
+                                Log.log("######### loc:" + new String(loc.toBytes(false)));
+                                Log.log("######### id:" + id);
+                                Log.log("######### last object id:" + lastObjectId);*/
+                                mapImage.getGraphics().drawImage(activeDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            }
+                        }else{
+                             if(lastObjectId.equals(id)){
+                                /*Log.log("######### draw active dot");
+                                Log.log("######### loc:" + new String(loc.toBytes(false)));
+                                Log.log("######### id:" + id);
+                                Log.log("######### last object id:" + lastObjectId);*/
+                                mapImage.getGraphics().drawImage(activeDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
+                            }
+                        }
+                    }
+                    repaintHitObject = false;
                 }
             }
 

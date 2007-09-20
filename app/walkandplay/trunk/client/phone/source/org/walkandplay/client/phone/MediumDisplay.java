@@ -13,12 +13,12 @@ public class MediumDisplay extends DefaultDisplay {
 
     private int screenWidth;
     private JXElement medium;
-    private String mediumId;
-    private String mediumName;
-    private String mediumType;
-    private String mediumUrl;
+    private String mediumId = "";
+    private String mediumName = "";
+    private String mediumType = "";
+    private String mediumUrl = "";
     private Image mediumImage;
-    private String mediumText;
+    private String mediumText = "";
     //private Image mediumAudio;
     private VideoDisplay videoDisplay;
     private AudioDisplay audioDisplay;
@@ -48,6 +48,10 @@ public class MediumDisplay extends DefaultDisplay {
             getMedium(aMediumId);
         }
 
+    }
+
+    public String getMediumId(){
+        return mediumId;
     }
 
     public boolean isActive() {
