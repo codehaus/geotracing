@@ -59,14 +59,14 @@ public class AddTextDisplay extends DefaultDisplay {
         return active;
     }
 
-    public void handleAddMediumRsp(JXElement aResponse) {
+    public void handleAddTextRsp(JXElement aResponse, String aText) {
         deleteAll();
         removeCommand(SUBMIT_CMD);
 
         //#style alertinfo
         append(alertField);
 
-        alertField.setText("Text sent successfully");
+        alertField.setText(aText);
     }
 
     public void handleAddMediumNrsp(JXElement aResponse) {
