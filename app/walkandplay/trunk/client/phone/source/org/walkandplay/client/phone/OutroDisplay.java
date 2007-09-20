@@ -11,6 +11,9 @@ public class OutroDisplay extends DefaultDisplay {
     public OutroDisplay(WPMidlet aMIDlet) {
         super(aMIDlet, "Outro");
 
+        //#style alertinfo
+        append("You completed all your tasks! Congratulations!");
+
         //#style formbox
         append(midlet.getPlayApp().getGame().getChildText("outro"));
 
