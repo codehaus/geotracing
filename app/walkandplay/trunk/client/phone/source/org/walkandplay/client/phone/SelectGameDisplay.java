@@ -222,7 +222,29 @@ public class SelectGameDisplay extends AppStartDisplay {
                         playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);
 
                     } else if (playDisplay.audioCaptureDisplay != null && playDisplay.audioCaptureDisplay.isActive()) {
-                        playDisplay.audioCaptureDisplay.handleAddMediumRsp(rsp);
+                        String text = "Audio sent succesfully.";
+
+                        if(playDisplay.taskDisplay != null){
+                            // set the mediastate
+                            if (playDisplay.taskDisplay.getMediaState().equals("open")) {
+                                playDisplay.taskDisplay.setMediaState("done");
+                            }
+
+                            if (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok")) {
+                                text += " You still have to answer the question though - good luck!";
+                            } else if (playDisplay.taskDisplay.getAnswerState().equals("ok")) {
+                                // finished this task so set state to done
+                                playDisplay.taskDisplay.setState("done");
+                                text += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
+                                // and check if this was the last task
+                                if(playDisplay.taskDisplay.getNrOfTasksToDo() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
+                                    playDisplay.imageCaptureDisplay.completedLastTask();
+                                    text += "This was also you're last task! Watch the outro.";
+                                }
+                            }
+                        }
+
+                        playDisplay.audioCaptureDisplay.handleAddAudioRsp(rsp, text);
                     }
                 }
             } else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {

@@ -795,6 +795,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             switch (SHOW_STATE) {
                 case SHOW_LOG:
                     drawMessage(g, netStatus + " | " + gpsStatus, 50);
+                    if(taskDisplay!=null) drawMessage(g, taskDisplay.getNrOfTasksToDo() + " tasks to do", 50 + fh);
                     /*g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
 					g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
 					g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
@@ -885,7 +886,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             if (lastObject == null) return;
 
             if (lastObjectType.equals("task")) {
-                taskDisplay.start(lastObject.getAttr("id"), null, null, null);
+                taskDisplay.start(lastObject.getAttr("id"), taskDisplay.getState(), taskDisplay.getAnswerState(), taskDisplay.getMediaState());
             } else if (lastObjectType.equals("medium")) {
                 mediumDisplay.start(lastObject.getAttr("id"), this);
             }

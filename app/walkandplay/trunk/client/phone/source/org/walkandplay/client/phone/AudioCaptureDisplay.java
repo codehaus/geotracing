@@ -77,10 +77,10 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
         return active;
     }
 
-    public void handleAddMediumRsp(JXElement aResponse) {
+    public void handleAddAudioRsp(JXElement aResponse, String aText) {
         clearScreen();
         removeCommand(PLAY_CMD);
-        alertField.setText("Audio sent successfully");
+        alertField.setText(aText);
     }
 
     public void handleAddMediumNrsp(JXElement aResponse) {

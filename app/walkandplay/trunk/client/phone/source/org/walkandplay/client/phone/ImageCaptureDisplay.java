@@ -27,7 +27,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
     private Display display;
     private boolean lastTaskComplete;
 
-    private Gauge progressBar = new Gauge("", false, 100, 0);
+    private Gauge progressBar;
     private int progressMax = 100;
 
     public ImageCaptureDisplay(WPMidlet aMIDlet) {
@@ -68,16 +68,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
 
     public void onFinish() {
         display.setCurrent(this);
-        drawScreen();
-    }
 
-    public void onCancel() {
-        active = false;
-        Display.getDisplay(midlet).setCurrent(prevScreen);
-    }
-
-    private void drawScreen() {
-        display.setCurrent(this);
         deleteAll();
         name = new TextField("", null, 24, TextField.ANY);
         //#style labelinfo
@@ -86,6 +77,11 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
         append(name);
 
         addCommand(SEND_CMD);
+    }
+
+    public void onCancel() {
+        active = false;
+        Display.getDisplay(midlet).setCurrent(prevScreen);
     }
 
     private class PhotoUploader {
@@ -206,9 +202,14 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
             active = false;
             Display.getDisplay(midlet).setCurrent(prevScreen);
         } else if (c == SEND_CMD) {
+            deleteAll();
+            removeCommand(SEND_CMD);
+
             //#style labelinfo
             append("Uploading... (takes a while)");
 
+            progressBar = new Gauge("", false, 100, 0);
+            
             //#style formbox
             append(progressBar);
 
@@ -224,8 +225,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
     public void handleAddImageRsp(JXElement aResponse, String aText) {
         if (aResponse.getTag().equals("play-add-medium-rsp") || aResponse.getTag().equals("game-add-medium-rsp")) {
             deleteAll();
-            removeCommand(SEND_CMD);
-
+            
             //#style alertinfo
             append(aText);
 
