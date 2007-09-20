@@ -118,9 +118,9 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
                 if (addTextDisplay != null && addTextDisplay.isActive()) {
                     addTextDisplay.handleAddMediumRsp(rsp);
                 } else if (imageCaptureDisplay != null && imageCaptureDisplay.isActive()) {
-                    imageCaptureDisplay.handleAddImageRsp(rsp, "Image sent succesfully.");
+                    imageCaptureDisplay.handleAddImageRsp(rsp, "Image sent successfully.");
                 } else if (audioCaptureDisplay != null && audioCaptureDisplay.isActive()) {
-                    audioCaptureDisplay.handleAddMediumRsp(rsp);
+                    audioCaptureDisplay.handleAddAudioRsp(rsp, "Audio sent successfully");
                 }
             } else if (rsp.getTag().equals("play-add-medium-nrsp") || rsp.getTag().equals("game-add-medium-nrsp")) {
                 if (addTextDisplay != null && addTextDisplay.isActive()) {

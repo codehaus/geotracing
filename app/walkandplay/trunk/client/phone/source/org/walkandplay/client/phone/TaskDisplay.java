@@ -57,6 +57,8 @@ public class TaskDisplay extends DefaultDisplay {
         }
 
         // show the display
+        deleteAll();
+        drawScreen();
         active = true;
         Display.getDisplay(midlet).setCurrent(this);
     }
@@ -106,7 +108,7 @@ public class TaskDisplay extends DefaultDisplay {
             append(Locale.get("task.Info"));
         }
         //#style formbox
-        append(taskName + "(" + taskScore + " pts)");
+        append(taskName + "(" + taskScore + " pts - " + nrOfTasksToDo + ")");
         //#style formbox
         append(taskDescription);
 
@@ -206,10 +208,6 @@ public class TaskDisplay extends DefaultDisplay {
 
     public int getNrOfTasksToDo(){
         return nrOfTasksToDo;
-    }
-
-    public void setNrOfTasksToDo(int aNrOfTasks){
-        nrOfTasksToDo = aNrOfTasks;
     }
 
     public void handleAnswerTaskNrsp(JXElement aResponse) {
