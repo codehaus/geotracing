@@ -203,7 +203,6 @@ public class SelectGameDisplay extends AppStartDisplay {
 					return;
 				}
 
-
 				if (playDisplay != null) {
 					if (playDisplay.addTextDisplay != null && playDisplay.addTextDisplay.isActive()) {
 						String text = "Text sent succesfully.";
@@ -249,42 +248,16 @@ public class SelectGameDisplay extends AppStartDisplay {
 
 	private String setAddMediumFeedback(String aTaskState, String aText) {
 		if (playDisplay.taskDisplay != null) {
-			// set the mediastate
-			/*if (playDisplay.taskDisplay.getMediaState().equals("open")) {
-							playDisplay.taskDisplay.setMediaState("done");
-						}
-						*/
-			playDisplay.taskDisplay.setMediaState("done");
+            
+            playDisplay.taskDisplay.setMediaState("done");
 
 			if (aTaskState.equals("done")) {
 				// finished this task so set state to done
 				playDisplay.taskDisplay.setState("done");
 				aText += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
-
-				/*// and check if this was the last task
-								if(playDisplay.taskDisplay.getNrOfTasksToDo() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
-									playDisplay.taskDisplay.decreaseNrOfTasksToDo();
-									new OutroDisplay(midlet);
-								}
-								playDisplay.taskDisplay.decreaseNrOfTasksToDo();*/
 			} else {
 				aText += " You still have to answer the question though - good luck!";
 			}
-
-			/*if (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok")) {
-							aText += " You still have to answer the question though - good luck!";
-						} else if (playDisplay.taskDisplay.getAnswerState().equals("ok")) {
-							// finished this task so set state to done
-							playDisplay.taskDisplay.setState("done");
-							aText += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
-
-							// and check if this was the last task
-							if(playDisplay.taskDisplay.getNrOfTasksToDo() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
-								playDisplay.taskDisplay.decreaseNrOfTasksToDo();
-								new OutroDisplay(midlet);
-							}
-							playDisplay.taskDisplay.decreaseNrOfTasksToDo();
-						}*/
 		}
 		return aText;
 	}
