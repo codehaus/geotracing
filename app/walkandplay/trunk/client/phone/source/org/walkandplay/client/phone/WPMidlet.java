@@ -96,8 +96,8 @@ public class WPMidlet extends MIDlet implements CommandListener {
         if(isInDemoMode()){
             //#style mainLogCommand
             menuScreen.append(Locale.get("menu.Log"), null);
-            //#style mainLogCommand
-            menuScreen.append("test", null);
+            /*//#style mainLogCommand
+            menuScreen.append("test", null);*/
             /*
             //#style mainLogCommand
             menuScreen.append("video display", null);
@@ -291,9 +291,9 @@ public class WPMidlet extends MIDlet implements CommandListener {
                 }
                 break;
             case 7:
-                if(isInDemoMode()){
+                /*if(isInDemoMode()){
                     Display.getDisplay(this).setCurrent(new TestDisplay(this));
-                }
+                }*/
                 break;
         }
     }
