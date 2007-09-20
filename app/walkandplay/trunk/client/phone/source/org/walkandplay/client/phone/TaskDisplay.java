@@ -98,7 +98,10 @@ public class TaskDisplay extends DefaultDisplay {
     }
 
     private void drawScreen() {
-        if (answerState.equals("ok")) {
+        if(state.equals("done")){
+            getErrorHandler().showGoBack("You already completed this task.");
+            return;
+        }else if (answerState.equals("ok")) {
             //#style alertinfo
             append(Locale.get("task.UploadMedia"));
         } else {
