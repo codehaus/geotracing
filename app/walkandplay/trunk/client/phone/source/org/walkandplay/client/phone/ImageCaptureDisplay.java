@@ -18,14 +18,12 @@ import javax.microedition.lcdui.*;
 public class ImageCaptureDisplay extends DefaultDisplay implements CameraListener, ProgressListener {
 
     private Command SEND_CMD = new Command("Send", Command.OK, 1);
-    private Command OUTRO_CMD = new Command("Outro", Command.CANCEL, 1);
 
     private Displayable prevScreen;
     private boolean playing;
     private TextField name;
     private boolean active;
     private Display display;
-    private boolean lastTaskComplete;
 
     private Gauge progressBar;
     private int progressMax = 100;
@@ -216,10 +214,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
             new PhotoUploader().start(this);
             
             //sendPhoto(CameraHandler.getPhotoBytes());
-        } else if (c == OUTRO_CMD) {
-            active = false;
-            new OutroDisplay(midlet);
-        }
+        } 
     }
 
     public void handleAddImageRsp(JXElement aResponse, String aText) {
@@ -228,16 +223,7 @@ public class ImageCaptureDisplay extends DefaultDisplay implements CameraListene
             
             //#style alertinfo
             append(aText);
-
-            if(lastTaskComplete){
-                removeCommand(BACK_CMD);
-                addCommand(OUTRO_CMD);
-            }
         }
-    }
-
-    public void completedLastTask(){
-        lastTaskComplete = true;
     }
 
     public void handleAddImageNrsp(JXElement aResponse) {

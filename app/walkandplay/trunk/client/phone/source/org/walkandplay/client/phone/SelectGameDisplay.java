@@ -230,7 +230,7 @@ public class SelectGameDisplay extends AppStartDisplay {
         }
     }
 
-    private String setAddMediumFeedback(String aText){
+    private String setAddMediumFeedback(int aMediumType, String aText){
         if(playDisplay.taskDisplay != null){
             // set the mediastate
             if (playDisplay.taskDisplay.getMediaState().equals("open")) {
@@ -243,10 +243,12 @@ public class SelectGameDisplay extends AppStartDisplay {
                 // finished this task so set state to done
                 playDisplay.taskDisplay.setState("done");
                 aText += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
+
+                playDisplay.taskDisplay.decreaseNrOfTasksToDo();
+                
                 // and check if this was the last task
                 if(playDisplay.taskDisplay.getNrOfTasksToDo() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
-                    playDisplay.imageCaptureDisplay.completedLastTask();
-                    aText += "This was also you're last task! Watch the outro.";
+                    new OutroDisplay(midlet);                    
                 }
             }
         }

@@ -35,7 +35,6 @@ public class TaskDisplay extends DefaultDisplay {
         nrOfTasksToDo = theNrOfTasks;
         prevScreen = aPrevScreen;
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
-        addCommand(OK_CMD);
     }
 
     public void start(String aTaskId, String aState, String anAnswerState, String aMediaState) {
@@ -98,15 +97,16 @@ public class TaskDisplay extends DefaultDisplay {
         return task;
     }
 
-    private void drawScreen() {
+    private void drawScreen() {        
         if (answerState.equals("ok")) {
             //#style alertinfo
             append(Locale.get("task.UploadMedia"));
-            removeCommand(OK_CMD);
         } else {
             //#style alertinfo
             append(Locale.get("task.Info"));
+            addCommand(OK_CMD);
         }
+
         //#style formbox
         append(taskName + "(" + taskScore + " pts - " + nrOfTasksToDo + ")");
         //#style formbox
@@ -195,15 +195,19 @@ public class TaskDisplay extends DefaultDisplay {
             answer = inputField.getString();
             getErrorHandler().showGoBack("Ok you send in media! Now fill in the right answer");
         } else if (state.equals("done")) {
-            nrOfTasksToDo--;
+            decreaseNrOfTasksToDo();
             if(nrOfTasksToDo == 0){
-                getErrorHandler().showOutro(score);
+                new OutroDisplay(midlet);
             }else{
                 getErrorHandler().showGoBack("Right answer and you sent in media!\nYou scored " + score + " points. Still " + nrOfTasksToDo + " tasks to go.");
             }            
         } else {
             getErrorHandler().showTryAgain("Oops, wrong answer! Try again...");
         }
+    }
+
+    public void decreaseNrOfTasksToDo(){
+        nrOfTasksToDo--;
     }
 
     public int getNrOfTasksToDo(){
@@ -277,7 +281,7 @@ public class TaskDisplay extends DefaultDisplay {
             Display.getDisplay(midlet).setCurrent(form);
         }
 
-        public void showOutro(String aScore) {
+        /*public void showOutro(String aScore) {
             //#style defaultscreen
             form = new Form("TaskDisplay");
 
@@ -288,7 +292,7 @@ public class TaskDisplay extends DefaultDisplay {
 
             form.setCommandListener(this);
             Display.getDisplay(midlet).setCurrent(form);
-        }
+        }*/
 
         public void commandAction(Command command, Displayable screen) {
             if (command == TRY_AGAIN_CMD) {
