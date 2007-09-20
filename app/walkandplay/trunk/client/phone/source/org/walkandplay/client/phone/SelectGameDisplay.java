@@ -193,18 +193,35 @@ public class SelectGameDisplay extends AppStartDisplay {
                     playDisplay.taskDisplay.handleAnswerTaskNrsp(rsp);
                 }
             } else if (rsp.getTag().equals("play-add-medium-rsp") || rsp.getTag().equals("game-add-medium-rsp")) {
+                // <play-add-medium-rsp locationid="935225" taskid="149577" taskstate="done" playstate="done"/>
+                String taskId = rsp.getAttr("taskid");
+                String taskState = rsp.getAttr("taskstate");
+                String playState = rsp.getAttr("playstate");
+                // we done!!
+                if(playState.equals("done")){
+                    new OutroDisplay(midlet);
+                    return;
+                }
+
+
                 if (playDisplay != null) {
                     if (playDisplay.addTextDisplay != null && playDisplay.addTextDisplay.isActive()) {
                         String text = "Text sent succesfully.";
-                        text = setAddMediumFeedback(text);
+                        if(taskId !=null && taskId.length()>0) {
+                            text = setAddMediumFeedback(taskState, text);
+                        }
                         playDisplay.addTextDisplay.handleAddTextRsp(rsp, text);
                     } else if (playDisplay.imageCaptureDisplay != null && playDisplay.imageCaptureDisplay.isActive()) {
                         String text = "Image sent succesfully.";
-                        text = setAddMediumFeedback(text);
+                        if(taskId !=null && taskId.length()>0) {
+                            text = setAddMediumFeedback(taskState, text);
+                        }
                         playDisplay.imageCaptureDisplay.handleAddImageRsp(rsp, text);
                     } else if (playDisplay.audioCaptureDisplay != null && playDisplay.audioCaptureDisplay.isActive()) {
                         String text = "Audio sent succesfully.";
-                        text = setAddMediumFeedback(text);
+                        if(taskId !=null && taskId.length()>0) {
+                            text = setAddMediumFeedback(taskState, text);
+                        }
                         playDisplay.audioCaptureDisplay.handleAddAudioRsp(rsp, text);
                     }
                 }
@@ -230,27 +247,44 @@ public class SelectGameDisplay extends AppStartDisplay {
         }
     }
 
-    private String setAddMediumFeedback(String aText){
+    private String setAddMediumFeedback(String aTaskState, String aText){
         if(playDisplay.taskDisplay != null){
             // set the mediastate
-            if (playDisplay.taskDisplay.getMediaState().equals("open")) {
+            /*if (playDisplay.taskDisplay.getMediaState().equals("open")) {
                 playDisplay.taskDisplay.setMediaState("done");
             }
+            */
+            playDisplay.taskDisplay.setMediaState("done");
 
-            if (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok")) {
+            if(aTaskState.equals("done")){
+                // finished this task so set state to done
+                playDisplay.taskDisplay.setState("done");
+                aText += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
+
+                /*// and check if this was the last task
+                if(playDisplay.taskDisplay.getNrOfTasksToDo() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
+                    playDisplay.taskDisplay.decreaseNrOfTasksToDo();
+                    new OutroDisplay(midlet);
+                }
+                playDisplay.taskDisplay.decreaseNrOfTasksToDo();*/
+            }else{
+                aText += " You still have to answer the question though - good luck!";
+            }
+
+            /*if (playDisplay.taskDisplay.getAnswerState().equals("open") || playDisplay.taskDisplay.getAnswerState().equals("notok")) {
                 aText += " You still have to answer the question though - good luck!";
             } else if (playDisplay.taskDisplay.getAnswerState().equals("ok")) {
                 // finished this task so set state to done
                 playDisplay.taskDisplay.setState("done");
                 aText += " Congratulations - you completed the task '" + playDisplay.taskDisplay.getTaskName() + "' and scored " + playDisplay.taskDisplay.getTaskScore() + " points.";
 
-                playDisplay.taskDisplay.decreaseNrOfTasksToDo();
-                
                 // and check if this was the last task
                 if(playDisplay.taskDisplay.getNrOfTasksToDo() == 1 && playDisplay.taskDisplay.getAnswerState().equals("ok")){
+                    playDisplay.taskDisplay.decreaseNrOfTasksToDo();
                     new OutroDisplay(midlet);                    
                 }
-            }
+                playDisplay.taskDisplay.decreaseNrOfTasksToDo();
+            }*/
         }
         return aText;
     }
