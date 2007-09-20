@@ -38,6 +38,9 @@ public class MediumDisplay extends DefaultDisplay {
         active = true;
         Display.getDisplay(midlet).setCurrent(this);
 
+        removeAllCommands();
+        addCommand(BACK_CMD);
+        
         if (mediumId == null || !mediumId.equals(aMediumId)) {
             mediumId = aMediumId;
             mediumLabel.setText("Loading...");
@@ -104,7 +107,7 @@ public class MediumDisplay extends DefaultDisplay {
     private void drawMedium() {
         // start fresh for when a new medium is drawn
         deleteAll();
-
+        
         if (mediumName != null && mediumName.length() > 0) {
             mediumLabel.setText(mediumName);
         } else {
