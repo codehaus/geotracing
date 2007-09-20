@@ -1245,6 +1245,7 @@ wpGame.prototype.editRound = function(resp,id,add)
 				break;
 			}
 		}
+		if (add && player==wp_login.loginname) select = 'selected'; //default select owner for new round
 		str+= '<option value="'+player+'" '+select+'>'+player+'</option>';
 	}
 	str+= '</select>';
