@@ -179,8 +179,13 @@ public class GPSEngine implements GPSFetcherListener {
             //long GPS_SAMPLE_INTERVAL = Long.parseLong(midlet.getAppProperty("gps-sample-interval"));
             gpsFetcher = GPSFetcher.getInstance();
             gpsFetcher.setListener(this);
-            gpsFetcher.setURL(gpsURL);
-            gpsFetcher.start(midlet.getGPSSampleInterval());
+            if (midlet.isInDemoMode()) {
+				gpsFetcher.setURL(midlet.getAppProperty("demo-nmea-url")); //
+				// "http://test.walkandplay.com/zwijger.nmea");				
+			} else{
+				gpsFetcher.setURL(gpsURL);
+			}
+			gpsFetcher.start(midlet.getGPSSampleInterval());
         } catch (Throwable t) {
             for (int i = 0; i < listeners.size(); i++) {
                 ((GPSEngineListener) listeners.elementAt(i)).onGPSStatus("start error");

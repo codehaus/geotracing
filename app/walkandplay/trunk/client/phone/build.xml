@@ -204,6 +204,7 @@
 					<attribute name="kw-role" value="${kw-role}"/>
 					<attribute name="volume" value="${volume}"/>
 					<attribute name="demo" value="${demo}"/>
+					<attribute name="demo-nmea-url" value="${demo-nmea-url}"/>
 					<attribute name="external-player" value="${external-player}"/>
 					<attribute name="audio-rate" value="${audio-rate}"/>
 					<attribute name="audio-bits" value="${audio-bits}"/>
