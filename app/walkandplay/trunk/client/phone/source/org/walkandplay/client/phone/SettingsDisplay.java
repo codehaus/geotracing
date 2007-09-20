@@ -111,11 +111,11 @@ public class SettingsDisplay extends DefaultDisplay {
         } else if (cmd == DEMO_CMD) {
             removeCommand(DEMO_CMD);
             if (midlet.isInDemoMode()) {
-                midlet.getPreferences().put(WPMidlet.DEMO_MODE, "no");
+                midlet.getPreferences().put(WPMidlet.DEMO_MODE, "false");
                 midlet.setTitle(false);
                 DEMO_CMD = new Command(Locale.get("settings.DemoModeOn"), Command.ITEM, 2);
             } else {
-                midlet.getPreferences().put(WPMidlet.DEMO_MODE, "yes");
+                midlet.getPreferences().put(WPMidlet.DEMO_MODE, "true");
                 midlet.setTitle(true);
                 DEMO_CMD = new Command(Locale.get("settings.DemoModeOff"), Command.ITEM, 2);
             }
