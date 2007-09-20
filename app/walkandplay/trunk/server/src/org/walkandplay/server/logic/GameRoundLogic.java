@@ -69,6 +69,10 @@ public class GameRoundLogic implements Constants {
 			transaction.begin();
 
 			for (int i = 0; i < persons.length; i++) {
+				if (persons[i].getStringField("firstname").equals("bot"))  {
+					log.warn("not adding bot to gameround");
+					continue;
+				}
 
 				// Get color available
 				String useColor = null;
