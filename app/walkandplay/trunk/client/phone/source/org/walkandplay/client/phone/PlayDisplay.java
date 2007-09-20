@@ -175,7 +175,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 	public void handlePlayLocationRsp(JXElement aResponse) {
 		JXElement hitElm = aResponse.getChildAt(0);
 
-		if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
+        if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
 			lastObject = hitElm;
 			repaintHitObject = true;
 
