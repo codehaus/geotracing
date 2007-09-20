@@ -5,6 +5,7 @@ package org.geotracing.client;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
+import javax.microedition.io.HttpConnection;
 import java.io.InputStream;
 
 /**
@@ -45,6 +46,7 @@ public class GPSFetcher implements Runnable {
 	public static final MFloat KM_PER_KNOT = MFloat.parse("1.85200", 10);
 	public static final MFloat MINS = new MFloat(60);
 	private GPSSmoother gpsSmoother = new GPSSmoother();
+	private boolean demoMode = false;
 
 	/**
 	 * Singleton.
@@ -85,6 +87,8 @@ public class GPSFetcher implements Runnable {
 
 	public void setURL(String aURL) {
 		connectionURL = aURL;
+		demoMode = connectionURL.startsWith("http://");
+
 	}
 
 	public void start() {
@@ -130,6 +134,17 @@ public class GPSFetcher implements Runnable {
 					case CONNECTED:
 						// Read raw GPS sample
 						String nmea = readNMEASentence();
+						if (demoMode) {
+							Thread.sleep(1000);
+							if (nmea == null) {
+								Thread.sleep(BT_RECONNECT_TIMEOUT_MILLIS);
+								close();
+								gpsListener.onGPSDisconnect();
+								setState(DISCONNECTED);
+								break;
+							}
+						}
+
 						if (nmea == null) {
 							break;
 						}
@@ -210,13 +225,18 @@ public class GPSFetcher implements Runnable {
 	private void connect() {
 		try {
 			gpsListener.onGPSStatus("connecting");
-			con = (StreamConnection) Connector.open(connectionURL, Connector.READ);
+			if (demoMode) {
+				con = (HttpConnection) Connector.open(connectionURL);
+			} else {
+				con = (StreamConnection) Connector.open(connectionURL, Connector.READ);
+			}
 
 			is = con.openInputStream();
 			setState(CONNECTED);
 			gpsListener.onGPSConnect();
 			info.msg = "connected to " + connectionURL;
 			gpsListener.onGPSInfo(info);
+			// System.out.println("connected to " + connectionURL);
 		} catch (Throwable t) {
 			gpsListener.onGPSStatus("conn error");
 			close();
@@ -239,6 +259,8 @@ public class GPSFetcher implements Runnable {
 			// Find start of NMEA sentence
 			do {
 				c = is.read();
+
+
 				if (c == '$') {
 					lineBuffer[index++] = (char) c;
 					break;
@@ -275,7 +297,6 @@ public class GPSFetcher implements Runnable {
 			// Try reconnecting
 			setState(FAILED);
 		}
-		// System.out.println("res=" + result);
 		return result;
 	}
 
