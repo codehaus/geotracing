@@ -108,7 +108,7 @@ public class TaskDisplay extends DefaultDisplay {
         }
 
         //#style formbox
-        append(taskName + "(" + taskScore + " pts - " + nrOfTasksToDo + ")");
+        append(taskName + "(" + taskScore + " pts)");
         //#style formbox
         append(taskDescription);
 
