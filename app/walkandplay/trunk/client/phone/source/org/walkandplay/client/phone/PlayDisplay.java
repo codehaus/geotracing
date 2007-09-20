@@ -173,61 +173,8 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
     }
 
     public void handlePlayLocationRsp(JXElement aResponse) {
-        JXElement hitElm = null;
-        if (midlet.isInDemoMode()) {
-            // video
-            /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                Log.log("add a hit!!!!");
-                JXElement hit = new JXElement("medium-hit");
-                hit.setAttr("id", 831882);
-                rsp.addChild(hit);
-            }
-
-            // audio
-            if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                Log.log("add a hit!!!!");
-                JXElement hit = new JXElement("medium-hit");
-                hit.setAttr("id", 831815);
-                rsp.addChild(hit);
-            }*/
-
-            // image
-            /*if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                Log.log("add a hit!!!!");
-                JXElement hit = new JXElement("medium-hit");
-                hit.setAttr("id", 831905);
-                rsp.addChild(hit);
-            }
-
-            // text
-            if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-                Log.log("add a hit!!!!");
-                JXElement hit = new JXElement("medium-hit");
-                hit.setAttr("id", 831820);
-                rsp.addChild(hit);
-            }*/
-
-            // task
-            //if (System.currentTimeMillis() % 3 == 0 && !rsp.hasChildren()) {
-            if (!demoTaskSent) {
-                Log.log("add a hit!!!!");
-                JXElement hit = new JXElement("task-hit");
-                hit.setAttr("id", 831651);
-                // open | done
-                hit.setAttr("state", "open");
-                // open | notok | ok
-                hit.setAttr("answerstate", "open");
-                // open | done
-                hit.setAttr("mediastate", "open");
-                aResponse.addChild(hit);
-
-                demoTaskSent = true;
-                hitElm = aResponse.getChildAt(0);
-            }
-        } else {
-            hitElm = aResponse.getChildAt(0);
-        }
-
+        JXElement hitElm = aResponse.getChildAt(0);
+        
         if (hitElm != null && (lastObject == null || (!hitElm.getAttr("id").equals(lastObject.getAttr("id"))))) {
             lastObject = hitElm;
             repaintHitObject = true;
@@ -647,10 +594,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
                             if (zoom >= 0 && zoom < 6) {
                                 if(lastObjectId.equals(id)){
-                                    /*Log.log("draw active dot");
-                                    Log.log("id:" + id);
-                                    Log.log("last object id:" + lastObjectId);
-                                    Log.log("activeDot1:" + activeDot1);*/
                                     mapImage.getGraphics().drawImage(activeDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                                 }else{
                                     if(type.equals("task")){
@@ -661,10 +604,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                                 }
                             }else if (zoom >= 6 && zoom < 12) {
                                 if(lastObjectId.equals(id)){
-                                    /*Log.log("draw active dot");
-                                    Log.log("id:" + id);
-                                    Log.log("last object id:" + lastObjectId);
-                                    Log.log("activeDot1:" + activeDot2);*/
                                     mapImage.getGraphics().drawImage(activeDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                                 }else{
                                     if(type.equals("task")){
@@ -675,10 +614,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                                 }
                             }else{
                                  if(lastObjectId.equals(id)){
-                                    /*Log.log("draw active dot");
-                                    Log.log("id:" + id);
-                                    Log.log("last object id:" + lastObjectId);
-                                    Log.log("activeDot3:" + activeDot3);*/
                                     mapImage.getGraphics().drawImage(activeDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                                 }else{
                                     if(type.equals("task")){
@@ -703,7 +638,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
             }else{
                // draw anyway!!
                 if (gameLocations != null && lastObject!=null && repaintHitObject) {
-                    //Log.log("######### debug");
                     for (int i = 0; i < gameLocations.size(); i++) {
                         JXElement loc = (JXElement) gameLocations.elementAt(i);
                         String id = loc.getChildText("id");
@@ -715,10 +649,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
                         if (zoom >= 0 && zoom < 6) {
                             if(lastObjectId.equals(id)){
-                                /*Log.log("######### draw active dot");
-                                Log.log("######### loc:" + new String(loc.toBytes(false)));
-                                Log.log("######### id:" + id);
-                                Log.log("######### last object id:" + lastObjectId);*/
                                 mapImage.getGraphics().drawImage(activeDot1, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                             }else{
                                 if(type.equals("task")){
@@ -729,10 +659,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                             }
                         }else if (zoom >= 6 && zoom < 12) {
                             if(lastObjectId.equals(id)){
-                                /*Log.log("######### draw active dot");
-                                Log.log("######### loc:" + new String(loc.toBytes(false)));
-                                Log.log("######### id:" + id);
-                                Log.log("######### last object id:" + lastObjectId);*/
                                 mapImage.getGraphics().drawImage(activeDot2, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                             }else{
                                 if(type.equals("task")){
@@ -743,10 +669,6 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
                             }
                         }else{
                              if(lastObjectId.equals(id)){
-                                /*Log.log("######### draw active dot");
-                                Log.log("######### loc:" + new String(loc.toBytes(false)));
-                                Log.log("######### id:" + id);
-                                Log.log("######### last object id:" + lastObjectId);*/
                                 mapImage.getGraphics().drawImage(activeDot3, gameLocXY.x, gameLocXY.y, Graphics.BOTTOM | Graphics.HCENTER);
                             }else{
                                  if(type.equals("task")){
@@ -794,8 +716,7 @@ public class PlayDisplay extends GameCanvas implements CommandListener, GPSEngin
 
             switch (SHOW_STATE) {
                 case SHOW_LOG:
-                    drawMessage(g, netStatus + " | " + gpsStatus, 50);
-                    if(taskDisplay!=null) drawMessage(g, taskDisplay.getNrOfTasksToDo() + " tasks to do", 50 + fh);
+                    drawMessage(g, netStatus + " | " + gpsStatus, 50);                    
                     /*g.drawImage(transBar, 0, h / 2 - transBar.getHeight() / 2, Graphics.TOP | Graphics.LEFT);
 					g.drawString(netStatus, w / 2 - (g.getFont().stringWidth(netStatus)) / 2, h / 2 - fh, Graphics.TOP | Graphics.LEFT);
 					g.drawString(gpsStatus, w / 2 - (g.getFont().stringWidth(gpsStatus)) / 2, h / 2, Graphics.TOP | Graphics.LEFT);*/
