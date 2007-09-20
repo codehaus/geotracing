@@ -135,7 +135,7 @@ public class GPSFetcher implements Runnable {
 						// Read raw GPS sample
 						String nmea = readNMEASentence();
 						if (demoMode) {
-							Thread.sleep(1000);
+							Thread.sleep(sampleIntervalMillis/2);
 							if (nmea == null) {
 								Thread.sleep(BT_RECONNECT_TIMEOUT_MILLIS);
 								close();
