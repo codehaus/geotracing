@@ -125,12 +125,11 @@ public class WPMidlet extends MIDlet implements CommandListener {
         Log.setDemoMode(isInDemoMode());
  		Log.setEmulator(getAppProperty(EMULATOR).equals("true"));
 		if (new VersionChecker().check()) {
-            if(splashDisplay == null){
+            /*if(splashDisplay == null){
                 splashDisplay = new SplashDisplay(this);
             }
-            splashDisplay.start(SplashDisplay.STATE_SPLASH_HOME);
-            Display.getDisplay(this).setCurrent(splashDisplay);
-            //setHome();
+            splashDisplay.start(SplashDisplay.STATE_SPLASH_HOME);*/
+            Display.getDisplay(this).setCurrent(new SplashDisplay(this, 1));
         }
     }
 
@@ -279,11 +278,12 @@ public class WPMidlet extends MIDlet implements CommandListener {
             case 5:
                 // Quit
                 Log.log("exit");
-                if(splashDisplay == null){
+                /*if(splashDisplay == null){
                     splashDisplay = new SplashDisplay(this);
                 }
                 Display.getDisplay(this).setCurrent(splashDisplay);
-                splashDisplay.start(SplashDisplay.STATE_SPLASH_EXIT);
+                splashDisplay.start(SplashDisplay.STATE_SPLASH_EXIT);*/
+                Display.getDisplay(this).setCurrent(new SplashDisplay(this, -1));
                 break;
             case 6:
                 if(isInDemoMode()){
@@ -340,22 +340,28 @@ public class WPMidlet extends MIDlet implements CommandListener {
 
         public void commandAction(Command command, Displayable screen) {
             if (command == EXIT_CMD) {
-                if(splashDisplay == null){
+                /*if(splashDisplay == null){
                     splashDisplay = new SplashDisplay(midlet);
                 }
-                Display.getDisplay(midlet).setCurrent(splashDisplay);
-                splashDisplay.start(SplashDisplay.STATE_SPLASH_EXIT);
+                splashDisplay.start(SplashDisplay.STATE_SPLASH_EXIT);*/
+                Display.getDisplay(midlet).setCurrent(new SplashDisplay(midlet, 1));
             } else if (command == CONTINUE_CMD) {
                 setHome();
             } else if (command == GET_CMD) {
                 try {
                     midlet.platformRequest("http://" + midlet.getKWServer());
                     // and exit
-                    if(splashDisplay == null){
+                    /*if(splashDisplay == null){
                         splashDisplay = new SplashDisplay(midlet);
                     }
                     Display.getDisplay(midlet).setCurrent(splashDisplay);
-                    splashDisplay.start(SplashDisplay.STATE_EXIT);
+                    splashDisplay.start(SplashDisplay.STATE_EXIT);*/
+                    try {
+                        midlet.destroyApp(true);
+                        midlet.notifyDestroyed();
+                    } catch (Throwable t) {
+                        //
+                    }
                 } catch (Throwable t) {
                     //#style alertinfo
                     form.append("Could not get new version...sorry.");

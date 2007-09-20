@@ -154,9 +154,8 @@ public class AudioCaptureDisplay extends DefaultDisplay implements ProgressListe
                                         JXElement lon = new JXElement("lon");
                                         lon.setText("" + GPSFetcher.getInstance().getCurrentLocation().lon);
                                         medium.addChild(lon);
-
-
                                     }
+
                                     listener.prProgress(progressMax * 3 / 4);
                                     midlet.getActiveApp().sendRequest(addMediumReq);
                                     listener.prProgress(progressMax);
