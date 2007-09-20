@@ -27,12 +27,14 @@ public class TaskDisplay extends DefaultDisplay {
     private TaskDisplay instance;
     private ErrorHandler errorHandler;
     private int nrOfTasksToDo;
+    private int maxScore;
 
-    public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, int theNrOfTasks, Displayable aPrevScreen) {
+    public TaskDisplay(WPMidlet aMIDlet, int theScreenWidth, int theMaxScore, int theNrOfTasks, Displayable aPrevScreen) {
         super(aMIDlet, "Task");
         instance = this;
         screenWidth = theScreenWidth;
         nrOfTasksToDo = theNrOfTasks;
+        maxScore = theMaxScore;
         prevScreen = aPrevScreen;
         MEDIUM_BASE_URL = midlet.getKWUrl() + "/media.srv?id=";
     }
@@ -188,7 +190,7 @@ public class TaskDisplay extends DefaultDisplay {
         // first check if we are done!
         String playState = aResponse.getAttr("playstate");
         if(playState!=null && playState.equals("done")){
-            new OutroDisplay(midlet);
+            new OutroDisplay(midlet, maxScore);
             return;
         }
 
@@ -208,7 +210,7 @@ public class TaskDisplay extends DefaultDisplay {
         } else if (state.equals("done")) {
             decreaseNrOfTasksToDo();
             if(nrOfTasksToDo == 0){
-                new OutroDisplay(midlet);
+                new OutroDisplay(midlet, maxScore);
             }else{
                 getErrorHandler().showGoBack("Right answer and you sent in media!\nYou scored " + score + " points. Still " + nrOfTasksToDo + " tasks to go.");
             }
@@ -315,7 +317,7 @@ public class TaskDisplay extends DefaultDisplay {
                 Display.getDisplay(midlet).setCurrent(prevScreen);
             } else if (command == OUTRO_CMD) {
                 active = false;
-                new OutroDisplay(midlet);
+                new OutroDisplay(midlet, maxScore);
             }
         }
     }
