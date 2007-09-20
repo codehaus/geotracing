@@ -28,12 +28,12 @@ public class GPSSmoother {
 	/**
 	 * Minimum number of samples required for best location calculation.
 	 */
-	private static final int MIN_SAMPLES = 10;
+	public static final int MIN_SAMPLES = 10;
 
 	/**
 	 * Maximum (target) number of samples to be held for best location calculation.
 	 */
-	private static final int MAX_SAMPLES = 15;
+	public static final int MAX_SAMPLES = 15;
 
 	/**
 	 * Series of GPS locations.

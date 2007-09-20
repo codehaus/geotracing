@@ -154,6 +154,11 @@ public class GPSFetcher implements Runnable {
 						if (location != null) {
 							// Remember locations for calculating the best
 							gpsSmoother.addLocation(location);
+							if (demoMode) {
+								for (int i=0; i < GPSSmoother.MIN_SAMPLES; i++) {
+									gpsSmoother.addLocation(location);									
+								}
+							}
 						}
 
 						// Send info to observer if interval passed
