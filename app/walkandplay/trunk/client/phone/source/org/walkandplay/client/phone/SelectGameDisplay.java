@@ -230,7 +230,7 @@ public class SelectGameDisplay extends AppStartDisplay {
         }
     }
 
-    private String setAddMediumFeedback(int aMediumType, String aText){
+    private String setAddMediumFeedback(String aText){
         if(playDisplay.taskDisplay != null){
             // set the mediastate
             if (playDisplay.taskDisplay.getMediaState().equals("open")) {
