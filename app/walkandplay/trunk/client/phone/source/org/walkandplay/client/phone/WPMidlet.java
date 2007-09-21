@@ -241,13 +241,18 @@ public class WPMidlet extends MIDlet implements CommandListener {
         switch (aScreenNr) {
             case 0:
                 // Play
-                selectGameDisplay = new SelectGameDisplay(this);
+                if(selectGameDisplay==null){
+                    selectGameDisplay = new SelectGameDisplay(this);
+                }
                 selectGameDisplay.start();
                 activeApp = selectGameDisplay;
+                Display.getDisplay(this).setCurrent(activeApp);
                 break;
             case 1:
                 // Create
-                createDisplay = new CreateDisplay(this);
+                if(createDisplay == null){
+                    createDisplay = new CreateDisplay(this);
+                }
                 createDisplay.start();
                 activeApp = createDisplay;
                 Display.getDisplay(this).setCurrent(activeApp);

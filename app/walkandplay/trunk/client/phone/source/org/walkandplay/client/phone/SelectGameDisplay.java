@@ -45,7 +45,8 @@ public class SelectGameDisplay extends AppStartDisplay {
 	}
 
 	public void start() {
-		connect();
+        deleteAll();
+        connect();
 	}
 
 	public void onConnected() {
@@ -58,8 +59,9 @@ public class SelectGameDisplay extends AppStartDisplay {
 	}
 
 	public void onError(String anErrorMessage) {
-		//#style alertinfo
-		append(anErrorMessage);
+        deleteAll();
+        //#style alertinfo
+        append(anErrorMessage);        
 	}
 
 	public void onFatal() {
@@ -78,41 +80,47 @@ public class SelectGameDisplay extends AppStartDisplay {
 			if (rsp.getTag().equals("query-store-rsp")) {
 				String cmd = rsp.getAttr("cmd");
 				if (cmd.equals("q-play-status-by-user")) {
+                    Vector elms = rsp.getChildrenByTag("record");
+                    
+                    if(elms.size() == 0){
+                        //#style labelinfo
+                        append("No gamerounds scheduled.");
+                    }else{
+                        // always start clean
+                        deleteAll();
+                        gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
+                        gameRounds = new Hashtable(2);
 
-					// always start clean
-					deleteAll();
-					gamesGroup = new ChoiceGroup("", ChoiceGroup.EXCLUSIVE);
-					gameRounds = new Hashtable(2);
+                        // draw the screen
+                        append(logo);
+                        //#style labelinfo
+                        append("Select a game and press PLAY from the options");
+                        append(gamesGroup);
+                        addCommand(PLAY_CMD);
+                        addCommand(DESCRIPTION_CMD);
 
-					// draw the screen
-					append(logo);
-					//#style labelinfo
-					append("Select a game and press PLAY from the options");
-					append(gamesGroup);
-					addCommand(PLAY_CMD);
-					addCommand(DESCRIPTION_CMD);
 
-					Vector elms = rsp.getChildrenByTag("record");
-					for (int i = 0; i < elms.size(); i++) {
-						JXElement elm = (JXElement) elms.elementAt(i);
-						String name = elm.getChildText("name");
-						String roundName = elm.getChildText("roundname");
-						String gameplayState = elm.getChildText("gameplaystate");
-						String displayName = name + " | " + roundName;
-						if (gameplayState.equals("running")) {
-							displayName += " *";
-						}
+                        for (int i = 0; i < elms.size(); i++) {
+                            JXElement elm = (JXElement) elms.elementAt(i);
+                            String name = elm.getChildText("name");
+                            String roundName = elm.getChildText("roundname");
+                            String gameplayState = elm.getChildText("gameplaystate");
+                            String displayName = name + " | " + roundName;
+                            if (gameplayState.equals("running")) {
+                                displayName += " *";
+                            }
 
-						if (!gameplayState.equals("done")) {
-							//#style formbox
-							gamesGroup.append(displayName, null);
-							gameRounds.put(displayName, elm);
-						}
-					}
-					// select the first
-					gamesGroup.setSelectedIndex(0, true);
+                            if (!gameplayState.equals("done")) {
+                                //#style formbox
+                                gamesGroup.append(displayName, null);
+                                gameRounds.put(displayName, elm);
+                            }
+                        }
+                        // select the first
+                        gamesGroup.setSelectedIndex(0, true);
+                    }
 
-					// now show the screen
+                    // now show the screen
 					Display.getDisplay(midlet).setCurrent(this);
 				} else if (cmd.equals("q-game")) {
 					Log.log("Seting game record");
