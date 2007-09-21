@@ -48,14 +48,14 @@ public class CreateDisplay extends AppStartDisplay implements TCPClientListener,
         } catch (Throwable t) {
             Log.log("Could not load the images on CreateDisplay");
         }
-
-        append(logo);
-        //#style labelinfo
-        append(gameLabel);
     }
 
     public void start() {
+        deleteAll();
         gameLabel.setText("Connecting to GPS...");
+        append(logo);
+        //#style labelinfo
+        append(gameLabel);
         connect();
     }
 
