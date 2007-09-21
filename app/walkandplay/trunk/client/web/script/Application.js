@@ -21,6 +21,7 @@ function wpStartup()
  	wpCreatePane('main');
  	wpCreatePane('login');
  	wpCreatePane('display');
+ 	wpCreatePane('info');
  	
  	wpToggleAutoLogin(); //auto-login enabled by default
  	
@@ -79,7 +80,7 @@ function wpSelect(mode)
 	}
 	
 	//hide panes
-	panes.hide('list_create','list_play','list_view');
+	panes.hide('list_create','list_play','list_view','info');
 	panes.hide('edit_game','edit_rounds','edit_round','edit_profile');
 	panes.hide('game_profile','list_locations','display','play','view','messaging','finish');
 	
@@ -131,6 +132,18 @@ function wpSelect(mode)
 	
 	//rewrite menu
 	document.getElementById('menu').innerHTML = create+', '+play+' and '+view;
+}
+
+function wpInfo(url)
+{
+	//select no mode
+	wpSelect();
+
+	//get external content
+	var url = url || 'default.php';
+	panes['info'].setContents('info/'+url);
+	//show pane
+	panes.show('info');
 }
 
 function wpCloseDisplay()

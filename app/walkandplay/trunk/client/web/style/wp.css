@@ -164,7 +164,20 @@ input, textarea
 	top:8px;
 	text-align:right;
 }
-
+#info
+{
+	right:11px;
+	/*left:11px;*/
+	top:38px;
+}
+#info_contents
+{
+	top:27px;
+	width:658px;
+	height:485px;
+	overflow:auto;
+	background-color:#dddddd;
+}
 
 
 
