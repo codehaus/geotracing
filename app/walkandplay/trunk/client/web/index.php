@@ -43,7 +43,7 @@
 <script type="text/javascript" src="script/common/pane.js"></script>
 <script type="text/javascript" src="script/common/dragdrop.js"></script> 
 <script type="text/javascript" src="script/common/humandate.js"></script> 
-<script type="text/javascript" src="script/common/swfobject.js"></script> 
+<script type="text/javascript" src="script/common/ajax.js"></script> 
 
 <script type="text/javascript" src="script/Application.js"></script>
 <script type="text/javascript" src="script/GuiPublic.js"></script>

@@ -19,13 +19,14 @@ function wpCreatePane(type,obj)
 			var pane = new Pane('main',40,40,225,80,1,true);
 // 			if (browser.properpngsupport) str+= '<img src="media/mlgk3.png" ondblclick="tmp_debug(\'toggle\')">';
 // 			else str+= '<div style="width:140px; height:45px; '+PNGbgImage('mlgk3.png')+'" ondblclick="tmp_debug(\'toggle\')"></div>';
-			str+= '<div><span class="title">Walk and Play</span><br><em>a locative workshop tool</em></div>';
+			str+= '<div onclick="wpInfo()" style="cursor:pointer"><span class="title">Walk and Play</span><br><em>a locative workshop tool</em></div>';
 			str+= '<div id="menu" style="line-height:24px;height:24px;">';
 			str+= '<a href="javascript://create" onclick="wpSelect(\'create\')">create</a>, ';
 			str+= '<a href="javascript://play" onclick="wpSelect(\'play\')">play</a> and ';
 			str+= '<a href="javascript://view" onclick="wpSelect(\'view\')">view</a>';
 			str+= '</div>';
 			str+= '<div id="login"><a href="javascript://login" onclick="wpLogin()">login</a></div>';
+			str+= '<div id="info"><a href="javascript://info" onclick="wpInfo()">info</a></div>';
 
 			pane.setContent(str);
 			pane.show();
@@ -47,6 +48,20 @@ function wpCreatePane(type,obj)
 			str+= '</form>';
 
 			pane.setContent(str);
+			break;
+			
+		case 'info':
+			var pane = new Pane('info',310,60,650,500,1,true);
+			str+= '<div class="title">about Walk and Play</div>';
+			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'info\')">close</a></div>';
+			str+= '<div id="info_contents"></div>';			
+			pane.setContent(str);
+			pane.setContents = function(url)
+			{
+				var ajax = new XMLObj();
+				ajax.done_action = function(resp) { panes['info'].content.lastChild.innerHTML = resp }
+				ajax.httpRequest(url);
+			}
 			break;
 
 		case 'list_games':

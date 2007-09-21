@@ -93,7 +93,7 @@ function wpLocation(collection,id,p,type,state,name)
 		
 		if (infopane)
 		{
-			if (panes['edit_location'].visible) return; //block if in edit/add modus
+			if (panes['edit_location'] && panes['edit_location'].visible) return; //block if in edit/add modus
 		
 			var str = '';
 				str+= '"<b>'+obj.name+'</b>"<br>'; // ('+obj.type.substring(0,1)+'='+obj.id+')<br>';
@@ -120,7 +120,7 @@ function wpLocation(collection,id,p,type,state,name)
 	//detail view
 	location.onclick = function ()
 	{
-		if (panes['edit_location'].visible) return; //block if in edit/add modus
+		if (panes['edit_location'] && panes['edit_location'].visible) return; //block if in edit/add modus
 		
 		if (obj.editing) return;
 		
