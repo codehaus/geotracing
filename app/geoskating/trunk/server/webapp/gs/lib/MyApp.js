@@ -19,7 +19,9 @@ var MYAPP = {
 	init: function() {
 		// Overrule GTApp.js functions here
 		GTAPP.createMap = MYAPP.createMap;
-    },
+		GTW.TRACK_COLOR = '#3366FF';
+
+	},
 
 	start: function() {
 		if (DH.getPageParameter('cmd', null) == null) {
