@@ -17,7 +17,7 @@ var GTW = {
 			'#FF6699',  '#FF3399',  '#99FFFF',  '#99CCFF',
 			'#99FF00',  '#99CC00',  '#6FFFF',  '#66CCFF', '#00FFFF',
 			'#00CCFF', '#00FF66',  '#00CC66', '#00EE00', '#CC3333', '#00CCFF', '#666666' ],  */
-	TRACK_COLOR: '#ff00cc',
+	TRACK_COLOR: '#ff9900',
 	TRACER_ICON_URL: 'img/blueball.gif',
 	FEATURE_BG_COLOR: '#ff0000',
 	FEATURE_FG_COLOR: '#ffffff',

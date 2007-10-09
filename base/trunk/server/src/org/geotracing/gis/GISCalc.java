@@ -136,13 +136,13 @@ public class GISCalc {
 	}
 
 	public static void main(String[] args) {
-		double lon1 = 4.9123;
-		double lon2 = 4.9123;
-		double lat1 = 52.9123451;
+		double lon1 = 4.912;
+		double lon2 = 4.924;
+		double lat1 = 52.912345;
 		double lat2 = 52.912345;
 
 		p("all eq=" + distance(lat1, lon1, lat2, lon2, 'K'));
-		double dist = 0.0;
+	/*	double dist = 0.0;
 		JXElement lastPt = null;
 		try {
 			JXBuilder builder = new JXBuilder();
@@ -168,6 +168,6 @@ public class GISCalc {
 
 		} catch (Throwable t) {
 			p("ERROR: " + t);
-		}
+		} */
 	}
 }

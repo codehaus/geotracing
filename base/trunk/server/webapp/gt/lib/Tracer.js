@@ -153,11 +153,17 @@ function Tracer(name, color, iconURL, pt, time) {
 			tracer.showInfo();
 
 			// Show Tracer at last point of Track
-			tracer.setLocation(track.getLastPoint());
+			var lastPoint = track.getLastPoint();
+			if (lastPoint != null) {
+				tracer.setLocation(lastPoint, lastPoint.time, true);
+			}
 
 			tracer.activeTrack = track;
-
-			tracer.activate();
+			if (GTW.trackPlayer != null) {
+				GTW.trackPlayer.setTrack(this.activeTrack);
+			}
+			
+			//tracer.activate();
 			track.showTitle();
 			track.showInfo();
 			GTW.showStatus('track drawn');
@@ -339,7 +345,7 @@ function Tracer(name, color, iconURL, pt, time) {
 			desc = ' ';
 		}
 
-		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a href="#" onclick="GTAPP.mUserTracks(\'' + this.name + '\')" >tracks (' + this.record.getField('tracks') + ')</a>&nbsp;&nbsp;<a href="#" onclick="GTAPP.mShowMediaByUser(\'' + this.name + '\')" >media (' + this.record.getField('media') + ')</a>&nbsp;&nbsp;<a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >msgs (' + this.record.getField('comments') + ')</a>&nbsp;&nbsp;</span>');
+		DH.setHTML('tracerdesc', '<i>' + desc + '</i> <br/><span class="cmtlink"><a title="Show list of tracks from ' + this.name + '" href="#" onclick="GTAPP.mUserTracks(\'' + this.name + '\')" >tracks (' + this.record.getField('tracks') + ')</a>&nbsp;&nbsp;<a title="Show all media (photos etc) from this user" href="#" onclick="GTAPP.mShowMediaByUser(\'' + this.name + '\')" >media (' + this.record.getField('media') + ')</a>&nbsp;&nbsp;<a href="#" title="Show user\'s messages or send message to this user" onclick="CMT.showCommentPanel(' + this.id + ',\'user\',\'' + this.name + '\')" >msgs (' + this.record.getField('comments') + ')</a>&nbsp;&nbsp;</span>');
 		if (CMT.isCommentPanelOpen() == true) {
 			// CMT.showCommentPanel(this.id, 'user', this.name);
 		}

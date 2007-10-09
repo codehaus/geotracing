@@ -1,5 +1,10 @@
 $Id: version.txt,v 1.4 2006-08-28 18:43:36 just Exp $
 
+2.0.5 - 9.okt.2007
+- show link to GPX file for tracks
+- zoom to track when drawing or following user in live mode
+- fixed bug in mapdrawer for mindist
+
 2.0.4 - 17.jul.2007
 - MobiTracer:  improvements to Map view (e.g. now your loc is centered)
 

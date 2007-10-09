@@ -4,7 +4,7 @@ http://www.geoskating.com/gs</property>
 <property name="queryTracks">
 srv/get.jsp?cmd=q-all-tracks</property>
 <property name="getTrack">
-srv/get.jsp?cmd=get-track&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;mindist=10&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;attrs=t,lon,lat,rr&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;id=</property>
+srv/get.jsp?cmd=get-track&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;mindist=10&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;attrs=t,lon,lat,rr&amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;amp;id=</property>
 <property name="forceDraw">
 false</property>
 <property name="zoomMin">
@@ -12,7 +12,7 @@ false</property>
 <property name="zoomMax">
 15</property>
 <property name="lastTrackTime">
-1189868465098</property>
+1191769317586</property>
 <property name="java.awt.headless">
 false</property>
 <properties name="tiles">
