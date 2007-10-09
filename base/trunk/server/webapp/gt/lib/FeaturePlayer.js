@@ -14,19 +14,19 @@ function FeaturePlayer() {
 
 	this.onFirst = function(e) {
 		DH.cancelEvent(e);
-		self.featureSet.displayFirst(true);
+		self.featureSet.displayFirst(false);
 	}
 	this.onPrev = function(e) {
 		DH.cancelEvent(e);
-		self.featureSet.displayPrev(true);
+		self.featureSet.displayPrev(false);
 	}
 	this.onNext = function(e) {
 		DH.cancelEvent(e);
-		self.featureSet.displayNext(true);
+		self.featureSet.displayNext(false);
 	}
 	this.onLast = function(e) {
 		DH.cancelEvent(e);
-		self.featureSet.displayLast(true);
+		self.featureSet.displayLast(false);
 	}
 
 	DH.addEvent('featfirst', 'click', self.onFirst, false);

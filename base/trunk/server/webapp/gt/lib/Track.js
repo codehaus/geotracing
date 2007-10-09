@@ -71,11 +71,29 @@ function Track(id, name, tracer) {
 
 	// Drawin view
 	this.draw = function () {
+		var bounds;
 
 		for (var i = 0; i < this.segments.length; i++) {
 			// Draw the entire Track on map
 			this.drawPoints(this.segments[i]);
 		}
+
+		for (var i = 0; i < this.polyLines.length; i++) {
+			if (i == 0) {
+				bounds = this.polyLines[i].getBounds();
+			} else {
+				var nextBounds = this.polyLines[i].getBounds();
+				bounds.extend(nextBounds.getSouthWest());
+				bounds.extend(nextBounds.getNorthEast());
+			}
+		}
+
+		if (bounds) {
+			var zoom = GMAP.map.getBoundsZoomLevel(bounds);
+			GMAP.map.setCenter(bounds.getCenter(), zoom);
+		}
+
+		GTW.getFeaturePlayer().setFeatureSet(this.featureSet);
 
 		this.featureSet.show();
 		this.featureSet.displayFirst();
@@ -231,7 +249,7 @@ function Track(id, name, tracer) {
 	// Show general track info
 	this.showInfo = function() {
 		DH.setHTML('trackview', 'start: ' + GTW.formatDateAndTime(this.startDate) + '<br/>end: ' + GTW.formatDateAndTime(this.endDate) + '<br/>distance: ' + this.distance.toFixed(2) + ' km' 
-				+ '<br/><span class="cmtlink"><a href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'track\',\'' + this.name + '\')" >[comments]</a></span>');
+				+ '<br/><span class="cmtlink"><a title="Show or make comments on this track" href="#" onclick="CMT.showCommentPanel(' + this.id + ',\'track\',\'' + this.name + '\')" >[comments]</a>&nbsp;&nbsp;<a target="_new" title="A direct link to this track. Use right-mouse to copy." href="index.html?cmd=showtrack&id=' + this.id + '&user=' + this.tracer.name +'">[link]</a>&nbsp;&nbsp;<a title="A link to the GPX file for this track. Use right-mouse to copy link." target="_new" href="srv/get.jsp?cmd=get-track&format=gpx&mindist=20&id=' + this.id + '">[gpx]</a></span>');
 		if (CMT.isCommentPanelOpen() == true) {
 			CMT.showCommentPanel(this.id, 'track', this.name);
 		}

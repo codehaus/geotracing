@@ -48,6 +48,7 @@ function onData(anEvent) {
 var GTAPP = {
 	statusId: null,
 	mode: 'none',
+	mediaSelectFun: null,
 	defaultMode: 'live',
 	menu: null,
 	userSelector: null,
@@ -123,7 +124,8 @@ var GTAPP = {
 			MYAPP.start();
 		}
 		GTAPP.busyOff();
-
+		//GEvent.addListener(GMAP.map, "zoomend", GTAPP.bboxChange);
+		GEvent.addListener(GMAP.map, "moveend", GTAPP.bboxChange);
 	},
 
 	/** Add GT signature to map. */
@@ -160,6 +162,17 @@ var GTAPP = {
 			// Set XHR callbacks for XHR status
 			DH._xhrBusy = GTAPP.busyOn;
 			DH._xhrReady = GTAPP.busyOff;
+		}
+	},
+
+	/** Map bounding box changed. */
+	bboxChange: function() {
+		if (GTAPP.mode != 'media') {
+			return;
+		}
+
+		if (GTAPP.mediaSelectFun != null) {
+			GTAPP.mediaSelectFun(GTAPP.mediaSelectArg);
 		}
 	},
 
@@ -531,7 +544,9 @@ var GTAPP = {
 		GTAPP.mode = 'media';
 		GTAPP.showMode();
 
-		// Get all active tracks
+		GTAPP.mediaSelectFun = GTAPP.mShowMedia;
+		GTAPP.mediaSelectArg = max;
+ 		// Get all active tracks
 		GTAPP.clearMap();
 		GTAPP._deleteSelectors();
 
@@ -542,6 +557,8 @@ var GTAPP = {
 	mShowRecentMedia: function(max) {
 		GTAPP.mode = 'media';
 		GTAPP.showMode();
+		GTAPP.mediaSelectFun = GTAPP.mShowRecentMedia;
+		GTAPP.mediaSelectArg = max;
 
 		// Get all active tracks
 		GTAPP.clearMap();
@@ -554,6 +571,9 @@ var GTAPP = {
 	mShowRecentMediaInBbox: function(max) {
 		GTAPP.mode = 'media';
 		GTAPP.showMode();
+
+		GTAPP.mediaSelectFun = GTAPP.mShowRecentMediaInBbox;
+		GTAPP.mediaSelectArg = max;
 
 		// Get all active tracks
 		GTAPP.clearMap();
@@ -569,6 +589,8 @@ var GTAPP = {
 		GTAPP.mode = 'media';
 		GTAPP.showMode();
 
+		GTAPP.mediaSelectFun = null;
+
 		// Get all active tracks
 		GTAPP.clearMap();
 		GTAPP._deleteSelectors();
@@ -583,6 +605,9 @@ var GTAPP = {
 	mShowMediaInBbox: function(max) {
 		GTAPP.mode = 'media';
 		GTAPP.showMode();
+
+		GTAPP.mediaSelectFun = GTAPP.mShowMediaInBbox;
+		GTAPP.mediaSelectArg = max;
 
 		// Get all active tracks
 		GTAPP.clearMap();

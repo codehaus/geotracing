@@ -203,7 +203,7 @@ public class TrackExport {
 
 					// Possibly filter out samples too close to each other
 					// and excess samples.
-					nextSample = new GPSSample(nextElement.getDoubleAttr("lat"), nextElement.getDoubleAttr("lat"));
+					nextSample = new GPSSample(nextElement.getDoubleAttr("lat"), nextElement.getDoubleAttr("lon"));
 					if (aTrackPointFilter.filter(nextSample)) {
 						nextSegment.addChild(nextPoint);
 						ptCount++;
@@ -389,7 +389,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 
 					// Possibly filter out samples too close to each other
 					// and excess samples.
-					nextSample = new GPSSample(nextPoint.getDoubleAttr("lat"), nextPoint.getDoubleAttr("lat"));
+					nextSample = new GPSSample(nextPoint.getDoubleAttr("lat"), nextPoint.getDoubleAttr("lon"));
 					if (aTrackPointFilter.filter(nextSample)) {
 						nextSegment.addChild(nextPoint);
 						ptCount++;
