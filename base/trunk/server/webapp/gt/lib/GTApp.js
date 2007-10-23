@@ -412,7 +412,7 @@ var GTAPP = {
 // Track selected e.g. in combo box
 	onTrackSelect: function(trackId, trackName, tracerName) {
 		// alert('select track: id=' + trackId + ' tracer=' + tracerName + ' trkName=' + trackName);
-		// GTAPP.clearMap();
+		GTAPP.clearMap();
 		GTW.displayTrackPlayer();
 
 

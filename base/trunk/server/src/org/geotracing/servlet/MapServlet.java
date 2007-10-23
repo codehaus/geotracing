@@ -194,7 +194,7 @@ public class MapServlet extends HttpServlet {
 			if (file == null) {
 				if (type.equals("sat")) {
 					file = new File(CACHE_DIR + khRef + Rand.randomString(3) + ".jpg");
-				} else if (type.equals("map")) {
+				} else if (type.equals("map") || type.equals("osm")) {
 					String fileRef = getTileRef().x + "-" + getTileRef().y + "-" + zoom;
 					file = new File(CACHE_DIR + fileRef + Rand.randomString(3) + ".png");
 				}
@@ -226,6 +226,9 @@ public class MapServlet extends HttpServlet {
 					// e.g. http://mt.google.com/mt?v=.1&x=480&y=-109&zoom=5;
 					// v=ap.31
 					url = "http://mt" + GoogleTiles.getTileServerNo(getTileRef().x, getTileRef().y) + ".google.com/mt?" + getTileRefStr();
+				} else if (type.equals("osm")) {
+					// http://tile.openstreetmap.org/z/x/y.png;
+					url = "http://tile.openstreetmap.org/" + zoom + "/" + getTileRef().x + "/" + getTileRef().y + ".png";
 				}
 
 			}

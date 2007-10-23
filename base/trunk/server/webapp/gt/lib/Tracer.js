@@ -160,9 +160,9 @@ function Tracer(name, color, iconURL, pt, time) {
 
 			tracer.activeTrack = track;
 			if (GTW.trackPlayer != null) {
-				GTW.trackPlayer.setTrack(this.activeTrack);
+				GTW.trackPlayer.setTrack(track);
 			}
-			
+
 			//tracer.activate();
 			track.showTitle();
 			track.showInfo();

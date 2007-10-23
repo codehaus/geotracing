@@ -22,7 +22,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 	private Command toggleMapType;
 	private MIDlet midlet;
 	private Image redDot;
-	private String mapType = "map";
+	private String mapType = "osm";
 	private GoogleMap.LonLat lonLat;
 	private GoogleMap.BBox bbox;
 	private boolean active;
@@ -45,7 +45,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 
 	public void activate(MIDlet aMidlet) {
 		midlet = aMidlet;
-		tileBaseURL = Net.getInstance().getURL() + "/map/gmap-wms.jsp";
+		tileBaseURL = Net.getInstance().getURL() + "/map.srv";
 		prevScreen = Display.getDisplay(aMidlet).getCurrent();
 		Display.getDisplay(midlet).setCurrent(this);
 		active = true;
@@ -61,7 +61,7 @@ public class MapCanvas extends GameCanvas implements CommandListener {
 		} else if (c == zoomOut) {
 			zoomOut();
 		} else if (c == toggleMapType) {
-			mapType = mapType.equals("sat") ? "map" : "sat";
+			mapType = mapType.equals("sat") ? "osm" : "sat";
 			resetMap();
 			show();
 		}
