@@ -38,7 +38,7 @@ var MYAPP = {
 		var WMS_URL_GREY = 'img/greysquare.jpg?';
 		var G_MAP_GREY = createWMSSpec(WMS_URL_GREY, "Blank", "Blank", "bl", "bla", "image/jpeg", "1.1.1");
 
-		CustomGetTileUrl = function(a, b) {
+		var skateMapGetTileUrl = function(a, b) {
 			var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
 			var lURL = "map/gmap-sk8-tile.jsp";
 //			lURL += "?x=" + a.x;
@@ -48,28 +48,45 @@ var MYAPP = {
 //			lURL += "&zoom=" + b;
 			return lURL;
 		}
-		var tile = new GTileLayer(new GCopyrightCollection("GT"), 5, 16);
-		tile.getTileUrl = CustomGetTileUrl;
-		tile.isPng = function() {
+
+		var skateTiles = new GTileLayer(new GCopyrightCollection("GT"), 5, 16);
+		skateTiles.getTileUrl = skateMapGetTileUrl;
+		skateTiles.isPng = function() {
 			return true;
 		}
-		tile.getOpacity = function() {
+		skateTiles.getOpacity = function() {
 			return 1.0;
 		}
 
+		var osmGetTileUrl = function(a, b) {
+			// http://tile.openstreetmap.org/z/x/y.png;
+			return 'http://tile.openstreetmap.org/' + b + '/' + a.x + "/" + a.y + '.png';
+		}
 
-		var satLayers = [G_SATELLITE_MAP.getTileLayers()[0], tile];
-		var mapLayers = [G_NORMAL_MAP.getTileLayers()[0], tile];
-		var blancLayers = [G_MAP_GREY.getTileLayers()[0], tile];
+		var osmTiles = new GTileLayer(new GCopyrightCollection("GT"), 5, 16);
+		osmTiles.getTileUrl = osmGetTileUrl;
+		osmTiles.isPng = function() {
+			return true;
+		}
+		osmTiles.getOpacity = function() {
+			return 1.0;
+		}
+
+		var satLayers = [G_SATELLITE_MAP.getTileLayers()[0], skateTiles];
+		var mapLayers = [G_NORMAL_MAP.getTileLayers()[0], skateTiles];
+		var osmLayers = [osmTiles, skateTiles];
+		var blancLayers = [G_MAP_GREY.getTileLayers()[0], skateTiles];
 
 		var satRoutesType = new GMapType(satLayers, G_SATELLITE_MAP.getProjection(), "satroute");
 		var mapRoutesType = new GMapType(mapLayers, G_NORMAL_MAP.getProjection(), "maproute");
+		var osmRoutesType = new GMapType(osmLayers, G_SATELLITE_MAP.getProjection(), "osmroute");
 		var blancRoutesType = new GMapType(blancLayers, G_SATELLITE_MAP.getProjection(), "blancroute");
 
 
 		// Add map specs to app (see also menu in index.jsp)
 		GMAP.addMapType('maproutes', mapRoutesType);
 		GMAP.addMapType('satroutes', satRoutesType);
+		GMAP.addMapType('osmroutes', osmRoutesType);
 		GMAP.addMapType('blancroutes', blancRoutesType);
 		GMAP.addMapType('map', G_NORMAL_MAP);
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);

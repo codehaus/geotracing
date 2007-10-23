@@ -168,7 +168,7 @@ function Feature(theId, name, desc, type, time, lon, lat) {
 		}
 		//alert('getting thumbid for ' + this.name);
 		this.record = -1;
-		SRV.get("q-feature-info", this.onGetRecord, "id", this.id);
+		SRV.get("q-medium-info", this.onGetRecord, "id", this.id);
 	}
 }
 

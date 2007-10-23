@@ -1,0 +1,36 @@
+Mapnik rendering Debian Etch
+
+see
+http://wiki.openstreetmap.org/index.php/Mapnik
+
+- checkout mapnik
+svn co svn://svn.mapnik.org/trunk mapnik
+
+- install deps
+apt-get install build-essential libfreetype6-dev libltdl3-dev libpng12-dev  libtiff4-dev libboost-thread-dev libboost-filesystem-dev
+   libboost-serialization-dev libboost-regex-dev libboost-python-dev libboost-program-options-dev libxml2-dev
+
+- compile
+in  mapnik dir
+python scons/scons install
+but first do:
+
+ln -s /usr/lib/libboost_python.so /usr/lib/libboost_python-gcc-mt.so
+
+in /usr/lib
+ln -s libboost_python.so libboost_python-mt.so
+ln -s libboost_thread.so libboost_thread-mt.so
+ ln -s libboost_filesystem.so libboost_filesystem-mt.so
+ ln -s libboost_regex.so libboost_regex-mt.so
+ ln -s libboost_program_options.so libboost_program_options-mt.so
+
+export LD_LIBRARY_PATH=/usr/local/lib
+cd demo/python
+run demo OK!!
+
+-Set up the Mapnik PostGIS plugin
+
+python scons/scons PGSQL_INCLUDES=/usr/include/postgresql PGSQL_LIBS=/usr/lib/postgresql/8.1/lib install
+
+- geos
+apt-get install libgeos-dev 
