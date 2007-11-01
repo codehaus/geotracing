@@ -52,7 +52,7 @@ function wpCreatePane(type,obj)
 			
 		case 'info':
 			var pane = new Pane('info',310,60,650,500,1,true);
-			str+= '<div class="title">about Walk and Play</div>';
+			str+= '<div class="title">about</div>';
 			str+= '<div style="right:11px; top:8px"><a href="javascript://close" onclick="panes.hide(\'info\')">close</a></div>';
 			str+= '<div id="info_contents"></div>';			
 			pane.setContent(str);
@@ -217,7 +217,7 @@ function wpCreatePane(type,obj)
 			//header
 // 			if (wp_viewmode=='archived') var header = '<b><span class="red">archived</span> or <a href="javascript://live_games" onclick="alert(\'not yet\')">live games</a></b><br><br>';
 // 			else var header = '<a href="javascript://archived_games">archived</a> or <span class="red">live games</span><br><br>';
-			var header = '<b><span class="red">select a game</span><br><br>';
+			var header = '<b class="red">select a game</b><br><br>';
 
 			str+= header;
 			str+= '<div class="list"></div>';
