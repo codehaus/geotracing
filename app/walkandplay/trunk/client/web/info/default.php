@@ -1,4 +1,4 @@
-home | <a href="javascript:wpInfo('picnic.php')">Picnic</a> | <a href="javascript:wpInfo('picnicjr.php')">Picnic Jr</a>
+home | <a href="javascript:wpInfo('picnic.php')">Picnic</a> | <a href="javascript:wpInfo('picnicjr.php')">Picnic Jr</a> | <a href="javascript:wpInfo('howto.php')">Howto</a>
 
 <h2>Walk and Play</h2>
 

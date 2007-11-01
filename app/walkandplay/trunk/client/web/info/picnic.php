@@ -1,6 +1,32 @@
-<a href="javascript:wpInfo('default.php')">home</a> | Picnic | <a href="javascript:wpInfo('picnicjr.php')">Picnic Jr</a>
-<h1>Walk and Play @ Picnic</h1>
-<br />
+<a href="javascript:wpInfo('default.php')">home</a> | Picnic | <a href="javascript:wpInfo('picnicjr.php')">Picnic Jr</a>  | <a href="javascript:wpInfo('howto.php')">Howto</a>
+<h2>Walk and Play @ Picnic</h2>
+<hr />
+<p>Imagine having the city as your playground. What would you do if you have the opportunity to create a new mixed reality for its residents and visitors?</p><p>Wednesday 26 Sep At Picnic'07, Waag Society's Locative Media programme is running a workshop to look into this together with you!</p>
+
+<p>The Mobile City workshop is all about using (mobile) technology to create immersive playful experiences. In the workshop we will investigate what elements seem to be essential to transforming your content or gameplay idea into a successful mobile concept. As a guideline we will look at the stages of Exposition, Interaction and Challenges; how to initiate contact with your users/players, what kind of interactive gameplay to offer them, and what challenges to build your game around. These topics will be highlighted by practitioners showing and telling from their own experience in developing immersivemixed/alternate reality games.</p>
+
+<p>After that we will introduce you to a prototyping tool created by Waag Society. In subgroups the workshop participants will take their idea or content and try to work out one of the aspects presented by and with help from the speakers. The tool will assist you in having a mobile demo to present your concept to the other participants during the additional last hour in which we will also present our new 7Scenes platform, which is scheduled for beta release January 1st. So come prepared: participants are asked to bring along mobile concepts or challenges that have been lingering in their minds and prepare media (images/audio/movieclips) to be used in the hands-on part of the workshop, or at least be willing to think along with your fellow participants.</p>
+
+<p>Wed 26 Sep, 9.00-13.00, &quot;Openbare Verlichting&quot; building</p>
+
+<h3>Programme</h3>
+<p>09.00-10.00 Presentations:<br/>
+                  1. Nathalie Brahler (Cultural Oil - NL)<br/>
+                  2. Gregory Trefry (COaP, Gamelab, NYU - USA)<br/>
+                  3. Dicky Eton (Can you see me now, Blast Theory - UK)<br/>
+                  4. Tom Kenyon (Know Your Place / BBC - UK)<br/>
+10.00-10.15 Break<br/>
+
+10.15-10.30 Set up parallel subgroups<br/>
+10.30-12.00 Hands-on sessions<br/>
+12.00-12.30 Coming soon: 7Scenes<br/>
+12.30-13.00 Subgroup presentations</p>
+<br /><br />
+<h2>Locative Media concept</h2>
+<hr />
+<h2>Foundation</h2>
+<p>First set-up your concept. Choose your goal(s), audience and context.<p>
+<hr />
 <h2>Exposition</h2>
 <h3>First Contact </h3>
 <p>How do you get people to play the game? How do you get them involved? Which media channels do you use? (blogs, SMS, email) </p>
@@ -9,9 +35,9 @@
 <h3>Identity </h3>
 <p>What identity does the user have in the game and how is it represented? MMORPG-style or are you you? </p>
 <h3>Location</h3>
-<p> Do you use the entire city or a street or square? </p>
+<p> Do you use the entire city or a street or square?</p>
+<p>How do you give your location(s) meaning in your game? How do you use them best in your storyline for example?</p>
 <p>What makes the game specific for this place or can it be played in different places as well? </p>
-<p>&nbsp;</p>
 <hr />
 <h2>Interaction</h2>
 <h3>GamePlay</h3>
@@ -28,8 +54,6 @@
 <p>sharing, messaging, notes, leaving, marking, demarcating, tracking, logging, opinions, trading, collaboration, gaming, searching.</p>
 <p>racing, shooting, commanding, hiding, trading, escaping, finding,  stunts, role playing, learning</p>
 <p>turns, action points, auction or bidding, cards, capture, catch-up, dice, movement, resource management, role-playing. tile-laying</p>
-<p>Acting, Action Point Allowance System, Area Control, Area Enclosure, Area Movement , Area-Impulse, Auction/Bidding, Betting/Wagering, Campaign/Battle Card Driven, Card Drafting, Chit-Pull System, Co-operative Play, Commodity Speculation, Crayon Rail System, Dice Rolling, Hand Management, Hex-and-Counter,  Line Drawing, Memory, Modular Board, Paper-and-Pencil, Partnerships, Pattern Building, Pattern Recognition, Pick-up and Deliver, Point to Point Movement, Rock-Paper-Scissors, Role Playing, Roll and Move, Secret Unit Deployment, Set Collection, Simulation, Simultaneous Action Selection, Singing, Stock Holding, Storytelling, Tile Placement, Trading, Trick-taking, Variable Phase Order, Variable Player Powers, Voting</p>
-<p>examples see at <a href="http://www.boardgamegeek.com/browser.php?itemtype=game&amp;sortby=mechanic" target="_blank">BoardGameGeek</a> </p>
 <h3>Virtual/Physical </h3>
 <p>What happens in the virtual world and what in the physical? </p>
 <h3>Duration &amp; Time </h3>
@@ -61,7 +85,6 @@
 <p>Is there anything happening players don't have any control over?</p>
 <p>What's the element of surprise? </p>
 <hr />
-<p>&nbsp;</p>
 <h2>Challenges</h2>
 <h3>Goals</h3>
 <p>This is the most general sort of victory condition, which can be broad enough to encompass any method of winning, but here refers to game-specific goals that are usually not duplicated in other games. An example is the checkmate of a king in chess.</p>
@@ -80,7 +103,6 @@
 <p> * The first player to reach a set number of points.<br />
   * The player with the most points at a predetermined finishing time or state of the game.</p>
 <hr />
-<p>&nbsp;</p>
 <h2>Game Modes</h2>
 <p>Which game modes do you have in your project? Game modes are different states that have impact on the gameplay. </p>
 <h3>Levels</h3>
