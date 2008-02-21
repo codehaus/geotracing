@@ -1,0 +1,201 @@
+<testset id="mobileclient-scenario" clients="1">
+
+    <!-- Standard KWX login sequence -->
+    <test id="login-selapp">
+
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" portalname="diwi" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
+
+        <expect id="client1">
+
+            <login-rsp>
+                <agent>
+                    <portal-context>
+                        <portalid>26
+                        </portalid>
+
+                        <portalname>diwi
+                        </portalname>
+
+                        <personid>${personid}
+                        </personid>
+
+                        <personname>geoapp user
+                        </personname>
+
+                        <accesslist>
+                            <access applicationname="geoapp" rolename="user"/>
+                        </accesslist>
+
+                    </portal-context>
+
+                </agent>
+
+            </login-rsp>
+
+
+            <select-app-rsp>
+                <!--<applicationid>${applicationid}</applicationid>-->
+            </select-app-rsp>
+
+        </expect>
+    </test>
+
+    <test id="nav-get-state-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-get-state-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-get-state-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <!--<test id="nav-route-getlist-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-route-getlist-req type="fixed"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-route-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-route-getlist-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-route-getlist-req type="generated"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-route-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-route-get-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-route-get-req id="705"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-route-get-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+-->
+    <!--<test id="nav-get-map-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-get-map-req  height="240" llbLat="52.07703" llbLon="5.487456" width="320" urtLon="5.490385" urtLat="52.07973" />
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-get-map-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>-->
+
+    <test id="nav-start-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-start-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-start-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-point-req-1">
+        <send id="client1">
+            <utopia-req>
+                <nav-point-req>
+                    <pt lon="4.922164678573608" lat="52.37660782924667"/>
+                </nav-point-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-point-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-activate-route-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-activate-route-req id="705"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-activate-route-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-point-req-2">
+        <send id="client1">
+            <utopia-req>
+                <nav-point-req>
+                    <pt lon="4.921724796295166" lat="52.376640577321176"/>
+                </nav-point-req>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-point-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="nav-deactivate-route-req">
+        <send id="client1">
+            <utopia-req>
+                <nav-deactivate-route-req/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <nav-deactivate-route-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
+
+    <test id="logout">
+        <send id="client1">
+            <logout-req/>
+        </send>
+
+        <expect id="client1">
+            <logout-rsp/>
+        </expect>
+    </test>
+
+</testset>
+
