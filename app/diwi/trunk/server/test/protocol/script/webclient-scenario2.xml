@@ -22,7 +22,7 @@
      2. create comment
     -->
 
-    <test id="trip-getlist-req">
+    <!--<test id="trip-getlist-req">
         <send id="client1">
             <utopia-req>
                 <trip-getlist-req personid="68"/>
@@ -34,12 +34,26 @@
                 <trip-getlist-rsp/>
             </utopia-rsp>
         </expect>
+    </test>-->
+
+    <test id="trip-get-req">
+        <send id="client1">
+            <utopia-req>
+                <trip-get-req id="5792"/>
+            </utopia-req>
+        </send>
+
+        <expect id="client1">
+            <utopia-rsp>
+                <trip-get-rsp/>
+            </utopia-rsp>
+        </expect>
     </test>
 
     <!--<test id="trip-get-req">
         <send id="client1">
             <utopia-req>
-                <trip-get-req id="14"/>
+                <trip-get-req id="23122"/>
             </utopia-req>
         </send>
 
