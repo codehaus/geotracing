@@ -1,0 +1,45 @@
+<testset id="cms-ugc" clients="1">
+
+    <!-- Standard KWX login sequence -->
+    <test id="login-selapp">
+
+        <send id="client1">
+            <login-req name="geoapp-user" password="user" protocolversion="4.0"/>
+            <select-app-req appname="geoapp" rolename="user"/>
+        </send>
+
+        <expect id="client1">
+
+            <login-rsp/>
+
+            <select-app-rsp/>
+        </expect>
+    </test>
+
+    <test id="query-one-table-all">
+		<send id="client1">
+			<utopia-req>
+				<query-store-req cmd="q-locative-media" />
+			</utopia-req>
+		</send>
+
+		<expect id="client1">
+			<utopia-rsp>
+				<query-store-rsp/>
+			</utopia-rsp>
+		</expect>
+	</test>
+
+
+    <test id="logout">
+        <send id="client1">
+            <logout-req/>
+        </send>
+
+        <expect id="client1">
+            <logout-rsp/>
+        </expect>
+    </test>
+
+</testset>
+
