@@ -25,6 +25,7 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 	public static final String CMD_QUERY_STARTENDPOINTS = "q-diwi-startendpoints";
 	public static final String CMD_QUERY_TRIP = "q-diwi-trip";
 	public static final String CMD_QUERY_TRIPS = "q-diwi-trips";
+	public static final String CMD_QUERY_UGCS = "q-diwi-ugcs";
 
 	public JXElement doQuery(String aQueryName, Map theParms) {
 		JXElement result;
@@ -64,6 +65,8 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 				result = queryTrip(theParms);
 			} else if (aQueryName.equals(CMD_QUERY_TRIPS)) {
 				result = queryTrips(theParms);
+			} else if (aQueryName.equals(CMD_QUERY_UGCS)) {
+				result = queryUGCs(theParms);
 			} else {
 				result = super.doQuery(aQueryName, theParms);
 			}
@@ -103,6 +106,15 @@ public class DIWIQueryLogic extends QueryLogic implements Constants {
 		result.addChildren(convertToRecordElms(ds.getKICHThemes()));
 		return result;
 	}
+
+	private JXElement queryUGCs(Map theParms) throws UtopiaException {
+		String tables = "base_medium,g_track";
+        String fields = "base_medium.id,base_medium.kind,base_medium.mime,base_medium.name,base_medium.description,base_medium.creationdate,base_medium.extra";
+        String where = null;
+        String relations = "g_track,base_medium,medium";
+        String postCond = null;        
+        return QueryLogic.queryStoreReq(getOase(), tables, fields, where, relations, postCond);
+    }
 
 	private JXElement queryStartPoints(Map theParms) throws Exception {
 		JXElement result = Protocol.createResponse(QueryHandler.QUERY_STORE_SERVICE);

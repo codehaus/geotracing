@@ -67,33 +67,41 @@ KW.CMS = {
 		KW.UTIL.addOptTextElement(media, 'kich-uri', poiObj.kichuri3);
 
 		req.documentElement.appendChild(poi);
-
 		KW.utopia(req, callback);
 	},
 
 	getthemes: function(callback) {
 		var req = KW.createRequest('kich-get-themes-req');
-
 		KW.utopia(req, callback);
 	},
 
 	getendpoints: function(callback) {
 		var req = KW.createRequest('poi-get-endpoints-req');
-
 		KW.utopia(req, callback);
 	},
 
 	getstartpoints: function(callback) {
 		var req = KW.createRequest('poi-get-startpoints-req');
-
 		KW.utopia(req, callback);
 	},
 
 	getstartendpoints: function(callback) {
 		var req = KW.createRequest('poi-get-startendpoints-req');
-
 		KW.utopia(req, callback);
 	},
+
+    // UGC funcs
+    getugclist: function(callback) {
+		var req = KW.createRequest('ugc-getlist-req');
+		KW.utopia(req, callback);
+	},
+
+    deleteugc: function(callback) {
+		var req = KW.createRequest('ugc-delete-req');
+		KW.UTIL.setAttr(req, 'id', targetId);
+		KW.utopia(req, callback);
+	},
+
 /**
  * Delete poi.
  * @param callback - user callback function or null

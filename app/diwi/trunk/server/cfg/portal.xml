@@ -49,6 +49,7 @@
             <handler id="user" class="nl.diwi.control.UserHandler"/>
             <handler id="nav" class="nl.diwi.control.NavigationHandler"/>
             <handler id="trip" class="nl.diwi.control.TripHandler"/>
+            <handler id="ugc" class="nl.diwi.control.UGCHandler"/>
 
             <!-- Handler for ALL queries -->
             <handler id="query" class="org.geotracing.handler.QueryHandler">
