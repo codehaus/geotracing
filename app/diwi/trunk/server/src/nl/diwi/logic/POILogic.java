@@ -378,6 +378,11 @@ public class POILogic implements Constants {
     public void delete(int aPOIId) throws UtopiaException {
         try {
             String kichId = oase.getFinder().read(aPOIId).getStringField(KICHID_FIELD);
+            /*
+            <poi>
+                <id>KICH-ID</id>
+            </poi>
+            */
             JXElement poi = new JXElement(POI_ELM);
             JXElement id = new JXElement(ID_FIELD);
             id.setText(kichId);

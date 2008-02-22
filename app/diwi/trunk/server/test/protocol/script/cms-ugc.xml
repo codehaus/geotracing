@@ -16,20 +16,19 @@
         </expect>
     </test>
 
-    <test id="query-one-table-all">
-		<send id="client1">
-			<utopia-req>
-				<query-store-req cmd="q-locative-media" />
-			</utopia-req>
-		</send>
+    <test id="ugc-getlist-req">
+        <send id="client1">
+            <utopia-req>
+                <ugc-getlist-req/>
+            </utopia-req>
+        </send>
 
-		<expect id="client1">
-			<utopia-rsp>
-				<query-store-rsp/>
-			</utopia-rsp>
-		</expect>
-	</test>
-
+        <expect id="client1">
+            <utopia-rsp>
+                <ugc-getlist-rsp/>
+            </utopia-rsp>
+        </expect>
+    </test>
 
     <test id="logout">
         <send id="client1">
