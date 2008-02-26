@@ -8,7 +8,31 @@
 <%@ page import="nl.diwi.util.Constants" %>
 <%@ page import="org.keyworx.oase.util.XML" %>
 <%@ page import="nl.justobjects.jox.parser.JXBuilder" %>
+<%@ page import="org.keyworx.common.util.Sys" %>
 
+<%!
+    int nrOfRoamActions = 0;
+    int nrOfRouteActivations = 0;
+    int nrOfRouteDeactivations = 0;
+    int nrOfMediaUploads = 0;
+    int nrOfMapLoads = 0;
+    int nrOfApplicationStarts = 0;
+    int nrOfApplicationShutdowns = 0;
+    int nrOfUGCOnActions = 0;
+    int nrOfPOIHits = 0;
+    int nrOfPOIsRequested = 0;
+    int nrOfRouteListRequested = 0;
+    int nrOfRouteDetailsRequested = 0;
+    int nrOfRoutesHomeRequested = 0;
+    int nrOfRoutesGenerated = 0;
+    int nrOfRouteListRequestedWeb = 0;
+    int nrOfRouteDetailsRequestedWeb = 0;
+    int nrOfTripListRequested = 0;
+    int nrOfTripDetailsRequestedWeb = 0;
+    String allLogs = "";
+    String personLog = "";
+
+%>
 <%
 
 
@@ -20,7 +44,7 @@
     /*System.out.println("Sync: " + sync);*/
 
     String portalName = "diwi";
-    Record[] people  = new Record[0];
+    Record[] people = new Record[0];
     JXElement getStatRsp = new JXElement("");
     try{
         JXElement rsp = HttpConnector.login(session, portalName, "geoapp", "user", "geoapp-user", "user", null);
@@ -35,6 +59,7 @@
         /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
         Record[] people = oase.getFinder().freeQuery(query);*/
         people = oase.getFinder().readAll(Person.TABLE_NAME);
+        AllStats allStats = new AllStats(people, session);
 
         if (xml != null && xml.length() > 0) {
             JXElement registerRsp = HttpConnector.executeRequest(session, new JXBuilder().build(xml));
@@ -85,6 +110,12 @@
             ////////////////////////////////////////////////////////////////////////
 
             Vector trips = aStatElement.getChildrenByTag(Constants.LOG_MOBILE_TYPE);
+            personLog = new String(aStatElement.toBytes(false));
+            try{
+                Sys.string2File("/var/keyworx/webapps/diwi/diwi/personlog.txt", personLog);
+            }catch(Throwable t){
+                System.out.println("Exception creating log:" + t.toString());
+            }
             for (int i = 0; i < trips.size(); i++) {
 
                 JXElement trip = (JXElement) trips.elementAt(i);
@@ -124,35 +155,14 @@
 
     private class AllStats{
 
-        int nrOfRoamActions = 0;
-        int nrOfRouteActivations = 0;
-        int nrOfRouteDeactivations = 0;
-        int nrOfMediaUploads = 0;
-        int nrOfMapLoads = 0;
-        int nrOfApplicationStarts = 0;
-        int nrOfApplicationShutdowns = 0;
-        int nrOfUGCOnActions = 0;
-        int nrOfPOIHits = 0;
-        int nrOfPOIsRequested = 0;
-        int nrOfRouteListRequested = 0;
-        int nrOfRouteDetailsRequested = 0;
-        int nrOfRoutesHomeRequested = 0;
-        int nrOfRoutesGenerated = 0;
-        int nrOfRouteListRequestedWeb = 0;
-        int nrOfRouteDetailsRequestedWeb = 0;
-        int nrOfTripListRequested = 0;
-        int nrOfTripDetailsRequestedWeb = 0;
-
-
         AllStats(Record[] thePeople, HttpSession aSession){
 
             for(int j=0;j<thePeople.length;j++){
                 Record person = thePeople[j];
-
                 JXElement getStatReq = new JXElement("user-get-stats-req");
                 getStatReq.setAttr("id", person.getId());
                 JXElement getStatRsp = HttpConnector.executeRequest(aSession, getStatReq);
-
+                allLogs += new String(getStatRsp.toBytes(false));
                 ////////////////////////////////////////////////////////////////////////
                 // Mobile log
                 ////////////////////////////////////////////////////////////////////////
@@ -192,6 +202,11 @@
                     nrOfTripDetailsRequestedWeb += webVistit.getChildrenByTag("trip-get-req").size();
                 }
             }
+            try{
+                Sys.string2File("/var/keyworx/webapps/diwi/diwi/alllogs.txt", allLogs);
+            }catch(Throwable t){
+                System.out.println("Exception creating log:" + t.toString());
+            }
         }
 
     }
@@ -214,6 +229,47 @@
         <%if(msg.length()>0){%>
             <h1><%=msg%></h1>
         <%}%>
+
+        <!--        
+        int nrOfRoamActions = 0;
+        int nrOfRouteActivations = 0;
+        int nrOfRouteDeactivations = 0;
+        int nrOfMediaUploads = 0;
+        int nrOfMapLoads = 0;
+        int nrOfApplicationStarts = 0;
+        int nrOfApplicationShutdowns = 0;
+        int nrOfUGCOnActions = 0;
+        int nrOfPOIHits = 0;
+        int nrOfPOIsRequested = 0;
+        int nrOfRouteListRequested = 0;
+        int nrOfRouteDetailsRequested = 0;
+        int nrOfRoutesHomeRequested = 0;
+        int nrOfRoutesGenerated = 0;
+        int nrOfRouteListRequestedWeb = 0;
+        int nrOfRouteDetailsRequestedWeb = 0;
+        int nrOfTripListRequested = 0;
+        int nrOfTripDetailsRequestedWeb = 0;
+        -->
+        <table width="400" border="0">
+            <tr><td>nr Of Roam Actions</td><td><%=nrOfRoamActions%></td></tr>
+            <tr><td>nr Of Route Activations</td><td><%=nrOfRouteActivations%></td></tr>
+            <tr><td>nr Of Route Deactivations</td><td><%=nrOfRouteDeactivations%></td></tr>
+            <tr><td>nr Of Media Uploads</td><td><%=nrOfMediaUploads%></td></tr>
+            <tr><td>nr Of Map Loads</td><td><%=nrOfMapLoads%></td></tr>
+            <tr><td>nr Of Application Starts</td><td><%=nrOfApplicationStarts%></td></tr>
+            <tr><td>nr Of Application Shutdowns</td><td><%=nrOfApplicationShutdowns%></td></tr>
+            <tr><td>nr Of UGC On Actions</td><td><%=nrOfUGCOnActions%></td></tr>
+            <tr><td>nr Of POIHits</td><td><%=nrOfPOIHits%></td></tr>
+            <tr><td>nr Of POIs Requested</td><td><%=nrOfPOIsRequested%></td></tr>
+            <tr><td>nr Of RouteList Requested</td><td><%=nrOfRouteListRequested%></td></tr>
+            <tr><td>nr Of Route Details Requested</td><td><%=nrOfRouteDetailsRequested%></td></tr>
+            <tr><td>nr Of Routes Home Requested</td><td><%=nrOfRoutesHomeRequested%></td></tr>
+            <tr><td>nr Of Routes Generated</td><td><%=nrOfRoutesGenerated%></td></tr>
+            <tr><td>nr Of RouteList Requested Web</td><td><%=nrOfRouteListRequestedWeb%></td></tr>
+            <tr><td>nr Of TripList Requested</td><td><%=nrOfTripListRequested%></td></tr>
+            <tr><td>nr Of Trip Details Requested Web</td><td><%=nrOfTripDetailsRequestedWeb%></td></tr>
+            <tr><td colspan="2"><a href="alllogs.txt" target="_blank">download the log file</a></td></tr> 
+        </table>
         <h1>Selecteer een gebruiker</h1>
         <p>
             <form id="userform" name="userform" method="post" action="">
@@ -425,17 +481,14 @@
                     %><tr><td colspan="2"><%=((JXElement)stat.tripGetMsgs.elementAt(i)).getAttr("date")%></td></tr><%
                 }%>--%>
                 <tr>
+                    <td colspan="2"><a href="personlog.txt" target="_blank">download the log file</a></td>
+                </tr>
+                <tr>
                     <td colspan="2"><hr /></td>
-                </tr>            
+                </tr>
             </table>
 
-        </p>
-        <p>
-            <h1>The entire log</h1>
-        </p>
-        <p>
-            <%=XML.element2EscapedString(getStatRsp.getChildAt(0))%>
-        </p>
+        </p>        
         <%
         }
         %>
