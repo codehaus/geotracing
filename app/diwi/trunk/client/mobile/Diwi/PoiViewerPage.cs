@@ -347,8 +347,6 @@ namespace Diwi {
                 mDnlMess.Left = 4;
                 mDnlMess.Top = 56;
                 mDnlMess.Size = new Size(200, 60);
-            
-
             }
         }
 
@@ -357,15 +355,11 @@ namespace Diwi {
             base.OnLoad(e);
             if (mParent != null) {
                 mParent.Visible = false;
-            }
-            
+            }           
             reOrient();
-
             if (mMediaIndex == -1) doNext(0, "");
-
             mIsInitialized = true;
         }
-
 
         protected override void OnResize(EventArgs e) {
             // change location of stuff

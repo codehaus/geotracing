@@ -186,7 +186,7 @@ namespace Diwi {
             XMLement xml = new XMLement(Protocol.TAG_LOGOUT_REQ);
             AppController.showStatus("logout");
             lock (this) {
-                xml = doRequest(xml);
+                xml = doRequest(xml,0);
             }
             mAgentKey = null;
             return xml;
@@ -195,7 +195,7 @@ namespace Diwi {
         public XMLement sendEchoRequest() {
             XMLement xml = new XMLement(Protocol.TAG_ECHO_REQ);
             lock (this) {
-                xml = doRequest(xml);
+                xml = doRequest(xml,0);
             }
             return xml;
         }
@@ -315,7 +315,7 @@ namespace Diwi {
             xml.addAttribute(Protocol.ATTR_PROTOCOLVERSION, Diwi.Properties.Resources.KwxServerProtocolVersion);
 
             lock (this) {
-                xml = doRequest(xml);
+                xml = doRequest(xml,0);
             }
 
             if (xml != null && xml.tag == Protocol.TAG_LOGIN_RSP) {
@@ -440,7 +440,7 @@ namespace Diwi {
             selectAppRequest = request;
 
             // Execute request
-            request = doRequest(request);
+            request = doRequest(request,0);
 
             // Throw exception or return positive response
             return request;
@@ -521,7 +521,7 @@ namespace Diwi {
             req.tag = Protocol.TAG_UTOPIA_REQ;
             req.addChild(anElement);
             lock (this) {
-                req = doRequest(req);
+                req = doRequest(req,0);
             }
             if ((req != null) && (req.tag == "utopia-rsp")) {
                 return req.firstChild();
@@ -532,7 +532,7 @@ namespace Diwi {
             return null;
         }
 
-        private XMLement doRequest(XMLement anElement) {
+        private XMLement doRequest(XMLement anElement, int lAttempt) {
             string url = mServer;
 
             if (mAgentKey != null) {
@@ -549,7 +549,7 @@ namespace Diwi {
                 byte[] postBytes = encoding.GetBytes(anElement.toString());
 
                 sKwxWebRequest.KeepAlive = true;
-                sKwxWebRequest.Timeout = 10000;
+                sKwxWebRequest.Timeout = 25000;
                 sKwxWebRequest.Method = "POST";
                 sKwxWebRequest.ContentType = "text/xml";
                 sKwxWebRequest.ContentLength = postBytes.Length;
@@ -575,33 +575,21 @@ namespace Diwi {
 
                 return XMLement.createFromRawXml(pageData);
 
+            } catch (TimeoutException e) {
+                AppController.sEventLog.WriteLine("Caught Timeout Excepotion;");
+                if (lAttempt < 3) {
+                    AppController.sEventLog.WriteLine("trying again...");
+                    return doRequest(anElement, lAttempt + 1);
+                } else {
+                    AppController.sEventLog.WriteLine("aborting after 3 attemps...");
+                }
+                AppController.showStatus("");
+                return null;
             } catch (WebException e) {
                 AppController.showStatus("");
                 string str = string.Format("Caught WebException: {0}", e.Status.ToString());
                 AppController.sEventLog.WriteLine(str);
                 return new XMLement("web-exception");
-                /*
-                HttpWebResponse resp = (HttpWebResponse)e.Response;
-                if (null != resp)
-                {
-                    // get the failure code from the response
-                    status = resp.StatusCode;
-                    str = string.Format("{0} ({1})", str, status);
-
-                    // close the response
-                    resp.Close();
-                }
-                else {
-                    // generic connection error
-                    status = (HttpStatusCode)(-1);
-                }
-
-                // update the ui so we can know what went wrong
-                if (CurrentPageEvent != null)
-                {
-                    CurrentPageEvent(str);
-                }
-                */
             } catch (Exception) {
                 AppController.showStatus("");
                 return null;
