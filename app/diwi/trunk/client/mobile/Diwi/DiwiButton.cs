@@ -65,6 +65,7 @@ namespace Diwi {
             if (mRect.Contains(p)) {
                 AppController.SysClick();
                 if (mCallback != null) {
+                    mParentForm.XorRectangle(mRect.X, mRect.Y, mRect.Width, mRect.Height);
                     mCallback();
                     return;
                 }

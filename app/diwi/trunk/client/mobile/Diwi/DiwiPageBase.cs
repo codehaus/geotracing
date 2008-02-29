@@ -36,7 +36,7 @@ namespace Diwi {   // base class for Diwi Pages.
         int blendCount;
         bool mDoDrawMenu = true;
         protected bool mIsMapPage = false;
-
+        Pen hilitePen = new Pen(Color.Blue, 2.0F);
 
         private System.Windows.Forms.MainMenu mainMenu1 = null;
         private System.Windows.Forms.MenuItem menuItem1;
@@ -194,21 +194,19 @@ namespace Diwi {   // base class for Diwi Pages.
       }
 
        protected override void OnMouseMove(MouseEventArgs e) {
+           if (mIsMapPage && AppController.sTapMode) {
+               return;           
+           }
+
            if (mDoDrawMenu == false) {
                mDoDrawMenu = true;
                blendCount = 4;
                draw();
            }
-          return;
-             Color c = DiwiPageBase.offScreenBitmap.GetPixel(e.X, e.Y);
-             Rectangle oldRect = mouseText.rect;
-             mouseText.erase(sBackgroundColor);
+        }
 
-             mouseText.text = "c: " + c.R + "; " + c.G + "; " + c.B; 
-             mouseText.x = 4;
-             mouseText.y = mCurrentRect.Height-18;
-             mouseText.draw();
-             redrawRect(oldRect, mouseText.rect);
+        public void XorRectangle(int x, int y, int w, int h) {
+            onScreenGraphics.DrawRectangle(hilitePen, x, y, w, h);
         }
 
         public bool invHorizontal() {
@@ -340,6 +338,11 @@ namespace Diwi {   // base class for Diwi Pages.
         }
 
         protected override void OnMouseDown(MouseEventArgs e) {
+            if (mIsMapPage && AppController.sTapMode) {
+                MapHandler.mouseClick(e.Y, e.X);
+                return;
+            }
+
             if (mDoDrawMenu == false) {
                 mDoDrawMenu = true;
                 blendCount = 4;

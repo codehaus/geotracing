@@ -116,6 +116,7 @@ namespace Diwi {
         protected override void doTerug(int i, string s) {
             AppController.deactivate();
             Close();
+            Application.Exit();
         }
 
         void doKiesRoute(int i, string s) {

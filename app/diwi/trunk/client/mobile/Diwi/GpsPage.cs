@@ -106,7 +106,7 @@ namespace Diwi {
         void updateNumSats() {
             Rectangle oldRect = numSatText.rect;
             numSatText.erase(sBackColor);
-            if (!GpsReader.demo || GpsReader.demoFile)
+            if (!GpsReader.demo)
                 numSatText.draw("Satellieten in zicht: " + GpsReader.numSats.ToString());
             else
                 numSatText.draw("Satellieten in zicht: -");
@@ -117,7 +117,7 @@ namespace Diwi {
         void updateFix() {
             Rectangle oldRect = fixText.rect;
             fixText.erase(sBackColor);
-            if (!GpsReader.demo || GpsReader.demoFile)
+            if (!GpsReader.demo)
                 fixText.draw(GpsReader.fix ? "Sat. fix: Ok" : "Sat. fix: geen");
             else
                 fixText.draw("Sat. fix: -");
@@ -153,10 +153,7 @@ namespace Diwi {
             Rectangle oldRect = demoText.rect;
             demoText.erase(sBackColor);
             if (GpsReader.demo) {
-                if (GpsReader.demoFile)
-                    demoText.draw("GPS gevonden (simulatie)");
-                else
-                    demoText.draw("Geen GPS...");
+                demoText.draw("GPS gevonden (simulatie)");
             } else {
                 demoText.draw("GPS gevonden.");
             }

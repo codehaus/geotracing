@@ -115,6 +115,8 @@ namespace Diwi {
         }
 
         public void buttonOK() {
+            AppController.ShowSIP(false);
+            draw();
             AppController.sKwxClient.stop();
             AppController.sKwxClient.start(mUserBox.Text, mPassBox.Text);
             if (AppController.sKwxClient.agentKey != null) {

@@ -14,7 +14,6 @@ namespace Diwi {
     class PoiViewerPage : DiwiPageBase {
         MediaDownloader mMediaDnl = null;
         TextBox mTextBox = new TextBox();
-        Label mDnlMess = new Label();
         DiwiScalingImage mImage;
         Bitmap mImageBitmap;
         XMLement mAllMedia;
@@ -23,7 +22,8 @@ namespace Diwi {
         int mDownloadIndex=-1;
         string mDnlName = null;
         string[] dnlFileNames = new string[10];
-        DiwiUIText mNameMess = new DiwiUIText(Color.Black,"",new Font("Tahoma", 14, FontStyle.Regular));
+        DiwiUIText mNameMess = new DiwiUIText(Color.Black, "", new Font("Tahoma", 14, FontStyle.Regular));
+        DiwiUIText mDnlMess = new DiwiUIText(Color.Black, "", new Font("Tahoma", 14, FontStyle.Regular));
 
 
         public PoiViewerPage(DiwiPageBase parent)
@@ -42,13 +42,9 @@ namespace Diwi {
             mTextBox.ForeColor = Color.Black;
             mTextBox.BackColor = Color.Transparent;
 
-            mDnlMess.Font = new Font("Tahoma", 14, FontStyle.Regular);
-            mDnlMess.ForeColor = Color.Black;
-            mDnlMess.BackColor = mTextBox.BackColor = Color.FromArgb(198, 255, 0);
-            mDnlMess.Text = "Media worden opgehaald...\n\nEen ogenlik, aub.";
-            mDnlMess.Visible = false;
 
             addDrawable(mNameMess);
+            addDrawable(mDnlMess);
 
             reOrient();
 
@@ -79,6 +75,13 @@ namespace Diwi {
             mNameMess.erase(sBackgroundColor);
             mNameMess.draw(mDnlName);
             redrawRect(oldRect, mNameMess.rect);
+        }
+
+        void drawDnlText(string t) {
+            Rectangle oldRect = mDnlMess.rect;
+            mDnlMess.erase(sBackgroundColor);
+            mDnlMess.draw(t);
+            redrawRect(oldRect, mDnlMess.rect);
         }
 
 
@@ -122,7 +125,7 @@ namespace Diwi {
         }
 
         void openFile(string path) {
-            mDnlMess.Visible = false;
+            drawDnlText("");
 
             int n = path.IndexOf("Image");
             if (n >= 0) {
@@ -183,28 +186,30 @@ namespace Diwi {
             }
             mDownloadIndex = index;
             if (kichUri != null) {
+                string fn="";
                 string url = kichUri.nodeText;
                 string ext = (url.Substring(url.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = kichUri.getAttributeValue("type");
-                mDnlName = null;
+                mDnlName = (url.Substring(1 + url.LastIndexOf('/'))).TrimEnd(trimChars);
+                drawDnlText("dnl: " + mDnlName);
+                mDnlUrl = url;
                 switch (type) {
                     case "image":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiImage" + mMediaIndex.ToString() + ext;
                         break;
                     case "audio":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiSound" + mMediaIndex.ToString() + ext;
                         break;
                     case "video":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiVideo" + mMediaIndex.ToString() + ext;
                         break;
                     case "text":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiText" + mMediaIndex.ToString() + ext;
                         break;
                 }
+                if( fn != "" )
+                    mMediaDnl = new MediaDownloader(url, fn, new AppController.DownloadCallbackHandler(dnlDoneT));
+
             }
         }
  
@@ -218,6 +223,7 @@ namespace Diwi {
                 string ext = (filename.Substring(filename.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = ugc.getAttributeValue("kind");
                 mDnlName = ugc.getAttributeValue("name");
+                drawDnlText("dnl: " + mDnlName);
                 switch (type) {
                     case "image":
                         mDnlUrl = url;
@@ -250,9 +256,7 @@ namespace Diwi {
                 } else {
                     mTextBox.Visible = false;
                     mImage.x = 800;
-                    mDnlMess.Visible = true;
                     draw();
-                    mDnlMess.Visible = true;
                 }
             } else {
                 if (mMediaDnl != null)
@@ -319,11 +323,10 @@ namespace Diwi {
                 }
                 mTextBox.Left = 4;
                 mTextBox.Top = 56;
-                mTextBox.Size = new Size(280, 180);
+                mTextBox.Size = new Size(280, 140);
 
-                mDnlMess.Left = 4;
-                mDnlMess.Top = 56;
-                mDnlMess.Size = new Size(280, 60);
+                mDnlMess.x = 4;
+                mDnlMess.y = 214;
 
                 
 
@@ -342,11 +345,10 @@ namespace Diwi {
                 }
                 mTextBox.Left = 4;
                 mTextBox.Top = 56;
-                mTextBox.Size = new Size(200, 260);
+                mTextBox.Size = new Size(200, 220);
 
-                mDnlMess.Left = 4;
-                mDnlMess.Top = 56;
-                mDnlMess.Size = new Size(200, 60);
+                mDnlMess.x = 4;
+                mDnlMess.y = 294;
             }
         }
 
