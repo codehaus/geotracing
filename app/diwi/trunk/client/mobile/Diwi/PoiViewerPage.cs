@@ -140,12 +140,15 @@ namespace Diwi {
         }
 
 
-        void dnlDoneT(string path) {
+        void dnlDoneT(string path, bool local) {
 
             mMediaDnl = null;
             if (this.mIsActive) {
 
-                AppController.sEventLog.WriteLine("\tdownloaded url: {0}", mDnlUrl);
+                if(local)
+                    AppController.sEventLog.WriteLine("\thit lolcal store: {0}", path);
+                else
+                    AppController.sEventLog.WriteLine("\tdownloaded url: {0}", mDnlUrl);
 
                 dnlFileNames[mDownloadIndex] = path;
                 if (mDownloadIndex == mMediaIndex) {
@@ -182,6 +185,14 @@ namespace Diwi {
                 string ext = (url.Substring(url.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = kichUri.getAttributeValue("type");
                 mDnlName = (url.Substring(1 + url.LastIndexOf('/'))).TrimEnd(trimChars);
+
+                string localF = AppController.sMediaStore + mDnlName;
+                FileInfo fi = new System.IO.FileInfo(localF);
+                if (fi.Exists) {
+                    dnlDoneT(localF,true);
+                    return;
+                }
+
                 AppController.sPoiSelectPage.setDownloadMessage("ophalen: " + mDnlName);
                 mDnlUrl = url;
                 switch (type) {
@@ -209,6 +220,7 @@ namespace Diwi {
             XMLement ugc = mAllMedia.getChild(index);
             mDownloadIndex = index;
             if (ugc != null) {
+                string fn = "";
                 string filename = ugc.getAttributeValue("filename");
                 string url = Diwi.Properties.Resources.KwxMediaServerUrl + "?id=" + ugc.getAttributeValue("id");
                 string ext = (filename.Substring(filename.LastIndexOf('.'))).TrimEnd(trimChars);
@@ -217,22 +229,20 @@ namespace Diwi {
                 drawDnlText("ophalen: " + mDnlName);
                 switch (type) {
                     case "image":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiImage" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiImage" + mMediaIndex.ToString() + ext;
                         break;
                     case "audio":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiSound" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiSound" + mMediaIndex.ToString() + ext;
                         break;
                     case "video":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiVideo" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiVideo" + mMediaIndex.ToString() + ext;
                         break;
                     case "text":
-                        mDnlUrl = url;
-                        mMediaDnl = new MediaDownloader(url, "poiText" + mMediaIndex.ToString() + ext, new AppController.DownloadCallbackHandler(dnlDoneT));
+                        fn = AppController.sAppDir + "poiText" + mMediaIndex.ToString() + ext;
                         break;
                 }
+                if (fn != "")
+                    mMediaDnl = new MediaDownloader(url, fn, new AppController.DownloadCallbackHandler(dnlDoneT));
             }
         }
 

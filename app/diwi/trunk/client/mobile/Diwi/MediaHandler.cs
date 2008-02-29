@@ -75,7 +75,7 @@ namespace Diwi {
                 stream.Close();
 
                 if ((AppController.sQuitting == false) && callb != null)
-                    callb(path);
+                    callb(path, false);
             } catch (WebException) { 
 
             }
