@@ -159,6 +159,7 @@ namespace Diwi {
             if (mAgentKey != null) {
                 doLogout();
             }
+            mSendSamplesThread.Abort();
         }
 
         public bool toggleUGC() {

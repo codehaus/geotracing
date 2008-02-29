@@ -31,12 +31,10 @@ namespace Diwi {
         private string mPort;
         private string mNMEA;
         private bool mIsLogging = true;
-        private StreamReader nmeaDemoFile = null;
 
         static private GpsReader sGPS = null;
 
 
-        private bool  mCanDemo = true;
         private bool  mDemo = false;
         private bool  mHasFix = false;
         private float mBearing, mSpeed, mLat, mLon, mPrecision;
@@ -51,32 +49,22 @@ namespace Diwi {
 
         public static bool up {
             get {
-                return GpsReader.fix && (!GpsReader.demo || GpsReader.demoFile);
+                return GpsReader.fix || AppController.sTapMode;
             }
         }
 
         public static bool present {
             get {
-                return (!GpsReader.demo || GpsReader.demoFile);
+                return (!GpsReader.demo);
             }
         }
 
-        static public bool demoFile {
-            get {
-                return (sGPS.nmeaDemoFile != null);
-            }
-        }
 
         static public string nmea {
             get { return sGPS.mNMEA; }
         }
 
-        static public bool canDemo {
-            get { return sGPS.mCanDemo; }
-            set { 
-                sGPS.mCanDemo = value; 
-            }
-        }
+
         static public bool demo {
             get { return sGPS.mDemo; }
         }
@@ -193,8 +181,12 @@ namespace Diwi {
 
 
         private GpsReader() {
-            findGpsPort();
-            start();
+            if (AppController.sTapMode == false) {
+                findGpsPort();
+                start();
+            } else {
+                mDemo = true;
+            }
         }
 
 
@@ -202,14 +194,6 @@ namespace Diwi {
         /// open a serial port and start reading, asynchronously.
         /// </summary>
         public void start() {
-            if (mCanDemo) {
-                try {
-                    nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
-                } catch (FileNotFoundException) {
-                    nmeaDemoFile = null;
-                    mCanDemo = false;
-                }
-            }
 
             if (mOpenPortThread == null) {
                 if (mSerialPort == null) {
@@ -248,6 +232,9 @@ namespace Diwi {
         public void stop()
         {
             mIsRunning = false;
+
+            if (AppController.sTapMode) return;
+
             Thread.Sleep(500);
             if (mSerialPort.IsOpen) {
                 mSerialPort.Close();
@@ -264,12 +251,6 @@ namespace Diwi {
                 mOpenPortThread.Abort();
                 mOpenPortThread = null;
             }
-
-            if (nmeaDemoFile != null) {
-                nmeaDemoFile.Close();
-                nmeaDemoFile = null;
-            }
-
         }
 
 
@@ -300,80 +281,35 @@ namespace Diwi {
             }
         }
 
-        string readDemoLine() {
-
-            while (mCanDemo) {
-                string s = nmeaDemoFile.ReadLine();
-                if (s != null) {
-                    if (s.Length > 10) {
-                        string nm = s.Substring(0, 6);
-                        if (nm == "$GPRMC" || nm == "$GPGGA")
-                            return s;
-                    }
-                } else {
-                    nmeaDemoFile.Close();
-                    nmeaDemoFile = null;
-                    try {
-                        nmeaDemoFile = new StreamReader(@"\DemoNMEA.txt");
-                    } catch (Exception) {
-                        mCanDemo = false;
-                    }
-                }
-            }
-            return null;
-        }
 
         /// <summary>
         /// thread sun loop reading GPS, or trying.
         /// </summary>
         private void readThread() {
 
-            // keep trying to open serial port; when fail, send data from file if 'candemo'
+            // keep trying to open serial port; 
             while (mIsRunning == true) {
+                string data = "";
 
-                while (mIsRunning == true) {
-
-                    if (mDemo) {
-                        if (mCanDemo) {
-                           // read from file
-                            parse( readDemoLine(), false );
-                            parse( readDemoLine(), false );
-                        }
-                    } else {
-                        break;
+                try {
+                    data = mSerialPort.ReadLine();
+                } catch (IOException) {
+                    // port broken, or somesuch
+                    if (mSerialPort.IsOpen) {
+                        mSerialPort.Close();
                     }
-
+                } catch (TimeoutException) {
+                    // no data, sleep for a while and try again
                     Thread.Sleep(1000);
+                    continue;
                 }
 
-                while (mIsRunning == true) {
-                    string data = "";
-
-                    try {
-                        data = mSerialPort.ReadLine();
-                    } catch (IOException) {
-                        // port broken, or somesuch
-                        if (mSerialPort.IsOpen) {
-                            mSerialPort.Close();
-                            mDemo = true;
-                            if (callback != null) {
-                                callback((int)sMess.M_DEMO);
-                            }
-                        }
-                        // up one loop and try to open the port again
-                        break;
-                    } catch (TimeoutException) {
-                        // no data, sleep for a while and try again
-                        Thread.Sleep(1000);
-                        continue;
-                    }
-
-                    if (data.Length > 0) {
-                        // got data from GPS
-                        parse(data,true);
-                    }
+                if (data.Length > 0) {
+                    // got data from GPS
+                    parse(data, true);
                 }
             }
+
         }
 
         #region parsing
@@ -423,6 +359,20 @@ namespace Diwi {
             }
 
             return true;
+        }
+
+
+        public void insertLocation(float lat, float lon) {
+            setFixStatus(true);
+            mLat = lat;
+            mLon = lon;
+            AppController.sTrackLog.WriteLine("lat=" + mLat.ToString(mUSFormat) + ", lon=" + mLon.ToString(mUSFormat));
+            // Notify the calling application of the change
+            if (true == AppController.sKwxClient.queueSample()) {
+                if (callback != null)
+                    callback((int)sMess.M_POS);
+            }
+
         }
 
         public bool ParseGPRMC(string[] words,bool real) {

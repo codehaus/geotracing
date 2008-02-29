@@ -26,8 +26,18 @@ namespace Diwi {
             return scale - (int)((float)scale * ((lat - blLat) / (urLat - blLat)));
         }
 
-    }
+        public float pix2lat(int y, int h) {
+            int y_on_map = h - y;
+            float a = ( urLat - blLat) * y_on_map / h + blLat;
+            return a;
+        }
 
+        public float pix2lon(int x, int w) {
+            float a = ( ( urLon - blLon) * x ) / w + blLon;
+            return a;
+        }
+
+    }
 
 
     class MapHandler {
@@ -74,6 +84,18 @@ namespace Diwi {
         public static void copyBounds() {
             sHorBounds.setBounds(sHorTempBounds.urLat, sHorTempBounds.urLon, sHorTempBounds.blLat, sHorTempBounds.blLon);
             sVerBounds.setBounds(sVerTempBounds.urLat, sVerTempBounds.urLon, sVerTempBounds.blLat, sVerTempBounds.blLon);
+        }
+
+        public static void mouseClick(int y, int x) {
+            float lat, lon;
+            if (DiwiPageBase.sCurrentPage.horizontal) {
+                lon = sHorBounds.pix2lon(x,320);
+                lat = sHorBounds.pix2lat(y,240);
+            } else {
+                lon = sVerBounds.pix2lon(x,240);
+                lat = sVerBounds.pix2lat(y,320);
+            }
+            AppController.sGpsReader.insertLocation(lat, lon);
         }
 
         public static int currentXpixel(bool hor) {

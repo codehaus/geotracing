@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.WindowsMobile.Status;
 using System.ComponentModel;
-
+using System.Globalization;
 using System.Data;
 using System.Diagnostics;
 
@@ -34,16 +34,25 @@ namespace Diwi {
         public static string sUserName = null;
         public static string sUserPass = null;
         public static string sUserProps = null;
+        public static string sPfPath;
+        public static string sAppDir;
+
         public static string sVideoFileName = null;
         public static Progress sProgBar;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
+        public static CultureInfo sUSFormat = new CultureInfo(0x0409); // constant voor en-US domain. gebruikt in nummerformat parsing 
 
         public delegate void DownloadCallbackHandler(string path);
 
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
-        //public static Backlight sBacklight = new Backlight();
+        public static bool sTapMode = true;
+//        public static float sStartLat = 52.07466f; // renswoude
+//        public static float sStartLon = 5.541181f;
+        public static float sStartLat = 51.95605f; // rhenen
+        public static float sStartLon = 5.584859f;
+
 
         private static Sound sPloink;
         private static Sound sClick;
@@ -65,10 +74,43 @@ namespace Diwi {
             DiwiPageBase.sCurrentPage.printStatus("");
         }
 
+        static void processOption(string opt) {
+            string[] kv = opt.Split('=');
+            if (kv[0] == "tapmode" && kv[1] == "true") sTapMode = true;
+            else if (kv[0] == "startlatlon") {
+                kv = kv[1].Split(',');
+                sStartLat = float.Parse(kv[0], AppController.sUSFormat);
+                sStartLon = float.Parse(kv[1], AppController.sUSFormat);
+            }
+        }
+
+        public static string GetLoadingAssembly() {
+            System.Reflection.Assembly assembly = System.Reflection.Assembly.GetCallingAssembly();
+            System.Reflection.AssemblyName assemblyName = assembly.GetName();
+            return assemblyName.CodeBase;
+        }
+
 
         public static void activate() {
-            sTrackLog = File.CreateText("DiwiTrackLog.txt");
-            sEventLog = File.CreateText("DiwiEventLog.txt");
+            sPfPath = GetLoadingAssembly();
+            sAppDir = sPfPath.Replace("Diwi.exe", "");
+
+            sTrackLog = File.CreateText(sAppDir + "TrackLog.txt");
+            sEventLog = File.CreateText(sAppDir + "EventLog.txt");
+
+            try {
+                StreamReader dwConfSR = new StreamReader(sAppDir + "dwConfig.txt");
+                if (dwConfSR != null) {
+                    string option = dwConfSR.ReadLine();
+                    while (option != null) {
+                        processOption(option);
+                        option = dwConfSR.ReadLine();
+                    }
+                    dwConfSR.Close();
+                }
+            } catch (IOException e) {
+                AppController.sEventLog.WriteLine("Exception: " + e.Message);
+            }
 
             Stream stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_horz.gif");
             backgroundHorBitmap = new Bitmap(stream);

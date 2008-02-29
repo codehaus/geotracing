@@ -304,11 +304,13 @@ namespace Diwi {
             else
                 title = AppController.sActiveRoute.getChildValue("name");
             mIsInitialized = true;
-            MapHandler.active = true;
             updateGPS((int)GpsReader.sMess.M_DEMO);
             mBlendTimer.Change(0, 3000);
             checkStruinWithUser = (AppController.sActiveRoute != null);
             setBackGround();
+            AppController.sGpsReader.insertLocation(AppController.sStartLat, AppController.sStartLon);
+            MapHandler.active = true;
+
         }
 
         void setBackGround() {

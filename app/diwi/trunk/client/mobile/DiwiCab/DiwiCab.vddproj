@@ -50,6 +50,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_749D0EB2ADB8466E91C1F75F0D0C1883"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8511717F4D4A9FA69160BE94358D2207"
         "OwnerKey" = "8:_308C8D860291C4B605FC03DC58BFF156"
         "MsmSig" = "8:_UNDEFINED"
@@ -282,6 +288,24 @@
             "Register" = "3:0"
             "Exclude" = "11:TRUE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{BA458234-9B71-4F46-8107-E91156377184}:_749D0EB2ADB8466E91C1F75F0D0C1883"
+            {
+            "SourcePath" = "8:..\\Diwi\\Resources\\dwConfig.txt"
+            "TargetName" = "8:dwConfig.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_AC39E48E76FC4DFB849BC248DC16ED2F"
+            "Condition" = "8:"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "Register" = "3:0"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{E4F2F62A-3940-4BF5-A031-F7FA98CAAFFA}:_8511717F4D4A9FA69160BE94358D2207"
