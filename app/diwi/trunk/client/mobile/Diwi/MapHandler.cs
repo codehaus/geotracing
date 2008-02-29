@@ -67,14 +67,14 @@ namespace Diwi {
             if(DiwiPageBase.sCurrentPage.horizontal) {
                 string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
                 if (mapUrl != null) {
-                    new MediaDownloader(mapUrl, @"\horMap.jpg", sMapDnl);
+                    new MediaDownloader(mapUrl, AppController.sAppDir + @"\horMap.jpg", sMapDnl);
                 } else {
                     AppController.sEventLog.WriteLine("Dit not get MapURI");
                 }
             } else {
                 string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
                 if (mapUrl != null) {
-                    new MediaDownloader(mapUrl, @"\verMap.jpg", sMapDnl);
+                    new MediaDownloader(mapUrl, AppController.sAppDir + @"\verMap.jpg", sMapDnl);
                 } else {
                     AppController.sEventLog.WriteLine("Dit not get MapURI");
                 }
@@ -162,7 +162,7 @@ namespace Diwi {
             }
         }
 
-        static void mapReceived(string path) {
+        static void mapReceived(string path, bool local) {
             int n = path.IndexOf("horMap");
             if (n >= 0) {
                 AppController.sActiveRouteMapPathHor = path;
@@ -173,7 +173,7 @@ namespace Diwi {
                     sDownloadingVersion = 1;
                     string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, false);
                     if (mapUrl != null) {
-                        new MediaDownloader(mapUrl, @"\verMap.jpg", sMapDnl);
+                        new MediaDownloader(mapUrl, AppController.sAppDir + @"\verMap.jpg", sMapDnl);
                     }
                     return;
                 }
@@ -186,7 +186,7 @@ namespace Diwi {
                     sDownloadingVersion = 1;
                     string mapUrl = AppController.sKwxClient.getBoundsMap(AppController.sActiveRouteID, sMapRadius, true);
                     if (mapUrl != null) {
-                        new MediaDownloader(mapUrl, @"\horMap.jpg", sMapDnl);
+                        new MediaDownloader(mapUrl, AppController.sAppDir + @"\horMap.jpg", sMapDnl);
                     }
                 } 
             }

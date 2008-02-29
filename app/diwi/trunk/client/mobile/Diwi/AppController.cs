@@ -26,6 +26,7 @@ namespace Diwi {
         public static XMLement sActiveRoute = null;
         public static string sActiveRouteMapPathHor = null;
         public static string sActiveRouteMapPathVer = null;
+        public static string sMediaStore = null;
         public static XMLement sRoutes;
         public static StreamWriter sTrackLog;
         public static StreamWriter sEventLog;
@@ -44,12 +45,12 @@ namespace Diwi {
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
         public static CultureInfo sUSFormat = new CultureInfo(0x0409); // constant voor en-US domain. gebruikt in nummerformat parsing 
 
-        public delegate void DownloadCallbackHandler(string path);
+        public delegate void DownloadCallbackHandler(string path, bool local);
 
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
-        public static bool sTapMode = false;
+        public static bool sTapMode = true;
 //        public static float sStartLat = 52.07466f; // renswoude
 //        public static float sStartLon = 5.541181f;
         public static float sStartLat = 51.95605f; // rhenen
@@ -113,6 +114,8 @@ namespace Diwi {
             } catch (IOException e) {
                 AppController.sEventLog.WriteLine("Exception: " + e.Message);
             }
+
+            sMediaStore = GetStorageCard() + @"\DiwiMedia\";
 
             Stream stream = sAssembly.GetManifestResourceStream(@"Diwi.Resources.back_horz.gif");
             backgroundHorBitmap = new Bitmap(stream);
@@ -222,6 +225,25 @@ namespace Diwi {
             sClick.Play();
         }
 
+
+        public static string GetStorageCard() {
+            //initialize the path as an empty string
+            string firstCard = "";
+
+            System.IO.DirectoryInfo di = new System.IO.DirectoryInfo("\\");
+            System.IO.FileSystemInfo[] fsi = di.GetFileSystemInfos();
+
+            //iterate through them
+            for (int x = 0; x < fsi.Length; x++) {
+                //check to see if this is a temporary storage card (e.g. SD card)
+                if ((fsi[x].Attributes & System.IO.FileAttributes.Temporary) == System.IO.FileAttributes.Temporary) {
+                    //if so, return the path
+                    firstCard = fsi[x].FullName;
+                }
+            }
+
+            return firstCard;
+        }
 
 
 

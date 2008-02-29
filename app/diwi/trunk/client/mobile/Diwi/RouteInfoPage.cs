@@ -24,9 +24,7 @@ namespace Diwi {
             mTextBox.Font = mTextBox.Font = new Font("Tahoma", 11, FontStyle.Bold);
             mTextBox.ForeColor = Color.Black;
             mTextBox.BackColor = Color.FromArgb(198, 255, 0);
-
             reOrient();
-
         }
 
         public void hideText(int i, string s) {
@@ -64,7 +62,7 @@ namespace Diwi {
             }
         }
 
-        void openMapT(string path) {
+        void openMapT(string path, bool local) {
             if (this.mIsActive) {
                 if (InvokeRequired) {
                     this.Invoke(mapDownloaded, new object[] { path });
