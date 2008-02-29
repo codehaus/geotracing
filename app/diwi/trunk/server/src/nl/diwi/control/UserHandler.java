@@ -3,9 +3,13 @@ package nl.diwi.control;
 import nl.diwi.logic.LogLogic;
 import nl.diwi.util.Constants;
 import nl.justobjects.jox.dom.JXElement;
+import nl.justobjects.jox.parser.JXBuilder;
+import nl.justobjects.jox.parser.JXBuilderListener;
 import org.keyworx.common.log.Log;
 import org.keyworx.common.log.Logging;
 import org.keyworx.oase.api.Record;
+import org.keyworx.oase.api.OaseException;
+import org.keyworx.oase.store.record.FileFieldImpl;
 import org.keyworx.server.ServerConfig;
 import org.keyworx.utopia.core.control.DefaultHandler;
 import org.keyworx.utopia.core.control.ThreadSafe;
@@ -15,7 +19,12 @@ import org.keyworx.utopia.core.session.UtopiaRequest;
 import org.keyworx.utopia.core.session.UtopiaResponse;
 import org.keyworx.utopia.core.util.Core;
 import org.keyworx.utopia.core.util.Oase;
+import org.keyworx.amuse.core.Protocol;
 import org.geotracing.handler.QueryLogic;
+import org.geotracing.handler.QueryHandler;
+import org.geotracing.handler.TrackLogic;
+import org.postgis.Point;
+import org.postgis.PGgeometryLW;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -25,6 +34,8 @@ import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.Map;
+import java.io.File;
 
 public class UserHandler extends DefaultHandler implements ThreadSafe, Constants {
 
@@ -303,7 +314,8 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
         return response;
     }
 
-    private JXElement getAllStats(UtopiaRequest anUtopiaReq) throws UtopiaException {
+    private JXElement getAllStats(UtopiaRequest anUtopiaReq) throws UtopiaException, OaseException {
+        /*
         Log log = Logging.getLog("UserHandler.getAllStats");
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
@@ -334,6 +346,155 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
             throw new UtopiaException(t);
         }
         return response;
+        */
+
+        JXElement response = createResponse(USER_GET_ALLSTATS_SERVICE);
+        Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
+
+        // first get all the people
+        Record[] people = oase.getFinder().readAll(Person.TABLE_NAME);
+        for (int i = 0; i < people.length; i++) {
+            Record person = people[i];
+            JXElement personElm = new JXElement(Person.XML_TAG);
+            personElm.setAttr(ID_FIELD, person.getId());
+            personElm.setChildText(Person.FIRSTNAME_FIELD, person.getStringField(Person.FIRSTNAME_FIELD));
+            personElm.setChildText(Person.LASTNAME_FIELD, person.getStringField(Person.LASTNAME_FIELD));
+
+            // get register prefs
+            Record[] prefs = oase.getRelater().getRelated(person, "diwi_prefs", "register");
+            for (int j = 0; j < prefs.length; j++) {
+                Record pref = prefs[j];
+                JXElement e = new JXElement("pref");
+                e.setAttr(pref.getStringField("name"), pref.getStringField("value"));
+                personElm.addChild(e);
+            }
+
+            // get tracks
+            Record[] tracks = oase.getRelater().getRelated(person, "g_track", null);
+            for (int j = 0; j < tracks.length; j++) {
+                Record track = tracks[j];
+
+                JXElement tripElm = new JXElement("trip");
+                tripElm.setChildText(STARTDATE_FIELD, "" + track.getTimestampField(STARTDATE_FIELD));
+                tripElm.setChildText(ENDDATE_FIELD, "" + track.getTimestampField(END_DATE_FIELD));
+                tripElm.setChildText(DISTANCE_FIELD, "" + track.getRealField(DISTANCE_FIELD));
+
+                personElm.addChild(tripElm);
+
+                // get the related ugs
+                Record[] ugcs = oase.getRelater().getRelated(track, Medium.TABLE_NAME, "medium");
+                for (int k = 0; k < ugcs.length; k++) {
+                    Record ugc = ugcs[k];
+
+                    JXElement e = new JXElement(Medium.XML_TAG);
+                    e.setAttr(ID_FIELD, ugc.getId());
+                    e.setChildText(Medium.NAME_FIELD, ugc.getStringField(Medium.NAME_FIELD));
+                    e.setChildText(Medium.KIND_FIELD, ugc.getStringField(Medium.KIND_FIELD));
+                    e.setChildText(Medium.FILENAME_FIELD, ugc.getStringField(Medium.FILENAME_FIELD));
+                    e.setChildText(Medium.FILESIZE_FIELD, "" + ugc.getLongField(Medium.FILESIZE_FIELD));
+                    e.setChildText(Medium.CREATION_DATE_FIELD, "" + ugc.getTimestampField(Medium.CREATION_DATE_FIELD));
+
+                    tripElm.addChild(e);
+                }
+
+                // get the trip log
+                Record[] logs = oase.getRelater().getRelated(track, LOG_TABLE, null);
+                for (int k = 0; k < logs.length; k++) {
+                    Record log = logs[k];
+
+                    JXElement events = getEvents(log);
+                    tripElm.setChildText("nrOfRoamActions", "" + events.getChildrenByTag("msg").size());
+
+                    tripElm.setChildText("nrOfRouteActivations", "" + events.getChildrenByTag("nav-activate-route-req").size());
+                    // <nav-activate-route-req init="True" id="14330" time="1187518523486" date="Sunday, 19 Aug 2007 12:15:23"/>
+                    Vector v = events.getChildrenByTag("nav-activate-route-req");
+                    for(int l = 0; l < v.size(); l++){
+                        JXElement elm = (JXElement)v.elementAt(l);
+                        Record rec = oase.getFinder().read(Integer.parseInt(elm.getAttr(ID_FIELD)));
+                        elm.setAttr(NAME_FIELD, rec.getStringField(NAME_FIELD));
+                    }
+
+                    tripElm.setChildText("nrOfRouteDeactivations", "" + events.getChildrenByTag("nav-deactivate-route-req").size());
+                    tripElm.setChildText("nrOfMediaUploads", "" + events.getChildrenByTag("nav-add-medium-req").size());
+                    tripElm.setChildText("nrOfMapLoads", "" + events.getChildrenByTag("nav-get-map-req").size());
+                    tripElm.setChildText("nrOfApplicationStarts", "" + events.getChildrenByTag("nav-start-req").size());
+                    tripElm.setChildText("nrOfApplicationShutdowns", "" + events.getChildrenByTag("nav-stop-req").size());
+                    tripElm.setChildText("nrOfUGCOnActions", "" + events.getChildrenByTag("nav-ugc-on-req").size());
+                    tripElm.setChildText("nrOfPOIHits", "" + events.getChildrenByTag("poi-hit").size());
+                    Vector w = events.getChildrenByTag("poi-hit");
+                    for(int l = 0; l < w.size(); l++){
+                        JXElement elm = (JXElement)w.elementAt(l);
+                        Record rec = oase.getFinder().read(Integer.parseInt(elm.getAttr(ID_FIELD)));
+                        elm.setAttr(NAME_FIELD, rec.getStringField(NAME_FIELD));
+                    }
+
+                    tripElm.setChildText("nrOfPOIsRequested", "" + events.getChildrenByTag("nav-poi-get-req").size());
+                    tripElm.setChildText("nrOfRouteListRequested", "" + events.getChildrenByTag("nav-route-getlist-req").size());
+                    tripElm.setChildText("nrOfRouteDetailsRequested", "" + events.getChildrenByTag("nav-route-get-req").size());
+                    tripElm.setChildText("nrOfRoutesHomeRequested", "" + events.getChildrenByTag("nav-route-home-req").size());
+
+                    if(events.hasChildren()){
+                        tripElm.addChild(events);
+                    }
+                }
+
+            }
+            response.addChild(personElm);
+        }
+
+        return response;
+    }
+
+    private JXElement getEvents(Record aLogRecord) throws UtopiaException {
+        final JXElement events = new JXElement("events");
+
+        try {
+            JXBuilder builder = new JXBuilder(
+                    new JXBuilderListener() {
+                        /**
+                         * Called by XmlElementParser when it parsed and created an JXElement.
+                         */
+                        public void element(JXElement e) {
+                            events.addChild(e);
+                        }
+
+                        /**
+                         * Called when parser encounters an error.
+                         */
+                        public void error(String msg) {
+                            Logging.getLog().warn("getLog() error: " + msg);
+                        }
+
+                        /**
+                         * End of input stream is reached.
+                         * <p/>
+                         * This may occur when listening for multiple documents on a stream.
+                         *
+                         * @param message     text message
+                         * @param anException optional exception that caused the stream end
+                         */
+                        public void endInputStream(String message, Throwable anException) {
+                            Logging.getLog().trace("getLog() EOF reached: " + message + " e=" + anException);
+                        }
+
+                    }
+            );
+
+            // Event data file
+            FileFieldImpl fileField = (FileFieldImpl) aLogRecord.getFileField(EVENTS_FIELD);
+            File file = fileField.getStoredFile();
+
+            // Only makes sense to parse a file with content
+            if (file != null && file.exists() && file.length() > 0) {
+                builder.setMultiDoc(true);
+                builder.build(fileField.getFileInputStream());
+            }
+
+        } catch (Throwable t) {
+            new UtopiaException("Error query getLogEvents logId=" + aLogRecord.getId(), t);
+        }
+
+        return events;
     }
 
     private JXElement getPreferences(UtopiaRequest anUtopiaReq) throws UtopiaException {

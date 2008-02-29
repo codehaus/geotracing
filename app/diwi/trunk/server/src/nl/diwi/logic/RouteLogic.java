@@ -255,7 +255,8 @@ public class RouteLogic implements Constants {
 		try {
 			boolean insert = true;
 			// fixed routes have unique names so check first
-			String name = aRouteElement.getChildText(DESCRIPTION_FIELD);
+			//String name = aRouteElement.getChildText(DESCRIPTION_FIELD);
+			String name = aRouteElement.getChildText(NAME_FIELD);
 			Record[] recs = oase.getFinder().queryTable(ROUTE_TABLE, NAME_FIELD + "='" + name + "'", null, null);
 
 			// get or create the record

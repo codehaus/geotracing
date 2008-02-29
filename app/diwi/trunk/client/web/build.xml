@@ -106,8 +106,8 @@ $Id$
 	<target name="deploy-local" depends="assemble">
 		<copy todir="${deploy.local.dir}/diwi/web" overwrite="true">
 			<fileset dir="${home}" />
-		</copy>
-	</target>
+		</copy>        
+    </target>
 
 	<target name="deploy-local-diwi-only" depends="assemble">
 		<copy todir="${deploy.local.dir}/diwi/web" overwrite="true">

@@ -43,7 +43,7 @@
     System.out.println("Person: " + personId);
     /*System.out.println("Sync: " + sync);*/
 
-    String portalName = "diwi";
+    String portalName = "diwitest";
     Record[] people = new Record[0];
     JXElement getStatRsp = new JXElement("");
     try{
@@ -51,30 +51,33 @@
         System.out.println(new String(rsp.toBytes(false)));
 
         // get the stats overview
-        /*JXElement getAllStatReq = new JXElement("user-get-allstats-req");
-        JXElement getAllStatRsp = HttpConnector.executeRequest(session, getAllStatReq);*/
+        JXElement getAllStatReq = new JXElement("user-get-allstats-req");
+        JXElement getAllStatRsp = HttpConnector.executeRequest(session, getAllStatReq);
+        Sys.string2File("/var/keyworx/webapps/diwitest/diwi/newlogs.txt", new String(getAllStatRsp.toBytes(false)));
 
-        // first get the users
-        OaseSession oase = Oase.createSession(portalName);
-        /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
-        Record[] people = oase.getFinder().freeQuery(query);*/
-        people = oase.getFinder().readAll(Person.TABLE_NAME);
-        AllStats allStats = new AllStats(people, session);
+        return;
 
-        if (xml != null && xml.length() > 0) {
-            JXElement registerRsp = HttpConnector.executeRequest(session, new JXBuilder().build(xml));
-            System.out.println(new String(registerRsp.toBytes(false)));
-            if(registerRsp.getTag().indexOf("-nrsp")!=-1){
-                msg += "Exception registering - " + registerRsp.getAttr("details") + "\n";
-            }
-        }
-        
-        if (personId != null && personId.length() > 0) {
-            JXElement getStatReq = new JXElement("user-get-stats-req");
-            getStatReq.setAttr("id", personId);
-            getStatRsp = HttpConnector.executeRequest(session, getStatReq);
-            System.out.println(new String(getStatRsp.toBytes(false)));
-        }
+//        // first get the users
+//        OaseSession oase = Oase.createSession(portalName);
+//        /*String query = "SELECT * from " + Person.TABLE_NAME + " WHERE firstname NOT LIKE '%geoapp%' AND firstname NOT LIKE '%admin%'";
+//        Record[] people = oase.getFinder().freeQuery(query);*/
+//        people = oase.getFinder().readAll(Person.TABLE_NAME);
+//        AllStats allStats = new AllStats(people, session);
+//
+//        if (xml != null && xml.length() > 0) {
+//            JXElement registerRsp = HttpConnector.executeRequest(session, new JXBuilder().build(xml));
+//            System.out.println(new String(registerRsp.toBytes(false)));
+//            if(registerRsp.getTag().indexOf("-nrsp")!=-1){
+//                msg += "Exception registering - " + registerRsp.getAttr("details") + "\n";
+//            }
+//        }
+//
+//        if (personId != null && personId.length() > 0) {
+//            JXElement getStatReq = new JXElement("user-get-stats-req");
+//            getStatReq.setAttr("id", personId);
+//            getStatRsp = HttpConnector.executeRequest(session, getStatReq);
+//            System.out.println(new String(getStatRsp.toBytes(false)));
+//        }
 
     }catch(Throwable t){
         msg = "Exception - " + t.getMessage();
