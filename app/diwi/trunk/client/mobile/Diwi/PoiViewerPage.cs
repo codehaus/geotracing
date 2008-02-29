@@ -23,12 +23,10 @@ namespace Diwi {
         string mDnlName = null;
         string[] dnlFileNames = new string[10];
         DiwiUIText mNameMess = new DiwiUIText(Color.Black, "", new Font("Tahoma", 14, FontStyle.Regular));
-        DiwiUIText mDnlMess = new DiwiUIText(Color.Black, "", new Font("Tahoma", 14, FontStyle.Regular));
-
+        DiwiUIText mDnlMess = new DiwiUIText(Color.Red, "", new Font("Tahoma", 12, FontStyle.Regular));
 
         public PoiViewerPage(DiwiPageBase parent)
             : base(parent) {
-
 
             mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext),AppController.sVolgIcon);
 
@@ -42,9 +40,7 @@ namespace Diwi {
             mTextBox.ForeColor = Color.Black;
             mTextBox.BackColor = Color.Transparent;
 
-
             addDrawable(mNameMess);
-            addDrawable(mDnlMess);
 
             reOrient();
 
@@ -75,13 +71,6 @@ namespace Diwi {
             mNameMess.erase(sBackgroundColor);
             mNameMess.draw(mDnlName);
             redrawRect(oldRect, mNameMess.rect);
-        }
-
-        void drawDnlText(string t) {
-            Rectangle oldRect = mDnlMess.rect;
-            mDnlMess.erase(sBackgroundColor);
-            mDnlMess.draw(t);
-            redrawRect(oldRect, mDnlMess.rect);
         }
 
 
@@ -125,8 +114,6 @@ namespace Diwi {
         }
 
         void openFile(string path) {
-            drawDnlText("");
-
             int n = path.IndexOf("Image");
             if (n >= 0) {
                 openImage(path);
@@ -172,6 +159,10 @@ namespace Diwi {
                 if (mAllMedia.getChild(1 + mDownloadIndex) != null) {
                     mDownloadIndex = mDownloadIndex + 1;
                     doDownloadMedium(mDownloadIndex);
+                } else {
+                    if (mIsActive) drawDnlText("");
+                    else
+                        AppController.sPoiSelectPage.setDownloadMessage("downloads: done");
                 }
             }
 
@@ -191,7 +182,7 @@ namespace Diwi {
                 string ext = (url.Substring(url.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = kichUri.getAttributeValue("type");
                 mDnlName = (url.Substring(1 + url.LastIndexOf('/'))).TrimEnd(trimChars);
-                drawDnlText("dnl: " + mDnlName);
+                AppController.sPoiSelectPage.setDownloadMessage("ophalen: " + mDnlName);
                 mDnlUrl = url;
                 switch (type) {
                     case "image":
@@ -223,7 +214,7 @@ namespace Diwi {
                 string ext = (filename.Substring(filename.LastIndexOf('.'))).TrimEnd(trimChars);
                 string type = ugc.getAttributeValue("kind");
                 mDnlName = ugc.getAttributeValue("name");
-                drawDnlText("dnl: " + mDnlName);
+                drawDnlText("ophalen: " + mDnlName);
                 switch (type) {
                     case "image":
                         mDnlUrl = url;
@@ -244,6 +235,14 @@ namespace Diwi {
                 }
             }
         }
+
+        void drawDnlText(string t) {
+            Rectangle oldRect = mDnlMess.rect;
+            mDnlMess.erase(sBackgroundColor);
+            mDnlMess.draw(t);
+            redrawRect(oldRect, mDnlMess.rect);
+        }
+
 
         void doNext(int i, string s) {
             mMediaIndex++;
@@ -289,6 +288,8 @@ namespace Diwi {
                 title = name.nodeText;
             mAllMedia = xml.getChildByName("media");
             AppController.sEventLog.WriteLine(mAllMedia.toString());
+            mDnlName = "";
+            drawNameText();
 
             mMediaIndex = -1;
             mDownloadIndex = -1;
@@ -323,12 +324,10 @@ namespace Diwi {
                 }
                 mTextBox.Left = 4;
                 mTextBox.Top = 56;
-                mTextBox.Size = new Size(280, 140);
-
+                mTextBox.Size = new Size(280, 116);
                 mDnlMess.x = 4;
                 mDnlMess.y = 214;
-
-                
+ 
 
             } else {
 
@@ -345,8 +344,7 @@ namespace Diwi {
                 }
                 mTextBox.Left = 4;
                 mTextBox.Top = 56;
-                mTextBox.Size = new Size(200, 220);
-
+                mTextBox.Size = new Size(200, 196);
                 mDnlMess.x = 4;
                 mDnlMess.y = 294;
             }

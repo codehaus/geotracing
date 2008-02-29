@@ -17,6 +17,8 @@ namespace Diwi {
         List<string> poiIDs;
         XMLement mCurrentPOI;
         bool mHasContent = false;
+        DiwiUIText mDnlMess = new DiwiUIText(Color.Red, "", new Font("Tahoma", 12, FontStyle.Regular));
+        
 
         public PoiSelectPage(DiwiPageBase parent)
             : base(parent) {
@@ -26,6 +28,8 @@ namespace Diwi {
             mMenu.addItem("Volgende", new DiwiUIMenu.DiwiMenuCallbackHandler(doNext),AppController.sVolgIcon);
 
             this.Controls.Add(mTextBox);
+
+            addDrawable(mDnlMess);
 
             mTextBox.Font = new Font("Tahoma", 12, FontStyle.Regular);
             mTextBox.Multiline = true;
@@ -38,9 +42,23 @@ namespace Diwi {
 
             sPoiPage = new PoiViewerPage(this);
 
+            AppController.sPoiSelectPage = this;
+
             title = "";
 
         }
+
+        void drawDnlText(string t) {
+            Rectangle oldRect = mDnlMess.rect;
+            mDnlMess.erase(sBackgroundColor);
+            mDnlMess.draw(t);
+            redrawRect(oldRect, mDnlMess.rect);
+        }
+
+        public void setDownloadMessage(string s) {
+            drawDnlText(s);
+        }
+
 
         void doView(int i, string s) {
 
@@ -112,6 +130,7 @@ namespace Diwi {
         public bool setContent(List<string> pids) {
             poiIDs = pids;
             string id = poiIDs[0];
+            drawDnlText("");
             if (id != null) {
                 poiIDs.Remove(id);
                 return offerPOI(id);
@@ -123,12 +142,15 @@ namespace Diwi {
             if (horizontal) {
                 mTextBox.Left = 4;
                 mTextBox.Top = 100;
-                mTextBox.Size = new Size(280, 140);
-
+                mTextBox.Size = new Size(280, 116);
+                mDnlMess.x = 4;
+                mDnlMess.y = 214;
             } else {
                 mTextBox.Left = 4;
                 mTextBox.Top = 100;
-                mTextBox.Size = new Size(200, 220);
+                mTextBox.Size = new Size(200, 196);
+                mDnlMess.x = 4;
+                mDnlMess.y = 294;
             }
         }
 
@@ -145,6 +167,7 @@ namespace Diwi {
                 setMenuText(1, "Volgende");
                 setMenuIcon(1, AppController.sVolgIcon);
             }
+            drawDnlText("");
             reOrient();
             mIsInitialized = true;
             this.Focus();

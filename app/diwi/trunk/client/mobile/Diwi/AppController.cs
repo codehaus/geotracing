@@ -37,6 +37,8 @@ namespace Diwi {
         public static string sPfPath;
         public static string sAppDir;
 
+        public static PoiSelectPage sPoiSelectPage = null; // hack, sorry.
+
         public static string sVideoFileName = null;
         public static Progress sProgBar;
         public static Assembly sAssembly = Assembly.GetExecutingAssembly();
@@ -47,7 +49,7 @@ namespace Diwi {
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
-        public static bool sTapMode = true;
+        public static bool sTapMode = false;
 //        public static float sStartLat = 52.07466f; // renswoude
 //        public static float sStartLon = 5.541181f;
         public static float sStartLat = 51.95605f; // rhenen
