@@ -32,7 +32,7 @@ namespace Diwi {
         private string xmlString;
         private XMLement selectAppRequest;
 
-        private Thread mSendSamplesThread = new Thread(sendSamplesThread);
+        private Thread mSendSamplesThread = null;
 
         private bool mUGCState = false;
         private bool mNavStarted = false;
@@ -48,7 +48,6 @@ namespace Diwi {
             get {
                 if (sKwxC != null) return sKwxC;
                 sKwxC = new KwxClient();
-                sKwxC.mSendSamplesThread.Start();
                 return sKwxC;
             }
         }
@@ -113,6 +112,9 @@ namespace Diwi {
                 }
             }
 
+            mSendSamplesThread = new Thread(sendSamplesThread);
+            mSendSamplesThread.Start();
+
             XMLement xml = new XMLement(Protocol.TAG_UGC_OFF_REQ);
             lock (this) {
                 xml = utopiaRequest(xml);
@@ -159,7 +161,10 @@ namespace Diwi {
             if (mAgentKey != null) {
                 doLogout();
             }
-            mSendSamplesThread.Abort();
+            if (mSendSamplesThread != null) {
+                mSendSamplesThread.Abort();
+                mSendSamplesThread = null;
+            }
         }
 
         public bool toggleUGC() {
@@ -469,18 +474,25 @@ namespace Diwi {
 
         private static void sendSamplesThread() {
             while (true) {
-                if (sKwxC.mPointsQueue.Count > 0) {
-                    GeoPoint p = sKwxC.mPointsQueue.Dequeue();
-                    sKwxC.sendSample(p.lat, p.lon);
-                }
+                try {
 
-                mEchoTimer++;
-                if (mEchoTimer > 120) {
-                    mEchoTimer = 0;
-                    sKwxC.sendEchoRequest();
-                }
+                    while (true) {
+                        if (sKwxC.mPointsQueue.Count > 0) {
+                            GeoPoint p = sKwxC.mPointsQueue.Dequeue();
+                            sKwxC.sendSample(p.lat, p.lon);
+                        }
 
-                Thread.Sleep(500);
+                        mEchoTimer++;
+                        if (mEchoTimer > 120) {
+                            mEchoTimer = 0;
+                            sKwxC.sendEchoRequest();
+                        }
+
+                        Thread.Sleep(500);
+                    }
+                } catch (Exception e) {
+                    AppController.sEventLog.WriteLine("sample send-thread exception...." + e.ToString());
+                }
             }
         }
 
