@@ -240,8 +240,11 @@ public class POIHandler extends DefaultHandler implements ThreadSafe, Constants 
      */
     protected JXElement getPoiList(UtopiaRequest anUtopiaReq) throws UtopiaException {
         JXElement response = createResponse(POI_GETLIST_SERVICE);
+        JXElement reqElm = anUtopiaReq.getRequestCommand();
+        String bbox = reqElm.getAttr(BBOX_FIELD);
         POILogic logic = new POILogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
-        response.addChildren(logic.getList());
+
+        response.addChildren(logic.getList(bbox));
         return response;
     }
 

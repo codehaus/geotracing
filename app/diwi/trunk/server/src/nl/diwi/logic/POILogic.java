@@ -17,6 +17,7 @@ import org.keyworx.utopia.core.data.UtopiaException;
 import org.keyworx.utopia.core.util.Oase;
 import org.postgis.PGgeometryLW;
 import org.postgis.Point;
+import org.postgis.PGbox2d;
 
 import java.util.Properties;
 import java.util.Vector;
@@ -312,10 +313,29 @@ public class POILogic implements Constants {
      *
      * @throws UtopiaException Standard exception
      */
-    public Vector getList() throws UtopiaException {
+    public Vector getList(String aBbox) throws UtopiaException {
         try {
-            Record[] pois = oase.getFinder().queryTable(POI_TABLE, null);
-            return getPOIList(pois);
+            Record[] recs;
+            if(aBbox!=null && aBbox.length()>0){
+                String tables = "diwi_poi";
+                String fields = "*";
+                // point && SetSRID('BOX3D(2 2, 6 5)'::box3d,4326)
+                String[] bbox = aBbox.split(",");
+                String where = "diwi_poi.wgspoint && SetSRID('BOX3D("
+                        + bbox[0] + " "
+                        + bbox[1] + ","
+                        + bbox[2] + " "
+                        + bbox[3] + ")'::box3d,4326)";
+
+                String relations = "gw_location,oase_medium";
+                String postCond = null;
+
+                recs = QueryLogic.queryStore(oase, tables, fields, where, relations, postCond);
+            }else{
+                recs = oase.getFinder().queryTable(POI_TABLE, null);
+            }
+
+            return getPOIList(recs);
         } catch (OaseException oe) {
             throw new UtopiaException("Cannot read pois ", oe, ErrorCode.__6006_database_irregularity_error);
         }
