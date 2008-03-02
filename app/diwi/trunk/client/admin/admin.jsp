@@ -27,6 +27,6 @@
     </head>
     <body>
         <h1>Digitale Wichelroede statistieken</h1>
-        <p><a href="<%=fileName%>">Download <%=fileName%></a> (rechtermuisknop - 'save as')</p>
+        <p>Download <a href="<%=fileName%>"><%=fileName%></a> (rechtermuisknop - 'save as')</p>
     </body>
 </html>
