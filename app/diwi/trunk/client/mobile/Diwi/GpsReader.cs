@@ -55,11 +55,11 @@ namespace Diwi {
 
         public static bool present {
             get {
-                return (!GpsReader.demo);
+                return (!GpsReader.demo  && sGPS.mSerialPort.IsOpen );
             }
         }
 
-
+        
         static public string nmea {
             get { return sGPS.mNMEA; }
         }
@@ -162,10 +162,10 @@ namespace Diwi {
 
 
         void findGpsPort() {
-            mSerialPort = new System.IO.Ports.SerialPort("COM9");
+            mSerialPort = new System.IO.Ports.SerialPort(AppController.sComPort);
             try {
                 mSerialPort.Open();
-                mPort = "COM9"; // internal GPS on HTC
+                mPort = AppController.sComPort; 
             } catch (IOException) {
                 mPort = "COM0";
             }
@@ -208,9 +208,8 @@ namespace Diwi {
 
                 try {
                     mSerialPort.Open();
-                    mDemo = false;
                 } catch (IOException) {
-                    mDemo = true;
+                    ;
                 }
 
                 mOpenPortThread = new Thread(openPortThread);
@@ -266,15 +265,14 @@ namespace Diwi {
 
         private void openPortThread() {
             while (mIsRunning == true) {
-                if (mDemo) {
+                if ( !mSerialPort.IsOpen ) {
                     try {
                         mSerialPort.Open();
-                        mDemo = false;
                         if (callback != null) {
                             callback((int)sMess.M_DEMO);
                         }
                     } catch (IOException) {
-                        mDemo = true;
+                        ;
                     }
                 }
                 Thread.Sleep(5000);
@@ -292,12 +290,17 @@ namespace Diwi {
                 string data = "";
 
                 try {
+                    if(mSerialPort.IsOpen )
                     data = mSerialPort.ReadLine();
                 } catch (IOException) {
                     // port broken, or somesuch
                     if (mSerialPort.IsOpen) {
                         mSerialPort.Close();
                     }
+                    if (callback != null) {
+                        callback((int)sMess.M_DEMO);
+                    }
+
                 } catch (TimeoutException) {
                     // no data, sleep for a while and try again
                     Thread.Sleep(1000);

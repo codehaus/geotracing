@@ -35,6 +35,7 @@ namespace Diwi {
         public static string sUserName = null;
         public static string sUserPass = null;
         public static string sUserProps = null;
+        public static string sComPort = "COM9";// internal GPS on HTC
         public static string sPfPath;
         public static string sAppDir;
 
@@ -50,7 +51,7 @@ namespace Diwi {
         public static Bitmap backgroundHorBitmap;
         public static Bitmap backgroundVerBitmap;
 
-        public static bool sTapMode = true;
+        public static bool sTapMode = false;
 //        public static float sStartLat = 52.07466f; // renswoude
 //        public static float sStartLon = 5.541181f;
         public static float sStartLat = 51.95605f; // rhenen
@@ -79,7 +80,8 @@ namespace Diwi {
 
         static void processOption(string opt) {
             string[] kv = opt.Split('=');
-            if (kv[0] == "tapmode" && kv[1] == "true") sTapMode = true;
+            if (kv[0] == "comport") sComPort = kv[1];
+            else if (kv[0] == "tapmode" && kv[1] == "true") sTapMode = true;
             else if (kv[0] == "startlatlon") {
                 kv = kv[1].Split(',');
                 sStartLat = float.Parse(kv[0], AppController.sUSFormat);

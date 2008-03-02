@@ -23,6 +23,7 @@
     <NativePlatformName>Windows Mobile 5.0 Smartphone SDK</NativePlatformName>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
+    <ApplicationIcon>appIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -231,6 +232,8 @@
     <EmbeddedResource Include="Resources\home.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\appIcon.ico" />
+    <Content Include="appIcon.ico" />
     <Content Include="Resources\dwConfig.txt" />
   </ItemGroup>
   <Import Condition="'$(TargetFrameworkVersion)' == 'v1.0'" Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.v1.targets" />
