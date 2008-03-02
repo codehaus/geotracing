@@ -347,7 +347,6 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
         }
         return response;
         */
-
         JXElement response = createResponse(USER_GET_ALLSTATS_SERVICE);
         Oase oase = anUtopiaReq.getUtopiaSession().getContext().getOase();
 
@@ -410,8 +409,12 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
                     Vector v = events.getChildrenByTag("nav-activate-route-req");
                     for(int l = 0; l < v.size(); l++){
                         JXElement elm = (JXElement)v.elementAt(l);
-                        Record rec = oase.getFinder().read(Integer.parseInt(elm.getAttr(ID_FIELD)));
-                        elm.setAttr(NAME_FIELD, rec.getStringField(NAME_FIELD));
+                        try{
+                            Record rec = oase.getFinder().read(Integer.parseInt(elm.getAttr(ID_FIELD)));
+                            elm.setAttr(NAME_FIELD, rec.getStringField(NAME_FIELD));
+                        }catch(Throwable t){
+                            elm.setAttr(NAME_FIELD, "removed");
+                        }
                     }
 
                     tripElm.setChildText("nrOfRouteDeactivations", "" + events.getChildrenByTag("nav-deactivate-route-req").size());
@@ -424,8 +427,12 @@ public class UserHandler extends DefaultHandler implements ThreadSafe, Constants
                     Vector w = events.getChildrenByTag("poi-hit");
                     for(int l = 0; l < w.size(); l++){
                         JXElement elm = (JXElement)w.elementAt(l);
-                        Record rec = oase.getFinder().read(Integer.parseInt(elm.getAttr(ID_FIELD)));
-                        elm.setAttr(NAME_FIELD, rec.getStringField(NAME_FIELD));
+                        try{
+                            Record rec = oase.getFinder().read(Integer.parseInt(elm.getAttr(ID_FIELD)));
+                            elm.setAttr(NAME_FIELD, rec.getStringField(NAME_FIELD));
+                        }catch(Throwable t){
+                            elm.setAttr(NAME_FIELD, "removed");                            
+                        }
                     }
 
                     tripElm.setChildText("nrOfPOIsRequested", "" + events.getChildrenByTag("nav-poi-get-req").size());
