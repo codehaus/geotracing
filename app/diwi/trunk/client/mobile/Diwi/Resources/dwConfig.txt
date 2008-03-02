@@ -1,4 +1,4 @@
-tapmode=true
-
+tapmode=false
 # rhenen:
 startlatlon=51.95605,5.584859
+

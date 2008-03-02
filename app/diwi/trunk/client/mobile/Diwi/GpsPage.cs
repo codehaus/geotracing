@@ -154,8 +154,10 @@ namespace Diwi {
             demoText.erase(sBackColor);
             if (GpsReader.demo) {
                 demoText.draw("GPS gevonden (simulatie)");
-            } else {
+            } else if (GpsReader.present) {
                 demoText.draw("GPS gevonden.");
+            } else {
+                demoText.draw("GPS: wachten...");
             }
             redrawRect(oldRect, demoText.rect);
             updateSpeed();
