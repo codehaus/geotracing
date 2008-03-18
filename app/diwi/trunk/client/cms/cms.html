@@ -313,6 +313,19 @@ function activeerPoiButton()
 DH.setHTML('selectie', '&nbsp;<br/><div align="center" ><input name="getAll" type="button" id="getAll" value="Teken POIs op de kaart" onClick="laadPois()"/> </div>	');		
 }
 
+function activeerVMButton()
+{
+DH.setHTML('selectie', '&nbsp;<br/><div align="center" ><input name="getAllVM" type="button" id="getAllVM" value="Teken Volksmond op de kaart" onClick="laadVM()"/> </div>	');				
+}
+
+
+function activeerAllButtons()
+{
+DH.setHTML('selectie', '&nbsp;<br/><div align="center" ><input name="getAll" type="button" id="getAll" value="Teken POIs op de kaart" onClick="laadPois()"/> </div>	');		
+DH.addHTML('selectie', '&nbsp;<br/><div align="center" ><input name="getAllVM" type="button" id="getAllVM" value="Teken Volksmond op de kaart" onClick="laadVM()"/> </div>	');		
+}
+
+
 function openPopup(URL)
 {
 day = new Date();
@@ -530,7 +543,7 @@ OpenLayer implementaties
 			map.addLayer(scanMarkersLayer);
 			map.addLayer(selMarkersLayer);
 			//loadXML();
-			activeerPoiButton();
+			activeerAllButtons();
 		}
 
 
@@ -660,7 +673,7 @@ MM_reloadPage(true);
 <!-- END FLOATING LAYER CODE //--> 
 
 
-  <div id="result" style="position:absolute; width:494px; height:115px; z-index:51; left: 15px; top: 696px; overflow: auto;" class="poidata"></div>
+ <div id="result" style="position:absolute; width:494px; height:115px; z-index:51; left: 15px; top: 696px; overflow: auto;" class="poidata"></div>
  <div id="top"><img src="images/top2.jpg" width="597" height="246" border="0" usemap="#Mapie">
   <map name="Mapie">
     <area shape="rect" coords="429,202,513,227" href="cms.html" target="_self">
