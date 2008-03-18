@@ -52,6 +52,7 @@ public interface Constants {
     public final static String Y_FIELD = "y";
     public final static String LAT_FIELD = "lat";
     public final static String LON_FIELD = "lon";
+    public final static String BBOX_FIELD = "bbox";
     public final static String STATE_FIELD = "state";
     public final static String VALUE_FIELD = "value";
     public final static String WGSPATH_FIELD = "wgspath";
@@ -88,6 +89,7 @@ public interface Constants {
     public final static int POI_STARTPOINT = 2;
     public final static int POI_ENDPOINT = 3;
     public final static int POI_START_AND_ENDPOINT = 4;
+    public final static int POI_HORECA_POINT = 5;
 
     // route types
     public final static int ROUTE_TYPE_FIXED = 0;
