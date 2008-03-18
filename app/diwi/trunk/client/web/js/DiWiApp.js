@@ -24,9 +24,9 @@ var DIWIAPP = {
 		DIWIAPP.pr('init...');
 
 		// Change portal base url for test
-	//	if (document.location.href.indexOf('test.digitalewichelroede.nl') != -1) {
-	//		DIWIAPP.PORTAL = '/diwitest';
-	//	}
+		if (document.location.href.indexOf('test.digitalewichelroede.nl') != -1) {
+			DIWIAPP.PORTAL = '/diwitest';
+		}
 
 		SRV.init();
 		SRV.url = DIWIAPP.PORTAL + '/srv/get.jsp?';
