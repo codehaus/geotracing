@@ -2,10 +2,10 @@ body {
 	position: relative;
 	margin: 0px;
 	padding: 0;
-	font-size: 16pt;
+	font-size: 12px;
 	font-family: verdana, arial, helvetica, sans-serif;
 	color:#5a3d1c;
-	background-color: #F6F8F5;
+	background-color: #FFFFFF;
 }
 
 H1 {
@@ -50,8 +50,8 @@ p{
 }
 
 H3{
- margin-left:20px;
- font-size: 1.0em;
+	font-size: 12px;
+	margin: auto;
 }
 
 H4 {
@@ -84,8 +84,8 @@ H4 {
 .pagina {
  position: absolute;
  width: 100%;
- top: 261px;
- left: 0px;
+ top: 156px;
+ left: 6px;
  z-index: 10;
  background-color:#F6F8F5;
 }
