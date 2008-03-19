@@ -16,8 +16,11 @@ var DIWINAV = {
 	},
 
 	init: function() {
+		
+		//alert("diwinav init")
+		
 		// Setup main menu buttons
-		new Button('b1', 'welkom', DIWINAV.showVideoLink);
+		/*new Button('b1', 'welkom', DIWINAV.showVideoLink);
 		new Button('b2', 'routes', ROUTE.showFixedRoutes);
 		new Button('b3', 'aanmelden', DIWINAV.showVideoLink);
 		new Button('b4', 'faq', DIWINAV.showVideoLink);
@@ -30,7 +33,7 @@ var DIWINAV = {
 		DIWINAV.buttons['b1'].onSelect();
 
 		// Listen to login button and password field
-		DH.addEvent(DH.getObject('butloginsubmit'), 'click', DIWIAPP.login, false);
+		DH.addEvent(DH.getObject('butloginsubmit'), 'click', DIWIAPP.login, false);*/
 		// DH.addEvent(DH.getObject('fieldpassword'), 'keypress', DIWINAV.onPasswordChar, false);
 	},
 
@@ -43,30 +46,49 @@ var DIWINAV = {
 
 	/** Callback (from DIWIAPP) when login ok.  */
 	onLogin: function() {
-		// Show new content, here logout form
-		DH.displayOn('butmaakroute');
-		DH.displayOn('butmijnpagina');
-		DH.displayOff('butinloggen');
-		DH.displayOn('butuitloggen');
-		DH.hide('loginform');
-		DH.displayOff('inlogbox');
-		DH.displayOff('inlogform');
+		
+		/**
+		extend the menu
+		*/
+		$("#browse_b").css("display","inline");
+		$("#maak_route *").css("display","inline");
+		$("#mijn_routes *").css("display","inline");
+		$("#aanmelden #mijn_diwi").css("display","none");
+		$("#aanmelden #log_uit").css("display","inline");
+		
+		//hide all submenus
+		select_menu_item(null);
+		
+		if (DIWIAPP.autoLogin == true) {
+			KW.storeAccount();
+		}
+		
+		
 		DIWIAPP.setStatus('ingelogd als ' + DIWIAPP.userName);
-		DIWIAPP.pr('ingelogd als ' + DIWIAPP.userName);
-		DIWINAV.buttons['b8'].onSelect();
+	
 	},
 
 	/** Callback (from DIWIAPP) when logout ok.  */
 	onLogout: function() {
 		// Show new content, here logout form
 		DIWIAPP.pr('logout OK');
-		DH.displayOff('butmaakroute');
-		DH.displayOff('butmijnpagina');
-		DH.displayOn('butinloggen');
-		DH.displayOff('butuitloggen');
-		DH.show('loginform');
-		DIWIAPP.setStatus('niet ingelogd');
-		DIWINAV.buttons['b1'].onSelect();
+		
+		$("#browse_b").css("display","none");
+		$("#maak_route *").css("display","none");
+		$("#mijn_routes *").css("display","none");
+		$("#aanmelden #mijn_diwi").css("display","inline");
+		$("#aanmelden #log_uit").css("display","none");
+		
+		if (DIWIAPP.autoLogin != true) {
+			KW.clearAccount();
+		}
+	
+		
+		DH.getObject('username_field').value = "";
+		DH.getObject('password_field').value = "";
+		select_menu_item(null);
+		
+		
 	},
 
 	onPasswordChar: function(e) {
@@ -80,13 +102,11 @@ var DIWINAV = {
 	},
 
 	prepareLogin: function() {
-		DH.getStyleObject('inlogbox').display = 'block';
-		DH.getStyleObject('inlogform').display = 'block';
-		var loginForm = DH.getObject('loginform');
+		
 		var accData = KW.getAccountData();
 		if (accData != null) {
-			loginForm.name.value = accData[0];
-			loginForm.password.value = accData[1];
+			DH.getObject('username_field').value = accData[0];
+			DH.getObject('password_field').value = accData[1];
 		}
 	},
 

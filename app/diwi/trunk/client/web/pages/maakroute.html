@@ -1,172 +1,81 @@
-<div id="maakroutecontainer">
+<br>
+<p>
+<strong>STEL HIER EEN NIEUW ROUTE SAMEN</strong>
+</p>
 
-<h2>Maak Route</h2>
-<div class="listboxes" id="starteindpunt-lb">
-</div>
+<table id="params3" >
+	<tr>
+		<td class="col1" ><input id="wandelen" type="radio" checked="true" onclick="route_gen_param_changed2(this)"> </input></td>
+		<td class="col2" >wandelen </td> 
+		
+	<tr>
+		<td><input id="fietsen" type="radio" onclick="route_gen_param_changed2(this)"> </input></td>
+		<td>fietsen </td>
+	</tr>
+</table>
 
+<table id="params1" >
+	<tr>
+		<td class="col1">
+			start / eindpunt
+		</td>
+		<td class="col2" id="starteindpunt-lb">
+			<select class="listbox" id="starteindpunt" ><option value="-1" selected="selected">kies...</option></select>	
+		</td>
+	</tr>
+	<tr>
+		<td>
+			afstand
+		</td>
+		<td id="afstand-lb">
+			<select id="afstand" class="listbox" ><option value="-1" selected="selected">kies...</option><option value="3000" >3 km</option><option value="5000" >5 km</option></select>	
+		</td>	
+	</tr>
+</table>	
 
-<!-- <div id="radiobuttons" class="radiocaption">
-	<input id="wandelen" name="rb1" type="radio" onClick="ROUTE.selectWandelen()"> Wandelen
-	<input id="fietsen" name="rb2" type="radio" onClick="ROUTE.selectFietsen()"> Fietsen
-</div>    -->
+<br>
+<p><strong> Geef hieronder uw gewenste landschapskenmerken aan (max 2) </strong></p>
 
-<!-- <div class="listboxes" id="thema-lb">
-</div>      -->
+<table id="params2" >
+	<tr>
+		<td class="col1" ><input id="besloten" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td class="col2" >besloten agrarisch gebied</td> 			
+	<tr>
+		<td><input id="halfopen" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>halfopen agrarisch gebied </td>				
+	</tr>
+<!--	
+	<tr>
+		<td><input id="open" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>open agrarisch gebied 	</td>				
+	</tr> 
 
-<div class="listboxes" id="afstand-lb">
-</div>
-<!--
-- besloten (integer, >= 0)
-- halfopen (integer, >= 0)
-- open (integer, >= 0)
-- bebouwd (integer, >= 0)
-- bos (integer, >= 0)
-- heizand (integer, >= 0)
-- natuurgras (integer, >= 0)
-- kleinwater  (integer, >= 0) -->
-<div class="slidercaption" id="caption1">
-	Besloten agrarisch gebied
-</div>
-
-<div class="slider" id="s1">
-	<input class="slider-input" id="s1input"/>
-</div>
-
-<div class="slidertext" id="besloten">
-	<input id="s1value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption2">
-	Halfopen agrarisch gebied
-</div>
-
-<div class="slider" id="s2">
-	<input class="slider-input" id="s2input"/>
-</div>
-
-<div class="slidertext" id="halfopen">
-	<input id="s2value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption3">
-	Open agrarisch gebied
-</div>
-
-<div class="slider" id="s3">
-	<input class="slider-input" id="s3input"/>
-</div>
-
-<div class="slidertext" id="open">
-	<input id="s3value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption4">
-	Bewoningskernen
-</div>
-
-<div class="slider" id="s4">
-	<input class="slider-input" id="s4input"/>
-</div>
-
-<div class="slidertext" id="bebouwd">
-	<input id="s4value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption5">
-	Bos
-</div>
-
-<div class="slider" id="s5">
-	<input class="slider-input" id="s5input"/>
-</div>
-
-<div class="slidertext" id="bos">
-	<input id="s5value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption6">
-	Heide zand en duingebied
-</div>
-
-<div class="slider" id="s6">
-	<input class="slider-input" id="s6input"/>
-</div>
-
-<div class="slidertext" id="heizand">
-	<input id="s6value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption7">
-	Natuurlijk grasland, moeras <br>en riet
-</div>
-
-<div class="slider" id="s7">
-	<input class="slider-input" id="s7input"/>
-</div>
-
-<div class="slidertext" id="natuurgras">
-	<input id="s7value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption8">
-	Sloten, beken, rivieren en <br>plassen
-</div>
-
-<div class="slider" id="s8">
-	<input class="slider-input" id="s8input"/>
-</div>
-
-<div class="slidertext" id="kleinwater">
-	<input id="s8value" size="3" value="0" />%
-</div>
-
-<!-- <div class="slidercaption" id="caption9">
-	Sloten, beken, rivieren en <br>plassen
-</div>
-
-<div class="slider" id="s9">
-	<input class="slider-input" id="s9input"/>
-</div>
-
-<div class="slidertext" id="grootwater">
-	<input id="s9value" size="3" value="0" />%
-</div>
-
-<div class="slidercaption" id="caption10">
-</div>
-
-<div class="slider" id="s10">
-	<input class="slider-input" id="s10input"/>
-</div>
-
-<div class="slidertext" id="kleinwater">
-	<input id="s10value" size="3" value="0" />%
-</div>  -->
-
-<div id="butmaakeigenroute">
-	<img class="button" src="media/buttons/maakroute-submit.gif" onClick="javascript:ROUTE.generateRoute();" alt="maakroute"/>
-</div>
-
-
-<!--
-
-
-<div id="maakroutebox" style="display:none"><img src="media/buttons/maakrouteblokken.gif" border="0"></div>
-
-<div id="leguitbox" style="display:block"><img src="media/images/videobox.gif" border="0"></div>
-
-<div id="leguitbullet" style="display:block"><img src="media/buttons/bullet.gif" border="0"></div>
-
-<div id="leguittext" class="slidercaption" style="display:block">
-	Stel uw eigen route samen naar uw eigen voorkeuren!
-	Klik op "maakroute" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen.
-	Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.
-</div>
-
-<div id="generated-routes" class="genroutetekst"></div>
-<div id="generated-routes-image"></div>
-
-<div id="generated-routes-image-big"></div>
+	<tr>
+		<td><input id="bebouwd" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>bewoningskernen 	</td>					
+	</tr>
 -->
+	<tr>
+		<td><input id="bos" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>bos 					</td>				
+	</tr>
+	<tr>
+		<td><input id="heizand" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>heide zand en duingebied 	</td>			
+	</tr>
+	<tr>
+		<td><input id="natuurgras" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>natuurlijk grasland, moeras en riet </td>	
+	</tr>
+	<tr>
+		<td><input id="kleinwater" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		<td>sloten, beken, rivieren en plassen </td>	
+	</tr>
+</table>
 
-</div>
+<br>
+
+<span id="maak_route_knop">
+	<a href="#" onclick="javascript:ROUTE.generateRoute();" > &nbsp; MAAK ROUTE > &nbsp; &nbsp; </a>
+</span>
+
