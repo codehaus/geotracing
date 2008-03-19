@@ -91,11 +91,9 @@ var MAP = {
 		var bounds = new OpenLayers.Bounds(bboxArr[0], bboxArr[1], bboxArr[2], bboxArr[3]);
 		MAP.map.zoomToExtent(bounds);
 		MAP.removeOverlays();
-
 		MAP.overlays['route'] = new OpenLayers.Layer.WMS.Untiled('Route (#' + id + ')',
 				// MAP.WMS_URL + '?ID=' + aRouteId + '&LAYERS=topnl_raster,single_diwi_route');
 				MAP.WMS_URL, {id: id, layers: 'diwi_routes_sel', format: MAP.IMAGE_FORMAT, transparent: true});
-
 		MAP.map.addLayer(MAP.overlays['route'] );
 		MAP.addStartEndPointLayer();
 		var pois = routeRec.getField('pois');
@@ -144,6 +142,7 @@ var MAP = {
 		MAP.overlays['pois'] = null;
 		MAP.overlays['startendpoints'] = null;
 		MAP.overlays['route'] = null;
+		MAP.overlays['routepois'] = null;
 	},
 
 	destroy: function() {
@@ -207,15 +206,24 @@ var MAP = {
 	},
 
 	show: function() {
-		DH.displayOn('map');
-		if (MAP.map == null) {
+		/*DH.displayOn('map');*/
+		/*if (MAP.map != null) {
+			MAP.destroy();
+			
+		
+		}*/
+			
+		if (MAP.map == null)
+		{
 			MAP.create();
 		}
+			
 
 		MAP.init();
-
+		DH.displayOn('map');
+		
 		// Position map absolute based on anchor position
-		DH.setObjectXY('map', DH.getObjectX('mapanchor'), DH.getObjectY('mapanchor'))
+		//DH.setObjectXY('map', DH.getObjectX('mapanchor'), DH.getObjectY('mapanchor'))
 		// DH.setObjectWH('pagina', DH.getObjectWidth('pagina'), DH.getObjectHeight('map') + 50)
 	}
 }

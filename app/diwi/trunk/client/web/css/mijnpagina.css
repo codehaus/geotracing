@@ -73,7 +73,7 @@ lichter {
 #map {
 	position: absolute;
 	width: 400px;
-	height: 300px;
+	height: 150px;
 	top: 190px;
 	left: 60px;
 	z-index: 100;

@@ -1,0 +1,62 @@
+<table id="params3" >
+	<tr>
+		<td class="col1" >wandelen </td> <td class="col2" ></td>
+		
+	<tr>
+		<td>fietsen </td><td></td>
+	</tr>
+</table>
+
+<table id="params1" >
+	<tr>
+		<td class="col1">
+			start / eindpunt
+		</td>
+		<td class="col2" id="starteindpunt-lb">
+			<select class="listbox"><option value="-1" selected="selected">kies...</option></select>	
+		</td>
+	</tr>
+	<tr>
+		<td>
+			wandelen / fietsen
+		</td>
+		<td id="afstand-lb">
+			<select class="listbox"><option value="-1" selected="selected">kies...</option></select>	
+		</td>	
+	</tr>
+</table>	
+
+
+<table id="params2" >
+	<tr>
+		<td class="col1" >besloten agrarisch gebied</td> 			<td class="col2" ><input id="besloten" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+		
+	<tr>
+		<td>halfopen agrarisch gebied </td>				<td><input id="halfopen" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>	
+	<tr>
+		<td>open agrarisch gebied 	</td>				<td><input id="open" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>
+	<tr>
+		<td>bewoningskernen 	</td>					<td><input id="bebouwd" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>
+	<tr>
+		<td>bos 					</td>				<td><input id="bos" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>
+	<tr>
+		<td>heide zand en duingebied 	</td>			<td><input id="heizand" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>
+	<tr>
+		<td>natuurlijk grasland, moeras en riet </td>	<td><input id="natuurgras" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>
+	<tr>
+		<td>sloten, beken, rivieren en plassen </td>	<td><input id="kleinwater" type="radio" onclick="route_gen_param_changed(this)"> </input></td>
+	</tr>
+</table>
+
+<br>
+
+<span id="maak_route_knop">
+	<a href="#" onclick="javascript:ROUTE.generateRoute();" > &nbsp; MAAK ROUTE > &nbsp; &nbsp; </a>
+</span>
+

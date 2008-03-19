@@ -38,13 +38,13 @@ var ROUTE = {
 	endPOIs: null,
 
 	createDistanceForm: function () {
-		var formHTML = '<p>Wandelen/fietsen en afstand</p><form><select id="afstand" ><option value="-1" selected="selected">kies...</option><option value="3000" >wandelen 3 km</option><option value="5000" >wandelen 5 km</option><option value="10000" >fietsen 10 km</option><option value="15000" >fietsen 15 km</option><option value="20000" >fietsen 20 km</option></select></form>';
+		/*var formHTML = '<select id="afstand" class="listbox" ><option value="-1" selected="selected">kies...</option><option value="3000" >wandelen 3 km</option><option value="5000" >wandelen 5 km</option><option value="10000" >fietsen 10 km</option><option value="15000" >fietsen 15 km</option><option value="20000" >fietsen 20 km</option></select>';
 
-		DH.setHTML('afstand-lb', formHTML);
+		DH.setHTML('afstand-lb', formHTML);*/
 	},
 
 	createEndPOIsForm: function(rspXML) {
-		var formHTML = '<p>Eindpunt</p><form><select style="width:120px;" id="eindpunt" ><option value="-1" selected="selected">geen voorkeur</option>';
+		var formHTML = '<p>Eindpunt</p><form><select id="eindpunt" class="listbox" ><option value="-1" selected="selected">geen voorkeur</option>';
 
 		ROUTE.endPOIs = ROUTE.rsp2Records(rspXML);
 
@@ -59,22 +59,86 @@ var ROUTE = {
 	},
 
 	creatFixedRoutesForm: function(records) {
-		var formHTML = '<form><select onChange="ROUTE.showFixedRoute(this.value)"><option name="frnone" value="-1" selected="selected" >Kies een route...</option>';
+			
+		/** generate a list of routes */
 		if (records != null) {
+			var routeListWandel = document.createElement("ul");
+			var routeListFiets = document.createElement("ul");
+			var routeListVerhaal = document.createElement("ul");
+			
+			
+			var strong1 = document.createElement("strong");
+			strong1.appendChild(document.createTextNode("Wandelroutes"));
+			routeListWandel.appendChild(strong1);
+			
+			var strong2 = document.createElement("strong");
+			strong2.appendChild(document.createTextNode("Fietsroutes"));
+			routeListFiets.appendChild(strong2);
+			
 			ROUTE.fixedRoutes = new Array();
 			for (i = 0; i < records.length; i++) {
-				ROUTE.fixedRoutes[records[i].id] = records[i];
-				formHTML += '<option name="fr' + records[i].id + '" value="' + records[i].id + '" >';
-				formHTML += records[i].getField('name');
-				formHTML += '</option>';
+		
+				var routeItem = document.createElement("li");
+				routeItem.className = "route"
+				
+				var name = records[i].getField('name');
+				
+				routeItem.appendChild(document.createTextNode(name));
+				routeItem.record = records[i];
+				
+				if(name.search('fiets') != -1)
+				{
+					routeListFiets.appendChild(routeItem)
+					
+				}
+				else if(name.search('Verhaal') != -1)
+				{
+					routeListVerhaal.appendChild(routeItem)	
+				}
+				else
+				{
+					routeListWandel.appendChild(routeItem)	
+				}
+				
+				$(routeItem).click(function() {
+					ROUTE.showFixedRoute(this.record);
+				});
+
 			}
+			DH.setHTML('right', ""); //clear
+			
+			/*
+			var hint1 = document.createElement("p");
+			var strong1 = document.createElement("strong");
+			strong1.appendChild(document.createTextNode("Wandelroutes"));
+			hint1.appendChild(strong1);
+			
+			var hint2 = document.createElement("p");
+			var strong2 = document.createElement("strong");
+			strong2.appendChild(document.createTextNode("Fietsroutes"));
+			hint2.appendChild(strong2);
+			*/
+			
+			//document.getElementById("right").appendChild(hint1);
+			document.getElementById("right").appendChild(routeListWandel);
+			document.getElementById("right").appendChild(routeListVerhaal);
+			//document.getElementById("right").appendChild(hint2);
+			document.getElementById("right").appendChild(routeListFiets);
+			
 		}
-		formHTML += '</select></form>';
-		DH.setHTML('vasteroutes', formHTML);
-		MAP.show();
+		
+		/** append "hover" functionality to list items */ 
+		$(".route").mouseover(function(){
+			$(this).addClass("mouseover");
+	    }).mouseout(function(){
+	      	$(this).removeClass("mouseover");
+	    });
+		
+		//DH.setHTML('right', formHTML);
+		//MAP.show();
 		MAP.addPOILayer();
 		MAP.addUGCLayer();
-		DIWIAPP.pr('Selecteer hiernaast een van de vaste routes. Punten:<br/>rood: Points of Interest<br/>oranje: start/eindpunten<br/>blauw: media van gebruikers.');
+		/*DIWIAPP.pr('Selecteer hiernaast een van de vaste routes. Punten:<br/>rood: Points of Interest<br/>oranje: start/eindpunten<br/>blauw: media van gebruikers.');*/
 	},
 
 	createGenerateRouteForm: function () {
@@ -87,12 +151,12 @@ var ROUTE = {
 		//DH.getObject("fietsen").checked = false;
 
 		//	DH.getObject("wandelen").checked = true;
-		DIWIAPP.pr('Maak uw eigen route naar uw eigen voorkeuren! Klik op "Maak Route" en er wordt een zo nauwkeurig mogelijke route voor u gemaakt, geheel naar eigen wensen. Let wel op! Wanneer u een nieuwe route maakt, wordt de vorige overschreven.<br/>Het maken van een eigen route is gebaseerd op het gebruik van GEEN, &Eacute;&Eacute;N of TWEE landschapskenmerken (dus GEEN, &Eacute;&Eacute;N of TWEE schuiven). Zodra er een schuif verschoven is richting maximum (100 %) dan wordt deze keuze meegenomen in de berekening.');
+		//DIWIAPP.pr('Maak uw eigen route naar uw eigen voorkeuren!');
 
 		// Create and configure the sliders
-		for (var i = 1; i < 9; i++) {
+		/*for (var i = 1; i < 9; i++) {
 			ROUTE.createSlider('s' + i);
-		}
+		}*/
 	},
 
 	createSlider: function(id) {
@@ -116,7 +180,7 @@ var ROUTE = {
 	},
 
 	createStartPOIsForm: function(rspXML) {
-		var formHTML = '<p>Startpunt</p><form ><select style="width:120px;" id="startpunt"><option value="-1" selected="selected">geen voorkeur</option>';
+		var formHTML = '<p>Startpunt</p><form ><select class="listbox" id="startpunt"><option value="-1" selected="selected">geen voorkeur</option>';
 
 		ROUTE.startPOIs = ROUTE.rsp2Records(rspXML);
 
@@ -131,7 +195,7 @@ var ROUTE = {
 	},
 
 	createStartEndPOIsForm: function(rspXML) {
-		var formHTML = '<p>Start/Eindpunt</p><form ><select style="width:120px;" id="starteindpunt"><option value="-1" selected="selected">kies...</option>';
+		var formHTML = '<select class="listbox" id="starteindpunt"><option value="-1" selected="selected">kies...</option>';
 
 		ROUTE.startEndPOIs = ROUTE.rsp2Records(rspXML);
 
@@ -141,12 +205,12 @@ var ROUTE = {
 			formHTML += '</option>';
 		}
 
-		formHTML += '</select></form>';
+		formHTML += '</select>';
 		DH.setHTML('starteindpunt-lb', formHTML);
 	},
 
 	createThemesForm: function(rspXML) {
-		var formHTML = '<p>Thema\'s</p><form><select style="width:120px;" id="thema" ><option value="-1" selected="selected">geen voorkeur</option>';
+		var formHTML = '<p>Thema\'s</p><form><select class="listbox" id="thema" ><option value="-1" selected="selected">geen voorkeur</option>';
 		var themes = rspXML.getElementsByTagName('theme');
 		for (i = 0; i < themes.length; i++) {
 			formHTML += '<option value="' + i + '">';
@@ -165,7 +229,7 @@ var ROUTE = {
 		// Start-point RD coordinates
 		var i = DH.getObject('starteindpunt').value;
 		if (i < 0) {
-			DIWIAPP.pr('U dient een start/eindpunt te kiezen.');
+			DIWIAPP.pr('U dient een start/eindpunt te kiezen.',"route_info");
 			return;
 		}
 
@@ -182,11 +246,14 @@ var ROUTE = {
 			// Theme value is value of displayed option in drop down
 			params[KW.DIWI.THEMA_PARAM] = themeElm.options[themeElm.selectedIndex].childNodes[0].nodeValue;
 		} */
+     
+        //pref type
+        //pref afstand
 
 		// Distance in meters
 		var distance = DH.getObject('afstand').value;
 		if (!distance || distance < 0) {
-			DIWIAPP.pr('U dient een afstand te kiezen.');
+			DIWIAPP.pr('U dient een afstand te kiezen.',"route_info");
 			return;
 		}
 
@@ -194,25 +261,31 @@ var ROUTE = {
 			params[KW.DIWI.AFSTAND_PARAM] = distance;
 		}
 
-		// All "omgeving" slider values
-		var slider, sliderVal;
-		for (i in ROUTE.sliders) {
-			slider = ROUTE.sliders[i];
-			sliderVal = slider.getValue();
-			params[slider.omgeving] = 0;
-			if (sliderVal > 0) {
-				params[slider.omgeving] = sliderVal;
+		// All "omgeving" checkbox values from params2 table in maakroute
+		var checkboxes = $("#right #params2 input"); 
+		for(var i=0;i<checkboxes.length;i++)
+		{
+			var param = checkboxes[i].id;
+			if(checkboxes[i].checked == true)
+			{
+				params[param] = 100;
+			}
+			else
+			{
+				params[param] = 0;
 			}
 		}
-
+		
 		// Defaults for non-exposed sliders
 		params['grootwater'] = 0;
 		params['industrie'] = 0;
+		params['open'] = 0;
+		params['bebouwd'] = 0;
 
-		params['type'] = distance < 10000 ? 'walking' : 'cycling';
+		params['type'] = document.getElementById('wandelen').checked ? 'walking' : 'cycling';
 
 		KW.DIWI.generateroute(ROUTE.onCreateRouteRsp, params);
-		DIWIAPP.pr('even geduld, uw persoonlijke route wordt gegenereerd...');
+		DIWIAPP.pr('even geduld, uw persoonlijke route wordt gegenereerd...',"route_info");
 
 	},
 
@@ -220,20 +293,20 @@ var ROUTE = {
 		ROUTE.generatedRouteId = xmlRsp.firstChild.getAttribute('id');
 		var route = xmlRsp.firstChild;
 		if (!route || route.childNodes.length == 0) {
-			DIWIAPP.pr('Helaas, met de door u ingegeven waarden kon geen route worden samengesteld. <br/>Probeert u het nogmaals met andere waarden..');
-			// DIWIAPP.pr('Helaas, er kon geen route gemaakt worden met de door u ingebrachte gegevens. Probeert u het nog een keer met andere gegevens.');
+			DIWIAPP.pr('Helaas, met de door u ingegeven waarden kon geen route worden samengesteld. <br/>Probeert u het nogmaals met andere waarden..',"route_info");
 			return;
 		}
-		DIWINAV.loadPage('pages/routemap.html');
-		MAP.show();
+		/*DH.setHTML("main", DH.getURL("pages/routes.html", null));*/
+		
 
 		SRV.get('q-diwi-route-info', ROUTE.onQueryGenRouteInfo, 'id', ROUTE.generatedRouteId);
+		MAP.show();
 		// KW.DIWI.getmap(ROUTE.onGetRouteMapRsp, ROUTE.generatedRouteId, 580, 400);
 	},
 
 	onGetRouteMapRsp: function(xmlRsp) {
-		DIWINAV.loadPage('pages/routemap.html');
-		MAP.show();
+		//DIWINAV.loadPage('pages/routemap.html');
+		//MAP.show();
 		MAP.addRouteLayer(ROUTE.generatedRouteId);
 	},
 
@@ -242,7 +315,7 @@ var ROUTE = {
 		var name = routeRec.getField('name');
 		var description = routeRec.getField('description');
 		var routeString = 'Uw persoonlijke route is gereed! De afstand is ' + Math.round(routeRec.getField('distance') / 1000) + ' km.<br/>Deze route kunt u straks op uw Digitale Wichelroede selecteren. Indien u een andere route wilt genereren klik dan nogmaals op "Maak Route".';
-		DIWIAPP.pr(routeString);
+		DIWIAPP.pr(routeString,"route_info");
 		MAP.addRouteLayer(routeRec);
 	},
 
@@ -250,8 +323,8 @@ var ROUTE = {
 		var routeRec = records[0];
 		var name = routeRec.getField('name');
 		var description = routeRec.getField('description');
-		var routeString = '<h2>' + name + '</h2>' + description + '<br/>afstand: ' + routeRec.getField('distance') / 1000 + ' km';
-		DIWIAPP.pr(routeString);
+		var routeString = '<strong>' + name + '</strong><br><br>' + description + '<br/>afstand: ' + routeRec.getField('distance') / 1000 + ' km';
+		DH.setHTML('route_info', routeString);
 		MAP.addRouteLayer(routeRec);
 	},
 
@@ -269,16 +342,20 @@ var ROUTE = {
 		SRV.get('q-diwi-routes', ROUTE.creatFixedRoutesForm, 'type', 'fixed');
 	},
 
-	showFixedRoute: function(optionValue) {
-		if (!optionValue || optionValue == -1) {
+	showFixedRoute: function(record) {
+		if (!record ) {
 			return;
 		}
-
-		var record = ROUTE.fixedRoutes[optionValue];
+		
+		//alert(optionValue)
+		
+		//var record = ROUTE.fixedRoutes[optionValue];
 		var content = '<h2>' + record.getField('name') + '</h2>';
 		content += record.getField('description');
-
-		DIWIAPP.pr(content);
+		//alert(content)
+		//DIWIAPP.pr(content);
+		DH.setHTML('route_info', content);
+		
 		SRV.get('q-diwi-route-info', ROUTE.onQueryRouteInfo, 'id', record.id);
 	},
 

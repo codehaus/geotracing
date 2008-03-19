@@ -21,32 +21,33 @@ var DIWIAPP = {
 
 // Initialization of all KWClient and all application objects.
 	init: function() {
+		
 		DIWIAPP.pr('init...');
 
 		// Change portal base url for test
-		if (document.location.href.indexOf('test.digitalewichelroede.nl') != -1) {
-			DIWIAPP.PORTAL = '/diwitest';
-		}
+	//	if (document.location.href.indexOf('test.digitalewichelroede.nl') != -1) {
+	//		DIWIAPP.PORTAL = '/diwitest';
+	//	}
 
 		SRV.init();
 		SRV.url = DIWIAPP.PORTAL + '/srv/get.jsp?';
+		
 		// KeyWorx client with
 		// callbacks (2x)
 		// server timeout in minutes
 		// server root path /diwi
 		KW.init(DIWIAPP.onRsp, DIWIAPP.onNegRsp, 2, DIWIAPP.PORTAL);
 		DIWINAV.init();
-		// DIWIAPP.pr('init done');
-		// MAP.init();
+				
 		var accData = KW.getAccountData();
-		if (accData != null && accData[0] != '' && accData[0].length > 0) {
-			var loginForm = DH.getObject('loginform');
-			loginForm.name.value = accData[0];
-			loginForm.password.value = accData[1];
-			DIWIAPP.login();
+		if (accData != null && accData[0] != '' && accData[0].length > 0) { //user and pass in a cookie
+			
+			DH.getObject('username_field').value = accData[0];
+			DH.getObject('password_field').value = accData[1];
+			DH.getObject('autologin').checked = true;
+						
+			DIWIAPP.autoLogin = true;
 		}
-
-		DIWIAPP.imageSwap();
 
 		Date.MONTHS = [
 				'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli',
@@ -59,25 +60,35 @@ var DIWIAPP = {
 				];
 
 		// Swap images in top (just for fun)
-		window.setInterval(DIWIAPP.imageSwap, 30000);
+		//window.setInterval(DIWIAPP.imageSwap, 30000);
 	},
 
 // called from form submit
 	login: function() {
 		DIWIAPP.pr('inloggen...');
-		var loginForm = DH.getObject('loginform');
-		DIWIAPP.userName = loginForm.name.value;
-		var password = loginForm.password.value;
-
-		// Call KWClient
+				
+		DIWIAPP.userName = DH.getObject('username_field').value;
+		var password = DH.getObject('password_field').value;
+					
+		if(DIWIAPP.userName == "") 
+		{			
+			DIWIAPP.pr('u moet een gebruikersnaam invullen',"login_error");
+			return false;
+		}
+		else if(password == "")
+		{
+			DIWIAPP.pr('u moet een wachtwoord invullen',"login_error");
+			return false;
+		}
+		
 		KW.login(DIWIAPP.userName, password);
-		DIWIAPP.pr('login sent');
+		
 		return false;
 	},
 
 	logout: function() {
 		DIWIAPP.pr('uitloggen...');
-		KW.clearAccount();
+		
 		// KeyWorx client
 		KW.logout();
 		return false;
@@ -100,7 +111,6 @@ var DIWIAPP = {
 		if (DIWIAPP.autoLogin == false) {
 			KW.clearAccount();
 		}
-		// DIWIAPP.pr('autologin=' + autologin);
 	},
 
 	onRsp: function(elm) {
@@ -108,7 +118,7 @@ var DIWIAPP = {
 			DIWIAPP.pr('empty response');
 			return;
 		}
-
+					
 		// DIWIAPP.pr('server response ' + elm.tagName);
 		if (elm.tagName == 'login-rsp') {
 			DIWIAPP.pr('login response ok');
@@ -116,10 +126,6 @@ var DIWIAPP = {
 			KW.selectApp('geoapp', 'user');
 		} else if (elm.tagName == 'select-app-rsp') {
 			DIWIAPP.hbTimer = window.setInterval('DIWIAPP.sendHeartbeat()', 120000)
-			if (DIWIAPP.autoLogin == true) {
-				KW.storeAccount();
-				KW.storeSession();
-			}
  			DIWINAV.onLogin();
 		} else if (elm.tagName == 'echo-rsp') {
 		} else if (elm.tagName == 'logout-rsp') {
@@ -134,11 +140,11 @@ var DIWIAPP = {
 	onNegRsp: function(errorId, error, details, responseTag) {
 		switch (responseTag) {
 			case 'route-generate-nrsp':
-				DIWIAPP.pr('Helaas, met de door u ingegeven waarden kon geen route worden samengesteld. <br/>Probeert u het nogmaals met andere waarden.');
+				DIWIAPP.pr('Helaas, met de door u ingegeven waarden kon geen route worden samengesteld. <br/>Probeert u het nogmaals met andere waarden.',"route_info");
 				break;
 
 			case 'login-nrsp':
-				DIWIAPP.pr('Gebruiker of wachtwoord is onbekend');
+				DIWIAPP.pr(details,"login_error");
 				break;
 
 			default:
@@ -148,10 +154,22 @@ var DIWIAPP = {
 	},
 
 // Util for printing/displaying debug output
-	pr: function (s) {
-		DH.setHTML('balloontext', s);
+	pr: function (s,type) {
+		if(type == null)
+		{
+			DH.setHTML('footer', s);
+		}
+		else if(type == "login_error")
+		{
+			DH.setHTML('login_error', s);
+		}
+		else if(type == "route_info")
+		{
+			DH.setHTML('route_info', s);
+		}
 	},
 
+	
 	setStatus: function (s) {
 		DH.setHTML('status', s);
 	}

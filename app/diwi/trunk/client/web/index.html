@@ -3,11 +3,10 @@
 <head>
 	<title>De Digitale Wichelroede</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<link rel="stylesheet" type="text/css" href="css/home.css">
-	<link rel="stylesheet" type="text/css" href="css/maakroute.css">
-	<link rel="stylesheet" type="text/css" href="css/bluecurve/bluecurve.css">
-	<link rel="stylesheet" type="text/css" href="css/winclassic.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 
+	
+	
 	<script type="text/javascript" src="lib/gt/Date.js"></script>
 	<script type="text/javascript" src="lib/gt/DHTML.js"></script>
 	<script type="text/javascript" src="lib/gt/KWClient.js"></script>
@@ -26,109 +25,458 @@
 	<script type="text/javascript" src="js/range.js"></script>
 	<script type="text/javascript" src="js/timer.js"></script>
 	<script type="text/javascript" src="js/DiWiApp.js"></script>
+	
+	<script type="text/javascript" src="js/jquery.js"></script>
 </head>
 
 <body>
-<div id="top"><img src="media/images/top2.jpg" border="0"/></div>
 
-<div id="topfoto"><img id="plaatje" src="media/images/01.jpg"/></div>
-
-<div id="butwelkom">
-	<img class="button" id="b1" src="media/buttons/welkom.gif"/>
-</div>
-
-<div id="butroutes">
-	<img class="button" id="b2" src="media/buttons/routes.gif"/>
-</div>
-
-<div id="butaanmelden">
-	<img class="button" id="b3" src="media/buttons/aanmelden.gif"/>
-</div>
-
-<div id="butfaq">
-	<img class="button" id="b4" src="media/buttons/faq.gif"/>
-</div>
-
-<div id="rechterkolom">
-	<div id="bovenbutlijn"><img src="media/images/bovenbuttons.gif"/></div>
-
-	<div id="butinloggen">
-		<img class="button" id="b5" src="media/buttons/inloggen.gif"/>
+	
+<div id="site">
+	
+	<div id="main">
+		<div id="map"></div>
+		<div id="main_content"></div>
 	</div>
 
-	<div id="butuitloggen" style="display:none">
-		<img class="button" id="b6" src="media/buttons/uitloggen.gif">
+	<div id="right">
+		
 	</div>
-
-	<div id="butmaakroute" style="display:none;">
-		<img class="button" id="b7" src="media/buttons/maakroute.gif"/>
-	</div>
-
-	<div id="butmijnpagina" style="display:none;">
-		<img class="button" id="b8" src="media/buttons/mijnpagina.gif"/>
-	</div>
-
-	<div id="onderbutlijn"><img src="media/images/onderbuttons2.gif"/></div>
-
-	<div id="inlogbox" style="display:none;"><img src="media/images/balloon.gif"/></div>
-
-	<div id="inlogform" class="logform" style="display:none;">
-		<form id="loginform" class="logform" action="#">
-			<p>Loginnaam :<br>
-				<input type="text" name="name">
-			</p>
-
-			<p> Wachtwoord :<br>
-				<input type="password" name="password" id="fieldpassword" ><br/>
-				onthoud<br/><input id="autologin" type="checkbox" name="auto" onclick="DIWIAPP.toggleAutoLogin()" />
-
-				<div id="logforminlogbut" style="display:inherit">
-					<img id="butloginsubmit" class="button" src="media/buttons/login.gif"/>
-				</div>
+	
+	
+	<div id="top">
+		<div id="logo" > </div>
+		<div id="browse_a"></div>
+		<div id="browse_b"></div>
+		<div id="browse_selected"></div>
+	
+		<div id="home_menu" class="sub_menu" >
+			Wat is de digitale wichelroede en wat kun je er allemaal mee <br>
+			<a id="videolink" href="#" onclick="DH.setHTML('main_content', DH.getURL('pages/video.html'));" > Bekijk hier de introductievideo </a>	
+		</div>
+	
+		<div id="op_pad_menu" class="sub_menu">
+			<span>
+				<a href="#" onclick="op_pad_submenu_click('bestaande route');" > bestaande route </a> /
+				<a href="#" onclick="op_pad_submenu_click('persoonlijke route');" > persoonlijke route </a> /
+				<a href="#" onclick="op_pad_submenu_click('struinen');" > struinen </a> 
+			</span><br>
+			<p id="op_pad_menu_info"></p>
+		</div>
+	
+		<div id="over_diwi_menu" class="sub_menu">
+			Beleef culturele geschiedenis ter plekke
+		</div>
+	
+		<div id="pers_menu" class="sub_menu" >
+			In de media komt Digitale Wichelroede geregeld aan bod 
+		</div>
+	
+		<div id="contact_menu" class="sub_menu">
+					
+		</div>
+	
+		<div id="aanmelden_menu" class="sub_menu">
+			<div id="login_form" >
+				Loginnaam :<br>
+				<input type="text" name="name" id="username_field"><br>
+				Wachtwoord :<br>
+				<input type="password" name="password" id="password_field" ><br/>
+				<span>				
+					onthoud<input id="autologin" type="checkbox" name="auto" onclick="DIWIAPP.toggleAutoLogin()" />
+					<a href="#" id="login_button" onclick="login_button_hit(this)" > &nbsp; &nbsp; LOGIN ></a>
+				</span> <br>
+				<p id="login_error"></p>
+			</div>
+		</div>
+		
+		<div id="maak_route_menu" class="sub_menu private">
+			Vul rechts de gewenste kenmerken van de route in en klik op ‘maak route’. <br>
+			Op basis van de door u ingevulde wensen wordt er een route berekend.	
+		</div>
+		
+		<div id="mijn_routes_menu" class="sub_menu private">
+			Bekijk de lijst met door u gemaakte tochten.		
+		</div>
+		
 			
-		</form>
+		<div id="home" class="menu_item">
+			<div class="button"></div>
+			<div class="label">HOME</div>
+		</div>
+		<div id="op_pad" class="menu_item" >
+			<div class="button"></div>
+			<div class="label">OP PAD</div>
+		</div>
+		<div id="over_diwi" class="menu_item" >
+			<div class="button"></div>
+			<div class="label">OVER DIWI</div>
+		</div>
+		<div id="pers" class="menu_item">
+			<div class="button"></div>
+			<div class="label">PERS</div>
+		</div>
+		<div id="contact" class="menu_item">
+			<div class="button"></div>
+			<div class="label">CONTACT</div>
+		</div>
+		<div id="aanmelden" class="menu_item">
+			<div class="button"></div>
+			<div class="label" id="mijn_diwi">MIJN DIWI</div>
+			<div class="label" id="log_uit">LOG UIT</div>
+		</div>
+		<div id="maak_route" class="menu_item">
+			<div class="button"></div>
+			<div class="label private">MAAK ROUTE</div>
+		</div>
+		<div id="mijn_routes" class="menu_item">
+			<div class="button"></div>
+			<div class="label private">MIJN ROUTES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
+		</div>
+	
+	
 	</div>
 
-	<div id="balloon"><img src="media/images/balloon.gif"/></div>
 
-	<div id="bullet"><img src="media/images/bullet.gif"/></div>
 
-	<div id="balloontext">
-		Hier allerlei meldingen texten etc. De Digitale Wichelroede is een slim apparaat dat een heleboel weet, zodat
-		jij als gebruiker d&iacute;e
-		cultuurhistorische kennis eruit kan halen waarover je graag wat meer te weten wilt komen. Bij het ontwikkelen
-		van het apparaat moet daarom eerst een heleboel kennis verzameld en gedigitaliseerd worden. Deze informatie
-		halen we overal vandaan. Uit boeken, databases, maar ook van historische verenigingen en van mensen die in een
 
-	</div>
-
-	<div id="generated-routes-image">&nbsp;</div>
-
-	<!--	<div id="fotovideobox"><a href="home/images/fotovideobox.gif" rel="lightbox"><img src="home/images/fotovideobox.gif" ></a> </div> -->
-	<!--
-	<div id="videobox"><img src="media/images/videobox.gif"></div>
-	<div id="fotovideobox"><img src="media/images/fotovideobox.gif"></div>
-
-	<div id="spotmetbox"><img src="media/images/spotmetbox.gif"></div>
-
-	<div id="butintrovideo">
-		<img id="9" src="media/buttons/introvideo.gif" onMouseOver="" onMouseOut="" onClick="">
-	</div>
-
-	<div id="watistext">
-
-		<font size="-2">Helaas is er in de huidige versie nog geen introductie video te bekijken.</font>
-
-	</div>
-	 -->
+</div>
+<div id="footer">
+	
 </div>
 
-<div id="line"><img src="media/images/lijn.gif"/><span id="status">niet ingelogd</span></div>
 
+<script type="text/javascript" >
+	
+	/** init */
+	
+	function op_pad_submenu_click(which)
+	{
+		MAP.removeOverlays();
+		
+		DH.setHTML("route_info",""); //clear
+		
+		switch(which)
+		{
+			case "bestaande route":
+				DH.setHTML('op_pad_menu_info','u kunt nu één van de voorgeselecteerde routes selecteren');
+				ROUTE.showFixedRoutes();
+				break;
+			case "persoonlijke route":
+				DH.setHTML('right', DH.getURL('pages/op_pad_right_persoonlijk.html'));
+				DH.setHTML('op_pad_menu_info','wanneer u ingelogd  bent kunt u onder MIJN DIWI persoonlijke routes samenstellen');		
+				break;
+			case "struinen":
+				MAP.addPOILayer();
+				DH.setHTML('right', DH.getURL('pages/op_pad_right_struinen.html'));
+				DH.setHTML('op_pad_menu_info','');
+				break;
+		}
+		
+	
+		
+	}
+	
+	
+	function select_menu_item(button)
+	{
+		/* deselect all */
+		$(".selected").removeClass("selected");
+		$("#browse_selected").css("display","none");
+		$(".sub_menu").css("display","none");
+		var labels = $(".label");
+		var label_width = parseInt($(".label").css("width"));
+		
+		/* set the labels to default pos */
+		for(var i=0;i<labels.length;i++)
+		{
+			var labelButton = $(".button",labels[i].parentNode)
+			var labelButtonLeft = labelButton.css("left");
+			
+			labels[i].style.left = 	"" + (parseInt(labelButtonLeft) + 10 - label_width/2) + "px";		
+		}
+				
+						
+		if(button == null)
+		{
+			return;
+		}
+		
+		/* go on place the label and the sub menu 
+		   make right side and main content visible
+		*/
+				
+		var button_left = parseInt($(button).css("left"));
+		var label = $(".label",button.parentNode);
+		
+		//make the button and the label selected
+		$(button).addClass("selected");
+		$("#browse_selected").css("left","" + button_left + "px");
+		$("#browse_selected").css("display","inline");
+						
+		//place the selected label and menu
+		var menu_width = parseInt($(".sub_menu").css("width"));
+		var menu_id = button.parentNode.id + "_menu";
+		$("#"+menu_id).css("display","block");
+		$(label).addClass("selected");
+		if(label.hasClass("private"))
+		{
+			$(label).css("left","" + (button_left - label_width - 15 ) + "px");
+			$("#"+menu_id).css("left","" + (button_left - 15 - menu_width ) +"px");
+		}
+		else
+		{
+			$(label).css("left","" + (button_left + 25 ) + "px");
+			$("#"+menu_id).css("left","" + (button_left + 25 ) +"px");
+		}
+		
+		//http://www.digitalewichelroede.nl/web/media/video/diwi-promo.swf
+		//http://test.digitalewichelroede.nl/diwi/media.srv?id=2842
+	
+		//show content right and main
+		setCompactPage();
+		
+		switch(menu_id)
+		{
+			case "home_menu":
+				/** main */
+				MAP.hide();
+				DH.setHTML("main_content", DH.getURL("pages/welkom.html", null));
+				/** right */
+				DH.setHTML("right", DH.getURL("pages/default_right.html", null));
+				break;
+			case "op_pad_menu":
+				/** main */
+				DH.setHTML("main_content", DH.getURL("pages/routes.html", null));
+				DH.setHTML('op_pad_menu_info','');
+				MAP.show();
+				/** right */
+				DH.setHTML("right", DH.getURL("pages/op_pad_right_default.html", null));
+				break;
+			case "over_diwi_menu":
+				MAP.hide();
+				setLargePage();
+				DH.setHTML("main_content", DH.getURL("pages/over_diwi.html", null));
+				/** right */
+				DH.setHTML("right", DH.getURL("pages/over_diwi_right.html", null));
+				break;
+			case "pers_menu":
+				MAP.hide();
+				setMediumPage();
+				DH.setHTML("main_content", DH.getURL("pages/pers.html", null));
+				/** right */
+				DH.setHTML("right", DH.getURL("pages/pers_right.html", null));
+				break;
+			case "contact_menu":
+				MAP.hide();
+				setMediumPage();
+				DH.setHTML("main_content", DH.getURL("pages/contact.html", null));
+				replace_mailto();
+				/** right */
+				DH.setHTML("right", DH.getURL("pages/contact_right.html", null));
+				break;
+			case "aanmelden_menu":
+				/** main */
+				MAP.hide();
+				DH.setHTML("main_content", DH.getURL("pages/welkom.html", null));
+				/** sub menu */
+				if($("#aanmelden #mijn_diwi").css("display") != "none" )
+				{
+					DIWINAV.prepareLogin();	
+				}
+				else
+				{
+					DIWIAPP.logout();
+				}
+				/** right */
+				DH.setHTML("right", DH.getURL("pages/default_right.html", null));
+				break;
+			case "mijn_routes_menu":
+				/*main*/
+				DH.setHTML("main_content", DH.getURL("pages/routes.html", null));
+				MAP.show();
+				/*right*/
+				TRIP.showTrips();
+				break;
+			case "maak_route_menu":
+				/*main*/
+				DH.setHTML("main_content", DH.getURL("pages/routes.html", null));
+				MAP.show();
+				/*right*/
+				DH.setHTML("right", DH.getURL("pages/maakroute.html", null));
+				ROUTE.createGenerateRouteForm();
+				break;
+	
+		}
 
-<div id="pagina" class="pagina">
-</div>
-<div id="map"></div>
+	}
+	
+	function login_button_hit(button)
+	{
+		DIWIAPP.login();
+	}	
+	
+	var lastCheckedParam = null;
+	function route_gen_param_changed(radio)
+	{ 
+		/* ingewikkeld gedoe omdat voor checkbox onchange niet goed werkt in ie6 
+		   en radios anders werken in firefox
+		*/
+				
+		if(radio.selected == true) //was selected turn off
+		{
+			radio.selected = false;
+			radio.checked = false;
+		}
+		else 
+		{	
+			radio.selected = true;
+			radio.checked = true;
+		}
+					
+		if(radio.selected == true) //a new radio is checked 
+		{
+			var radioes = $("#right #params2 input");
+			
+			var nrSelected = 0;
+			for(var i=0;i<radioes.length;i++)
+			{
+				if(radioes[i].selected == true)
+				{
+					nrSelected++;
+				}
+			}
+			if(nrSelected > 2)
+			{
+				for(var i=0;i<radioes.length;i++)
+				{
+					if((radio.id != radioes[i].id) && (lastCheckedParam != radioes[i].id))
+					{
+						//turn all off except for the current and the last
+						radioes[i].checked = false;
+						radioes[i].selected = false;
+					}
+				}
+			}
+			lastCheckedParam = radio.id;
+		}
+		
+	
+
+	}
+	function route_gen_param_changed2(radio)
+	{ 
+		radio.checked = true;
+		
+		if(radio.id == 'fietsen')
+		{
+			document.getElementById('wandelen').checked = false;
+			var formHTML = '<select id="afstand" class="listbox" ><option value="-1" selected="selected">kies...</option><option value="15000" >15 km</option><option value="25000" >25 km</option></select>';
+
+			DH.setHTML('afstand-lb', formHTML);
+			
+		}
+		else
+		{
+			document.getElementById('fietsen').checked = false;
+			var formHTML = '<select id="afstand" class="listbox" ><option value="-1" selected="selected">kies...</option><option value="3000" >3 km</option><option value="5000" >5 km</option></select>';
+
+			DH.setHTML('afstand-lb', formHTML);			
+		}
+
+	}
+	
+	/** init */
+	
+	$(".button").mouseover(function(){
+		$(this).addClass("mouseover");
+    }).mouseout(function(){
+      	$(this).removeClass("mouseover");
+    });
+ 
+	$(".button").click(function() {
+		select_menu_item(this);
+	});
+	
+	select_menu_item(null)
+	
+	function setFooterHeight()
+	{
+		var h = $(window).height();
+	  
+		var s = $("#site").height(); //from site height till rest of window
+		
+		var fh = h - s - 10;
+		
+		if(fh > 0)
+		{
+			$("#footer").css("height","" + fh + "px")
+		}
+	}
+	
+	function setPageHeight(pix)
+	{				
+		$("#right").css("height","" + (pix-155) + "px");
+		$("#main").css("height","" + (pix-155) + "px");
+		$("#site").css("height",""+ pix+"px");
+		$("#footer").css("top","" + pix +"px"); //footer lay on top of all others below site
+		
+		setFooterHeight()
+	}
+	
+	function setCompactPage()
+	{
+		setPageHeight(677);
+	}
+	function setMediumPage()
+	{
+		setPageHeight(800);
+	}
+	function setLargePage()
+	{
+		setPageHeight(950);
+	}
+	
+	select_menu_item($("#home .button")[0]);
+	
+	
+	
+	$(window).resize(function(ev){
+	    
+		setFooterHeight()
+	
+	
+	});
+	
+	$("#login_form input").keypress(function(event){ //submit form on enter
+
+		var key = event.keyCode;
+
+		if(key == 0)
+		{
+			key = event.charCode;
+		}
+		
+		if(key == 13)
+		{
+			login_button_hit(this);
+		}
+	});
+	
+	function replace_mailto()
+	{
+		
+		var name="info";
+		var domain="digitalewichelroede.nl"
+		var mail_to = document.getElementById("mail_to");
+		mail_to.href = "mailto:" + name + "@" + domain;
+		
+		
+	}
+	
+	
+	
+</script>
 
 </body>
 
