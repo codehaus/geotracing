@@ -227,6 +227,7 @@ function parseAllMedia(mediaElms)
 					document.poidata.description.value = poiArray[i].p_Beschrijving;	
 					document.poidata.type.value = poiArray[i].p_Type;							
 					DH.setHTML('media','<strong>Reeds gekoppelde media:</strong><p/>');
+					alert (poiArray[i].p_Media);
 					DH.addHTML('media',poiArray[i].p_Media);
 					currentEditPoi = poiId;
 					drawSelected(poiArray[i].p_X,poiArray[i].p_Y);
@@ -248,7 +249,6 @@ function parseAllMedia(mediaElms)
 
 	function koppelMedia(medId){
 		var medArray = new Array();
-		medArray[0] = medId;
 		KW.CMS.relateMedia(TST.onRsp,currentEditPoi,medArray);
 		laadPois();
 		fillPoiForm(currentEditPoi);
@@ -391,6 +391,7 @@ KeyWorx functies
 					return;
 				}
 				TST.pr('server response ' + elm.tagName);
+				//TST.pr('xml content:<pre>' + DH.escape(elm.ownerDocument.xml) + '</pre>');
 				parsePois(elm);
 			},
 			
