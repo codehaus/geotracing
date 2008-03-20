@@ -146,6 +146,7 @@ KW.CMS = {
  * @param kichURIs - array of kich URIs
  */
 	relateMedia: function(callback, poiId, kichURIs) {
+		alert kichURIs
 		var req = KW.createRequest('poi-relate-media-req');
 		KW.UTIL.setAttr(req, 'id', poiId);
 
