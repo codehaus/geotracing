@@ -149,6 +149,12 @@ namespace Diwi {
                 return;
             }
 
+            n = path.IndexOf(".mp4");
+            if (n >= 0) {
+                openVideo(path);
+                return;
+            }
+
             n = path.IndexOf("Text");
             if (n >= 0) {
                 openText(path);
