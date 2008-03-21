@@ -120,7 +120,18 @@ namespace Diwi {
                 return;
             }
 
+            n = path.IndexOf(".jpg");
+            if (n >= 0) {
+                openImage(path);
+                return;
+            }
+
             n = path.IndexOf("Sound");
+            if (n >= 0) {
+                openAudio(path);
+                return;
+            }
+            n = path.IndexOf(".mp3");
             if (n >= 0) {
                 openAudio(path);
                 return;
@@ -132,42 +143,56 @@ namespace Diwi {
                 return;
             }
 
+            n = path.IndexOf(".wmv");
+            if (n >= 0) {
+                openVideo(path);
+                return;
+            }
+
             n = path.IndexOf("Text");
             if (n >= 0) {
                 openText(path);
                 return;
             }
+
+            n = path.IndexOf(".txt");
+            if (n >= 0) {
+                openText(path);
+                return;
+            }
+
         }
 
 
         void dnlDoneT(string path, bool local) {
 
             mMediaDnl = null;
-            if (this.mIsActive) {
 
-                if(local)
-                    AppController.sEventLog.WriteLine("\thit lolcal store: {0}", path);
-                else
-                    AppController.sEventLog.WriteLine("\tdownloaded url: {0}", mDnlUrl);
+            if (local)
+                AppController.sEventLog.WriteLine("\tHit local store: {0}", path);
+            else
+                AppController.sEventLog.WriteLine("\tDownloaded url: {0}", mDnlUrl);
 
-                dnlFileNames[mDownloadIndex] = path;
-                if (mDownloadIndex == mMediaIndex) {
-                    if (InvokeRequired) {
-                        this.Invoke(new mediaCallback(this.openFile), new object[] { path });
-                    } else {
-                        openFile(path);
-                    }
-                }
+            dnlFileNames[mDownloadIndex] = path;
 
-                if (mAllMedia.getChild(1 + mDownloadIndex) != null) {
-                    mDownloadIndex = mDownloadIndex + 1;
-                    doDownloadMedium(mDownloadIndex);
+            if (this.mIsActive && (mDownloadIndex == mMediaIndex)) {
+                if (InvokeRequired) {
+                    this.Invoke(new mediaCallback(this.openFile), new object[] { path });
                 } else {
-                    if (mIsActive) drawDnlText("");
-                    else
-                        AppController.sPoiSelectPage.setDownloadMessage("downloads: done");
+                    openFile(path);
                 }
             }
+
+            if (mAllMedia.getChild(1 + mDownloadIndex) != null) {
+                mDownloadIndex = mDownloadIndex + 1;
+                doDownloadMedium(mDownloadIndex);
+            } else {
+                if (mIsActive) 
+                    drawDnlText("");
+                else
+                    AppController.sPoiSelectPage.setDownloadMessage("downloads: done");
+            }
+
 
         }
 
@@ -367,7 +392,10 @@ namespace Diwi {
                 mParent.Visible = false;
             }           
             reOrient();
-            if (mMediaIndex == -1) doNext(0, "");
+            if (mMediaIndex == -1) {
+                AppController.sEventLog.WriteLine("\tDoNext from Onload");
+                doNext(0, "");
+            }
             mIsInitialized = true;
         }
 
