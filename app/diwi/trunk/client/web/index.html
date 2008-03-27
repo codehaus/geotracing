@@ -167,9 +167,10 @@
 				DH.setHTML('op_pad_menu_info','wanneer u ingelogd  bent kunt u onder MIJN DIWI persoonlijke routes samenstellen');		
 				break;
 			case "struinen":
-				MAP.addPOILayer();
+				//MAP.addPOILayer();
 				DH.setHTML('right', DH.getURL('pages/op_pad_right_struinen.html'));
 				DH.setHTML('op_pad_menu_info','');
+				ROUTE.showFixedRoutes();
 				break;
 		}
 		
