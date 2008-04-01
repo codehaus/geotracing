@@ -317,6 +317,8 @@ var ROUTE = {
 		var routeString = 'Uw persoonlijke route is gereed! De afstand is ' + Math.round(routeRec.getField('distance') / 1000) + ' km.<br/>Deze route kunt u straks op uw Digitale Wichelroede selecteren. Indien u een andere route wilt genereren klik dan nogmaals op "Maak Route".';
 		DIWIAPP.pr(routeString,"route_info");
 		MAP.addRouteLayer(routeRec);
+		MAP.addPOILayer();
+		MAP.addUGCLayer();
 	},
 
 	onQueryRouteInfo: function(records) {

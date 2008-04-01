@@ -160,7 +160,8 @@
 		{
 			case "bestaande route":
 				DH.setHTML('op_pad_menu_info','u kunt nu één van de voorgeselecteerde routes selecteren');
-				ROUTE.showFixedRoutes();
+				MAP.addPOILayer();
+				MAP.addUGCLayer();
 				break;
 			case "persoonlijke route":
 				DH.setHTML('right', DH.getURL('pages/op_pad_right_persoonlijk.html'));
@@ -170,7 +171,8 @@
 				//MAP.addPOILayer();
 				DH.setHTML('right', DH.getURL('pages/op_pad_right_struinen.html'));
 				DH.setHTML('op_pad_menu_info','');
-				ROUTE.showFixedRoutes();
+					MAP.addPOILayer();
+					MAP.addUGCLayer();
 				break;
 		}
 		
