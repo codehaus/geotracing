@@ -20,11 +20,11 @@ iframe
 #site
 {
 	left:106px;
-	height:617px;
+	height:627px;
 	width:802px;
 	position:absolute;
 	border-left:10px solid  #F88011;
-	border-right:10px solid #F88011;
+	/*border-right:10px solid #F88011;*/
 	border-bottom:10px solid #F88011;
 	background-color:white;
 }
@@ -50,7 +50,7 @@ iframe
 	position:absolute;
 	color:white; /* debug info #aaa; */
 	left:106px;
-	top:627px;
+	top:727px;
 	height:100px;
 	bottom:0px;
 	width:802px;
@@ -58,7 +58,6 @@ iframe
 	background-color:white;
 	border-left:10px solid  #F88011;
 	border-right:10px solid #F88011;
-	border-top:10px solid #F88011;
 }
 
 span {
@@ -111,6 +110,7 @@ H4 {
 	height:155px;
 	width: 802px;
 	background-color:white;
+	border-right:10px solid #F88011;
 	top: 0px;
 	left: 0px;
 	z-index: 50;
@@ -436,8 +436,11 @@ right side stuff
 	top: 155px;
 	left: 525px;
 	height:452px;
+	width:277;
 	border-left:10px solid #F88011;
 	border-top:10px solid #F88011;
+	border-bottom:10px solid #F88011;
+	border-right:10px solid #F88011;
 	overflow:hidden;
 	padding:none;
 	/*line-height:0.95;*/
@@ -458,9 +461,10 @@ right side stuff
 #right .right_vakje
 {
 	width:100%;
-	height:144px;
+	height:154px;
 	background:#46551D;
 	border-bottom:10px solid #F88011;
+	overflow:hidden;
 	padding:10px;
 }
 #right .right_vakje ul

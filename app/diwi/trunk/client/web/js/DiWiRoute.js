@@ -91,7 +91,7 @@ var ROUTE = {
 					routeListFiets.appendChild(routeItem)
 					
 				}
-				else if(name.search('Verhaal') != -1)
+				else if(name.search('verhaal') != -1)
 				{
 					routeListVerhaal.appendChild(routeItem)	
 				}
