@@ -31,8 +31,14 @@
 
 <body>
 
+
+<div id="footer">
+
+</div>
 	
 <div id="site">
+	
+	
 	
 	<div id="main">
 		<div id="map"></div>
@@ -137,13 +143,11 @@
 	
 	</div>
 
-
-
-
-</div>
-<div id="footer">
 	
+
+
 </div>
+
 
 
 <script type="text/javascript" >
@@ -159,9 +163,9 @@
 		switch(which)
 		{
 			case "bestaande route":
+				setPageToMapLayout();
 				DH.setHTML('op_pad_menu_info','u kunt nu één van de voorgeselecteerde routes selecteren');
-				MAP.addPOILayer();
-				MAP.addUGCLayer();
+				ROUTE.showFixedRoutes();
 				break;
 			case "persoonlijke route":
 				DH.setHTML('right', DH.getURL('pages/op_pad_right_persoonlijk.html'));
@@ -171,8 +175,8 @@
 				//MAP.addPOILayer();
 				DH.setHTML('right', DH.getURL('pages/op_pad_right_struinen.html'));
 				DH.setHTML('op_pad_menu_info','');
-					MAP.addPOILayer();
-					MAP.addUGCLayer();
+				MAP.addPOILayer();
+				MAP.addUGCLayer();
 				break;
 		}
 		
@@ -419,7 +423,7 @@
 	
 	function setPageHeight(pix)
 	{				
-		$("#right").css("height","" + (pix-155) + "px");
+		$("#right").css("height","" + (pix-165) + "px");
 		$("#main").css("height","" + (pix-155) + "px");
 		$("#site").css("height",""+ pix+"px");
 		$("#footer").css("top","" + pix +"px"); //footer lay on top of all others below site
@@ -427,9 +431,17 @@
 		setFooterHeight()
 	}
 	
+	function setPageToMapLayout()
+	{
+		setCompactPage()
+		$("#right").css("height","800px");
+		$("#footer").css("height","298px");
+	}
+	
+	
 	function setCompactPage()
 	{
-		setPageHeight(677);
+		setPageHeight(700);
 	}
 	function setMediumPage()
 	{
