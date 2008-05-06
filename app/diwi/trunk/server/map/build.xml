@@ -11,7 +11,7 @@ $Id$
 	<property file="../../build.properties"/>
 
 	<property name="build.dir" value="${basedir}/../build/map" />
-    <property name="runtime.properties" value="../runtime.test.properties" />
+    <property name="runtime.properties" value="../runtime.live.properties" />
     <property file="${runtime.properties}" />
 
 	<target name="processvars">

@@ -75,6 +75,7 @@ public interface Constants {
     public final static String TIME_FIELD = "time";
     public final static String LOCATION_ID_FIELD = "locationid";
     public final static String INIT_FIELD = "init";
+    public final static String LAYER_ID = "layerid";
 
     // log types
     public final static String LOG_MOBILE_TYPE = "mobile";
@@ -125,4 +126,9 @@ public interface Constants {
 
     public static final int HIT_DISTANCE = 20;
     public static final int ROAM_DISTANCE = 20;
+
+    public final static int MAP_GREBBELINIE = 0;
+    public final static int MAP_DOMPLEIN1 = 1;
+    public final static int MAP_DOMPLEIN2 = 2;
+    public final static int MAP_DOMPLEIN3 = 3;
 }

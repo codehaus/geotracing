@@ -325,8 +325,9 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 		NavigationLogic navLogic = createLogic(anUtopiaReq);
 
 		JXElement reqElm = anUtopiaReq.getRequestCommand();
+        int layerId = reqElm.getIntAttr(LAYER_ID);
 
-		int height = reqElm.getIntAttr(HEIGHT_FIELD);
+        int height = reqElm.getIntAttr(HEIGHT_FIELD);
 		int width = reqElm.getIntAttr(WIDTH_FIELD);
 		double llbLat = reqElm.getDoubleAttr(LLB_LAT_ATTR);
 		double llbLon = reqElm.getDoubleAttr(LLB_LON_ATTR);
@@ -342,10 +343,30 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 		if (route != null) {
 			// Following a route
 			String routePOIs = DIWIQueryLogic.getRoutePOIs(route.getId());
-			mapURL = mapLogic.getMapURL(route.getId(), routePOIs, navLogic.isUserContentEnabled(personId), llb, urt, width, height);
+			mapURL = mapLogic.getMapURL(layerId, route.getId(), routePOIs, navLogic.isUserContentEnabled(personId), llb, urt, width, height);
 		} else {
-			// Roaming
-			String layers = "topnl_diwiwms,diwi_pois";
+            // Roaming
+            String layers = "";
+            switch (layerId){
+                case MAP_GREBBELINIE:
+                    layers += "topnl_diwiwms";
+                    break;
+                case MAP_DOMPLEIN1:
+                    layers += "topnl_domplein1";
+                    break;
+                case MAP_DOMPLEIN2:
+                    layers += "topnl_domplein2";
+                    break;
+                case MAP_DOMPLEIN3:
+                    layers += "topnl_domplein3";
+                    break;
+                default:
+                    layers += "topnl_diwiwms";
+
+            }
+
+            layers += ",diwi_pois";
+
 			if (navLogic.isUserContentEnabled(personId)) {
 				layers += ",diwi_ugc";
 			}
