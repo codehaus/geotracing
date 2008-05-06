@@ -30,17 +30,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/client/admin/admin.jsp" afterPath="$PROJECT_DIR$/client/admin/admin.jsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/UserHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/UserHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DiWi.iws" afterPath="$PROJECT_DIR$/DiWi.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/logic/MapLogic.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/logic/MapLogic.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/map/rd/diwi.map" afterPath="$PROJECT_DIR$/server/map/rd/diwi.map" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/test/protocol/test.properties" afterPath="$PROJECT_DIR$/server/test/protocol/test.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/map/build.xml" afterPath="$PROJECT_DIR$/server/map/build.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DiWi.ipr" afterPath="$PROJECT_DIR$/DiWi.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/control/NavigationHandler.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/control/NavigationHandler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/build.xml" afterPath="$PROJECT_DIR$/server/build.xml" />
     </list>
     <list name="Failed commit: Default (2)" comment="test media" />
     <list name="Failed commit: Default" comment="test media" />
     <list name="Failed commit: Default (3)" comment="live and test config added" />
-    <list name="Failed commit: Default (4)" comment="diwi:">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java" afterPath="$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java" />
-    </list>
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="Commander">
@@ -406,28 +409,73 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DIWIQueryLogic.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/DIWIQueryLogic.java">
+      <file leaf-file-name="RouteLogic.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="4" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.020477816">
+            <state line="263" column="8" selection-start="10543" selection-end="10543" vertical-scroll-proportion="-0.08746356">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserHandler.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/UserHandler.java">
+      <file leaf-file-name="diwi.map" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/map/rd/diwi.map">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="433" column="63" selection-start="20528" selection-end="20528" vertical-scroll-proportion="0.61433446">
+            <state line="119" column="26" selection-start="3304" selection-end="3304" vertical-scroll-proportion="1.0874635">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="test.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/test.xml">
+      <file leaf-file-name="NavigationHandler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/NavigationHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1124" column="24" selection-start="58485" selection-end="58485" vertical-scroll-proportion="0.94210523">
+            <state line="315" column="12" selection-start="13239" selection-end="13239" vertical-scroll-proportion="0.069970846">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server/build.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="58" selection-start="654" selection-end="654" vertical-scroll-proportion="0.28656715">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/map/build.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="18" selection-start="1051" selection-end="1051" vertical-scroll-proportion="0.6481752">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="build.properties" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/build.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RouteHandler.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="101" column="47" selection-start="4371" selection-end="4371" vertical-scroll-proportion="0.36734694">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MapLogic.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/MapLogic.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="61" column="63" selection-start="2105" selection-end="2105" vertical-scroll-proportion="0.5801749">
               <folding />
             </state>
           </provider>
@@ -436,34 +484,16 @@
       <file leaf-file-name="Constants.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="38" selection-start="1923" selection-end="1923" vertical-scroll-proportion="0.019966722">
+            <state line="77" column="31" selection-start="3707" selection-end="3707" vertical-scroll-proportion="-0.061340943">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LogLogic.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/LogLogic.java">
+      <file leaf-file-name="portal.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/server/cfg/portal.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="333" column="74" selection-start="12744" selection-end="12744" vertical-scroll-proportion="0.020477816">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="admin.jsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/client/admin/admin.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="32" column="0" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.6564103">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="build.xml" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/server/build.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="59" selection-start="832" selection-end="832" vertical-scroll-proportion="0.021052632">
+            <state line="20" column="28" selection-start="936" selection-end="944" vertical-scroll-proportion="0.0890511">
               <folding />
             </state>
           </provider>
@@ -483,14 +513,14 @@
   </component>
   <component name="JspContextManager">
     <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/srv/myget.jsp" context-file="file://$PROJECT_DIR$/server/build/war/srv/get.jsp" />
-    <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/catch.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/context.jsp" />
     <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/log_include.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/log_view.jsp" />
     <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/auth.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/app_user_add.jsp" />
-    <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/init.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/oase_access.jsp" />
     <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/requests.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/app_user_add.jsp" />
-    <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/app_xmllogfile_include.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/app_xmlmessages.jsp" />
     <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/catch.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/app_user_add.jsp" />
     <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/menu.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/error.jsp" />
+    <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/app_xmllogfile_include.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/app_xmlmessages.jsp" />
+    <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/catch.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/context.jsp" />
+    <jsp-to-context jsp-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/init.jsp" context-file="file://$PROJECT_DIR$/server/build/war/kwx/oase/admin/oase_access.jsp" />
   </component>
   <component name="ModuleEditorState">
     <option name="LAST_EDITED_MODULE_NAME" />
@@ -565,32 +595,6 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="DiWi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="DiWi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/webapp" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/webapp/diwi" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -690,6 +694,36 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/test" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/test/protocol" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/test/protocol/bin" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="DiWi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="DiWi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/src" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
@@ -729,36 +763,6 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/src/nl/diwi/logic" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="DiWi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="DiWi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/src" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/src/nl/diwi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/src/nl/diwi/external" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -836,7 +840,33 @@
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
         <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/cfg" />
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/map" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="DiWi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="DiWi" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/map" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/map/rd" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -859,32 +889,6 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/cfg" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/server/cfg/tables" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-      </PATH>
-      <PATH>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="DiWi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="DiWi" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/client" />
-          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-        </PATH_ELEMENT>
-        <PATH_ELEMENT>
-          <option name="myItemId" value="PsiDirectory:$PROJECT_DIR$/client/web" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -960,6 +964,7 @@
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="cvs_file_history_flatOrder2" value="2" />
+    <property name="TEMP_MODULE_EXPLODED_DIR_FOR_DiWi/web/Web5" value="/private/tmp/webExplodedDir39965tmp" />
     <property name="cvs_file_history_treeWidth2" value="289" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="cvs_file_history_flatOrder3" value="3" />
@@ -975,6 +980,7 @@
     <property name="cvs_file_history_flatWidth0" value="288" />
     <property name="cvs_file_history_flatWidth3" value="288" />
     <property name="cvs_file_history_treeOrder0" value="0" />
+    <property name="TEMP_MODULE_EXPLODED_DIR_FOR_DiWi/web/Web4" value="/private/tmp/webExplodedDir39964tmp" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -983,18 +989,141 @@
       <recent name="nl.diwi.external" />
     </key>
   </component>
+  <component name="RestoreUpdateTree">
+    <UpdateInfo date="5/6/08 1:43 PM" ActionInfo="_Update">
+      <UpdatedFiles>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated from server" />
+          <option name="myStatusName" value="Changed on server" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CHANGED_ON_SERVER" />
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Updated" />
+            <option name="myStatusName" value="Changed" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="UPDATED" />
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/css/home.css</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/css/style.css</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/index.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/js/DiWiRoute.js</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/media/image/home_1.jpg</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/media/image/home_2.jpg</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/media/image/home_3.jpg</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/media/image/pers_1.jpg</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/media/image/pers_2.jpg</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/media/image/pers_3.jpg</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/pages/contact.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/pages/contact_right.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/pages/over_diwi.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/pages/over_diwi_right.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/pages/pers.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/web/pages/welkom.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/cms.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/css/home.css</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/index.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/login.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/mobile/Diwi.suo</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/mobile/Diwi/Diwi.csproj</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/mobile/Diwi/PoiViewerPage.cs</PATH>
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Created" />
+            <option name="myStatusName" value="Created" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="CREATED" />
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/vm.html</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/pleasewait.gif</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/images/browse_a.gif</PATH>
+            <PATH vcs="svn" revision="1248">$PROJECT_DIR$/client/cms/js/KWClientCMS.js</PATH>
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Deleted" />
+            <option name="myStatusName" value="Deleted" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="true" />
+            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Restored" />
+            <option name="myStatusName" value="Will be restored" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="RESTORED" />
+          </FILE-GROUP>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Modified" />
+          <option name="myStatusName" value="Modified" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MODIFIED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Skipped" />
+          <option name="myStatusName" value="Skipped" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="SKIPPED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with conflicts" />
+          <option name="myStatusName" value="Will be merged with conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_CONFLICTS" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged" />
+          <option name="myStatusName" value="Will be merged" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Not in repository" />
+          <option name="myStatusName" value="Not in repository" />
+          <option name="mySupportsDeletion" value="true" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UNKNOWN" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally added" />
+          <option name="myStatusName" value="Locally added" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_ADDED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally removed" />
+          <option name="myStatusName" value="Locally removed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_REMOVED" />
+        </FILE-GROUP>
+      </UpdatedFiles>
+    </UpdateInfo>
+  </component>
   <component name="RunManager" selected="Remote.Tomcat debug">
-    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" />
-      <option name="PROGRAM_PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
+      <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
       <envs />
       <method>
         <option name="Make" value="true" />
@@ -1029,13 +1158,6 @@
         <option name="Make" value="true" />
       </method>
     </configuration>
-    <configuration default="true" type="Remote" factoryName="Remote">
-      <option name="USE_SOCKET_TRANSPORT" value="true" />
-      <option name="SERVER_MODE" value="false" />
-      <option name="SHMEM_ADDRESS" value="javadebug" />
-      <option name="HOST" value="localhost" />
-      <option name="PORT" value="5005" />
-    </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -1048,23 +1170,24 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
     </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false">
-      <module name="" />
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
+      <module name="" />
       <envs />
       <method>
         <option name="Make" value="true" />
@@ -1173,21 +1296,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1280" height="774" extended-state="6" />
+    <frame x="0" y="22" width="1440" height="874" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="3" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32885906" order="7" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18765232" order="0" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35072142" order="1" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20992091" order="0" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35019973" order="1" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" order="1" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31797236" order="10" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31557924" order="10" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="6" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="7" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="11" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="5" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.11616572" order="1" />
+      <window_info id="Ant Build" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15025161" order="1" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="4" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32928178" order="12" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="2" />
@@ -1195,7 +1318,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" order="0" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38121548" order="4" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="13" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31964484" order="8" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3195739" order="8" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="9" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="0" />
       <window_info id="CVS" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" order="14" />
@@ -1220,7 +1343,7 @@
     <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="diwi: update voor CMS" />
+    <option name="LAST_COMMIT_MESSAGE" value="diwi: last update" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -1240,8 +1363,9 @@
     <MESSAGE value="removed init force param in activeRoute" />
     <MESSAGE value="diwi: export check in Loglogic" />
     <MESSAGE value="diwi: ugc-hit bug fixed" />
-    <MESSAGE value="diwi:" />
     <MESSAGE value="diwi: update voor CMS" />
+    <MESSAGE value="diwi:" />
+    <MESSAGE value="diwi: last update" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -1296,6 +1420,14 @@
       <verbose value="true" />
       <viewClosedWhenNoErrors value="false" />
     </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/server/map/build.xml">
+      <antCommandLine value="" />
+      <runInBackground value="true" />
+      <targetFilters />
+      <treeView value="true" />
+      <verbose value="true" />
+      <viewClosedWhenNoErrors value="false" />
+    </buildFile>
   </component>
   <component name="com.intellij.ide.util.scopeChooser.ScopeChooserConfigurable" proportions="" version="1">
     <option name="myLastEditedConfigurable" />
@@ -1308,116 +1440,117 @@
     <option name="myLastEditedConfigurable" />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/server/runtime.live.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="55" selection-start="782" selection-end="782" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/test/protocol/test.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="60" selection-start="153" selection-end="153" vertical-scroll-proportion="0.10271041">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/server/test/protocol/script/suite.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="724" selection-end="724" vertical-scroll-proportion="0.34871796">
-          <folding>
-            <marker date="1204049060000" expanded="true" signature="10:721" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/POIHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="13" selection-start="671" selection-end="671" vertical-scroll-proportion="0.020477816">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="110" column="49" selection-start="4646" selection-end="4646" vertical-scroll-proportion="0.49146757">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/TripHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="13" selection-start="778" selection-end="778" vertical-scroll-proportion="0.061433446">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/NavigationHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="127" column="39" selection-start="5750" selection-end="5750" vertical-scroll-proportion="0.20591862">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="74" column="21" selection-start="2561" selection-end="2561" vertical-scroll-proportion="-1.2135679">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/cfg/tables/diwi_prefs.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.17283951">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/client/web/build.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="jar:///Volumes/Data/projects/geotracing/svn/base/trunk/external/keyworx-1.0.8rc1/build/server/keyworx.jar!/nl/justobjects/jox/dom/JXElement.class">
+    <entry file="file://$PROJECT_DIR$/client/web/pages/welkom.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="125" column="16" selection-start="4992" selection-end="4992" vertical-scroll-proportion="0.33291456">
+        <state line="21" column="59" selection-start="1520" selection-end="1520" vertical-scroll-proportion="0.6631579">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="HtmlPreview">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/admin/admin.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="64" selection-start="1813" selection-end="1813" vertical-scroll-proportion="1.2394366">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/DIWIQueryLogic.java">
+    <entry file="file://$PROJECT_DIR$/server/cfg/tables/diwi_route.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="4" selection-start="1310" selection-end="1310" vertical-scroll-proportion="0.020477816">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/test.xml">
+    <entry file="file://$PROJECT_DIR$/server/cfg/portal.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1124" column="24" selection-start="58485" selection-end="58485" vertical-scroll-proportion="0.94210523">
+        <state line="20" column="28" selection-start="936" selection-end="944" vertical-scroll-proportion="0.0890511">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/RouteLogic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="263" column="8" selection-start="10543" selection-end="10543" vertical-scroll-proportion="-0.08746356">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/build.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/map/build.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="18" selection-start="1051" selection-end="1051" vertical-scroll-proportion="0.6481752">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/util/Constants.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="38" selection-start="1923" selection-end="1923" vertical-scroll-proportion="0.019966722">
+        <state line="77" column="31" selection-start="3707" selection-end="3707" vertical-scroll-proportion="-0.061340943">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/LogLogic.java">
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/logic/MapLogic.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="333" column="74" selection-start="12744" selection-end="12744" vertical-scroll-proportion="0.020477816">
+        <state line="61" column="63" selection-start="2105" selection-end="2105" vertical-scroll-proportion="0.5801749">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/admin/admin.jsp">
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/RouteHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="0" selection-start="1232" selection-end="1232" vertical-scroll-proportion="0.6564103">
+        <state line="101" column="47" selection-start="4371" selection-end="4371" vertical-scroll-proportion="0.36734694">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/NavigationHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="315" column="12" selection-start="13239" selection-end="13239" vertical-scroll-proportion="0.069970846">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server/map/rd/diwi.map">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="26" selection-start="3304" selection-end="3304" vertical-scroll-proportion="1.0874635">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/server/build.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="59" selection-start="832" selection-end="832" vertical-scroll-proportion="0.021052632">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/server/src/nl/diwi/control/UserHandler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="433" column="63" selection-start="20528" selection-end="20528" vertical-scroll-proportion="0.61433446">
+        <state line="16" column="58" selection-start="654" selection-end="654" vertical-scroll-proportion="0.28656715">
           <folding />
         </state>
       </provider>

@@ -16,7 +16,7 @@ public class MapLogic implements Constants {
 
 	private Log log = Logging.getLog("MapLogic");
 
-	public MapLogic() {
+    public MapLogic() {
 	}
 
 	public String getMapURL(String theLayers, Point llb, Point urt, int width, int height) throws UtopiaException {
@@ -31,7 +31,7 @@ public class MapLogic implements Constants {
 		return Amuse.server.getPortal().getProperty(SITE_URL) + "/map?LAYERS=" + theLayers + "&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A28992&BBOX=" + boxString + "&WIDTH=" + width + "&HEIGHT=" + height;
 	}
 
-	public String getMapURL(int routeId, String poiIds, boolean showUGC, Point llb, Point urt, double width, double height) throws UtopiaException {
+	public String getMapURL(int aLayerId, int routeId, String poiIds, boolean showUGC, Point llb, Point urt, double width, double height) throws UtopiaException {
 
 		double boundsHeight = urt.y - llb.y;
 		double boundsWidth = urt.x - llb.x;
@@ -59,8 +59,28 @@ public class MapLogic implements Constants {
 		llb.y -= padHeight / 2;
 		urt.y += padHeight / 2;
 
-		String layers = "topnl_diwiwms,diwi_routes_sel";
-		if (poiIds != null) {
+        String layers = "";
+        switch (aLayerId){
+            case MAP_GREBBELINIE:
+                layers += "topnl_diwiwms";
+                break;
+            case MAP_DOMPLEIN1:
+                layers += "topnl_domplein1";
+                break;
+            case MAP_DOMPLEIN2:
+                layers += "topnl_domplein2";
+                break;
+            case MAP_DOMPLEIN3:
+                layers += "topnl_domplein3";
+                break;
+            default:
+                layers += "topnl_diwiwms";
+
+        }
+
+        layers += ",diwi_routes_sel";
+        
+        if (poiIds != null) {
 			layers = layers + ",diwi_pois_sel";
 		}
 

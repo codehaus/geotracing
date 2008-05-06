@@ -73,6 +73,63 @@ LAYER
 	END
 END
 
+# maps NL from Alterra: Domplein
+# http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?request=getmap&service=WMS&version=1.1.1&SRS=EPSG:28992&height=320&width=240&format=image/jpeg&styles=&bbox=136519,455280,137440,456642&layers=id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id1500,id100
+LAYER
+#	GROUP topnl
+	NAME topnl_domplein1
+	TYPE RASTER
+	STATUS ON
+	CONNECTIONTYPE WMS
+	CONNECTION "geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?"
+	METADATA
+		"wms_name" "id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id13"
+		"wms_srs" "EPSG:28992"
+		"wms_server_version" "1.1.1"
+		"wms_request" "GetMap"
+		"wms_format" "image/jpeg"
+		"wms_connectiontimeout" "60"
+	END
+END
+
+# maps NL from Alterra: Domplein
+# http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?request=getmap&service=WMS&version=1.1.1&SRS=EPSG:28992&height=320&width=240&format=image/jpeg&styles=&bbox=136519,455280,137440,456642&layers=id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id1500,id100
+LAYER
+#	GROUP topnl
+	NAME topnl_domplein2
+	TYPE RASTER
+	STATUS ON
+	CONNECTIONTYPE WMS
+	CONNECTION "geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?"
+	METADATA
+		"wms_name" "id100"
+		"wms_srs" "EPSG:28992"
+		"wms_server_version" "1.1.1"
+		"wms_request" "GetMap"
+		"wms_format" "image/jpeg"
+		"wms_connectiontimeout" "60"
+	END
+END
+
+# maps NL from Alterra: Domplein
+# http://geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?request=getmap&service=WMS&version=1.1.1&SRS=EPSG:28992&height=320&width=240&format=image/jpeg&styles=&bbox=136519,455280,137440,456642&layers=id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id1500,id100
+LAYER
+#	GROUP topnl
+	NAME topnl_domplein3
+	TYPE RASTER
+	STATUS ON
+	CONNECTIONTYPE WMS
+	CONNECTION "geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?"
+	METADATA
+		"wms_name" "id1500"
+		"wms_srs" "EPSG:28992"
+		"wms_server_version" "1.1.1"
+		"wms_request" "GetMap"
+		"wms_format" "image/jpeg"
+		"wms_connectiontimeout" "60"
+	END
+END
+
 # maps NL from Alterra
 # http://www.geese.nl/milcon?LAYERS=w&REQUEST=GetMap&SERVICE=WMS&FORMAT=image%2Fpng&HEIGHT=256&VERSION=1.1.1&SRS=EPSG:4326&WIDTH=256&BBOX=4.8,52,5,52.50&TRANSPARENT=FALSE&EXCEPTIONS=application/vnd.ogc.se_inimage
 #LAYER

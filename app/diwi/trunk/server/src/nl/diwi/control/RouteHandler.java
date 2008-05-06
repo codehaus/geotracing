@@ -90,6 +90,7 @@ public class RouteHandler extends DefaultHandler implements ThreadSafe, Constant
 		int routeId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(ID_FIELD));
 		int height = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(HEIGHT_FIELD));
 		int width = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(WIDTH_FIELD));
+		int layerId = Integer.parseInt(anUtopiaReq.getRequestCommand().getAttr(LAYER_ID));
 
 		JXElement response = createResponse(ROUTE_GET_MAP_SERVICE);
 		MapLogic mapLogic = new MapLogic();
@@ -98,7 +99,7 @@ public class RouteHandler extends DefaultHandler implements ThreadSafe, Constant
 
 		NavigationLogic navLogic = new NavigationLogic(anUtopiaReq.getUtopiaSession().getContext().getOase());
 		String routePOIs = DIWIQueryLogic.getRoutePOIs(routeId);
-		String url = mapLogic.getMapURL(routeId, routePOIs, navLogic.isUserContentEnabled(personId), bbox.getLLB(), bbox.getURT(), width, height);
+		String url = mapLogic.getMapURL(layerId, routeId, routePOIs, navLogic.isUserContentEnabled(personId), bbox.getLLB(), bbox.getURT(), width, height);
 
 		try {
 			response.setAttr(URL_FIELD, URLEncoder.encode(url, "UTF-8"));
