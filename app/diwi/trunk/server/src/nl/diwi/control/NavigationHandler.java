@@ -347,22 +347,17 @@ public class NavigationHandler extends DefaultHandler implements ThreadSafe, Con
 		} else {
             // Roaming
             String layers = "";
-            switch (layerId){
-                case MAP_GREBBELINIE:
-                    layers += "topnl_diwiwms";
-                    break;
-                case MAP_DOMPLEIN1:
-                    layers += "topnl_domplein1";
-                    break;
-                case MAP_DOMPLEIN2:
-                    layers += "topnl_domplein2";
-                    break;
-                case MAP_DOMPLEIN3:
-                    layers += "topnl_domplein3";
-                    break;
-                default:
-                    layers += "topnl_diwiwms";
 
+            if(layerId == MAP_GREBBELINIE){
+                layers += "topnl_diwiwms";
+            }else if(layerId == MAP_DOMPLEIN1){
+                layers += "topnl_domplein1";
+            }else if(layerId == MAP_DOMPLEIN2){
+                layers += "topnl_domplein2";
+            }else if(layerId == MAP_DOMPLEIN3){
+                layers += "topnl_domplein3";
+            }else{
+                layers += "topnl_diwiwms";
             }
 
             layers += ",diwi_pois";
