@@ -102,7 +102,7 @@ LAYER
 	CONNECTIONTYPE WMS
 	CONNECTION "geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?"
 	METADATA
-		"wms_name" "id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id100"
+		"wms_name" "id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id1500"
 		"wms_srs" "EPSG:28992"
 		"wms_server_version" "1.1.1"
 		"wms_request" "GetMap"
@@ -121,7 +121,7 @@ LAYER
 	CONNECTIONTYPE WMS
 	CONNECTION "geodatakich.wur.nl/wmsconnector/com.esri.wms.Esrimap/DIWIUTR_WMS?"
 	METADATA
-		"wms_name" "id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id1500"
+		"wms_name" "id1,id2,id3,id4,id5,id6,id7,id8,id9,id10,id11,id12,id100"
 		"wms_srs" "EPSG:28992"
 		"wms_server_version" "1.1.1"
 		"wms_request" "GetMap"
