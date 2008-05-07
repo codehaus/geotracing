@@ -60,22 +60,16 @@ public class MapLogic implements Constants {
 		urt.y += padHeight / 2;
 
         String layers = "";
-        switch (aLayerId){
-            case MAP_GREBBELINIE:
-                layers += "topnl_diwiwms";
-                break;
-            case MAP_DOMPLEIN1:
-                layers += "topnl_domplein1";
-                break;
-            case MAP_DOMPLEIN2:
-                layers += "topnl_domplein2";
-                break;
-            case MAP_DOMPLEIN3:
-                layers += "topnl_domplein3";
-                break;
-            default:
-                layers += "topnl_diwiwms";
-
+        if(aLayerId == MAP_GREBBELINIE){
+            layers += "topnl_diwiwms";
+        }else if(aLayerId == MAP_DOMPLEIN1){
+            layers += "topnl_domplein1";
+        }else if(aLayerId == MAP_DOMPLEIN2){
+            layers += "topnl_domplein2";
+        }else if(aLayerId == MAP_DOMPLEIN3){
+            layers += "topnl_domplein3";
+        }else{
+            layers += "topnl_diwiwms";
         }
 
         layers += ",diwi_routes_sel";
