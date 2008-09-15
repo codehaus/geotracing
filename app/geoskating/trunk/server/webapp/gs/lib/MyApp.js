@@ -38,13 +38,14 @@ var MYAPP = {
 		var WMS_URL_GREY = 'img/greysquare.jpg?';
 		var G_MAP_GREY = createWMSSpec(WMS_URL_GREY, "Blank", "Blank", "bl", "bla", "image/jpeg", "1.1.1");
 
-		var skateMapGetTileUrl = function(a, b) {
-			var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
+		var skateMapGetTileUrl = function(tile, zoom) {
+			// var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
 			var lURL = "map/gmap-sk8-tile.jsp";
-//			lURL += "?x=" + a.x;
-//			lURL += "&y=" + a.y;
 			lURL += "?layer=sk8";
-			lURL += khURL.substring(khURL.indexOf('&t'), khURL.length);
+			lURL += "&x=" + tile.x;
+			lURL += "&y=" + tile.y;
+			lURL += "&z=" + zoom;
+//			lURL += khURL.substring(khURL.indexOf('&t'), khURL.length);
 //			lURL += "&zoom=" + b;
 			return lURL;
 		}
@@ -72,15 +73,31 @@ var MYAPP = {
 			return 1.0;
 		}
 
+		var mapnikGetTileUrl = function(a, b) {
+			// http://tile.openstreetmap.org/z/x/y.png;
+			return 'http://www.geoskating.com/rsc/mapniktiles/' + b + '/' + a.x + "/" + a.y + '.png';
+		}
+
+		var mapnikTiles = new GTileLayer(new GCopyrightCollection("GT"), 5, 16);
+		mapnikTiles.getTileUrl = mapnikGetTileUrl;
+		mapnikTiles.isPng = function() {
+			return true;
+		}
+		mapnikTiles.getOpacity = function() {
+			return 0.8;
+		}
+
 		var satLayers = [G_SATELLITE_MAP.getTileLayers()[0], skateTiles];
 		var mapLayers = [G_NORMAL_MAP.getTileLayers()[0], skateTiles];
 		var osmLayers = [osmTiles, skateTiles];
 		var blancLayers = [G_MAP_GREY.getTileLayers()[0], skateTiles];
+		var mapnikLayers = [osmTiles, mapnikTiles];
 
 		var satRoutesType = new GMapType(satLayers, G_SATELLITE_MAP.getProjection(), "satroute");
 		var mapRoutesType = new GMapType(mapLayers, G_NORMAL_MAP.getProjection(), "maproute");
 		var osmRoutesType = new GMapType(osmLayers, G_SATELLITE_MAP.getProjection(), "osmroute");
 		var blancRoutesType = new GMapType(blancLayers, G_SATELLITE_MAP.getProjection(), "blancroute");
+		var mapnikRoutesType = new GMapType(mapnikLayers, G_SATELLITE_MAP.getProjection(), "osmroute");
 
 
 		// Add map specs to app (see also menu in index.jsp)
@@ -92,6 +109,7 @@ var MYAPP = {
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);
 		GMAP.addMapType('hybrid', G_HYBRID_MAP);
 		GMAP.addMapType('blanc', G_MAP_GREY);
+		GMAP.addMapType('mapnik', mapnikRoutesType);
 
 		// Create the Google Map
 		GMAP.createGMap('map');

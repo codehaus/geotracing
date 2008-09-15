@@ -79,6 +79,9 @@ function Track(id, name, tracer) {
 		}
 
 		for (var i = 0; i < this.polyLines.length; i++) {
+			if (!this.polyLines[i] || !this.polyLines[i].getBounds) {
+				continue;
+			}
 			if (i == 0) {
 				bounds = this.polyLines[i].getBounds();
 			} else {
