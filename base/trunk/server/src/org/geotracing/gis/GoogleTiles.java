@@ -418,6 +418,15 @@ public class GoogleTiles {
 	}
 
 	/**
+	 * Returns keyhole string for tile x,y,zoom.
+	 */
+	public static String getKeyholeRef(int x, int y, int zoom) {
+		// TODO: optimize, now just getting bbox and center to obtain khref
+		Rectangle2D.Double bbox = getBoundingBox(x, y, zoom);
+		return getKeyholeRef(bbox.getCenterX(), bbox.getCenterY(), zoom);
+	}
+
+	/**
 	 * Get keyhole string for a longitude (x), latitude (y), and zoom
 	 */
 	public static String getKeyholeRef(double lon, double lat, int zoom) {

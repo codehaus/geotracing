@@ -13,6 +13,12 @@
 	// A bit hacky until we get a cleaner solution using context-dependent
 	// config.
 	String khRef = request.getParameter("t");
+	if (khRef == null || khRef.length() == 0) {
+		String x = request.getParameter("x");
+		String y = request.getParameter("y");
+		String z = request.getParameter("z");
+		khRef = GoogleTiles.getKeyholeRef(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z));
+	}
 	String layer = request.getParameter("layer");
 	String khDir = GoogleTiles.getKeyHolePath(khRef);
 	String filePath = TILE_DIR + khDir + "/" + layer + ".png";
