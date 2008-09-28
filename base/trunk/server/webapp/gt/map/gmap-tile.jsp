@@ -19,9 +19,11 @@
 		String z = request.getParameter("z");
 		khRef = GoogleTiles.getKeyholeRef(Integer.parseInt(x), Integer.parseInt(y), Integer.parseInt(z));
 	}
+	// log.info("khRef=" + khRef);
 	String layer = request.getParameter("layer");
 	String khDir = GoogleTiles.getKeyHolePath(khRef);
 	String filePath = TILE_DIR + khDir + "/" + layer + ".png";
+	// log.info("khRef=" + khRef + " filePath=" + filePath);
 	String url;
 	int zoom = GoogleTiles.getTileZoom(khRef);
 	if (zoom > MAX_ZOOM) {
