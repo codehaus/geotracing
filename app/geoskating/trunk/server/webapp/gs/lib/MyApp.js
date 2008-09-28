@@ -39,14 +39,20 @@ var MYAPP = {
 		var G_MAP_GREY = createWMSSpec(WMS_URL_GREY, "Blank", "Blank", "bl", "bla", "image/jpeg", "1.1.1");
 
 		var skateMapGetTileUrl = function(tile, zoom) {
-			// var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(a,b);
+			var khURL = G_SATELLITE_MAP.getTileLayers()[0].getTileUrl(tile,zoom);
 			var lURL = "map/gmap-sk8-tile.jsp";
 			lURL += "?layer=sk8";
-			lURL += "&x=" + tile.x;
-			lURL += "&y=" + tile.y;
-			lURL += "&z=" + zoom;
-//			lURL += khURL.substring(khURL.indexOf('&t'), khURL.length);
-//			lURL += "&zoom=" + b;
+
+			// Google chnages URL scheme now and then (28.9.08)
+			if (khURL.indexOf('&x=') > 0) {
+				lURL += "&x=" + tile.x;
+				lURL += "&y=" + tile.y;
+				lURL += "&z=" + zoom;
+				lURL += "&zoom=" + zoom;
+			} else {
+				// We have a t=tssqtrsr etc
+				lURL += khURL.substring(khURL.indexOf('&t'), khURL.length);
+			}
 			return lURL;
 		}
 

@@ -327,7 +327,8 @@ public class GoogleTiles {
 		double lat = -1;
 		double latHeight = 2;
 
-		int tilesAtThisZoom = 1 << (17 - zoom);
+		// int tilesAtThisZoom = 1 << (17 - zoom);
+		int tilesAtThisZoom = 1 << zoom;
 		lonWidth = 360.0 / tilesAtThisZoom;
 		lon = -180 + (x * lonWidth);
 		latHeight = -2.0 / tilesAtThisZoom;
