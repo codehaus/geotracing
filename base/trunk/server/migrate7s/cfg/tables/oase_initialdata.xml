@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This table is used to store state about initial data to be entered into the databse. -->
+<table>
+
+    <views>
+		<insert>
+			<field name="label" />
+			<field name="filehash" />
+			<field name="idmap"/>
+			<field name="creationdate"/>
+			<field name="modificationdate"/>
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="label" />
+			<field name="filehash" />
+			<field name="idmap"/>
+			<field name="creationdate"/>
+			<field name="modificationdate"/>
+ 		</list>
+
+		<query>
+			<field name="id" />
+			<field name="label" />
+			<field name="creationdate"/>
+			<field name="modificationdate"/>
+		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<!-- Just an identifier for this set of default data, such as the plugin name. -->
+		<field name="label" type="STRING" size="32" required="true" index="true" />
+		
+		<!-- A Base64 encoded MD5 hash of the default data file, used to find out if it changed. -->
+		<field name="filehash" type="STRING" size="64" required="true" />
+		
+		<!-- A mapping between the symbolic ids used in the data files and the actual ids in the database. -->
+		<field name="idmap" type="TEXT" required="false" />
+
+		<field name="creationdate" type="TIMESTAMP"/>
+
+		<field name="modificationdate" type="TIMESTAMP"/>
+	</data>
+</table>

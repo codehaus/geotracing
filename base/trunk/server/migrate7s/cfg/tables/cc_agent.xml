@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+
+    <views>
+        <insert>
+            <field name="name"/>
+            <field name="uri"/>
+            <field name="email"/>
+            <field name="type"/>
+        </insert>
+
+        <list>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="email"/>
+            <field name="uri"/>
+            <field name="type"/>
+        </list>
+
+        <query>
+            <field name="id"/>
+            <field name="name"/>
+            <field name="uri"/>
+            <field name="email"/>
+            <field name="type"/>
+        </query>
+    </views>
+
+    <data>
+        <field name="id" type="INTEGER" required="true" key="true"/>
+        <field name="name" type="STRING" size="1024" required="false"/>
+        <field name="uri" type="STRING" size="1024" required="false"/>
+        <field name="email" type="STRING" size="256" required="true"/>
+        <field name="type" type="STRING" size="32" required="true"/>
+    </data>
+</table>

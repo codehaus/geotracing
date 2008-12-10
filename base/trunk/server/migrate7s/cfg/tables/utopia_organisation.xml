@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+            <field name="description" />
+            <field name="street" />
+            <field name="streetnr" />
+            <field name="zipcode" />
+            <field name="city" />
+            <field name="country" />
+            <field name="phonenr" />
+            <field name="email" />
+             <field name="extra" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+            <field name="email" />
+   		</list>
+
+		<query>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+            <field name="description" />
+            <field name="street" />
+            <field name="streetnr" />
+            <field name="zipcode" />
+            <field name="city" />
+            <field name="country" />
+            <field name="phonenr" />
+            <field name="email" />
+            <field name="creationdate" />
+            <field name="modificationdate" />
+            <field name="extra" />
+		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="owner" type="STRING" size="12" required="true" default="unknown" />
+		<field name="name" type="STRING" size="64" required="true" />
+        <field name="description" type="TEXT" required="false" />
+		<field name="street" type="STRING" required="false" size="64" />
+		<field name="streetnr" type="STRING" required="false" size="6" />
+		<field name="zipcode" type="STRING" required="false" size="10" />
+		<field name="city" type="STRING" required="false" size="32" />
+		<field name="country" type="STRING" required="false"	size="32" />
+		<field name="phonenr" type="STRING" required="false"  size="32"  />
+		<field name="email" type="STRING" required="false" size="128" />
+		<field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML" />
+	</data>
+</table>
