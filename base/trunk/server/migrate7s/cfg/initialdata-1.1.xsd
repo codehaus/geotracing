@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-	targetNamespace="http://www.keyworx.org/initialdata/1.1" 
-	xmlns="http://www.keyworx.org/initialdata/1.1" 
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.keyworx.org/initialdata/1.1"
+	xmlns="http://www.keyworx.org/initialdata/1.1"
 	elementFormDefault="qualified">
-    
+
     <!-- The root element -->
     <xs:element name="initialdata">
     	<xs:complexType>
@@ -16,8 +16,8 @@
      		</xs:sequence>
     	</xs:complexType>
     </xs:element>
-    
-	
+
+
 	<!-- The queries element -->
 	<xs:element name="queries">
 		<xs:annotation>
@@ -27,19 +27,19 @@
 				id that you can use in the data file.
 				Every field in a record element under this queries element translates
 				to an element in the where clause. String fields match as
-				LIKE type queries. A query must yield a single result or the entire 
+				LIKE type queries. A query must yield a single result or the entire
 				initial data process will fail.
 			</xs:documentation>
 		</xs:annotation>
-		
+
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="record" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
-		
+
 	</xs:element>
-	
+
 	<!-- The records element -->
 	<xs:element name="records">
 		<xs:complexType>
@@ -48,7 +48,7 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	
+
 	<!-- A record element -->
 	<xs:element name="record">
 		<xs:annotation>
@@ -58,14 +58,14 @@
 				not required can be omitted.
 			</xs:documentation>
 		</xs:annotation>
-		
+
 		<xs:complexType>
-		
+
 			<xs:sequence>
 				<!-- Anything will do -->
 				<xs:any namespace="##any" processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
-			
+
 			<xs:attribute name="id" type="xs:ID" use="required">
 				<xs:annotation>
 					<xs:documentation>
@@ -86,7 +86,7 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-	
+
 	<xs:element name="media">
 		<xs:complexType>
 			<xs:sequence>
@@ -94,24 +94,27 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	
+
 	<xs:element name="medium">
-		
+
 		<xs:annotation>
 			<xs:documentation>
 				A single medium in the media table.
 			</xs:documentation>
 		</xs:annotation>
-		
+
 		<xs:complexType>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="owner" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="name" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="description" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="kind" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="mime" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="state" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="creationdate" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="extra" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="point" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="ref" minOccurs="0" maxOccurs="1"/>
 			</xs:choice>
 			<xs:attribute name="id" type="xs:ID" use="required"/>
 			<xs:attribute name="filename" type="xs:string" use="required">
@@ -123,7 +126,7 @@
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
-	
+
 	<!-- The relations element -->
 	<xs:element name="relations">
 		<xs:complexType>
@@ -132,7 +135,7 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	
+
 	<!-- A relation element -->
 	<xs:element name="relation">
 		<xs:complexType>
