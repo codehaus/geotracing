@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.keyworx.org/initialdata/1.1" 
+	xmlns="http://www.keyworx.org/initialdata/1.1" 
+	elementFormDefault="qualified">
+    
+    <!-- The root element -->
+    <xs:element name="initialdata">
+    	<xs:complexType>
+    		<xs:sequence>
+    			<xs:element ref="queries" minOccurs="0" maxOccurs="1"/>
+    			<xs:element ref="records" minOccurs="0" maxOccurs="1"/>
+    			<xs:element ref="media" minOccurs="0" maxOccurs="1"/>
+    			<xs:element ref="relations" minOccurs="0" maxOccurs="1"/>
+			    <xs:element ref="scripts" minOccurs="0" maxOccurs="1"/>
+     		</xs:sequence>
+    	</xs:complexType>
+    </xs:element>
+    
+	
+	<!-- The queries element -->
+	<xs:element name="queries">
+		<xs:annotation>
+			<xs:documentation>
+				Container for record elements that represent records already present
+				in the database. Use this to bind an existing record to a symbolic
+				id that you can use in the data file.
+				Every field in a record element under this queries element translates
+				to an element in the where clause. String fields match as
+				LIKE type queries. A query must yield a single result or the entire 
+				initial data process will fail.
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="record" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+		
+	</xs:element>
+	
+	<!-- The records element -->
+	<xs:element name="records">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="record" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- A record element -->
+	<xs:element name="record">
+		<xs:annotation>
+			<xs:documentation>
+				A single record in a database table. Children should be named
+				like the columns in the table. Children for columns that are
+				not required can be omitted.
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:complexType>
+		
+			<xs:sequence>
+				<!-- Anything will do -->
+				<xs:any namespace="##any" processContents="skip" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			
+			<xs:attribute name="id" type="xs:ID" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The id of this record as used in this file.
+						You can use this id in relations. You can also use
+						it as a value in other record elements if you write
+						it like ${id}.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+
+			<xs:attribute name="table" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						The table in insert or find the record in.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="media">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="medium" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="medium">
+		
+		<xs:annotation>
+			<xs:documentation>
+				A single medium in the media table.
+			</xs:documentation>
+		</xs:annotation>
+		
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="owner" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="name" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="description" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="mime" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="state" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="creationdate" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="extra" minOccurs="0" maxOccurs="1"/>
+			</xs:choice>
+			<xs:attribute name="id" type="xs:ID" use="required"/>
+			<xs:attribute name="filename" type="xs:string" use="required">
+				<xs:annotation>
+					<xs:documentation>
+						Path to a file, relative to this file or an absolute path.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- The relations element -->
+	<xs:element name="relations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="relation" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<!-- A relation element -->
+	<xs:element name="relation">
+		<xs:complexType>
+			<xs:attribute name="rec1" type="xs:IDREF" use="required"/>
+			<xs:attribute name="rec2" type="xs:IDREF" use="required"/>
+			<xs:attribute name="tag" type="xs:string" use="optional"/>
+			<xs:attribute name="rank" type="xs:positiveInteger" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+
+		<!-- The scripts element -->
+	<xs:element name="scripts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="script" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A script element -->
+	<xs:element name="script">
+		<xs:complexType>
+			<xs:attribute name="filename" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

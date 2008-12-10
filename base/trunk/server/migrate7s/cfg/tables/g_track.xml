@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+	        <field name="description" />
+			<field name="startdate" />
+			<field name="enddate" />
+			<field name="type" />
+			<field name="format" />
+  		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="name" />
+			<field name="state" />
+ 			<field name="startdate" />
+			<field name="enddate" />
+			<field name="type" />
+			<field name="ptcount" />
+			<field name="distance" />
+  		</list>
+
+		<query>
+			<field name="id" />
+			<field name="name" />
+	        <field name="description" />
+			<field name="type" />
+			<field name="format" />
+     	</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="name" type="STRING" size="64" required="false" />
+		<field name="description" type="TEXT" required="false" />
+
+		<!-- reserved, e.g. normal(1) or daylog(2) -->
+		<field name="type" type="INTEGER" default="1" required="true" />
+
+		<!-- reserved, data type, e.g. standard or GPX file -->
+		<field name="format" type="STRING" size="12" required="true" default="gtbasic" />
+
+		<!-- 1=active 2=inactive 3=invalid -->
+        <field name="state" type="INTEGER" default="2" required="true" />
+
+		<!-- When first event e.g. a point was added to data-->
+		<field name="startdate" type="TIMESTAMP" required="true"/>
+
+		<!-- When last event e.g. a point was added to data-->
+ 		<field name="enddate" type="TIMESTAMP" required="true"/>
+
+		<!-- The track event elements: points, open, close etc. -->
+ 		<field name="data" type="FILE" required="true" />
+
+		<!-- Total number of points in data. -->
+		<field name="ptcount" type="INTEGER"  required="true" default="0" />
+
+		<!-- Distance in kilometers traveled. -->
+		<field name="distance" type="REAL"  required="true" default="0" />
+
+		<!-- Last event added to data. -->
+		<field name="lastevt" type="XML"  />
+
+		<!-- Timestamp of creation -->
+        <field name="creationdate" type="TIMESTAMP"/>
+
+		<!-- Timestamp of last modification -->
+         <field name="modificationdate" type="TIMESTAMP"/>
+
+		<!-- Reserved -->
+		<field name="extra" type="XML" required="false"/>
+	</data>
+</table>

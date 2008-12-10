@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+
+    <views>
+		<insert>
+			<field name="name" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+			<field name="creationdate"/>
+ 		</list>
+
+		<query>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+			<field name="creationdate"/>
+		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="owner" type="INTEGER" required="true" default="-1" index="true" foreignkey="nocascade" />
+		<field name="name" type="STRING" size="64" required="true" index="true" />
+		<field name="creationdate" type="TIMESTAMP"/>
+	</data>
+</table>

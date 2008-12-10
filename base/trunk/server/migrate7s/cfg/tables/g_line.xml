@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="lon1" />
+            <field name="lat1" />
+			<field name="lon2" />
+			<field name="lat2" />
+ 		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="lon1" />
+            <field name="lat1" />
+			<field name="lon2" />
+			<field name="lat2" />
+ 		</list>
+
+		<query>
+			<field name="id" />
+			<field name="type" />
+  		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+
+		<!-- Describes bounding box from bottom-left (SW) to top-right (NE) -->
+		<field name="lon1" type="REAL" required="true" default="-180"/>
+		<field name="lat1" type="REAL" required="true" default="-90" />
+		<field name="lon2" type="REAL" required="true" default="180"/>
+		<field name="lat2" type="REAL" required="true" default="90" />
+
+		<field name="type" type="INTEGER" required="false" />
+		<field name="state" type="INTEGER" required="false" />
+		<field name="creationdate" type="TIMESTAMP"/>
+		<field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML" required="false"/>
+	</data>
+</table>

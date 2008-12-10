@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+
+	<views>
+
+		<insert>
+			<field name="id"/>
+			<field name="tableid"/>
+		</insert>
+
+		<list>
+			<field name="id"/>
+			<field name="tableid"/>
+		</list>
+
+		<query>
+			<field name="id"/>
+			<field name="tableid"/>
+		</query>
+	</views>
+
+	<data>
+
+		<field name="id" type="INTEGER" required="true" key="true"/>
+
+		<field name="tableid" type="INTEGER" required="true"/>
+
+	</data>
+
+	<!--
+
+	CVS log:
+
+	$Log: oase_index.xml,v $
+	Revision 1.3  2006/07/10 19:27:44  just
+	replaced all usages of JDOM with JOX
+	
+	Revision 1.2  2005/09/07 14:33:04  maarten
+	Changed encoding declaration.
+	
+	Revision 1.1.1.1  2005/03/10 21:42:13  just
+	Import of keyworx server
+	
+	Revision 1.1.1.1  2003/05/27 21:28:22  justb
+	no message
+	
+	Revision 1.1.1.1  2003/05/15 14:34:02  justb
+	no message
+	
+
+	-->
+
+</table>

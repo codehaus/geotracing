@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+			<field name="description"/>
+            <field name="type" />
+            <field name="state" />
+            <field name="extra" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+            <field name="type" />
+            <field name="state" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="owner" />
+			<field name="name" />
+			<field name="description" />
+            <field name="type" />
+            <field name="state" />
+            <field name="creationdate" />
+            <field name="modificationdate" />
+            <field name="extra" />
+		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="owner" type="STRING" size="12" required="true" default="unknown" />
+		<field name="name" type="STRING" size="64" required="true" />
+		<field name="description" type="TEXT" required="false" />
+        <field name="type" type="STRING" size="32" required="false" />
+        <field name="state" type="INTEGER" required="false" />
+        <field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML" />
+	</data>
+</table>

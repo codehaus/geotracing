@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Point of Interest, generic item coupled to a g_location
+  NOTE: not in use anymore but kept for upgrades -->
+<table>
+
+    <views>
+
+		<insert>
+			<field name="name" />
+            <field name="type" />
+		</insert>
+
+		<list>
+			<field name="id" />
+			<field name="name" />
+            <field name="type" />
+            <field name="state" />
+ 			<field name="time" />
+		</list>
+
+		<query>
+			<field name="id" />
+			<field name="name" />
+            <field name="description" />
+            <field name="type" />
+            <field name="state" />
+   	</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="name" type="STRING" size="64" required="true" />
+		<field name="description" type="TEXT" required="false" />
+        <field name="type" type="STRING" size="32" required="true" default="poi"/>
+        <field name="state" type="INTEGER" required="true" default="0"/>
+        <field name="value" type="INTEGER" required="false" />
+		<field name="time" type="TIMESTAMP" required="true" />
+		<field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+		<field name="extra" type="XML" />
+	</data>
+</table>

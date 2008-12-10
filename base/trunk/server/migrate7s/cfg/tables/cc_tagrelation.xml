@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<table>
+
+    <views>
+		<insert>
+			<field name="tagger" />
+			<field name="taggertable" />
+			<field name="item" />
+			<field name="itemtable" />
+			<field name="tag" />
+		</insert>
+
+		<list>
+			<field name="tagger" />
+			<field name="taggertable" />
+			<field name="item" />
+			<field name="itemtable" />
+			<field name="tag" />
+			<field name="creationdate"/>
+			<field name="modificationdate"/>
+ 		</list>
+
+		<query>
+			<field name="tagger" />
+			<field name="taggertable" />
+			<field name="item" />
+			<field name="itemtable" />
+			<field name="tag" />
+			<field name="creationdate"/>
+			<field name="modificationdate"/>
+		</query>
+ 	</views>
+
+	<data>
+		<field name="id" type="INTEGER" required="true" key="true" />
+		<field name="tagger" type="INTEGER" required="true" index="true" foreignkey="cascade"/>
+		<field name="taggertable" type="INTEGER" required="true" index="true" />
+		<field name="item" type="INTEGER" required="true" index="true" foreignkey="cascade"/>
+		<field name="itemtable" type="INTEGER" required="true" index="true" />
+		<field name="tag" type="INTEGER" required="true" index="true" foreignkey="cascade"/>
+		<field name="creationdate" type="TIMESTAMP"/>
+        <field name="modificationdate" type="TIMESTAMP"/>
+	</data>
+</table>
