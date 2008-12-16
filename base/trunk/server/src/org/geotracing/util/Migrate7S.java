@@ -391,7 +391,7 @@ public class Migrate7S {
 			// Icon id
 			Record[] iconMedium = relater.getRelated(person, "base_medium", "thumb");
 			if (iconMedium.length > 0) {
-				// userRec.addTextChild("iconid", "medium" + iconMedium[0].getId());
+				userRec.addTextChild("iconid", "medium" + iconMedium[0].getId());
 			}
 
 			iniRecs.addChild(userRec);

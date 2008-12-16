@@ -115,7 +115,7 @@ var MYAPP = {
 		GMAP.addMapType('satellite', G_SATELLITE_MAP);
 		GMAP.addMapType('hybrid', G_HYBRID_MAP);
 		GMAP.addMapType('blanc', G_MAP_GREY);
-		GMAP.addMapType('mapnik', mapnikRoutesType);
+		// GMAP.addMapType('mapnik', mapnikRoutesType);
 
 		// Create the Google Map
 		GMAP.createGMap('map');
