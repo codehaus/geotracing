@@ -81,7 +81,7 @@ public class TesterDaemon extends Daemon {
 		protected String mediaDir;
 		protected Properties properties;
 		protected Thread thread;
-		protected Process process;
+		protected Process proc;
 
 		public Worker(String thePropFilePath) {
 			propFilePath = thePropFilePath;
@@ -105,8 +105,8 @@ public class TesterDaemon extends Daemon {
 		}
 
 		public void stop() {
-			if (process != null) {
-				process.destroy();
+			if (proc != null) {
+				proc.destroy();
 			}
 			if (thread == null) {
 				return;
