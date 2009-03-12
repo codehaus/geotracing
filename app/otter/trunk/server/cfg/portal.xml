@@ -5,6 +5,8 @@
 	<property name="webappurl" host="pundit">http://www.geotracing.com/otter</property>
 	<property name="siteurl" host="suwa">http://test.geotracing.com/otter</property>
 	<property name="webappurl" host="suwa">http://test.geotracing.com/otter</property>
+	<property name="siteurl" host="samoa">http://www.geotracing.com/otter</property>
+	<property name="webappurl" host="samoa">http://www.geotracing.com/otter</property>
 
 	<config>
 		<!-- Oase context file. Context id becomes portal name -->
@@ -58,10 +60,10 @@
 
                -->
 
-			<!-- Daemon for various upgrades -->
+			<!-- Daemon for various upgrades
 			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
 				<property name="locations">true</property>
-			</daemon>
+			</daemon>  -->
 
 		</daemons>
 	</application>
