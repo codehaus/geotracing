@@ -352,9 +352,11 @@ $Id$
 	</target>
 
 	<target name="sync-site" depends="init">
-		<copy todir="${deploy.live.dir}" overwrite="true">
-			<fileset dir="${home.webapp.dir}/site"/>
-		</copy>
+		<exec executable="rsync">
+			<arg line="-alzvx -e ssh"/>
+			<arg line="${home.webapp.dir}/site/"/>
+			<arg line="${deploy.live.dir}/"/>
+		</exec>
 	</target>
 
 	<target name="sync-site-local" depends="init">
