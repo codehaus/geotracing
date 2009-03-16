@@ -48,7 +48,7 @@ TLabel.prototype.getXY = function(a, b) {
 		this.lastZoom = zoom;
 
 		// Calc scale
-		var scale = Math.pow(3,(zoom/8)) / 12;
+		var scale = Math.pow(3, (zoom / 8)) / 12;
 
 		// Keep to minimum
 		scale = Math.max(this.minScaleFactor, scale);
@@ -66,12 +66,12 @@ TLabel.prototype.getXY = function(a, b) {
 			return;
 		}
 
-		icon.style.width = sw +'px';
-		icon.style.height = sh +'px';
+		icon.style.width = sw + 'px';
+		icon.style.height = sh + 'px';
 
 		// Correct marker offset (assume middle and topleft anchor!!!)
-		this.markerOffset.width = sw/2;
-		this.markerOffset.height = sh/2;
+		this.markerOffset.width = sw / 2;
+		this.markerOffset.height = sh / 2;
 	}
 
 	if (this.diffuse == true) {
@@ -136,19 +136,19 @@ var MYAPP = {
 	WINDOW_TITLE: 'Geosailing - Schuttevaer 2007 Live',
 	DOC_TITLE: 'Geosailing',
 	LOGOS: new Array('sidebar/images/devriessailsW.gif', 'sidebar/images/maxleadW.gif', 'sidebar/images/4ptelecomW.gif', 'sidebar/images/kuiperverzW.gif'),
-// LOGOS_LINKS: new Array('http://www.sneekweek.nl', 'http://www.schuttevaer.nl', 'http://www.nhl.nl'),
+	// LOGOS_LINKS: new Array('http://www.sneekweek.nl', 'http://www.schuttevaer.nl', 'http://www.nhl.nl'),
 	LOGOS_LINKS: new Array('http://www.devriessails.nl', 'http://www.maxlead.nl', 'http://www.4ptelecom.nl', 'http://www.kuiperverzekeringen.nl'),
 	logoIndex: 0,
 	MAP_INIT_CENTER: new GLatLng(53.12715, 5.175445),
 	MAP_INIT_ZOOM: 10,
 	liveMedia: new FeatureSet(),
 
-/** Add uploaded medium. */
+	/** Add uploaded medium. */
 	addLiveMedium: function(aMedium) {
 		MYAPP.liveMedia.addFeature(aMedium);
 	},
 
-/** Create listener to incoming live events. */
+	/** Create listener to incoming live events. */
 	createLiveListener: function() {
 		// May overload with MyApp LiveListener
 		GTAPP.liveListener = new SailLiveListener('livestatus');
@@ -164,7 +164,7 @@ var MYAPP = {
 	},
 
 
-// Called in GTAPP.init() (see overload above)
+	// Called in GTAPP.init() (see overload above)
 
 	createMap: function() {
 		GTAPP.blinkStatus('Creating map...');
@@ -247,10 +247,10 @@ var MYAPP = {
 	showUserDetails: function(aLoginName) {
 		var tracer = GTW.getTracer(aLoginName);
 		BOAT.show(aLoginName);
-/*		var panel = new Panel(aLoginName + ' Info', '#072855', 'white');
-		panel.setXY(200, 100);
-		panel.setDimension(400, 300);
-		panel.loadContent('popup/boot.html');  */
+		/*		var panel = new Panel(aLoginName + ' Info', '#072855', 'white');
+				panel.setXY(200, 100);
+				panel.setDimension(400, 300);
+				panel.loadContent('popup/boot.html');  */
 	},
 
 	empty: function() {
@@ -268,7 +268,7 @@ var MYAPP = {
 		// This is the base URL for directional icons (dir_icon_green_01.png through dir_icon_green_08.png)
 		// SailTracer will determine appropriate icon based on geo-course (heading)
 		GTW.TRACER_ICON_URL = 'img/iconen/boten/';
-		GTW.minTrackPtDist = 30;
+		GTW.minTrackPtDist = 300;
 		// Disable menu
 		GTAPP.createMenu = MYAPP.empty;
 
@@ -315,7 +315,7 @@ var MYAPP = {
 			userName = records[i].getField('loginname');
 			color = records[i].getField('color');
 			userDiv = tracer.createStatusLine();
-			if (i == records.length -1) {
+			if (i == records.length - 1) {
 				userList.innerHTML += '<span class="clearfloats"></span>';
 			}
 			userList.innerHTML += userDiv;

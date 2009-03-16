@@ -1,6 +1,6 @@
 GMAP.addKey('live',
-		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xS5YRenGt3JukWk_aGP0SoHu0zjghTY1g4Ko2wi-dmVIFHnMcytcWvTtA',
-		'^https?://www.geotracing.com/gt/.*' );
+		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xRLLtc0-1T5fqcwUKDTcgBoUGcRixSIPo5Dq2y4XMqndWO7D5kczi5x-w',
+		'^https?://*.geotracing.com/.*' );
 
 GMAP.addKey('test',
 		'ABQIAAAAD3bxjYK2kuWoA5XU4dh89xRwJAeN3G50o_YQw1rKznRUFZZPJBQfSrLrU-Dm48ebDMIZwnAIMGhljQ',

@@ -59,7 +59,7 @@
 
 
 		<daemons>
-			<daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
+			<!-- <daemon id="emailupload" class="org.geotracing.daemon.LocEmailUploadDaemon">
 				<property name="intervalMillis">20000</property>
 
 				<property name="host">email.upload.host</property>
@@ -67,7 +67,7 @@
 				<property name="email" host="samoa">email.upload.email.samoa</property>
 				<property name="user" host="samoa">email.upload.user.samoa</property>
 				<property name="password" host="samoa">email.upload.password.samoa</property>
-			</daemon>
+			</daemon> -->
 
 			<!-- Daemon for various upgrades
 			<daemon id="upgradedaemon" class="org.geotracing.daemon.UpgradeDaemon">
