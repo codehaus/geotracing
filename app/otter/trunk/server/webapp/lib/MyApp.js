@@ -29,9 +29,9 @@ var MYAPP = {
 
 	createMap: function() {
 		GTAPP.blinkStatus('Creating map...');
-		GMAP.addMapType('satellite', G_SATELLITE_TYPE);
-		GMAP.addMapType('map', G_MAP_TYPE);
-		GMAP.addMapType('hybrid', G_HYBRID_TYPE);
+		GMAP.addMapType('satellite', G_SATELLITE_MAP);
+		GMAP.addMapType('map', G_NORMAL_MAP);
+		GMAP.addMapType('hybrid', G_HYBRID_MAP);
 
 		// Create the Google Map
 		GMAP.createGMap('map');
